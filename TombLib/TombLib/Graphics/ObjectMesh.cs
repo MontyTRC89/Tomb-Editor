@@ -18,47 +18,13 @@ namespace TombLib.Graphics
             : base(device, name)
         { }
 
-        public void UpdateBuffers(Camera camera = null)
+        public void UpdateBuffers(Vector3? position = null)
         {
-            int lastBaseIndex = 0;
-
-            foreach (var submesh in Submeshes)
-            {
-                submesh.Value.BaseIndex = lastBaseIndex;
-                if (submesh.Value.NumIndices != 0)
-                {
-                    var indexList = new List<int[]>();
-
-                    // Collect triangles
-
-                    for (int i = 0; i < submesh.Value.NumIndices; i += 3)
-                    {
-                        int[] tri = new int[3] { submesh.Value.Indices[i], submesh.Value.Indices[i + 1], submesh.Value.Indices[i + 2] };
-                        indexList.Add(tri);
-                    }
-
-                    // Sort triangles
-
-                    if (camera != null)
-                    {
-                        var pos = camera.GetPosition();
-                        indexList = indexList.OrderByDescending(p => Vector3.Distance(pos,
-                        (Vertices[p[0]].Position + Vertices[p[1]].Position + Vertices[p[2]].Position) / 3.0f)).ToList();
-                    }
-
-                    // Rebuild index list
-
-                    Indices.Clear();
-                    foreach (var tri in indexList)
-                        Indices.AddRange(tri);
-                }
-                lastBaseIndex += submesh.Value.NumIndices;
-            }
-
-            UpdateBoundingBox();
-
             if (Vertices.Count == 0)
                 return;
+
+            DepthSort(position);
+            UpdateBoundingBox();
 
             if (VertexBuffer != null)
                 VertexBuffer.Dispose();

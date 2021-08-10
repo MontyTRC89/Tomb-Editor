@@ -238,7 +238,7 @@ namespace WadTool.Controls
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
-                    mesh.UpdateBuffers(Camera);
+                    mesh.UpdateBuffers(Camera.GetPosition());
 
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);

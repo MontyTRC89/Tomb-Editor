@@ -2928,6 +2928,8 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
+            var camPos = Camera.GetPosition();
+
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
             foreach (var group in groups)
             {
@@ -2955,13 +2957,17 @@ namespace TombEditor.Controls
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
                         continue;
-                    
+
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
                     foreach (var instance in group)
                     {
+                        // Only depth-sort near objects, since sorting is very costly operation.
+                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
+                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
+
                         if (!disableSelection && _editor.SelectedObject == instance) // Selection
                             skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
@@ -2983,22 +2989,13 @@ namespace TombEditor.Controls
                                 skinnedModelEffect.Parameters["Color"].SetValue(Vector3.One);
                         }
 
-                        Matrix4x4 world = model.AnimationTransforms[i] * instance.ObjectMatrix;
+                        var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
                         skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * _viewProjection).ToSharpDX());
                         skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
                         {
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                            else
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
+                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
 						}
 
@@ -3034,10 +3031,11 @@ namespace TombEditor.Controls
             // Before drawing custom geometry, apply a depth bias for reducing Z fighting
             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
             
-            
             // If picking for imported geometry is disabled, then draw geometry translucent
             if (DisablePickingForImportedGeometry)
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
+
+            var camPos = Camera.GetPosition();
 
             var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
             foreach (var group in groups)
@@ -3052,7 +3050,7 @@ namespace TombEditor.Controls
                     var mesh = meshes[i];
                     if (mesh.Vertices.Count == 0 || mesh.InputLayout == null || mesh.IndexBuffer == null || mesh.VertexBuffer == null)
                         continue;
-
+                    
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
@@ -3061,6 +3059,10 @@ namespace TombEditor.Controls
                     {
                         if (instance.Hidden)
                             continue;
+
+                        // Only depth-sort near objects, since sorting is very costly operation.
+                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
+                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
 
                         geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
 
@@ -3111,20 +3113,8 @@ namespace TombEditor.Controls
                             else
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(false);
 
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (!DisablePickingForImportedGeometry)
-                            {
-                                if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                    _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                                else
-                                    _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-                            }
-
                             geometryEffect.Techniques[0].Passes[0].Apply();
+                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
 
@@ -3162,6 +3152,8 @@ namespace TombEditor.Controls
             staticMeshEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
+            var camPos = Camera.GetPosition();
+
             var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
             foreach (var group in groups)
             {
@@ -3175,13 +3167,17 @@ namespace TombEditor.Controls
                     var mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.IndexBuffer == null || mesh.InputLayout == null)
                         continue;
-
+                    
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
                     foreach (var instance in group)
                     {
+                        // Only depth-sort near objects, since sorting is very costly operation.
+                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
+                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
+
                         if (!disableSelection && _editor.SelectedObject == instance)
                             staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
@@ -3209,16 +3205,7 @@ namespace TombEditor.Controls
 
                         foreach (var submesh in mesh.Submeshes)
                         {
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                            else
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
+                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
 						}
 

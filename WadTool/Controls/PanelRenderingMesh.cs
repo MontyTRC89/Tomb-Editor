@@ -373,8 +373,8 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
-            mesh.UpdateBuffers(Camera);
+            var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
+            mesh.UpdateBuffers(Camera.GetPosition());
 
             var world  = Matrix4x4.Identity;
 

@@ -1,5 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace TombLib.Graphics
@@ -32,6 +33,41 @@ namespace TombLib.Graphics
                 maxVertex = Vector3.Max(maxVertex, vertex.Position);
             }
             BoundingBox = new BoundingBox(minVertex, maxVertex);
+        }
+
+        public void DepthSort(Vector3? position)
+        {
+            int lastBaseIndex = 0;
+            Indices.Clear();
+
+            foreach (var submesh in Submeshes)
+            {
+                submesh.Value.BaseIndex = lastBaseIndex;
+                if (submesh.Value.NumIndices != 0)
+                {
+                    var indexList = new List<int[]>();
+
+                    // Collect triangles
+
+                    for (int i = 0; i < submesh.Value.NumIndices; i += 3)
+                    {
+                        int[] tri = new int[3] { submesh.Value.Indices[i], submesh.Value.Indices[i + 1], submesh.Value.Indices[i + 2] };
+                        indexList.Add(tri);
+                    }
+
+                    // Sort triangles
+
+                    if (position != null)
+                        indexList = indexList.OrderByDescending(p => Vector3.Distance(position.Value,
+                        (Vertices[p[0]].Position + Vertices[p[1]].Position + Vertices[p[2]].Position) / 3.0f)).ToList();
+
+                    // Rebuild index list
+
+                    foreach (var tri in indexList)
+                        Indices.AddRange(tri);
+                }
+                lastBaseIndex += submesh.Value.NumIndices;
+            }
         }
     }
 }

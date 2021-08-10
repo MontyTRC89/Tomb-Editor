@@ -241,6 +241,8 @@ namespace TombLib.LevelData
             set { Position = new Vector3(value.X * Level.WorldUnit, Position.Y, value.Y * Level.WorldUnit); }
         }
 
+        public Vector3 WorldPosition => Room != null ? Room.WorldPos + Position : Position;
+
         // All object matrices are precached on any transform, which allows to save some CPU time
         // with big level previews.
 

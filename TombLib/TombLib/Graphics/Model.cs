@@ -31,7 +31,7 @@ namespace TombLib.Graphics
             Meshes = new List<T>();
         }
 
-        public abstract void UpdateBuffers(Camera camera);
+        public abstract void UpdateBuffers(Vector3? position = null);
 
         protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                       Vector3 color, Vector2 positionInAtlas)

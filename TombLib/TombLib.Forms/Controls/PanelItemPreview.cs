@@ -271,7 +271,7 @@ namespace TombLib.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    mesh.UpdateBuffers(Camera);
+                    mesh.UpdateBuffers(Camera.GetPosition());
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
@@ -308,7 +308,7 @@ namespace TombLib.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    mesh.UpdateBuffers(Camera);
+                    mesh.UpdateBuffers(Camera.GetPosition());
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
@@ -361,7 +361,7 @@ namespace TombLib.Controls
                         if (mesh.Vertices.Count == 0)
                             continue;
 
-                        mesh.UpdateBuffers(Camera);
+                        mesh.UpdateBuffers(Camera.GetPosition());
 
                         _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                         _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);

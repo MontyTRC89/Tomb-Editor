@@ -80,23 +80,13 @@ namespace TombLib.LevelData
             : base(device, name)
         { }
 
-        public void UpdateBuffers(Camera camera)
+        public void UpdateBuffers(Vector3? position = null)
         {
-            int lastBaseIndex = 0;
-
-            foreach (var submesh in Submeshes)
-            {
-                submesh.Value.BaseIndex = lastBaseIndex;
-                if (submesh.Value.NumIndices != 0)
-                    foreach (var index in submesh.Value.Indices)
-                        Indices.Add((ushort)(index));
-                lastBaseIndex += submesh.Value.NumIndices;
-            }
-
-            UpdateBoundingBox();
-
             if (Vertices.Count == 0)
                 return;
+
+            DepthSort(position);
+            UpdateBoundingBox();
 
             if (VertexBuffer != null)
                 VertexBuffer.Dispose();
@@ -106,6 +96,7 @@ namespace TombLib.LevelData
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
             InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
             IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
+
             if (VertexBuffer == null)
                 logger.Error("Vertex Buffer of Imported Geometry " + Name + " could not be created!");
             if (InputLayout == null)
@@ -181,12 +172,12 @@ namespace TombLib.LevelData
                 Scale = scale;
             }
 
-            public override void UpdateBuffers(Camera camera = null)
+            public override void UpdateBuffers(Vector3? position = null)
             {
                 foreach (var mesh in Meshes)
                 {
                     mesh.UpdateBoundingBox();
-                    mesh.UpdateBuffers(camera);
+                    mesh.UpdateBuffers(position);
                 }
             }
         }

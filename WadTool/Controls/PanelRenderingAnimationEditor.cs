@@ -224,7 +224,7 @@ namespace WadTool.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    mesh.UpdateBuffers(Camera);
+                    mesh.UpdateBuffers(Camera.GetPosition());
 
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
