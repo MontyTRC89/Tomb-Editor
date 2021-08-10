@@ -226,8 +226,6 @@ namespace TombLib.Controls
 
         protected override void OnDraw()
         {
-            _wadRenderer.Camera = Camera;
-
             // To make sure things are in a defined state for legacy rendering...
             ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -273,6 +271,8 @@ namespace TombLib.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
+                    mesh.UpdateBuffers(Camera);
+
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
                     _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
@@ -305,6 +305,10 @@ namespace TombLib.Controls
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    mesh.UpdateBuffers(Camera);
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
@@ -354,6 +358,10 @@ namespace TombLib.Controls
                     for (int i = 0; i < model.Meshes.Count; i++)
                     {
                         var mesh = model.Meshes[i];
+                        if (mesh.Vertices.Count == 0)
+                            continue;
+
+                        mesh.UpdateBuffers(Camera);
 
                         _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                         _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);

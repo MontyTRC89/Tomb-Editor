@@ -348,8 +348,6 @@ namespace WadTool.Controls
             if (VisibleMesh == null)
                 return;
 
-            _wadRenderer.Camera = Camera;
-
             // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();

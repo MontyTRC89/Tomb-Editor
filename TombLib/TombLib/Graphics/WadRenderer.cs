@@ -14,7 +14,6 @@ namespace TombLib.Graphics
 
         public GraphicsDevice GraphicsDevice { get; }
         public Texture2D Texture { get; private set; } = null;
-        public Camera Camera { get; set; } = null;
 
         private Dictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
         private Dictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
@@ -99,7 +98,7 @@ namespace TombLib.Graphics
             // The data is either new or has changed, unfortunately we need to reload it
             try
             {
-                model = AnimatedModel.FromWadMoveable(GraphicsDevice, Camera, moveable, AllocateTexture);
+                model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture);
             }
             catch (TextureAtlasFullException exc)
             {
@@ -134,7 +133,7 @@ namespace TombLib.Graphics
             try
             {
                 model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, Camera, @static.Mesh, AllocateTexture, _correctTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice,  @static.Mesh, AllocateTexture, _correctTexture));
                 model.UpdateBuffers();
             }
             catch (TextureAtlasFullException exc)
@@ -235,7 +234,8 @@ namespace TombLib.Graphics
             // Create moveable models
             Parallel.ForEach(newMoveables, moveable =>
             {
-                var model = AnimatedModel.FromWadMoveable(GraphicsDevice, Camera, moveable, AllocateTexture);
+                var model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture);
+                model.UpdateBuffers();
                 lock (Moveables)
                     Moveables.Add(moveable, model);
             });
@@ -244,7 +244,7 @@ namespace TombLib.Graphics
             Parallel.ForEach(newStatics, @static =>
             {
                 var model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, Camera, @static.Mesh, AllocateTexture, _correctTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice,  @static.Mesh, AllocateTexture, _correctTexture));
                 model.UpdateBuffers();
                 lock (Statics)
                     Statics.Add(@static, model);

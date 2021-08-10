@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using TombLib.Utils;
-using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -33,7 +31,7 @@ namespace TombLib.Graphics
             Meshes = new List<T>();
         }
 
-        public abstract void UpdateBuffers();
+        public abstract void UpdateBuffers(Camera camera);
 
         protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                       Vector3 color, Vector2 positionInAtlas)

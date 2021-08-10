@@ -14,12 +14,12 @@ namespace TombLib.Graphics
             : base(device, ModelType.Static)
         {}
 
-        public override void UpdateBuffers()
+        public override void UpdateBuffers(Camera camera = null)
         {
             foreach (var mesh in Meshes)
             {
                 mesh.UpdateBoundingBox();
-                mesh.UpdateBuffers();
+                mesh.UpdateBuffers(camera);
             }
         }
     }

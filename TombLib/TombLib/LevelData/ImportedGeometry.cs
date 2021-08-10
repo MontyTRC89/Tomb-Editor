@@ -80,7 +80,7 @@ namespace TombLib.LevelData
             : base(device, name)
         { }
 
-        public void UpdateBuffers()
+        public void UpdateBuffers(Camera camera)
         {
             int lastBaseIndex = 0;
 
@@ -181,12 +181,12 @@ namespace TombLib.LevelData
                 Scale = scale;
             }
 
-            public override void UpdateBuffers()
+            public override void UpdateBuffers(Camera camera = null)
             {
                 foreach (var mesh in Meshes)
                 {
                     mesh.UpdateBoundingBox();
-                    mesh.UpdateBuffers();
+                    mesh.UpdateBuffers(camera);
                 }
             }
         }
