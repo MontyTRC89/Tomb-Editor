@@ -269,6 +269,7 @@ namespace WadTool
             ExpandSkeleton();
 
             panelRendering.Skeleton = _bones;
+            panelRendering.UpdateModel();
             panelRendering.Invalidate();
         }
 
@@ -296,6 +297,7 @@ namespace WadTool
             ExpandSkeleton();
 
             panelRendering.Skeleton = _bones;
+            panelRendering.UpdateModel();
             UpdateUI();
         }
 

@@ -418,5 +418,6 @@ namespace WadTool.Controls
             else
                 return false;
         }
+        public void UpdateModel() => _wadRenderer.Dispose();
     }
 }
