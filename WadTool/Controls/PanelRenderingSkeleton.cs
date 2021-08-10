@@ -128,6 +128,8 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
+            _wadRenderer.Camera = Camera;
+
             // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -138,8 +140,23 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            
+            if (DrawGrid)
+            {
+                _device.SetRasterizerState(_rasterizerWireframe);
 
-            _wadRenderer.Dispose();
+                // Draw the grid
+                _device.SetVertexBuffer(0, _plane.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
+                _device.SetIndexBuffer(_plane.IndexBuffer, true);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                solidEffect.Techniques[0].Passes[0].Apply();
+
+                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+            }
+
             if (Skeleton != null)
             {
                 var effect = _deviceManager.___LegacyEffects["Model"];
@@ -202,22 +219,6 @@ namespace WadTool.Controls
 
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
                 }
-            }
-
-            if (DrawGrid)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
             if (DrawGizmo && SelectedNode != null)

@@ -49,14 +49,14 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
     float4 pixel = Texture.Sample(TextureSampler, input.UV);
-
-	if (AlphaTest == true && pixel.w <= 0.05f)
-		discard;
 	
     float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
     float3 colorMul = min(input.Color.xyz, 1.0f);
     pixel.xyz = pixel.xyz * colorMul + colorAdd;
     pixel.w *= input.Color.w;
+
+	if (AlphaTest == true && pixel.w <= 0.01f)
+		discard;
 
     return pixel;
 }

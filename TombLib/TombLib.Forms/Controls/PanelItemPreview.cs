@@ -226,6 +226,8 @@ namespace TombLib.Controls
 
         protected override void OnDraw()
         {
+            _wadRenderer.Camera = Camera;
+
             // To make sure things are in a defined state for legacy rendering...
             ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -281,16 +283,7 @@ namespace TombLib.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        if (DrawTransparency && submesh.Value.Material.AdditiveBlending)
-                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                        else
-                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
-                        if (submesh.Value.Material.DoubleSided)
-                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                        else
-                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
+                        SetStates(submesh.Value.Material);
                         _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
@@ -322,16 +315,7 @@ namespace TombLib.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        if (DrawTransparency && submesh.Value.Material.AdditiveBlending)
-                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                        else
-                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
-                        if (submesh.Value.Material.DoubleSided)
-                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                        else
-                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
+                        SetStates(submesh.Value.Material);
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
@@ -392,7 +376,7 @@ namespace TombLib.Controls
                             else
                                 effect.Parameters["TextureEnabled"].SetValue(false);
 
-                            effect.Techniques[0].Passes[0].Apply();
+                            SetStates(submesh.Value.Material);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
                     }
@@ -483,6 +467,21 @@ namespace TombLib.Controls
             {
                 stateCount = ((WadSpriteSequence)CurrentObject).Sprites.Count;
             }
+        }
+
+        private void SetStates(Material material)
+        {
+            if (DrawTransparency && material.AdditiveBlending)
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
+            else if (DrawTransparency)
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+            else
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+
+            if (material.DoubleSided)
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+            else
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
         public abstract float FieldOfView { get; }

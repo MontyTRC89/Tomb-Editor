@@ -159,6 +159,8 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
+            _wadRenderer.Camera = Camera;
+
             // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -167,9 +169,60 @@ namespace WadTool.Controls
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
-            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            if (DrawGrid)
+            {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
+                // Draw the grid
+                _device.SetVertexBuffer(0, _plane.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
+                _device.SetIndexBuffer(_plane.IndexBuffer, true);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                solidEffect.Techniques[0].Passes[0].Apply();
+
+                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+            }
+
+            if (DrawLights)
+            {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
+                foreach (var light in Static.Lights)
+                {
+                    // Draw the little sphere
+                    _device.SetVertexBuffer(0, _littleSphere.VertexBuffer);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
+                    _device.SetIndexBuffer(_littleSphere.IndexBuffer, false);
+
+                    var world = Matrix4x4.CreateTranslation(light.Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                    solidEffect.Techniques[0].Passes[0].Apply();
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+
+                    if (SelectedLight == light)
+                    {
+                        _device.SetVertexBuffer(0, _sphere.VertexBuffer);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
+                        _device.SetIndexBuffer(_sphere.IndexBuffer, false);
+
+                        world = Matrix4x4.CreateScale(light.Radius * 2.0f) * Matrix4x4.CreateTranslation(light.Position);
+                        solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                        solidEffect.Techniques[0].Passes[0].Apply();
+
+                        _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                    }
+                }
+
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            }
 
             if (Static != null)
             {
@@ -284,58 +337,6 @@ namespace WadTool.Controls
 
                     _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
                 }
-            }
-
-            if (DrawGrid)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
-            }
-
-            if (DrawLights)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                foreach (var light in Static.Lights)
-                {
-                    // Draw the little sphere
-                    _device.SetVertexBuffer(0, _littleSphere.VertexBuffer);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
-                    _device.SetIndexBuffer(_littleSphere.IndexBuffer, false);
-
-                    var world = Matrix4x4.CreateTranslation(light.Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
-                    solidEffect.Techniques[0].Passes[0].Apply();
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
-
-                    if (SelectedLight == light)
-                    {
-                        _device.SetVertexBuffer(0, _sphere.VertexBuffer);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
-                        _device.SetIndexBuffer(_sphere.IndexBuffer, false);
-
-                        world = Matrix4x4.CreateScale(light.Radius * 2.0f) * Matrix4x4.CreateTranslation(light.Position);
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                        solidEffect.Techniques[0].Passes[0].Apply();
-
-                        _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                    }
-                }
-
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             }
 
             if (DrawGizmo)

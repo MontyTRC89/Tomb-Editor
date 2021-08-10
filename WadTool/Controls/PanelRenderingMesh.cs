@@ -348,6 +348,8 @@ namespace WadTool.Controls
             if (VisibleMesh == null)
                 return;
 
+            _wadRenderer.Camera = Camera;
+
             // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -372,8 +374,6 @@ namespace WadTool.Controls
 
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
-
-            _wadRenderer.Dispose();
 
             var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
             var world  = Matrix4x4.Identity;
@@ -682,6 +682,8 @@ namespace WadTool.Controls
                     {
                         if (AlphaTest && submesh.Value.Material.AdditiveBlending)
                             _device.SetBlendState(_device.BlendStates.Additive);
+                        else if (AlphaTest)
+                            _device.SetBlendState(_device.BlendStates.NonPremultiplied);
                         else
                             _device.SetBlendState(_device.BlendStates.Opaque);
 

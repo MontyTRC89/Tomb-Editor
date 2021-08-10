@@ -114,14 +114,14 @@ namespace TombLib.Graphics
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
         }
 
-        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)
+        public static AnimatedModel FromWadMoveable(GraphicsDevice device, Camera camera, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)
         {
             AnimatedModel model = new AnimatedModel(device);
             List<WadBone> bones = mov.Bones;  
 
             // Create meshes
             for (int m = 0; m < bones.Count; m++)
-                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture, true));
+                model.Meshes.Add(ObjectMesh.FromWad2(device, camera, bones[m].Mesh, allocateTexture, true));
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count

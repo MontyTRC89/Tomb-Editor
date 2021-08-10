@@ -845,18 +845,21 @@ namespace WadTool
             {
                 var poly = panelMesh.Mesh.Polys[i];
 
+                if (cbTexture.Checked && panelTextureMap.SelectedTexture != TextureArea.None)
+                    poly.Texture = panelTextureMap.SelectedTexture;
+
+                var texture = poly.Texture;
+
                 if (cbSheen.Checked)
                     poly.ShineStrength = currentShinyValue;
 
                 if (cbBlend.Checked)
                 {
-                    poly.Texture.BlendMode = currentBlendMode;
-                    poly.Texture.DoubleSided = butDoubleSide.Checked;
+                    texture.BlendMode = currentBlendMode;
+                    texture.DoubleSided = butDoubleSide.Checked;
                 }
 
-                if (cbTexture.Checked && panelTextureMap.SelectedTexture != TextureArea.None)
-                    poly.Texture = panelTextureMap.SelectedTexture;
-
+                poly.Texture = texture;
                 panelMesh.Mesh.Polys[i] = poly;
             }
 

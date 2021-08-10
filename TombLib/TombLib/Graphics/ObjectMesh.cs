@@ -79,7 +79,7 @@ namespace TombLib.Graphics
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
+        public static ObjectMesh FromWad2(GraphicsDevice device, Camera camera, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
         {
             Console.WriteLine(msh.Name);
             // Initialize the mesh
@@ -108,9 +108,20 @@ namespace TombLib.Graphics
             // For some reason, wad meshes sometimes may have position count desynced from color count, so we check that too.
             var hasShades = msh.VertexColors.Count != 0 && msh.VertexPositions.Count == msh.VertexColors.Count;
 
-            for (int j = 0; j < msh.Polys.Count; j++)
+            List<WadPolygon> sortedPolys;
+
+            if (camera != null)
             {
-                WadPolygon poly = msh.Polys[j];
+                var pos = camera.GetPosition();
+                sortedPolys = msh.Polys.OrderByDescending(p => Vector3.Distance(pos,
+                (msh.VertexPositions[p.Index0] + msh.VertexPositions[p.Index1] + msh.VertexPositions[p.Index2] + msh.VertexPositions[p.Index3]) / 4.0f)).ToList();
+            }
+            else
+                sortedPolys = msh.Polys;
+
+            for (int j = 0; j < sortedPolys.Count; j++)
+            {
+                WadPolygon poly = sortedPolys[j];
                 Vector2 positionInPackedTexture = allocateTexture((WadTexture)poly.Texture.Texture);
 
                 // Get the right submesh
