@@ -262,7 +262,7 @@
             // 
             this.darkLabel73.AutoSize = true;
             this.darkLabel73.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel73.Location = new System.Drawing.Point(324, 78);
+            this.darkLabel73.Location = new System.Drawing.Point(324, 101);
             this.darkLabel73.Name = "darkLabel73";
             this.darkLabel73.Size = new System.Drawing.Size(16, 13);
             this.darkLabel73.TabIndex = 77;
