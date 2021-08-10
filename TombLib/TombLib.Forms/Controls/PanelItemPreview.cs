@@ -283,7 +283,7 @@ namespace TombLib.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        SetStates(submesh.Value.Material);
+                        submesh.Value.Material.SetStates(_legacyDevice, DrawTransparency);
                         _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
@@ -319,7 +319,7 @@ namespace TombLib.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        SetStates(submesh.Value.Material);
+                        submesh.Value.Material.SetStates(_legacyDevice, DrawTransparency);
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
@@ -384,7 +384,7 @@ namespace TombLib.Controls
                             else
                                 effect.Parameters["TextureEnabled"].SetValue(false);
 
-                            SetStates(submesh.Value.Material);
+                            submesh.Value.Material.SetStates(_legacyDevice, DrawTransparency);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
                     }
@@ -475,21 +475,6 @@ namespace TombLib.Controls
             {
                 stateCount = ((WadSpriteSequence)CurrentObject).Sprites.Count;
             }
-        }
-
-        private void SetStates(Material material)
-        {
-            if (DrawTransparency && material.AdditiveBlending)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-            else if (DrawTransparency)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
-            else
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
-            if (material.DoubleSided)
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-            else
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
         public abstract float FieldOfView { get; }
