@@ -374,6 +374,8 @@ namespace WadTool.Controls
             }
 
             var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
+            mesh.UpdateBuffers(Camera);
+
             var world  = Matrix4x4.Identity;
 
             var textToDraw  = new List<Text>();
