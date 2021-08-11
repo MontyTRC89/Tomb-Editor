@@ -131,13 +131,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     newMesh.Vertices[indices[0]].Polygons.Add(new NormalHelper(newPoly));
                     newMesh.Vertices[indices[1]].Polygons.Add(new NormalHelper(newPoly));
                     newMesh.Vertices[indices[2]].Polygons.Add(new NormalHelper(newPoly));
-                    if (poly.IsTriangle)
+                    if (!poly.IsTriangle)
                         newMesh.Vertices[indices[3]].Polygons.Add(new NormalHelper(newPoly));
 
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[2]].Normal);
-                    if (poly.IsTriangle)
+                    if (!poly.IsTriangle)
                         newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[3]].Normal);
                 }
             }
