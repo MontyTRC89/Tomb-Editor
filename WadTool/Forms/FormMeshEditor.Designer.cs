@@ -82,6 +82,8 @@
             this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
             this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbFindSelectedTexture = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbRotateTexture = new System.Windows.Forms.ToolStripButton();
             this.butTbMirrorTexture = new System.Windows.Forms.ToolStripButton();
             this.panelCenter = new DarkUI.Controls.DarkPanel();
@@ -848,7 +850,7 @@
             this.butSearchMeshes.Selectable = false;
             this.butSearchMeshes.Size = new System.Drawing.Size(24, 23);
             this.butSearchMeshes.TabIndex = 10;
-            this.toolTip.SetToolTip(this.butSearchMeshes, "Search for texture sets");
+            this.toolTip.SetToolTip(this.butSearchMeshes, "Search for meshes by name");
             this.butSearchMeshes.Click += new System.EventHandler(this.butSearchMeshes_Click);
             // 
             // tbSearchMeshes
@@ -893,6 +895,8 @@
             this.butTbAlpha,
             this.butTbBilinear,
             this.toolStripSeparator2,
+            this.butTbFindSelectedTexture,
+            this.toolStripSeparator4,
             this.butTbRotateTexture,
             this.butTbMirrorTexture});
             this.topBar.Location = new System.Drawing.Point(263, 0);
@@ -1039,6 +1043,26 @@
             this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbFindSelectedTexture
+            // 
+            this.butTbFindSelectedTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbFindSelectedTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbFindSelectedTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbFindSelectedTexture.Image = global::WadTool.Properties.Resources.general_search_texture_16;
+            this.butTbFindSelectedTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbFindSelectedTexture.Name = "butTbFindSelectedTexture";
+            this.butTbFindSelectedTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbFindSelectedTexture.ToolTipText = "Search for mesh by selected texture area";
+            this.butTbFindSelectedTexture.Click += new System.EventHandler(this.butTbFindSelectedTexture_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
             // 
             // butTbRotateTexture
             // 
@@ -1340,5 +1364,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton butTbImport;
         private System.Windows.Forms.ToolStripButton butTbExport;
+        private System.Windows.Forms.ToolStripButton butTbFindSelectedTexture;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }

@@ -71,8 +71,8 @@ namespace TombLib
             Start.X <= point.X && End.X >= point.X && Start.Y <= point.Y && End.Y >= point.Y;
 
         public bool Intersects(Rectangle2 other) =>
-            Start.X <= other.End.X && End.X >= other.Start.X &&
-            Start.Y <= other.End.Y && End.Y >= other.Start.Y;
+            Start.X < other.End.X && End.X > other.Start.X &&
+            Start.Y < other.End.Y && End.Y > other.Start.Y;
 
         public Rectangle2 Inflate(float width) =>
             new Rectangle2(Start - new Vector2(width), End + new Vector2(width));

@@ -138,6 +138,11 @@ namespace WadTool
                         _tool.UndoManager.Redo();
                         break;
 
+                    case (Keys.Control | Keys.F):
+                        if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
+                            FindTexture();
+                        break;
+
                     case Keys.OemMinus:
                     case Keys.Oemplus:
                     case Keys.Oem3:
@@ -367,10 +372,12 @@ namespace WadTool
             }
             else 
             {
-                // If form is called with specific mesh, show only it and not meshtree.
+                // If form is called with specific mesh, show only it and not meshtree or any related controls.
 
                 panelMesh.Mesh = mesh;
                 panelTree.Visible = false;
+                butTbFindSelectedTexture.Visible = false;
+                toolStripSeparator4.Visible = false;
                 GetSphereValues();
             }
         }
@@ -776,6 +783,47 @@ namespace WadTool
                 lstMeshes.EnsureVisible();
                 ShowSelectedMesh();
             }
+        }
+
+        private void FindTexture()
+        {
+            if (!lstMeshes.Visible)
+                return;
+
+            if (panelTextureMap.SelectedTexture == TextureArea.None)
+            {
+                popup.ShowError(panelTextureMap, "Please select valid texture area");
+                return;
+            }
+
+            var validNodes = lstMeshes.GetAllNodes().Where(node => node.Tag != null && node.Tag is MeshTreeNode).ToList();
+            int lastNodeIndex = lstMeshes.SelectedNodes.Count > 0 ? validNodes.IndexOf(lstMeshes.SelectedNodes[0]) + 1 : 0;
+            bool searchRestarted = false;
+
+            if (lastNodeIndex == validNodes.Count)
+                lastNodeIndex = 0;
+
+            for (int i = lastNodeIndex; i < validNodes.Count; i++)
+            {
+                if (i == (validNodes.Count - 1) && lastNodeIndex > 0 && !searchRestarted)
+                {
+                    i = 0;
+                    searchRestarted = true;
+                }
+
+                var node = validNodes[i];
+                var mesh = (node.Tag as MeshTreeNode).WadMesh;
+
+                if (mesh.Polys.Any(p => p.Texture.Texture == panelTextureMap.VisibleTexture &&
+                                        p.Texture.GetRect().Intersects(panelTextureMap.SelectedTexture.GetRect())))
+                {
+                    lstMeshes.SelectNode(node);
+                    lstMeshes.EnsureVisible();
+                    return;
+                }
+            }
+
+            popup.ShowInfo(panelMesh, "No meshes with any textures from enclosed area were found.");
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -1206,6 +1254,11 @@ namespace WadTool
         private void butTbExport_Click(object sender, EventArgs e)
         {
             WadActions.ExportMesh(panelMesh.Mesh, _tool, this);
+        }
+
+        private void butTbFindSelectedTexture_Click(object sender, EventArgs e)
+        {
+            FindTexture();
         }
     }
 }
