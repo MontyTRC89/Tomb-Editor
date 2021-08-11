@@ -1568,9 +1568,7 @@ namespace TombEditor.Controls
                 -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
             _gizmo.MouseMoved(_viewProjection, GetRay(cursorPos.X, cursorPos.Y));
-
-            Invalidate();
-
+            
             _lastMousePosition = cursorPos;
         }
 
