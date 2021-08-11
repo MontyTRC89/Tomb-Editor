@@ -11,6 +11,8 @@ namespace TombLib.Utils
     {
         public static List<string> GetAllFunctionsNames(string path)
         {
+            const string tableName = "LevelFuncs";
+            string[] reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
             try
             {
                 var result = new List<string>();
@@ -19,20 +21,48 @@ namespace TombLib.Utils
                 foreach (string l in lines)
                 {
                     string line = l.Trim();
-
-                    if (line.StartsWith("function"))
+                    bool skip = false;
+                    foreach (string name in reservedNames)
+                    {
+                        if (line.Contains(name))
+                        {
+                            skip = true;
+                            break;
+                        }
+                    }
+                    if (skip)
+                    {
+                        continue;
+                    }
+                    if (line.StartsWith("function " + tableName + "."))
                     {
                         if (line.Contains("--"))
                         {
                             line = line.Substring(0, line.IndexOf("--") - 1);
                         }
-
-                        string functionName = line.Substring(line.IndexOf(" "), line.IndexOf("(") - line.IndexOf(" ")).Trim();
+                        int indexStart = line.IndexOf(".") + 1;
+                        int indexEnd = line.IndexOf("(") - indexStart;
+                        string functionName = line.Substring(indexStart, indexEnd).Trim();
                         if (!result.Contains(functionName))
                         {
                             result.Add(functionName);
                         }
                     }
+                    else if (line.StartsWith(tableName + "."))
+                    {
+                        if (line.Contains("--"))
+                        {
+                            line = line.Substring(0, line.IndexOf("--") - 1);
+                        }
+                        int indexStart = line.IndexOf(".") + 1;
+                        int indexEnd = line.IndexOf("=") - indexStart;
+                        string functionName = line.Substring(indexStart, indexEnd).Trim();
+                        if (!result.Contains(functionName))
+                        {
+                            result.Add(functionName);
+                        }
+                    }
+
                 }
 
                 return result;
