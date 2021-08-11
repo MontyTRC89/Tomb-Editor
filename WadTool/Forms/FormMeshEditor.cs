@@ -792,7 +792,7 @@ namespace WadTool
 
             if (panelTextureMap.SelectedTexture == TextureArea.None)
             {
-                popup.ShowError(panelTextureMap, "Please select valid texture area");
+                popup.ShowError(panelMesh, "Please select valid texture area");
                 return;
             }
 
