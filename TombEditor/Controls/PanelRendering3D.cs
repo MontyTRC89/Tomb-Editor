@@ -176,6 +176,9 @@ namespace TombEditor.Controls
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
+        // Render stats
+        private Stopwatch _watch = new Stopwatch();
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
         private IntPtr LastWindow { get; set; }
@@ -1504,9 +1507,15 @@ namespace TombEditor.Controls
 
             Capture = true;
 
+            Invalidate();
+            var step = (float)_watch.Elapsed.TotalSeconds - (float)_flyModeTimer.Interval / 1000.0f;
+
+            step *= 500;
+            step *= _editor.Configuration.Rendering3D_FlyModeMoveSpeed;
+
             /* Camera position handling */
             var newCameraPos = new Vector3();
-            var cameraMoveSpeed = 10 * _editor.Configuration.Rendering3D_FlyModeMoveSpeed;
+            var cameraMoveSpeed = _editor.Configuration.Rendering3D_FlyModeMoveSpeed * 5 + step;
 
             if (ModifierKeys.HasFlag(Keys.Shift))
                 cameraMoveSpeed *= 2;
@@ -3443,8 +3452,7 @@ namespace TombEditor.Controls
             if (_editor == null || _editor.Level == null || _editor.SelectedRoom == null || _legacyDevice == null)
                 return;
 
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            _watch.Restart();
 
             // New rendering setup
             _viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
@@ -3604,13 +3612,13 @@ namespace TombEditor.Controls
                 SwapChain.RenderSprites(_renderingTextures, BilinearFilter, true, flatSprites);
             }
 
-            watch.Stop();
+            _watch.Stop();
 
             // Construct debug string
 
             string DebugString = "";
             if (_editor.Configuration.Rendering3D_ShowFPS)
-                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + "\n";
+                DebugString += "FPS: " + Math.Round(1.0f / _watch.Elapsed.TotalSeconds, 2) + "\n";
 
             if (_editor.SelectedObject != null)
                 DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
