@@ -35,7 +35,7 @@ namespace TombEditor.Forms.TombEngine
         {
             if (_editor.Level.Settings.TenLuaScriptFile != null)
             {
-                string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile, null);
+                string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
                 var functions = ScriptingUtils.GetAllFunctionsNames(path);
                 if (functions!=null)
                 {
