@@ -1053,7 +1053,7 @@
             this.butTbFindSelectedTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbFindSelectedTexture.Name = "butTbFindSelectedTexture";
             this.butTbFindSelectedTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbFindSelectedTexture.ToolTipText = "Search for mesh by selected texture area";
+            this.butTbFindSelectedTexture.ToolTipText = "Search for mesh by selected texture area (Ctrl+F)";
             this.butTbFindSelectedTexture.Click += new System.EventHandler(this.butTbFindSelectedTexture_Click);
             // 
             // toolStripSeparator4
@@ -1073,7 +1073,7 @@
             this.butTbRotateTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbRotateTexture.Name = "butTbRotateTexture";
             this.butTbRotateTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbRotateTexture.ToolTipText = "Rotate current texture";
+            this.butTbRotateTexture.ToolTipText = "Rotate current texture (~)";
             this.butTbRotateTexture.Click += new System.EventHandler(this.butTbRotateTexture_Click);
             // 
             // butTbMirrorTexture
@@ -1085,7 +1085,7 @@
             this.butTbMirrorTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbMirrorTexture.Name = "butTbMirrorTexture";
             this.butTbMirrorTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbMirrorTexture.ToolTipText = "Mirror current texture";
+            this.butTbMirrorTexture.ToolTipText = "Mirror current texture (Shift+~)";
             this.butTbMirrorTexture.Click += new System.EventHandler(this.butTbMirrorTexture_Click);
             // 
             // panelCenter
