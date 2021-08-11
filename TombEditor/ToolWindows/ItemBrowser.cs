@@ -101,7 +101,8 @@ namespace TombEditor.ToolWindows
             }
 
             if (obj is Editor.ChosenItemChangedEvent ||
-                obj is Editor.GameVersionChangedEvent)
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
                 FindLaraSkin();
 
             // Update tooltip texts
@@ -140,7 +141,6 @@ namespace TombEditor.ToolWindows
             }
 
             MakeActive();
-            panelItem.ResetCamera();
         }
 
         private void FindLaraSkin()
@@ -149,15 +149,15 @@ namespace TombEditor.ToolWindows
                 return;
 
             var item = comboItems.SelectedItem as WadMoveable;
-            if (item.Id == WadMoveableId.Lara) // Show Lara's skin
-            {
-                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, item.Id.TypeId));
-                var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                if (moveableSkin != null)
-                    panelItem.CurrentObject = moveableSkin;
+            var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, item.Id.TypeId));
+            var skin = _editor.Level.Settings.WadTryGetMoveable(skinId);
 
-                panelItem.Invalidate();
-            }
+            if (skin != null && skin != item)
+                panelItem.CurrentObject = item.ReplaceDummyMeshes(skin);
+            else
+                panelItem.CurrentObject = item;
+
+            panelItem.Invalidate();
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
