@@ -85,7 +85,12 @@ namespace TombLib.LevelData
             if (Vertices.Count == 0)
                 return;
 
-            DepthSort(position);
+            // FIXME: because imp geo meshes are directly referenced everywhere in TE,
+            // we can't depth-sort them, otherwise a race condition may occur which will
+            // cause incorrect rendering or occasional SEHExceptions. For more info, see here:
+            // https://github.com/MontyTRC89/Tomb-Editor/issues/516
+
+            DepthSort(null); // null means no depth-sorting occurs
             UpdateBoundingBox();
 
             if (VertexBuffer != null)

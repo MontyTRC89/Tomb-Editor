@@ -7,12 +7,12 @@ namespace TombLib.Graphics
 {
     public abstract class Mesh<T> : GraphicsResource, IRenderableObject where T : struct, IVertex
     {
-        public Buffer<T> VertexBuffer { get; set; }
-        public Buffer IndexBuffer { get; set; }
-        public VertexInputLayout InputLayout { get; set; }
-        public List<Material> Materials { get; set; }
-        public List<T> Vertices { get; set; } = new List<T>();
-        public List<int> Indices { get; set; } = new List<int>();
+        public Buffer<T> VertexBuffer { get; protected set; }
+        public Buffer IndexBuffer { get; protected set; }
+        public VertexInputLayout InputLayout { get; protected set; }
+        public List<Material> Materials { get; protected set; }
+        public List<T> Vertices { get; protected set; } = new List<T>();
+        public List<int> Indices { get; protected set; } = new List<int>();
         public Dictionary<Material, Submesh> Submeshes { get; private set; } = new Dictionary<Material, Submesh>();
 
         public BoundingSphere BoundingSphere { get; set; }

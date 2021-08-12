@@ -2971,10 +2971,6 @@ namespace TombEditor.Controls
 
                     foreach (var instance in group)
                     {
-                        // Only depth-sort near objects, since sorting is very costly operation.
-                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
-                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
-
                         if (!disableSelection && _editor.SelectedObject == instance) // Selection
                             skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
@@ -3066,10 +3062,6 @@ namespace TombEditor.Controls
                     {
                         if (instance.Hidden)
                             continue;
-
-                        // Only depth-sort near objects, since sorting is very costly operation.
-                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
-                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
 
                         geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
 
@@ -3181,10 +3173,6 @@ namespace TombEditor.Controls
 
                     foreach (var instance in group)
                     {
-                        // Only depth-sort near objects, since sorting is very costly operation.
-                        if (Vector3.Distance(camPos, instance.WorldPosition) < Level.WorldUnit * 8)
-                            mesh.UpdateBuffers(camPos - instance.WorldPosition);
-
                         if (!disableSelection && _editor.SelectedObject == instance)
                             staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
