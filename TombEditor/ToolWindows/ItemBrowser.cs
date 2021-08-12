@@ -102,6 +102,8 @@ namespace TombEditor.ToolWindows
 
             if (obj is Editor.ChosenItemChangedEvent ||
                 obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
                 FindLaraSkin();
 
@@ -157,7 +159,7 @@ namespace TombEditor.ToolWindows
             else
                 panelItem.CurrentObject = item;
 
-            panelItem.Invalidate();
+            panelItem.ResetCamera();
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
