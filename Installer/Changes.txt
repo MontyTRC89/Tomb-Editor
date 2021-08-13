@@ -1,7 +1,8 @@
-Version 1.3.16
-==============
+Version 1.4
+===========
 
 Tomb Editor:
+ * Object multiselection with Ctrl + click. Move, rotate, copy-paste and do batch triggering.
  * An option to toggle bilinear filter on or off (right-click and customize toolbar to see the button).
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
