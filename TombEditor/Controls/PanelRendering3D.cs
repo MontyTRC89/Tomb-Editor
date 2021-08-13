@@ -871,8 +871,11 @@ namespace TombEditor.Controls
                     PickingResult newPicking = DoPicking(GetRay(e.X, e.Y), true);
                     if (newPicking is PickingResultObject)
                     {
-                        var pickedObject = ((PickingResultObject)newPicking).ObjectInstance;
-                        EditorActions.EditObject(pickedObject, Parent);
+                        if (Control.ModifierKeys == Keys.None)
+                        {
+                            var pickedObject = ((PickingResultObject)newPicking).ObjectInstance;
+                            EditorActions.EditObject(pickedObject, Parent);
+                        }
                     }
                     else if (newPicking is PickingResultBlock)
                     {
@@ -2531,7 +2534,7 @@ namespace TombEditor.Controls
                 }
         }
 
-        private void DrawObjects(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        private void DrawPlaceholders(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
@@ -2586,15 +2589,18 @@ namespace TombEditor.Controls
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            "Camera " + (instance.Fixed ? "(Locked)" : "") +
-                            GetObjectScriptIDString(instance) + "\n" + 
-                            GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                "Camera " + (instance.Fixed ? "(Locked)" : "") +
+                                GetObjectScriptIDString(instance) + "\n" +
+                                GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2611,15 +2617,18 @@ namespace TombEditor.Controls
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
-                            GetObjectScriptIDString(instance) + "\n" + 
-                            GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
+                                GetObjectScriptIDString(instance) + "\n" +
+                                GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2637,10 +2646,8 @@ namespace TombEditor.Controls
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
                             // Add text message
-                            textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
-
-                            // Add the line height of the object
-                            AddObjectHeightLine(instance.Room, instance.Position);
+                            if (_editor.SelectedObject == instance)
+                                textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
                         }
 
                         RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2658,14 +2665,17 @@ namespace TombEditor.Controls
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
                         // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            "Sink (Strength = " + instance.Strength + ") " +
-                            GetObjectScriptIDString(instance) + "\n" + 
-                            GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                "Sink (Strength = " + instance.Strength + ") " +
+                                GetObjectScriptIDString(instance) + "\n" +
+                                GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2682,15 +2692,18 @@ namespace TombEditor.Controls
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") +
-                            GetObjectScriptIDString(instance) + "\n" +
-                            GetObjectPositionString(instance.Room, instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") +
+                                GetObjectScriptIDString(instance) + "\n" +
+                                GetObjectPositionString(instance.Room, instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2710,15 +2723,18 @@ namespace TombEditor.Controls
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            instance.ShortName() + "\nUnavailable " + instance.ItemType +
-                            GetObjectScriptIDString(instance) + "\n" + 
-                            GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                                // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                instance.ShortName() + "\nUnavailable " + instance.ItemType +
+                                GetObjectScriptIDString(instance) + "\n" +
+                                GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                                // Add the line height of the object
+                                AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2738,13 +2754,16 @@ namespace TombEditor.Controls
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        // Add text message
-                        textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * _viewProjection,
-                            instance.ShortName() + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
+                        if (_editor.SelectedObject == instance)
+                        {
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                instance.ShortName() + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
 
-                        // Add the line height of the object
-                        AddObjectHeightLine(instance.Room, instance.Position);
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2761,13 +2780,16 @@ namespace TombEditor.Controls
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                            // Add text message
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * _viewProjection,
-                                instance.ToString()));
+                            if (_editor.SelectedObject == instance)
+                            {
+                                // Add text message
+                                textToDraw.Add(CreateTextTagForObject(
+                                    instance.RotationPositionMatrix * _viewProjection,
+                                    instance.ToString()));
 
-                            // Add the line height of the object
-                            AddObjectHeightLine(instance.Room, instance.Position);
+                                // Add the line height of the object
+                                AddObjectHeightLine(instance.Room, instance.Position);
+                            }
                         }
 
                         RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
@@ -2786,8 +2808,11 @@ namespace TombEditor.Controls
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
-                    Vector4 color;
+                    var color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
                     Matrix4x4 model;
+
+                    if (_highlightedObjects.Contains(instance))
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
                     if (_editor.SelectedObject == instance)
                     {
@@ -2795,7 +2820,6 @@ namespace TombEditor.Controls
                         float cutoffScaleH = 1;
                         float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
                         model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
-                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
                         if (wireframe == false)
                         {
@@ -2815,9 +2839,6 @@ namespace TombEditor.Controls
                                  Matrix4x4.CreateRotationY((float)Math.PI) *
                                  Matrix4x4.CreateScale(1 / _coneRadius * _littleCubeRadius * 2.0f) *
                                  instance.ObjectMatrix;
-
-
-                        color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
                         if (wireframe == true)
                         {
@@ -3553,8 +3574,8 @@ namespace TombEditor.Controls
             {
                 // Draw sprites
                 DrawSprites(roomsToDraw, spritesToDraw);
-                // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-                DrawObjects(effect, roomsToDraw, textToDraw, spritesToDraw);
+                // Draw placeholder objects (sinks, cameras, fly-by cameras, sound sources and missing 3D objects)
+                DrawPlaceholders(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw light objects and bounding volumes
                 DrawLights(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw flyby path
