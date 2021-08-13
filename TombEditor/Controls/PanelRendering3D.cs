@@ -2837,7 +2837,7 @@ namespace TombEditor.Controls
         {
             if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
             {
-                var newSprite = ServiceObjectTextures.GetSprite(instance, Camera.GetPosition(), _viewProjection, ClientSize, color, _editor.SelectedObject == instance);
+                var newSprite = ServiceObjectTextures.GetSprite(instance, Camera.GetPosition(), _viewProjection, ClientSize, color, _highlightedObjects.Contains((ObjectInstance)instance));
                 if (newSprite != null)
                     sprites.Add(newSprite);
                 return;
