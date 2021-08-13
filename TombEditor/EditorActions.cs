@@ -1135,7 +1135,7 @@ namespace TombEditor
                 var undoList = new List<UndoRedoInstance>();
                 foreach (var instance in objects)
                 {
-                    if (instance is PositionBasedObjectInstance)
+                    if (instance is PositionBasedObjectInstance && !(instance is ObjectGroup))
                         undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
                     else if (instance is GhostBlockInstance)
                         undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
@@ -2095,8 +2095,8 @@ namespace TombEditor
 
         public static void PlaceObjectWithoutUpdate(Room room, Vector2 pos, PositionBasedObjectInstance instance)
         {
-            Block block = room.GetBlock(new VectorInt2((int)pos.X, (int)pos.Y));
-            int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
+            var block = room.GetBlockTry(new VectorInt2((int)pos.X, (int)pos.Y));
+            int y = block == null ? 0 : (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
 
             instance.Position = new Vector3(pos.X * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, pos.Y * Level.WorldUnit + Level.HalfWorldUnit);
             room.AddObject(_editor.Level, instance);
