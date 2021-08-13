@@ -635,13 +635,7 @@ namespace TombEditor
         {
             if (room == null || @object == null)
                 throw new ArgumentNullException();
-
-            if (@object is ObjectGroup)
-                foreach (var o in ((ObjectGroup)@object).ToList())
-                    RaiseEvent(new ObjectChangedEvent { Room = room, Object = o, ChangeType = changeType });
-            else
-                RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
-
+            RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
         }
         public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType)
         {
@@ -1032,7 +1026,7 @@ namespace TombEditor
             }
 
             // Backup last used tool for next mode
-            if(obj is ToolChangedEvent)
+            if (obj is ToolChangedEvent)
             {
                 var @event = (ToolChangedEvent)obj;
                 if (Mode == EditorMode.Geometry)

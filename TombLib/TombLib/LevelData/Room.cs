@@ -1132,9 +1132,6 @@ namespace TombLib.LevelData
 
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
-            if (instance is ObjectGroup)
-                return ((ObjectGroup)instance).Select(obj => RemoveObjectAndSingularPortalAndKeepAlive(level, obj));
-
             var result = new List<ObjectInstance>();
             result.Add(RemoveObjectAndSingularPortalAndKeepAlive(level, instance));
 
