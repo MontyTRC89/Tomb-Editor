@@ -143,6 +143,7 @@ namespace TombEditor.ToolWindows
             }
 
             MakeActive();
+            panelItem.ResetCamera();
         }
 
         private void FindLaraSkin()
