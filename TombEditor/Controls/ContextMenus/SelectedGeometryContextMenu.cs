@@ -15,6 +15,12 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PasteObject(targetBlock, targetRoom);
             })
             { Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName) });
+
+            Items.Add(new ToolStripMenuItem("Select objects", null, (o, e) =>
+            {
+                EditorActions.SelectObjectsInArea(this);
+            }));
+
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>

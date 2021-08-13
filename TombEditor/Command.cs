@@ -2058,13 +2058,24 @@ namespace TombEditor
                     return;
                 EditorActions.MakeQuickItemGroup(args.Window);
             });
-			AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) {
-			if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",
-								   "Delete all lights", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-				foreach (var room in args.Editor.SelectedRooms) {
+
+            AddCommand("SelectAllObjectsInArea", "Select all objects in selected area", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.SelectObjectsInArea(args.Window);
+            });
+
+            AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 
+            {
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",
+                                   "Delete all lights", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+
+				foreach (var room in args.Editor.SelectedRooms)
+                {
 					var objects = room.Objects.Where(ob => ob is LightInstance).ToList();
 					if (objects.Count > 0)
-						for (int i = objects.Count - 1; i >= 0; i--) {
+						for (int i = objects.Count - 1; i >= 0; i--)
+                        {
 							var obj = objects[i];
 							EditorActions.DeleteObjectWithoutUpdate(obj);
 							objects.RemoveAt(i);
@@ -2072,13 +2083,14 @@ namespace TombEditor
 				}
 			});
 
-			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args) {
+			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args) 
+            {
 				SortedDictionary<WadMoveableId,uint> moveablesCount = new SortedDictionary<WadMoveableId, uint>();
 				SortedDictionary<WadStaticId,uint> staticsCount = new SortedDictionary<WadStaticId, uint>();
 				int totalMoveablesCount;
 				int totalStaticsCount;
 
-				EditorActions.GetObjectStatistics(args.Editor, moveablesCount, staticsCount,out totalMoveablesCount, out totalStaticsCount);
+				EditorActions.GetObjectStatistics(args.Editor, moveablesCount, staticsCount, out totalMoveablesCount, out totalStaticsCount);
 
 				var sb = new StringBuilder();
 				foreach (var kvp in moveablesCount) {

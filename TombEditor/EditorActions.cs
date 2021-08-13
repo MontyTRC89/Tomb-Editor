@@ -2081,15 +2081,6 @@ namespace TombEditor
             }
         }
 
-		internal static void DeleteAllLights(CommandArgs args) {
-
-			foreach(var r in args.Editor.Level.Rooms.Where(r => r != null)) {
-				foreach (var l in r.Objects.Where(obj => obj is LightInstance).Cast<LightInstance>()) {
-					l.RemoveFromRoom(args.Editor.Level, r);
-				};
-			}
-		}
-
         public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance) =>
             PlaceObjectWithoutUpdate(room, new Vector2(pos.X, pos.Y), instance);
 
@@ -2123,6 +2114,20 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
 
             return true;
+        }
+
+        public static void SelectObjectsInArea(IWin32Window owner)
+        {
+            if (!CheckForRoomAndBlockSelection(owner))
+                return;
+
+            _editor.SelectedObject = null;
+
+            foreach (var obj in _editor.SelectedRoom.Objects)
+                if (_editor.SelectedSectors.Area.Contains(obj.SectorPosition))
+                    MultiSelect(obj);
+
+            _editor.SelectedSectors = SectorSelection.None;
         }
 
         public static void MultiSelect(ObjectInstance instance)
