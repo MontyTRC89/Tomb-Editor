@@ -2,6 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <LangVersion>6</LangVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</ProjectGuid>
@@ -151,6 +152,7 @@
     <Compile Include="LevelData\Compilers\TombEngine\Wad.cs" />
     <Compile Include="LevelData\Compilers\Tr1.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
+	<Compile Include="LevelData\Instances\ObjectGroup.cs" />
     <Compile Include="LevelData\Instances\MemoInstance.cs" />
     <Compile Include="LevelData\Instances\SpriteInstance.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />

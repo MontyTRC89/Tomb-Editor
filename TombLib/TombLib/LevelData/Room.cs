@@ -1113,14 +1113,29 @@ namespace TombLib.LevelData
                 return addedObjects;
             }
 
-            // Add normal object
-            AddObjectAndSingularPortal(level, instance);
-            return new[] { instance };
+            var og = instance as ObjectGroup;
+            if (og != null)
+            {
+                og.SetRoom(this);
+
+                return og
+                    .Select(obj => AddObjectAndSingularPortal(level, obj))
+                    .ToArray();
+            }
+            else
+            {
+                // Add normal object
+                AddObjectAndSingularPortal(level, instance);
+                return new[] { instance };
+            }
         }
 
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
-            List<ObjectInstance> result = new List<ObjectInstance>();
+            if (instance is ObjectGroup)
+                return ((ObjectGroup)instance).Select(obj => RemoveObjectAndSingularPortalAndKeepAlive(level, obj));
+
+            var result = new List<ObjectInstance>();
             result.Add(RemoveObjectAndSingularPortalAndKeepAlive(level, instance));
 
             // Delete the corresponding other portals if necessary.

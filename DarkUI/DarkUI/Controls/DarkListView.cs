@@ -55,7 +55,7 @@ namespace DarkUI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<int> SelectedIndices
         {
-            get { return _selectedIndices; }
+            get { return _selectedIndices.Where(i => i != -1).ToList(); }
         }
 
         [Category("Appearance")]
@@ -293,7 +293,7 @@ namespace DarkUI.Controls
             Invalidate();
         }
 
-        public DarkListItem SelectedItem => (SelectedIndices.Count == 0 || SelectedIndices[0] >= Items.Count) ? null : Items[SelectedIndices[0]];
+        public DarkListItem SelectedItem => (SelectedIndices.Count == 0 || SelectedIndices[0] >= Items.Count || SelectedIndices[0] < 0) ? null : Items[SelectedIndices[0]];
         public List<DarkListItem> SelectedItems => Items.Where(item => SelectedIndices.Any(index => Items.IndexOf(item) == index)).ToList();
 
         public void ToggleItem(int index)

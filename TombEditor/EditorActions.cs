@@ -545,16 +545,23 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
         }
-        public static void AddTrigger(Room room, RectangleInt2 area, TriggerInstance trigger)
-        {
-            trigger.Area = area;
 
-            room.AddObject(_editor.Level, trigger);
-            _editor.ObjectChange(trigger, ObjectChangeType.Add);
+        public static void AddTrigger(Room room, RectangleInt2 area, TriggerInstance trigger) =>
+            AddTriggers(room, area, new List<TriggerInstance> { trigger });
+
+        public static void AddTriggers(Room room, RectangleInt2 area, List<TriggerInstance> triggers)
+        {
+            foreach (var trigger in triggers)
+            {
+                trigger.Area = area;
+                room.AddObject(_editor.Level, trigger);
+                _editor.ObjectChange(trigger, ObjectChangeType.Add);
+            }
+
             _editor.RoomSectorPropertiesChange(room);
 
             // Undo
-            _editor.UndoManager.PushSectorObjectCreated(trigger);
+            _editor.UndoManager.PushSectorObjectCreated(triggers.Cast<SectorBasedObjectInstance>().ToList());
         }
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
@@ -567,53 +574,82 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner, ObjectInstance @object)
         {
-            // Initialize trigger with selected object if the selected object makes sense in the trigger context.
+            // Initialize root trigger and object list.
             var trigger = new TriggerInstance(area);
-            if (@object is MoveableInstance)
-            {
-                trigger.TargetType = TriggerTargetType.Object;
-                trigger.Target = @object;
+            var objectList = new List<ObjectInstance>();
 
-                if (_editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+            // If object group is a group of moveables, batch-trigger it. Otherwise, add single object to list.
+            if (@object is ObjectGroup && ((ObjectGroup)@object).All(o => o is MoveableInstance))
+                objectList.AddRange(((ObjectGroup)@object));
+            else
+                objectList.Add(@object);
+
+            // This flag is set when key/switch/bridge trigger is created to differentiate other object
+            // trigger types from root object trigger type.
+            bool useDefaultTypeForBatchTriggers = false;
+
+            // Sort object list and prioritize key/switch/bridge objects above all
+            if (objectList.First() is MoveableInstance &&
+                _editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+            {
+                objectList = objectList.OrderByDescending(o =>
                 {
-                    string objectName = @object.ToString().ToLower();
-                    bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))
-                        && objectName.Contains("hole");
-                    bool isSwitch = objectName.Contains("switch");
+                    string objectName = o.ToString().ToLower();
+
+                    bool isSwitch = objectName.Contains("switch") || objectName.Contains("pulley");
+                    bool isHole = objectName.Contains("hole") &&
+                        (objectName.Contains("key") || objectName.Contains("puzzle"));
+                    bool isBridge = objectName.Contains("bridge") &&
+                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom"));
+
+                    // Also set trigger type along the way of sorting.
+
                     if (isHole)
                         trigger.TriggerType = TriggerType.Key;
                     else if (isSwitch)
                         trigger.TriggerType = TriggerType.Switch;
-
-                    bool isBridge = (objectName.Contains("bridge") && 
-                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom")));
-                    if (isBridge)
+                    else if (isBridge)
                         trigger.TriggerType = TriggerType.Dummy;
-                }
+                    else
+                        return false;
+
+                    useDefaultTypeForBatchTriggers = true;
+                    return true;
+                }).ToList();
             }
-            else if (@object is FlybyCameraInstance)
+
+            // Get root object from now-sorted object list.
+            var firstObject = objectList.First(); 
+
+            // Setup root trigger.
+            if (firstObject is MoveableInstance)
+            {
+                trigger.TargetType = TriggerTargetType.Object;
+                trigger.Target = firstObject;
+            }
+            else if (firstObject is FlybyCameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.FlyByCamera;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is CameraInstance)
+            else if (firstObject is CameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.Camera;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is SinkInstance)
+            else if (firstObject is SinkInstance)
             {
                 trigger.TargetType = TriggerTargetType.Sink;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is StaticInstance && _editor.Level.IsNG)
+            else if (firstObject is StaticInstance && _editor.Level.IsNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
-                trigger.Timer = @object;
+                trigger.Timer = firstObject;
             }
 
-            // Display form
+            // Display form for additional root trigger setup.
             using (var formTrigger = GetObjectSetupWindow(trigger, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
                                                      new Action<Room>(r => _editor.SelectRoom(r))))
             {
@@ -621,7 +657,27 @@ namespace TombEditor
                     return;
             }
 
-            AddTrigger(room, area, trigger);
+            // Initialize trigger list with root trigger first.
+            var triggerList = new List<TriggerInstance>() { trigger };
+
+            // Exclude root object from object list (list will be empty if single object)
+            objectList = objectList.Where(o => o != firstObject).ToList();
+
+            // Populate trigger list with additional triggers if object list isn't empty by now.
+            foreach (var obj in objectList)
+            {
+                // If user changed target type, abandon batch triggering.
+
+                if (trigger.Target.GetType() != obj.GetType())
+                    break;
+
+                var newTrigger = (TriggerInstance)trigger.Clone(trigger.Area);
+                if (useDefaultTypeForBatchTriggers) newTrigger.TriggerType = TriggerType.Trigger;
+                newTrigger.Target = obj;
+                triggerList.Add(newTrigger);
+            }
+
+            AddTriggers(room, area, triggerList);
         }
 
         public static void AddGhostBlocks(Room room, RectangleInt2 area)
@@ -821,10 +877,20 @@ namespace TombEditor
             switch (axis)
             {
                 case RotationAxis.Y:
-                    var rotateableY = instance as IRotateableY;
-                    if (rotateableY == null)
-                        return;
-                    rotateableY.RotationY = angleInDegrees + (delta ? rotateableY.RotationY : 0);
+                    if (Control.ModifierKeys.HasFlag(Keys.Alt) && instance is ObjectGroup)
+                    {
+                        var og = (ObjectGroup)instance;
+                        og.RotateAsGroup(angleInDegrees + (delta ? og.RotationY : 0));
+                    }
+                    else
+                    {
+                        var rotateableY = instance as IRotateableY;
+                        if (rotateableY != null)
+                            rotateableY.RotationY = angleInDegrees + (delta ? rotateableY.RotationY : 0);
+                        else
+                            return;
+                    }
+
                     break;
                 case RotationAxis.X:
                     var rotateableX = instance as IRotateableYX;
@@ -1018,10 +1084,16 @@ namespace TombEditor
 
                 if (instance is ISpatial)
                 {
-                    // HACK: fix imported geometry reference
-                    if (instance is ImportedGeometryInstance)
-                    {
-                        var imported = instance as ImportedGeometryInstance;
+					// HACK: fix imported geometry reference
+					var importedGeometries = new List<ImportedGeometryInstance>();
+
+					if (instance is ImportedGeometryInstance)
+						importedGeometries.Add(instance as ImportedGeometryInstance);
+					else if (instance is ObjectGroup)
+						importedGeometries.AddRange((instance as ObjectGroup).OfType<ImportedGeometryInstance>());
+					
+					foreach (var imported in importedGeometries)
+					{
                         var pastedPath = _editor.Level.Settings.MakeAbsolute(imported.Model.Info.Path);
                         foreach (var model in _editor.Level.Settings.ImportedGeometries)
                         {
@@ -1032,7 +1104,7 @@ namespace TombEditor
                                 break;
                             }
                         }
-                    }
+					}
 
                     PlaceObject(room, pos, instance);
                 }
@@ -1080,7 +1152,12 @@ namespace TombEditor
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            DeleteObjects(new List<ObjectInstance>() { instance }, owner);
+            var og = instance as ObjectGroup;
+            var objectsToDelete = og != null
+                ? og.OfType<ObjectInstance>().ToList()
+                : new List<ObjectInstance> { instance };
+
+            DeleteObjects(objectsToDelete, owner);
         }
 
         public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
@@ -1969,6 +2046,14 @@ namespace TombEditor
             {
                 (instance as IHasLuaName).AllocateNewLuaName();
             }
+
+            if (instance is ObjectGroup)
+            {
+                foreach (var obj in (ObjectGroup)instance)
+                {
+                    AllocateScriptIds(obj);
+                }
+            }
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
@@ -2036,6 +2121,44 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
 
             return true;
+        }
+
+        public static void MultiSelect(ObjectInstance instance)
+        {
+            var objPositionBased = instance as PositionBasedObjectInstance;
+
+            // Ignore ctrl-clicks on things that are not multi-selectable
+
+            if (objPositionBased == null || objPositionBased is ObjectGroup)
+                return;
+
+            // We've clicked on something multi-selectable
+
+            var selectedItemInstance = _editor.SelectedObject as PositionBasedObjectInstance;
+            if (selectedItemInstance != null)
+            {
+                // Selected object is also multi-selectable or already an object-group
+
+                var objectGroup = selectedItemInstance as ObjectGroup ?? new ObjectGroup(selectedItemInstance);
+
+                objectGroup.AddOrRemove(objPositionBased);
+
+                if (objectGroup.Count() > 1)
+                {
+                    // There is more than one object in the group, keep it
+                    _editor.SelectedObject = objectGroup;
+                }
+                else
+                {
+                    // We're left with one object, there is no reason to keep the object group
+                    _editor.SelectedObject = objectGroup.FirstOrDefault();
+                }
+            }
+            else
+            {
+                // Selected object is not multi-selectable or there's no selected object
+                _editor.SelectedObject = instance;
+            }
         }
 
         public static void MakeNewRoom(int index)
@@ -4242,6 +4365,16 @@ namespace TombEditor
             // To prevent that, we block copying of such entries.
             if (instance is ImportedGeometryInstance && (instance as ImportedGeometryInstance)?.Model == null)
                 return;
+
+            if (instance is ObjectGroup)
+            {
+                // HACK: Same thing for each object in multi-selection
+                foreach (var groupedObject in instance as ObjectGroup)
+                {
+                    if (groupedObject is ImportedGeometryInstance && (groupedObject as ImportedGeometryInstance)?.Model == null)
+                        return;
+                }
+            }
 
             if (_editor.SelectedObject == null && instance != null)
             {

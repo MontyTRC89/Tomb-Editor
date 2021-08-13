@@ -122,6 +122,7 @@ namespace TombEditor.Controls
         private readonly MovementTimer _movementTimer;
         private bool _dragObjectPicked = false;
         private bool _dragObjectMoved = false;
+        private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
@@ -469,6 +470,9 @@ namespace TombEditor.Controls
                     Invalidate();
                 }
             }
+
+            if (obj is Editor.SelectedObjectChangedEvent)
+                _highlightedObjects = HighlightedObjects.Create(_editor.SelectedObject);
         }
 
         public void ResetCamera(bool forceNewCamera = false)
@@ -823,12 +827,18 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.SelectedObject != obj)
                     {
-                        // Animate objects about to be selected
-                        if (obj is GhostBlockInstance && _editor.Configuration.Rendering3D_AnimateGhostBlockUnfolding)
-                            _movementTimer.Animate(AnimationMode.GhostBlockUnfold, 0.4f);
+                        if (ModifierKeys.HasFlag(Keys.Control)) // User is attempting to multi-select
+                        {
+                            EditorActions.MultiSelect(obj);
+                        }
+                        else // User is not attempting to multi-select
+                        { 
+                            // Animate objects about to be selected
+                            if (obj is GhostBlockInstance && _editor.Configuration.Rendering3D_AnimateGhostBlockUnfolding)
+                                _movementTimer.Animate(AnimationMode.GhostBlockUnfold, 0.4f);
 
-                        // Select object
-                        _editor.SelectedObject = obj;
+                            _editor.SelectedObject = obj;
+                        }
 
                         if (obj is ItemInstance)
                             _dragObjectPicked = true; // Prepare for drag-n-drop
@@ -1970,7 +1980,7 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
                 if (light.Type == LightType.Sun)
                     color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
-                if (_editor.SelectedObject == light)
+                if (_highlightedObjects.Contains(light))
                     color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
                 RenderOrQueueServiceObject(light, _littleSphere, color, effect, sprites);
@@ -2571,7 +2581,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     var color = new Vector4(0.4f, 0.9f, 0.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2596,7 +2606,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2621,7 +2631,7 @@ namespace TombEditor.Controls
                         _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                         Vector4 color = Vector4.One;
-                        if (_editor.SelectedObject == instance)
+                        if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2642,7 +2652,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     Vector4 color = new Vector4(0.0f, 0.6f, 1.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2667,7 +2677,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     Vector4 color = new Vector4(1.0f, 0.7f, 0.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2695,7 +2705,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2723,7 +2733,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                     Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
-                    if (_editor.SelectedObject == instance)
+                    if (_highlightedObjects.Contains(instance))
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2746,7 +2756,7 @@ namespace TombEditor.Controls
                     if (instance.Model?.DirectXModel == null || instance.Model?.DirectXModel.Meshes.Count == 0 || instance.Hidden)
                     {
                         Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
-                        if (_editor.SelectedObject == instance)
+                        if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -2971,7 +2981,7 @@ namespace TombEditor.Controls
 
                     foreach (var instance in group)
                     {
-                        if (!disableSelection && _editor.SelectedObject == instance) // Selection
+                        if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
                             skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
                         {
@@ -3066,7 +3076,7 @@ namespace TombEditor.Controls
                         geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
 
                         // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
-                        if (!disableSelection && _editor.SelectedObject == instance)
+                        if (!disableSelection && _highlightedObjects.Contains(instance))
                         {
                             geometryEffect.Parameters["UseVertexColors"].SetValue(false);
                             geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
@@ -3173,7 +3183,7 @@ namespace TombEditor.Controls
 
                     foreach (var instance in group)
                     {
-                        if (!disableSelection && _editor.SelectedObject == instance)
+                        if (!disableSelection && _highlightedObjects.Contains(instance))
                             staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
                         {
@@ -3618,6 +3628,16 @@ namespace TombEditor.Controls
                 Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
             });
+
+            var activeObjectGroup = _editor.SelectedObject as ObjectGroup;
+            if (activeObjectGroup != null)
+            {
+                // Add text message
+                textToDraw.Add(CreateTextTagForObject(
+                    activeObjectGroup.RotationPositionMatrix * _viewProjection,
+                    $"Group of {activeObjectGroup.Count()} objects" +
+                    "\n" + GetObjectPositionString(activeObjectGroup.Room, activeObjectGroup)));
+            }
 
             // Finish strings
             SwapChain.RenderText(textToDraw);

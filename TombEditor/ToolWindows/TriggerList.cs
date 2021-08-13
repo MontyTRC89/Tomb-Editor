@@ -184,7 +184,7 @@ namespace TombEditor.ToolWindows
 
         private void lstTriggers_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom == null || lstTriggers.SelectedIndices.Count == 0)
+            if (_editor.SelectedRoom == null || lstTriggers.SelectedItem == null)
                 return;
             _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem.Tag);
         }

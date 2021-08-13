@@ -10,6 +10,7 @@ namespace TombEditor.ToolWindows
     public partial class ObjectList : DarkToolWindow
     {
         private readonly Editor _editor;
+        private bool _lockList = false;
 
         public ObjectList()
         {
@@ -33,8 +34,11 @@ namespace TombEditor.ToolWindows
             // Update the trigger control
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ObjectChangedEvent)
             {
-                // Preserve selection
-                var currentObject = lstObjects.SelectedItems.Count > 0 ? lstObjects.SelectedItem.Tag : null;
+                // Disable events
+                _lockList = true;
+
+                 // Preserve selection
+                 var currentObject = lstObjects.SelectedItems.Count > 0 ? lstObjects.SelectedItem.Tag : null;
                 lstObjects.Items.Clear();
 
                 foreach (var o in _editor.SelectedRoom.Objects)
@@ -50,11 +54,19 @@ namespace TombEditor.ToolWindows
                         lstObjects.SelectItem(i);
                         break;
                     }
+
+                // Reenable events
+                _lockList = false;
             }
 
             // Update the object control selection
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.SelectedObjectChangedEvent)
             {
+                // Disable events
+                _lockList = true;
+
+                lstObjects.ClearSelection();
+
                 if (_editor.SelectedObject?.Room == _editor.SelectedRoom)
                 {
                     if (_editor.SelectedObject is PositionBasedObjectInstance)
@@ -76,16 +88,18 @@ namespace TombEditor.ToolWindows
                             lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
                             lstObjects.EnsureVisible();
                         }
-                        }
+                    }
                 }
-                else
-                    lstObjects.ClearSelection();
+
+                // Reenable events
+                _lockList = false;
             }
         }
 
         private void lstObjects_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom == null || lstObjects.SelectedItem == null)
+            if (_lockList || lstObjects.SelectedItem == null ||
+                _editor.SelectedRoom == null || _editor.SelectedObject is ObjectGroup)
                 return;
 
             _editor.SelectedObject = (ObjectInstance)lstObjects.SelectedItem.Tag;

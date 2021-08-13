@@ -635,7 +635,13 @@ namespace TombEditor
         {
             if (room == null || @object == null)
                 throw new ArgumentNullException();
-            RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
+
+            if (@object is ObjectGroup)
+                foreach (var o in ((ObjectGroup)@object).ToList())
+                    RaiseEvent(new ObjectChangedEvent { Room = room, Object = o, ChangeType = changeType });
+            else
+                RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
+
         }
         public void ObjectChange(IEnumerable<ObjectInstance> objects, ObjectChangeType changeType)
         {
@@ -1074,8 +1080,24 @@ namespace TombEditor
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
             {
-                if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
+                var removedObject = ((IEditorObjectChangedEvent)obj).Object;
+
+                if (removedObject == SelectedObject)
+                {
                     SelectedObject = null;
+                }
+                else
+                {
+                    var og = SelectedObject as ObjectGroup;
+                    var item = removedObject as ItemInstance;
+                    if (og != null && item != null)
+                    {
+                        og.Remove(item);
+
+                        if (!og.Any())
+                            SelectedObject = null;
+                    }
+                }
             }
 
             // Update level settings watcher

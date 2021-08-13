@@ -98,7 +98,7 @@ namespace TombEditor.Forms
             paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
             paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, TriggerType).ToParameterRange();
             
-            bool isConditionNg = TriggerType == TriggerType.ConditionNg;
+            bool isConditionNg = TriggerType == TriggerType.ConditionNg || TargetType == TriggerTargetType.ActionNg;
 
             // HACK: Change order of population based on target type.
 

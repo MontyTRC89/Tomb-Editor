@@ -83,12 +83,17 @@ namespace TombEditor
     public class AddRemoveObjectUndoInstance : EditorUndoRedoInstance
     {
         private PositionBasedObjectInstance UndoObject;
+        private IReadOnlyList<PositionBasedObjectInstance> Children;
         private bool Created;
 
         public AddRemoveObjectUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent, obj.Room)
         {
             Created = created;
             UndoObject = obj;
+            if (obj is ObjectGroup)
+            { // need to make a copy because removing ObjectGroup removes children from it first
+                Children = ((ObjectGroup)obj).ToList();
+            }
 
             Valid = () =>
             {
@@ -114,6 +119,13 @@ namespace TombEditor
                     EditorActions.DeleteObjectWithoutUpdate(UndoObject);
                 else
                 {
+                    if (UndoObject is ObjectGroup)
+                    {
+                        var grp = (ObjectGroup)UndoObject;
+                        foreach (var child in Children)
+                            grp.Add(child);
+                    }
+
                     var backupPos = obj.Position; // Preserve original position and reassign it after placement
                     EditorActions.PlaceObjectWithoutUpdate(Room, obj.SectorPosition, UndoObject);
                     EditorActions.MoveObject(UndoObject, backupPos);
@@ -141,6 +153,7 @@ namespace TombEditor
         private float? RotationY = null;
         private float? RotationX = null;
         private float? Roll = null;
+        private Dictionary<int, Vector3> GroupedObjectPositions;
 
         public TransformObjectUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
         {
@@ -152,6 +165,12 @@ namespace TombEditor
             if (obj is IRotateableY) RotationY = ((IRotateableY)obj).RotationY;
             if (obj is IRotateableYX) RotationX = ((IRotateableYX)obj).RotationX;
             if (obj is IRotateableYXRoll) Roll = ((IRotateableYXRoll)obj).Roll;
+
+            if (obj is ObjectGroup)
+            {
+                var og = (ObjectGroup)obj;
+                GroupedObjectPositions = og.ToDictionary(i => i.GetHashCode(), i => i.Position);
+            }
 
             Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
 
@@ -178,8 +197,20 @@ namespace TombEditor
                 if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;
                 if (UndoObject is IRotateableYXRoll && Roll.HasValue) ((IRotateableYXRoll)obj).Roll = Roll.Value;
 
+                // Reassign all object positions in group
+                if (UndoObject is ObjectGroup && GroupedObjectPositions != null)
+                {
+                    foreach (var groupedObject in (ObjectGroup)UndoObject)
+                    {
+                        Vector3 position;
+                        if (GroupedObjectPositions.TryGetValue(groupedObject.GetHashCode(), out position))
+                            groupedObject.Position = position;
+                    }
+                }
+
+                // Rebuild lighting!
                 if (UndoObject is LightInstance)
-                    Room.BuildGeometry(); // Rebuild lighting!
+                    Room.BuildGeometry(); 
 
                 if (!roomChanged)
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
@@ -412,6 +443,7 @@ namespace TombEditor
         public void PushAdjoiningRoomCreated(Room room) => Push(new AddAdjoiningRoomUndoInstance(this, room));
         public void PushRoomsMoved(List<Room> rooms, VectorInt3 delta) { if (delta != VectorInt3.Zero) Push(new MoveRoomsUndoInstance(this, rooms, delta)); }
         public void PushSectorObjectCreated(SectorBasedObjectInstance obj) => Push(new AddSectorBasedObjectUndoInstance(this, obj));
+        public void PushSectorObjectCreated(List<SectorBasedObjectInstance> objs) => Push(objs.Select(obj => (new AddSectorBasedObjectUndoInstance(this, obj)) as UndoRedoInstance).ToList());
         public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
         public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(room => (new GeometryUndoInstance(this, room)) as UndoRedoInstance).ToList());
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));

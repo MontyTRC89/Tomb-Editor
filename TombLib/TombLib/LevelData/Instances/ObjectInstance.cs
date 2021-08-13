@@ -69,7 +69,7 @@ namespace TombLib.LevelData
     {
         public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
         public event RemovedFromRoomDelegate DeletedEvent;
-        public Room Room { get; private set; }
+        public Room Room { get; protected set; }
 
         public virtual ObjectInstance Clone()
         {
@@ -233,7 +233,17 @@ namespace TombLib.LevelData
 
     public abstract class PositionBasedObjectInstance : ObjectInstance, ISpatial, ICopyable
     {
-        public Vector3 Position { get; set; }
+        private Vector3 _position;
+        public Vector3 Position
+        {
+            get { return _position; }
+            set { SetPosition(value); }
+        }
+
+        protected virtual void SetPosition(Vector3 position)
+        {
+            _position = position;
+        }
 
         public VectorInt2 SectorPosition
         {
