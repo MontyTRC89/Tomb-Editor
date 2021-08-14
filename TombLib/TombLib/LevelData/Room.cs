@@ -937,6 +937,13 @@ namespace TombLib.LevelData
                 NumZSectors * (0.5f * Level.WorldUnit));
         }
 
+        public Vector3 GetFloorMidpointPosition(int sectorX, int sectorZ)
+        {
+            var block = GetBlockTry(new VectorInt2(sectorX, sectorZ));
+            int y = block == null ? 0 : (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
+            return new Vector3(sectorX * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, sectorZ * Level.WorldUnit + Level.HalfWorldUnit);
+        }
+
         public int NumXSectors
         {
             get { return Blocks.GetLength(0); }
@@ -1113,21 +1120,9 @@ namespace TombLib.LevelData
                 return addedObjects;
             }
 
-            var og = instance as ObjectGroup;
-            if (og != null)
-            {
-                og.SetRoom(this);
-
-                return og
-                    .Select(obj => AddObjectAndSingularPortal(level, obj))
-                    .ToArray();
-            }
-            else
-            {
-                // Add normal object
-                AddObjectAndSingularPortal(level, instance);
-                return new[] { instance };
-            }
+            // Add normal object
+            AddObjectAndSingularPortal(level, instance);
+            return new[] { instance };
         }
 
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)

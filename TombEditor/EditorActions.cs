@@ -829,8 +829,7 @@ namespace TombEditor
             instance.Position = pos;
 
             // Update state
-            if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -861,8 +860,7 @@ namespace TombEditor
             newRoom.MoveObjectFrom(_editor.Level, instance.Room, instance);
 
             // Update state
-            if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -905,13 +903,17 @@ namespace TombEditor
                     rotateableRoll.Roll = angleInDegrees + (delta ? rotateableRoll.Roll : 0);
                     break;
             }
-            if (instance is LightInstance)
-            {
-                instance.Room.BuildGeometry();
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-            }
-                
+
+            // Update state
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
+        }
+
+        public static void RebuildLightsForObject(ObjectInstance instance)
+        {
+            if (instance is LightInstance ||
+               (instance is ObjectGroup && ((ObjectGroup)instance).Any(o => o is LightInstance)))
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
         }
 
         public static DarkForm GetObjectSetupWindow(params object[] args)
@@ -1135,7 +1137,9 @@ namespace TombEditor
                 var undoList = new List<UndoRedoInstance>();
                 foreach (var instance in objects)
                 {
-                    if (instance is PositionBasedObjectInstance && !(instance is ObjectGroup))
+                    if (instance is ObjectGroup)
+                        undoList.AddRange(((ObjectGroup)instance).Select(o => new AddRemoveObjectUndoInstance(_editor.UndoManager, o, false)));
+                    else if (instance is PositionBasedObjectInstance )
                         undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
                     else if (instance is GhostBlockInstance)
                         undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
@@ -1147,18 +1151,23 @@ namespace TombEditor
 
             // Delete objects
             foreach (var instance in objects)
-                DeleteObjectWithoutUpdate(instance);
+            {
+                if (instance is ObjectGroup)
+                {
+                    ((ObjectGroup)instance).ToList().ForEach(o => DeleteObjectWithoutUpdate(o));
+                    if (_editor.SelectedObject == instance)
+                        _editor.SelectedObject = null;
+                }
+                else
+                    DeleteObjectWithoutUpdate(instance);
+            }
+
+            return;
         }
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            var objectsToDelete = new List<ObjectInstance> { instance };
-
-            // For object group, add group contents to the list of deleted objects too
-            var og = instance as ObjectGroup;
-            if (og != null) objectsToDelete.AddRange(og);
-
-            // Delete all needed objects
+            var objectsToDelete = new List<ObjectInstance>() { instance };
             DeleteObjects(objectsToDelete, owner);
         }
 
@@ -2063,7 +2072,12 @@ namespace TombEditor
             if (!(instance is ISpatial))
                 return;
 
-            if (instance is PositionBasedObjectInstance)
+            if (instance is ObjectGroup)
+            {
+                PlaceObjectGroupContents(room, pos, (ObjectGroup)instance);
+                _editor.SelectedObject = instance;
+            }
+            else if (instance is PositionBasedObjectInstance)
             {
                 var posInstance = (PositionBasedObjectInstance)instance;
 
@@ -2086,10 +2100,7 @@ namespace TombEditor
 
         public static void PlaceObjectWithoutUpdate(Room room, Vector2 pos, PositionBasedObjectInstance instance)
         {
-            var block = room.GetBlockTry(new VectorInt2((int)pos.X, (int)pos.Y));
-            int y = block == null ? 0 : (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
-
-            instance.Position = new Vector3(pos.X * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, pos.Y * Level.WorldUnit + Level.HalfWorldUnit);
+            instance.Position = room.GetFloorMidpointPosition((int)pos.X, (int)pos.Y);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
             {
@@ -2114,6 +2125,29 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
 
             return true;
+        }
+
+        public static void PlaceObjectGroupContents(Room room, VectorInt2 pos, ObjectGroup instance)
+        {
+            var undoList = new List<UndoRedoInstance>();
+
+            foreach (var child in instance)
+            {
+                var y = child.Position.Y;
+                PlaceObjectWithoutUpdate(room, child.SectorPosition, child);
+                child.Position = new Vector3(child.Position.X, y, child.Position.Z);
+                undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
+                AllocateScriptIds(child);
+            }
+
+            // Update group position
+            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
+            instance.SetRoom(room);
+
+            _editor.UndoManager.Push(undoList);
+
+            // Update state
+            RebuildLightsForObject(instance);
         }
 
         public static void SelectObjectsInArea(IWin32Window owner)

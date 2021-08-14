@@ -32,7 +32,7 @@ namespace TombEditor.Controls.ContextMenus
             {
 				var obj = editor.SelectedObject as PositionBasedObjectInstance;
 				EditorActions.MoveObject(obj, targetRoom, targetBlock);
-			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance });
+			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance && !(_editor.SelectedObject is ObjectGroup) });
 			Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>
