@@ -2418,7 +2418,7 @@ namespace TombEditor.Controls
                     var shape = instance.Shape();
 
                     // Switch colours
-                    if (i == selectedIndex)
+                    if (_highlightedObjects.Contains(instance))
                         color = selectColor;
                     else
                         color = normalColor;
