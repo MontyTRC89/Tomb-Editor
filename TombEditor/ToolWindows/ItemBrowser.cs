@@ -48,7 +48,8 @@ namespace TombEditor.ToolWindows
             {
                 var allMoveables = _editor.Level.Settings.WadGetAllMoveables();
                 var allStatics   = _editor.Level.Settings.WadGetAllStatics();
-                
+
+                comboItems.GameVersion = _editor.Level.Settings.GameVersion;
                 comboItems.Items.Clear();
                 foreach (var moveable in allMoveables.Values)
                     if (!_editor.Configuration.RenderingItem_HideInternalObjects ||
