@@ -448,11 +448,16 @@ namespace TombLib.LevelData.IO
         {
             using (var chunkObjects = chunkIO.WriteChunk(Prj2Chunks.Objects, long.MaxValue))
             {
+                // FIXME: Null level is used when prj2writer is called with clipboard events.
+                // It's not clear why Monty decided to deviate for 2 different chunk versions.
+
+                var isTEN = level == null || level.IsTombEngine;
+
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
                     {
-                        if (level.IsTombEngine)
+                        if (isTEN)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine, LEB128.MaximumSize2Byte))
                             {
@@ -490,7 +495,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (o is StaticInstance)
                     {
-                        if (level.IsTombEngine)
+                        if (isTEN)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStaticTombEngine, LEB128.MaximumSize2Byte))
                             {
@@ -522,7 +527,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (o is CameraInstance)
                     {
-                        if (_level.IsTombEngine)
+                        if (isTEN)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCameraTombEngine, LEB128.MaximumSize1Byte))
                             {
@@ -584,7 +589,7 @@ namespace TombLib.LevelData.IO
                         }
                     else if (o is SinkInstance)
                     {
-                        if (level.IsTombEngine)
+                        if (isTEN)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSinkTombEngine, LEB128.MaximumSize1Byte))
                             {
@@ -610,7 +615,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (o is SoundSourceInstance)
                     {
-                        if (level.IsTombEngine)
+                        if (isTEN)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSourceTombEngine, LEB128.MaximumSize1Byte))
                             {
