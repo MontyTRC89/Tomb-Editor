@@ -2519,7 +2519,7 @@ namespace TombEditor.Controls
 
                         if (depth < 1.0f) // Discard offscreen sprites
                         {
-                            var selected = _editor.SelectedObject == instance;
+                            var selected = _highlightedObjects.Contains(instance);
                             var newSprite = new Sprite
                             {
                                 Texture = sprite.Texture.Image,
