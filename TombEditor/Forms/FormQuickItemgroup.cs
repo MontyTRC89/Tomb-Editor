@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Wad;
@@ -14,7 +10,7 @@ namespace TombEditor.Forms
     {
         private readonly List<IWadObjectId> dropDownValues;
         private readonly Editor _editor;
-        public IWadObjectId selectedValue;
+        public IWadObjectId SelectedValue;
         public FormQuickItemgroup(Editor _editor)
         {
             InitializeComponent();
@@ -35,7 +31,7 @@ namespace TombEditor.Forms
 
         private void CbSlots_SelectedValueChanged(object sender, EventArgs e)
         {
-            selectedValue = (IWadObjectId)cbSlots.SelectedValue;
+            SelectedValue = (IWadObjectId)cbSlots.SelectedValue;
         }
 
         private void ButOk_Click(object sender, EventArgs e)

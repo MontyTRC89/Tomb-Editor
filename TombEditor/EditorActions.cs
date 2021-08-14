@@ -5290,36 +5290,37 @@ namespace TombEditor
             }
 
             using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) {
-                if(form.ShowDialog(owner) == DialogResult.OK)
+                if (form.ShowDialog(owner) == DialogResult.OK &&
+                    form.SelectedValue != null)
                 {
                     ConcurrentBag<ItemInstance> objects = new ConcurrentBag<ItemInstance>();
                     Parallel.ForEach(_editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
-                        foreach(var item in r.Objects.OfType<ItemInstance>())
+                        foreach (var item in r.Objects.OfType<ItemInstance>())
                         {
                             if (item is StaticInstance)
                             {
-                                if(form.selectedValue is WadStaticId)
-                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.selectedValue))
+                                if (form.SelectedValue is WadStaticId)
+                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
                                         objects.Add(item);
                             }
                             else
                             {
-                                if (form.selectedValue is WadMoveableId)
-                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.selectedValue))
+                                if (form.SelectedValue is WadMoveableId)
+                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
                                         objects.Add(item);
                             }
                         }
                     });
 
                     // Create ItemGroup string
-                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.selectedValue.ToString(_editor.Level.Settings.GameVersion));
+                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.SelectedValue.ToString(_editor.Level.Settings.GameVersion));
                     scriptString += "ItemGroup= 1";
                     foreach (ItemInstance item in objects)
                         scriptString +=  "," + item.ScriptId;
                     Clipboard.SetText(scriptString, TextDataFormat.Text);
                     _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
                 }
-            } ;
+            };
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)
