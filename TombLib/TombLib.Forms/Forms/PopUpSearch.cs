@@ -145,7 +145,10 @@ namespace TombLib.Forms
                                 }
                             }
 
-                            if (_searchItems[i].IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                            int startIndex;
+                            int levenshtein = Levenshtein.DistanceSubstring(_searchItems[i].ToLower(), txtSearchString.Text.ToLower(), out startIndex);
+
+                            if (levenshtein < 2)
                             {
                                 _currentIndex = i;
                                 break;
