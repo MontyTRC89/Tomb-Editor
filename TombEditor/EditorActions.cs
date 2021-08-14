@@ -747,6 +747,7 @@ namespace TombEditor
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
             PlaceObjectWithoutUpdate(_editor.SelectedRoom, localCenter, box);
+            box.Position += new Vector3(0, Level.HalfWorldUnit, 0); // Lift it up a bit
             _editor.UndoManager.PushObjectCreated(box);
             AllocateScriptIds(box);
         }
@@ -2100,7 +2101,7 @@ namespace TombEditor
 
         public static void PlaceObjectWithoutUpdate(Room room, Vector2 pos, PositionBasedObjectInstance instance)
         {
-            instance.Position = room.GetFloorMidpointPosition((int)pos.X, (int)pos.Y);
+            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
             {
