@@ -641,19 +641,22 @@ namespace TombEditor.Controls
                     VectorInt2 pos = newBlockPicking.Pos;
 
                     // Handle face selection
-                    if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag)
-                         && ModifierKeys == Keys.None)
+                    if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && 
+                        (ModifierKeys == Keys.None || ModifierKeys == Keys.Control))
                     {
                         if (!_editor.SelectedSectors.Valid || !_editor.SelectedSectors.Area.Contains(pos))
                         {
                             // Select rectangle
                             if (ModifierKeys.HasFlag(Keys.Control))
                             {
-                                // Multiple separate tile selection - To Be Implemented...
+                                // Multiple object selection - do we need to indicate differently?
                                 _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                             }
                             else
+                            {
+                                // Normal face selection
                                 _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                            }
                             _doSectorSelection = true;
                             return;
                         }
@@ -1281,7 +1284,12 @@ namespace TombEditor.Controls
                     if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled && !_objectPlaced)
                     {
                         var newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
-                        if (newBlockPicking != null && !_toolHandler.Dragged)
+
+                        if (ModifierKeys.HasFlag(Keys.Control)) // Handle bulk object selection
+                        {
+                            EditorActions.SelectObjectsInArea(FindForm());
+                        }
+                        else if (newBlockPicking != null && !_toolHandler.Dragged) // Handle ordinary button push
                         {
                             var pos = newBlockPicking.Pos;
                             var zone = _editor.SelectedSectors.Empty ? new RectangleInt2(pos, pos) : _editor.SelectedSectors.Area;

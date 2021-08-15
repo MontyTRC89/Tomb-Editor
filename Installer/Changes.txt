@@ -2,10 +2,11 @@ Version 1.4
 ===========
 
 Tomb Editor:
- * Select multiple objects by Ctrl+click or from block selection:
-    - Bulk rotate by holding Alt key.
+ * Select multiple objects by Ctrl+click or from block selection (Ctrl+drag mouse on the blocks):
+    - Bulk position change.
+	- Bulk rotate individually or around root object by holding Alt key.
 	- Bulk delete and copy-paste.
-	- Batch triggering in dxtre3d style, including key/switch trigger types.
+	- Batch triggering in dxtre3d style, including key/switch trigger type autodetection.
  * An option to toggle bilinear filter on or off (right-click and customize toolbar to see the button).
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
