@@ -1280,7 +1280,7 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled && !_objectPlaced)
                     {
-                        PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                        var newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
                         {
                             var pos = newBlockPicking.Pos;

@@ -485,6 +485,9 @@ namespace TombLib.LevelData
 
         public string GetScriptIDOrName(bool shortened = true)
         {
+            if (Room == null)
+                return " <NO ROOM>";
+
             if (shortened)
                 return (Room.Level.IsNG ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
                        (Room.Level.IsTombEngine ? (!string.IsNullOrEmpty(LuaName) ? " [" + LuaName + "]" : "") : "");

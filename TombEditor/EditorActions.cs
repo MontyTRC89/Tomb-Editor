@@ -2052,11 +2052,15 @@ namespace TombEditor
             if (instance is IHasScriptID &&
                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 || _editor.Level.IsNG))
             {
-                (instance as IHasScriptID).AllocateNewScriptId();
+                var si = instance as IHasScriptID;
+                if (si.ScriptId == null)
+                    si.AllocateNewScriptId();
             }
             else if (instance is IHasLuaName && _editor.Level.IsTombEngine)
             {
-                (instance as IHasLuaName).AllocateNewLuaName();
+                var li = instance as IHasLuaName;
+                if (string.IsNullOrEmpty(li.LuaName))
+                    li.AllocateNewLuaName();
             }
 
             if (instance is ObjectGroup)
@@ -2076,7 +2080,6 @@ namespace TombEditor
             if (instance is ObjectGroup)
             {
                 PlaceObjectGroupContents(room, pos, (ObjectGroup)instance);
-                _editor.SelectedObject = instance;
             }
             else if (instance is PositionBasedObjectInstance)
             {
@@ -2137,8 +2140,8 @@ namespace TombEditor
                 var y = child.Position.Y;
                 PlaceObjectWithoutUpdate(room, child.SectorPosition, child);
                 child.Position = new Vector3(child.Position.X, y, child.Position.Z);
-                undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
                 AllocateScriptIds(child);
+                undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
             }
 
             // Update group position
@@ -2146,6 +2149,7 @@ namespace TombEditor
             instance.SetRoom(room);
 
             _editor.UndoManager.Push(undoList);
+            _editor.SelectedObject = instance;
 
             // Update state
             RebuildLightsForObject(instance);
