@@ -2160,11 +2160,15 @@ namespace TombEditor
             if (!CheckForRoomAndBlockSelection(owner))
                 return;
 
-            _editor.SelectedObject = null;
-
+            var rootObject = _editor.SelectedObject;
             foreach (var obj in _editor.SelectedRoom.Objects)
+            {
+                if (obj == rootObject)
+                    continue;
+
                 if (_editor.SelectedSectors.Area.Contains(obj.SectorPosition))
                     MultiSelect(obj);
+            }
 
             _editor.SelectedSectors = SectorSelection.None;
         }
