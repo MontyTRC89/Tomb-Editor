@@ -272,11 +272,13 @@ namespace TombLib.Rendering
                                     return colorScheme.ColorPortal;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable)
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                    room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.FullPortal)
                                     return colorScheme.ColorPortalFace;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable)
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                    room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.FullPortal)
                                     return colorScheme.ColorPortalFace;
                                 break;
                         }
@@ -320,20 +322,80 @@ namespace TombLib.Rendering
                         }
                         break;
                     case SectorColoringShape.TriangleXnZn:
-                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
-                            return colorScheme.ColorWall;
+                        switch (priorityList[i])
+                        {
+                            case SectorColoringType.Wall:
+                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                                    return colorScheme.ColorWall;
+                                break;
+                            case SectorColoringType.FloorPortal:
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                    room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZp)
+                                    return colorScheme.ColorFloor;
+                                break;
+                            case SectorColoringType.CeilingPortal:
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                    room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZp)
+                                    return colorScheme.ColorFloor;
+                                break;
+                        }
                         break;
                     case SectorColoringShape.TriangleXnZp:
-                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
-                            return colorScheme.ColorWall;
+                        switch (priorityList[i])
+                        {
+                            case SectorColoringType.Wall:
+                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                                    return colorScheme.ColorWall;
+                                break;
+                            case SectorColoringType.FloorPortal:
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                    room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZn)
+                                    return colorScheme.ColorFloor;
+                                break;
+                            case SectorColoringType.CeilingPortal:
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                    room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZn)
+                                    return colorScheme.ColorFloor;
+                                break;
+                        }
                         break;
                     case SectorColoringShape.TriangleXpZn:
-                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
-                            return colorScheme.ColorWall;
+                        switch (priorityList[i])
+                        {
+                            case SectorColoringType.Wall:
+                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                                    return colorScheme.ColorWall;
+                                break;
+                            case SectorColoringType.FloorPortal:
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                    room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZp)
+                                    return colorScheme.ColorFloor;
+                                break;
+                            case SectorColoringType.CeilingPortal:
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                    room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZp)
+                                    return colorScheme.ColorFloor;
+                                break;
+                        }
                         break;
                     case SectorColoringShape.TriangleXpZp:
-                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
-                            return colorScheme.ColorWall;
+                        switch (priorityList[i])
+                        {
+                            case SectorColoringType.Wall:
+                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                                    return colorScheme.ColorWall;
+                                break;
+                            case SectorColoringType.FloorPortal:
+                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                    room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZn)
+                                    return colorScheme.ColorFloor;
+                                break;
+                            case SectorColoringType.CeilingPortal:
+                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                    room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZn)
+                                    return colorScheme.ColorFloor;
+                                break;
+                        }
                         break;
                     case SectorColoringShape.EdgeXn:
                     case SectorColoringShape.EdgeXp:

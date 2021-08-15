@@ -1915,6 +1915,63 @@ namespace TombEditor.Controls
             }
         }
 
+        private void DrawText(Room[] roomsToDraw, List<Text> textToDraw)
+        {
+            // Draw room names
+            if (ShowRoomNames)
+            {
+                Size size = ClientSize;
+                for (int i = 0; i < roomsToDraw.Length; i++)
+                {
+                    var pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * _viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter());
+                    if (pos.Z <= 1.0f)
+                        textToDraw.Add(new Text
+                        {
+                            Font = _fontDefault,
+                            Pos = pos.To2(),
+                            Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                            String = roomsToDraw[i].Name
+                        });
+                }
+            }
+
+            // Draw North, South, East and West
+            if (ShowCardinalDirections)
+                DrawCardinalDirections(textToDraw);
+
+            // Construct debug string
+            string DebugString = "";
+            if (_editor.Configuration.Rendering3D_ShowFPS)
+                DebugString += "FPS: " + Math.Round(1.0f / _watch.Elapsed.TotalSeconds, 2) + "\n";
+
+            if (_editor.SelectedObject != null)
+                DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
+
+            // Draw debug string
+            textToDraw.Add(new Text
+            {
+                Font = _fontDefault,
+                PixelPos = new Vector2(10, -10),
+                Alignment = new Vector2(0.0f, 0.0f),
+                Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                String = DebugString
+            });
+
+            // If multiple objects are selected, display multiselection label
+            var activeObjectGroup = _editor.SelectedObject as ObjectGroup;
+            if (activeObjectGroup != null)
+            {
+                // Add text message
+                textToDraw.Add(CreateTextTagForObject(
+                    activeObjectGroup.RotationPositionMatrix * _viewProjection,
+                    $"Group of {activeObjectGroup.Count()} objects" +
+                    "\n" + GetObjectPositionString(activeObjectGroup.Room, activeObjectGroup)));
+            }
+
+            // Finish strings
+            SwapChain.RenderText(textToDraw);
+        }
+
         private void DrawRoomBoundingBox(Effect solidEffect, Room room)
         {
             _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
@@ -3512,29 +3569,7 @@ namespace TombEditor.Controls
             var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);
             var volumesToDraw = CollectVolumesToDraw(roomsToDraw);
             var ghostBlocksToDraw = CollectGhostBlocksToDraw(roomsToDraw);
-
-            // Draw room names
-            if (ShowRoomNames)
-            {
-                Size size = ClientSize;
-                for (int i = 0; i < roomsToDraw.Length; i++)
-                {
-                    var pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * _viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter());
-                    if (pos.Z <= 1.0f)
-                        textToDraw.Add(new Text
-                        {
-                            Font = _fontDefault,
-                            Pos = pos.To2(),
-                            Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                            String = roomsToDraw[i].Name
-                        });
-                }
-            }
-
-            // Draw North, South, East and West
-            if (ShowCardinalDirections)
-                DrawCardinalDirections(textToDraw);
-
+            
             // Draw skybox
             if (ShowHorizon)
                 DrawSkybox();
@@ -3631,37 +3666,8 @@ namespace TombEditor.Controls
 
             _watch.Stop();
 
-            // Construct debug string
-
-            string DebugString = "";
-            if (_editor.Configuration.Rendering3D_ShowFPS)
-                DebugString += "FPS: " + Math.Round(1.0f / _watch.Elapsed.TotalSeconds, 2) + "\n";
-
-            if (_editor.SelectedObject != null)
-                DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
-
-            // Draw debug string
-            textToDraw.Add(new Text
-            {
-                Font = _fontDefault,
-                PixelPos = new Vector2(10, -10),
-                Alignment = new Vector2(0.0f, 0.0f),
-                Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                String = DebugString
-            });
-
-            var activeObjectGroup = _editor.SelectedObject as ObjectGroup;
-            if (activeObjectGroup != null)
-            {
-                // Add text message
-                textToDraw.Add(CreateTextTagForObject(
-                    activeObjectGroup.RotationPositionMatrix * _viewProjection,
-                    $"Group of {activeObjectGroup.Count()} objects" +
-                    "\n" + GetObjectPositionString(activeObjectGroup.Room, activeObjectGroup)));
-            }
-
-            // Finish strings
-            SwapChain.RenderText(textToDraw);
+            // At last, construct additional labels and draw all in-game text
+            DrawText(roomsToDraw, textToDraw);
         }
 
 

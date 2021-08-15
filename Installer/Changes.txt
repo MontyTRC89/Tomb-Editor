@@ -11,6 +11,7 @@ Tomb Editor:
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
  * Allow shiny effect on static meshes, if light type is set to dynamic.
  * Properly fit every item in item browser preview and optionally animate it.
+ * Draw triangular portals in 2D grid.
  * Fix exception if level with missing merged statics is compiled.
  * Fix launching of SoundTool and WadTool from Tomb Editor in case project is opened from explorer.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
