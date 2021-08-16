@@ -650,6 +650,7 @@ namespace TombEditor.Controls
                             if (ModifierKeys.HasFlag(Keys.Control))
                             {
                                 // Multiple object selection - do we need to indicate differently?
+                                _toolHandler.Engage(e.X, e.Y, newBlockPicking);
                                 _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                             }
                             else
@@ -1285,7 +1286,7 @@ namespace TombEditor.Controls
                     {
                         var newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
 
-                        if (ModifierKeys.HasFlag(Keys.Control)) // Handle bulk object selection
+                        if (ModifierKeys.HasFlag(Keys.Control) && _toolHandler.Engaged) // Handle multiple object selection
                         {
                             EditorActions.SelectObjectsInArea(FindForm());
                         }
