@@ -2102,11 +2102,9 @@ namespace TombEditor
         {
             instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
             room.AddObject(_editor.Level, instance);
-            if (instance is LightInstance)
-            {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-            }
+
+            RebuildLightsForObject(instance);
+
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -2131,23 +2129,23 @@ namespace TombEditor
         {
             var undoList = new List<UndoRedoInstance>();
 
+            // Update group position
+            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
+            instance.SetRoom(room);
+            
+            // Place children
             foreach (var child in instance)
-            {
-                var y = child.Position.Y;
-                PlaceObjectWithoutUpdate(room, child.SectorPosition, child);
-                child.Position = new Vector3(child.Position.X, y, child.Position.Z);
+            {    
+                room.AddObject(_editor.Level, child);
                 AllocateScriptIds(child);
                 undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
             }
 
-            // Update group position
-            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
-            instance.SetRoom(room);
-
+            // Update state
             _editor.UndoManager.Push(undoList);
             _editor.SelectedObject = instance;
 
-            // Update state
+            // Relight room just once
             RebuildLightsForObject(instance);
         }
 
