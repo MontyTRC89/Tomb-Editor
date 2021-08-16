@@ -91,12 +91,12 @@ namespace TombLib.LevelData
 
             foreach (var i in _objects)
             {
-                var distance = i.Position - Position;
+                var distance = i.WorldPosition - WorldPosition;
 
-                var x = distance.X * cos - distance.Z * sin + Position.X;
-                var z = distance.X * sin + distance.Z * cos + Position.Z;
+                var x = distance.X * cos - distance.Z * sin + WorldPosition.X;
+                var z = distance.X * sin + distance.Z * cos + WorldPosition.Z;
 
-                i.Position =new Vector3(x, i.Position.Y, z);
+                i.Position = new Vector3(x - i.Room.WorldPos.X, i.Position.Y, z - i.Room.WorldPos.Z);
             }
         }
 

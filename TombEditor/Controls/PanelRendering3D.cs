@@ -647,9 +647,9 @@ namespace TombEditor.Controls
                         if (!_editor.SelectedSectors.Valid || !_editor.SelectedSectors.Area.Contains(pos))
                         {
                             // Select rectangle
-                            if (ModifierKeys.HasFlag(Keys.Control))
+                            if (_editor.Tool.Tool == EditorToolType.Selection && ModifierKeys.HasFlag(Keys.Control))
                             {
-                                // Multiple object selection - do we need to indicate differently?
+                                // Multiple object selection
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
                                 _editor.HighlightedSectors = new SectorSelection { Start = pos, End = pos };
                             }
