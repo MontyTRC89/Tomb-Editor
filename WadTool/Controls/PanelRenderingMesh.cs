@@ -931,12 +931,14 @@ namespace WadTool.Controls
 
         public void InitializeVertexBuffer()
         {
-            var vertexCount = 0;
-            foreach (var poly in _mesh.Polys)
-                if (poly.IsTriangle) vertexCount += 3; else vertexCount += 6;
+            if (_mesh.Polys.Count > 0)
+            {
+                var vertexCount = 0;
+                foreach (var poly in _mesh.Polys)
+                    if (poly.IsTriangle) vertexCount += 3; else vertexCount += 6;
 
-            if (vertexCount > 0)
                 _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
+            }
 
             _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);
             _normalLength = VertexSphereRadius * 3.0f;
