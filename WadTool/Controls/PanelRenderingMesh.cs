@@ -530,7 +530,7 @@ namespace WadTool.Controls
             {
                 // Accumulate and draw extra face info (for now, only shininess values)
 
-                if (DrawExtraInfo)
+                if (DrawExtraInfo && _mesh.Polys.Count > 0)
                 {
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                     _device.SetBlendState(_device.BlendStates.Opaque);
@@ -648,6 +648,9 @@ namespace WadTool.Controls
 
         private void DrawModel(StaticModel mesh, Matrix4x4 world)
         {
+            if (mesh.Meshes.Count == 0)
+                return;
+
             // Next, draw whole textured mesh.
             // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
 
@@ -671,6 +674,9 @@ namespace WadTool.Controls
 
             foreach (var mesh_ in mesh.Meshes)
             {
+                if (mesh_.Vertices.Count == 0)
+                    continue;
+
                 _device.SetVertexBuffer(0, mesh_.VertexBuffer);
                 _device.SetIndexBuffer(mesh_.IndexBuffer, true);
                 _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
@@ -928,7 +934,9 @@ namespace WadTool.Controls
             var vertexCount = 0;
             foreach (var poly in _mesh.Polys)
                 if (poly.IsTriangle) vertexCount += 3; else vertexCount += 6;
-            _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
+
+            if (vertexCount > 0)
+                _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
 
             _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);
             _normalLength = VertexSphereRadius * 3.0f;
