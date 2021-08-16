@@ -2064,12 +2064,8 @@ namespace TombEditor
             }
 
             if (instance is ObjectGroup)
-            {
                 foreach (var obj in (ObjectGroup)instance)
-                {
                     AllocateScriptIds(obj);
-                }
-            }
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)

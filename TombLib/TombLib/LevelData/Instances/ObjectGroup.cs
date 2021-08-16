@@ -106,6 +106,7 @@ namespace TombLib.LevelData
         }
 
         public string ShortName() => $"Group of {_objects.Count} objects";
+        public override string ToString() => ShortName();
 
         public IEnumerator<PositionBasedObjectInstance> GetEnumerator() => _objects.GetEnumerator();
 
