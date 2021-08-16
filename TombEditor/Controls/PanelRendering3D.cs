@@ -1285,12 +1285,7 @@ namespace TombEditor.Controls
                     if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled && !_objectPlaced)
                     {
                         var newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
-
-                        if (ModifierKeys.HasFlag(Keys.Control) && _toolHandler.Engaged) // Handle multiple object selection
-                        {
-                            EditorActions.SelectObjectsInArea(FindForm());
-                        }
-                        else if (newBlockPicking != null && !_toolHandler.Dragged) // Handle ordinary button push
+                        if (newBlockPicking != null && !_toolHandler.Dragged)
                         {
                             var pos = newBlockPicking.Pos;
                             var zone = _editor.SelectedSectors.Empty ? new RectangleInt2(pos, pos) : _editor.SelectedSectors.Area;
@@ -1343,8 +1338,13 @@ namespace TombEditor.Controls
                         }
                     }
 
+                    // Handle gizmo manipulation with ghostblock (to update room properties in 2D grid)
                     if (_gizmoEnabled && _editor.SelectedObject is GhostBlockInstance)
                         _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
+
+                    // Handle multiple object selection
+                    if (_editor.Tool.Tool == EditorToolType.Selection && _toolHandler.Engaged && ModifierKeys.HasFlag(Keys.Control))
+                        EditorActions.SelectObjectsInArea(FindForm());
 
                     break;
 
