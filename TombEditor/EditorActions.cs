@@ -793,6 +793,15 @@ namespace TombEditor
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
+        public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block)
+        {
+            var r = instance.Room;
+            _editor.UndoManager.PushObjectTransformed(instance);
+            instance.Room.RemoveObject(_editor.Level, instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, r);
+            PlaceObjectWithoutUpdate(targetRoom, block, instance);
+        }
+
         public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
             MoveObject(instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
@@ -2149,10 +2158,15 @@ namespace TombEditor
             RebuildLightsForObject(instance);
         }
 
-        public static void SelectObjectsInArea(IWin32Window owner)
+        public static void SelectObjectsInArea(IWin32Window owner, SectorSelection area, bool resetCurrentSelection = true)
         {
-            if (!CheckForRoomAndBlockSelection(owner))
+            if (_editor.SelectedRoom == null || !area.Valid)
+            {
+                _editor.SendMessage("Please define a valid group of sectors.", PopupType.Error);
                 return;
+            }
+
+            int objectCount = 0;
 
             var rootObject = _editor.SelectedObject;
             foreach (var obj in _editor.SelectedRoom.Objects)
@@ -2160,11 +2174,21 @@ namespace TombEditor
                 if (obj == rootObject)
                     continue;
 
-                if (_editor.SelectedSectors.Area.Contains(obj.SectorPosition))
+                if (area.Area.Contains(obj.SectorPosition))
+                {
                     MultiSelect(obj);
+                    objectCount++;
+                }
             }
 
-            _editor.SelectedSectors = SectorSelection.None;
+            if (objectCount == 0 && rootObject == null)
+            {
+                _editor.SendMessage("Defined area has no objects. None were selected.", PopupType.Info);
+                return;
+            }
+
+            if (resetCurrentSelection)
+                _editor.SelectedSectors = SectorSelection.None;
         }
 
         public static void MultiSelect(ObjectInstance instance)
@@ -4505,15 +4529,6 @@ namespace TombEditor
                     return true;
             return false;
         }
-
-		public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block)
-        {
-			var r = instance.Room;
-			_editor.UndoManager.PushObjectTransformed(instance);
-			instance.Room.RemoveObject(_editor.Level, instance);
-			_editor.ObjectChange(instance, ObjectChangeType.Remove, r);
-			PlaceObjectWithoutUpdate(targetRoom, block, instance);
-		}
 
         public static void SelectFloorBelowObject(PositionBasedObjectInstance instance)
         {

@@ -18,7 +18,7 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Select objects", null, (o, e) =>
             {
-                EditorActions.SelectObjectsInArea(this);
+                EditorActions.SelectObjectsInArea(this, editor.SelectedSectors);
             }));
 
             Items.Add(new ToolStripSeparator());

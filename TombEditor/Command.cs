@@ -2061,7 +2061,7 @@ namespace TombEditor
 
             AddCommand("SelectAllObjectsInArea", "Select all objects in selected area", CommandType.Objects, delegate (CommandArgs args)
             {
-                EditorActions.SelectObjectsInArea(args.Window);
+                EditorActions.SelectObjectsInArea(args.Window, args.Editor.SelectedSectors);
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 

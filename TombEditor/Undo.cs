@@ -185,7 +185,15 @@ namespace TombEditor
 
                 // Rebuild lighting!
                 if (UndoObject is LightInstance)
-                    Room.BuildGeometry(); 
+                    Room.BuildGeometry();
+
+                // Move origin of object group, if it contains object
+                if (Parent.Editor.SelectedObject is ObjectGroup)
+                {
+                    var group = ((ObjectGroup)Parent.Editor.SelectedObject);
+                    if (group.RootObject == UndoObject)
+                        group.SetOrigin(group.RootObject.Position);
+                }
 
                 if (!roomChanged)
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);

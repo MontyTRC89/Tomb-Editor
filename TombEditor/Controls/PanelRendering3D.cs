@@ -651,7 +651,7 @@ namespace TombEditor.Controls
                             {
                                 // Multiple object selection - do we need to indicate differently?
                                 _toolHandler.Engage(e.X, e.Y, newBlockPicking);
-                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                _editor.HighlightedSectors = new SectorSelection { Start = pos, End = pos };
                             }
                             else
                             {
@@ -1110,15 +1110,22 @@ namespace TombEditor.Controls
 
                             if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && _doSectorSelection)
                             {
-                                var newSelection = new SectorSelection
+                                var objectSelectionMode = _editor.Tool.Tool == EditorToolType.Selection && _toolHandler.Engaged;
+
+                                var newArea = new SectorSelection
                                 {
-                                    Start = _editor.SelectedSectors.Start,
+                                    Start = objectSelectionMode ? _editor.HighlightedSectors.Start : _editor.SelectedSectors.Start,
                                     End = new VectorInt2(pos.X, pos.Y)
                                 };
 
-                                if (_editor.SelectedSectors != newSelection)
+                                if (objectSelectionMode && _editor.HighlightedSectors != newArea)
                                 {
-                                    _editor.SelectedSectors = newSelection;
+                                    _editor.HighlightedSectors = newArea;
+                                    redrawWindow = true;
+                                }
+                                else if (!objectSelectionMode && _editor.SelectedSectors != newArea)
+                                {
+                                    _editor.SelectedSectors = newArea;
                                     redrawWindow = true;
                                 }
                             }
@@ -1344,7 +1351,7 @@ namespace TombEditor.Controls
 
                     // Handle multiple object selection
                     if (_editor.Tool.Tool == EditorToolType.Selection && _toolHandler.Engaged && ModifierKeys.HasFlag(Keys.Control))
-                        EditorActions.SelectObjectsInArea(FindForm());
+                        EditorActions.SelectObjectsInArea(FindForm(), _editor.HighlightedSectors, false);
 
                     break;
 

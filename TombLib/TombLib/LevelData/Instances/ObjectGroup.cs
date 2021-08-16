@@ -38,6 +38,7 @@ namespace TombLib.LevelData
         public void Remove(PositionBasedObjectInstance objectInstance) => _objects.Remove(objectInstance);
         public bool Contains(PositionBasedObjectInstance obInstance) => _objects.Contains(obInstance);
         public bool Any() => _objects.Any();
+        public PositionBasedObjectInstance RootObject => _objects.FirstOrDefault();
 
         public void AddOrRemove(PositionBasedObjectInstance objectInstance)
         {
@@ -103,6 +104,11 @@ namespace TombLib.LevelData
         {
             Room = room;
             return this;
+        }
+
+        public void SetOrigin(Vector3 position)
+        {
+            base.SetPosition(position);
         }
 
         public string ShortName() => $"Group of {_objects.Count} objects";
