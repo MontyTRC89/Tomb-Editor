@@ -16,19 +16,29 @@ namespace TombLib.Controls
 
         public ComboBox.ObjectCollection Items => combo.Items;
 
+        [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(106)]
         public int DropDownHeight { get { return combo.DropDownHeight; } set { combo.DropDownHeight = value; } }
 
+        [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(236)]
         public int DropDownWidth { get { return combo.DropDownWidth; } set { combo.DropDownWidth = value; } }
 
+        [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(true)]
         public bool IntegralHeight { get { return combo.IntegralHeight; } set { combo.IntegralHeight = value; } }
 
+        [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(15)]
         public int ItemHeight { get { return combo.ItemHeight; } set { combo.ItemHeight = value; } }
 
+        [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(true)]
         public bool FormattingEnabled { get { return combo.FormattingEnabled; } set { combo.FormattingEnabled = value; } }
 
         [Browsable(false)]
