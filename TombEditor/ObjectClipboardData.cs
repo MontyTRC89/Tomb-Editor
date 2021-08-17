@@ -60,9 +60,11 @@ namespace TombEditor
                     new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
 
                 // A little workaround to detect script id collisions already
+
+                var testRoom = editor.SelectedRoom;
+
                 if (obj is IHasScriptID)
                 {
-                    Room testRoom = editor.SelectedRoom;
                     try
                     {
                         testRoom.AddObject(editor.Level, obj);
@@ -72,6 +74,15 @@ namespace TombEditor
                     {
                         ((IHasScriptID)obj).ScriptId = null;
                     }
+                }
+
+                if (obj is IHasLuaName)
+                {
+                    testRoom.AddObject(editor.Level, obj);
+                    var luaObj = obj as IHasLuaName;
+                    if (!luaObj.TrySetLuaName(luaObj.LuaName, null))
+                        luaObj.AllocateNewLuaName();
+                    testRoom.RemoveObject(editor.Level, obj);
                 }
 
                 return obj;
