@@ -21,6 +21,7 @@
       <limit name="RoomMaxCount" value="1024" />
       <limit name="RoomSafeCount" value="255" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="100" />
     </limits>
     <moveables>
       <moveable id="0" name="Lara" t5m="LARA" />
@@ -652,6 +653,7 @@
       <limit name="RoomMaxCount" value="1023" />
       <limit name="RoomSafeCount" value="255" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="100" />
     </limits>
     <moveables>
       <moveable id="0" name="Lara" />
@@ -1338,6 +1340,7 @@
       <limit name="RoomMaxCount" value="1023" />
       <limit name="RoomSafeCount" value="255" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="100" />
     </limits>
     <moveables>
       <moveable id="0" name="Lara" use_body_from="315" />
@@ -2673,6 +2676,7 @@
       <limit name="RoomMaxCount" value="1023" />
       <limit name="RoomSafeCount" value="255" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="100" />
 
       <limit name="NG_SoundMapSize" value="2048" />
     </limits>
@@ -4631,6 +4635,7 @@
       <limit name="RoomMaxCount" value="1023" />
       <limit name="RoomSafeCount" value="255" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="100" />
     </limits>
     <moveables>
       <moveable id="0" name="Lara" use_body_from="8" t5m="LARA" />
@@ -5629,6 +5634,7 @@
       <limit name="RoomMaxCount" value="2147483647" />
       <limit name="RoomSafeCount" value="2147483647" />
       <limit name="FloorHeight" value="127" />
+      <limit name="WorldDimensions" value="400" />
     </limits>
     <moveables>
       <moveable id="0" name="LARA" use_body_from="12" />

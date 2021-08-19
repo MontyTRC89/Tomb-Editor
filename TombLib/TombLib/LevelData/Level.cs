@@ -16,7 +16,6 @@ namespace TombLib.LevelData
         public const float HalfWorldUnit = WorldUnit / 2.0f;
         public const float QuarterWorldUnit = HalfWorldUnit / 2.0f;
 
-        public const short MaxRecommendedSectorCoord = 100;
         public const short MaxNumberOfRooms = 1024;
 
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
