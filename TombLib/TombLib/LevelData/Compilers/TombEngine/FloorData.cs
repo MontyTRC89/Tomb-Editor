@@ -395,54 +395,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Ceiling collision
             BuildFloorDataCollision(ceilingShape, floorShape.Min, true, outFloorData, ref lastFloorDataFunction, room, pos);
 
-            // If sector is Death
-            if (block.HasFlag(BlockFlags.DeathFire))
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x05);
-            }
-
-            // If sector is Climbable
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR2 &&
-                (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
-            {
-                ushort climb = 0x06;
-                if ((block.Flags & BlockFlags.ClimbPositiveZ) != BlockFlags.None)
-                    climb |= 0x0100;
-                if ((block.Flags & BlockFlags.ClimbPositiveX) != BlockFlags.None)
-                    climb |= 0x0200;
-                if ((block.Flags & BlockFlags.ClimbNegativeZ) != BlockFlags.None)
-                    climb |= 0x0400;
-                if ((block.Flags & BlockFlags.ClimbNegativeX) != BlockFlags.None)
-                    climb |= 0x0800;
-
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(climb);
-            }
-
-            // If sector is Monkey
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                (block.Flags & BlockFlags.Monkey) != BlockFlags.None)
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x13);
-            }
-
-            // If sector is Trigger triggerer
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                (block.Flags & BlockFlags.TriggerTriggerer) != BlockFlags.None)
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x14);
-            }
-
-            // If sector is Beetle
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                (block.Flags & BlockFlags.Beetle) != BlockFlags.None) {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x15);
-            }
-
             // Collect all valid triggers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
 
@@ -523,37 +475,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Do some warnings in case user switches targets and some incompatible triggers are left behind
 
-                if (!_level.IsNG && setupTrigger.TriggerType == TriggerType.ConditionNg)
-                    _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
+                if (setupTrigger.TriggerType == TriggerType.ConditionNg ||
+                    setupTrigger.TargetType == TriggerTargetType.ActionNg ||
+                    setupTrigger.TargetType == TriggerTargetType.ParameterNg ||
+                    setupTrigger.TargetType == TriggerTargetType.TimerfieldNg ||
+                    setupTrigger.TargetType == TriggerTargetType.FmvNg)
+                    _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses TRNG trigger data which is not supported in Tomb Engine.");
 
-                if (_level.IsNG && setupTrigger.TriggerType == TriggerType.Monkey)
-                    _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
-
-                if ((_level.Settings.GameVersion != TRVersion.Game.TR5) &&
-                    (setupTrigger.TriggerType > TriggerType.ConditionNg && setupTrigger.TriggerType < TriggerType.Monkey))
-                    _progressReporter.ReportWarn("Level uses trigger type '" + setupTrigger.TriggerType + "', which is not supported in this game engine.");
-
-                ushort triggerSetup;
-                if (_level.IsNG)
-                {
-                    // NG flipeffects store timer and extra in additional ushort
-                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (setupTrigger.Target as TriggerParameterUshort)?.Key > 46)
-                        triggerSetup = 0;
-                    // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
-                    else if (setupTrigger.TriggerType == TriggerType.ConditionNg)
-                        triggerSetup = GetTriggerRealTimer(setupTrigger, 0xffff);
-                    // all other triggers work as usual
-                    else
-                        triggerSetup = GetTriggerRealTimer(setupTrigger, 0xff);
-                }
-                else
-                    triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
+                var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
 
                 triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
-
-                // Omit writing bitmask for ConditionNg, because it uses these bits for keeping EXTRA param.
-                if (setupTrigger.TriggerType != TriggerType.ConditionNg)
-                    triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
 
                 outFloorData.Add(trigger1);
                 outFloorData.Add(triggerSetup);
@@ -576,14 +507,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             outFloorData.Add(trigger2);
 
                             // Additional short
+                            // TODO: Reimplement move timer in TEN!
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-
-                            // Move timer exists only in TR1-2. Also, all values above 1 are ignored by TR2,
-                            // but we write them anyway.
-                            if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
-                                trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 9 ?? 0);
-
+                            trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 9 ?? 0);
                             outFloorData.Add(trigger3);
                             break;
                         case TriggerTargetType.Sink:
@@ -625,32 +552,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             // Trigger for flip effect
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
                             outFloorData.Add(trigger2);
-
-                            // TRNG stores flipeffect timer as an extra ushort
-                            if (_level.IsNG)
-                            {
-                                trigger3 = GetTriggerRealTimer(trigger, 0xffff);
-                                outFloorData.Add(trigger3);
-                            }
-
                             break;
                         case TriggerTargetType.Secret:
                             // Trigger for secret found
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
                             outFloorData.Add(trigger2);
-                            break;
-                        case TriggerTargetType.ActionNg:
-                            // Trigger for action
-                            if (_level.IsNG)
-                            {
-                                trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
-                                outFloorData.Add(trigger2);
-
-                                trigger2 = GetTriggerRealTimer(trigger, 0xffff);
-                                outFloorData.Add(trigger2);
-                            }
-                            else
-                                _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
                             break;
                         case TriggerTargetType.FlyByCamera:
                             // Trigger for fly by
@@ -661,19 +567,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             outFloorData.Add(trigger2);
 
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
-                            outFloorData.Add(trigger2);
-                            break;
-                        case TriggerTargetType.ParameterNg:
-                            ushort targetTypeBits = trigger.Target is ObjectInstance ? (ushort)(0 << 10) : (ushort)(13 << 10);
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
-                            outFloorData.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FmvNg:
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
-                            outFloorData.Add(trigger2);
-                            break;
-                        case TriggerTargetType.TimerfieldNg:
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (15 << 10));
                             outFloorData.Add(trigger2);
                             break;
                         default:
@@ -687,14 +580,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Set end of floor data function
             if (lastFloorDataFunction != -1)
                 outFloorData[lastFloorDataFunction] |= 0x8000;
-        }
-
-        private ushort GetTriggerRealTimer(TriggerInstance trigger, ushort upperBound)
-        {
-            return NgParameterInfo.EncodeNGRealTimer(trigger.TargetType, trigger.TriggerType,
-                (trigger.Target as TriggerParameterUshort)?.Key ?? ushort.MaxValue, ushort.MaxValue,
-                upperBoundInner => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
-                upperBoundInner => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
         }
 
         private ushort GetTriggerParameter(ITriggerParameter parameter, TriggerInstance triggerDiagnostic, ushort upperBound)

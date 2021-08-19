@@ -51,6 +51,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class TombEngineSectorFlags
+    {
+        public bool Death;
+        public bool Monkeyswing;
+        public bool ClimbNorth;
+        public bool ClimbSouth;
+        public bool ClimbWest;
+        public bool ClimbEast;
+       
+        public bool MarkTriggerer;
+        public bool MarkBeetle;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomSector
     {
         public int FloorDataIndex;
@@ -64,6 +78,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineCollisionInfo FloorCollision;
         public TombEngineCollisionInfo CeilingCollision;
         public int WallPortal;
+        public TombEngineSectorFlags Flags;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -333,6 +348,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(s.CeilingCollision.Planes[0]);
                 writer.Write(s.CeilingCollision.Planes[1]);
                 writer.Write(s.WallPortal);
+
+                writer.Write(s.Flags.Death);
+                writer.Write(s.Flags.Monkeyswing);
+                writer.Write(s.Flags.ClimbNorth);
+                writer.Write(s.Flags.ClimbSouth);
+                writer.Write(s.Flags.ClimbEast);
+                writer.Write(s.Flags.ClimbWest);
+                writer.Write(s.Flags.MarkTriggerer);
+                writer.Write(s.Flags.MarkBeetle);
             }
 
             // Write room color
