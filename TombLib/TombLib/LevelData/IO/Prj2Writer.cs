@@ -661,7 +661,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.IsUsedForImportedGeometry);
                             chunkIO.Raw.Write((byte)instance.Quality);
                         }
-                    else if (o is PortalInstance && ((PortalInstance)o).AdjoiningRoom != null && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
+                    else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, LEB128.MaximumSize2Byte))
                         {
                             var instance = (PortalInstance)o;
@@ -766,7 +766,7 @@ namespace TombLib.LevelData.IO
                     else if (o is ImportedGeometryInstance)
                     {
                         var instance = (ImportedGeometryInstance)o;
-                        if (instance.Model != null && levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
+                        if (instance.Model == null || levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
                             {
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -786,7 +786,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
                             });
                         else
-                            logger.Warn("Imported geometry " + instance.ToString() + " refers to a model which is missing from project.");
+                            logger.Warn("Imported geometry in room " + instance.Room + " refers to a model which is missing from project.");
                     }
                     else
                         logger.Warn("Object " + o + " not supported.");

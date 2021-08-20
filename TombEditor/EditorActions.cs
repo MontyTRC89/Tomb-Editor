@@ -4635,7 +4635,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + fileName + "\".");
-                _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
+                _editor.SendMessage("There was an error while saving project file.\nException: " + exc.Message, PopupType.Error);
                 return false;
             }
 
