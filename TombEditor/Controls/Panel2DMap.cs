@@ -13,6 +13,7 @@ using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
 using RectangleF = System.Drawing.RectangleF;
@@ -53,6 +54,8 @@ namespace TombEditor.Controls
         private VectorInt2 _insertionCurrentOffset;
         private Point _startMousePosition;
         private VectorInt3 _overallDelta;
+
+        private int _mapSize = 100;
 
         private class SelectionArea
         {
@@ -130,6 +133,15 @@ namespace TombEditor.Controls
         {
             if (_selectionArea != null)
                 _selectionArea._roomSelectionCache = null;
+
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                var newSize = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.WorldDimensions);
+                _mapSize = newSize > 0 ? newSize : 100;
+                Invalidate();
+            }
 
             // Update drawing
             if (obj is Editor.SelectedRoomsChangedEvent ||
@@ -217,7 +229,7 @@ namespace TombEditor.Controls
 
         private void LimitPosition()
         {
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(Level.MaxRecommendedSectorCoord));
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(_mapSize));
         }
 
         private int? FindClosestProbe(Vector2 clickPos)
@@ -599,18 +611,18 @@ namespace TombEditor.Controls
                     Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
                     Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
                     Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
-                    GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxRecommendedSectorCoord));
-                    GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxRecommendedSectorCoord));
+                    GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(_mapSize));
+                    GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(_mapSize));
                     Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
                     Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                     for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
                         e.Graphics.DrawLine(x % 10 == 0 ? _gridPenThick : _gridPenThin,
-                            ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxRecommendedSectorCoord)));
+                            ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, _mapSize)));
 
                     for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
                         e.Graphics.DrawLine(y % 10 == 0 ? _gridPenThick : _gridPenThin,
-                            ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxRecommendedSectorCoord, y)));
+                            ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(_mapSize, y)));
 
                     // Draw visible rooms
                     foreach (Room room in sortedRoomList)

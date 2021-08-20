@@ -33,12 +33,6 @@ namespace TombEditor.Controls
         private int _startX => Padding.Left;
         private int _startY => Padding.Top; 
 
-        public static readonly HashSet<SectorColoringType> IgnoredHighlights = new HashSet<SectorColoringType>
-        {
-            SectorColoringType.FloorPortal,
-            SectorColoringType.CeilingPortal
-        };
-
         public Room Room
         {
             get { return _room; }
@@ -320,7 +314,7 @@ namespace TombEditor.Controls
 
         protected virtual void PaintSectorTile(PaintEventArgs e, RectangleF sectorArea, int x, int z)
         {
-            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(_editor.Configuration.UI_ColorScheme, Room, x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals, IgnoredHighlights);
+            var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(_editor.Configuration.UI_ColorScheme, Room, x, z, _editor.Configuration.UI_ProbeAttributesThroughPortals);
             if (currentSectorColoringInfos == null)
                 return;
 

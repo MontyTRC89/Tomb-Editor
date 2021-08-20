@@ -76,6 +76,9 @@ namespace TombLib.Rendering.DirectX11
                     throw new Exception("No connected displays found.");
                 }
 
+                logger.Info("Creating D3D device: " + adapter.Description.Description + ", " + 
+                    (adapter.Description.DedicatedVideoMemory / 1024 / 1024) + " MB GPU RAM.");
+
                 Device = new Device(adapter, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
             }
             catch (Exception exc)

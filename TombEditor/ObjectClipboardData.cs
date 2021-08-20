@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
@@ -19,7 +21,17 @@ namespace TombEditor
             using (var stream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(stream);
-                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, new[] { editor.SelectedObject });
+                var objectInstances = new List<ObjectInstance>();
+
+                if (editor.SelectedObject is ObjectGroup)
+                {
+                    var og = (ObjectGroup)editor.SelectedObject;
+                    objectInstances.AddRange(og);
+                }
+                else
+                    objectInstances.Add(editor.SelectedObject);
+
+                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, objectInstances);
                 _data = stream.GetBuffer();
             }
         }
@@ -36,31 +48,58 @@ namespace TombEditor
 
         public ObjectInstance MergeGetSingleObject(Editor editor)
         {
-            Prj2Loader.LoadedObjects loadedObjects = CreateObjects(editor.Level);
-
+            var newLevelSettings = editor.Level.Settings.Clone();
+            var loadedObjects = CreateObjects(editor.Level);
+            
             if (loadedObjects.Objects.Count == 0)
                 return null;
-
-            ObjectInstance obj = (ObjectInstance)loadedObjects.Objects[0];
-            LevelSettings newLevelSettings = editor.Level.Settings.Clone();
-            obj.CopyDependentLevelSettings(new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
-            editor.UpdateLevelSettings(newLevelSettings);
-
-            // A little workaround to detect script id collisions already
-            if (obj is IHasScriptID)
+                
+            var unpackedObjects = loadedObjects.Objects.Select(obj =>
             {
-                Room testRoom = editor.SelectedRoom;
-                try
+                obj.CopyDependentLevelSettings(
+                    new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
+
+                // A little workaround to detect script id collisions already
+
+                var testRoom = editor.SelectedRoom;
+
+                if (obj is IHasScriptID)
+                {
+                    try
+                    {
+                        testRoom.AddObject(editor.Level, obj);
+                        testRoom.RemoveObject(editor.Level, obj);
+                    }
+                    catch (ScriptIdCollisionException)
+                    {
+                        ((IHasScriptID)obj).ScriptId = null;
+                    }
+                }
+
+                if (obj is IHasLuaName)
                 {
                     testRoom.AddObject(editor.Level, obj);
+                    var luaObj = obj as IHasLuaName;
+                    if (!luaObj.TrySetLuaName(luaObj.LuaName, null))
+                        luaObj.AllocateNewLuaName();
                     testRoom.RemoveObject(editor.Level, obj);
                 }
-                catch (ScriptIdCollisionException)
-                {
-                    ((IHasScriptID)obj).ScriptId = null;
-                }
+
+                return obj;
+            })
+            .ToList();
+                
+			editor.UpdateLevelSettings(newLevelSettings);
+
+            if (unpackedObjects.Count == 0)
+                return null;
+            else if (unpackedObjects.Count == 1)
+                return unpackedObjects.FirstOrDefault();
+            else
+            {
+                var unpackedChildren = unpackedObjects.OfType<PositionBasedObjectInstance>().ToList();
+                return new ObjectGroup(unpackedChildren);
             }
-            return obj;
         }
     }
 }

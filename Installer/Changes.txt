@@ -1,16 +1,23 @@
-Version 1.3.16
-==============
+Version 1.4
+===========
 
 Tomb Editor:
+ * Select multiple objects by Ctrl+click or from block selection (Ctrl+drag mouse on the blocks):
+    - Bulk position change.
+	- Bulk rotate individually or around root object by holding Alt key.
+	- Bulk delete and copy-paste.
+	- Batch triggering in dxtre3d style, including key/switch trigger type autodetection.
  * An option to toggle bilinear filter on or off (right-click and customize toolbar to see the button).
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
- * Allow shiny effect on static, if light type is set to dynamic.
- * Fit every item in item browser preview and optionally animate it.
+ * Allow shiny effect on static meshes, if light type is set to dynamic.
+ * Properly fit every item in item browser preview and optionally animate it.
+ * Draw triangular portals in 2D grid.
  * Fix exception if level with missing merged statics is compiled.
  * Fix launching of SoundTool and WadTool from Tomb Editor in case project is opened from explorer.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
  * Fix possible corruption of very small textures (less than 5px).
+ * Fix fly mode slowdowns if performance is low.
  * Fix statistics GUI memory leak which led to editor slowdown over time.
 
 WadTool:

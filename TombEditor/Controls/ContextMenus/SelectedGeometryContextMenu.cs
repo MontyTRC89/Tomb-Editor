@@ -15,6 +15,12 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PasteObject(targetBlock, targetRoom);
             })
             { Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName) });
+
+            Items.Add(new ToolStripMenuItem("Select objects", null, (o, e) =>
+            {
+                EditorActions.SelectObjectsInArea(this, editor.SelectedSectors);
+            }));
+
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
@@ -26,7 +32,7 @@ namespace TombEditor.Controls.ContextMenus
             {
 				var obj = editor.SelectedObject as PositionBasedObjectInstance;
 				EditorActions.MoveObject(obj, targetRoom, targetBlock);
-			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance });
+			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance && !(_editor.SelectedObject is ObjectGroup) });
 			Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>

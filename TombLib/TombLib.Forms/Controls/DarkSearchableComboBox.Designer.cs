@@ -47,7 +47,9 @@
             // combo
             // 
             this.combo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.combo.DropDownHeight = 400;
             this.combo.FormattingEnabled = true;
+            this.combo.IntegralHeight = false;
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
             this.combo.Size = new System.Drawing.Size(129, 21);

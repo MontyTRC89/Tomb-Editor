@@ -937,6 +937,13 @@ namespace TombLib.LevelData
                 NumZSectors * (0.5f * Level.WorldUnit));
         }
 
+        public Vector3 GetFloorMidpointPosition(float sectorX, float sectorZ)
+        {
+            var block = GetBlockTry(new VectorInt2((int)sectorX, (int)sectorZ));
+            int y = block == null ? 0 : (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
+            return new Vector3(sectorX * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, sectorZ * Level.WorldUnit + Level.HalfWorldUnit);
+        }
+
         public int NumXSectors
         {
             get { return Blocks.GetLength(0); }
@@ -1120,7 +1127,7 @@ namespace TombLib.LevelData
 
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
-            List<ObjectInstance> result = new List<ObjectInstance>();
+            var result = new List<ObjectInstance>();
             result.Add(RemoveObjectAndSingularPortalAndKeepAlive(level, instance));
 
             // Delete the corresponding other portals if necessary.

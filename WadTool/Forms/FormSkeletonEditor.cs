@@ -72,11 +72,14 @@ namespace WadTool
             UpdateUI();
         }
 
-        private void ExpandSkeleton()
+        protected override void Dispose(bool disposing)
         {
-            treeSkeleton.ExpandAllNodes();
-            if (_lastBone != null && _nodesDictionary.ContainsKey(_lastBone))
-                treeSkeleton.SelectNode(_nodesDictionary[_lastBone]);
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+                _tool.EditorEventRaised -= Tool_EditorEventRaised;
+            }
+            base.Dispose(disposing);
         }
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
@@ -104,6 +107,13 @@ namespace WadTool
                 var m = obj as WadToolClass.MessageEvent;
                 PopUpInfo.Show(popup, this, panelRendering, m.Message, m.Type);
             }
+        }
+
+        private void ExpandSkeleton()
+        {
+            treeSkeleton.ExpandAllNodes();
+            if (_lastBone != null && _nodesDictionary.ContainsKey(_lastBone))
+                treeSkeleton.SelectNode(_nodesDictionary[_lastBone]);
         }
 
         private List<DarkTreeNode> LoadSkeleton()

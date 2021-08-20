@@ -29,6 +29,7 @@ namespace TombLib.Wad.Catalog
         RoomSafeCount,
         FloorHeight,
         CornerHeight,
+        WorldDimensions,
 
         NG_SoundMapSize
     }

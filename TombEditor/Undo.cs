@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -111,7 +110,13 @@ namespace TombEditor
             UndoAction = () =>
             {
                 if (Created)
+                {
+                    if (Parent.Editor.SelectedObject is ObjectGroup &&
+                        ((ObjectGroup)Parent.Editor.SelectedObject).Contains(UndoObject))
+                        Parent.Editor.SelectedObject = null;
+
                     EditorActions.DeleteObjectWithoutUpdate(UndoObject);
+                }
                 else
                 {
                     var backupPos = obj.Position; // Preserve original position and reassign it after placement
@@ -178,8 +183,17 @@ namespace TombEditor
                 if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;
                 if (UndoObject is IRotateableYXRoll && Roll.HasValue) ((IRotateableYXRoll)obj).Roll = Roll.Value;
 
+                // Rebuild lighting!
                 if (UndoObject is LightInstance)
-                    Room.BuildGeometry(); // Rebuild lighting!
+                    Room.BuildGeometry();
+
+                // Move origin of object group, if it contains object
+                if (Parent.Editor.SelectedObject is ObjectGroup)
+                {
+                    var group = ((ObjectGroup)Parent.Editor.SelectedObject);
+                    if (group.RootObject == UndoObject)
+                        group.SetOrigin(group.RootObject.Position);
+                }
 
                 if (!roomChanged)
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
@@ -412,15 +426,23 @@ namespace TombEditor
         public void PushAdjoiningRoomCreated(Room room) => Push(new AddAdjoiningRoomUndoInstance(this, room));
         public void PushRoomsMoved(List<Room> rooms, VectorInt3 delta) { if (delta != VectorInt3.Zero) Push(new MoveRoomsUndoInstance(this, rooms, delta)); }
         public void PushSectorObjectCreated(SectorBasedObjectInstance obj) => Push(new AddSectorBasedObjectUndoInstance(this, obj));
+        public void PushSectorObjectCreated(List<SectorBasedObjectInstance> objs) => Push(objs.Select(obj => (new AddSectorBasedObjectUndoInstance(this, obj)) as UndoRedoInstance).ToList());
         public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
         public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(room => (new GeometryUndoInstance(this, room)) as UndoRedoInstance).ToList());
-        public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
-        public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
-        public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
-        public void PushObjectPropertyChanged(PositionBasedObjectInstance obj) => Push(new ChangeObjectPropertyUndoInstance(this, obj));
         public void PushGhostBlockCreated(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, true));
         public void PushGhostBlockCreated(List<GhostBlockInstance> objs) => Push(objs.Select(obj => (new AddRemoveGhostBlockUndoInstance(this, obj, true)) as UndoRedoInstance).ToList());
         public void PushGhostBlockDeleted(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, false));
         public void PushGhostBlockTransformed(GhostBlockInstance obj) => Push(new TransformGhostBlockUndoInstance(this, obj));
+
+        public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
+        public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
+        public void PushObjectPropertyChanged(PositionBasedObjectInstance obj) => Push(new ChangeObjectPropertyUndoInstance(this, obj));
+        public void PushObjectTransformed(PositionBasedObjectInstance obj)
+        {
+            if (obj is ObjectGroup)
+                Push(((ObjectGroup)obj).Select(o => new TransformObjectUndoInstance(this, o)).Cast<UndoRedoInstance>().ToList());
+            else
+                Push(new TransformObjectUndoInstance(this, obj));
+        }
     }
 }

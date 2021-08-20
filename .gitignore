@@ -12,3 +12,6 @@ packages/
 *.vspx
 /BuildNgXmlBuilder
 /BuildNgXmlBuilderRelease
+
+# JetBrains IDEs
+.idea/

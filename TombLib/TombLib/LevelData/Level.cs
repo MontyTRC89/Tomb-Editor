@@ -16,7 +16,6 @@ namespace TombLib.LevelData
         public const float HalfWorldUnit = WorldUnit / 2.0f;
         public const float QuarterWorldUnit = HalfWorldUnit / 2.0f;
 
-        public const short MaxRecommendedSectorCoord = 100;
         public const short MaxNumberOfRooms = 1024;
 
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
@@ -173,7 +172,10 @@ namespace TombLib.LevelData
 
         public List<Room> DeleteTriggersForObject(ObjectInstance instance)
         {
-            List<Room> result = new List<Room>();
+            if (instance is ObjectGroup)
+                return ((ObjectGroup)instance).SelectMany(DeleteTriggersForObject).Distinct().ToList();
+
+            var result = new List<Room>();
 
             var isTriggerableObject = instance is MoveableInstance || instance is StaticInstance || instance is CameraInstance ||
                                       instance is FlybyCameraInstance || instance is SinkInstance || instance is SoundSourceInstance;

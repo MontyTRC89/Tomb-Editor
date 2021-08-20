@@ -545,16 +545,23 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
         }
-        public static void AddTrigger(Room room, RectangleInt2 area, TriggerInstance trigger)
-        {
-            trigger.Area = area;
 
-            room.AddObject(_editor.Level, trigger);
-            _editor.ObjectChange(trigger, ObjectChangeType.Add);
+        public static void AddTrigger(Room room, RectangleInt2 area, TriggerInstance trigger) =>
+            AddTriggers(room, area, new List<TriggerInstance> { trigger });
+
+        public static void AddTriggers(Room room, RectangleInt2 area, List<TriggerInstance> triggers)
+        {
+            foreach (var trigger in triggers)
+            {
+                trigger.Area = area;
+                room.AddObject(_editor.Level, trigger);
+                _editor.ObjectChange(trigger, ObjectChangeType.Add);
+            }
+
             _editor.RoomSectorPropertiesChange(room);
 
             // Undo
-            _editor.UndoManager.PushSectorObjectCreated(trigger);
+            _editor.UndoManager.PushSectorObjectCreated(triggers.Cast<SectorBasedObjectInstance>().ToList());
         }
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
@@ -567,53 +574,82 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner, ObjectInstance @object)
         {
-            // Initialize trigger with selected object if the selected object makes sense in the trigger context.
+            // Initialize root trigger and object list.
             var trigger = new TriggerInstance(area);
-            if (@object is MoveableInstance)
-            {
-                trigger.TargetType = TriggerTargetType.Object;
-                trigger.Target = @object;
+            var objectList = new List<ObjectInstance>();
 
-                if (_editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+            // If object group is a group of moveables, batch-trigger it. Otherwise, add single object to list.
+            if (@object is ObjectGroup && ((ObjectGroup)@object).All(o => o is MoveableInstance))
+                objectList.AddRange(((ObjectGroup)@object));
+            else
+                objectList.Add(@object);
+
+            // This flag is set when key/switch/bridge trigger is created to differentiate other object
+            // trigger types from root object trigger type.
+            bool useDefaultTypeForBatchTriggers = false;
+
+            // Sort object list and prioritize key/switch/bridge objects above all
+            if (objectList.First() is MoveableInstance &&
+                _editor.Configuration.UI_AutoFillTriggerTypesForSwitchAndKey)
+            {
+                objectList = objectList.OrderByDescending(o =>
                 {
-                    string objectName = @object.ToString().ToLower();
-                    bool isHole = (objectName.Contains("key") || objectName.Contains("puzzle"))
-                        && objectName.Contains("hole");
-                    bool isSwitch = objectName.Contains("switch");
+                    string objectName = o.ToString().ToLower();
+
+                    bool isSwitch = objectName.Contains("switch") || objectName.Contains("pulley");
+                    bool isHole = objectName.Contains("hole") &&
+                        (objectName.Contains("key") || objectName.Contains("puzzle"));
+                    bool isBridge = objectName.Contains("bridge") &&
+                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom"));
+
+                    // Also set trigger type along the way of sorting.
+
                     if (isHole)
                         trigger.TriggerType = TriggerType.Key;
                     else if (isSwitch)
                         trigger.TriggerType = TriggerType.Switch;
-
-                    bool isBridge = (objectName.Contains("bridge") && 
-                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom")));
-                    if (isBridge)
+                    else if (isBridge)
                         trigger.TriggerType = TriggerType.Dummy;
-                }
+                    else
+                        return false;
+
+                    useDefaultTypeForBatchTriggers = true;
+                    return true;
+                }).ToList();
             }
-            else if (@object is FlybyCameraInstance)
+
+            // Get root object from now-sorted object list.
+            var firstObject = objectList.First(); 
+
+            // Setup root trigger.
+            if (firstObject is MoveableInstance)
+            {
+                trigger.TargetType = TriggerTargetType.Object;
+                trigger.Target = firstObject;
+            }
+            else if (firstObject is FlybyCameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.FlyByCamera;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is CameraInstance)
+            else if (firstObject is CameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.Camera;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is SinkInstance)
+            else if (firstObject is SinkInstance)
             {
                 trigger.TargetType = TriggerTargetType.Sink;
-                trigger.Target = @object;
+                trigger.Target = firstObject;
             }
-            else if (@object is StaticInstance && _editor.Level.IsNG)
+            else if (firstObject is StaticInstance && _editor.Level.IsNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
-                trigger.Timer = @object;
+                trigger.Timer = firstObject;
             }
 
-            // Display form
+            // Display form for additional root trigger setup.
             using (var formTrigger = GetObjectSetupWindow(trigger, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
                                                      new Action<Room>(r => _editor.SelectRoom(r))))
             {
@@ -621,7 +657,27 @@ namespace TombEditor
                     return;
             }
 
-            AddTrigger(room, area, trigger);
+            // Initialize trigger list with root trigger first.
+            var triggerList = new List<TriggerInstance>() { trigger };
+
+            // Exclude root object from object list (list will be empty if single object)
+            objectList = objectList.Where(o => o != firstObject).ToList();
+
+            // Populate trigger list with additional triggers if object list isn't empty by now.
+            foreach (var obj in objectList)
+            {
+                // If user changed target type, abandon batch triggering.
+
+                if (trigger.Target.GetType() != obj.GetType())
+                    break;
+
+                var newTrigger = (TriggerInstance)trigger.Clone(trigger.Area);
+                if (useDefaultTypeForBatchTriggers) newTrigger.TriggerType = TriggerType.Trigger;
+                newTrigger.Target = obj;
+                triggerList.Add(newTrigger);
+            }
+
+            AddTriggers(room, area, triggerList);
         }
 
         public static void AddGhostBlocks(Room room, RectangleInt2 area)
@@ -691,6 +747,7 @@ namespace TombEditor
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
             PlaceObjectWithoutUpdate(_editor.SelectedRoom, localCenter, box);
+            box.Position += new Vector3(0, Level.HalfWorldUnit, 0); // Lift it up a bit
             _editor.UndoManager.PushObjectCreated(box);
             AllocateScriptIds(box);
         }
@@ -736,6 +793,15 @@ namespace TombEditor
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
+        public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block)
+        {
+            var r = instance.Room;
+            _editor.UndoManager.PushObjectTransformed(instance);
+            instance.Room.RemoveObject(_editor.Level, instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, r);
+            PlaceObjectWithoutUpdate(targetRoom, block, instance);
+        }
+
         public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
             MoveObject(instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
@@ -773,8 +839,7 @@ namespace TombEditor
             instance.Position = pos;
 
             // Update state
-            if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -805,8 +870,7 @@ namespace TombEditor
             newRoom.MoveObjectFrom(_editor.Level, instance.Room, instance);
 
             // Update state
-            if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -821,10 +885,20 @@ namespace TombEditor
             switch (axis)
             {
                 case RotationAxis.Y:
-                    var rotateableY = instance as IRotateableY;
-                    if (rotateableY == null)
-                        return;
-                    rotateableY.RotationY = angleInDegrees + (delta ? rotateableY.RotationY : 0);
+                    if (Control.ModifierKeys.HasFlag(Keys.Alt) && instance is ObjectGroup)
+                    {
+                        var og = (ObjectGroup)instance;
+                        og.RotateAsGroup(angleInDegrees + (delta ? og.RotationY : 0));
+                    }
+                    else
+                    {
+                        var rotateableY = instance as IRotateableY;
+                        if (rotateableY != null)
+                            rotateableY.RotationY = angleInDegrees + (delta ? rotateableY.RotationY : 0);
+                        else
+                            return;
+                    }
+
                     break;
                 case RotationAxis.X:
                     var rotateableX = instance as IRotateableYX;
@@ -839,13 +913,17 @@ namespace TombEditor
                     rotateableRoll.Roll = angleInDegrees + (delta ? rotateableRoll.Roll : 0);
                     break;
             }
-            if (instance is LightInstance)
-            {
-                instance.Room.BuildGeometry();
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-            }
-                
+
+            // Update state
+            RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
+        }
+
+        public static void RebuildLightsForObject(ObjectInstance instance)
+        {
+            if (instance is LightInstance ||
+               (instance is ObjectGroup && ((ObjectGroup)instance).Any(o => o is LightInstance)))
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
         }
 
         public static DarkForm GetObjectSetupWindow(params object[] args)
@@ -1018,10 +1096,16 @@ namespace TombEditor
 
                 if (instance is ISpatial)
                 {
-                    // HACK: fix imported geometry reference
-                    if (instance is ImportedGeometryInstance)
-                    {
-                        var imported = instance as ImportedGeometryInstance;
+					// HACK: fix imported geometry reference
+					var importedGeometries = new List<ImportedGeometryInstance>();
+
+					if (instance is ImportedGeometryInstance)
+						importedGeometries.Add(instance as ImportedGeometryInstance);
+					else if (instance is ObjectGroup)
+						importedGeometries.AddRange((instance as ObjectGroup).OfType<ImportedGeometryInstance>());
+					
+					foreach (var imported in importedGeometries)
+					{
                         var pastedPath = _editor.Level.Settings.MakeAbsolute(imported.Model.Info.Path);
                         foreach (var model in _editor.Level.Settings.ImportedGeometries)
                         {
@@ -1032,7 +1116,7 @@ namespace TombEditor
                                 break;
                             }
                         }
-                    }
+					}
 
                     PlaceObject(room, pos, instance);
                 }
@@ -1051,7 +1135,7 @@ namespace TombEditor
             if (!silent)
             {
                 string prompt = "Do you really want to delete ";
-                prompt += (objects.Count() == 1) ? (objects.First() + "?") : "specified objects?";
+                prompt += (objects.Count() > 1 || objects.Any(o => o is ObjectGroup)) ? "specified objects?" : (objects.First() + "?");
 
                 if (DarkMessageBox.Show(owner, prompt, "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
@@ -1063,7 +1147,9 @@ namespace TombEditor
                 var undoList = new List<UndoRedoInstance>();
                 foreach (var instance in objects)
                 {
-                    if (instance is PositionBasedObjectInstance)
+                    if (instance is ObjectGroup)
+                        undoList.AddRange(((ObjectGroup)instance).Select(o => new AddRemoveObjectUndoInstance(_editor.UndoManager, o, false)));
+                    else if (instance is PositionBasedObjectInstance )
                         undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
                     else if (instance is GhostBlockInstance)
                         undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
@@ -1075,12 +1161,24 @@ namespace TombEditor
 
             // Delete objects
             foreach (var instance in objects)
-                DeleteObjectWithoutUpdate(instance);
+            {
+                if (instance is ObjectGroup)
+                {
+                    ((ObjectGroup)instance).ToList().ForEach(o => DeleteObjectWithoutUpdate(o));
+                    if (_editor.SelectedObject == instance)
+                        _editor.SelectedObject = null;
+                }
+                else
+                    DeleteObjectWithoutUpdate(instance);
+            }
+
+            return;
         }
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            DeleteObjects(new List<ObjectInstance>() { instance }, owner);
+            var objectsToDelete = new List<ObjectInstance>() { instance };
+            DeleteObjects(objectsToDelete, owner);
         }
 
         public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
@@ -1963,12 +2061,20 @@ namespace TombEditor
             if (instance is IHasScriptID &&
                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 || _editor.Level.IsNG))
             {
-                (instance as IHasScriptID).AllocateNewScriptId();
+                var si = instance as IHasScriptID;
+                if (si.ScriptId == null)
+                    si.AllocateNewScriptId();
             }
             else if (instance is IHasLuaName && _editor.Level.IsTombEngine)
             {
-                (instance as IHasLuaName).AllocateNewLuaName();
+                var li = instance as IHasLuaName;
+                if (string.IsNullOrEmpty(li.LuaName))
+                    li.AllocateNewLuaName();
             }
+
+            if (instance is ObjectGroup)
+                foreach (var obj in (ObjectGroup)instance)
+                    AllocateScriptIds(obj);
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
@@ -1976,7 +2082,11 @@ namespace TombEditor
             if (!(instance is ISpatial))
                 return;
 
-            if (instance is PositionBasedObjectInstance)
+            if (instance is ObjectGroup)
+            {
+                PlaceObjectGroupContents(room, pos, (ObjectGroup)instance);
+            }
+            else if (instance is PositionBasedObjectInstance)
             {
                 var posInstance = (PositionBasedObjectInstance)instance;
 
@@ -1994,30 +2104,16 @@ namespace TombEditor
             }
         }
 
-		internal static void DeleteAllLights(CommandArgs args) {
-
-			foreach(var r in args.Editor.Level.Rooms.Where(r => r != null)) {
-				foreach (var l in r.Objects.Where(obj => obj is LightInstance).Cast<LightInstance>()) {
-					l.RemoveFromRoom(args.Editor.Level, r);
-				};
-			}
-		}
-
         public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance) =>
             PlaceObjectWithoutUpdate(room, new Vector2(pos.X, pos.Y), instance);
 
         public static void PlaceObjectWithoutUpdate(Room room, Vector2 pos, PositionBasedObjectInstance instance)
         {
-            Block block = room.GetBlock(new VectorInt2((int)pos.X, (int)pos.Y));
-            int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
-
-            instance.Position = new Vector3(pos.X * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, pos.Y * Level.WorldUnit + Level.HalfWorldUnit);
+            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
             room.AddObject(_editor.Level, instance);
-            if (instance is LightInstance)
-            {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-            }
+
+            RebuildLightsForObject(instance);
+
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -2036,6 +2132,101 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
 
             return true;
+        }
+
+        public static void PlaceObjectGroupContents(Room room, VectorInt2 pos, ObjectGroup instance)
+        {
+            var undoList = new List<UndoRedoInstance>();
+
+            // Update group position
+            instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
+            instance.SetRoom(room);
+            
+            // Place children
+            foreach (var child in instance)
+            {    
+                room.AddObject(_editor.Level, child);
+                AllocateScriptIds(child);
+                undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
+            }
+
+            // Update state
+            _editor.UndoManager.Push(undoList);
+            _editor.SelectedObject = instance;
+
+            // Relight room just once
+            RebuildLightsForObject(instance);
+        }
+
+        public static void SelectObjectsInArea(IWin32Window owner, SectorSelection area, bool resetCurrentSelection = true)
+        {
+            if (_editor.SelectedRoom == null || !area.Valid)
+            {
+                _editor.SendMessage("Please define a valid group of sectors.", PopupType.Error);
+                return;
+            }
+
+            int objectCount = 0;
+
+            var rootObject = _editor.SelectedObject;
+            foreach (var obj in _editor.SelectedRoom.Objects)
+            {
+                if (obj == rootObject)
+                    continue;
+
+                if (area.Area.Contains(obj.SectorPosition))
+                {
+                    MultiSelect(obj);
+                    objectCount++;
+                }
+            }
+
+            if (objectCount == 0 && rootObject == null)
+            {
+                _editor.SendMessage("Defined area has no objects. None were selected.", PopupType.Info);
+                return;
+            }
+
+            if (resetCurrentSelection)
+                _editor.SelectedSectors = SectorSelection.None;
+        }
+
+        public static void MultiSelect(ObjectInstance instance)
+        {
+            var objPositionBased = instance as PositionBasedObjectInstance;
+
+            // Ignore ctrl-clicks on things that are not multi-selectable
+
+            if (objPositionBased == null || objPositionBased is ObjectGroup)
+                return;
+
+            // We've clicked on something multi-selectable
+
+            var selectedItemInstance = _editor.SelectedObject as PositionBasedObjectInstance;
+            if (selectedItemInstance != null)
+            {
+                // Selected object is also multi-selectable or already an object-group
+
+                var objectGroup = selectedItemInstance as ObjectGroup ?? new ObjectGroup(selectedItemInstance);
+
+                objectGroup.AddOrRemove(objPositionBased);
+
+                if (objectGroup.Count() > 1)
+                {
+                    // There is more than one object in the group, keep it
+                    _editor.SelectedObject = objectGroup;
+                }
+                else
+                {
+                    // We're left with one object, there is no reason to keep the object group
+                    _editor.SelectedObject = objectGroup.FirstOrDefault();
+                }
+            }
+            else
+            {
+                // Selected object is not multi-selectable or there's no selected object
+                _editor.SelectedObject = instance;
+            }
         }
 
         public static void MakeNewRoom(int index)
@@ -4243,6 +4434,16 @@ namespace TombEditor
             if (instance is ImportedGeometryInstance && (instance as ImportedGeometryInstance)?.Model == null)
                 return;
 
+            if (instance is ObjectGroup)
+            {
+                // HACK: Same thing for each object in multi-selection
+                foreach (var groupedObject in instance as ObjectGroup)
+                {
+                    if (groupedObject is ImportedGeometryInstance && (groupedObject as ImportedGeometryInstance)?.Model == null)
+                        return;
+                }
+            }
+
             if (_editor.SelectedObject == null && instance != null)
             {
                 _editor.SelectedObject = instance;
@@ -4328,15 +4529,6 @@ namespace TombEditor
                     return true;
             return false;
         }
-
-		public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block)
-        {
-			var r = instance.Room;
-			_editor.UndoManager.PushObjectTransformed(instance);
-			instance.Room.RemoveObject(_editor.Level, instance);
-			_editor.ObjectChange(instance, ObjectChangeType.Remove, r);
-			PlaceObjectWithoutUpdate(targetRoom, block, instance);
-		}
 
         public static void SelectFloorBelowObject(PositionBasedObjectInstance instance)
         {
@@ -5150,36 +5342,37 @@ namespace TombEditor
             }
 
             using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) {
-                if(form.ShowDialog(owner) == DialogResult.OK)
+                if (form.ShowDialog(owner) == DialogResult.OK &&
+                    form.SelectedValue != null)
                 {
                     ConcurrentBag<ItemInstance> objects = new ConcurrentBag<ItemInstance>();
                     Parallel.ForEach(_editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
-                        foreach(var item in r.Objects.OfType<ItemInstance>())
+                        foreach (var item in r.Objects.OfType<ItemInstance>())
                         {
                             if (item is StaticInstance)
                             {
-                                if(form.selectedValue is WadStaticId)
-                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.selectedValue))
+                                if (form.SelectedValue is WadStaticId)
+                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
                                         objects.Add(item);
                             }
                             else
                             {
-                                if (form.selectedValue is WadMoveableId)
-                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.selectedValue))
+                                if (form.SelectedValue is WadMoveableId)
+                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
                                         objects.Add(item);
                             }
                         }
                     });
 
                     // Create ItemGroup string
-                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.selectedValue.ToString(_editor.Level.Settings.GameVersion));
+                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.SelectedValue.ToString(_editor.Level.Settings.GameVersion));
                     scriptString += "ItemGroup= 1";
                     foreach (ItemInstance item in objects)
                         scriptString +=  "," + item.ScriptId;
                     Clipboard.SetText(scriptString, TextDataFormat.Text);
                     _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
                 }
-            } ;
+            };
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)
