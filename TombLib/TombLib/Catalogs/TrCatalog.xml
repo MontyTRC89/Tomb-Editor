@@ -2744,7 +2744,7 @@
       <moveable id="60" name="TROOPS_MIP" description="Troops Mip" hidden="true" />
       <moveable id="61" name="KNIGHTS_TEMPLAR" description="Knights Templar" t5m="KNIGHTS_TEMPLAR" essential="false" />
       <moveable id="62" name="KNIGHTS_TEMPLAR_MIP" description="Knights Templar Mip" hidden="true" />
-      <moveable id="63" name="MUTANT" description="Mutant" essential="false" />
+      <moveable id="63" name="MUTANT" description="Mutant" essential="false" t5m="CROCODILE_GOD" />
       <moveable id="64" name="MUTANT_MIP" description="Mutant Mip" hidden="true" />
       <moveable id="65" name="HORSE" description="Horse" t5m="HORSE" essential="false" />
       <moveable id="66" name="HORSE_MIP" description="Horse Mip" hidden="true" />
@@ -2784,11 +2784,11 @@
       <moveable id="100" name="SAS_CAPTAIN_MIP" description="Sas Captain Mip" hidden="true" />
       <moveable id="101" name="SAS_DRAG_BLOKE" description="Sas Drag Bloke" t5m="SAS_DRAG_BLOKE" essential="false" />
       <moveable id="102" name="AHMET" description="Ahmet" t5m="AHMET" essential="false" />
-      <moveable id="103" name="AHMET_MIP" description="Ahmet Mip" hidden="true" />
+      <moveable id="103" name="AHMET_MIP" description="Ahmet Mip" hidden="true" t5m="LOCUSTS" />
       <moveable id="104" name="LARA_DOUBLE" description="Lara Double" t5m="LARA_DOUBLE" essential="false" />
       <moveable id="105" name="LARA_DOUBLE_MIP" description="Lara Double Mip" hidden="true" />
       <moveable id="106" name="SMALL_SCORPION" description="Small Scorpion" t5m="SMALL_SCORPION" essential="false" />
-      <moveable id="107" name="FISH|LOCUST_EMITTER" description="Locust Emitter" t5m="LOCUST_EMITTER" essential="false" />
+      <moveable id="107" name="FISH|LOCUST_EMITTER" description="Locust Emitter" t5m="LOCUSTS_EMITTER" essential="false" />
       <moveable id="108" name="GAME_PIECE1" description="Game Piece1" t5m="GAME_PIECE1" essential="false" />
       <moveable id="109" name="GAME_PIECE2" description="Game Piece2" t5m="GAME_PIECE2" essential="false" />
       <moveable id="110" name="GAME_PIECE3" description="Game Piece3" t5m="GAME_PIECE3" essential="false" />
@@ -6354,7 +6354,6 @@
       <moveable id="1020" name="SMOKE_EMITTER_WHITE" />
       <moveable id="1021" name="SMOKE_EMITTER_BLACK" />
       <moveable id="1022" name="SMOKE_EMITTER" />
-      <moveable id="1023" name="LOCUST_EMITTER" />
       <moveable id="1024" name="EARTHQUAKE" />
       <moveable id="1025" name="BUBBLES" />
       <moveable id="1026" name="WATERFALLMIST" />
