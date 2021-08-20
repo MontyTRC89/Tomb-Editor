@@ -19,7 +19,6 @@ namespace WadTool
             get { return _command; }
             set
             {
-                if (value == _command) return;
                 _command = value;
                 UpdateUI(_command);
             }

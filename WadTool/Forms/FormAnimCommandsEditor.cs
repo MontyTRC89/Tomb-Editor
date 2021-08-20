@@ -202,13 +202,8 @@ namespace WadTool
             if (gridViewCommands.SelectedRows.Count == 0)
                 return;
 
-            foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
-            {
-                int index = row.Index;
-                var cmdCopy = _animCommands[index].Clone();
-                _animCommands.Insert(index+1, cmdCopy);
-            }
-
+            var index = gridViewCommands.SelectedRows[0].Index;
+            _animCommands.Insert(index + 1, _animCommands[index].Clone());
             _editor.Tool.AnimationEditorAnimcommandChanged();
         }
 
