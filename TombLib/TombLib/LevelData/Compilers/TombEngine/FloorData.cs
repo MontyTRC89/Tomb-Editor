@@ -484,7 +484,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
 
-                triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
+                triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0); 
+                
+                // Write bitmask
+                triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
 
                 outFloorData.Add(trigger1);
                 outFloorData.Add(triggerSetup);
