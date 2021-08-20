@@ -858,7 +858,7 @@
             this.tbSearchMeshes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbSearchMeshes.Location = new System.Drawing.Point(0, 3);
             this.tbSearchMeshes.Name = "tbSearchMeshes";
-            this.tbSearchMeshes.Size = new System.Drawing.Size(227, 23);
+            this.tbSearchMeshes.Size = new System.Drawing.Size(233, 23);
             this.tbSearchMeshes.TabIndex = 11;
             this.tbSearchMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchMeshes_KeyDown);
             // 

@@ -336,15 +336,15 @@ namespace WadTool
             {
                 // Populate tree view
 
-                var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
+                var moveablesNode = new DarkTreeNode("Moveables");
                 foreach (var moveable in _wad.Moveables)
                 {
-                    var list = new List<DarkUI.Controls.DarkTreeNode>();
-                    var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
+                    var list = new List<DarkTreeNode>();
+                    var moveableNode = new DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
                     for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
                     {
                         var wadMesh = moveable.Value.Meshes.ElementAt(i);
-                        var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                        var node = new DarkTreeNode(wadMesh.Name);
                         node.Tag = new MeshTreeNode(moveable.Key, i, wadMesh);
                         list.Add(node);
                     }
@@ -353,12 +353,12 @@ namespace WadTool
                 }
                 lstMeshes.Nodes.Add(moveablesNode);
 
-                var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
+                var staticsNode = new DarkTreeNode("Statics");
                 foreach (var @static in _wad.Statics)
                 {
-                    var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
+                    var staticNode = new DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
                     var wadMesh = @static.Value.Mesh;
-                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                    var node = new DarkTreeNode(wadMesh.Name);
                     node.Tag = new MeshTreeNode(@static.Key, 0, wadMesh);
                     staticNode.Nodes.Add(node);
                     staticsNode.Nodes.Add(staticNode);
@@ -834,6 +834,7 @@ namespace WadTool
 
         private void btOk_Click(object sender, EventArgs e)
         {
+            SaveCurrentMesh();
             SelectedMesh = panelMesh.Mesh;
             _tool.ToggleUnsavedChanges();
             _tool.WadChanged(WadArea.Destination);

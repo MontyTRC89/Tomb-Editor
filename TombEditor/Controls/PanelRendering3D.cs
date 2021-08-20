@@ -2015,7 +2015,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
                 _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
                 effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-                effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.TriangleStripWithAdjacency, _flybyPathVertexBuffer.ElementCount);
             }
@@ -2999,7 +2999,7 @@ namespace TombEditor.Controls
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
             skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
             skinnedModelEffect.Parameters["ColoredVertices"].SetValue(false);
 
@@ -3032,12 +3032,11 @@ namespace TombEditor.Controls
             if (moveablesToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
 
             var camPos = Camera.GetPosition();
 
@@ -3093,7 +3092,7 @@ namespace TombEditor.Controls
                                 }
                             }
                             else
-                                skinnedModelEffect.Parameters["Color"].SetValue(Vector3.One);
+                                skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
                         }
 
                         var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
@@ -3137,10 +3136,6 @@ namespace TombEditor.Controls
             
             // Before drawing custom geometry, apply a depth bias for reducing Z fighting
             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-            
-            // If picking for imported geometry is disabled, then draw geometry translucent
-            if (DisablePickingForImportedGeometry)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
 
             var camPos = Camera.GetPosition();
 
@@ -3201,7 +3196,7 @@ namespace TombEditor.Controls
                                 }
                             }
                             else
-                                geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                geometryEffect.Parameters["Color"].SetValue(Vector4.One);
                         }
 
                         foreach (var submesh in mesh.Submeshes)
@@ -3217,7 +3212,13 @@ namespace TombEditor.Controls
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(false);
 
                             geometryEffect.Techniques[0].Passes[0].Apply();
+
                             submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
+
+                            // If picking for imported geometry is disabled, then draw geometry translucent
+                            if (DisablePickingForImportedGeometry)
+                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
+
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
 
@@ -3248,7 +3249,6 @@ namespace TombEditor.Controls
             if (staticsToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
@@ -3296,7 +3296,7 @@ namespace TombEditor.Controls
                                     staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
                             }
                             else
-                                staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
+                                staticMeshEffect.Parameters["Color"].SetValue(Vector4.One);
                         }
 
                         staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
@@ -3808,16 +3808,16 @@ namespace TombEditor.Controls
             return true;
         }
         
-        private Vector3 ConvertColor(Vector3 originalColor)
+        private Vector4 ConvertColor(Vector3 originalColor)
         {
             switch (_editor.Level.Settings.GameVersion)
             {
                 case TRVersion.Game.TR1:
                 case TRVersion.Game.TR2:
-                    return new Vector3(originalColor.GetLuma());
+                    return new Vector4(originalColor.GetLuma());
 
                 case TRVersion.Game.TombEngine:
-                    return originalColor;
+                    return new Vector4(originalColor, 1.0f);
 
                 // All engine versions up to TR5 use 15-bit color as static mesh tint
 
@@ -3826,7 +3826,7 @@ namespace TombEditor.Controls
                     var R = (float)Math.Floor(originalColor.X * 32.0f);
                     var G = (float)Math.Floor(originalColor.Y * 32.0f);
                     var B = (float)Math.Floor(originalColor.Z * 32.0f);
-                    return new Vector3(R / 32.0f, G / 32.0f, B / 32.0f);
+                    return new Vector4(R / 32.0f, G / 32.0f, B / 32.0f, 1.0f);
                 }
             }
         }
