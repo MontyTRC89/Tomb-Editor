@@ -272,7 +272,7 @@ namespace TombLib.LevelData.IO
                             {
                                 foreach (AnimatedTextureFrame frame in set.Frames)
                                 {
-                                    if (levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
+                                    if (frame.Texture != null && levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
                                         using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
                                         {
                                             LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
@@ -382,7 +382,7 @@ namespace TombLib.LevelData.IO
                                             if (texture.Texture is LevelTexture)
                                             {
                                                 var t = (LevelTexture)texture.Texture;
-                                                if (levelSettingIds.LevelTextures.ContainsKey(t))
+                                                if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
                                                     using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
                                                     {
                                                         int textureIndex = levelSettingIds.LevelTextures[t];
@@ -661,7 +661,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.IsUsedForImportedGeometry);
                             chunkIO.Raw.Write((byte)instance.Quality);
                         }
-                    else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
+                    else if (o is PortalInstance && ((PortalInstance)o).AdjoiningRoom != null && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, LEB128.MaximumSize2Byte))
                         {
                             var instance = (PortalInstance)o;
@@ -766,7 +766,7 @@ namespace TombLib.LevelData.IO
                     else if (o is ImportedGeometryInstance)
                     {
                         var instance = (ImportedGeometryInstance)o;
-                        if (levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
+                        if (instance.Model != null && levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
                             {
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));

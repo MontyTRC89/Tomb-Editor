@@ -109,9 +109,9 @@ namespace TombLib.Wad
                 {
                     if (id2 == Wad2Chunks.TextureIndex)
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
-                    if (id2 == Wad2Chunks.TextureName)
+                    else if (id2 == Wad2Chunks.TextureName)
                         name = chunkIO.ReadChunkString(chunkSize2);
-                    if (id2 == Wad2Chunks.TextureData)
+                    else if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
                         return false;
