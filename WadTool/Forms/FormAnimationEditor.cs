@@ -470,10 +470,10 @@ namespace WadTool
                     nudEndFrame.Value = node.WadAnimation.EndFrame;
                     nudNextAnim.Value = node.WadAnimation.NextAnimation;
                     nudNextFrame.Value = node.WadAnimation.NextFrame;
-                    tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
-                    tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
-                    tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
-                    tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
+                    nudStartVertVel.Value = (decimal)node.WadAnimation.StartVelocity;
+                    nudEndVertVel.Value = (decimal)node.WadAnimation.EndVelocity;
+                    nudStartHorVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
+                    nudEndHorVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
                     UpdateStateChange();
@@ -1154,50 +1154,50 @@ namespace WadTool
             // Get actual old value
             switch (control.Name)
             {
-                case "nudNextAnim":
+                case nameof(nudNextAnim):
                     oldValue = _editor.CurrentAnim.WadAnimation.NextAnimation;
                     roundToShort = true;
                     break;
-                case "nudNextFrame":
+                case nameof(nudNextFrame):
                     oldValue = _editor.CurrentAnim.WadAnimation.NextFrame;
                     roundToShort = true;
                     break;
-                case "nudFramerate":
+                case nameof(nudFramerate):
                     oldValue = _editor.CurrentAnim.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
-                case "nudEndFrame":
+                case nameof(nudEndFrame):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndFrame;
                     roundToShort = true;
                     break;
-                case "tbStartVertVel":
+                case nameof(nudStartVertVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.StartVelocity;
                     break;
-                case "tbEndVertVel":
+                case nameof(nudEndVertVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndVelocity;
                     break;
-                case "tbStartHorVel":
+                case nameof(nudStartHorVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.StartLateralVelocity;
                     break;
-                case "tbEndHorVel":
+                case nameof(nudEndHorVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndLateralVelocity;
                     break;
-                case "nudBBoxMinX":
+                case nameof(nudBBoxMinX):
                     oldValue = bb.Minimum.X;
                     break;
-                case "nudBBoxMinY":
+                case nameof(nudBBoxMinY):
                     oldValue = bb.Minimum.Y;
                     break;
-                case "nudBBoxMinZ":
+                case nameof(nudBBoxMinZ):
                     oldValue = bb.Minimum.Z;
                     break;
-                case "nudBBoxMaxX":
+                case nameof(nudBBoxMaxX):
                     oldValue = bb.Maximum.X;
                     break;
-                case "nudBBoxMaxY":
+                case nameof(nudBBoxMaxY):
                     oldValue = bb.Maximum.Y;
                     break;
-                case "nudBBoxMaxZ":
+                case nameof(nudBBoxMaxZ):
                     oldValue = bb.Maximum.Z;
                     break;
             }
@@ -1225,46 +1225,46 @@ namespace WadTool
             // Update actual values
             switch (control.Name)
             {
-                case "nudNextAnim":
+                case nameof(nudNextAnim):
                     _editor.CurrentAnim.WadAnimation.NextAnimation = (ushort)result;
                     break;
-                case "nudNextFrame":
+                case nameof(nudNextFrame):
                     _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)result;
                     break;
-                case "nudFramerate":
+                case nameof(nudFramerate):
                     _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
                     break;
-                case "nudEndFrame":
+                case nameof(nudEndFrame):
                     _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)result;
                     break;
-                case "tbStartVertVel":
+                case nameof(nudStartVertVel):
                     _editor.CurrentAnim.WadAnimation.StartVelocity = result;
                     break;
-                case "tbEndVertVel":
+                case nameof(nudEndVertVel):
                     _editor.CurrentAnim.WadAnimation.EndVelocity = result;
                     break;
-                case "tbStartHorVel":
+                case nameof(nudStartHorVel):
                     _editor.CurrentAnim.WadAnimation.StartLateralVelocity = result;
                     break;
-                case "tbEndHorVel":
+                case nameof(nudEndHorVel):
                     _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
                     break;
-                case "nudBBoxMinX":
+                case nameof(nudBBoxMinX):
                     EditBoundingBox(new Vector3(result, bb.Minimum.Y, bb.Minimum.Z), bb.Maximum);
                     break;
-                case "nudBBoxMinY":
+                case nameof(nudBBoxMinY):
                     EditBoundingBox(new Vector3(bb.Minimum.X, result, bb.Minimum.Z), bb.Maximum);
                     break;
-                case "nudBBoxMinZ":
+                case nameof(nudBBoxMinZ):
                     EditBoundingBox(new Vector3(bb.Minimum.X, bb.Minimum.Y, result), bb.Maximum);
                     break;
-                case "nudBBoxMaxX":
+                case nameof(nudBBoxMaxX):
                     EditBoundingBox(bb.Minimum, new Vector3(result, bb.Maximum.Y, bb.Maximum.Z));
                     break;
-                case "nudBBoxMaxY":
+                case nameof(nudBBoxMaxY):
                     EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, result, bb.Maximum.Z));
                     break;
-                case "nudBBoxMaxZ":
+                case nameof(nudBBoxMaxZ):
                     EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, bb.Maximum.Y, result));
                     break;
             }
@@ -1928,10 +1928,10 @@ namespace WadTool
         private void nudEndFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndFrame);
         private void nudNextAnim_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextAnim);
         private void nudNextFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextFrame);
-        private void tbStartVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbStartVertVel);
-        private void tbEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbEndVertVel);
-        private void tbStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbStartHorVel);
-        private void tbEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbEndHorVel);
+        private void nudStartVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartVertVel);
+        private void nudEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndVertVel);
+        private void nudStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartHorVel);
+        private void nudEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndHorVel);
 
         private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
         private void animParameter_Validated(object sender, EventArgs e) => ValidateAnimationParameter();
