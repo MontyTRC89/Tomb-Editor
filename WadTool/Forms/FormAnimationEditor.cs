@@ -1827,12 +1827,13 @@ namespace WadTool
 
             var files = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".xml").ToList();
 
-            var undoList = new List<AnimationUndoInstance>();
+            var undoList = new List<UndoRedoInstance>();
 
             bool updateSelection = false;
             bool? generateMissingAnims = null;
             int errorCount = 0;
             int importCount = 0;
+
             foreach (var file in files)
             {
                 int number = -1;
@@ -1856,7 +1857,7 @@ namespace WadTool
 
                         if (generateMissingAnims.Value)
                             while (_editor.Animations.Count <= number)
-                                _editor.Animations.Add(new AnimationNode(new WadAnimation(), new Animation(), _editor.Animations.Count));
+                                _editor.Animations.Add(new AnimationNode(new WadAnimation() { Name = "Empty animation " + _editor.Animations.Count }, new Animation(), _editor.Animations.Count));
                         else
                             throw new Exception("Animation index is out of range for animation file " + file);
                     }
@@ -1877,6 +1878,8 @@ namespace WadTool
                     continue;
                 }
             }
+
+            _editor.Tool.UndoManager.Push(undoList);
 
             if (errorCount > 0)
                 popup.ShowWarning(panelRendering, "Successfully imported " + importCount + " animations.\n" +
@@ -1911,6 +1914,7 @@ namespace WadTool
 
             int errorCount = 0;
             int exportCount = 0;
+
             foreach (var i in (all ? _editor.Animations.Select(a => a.Index) : lstAnimations.SelectedIndices))
             {
                 try
