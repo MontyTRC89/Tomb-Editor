@@ -1852,7 +1852,7 @@ namespace WadTool
                     if (_editor.Animations.Count <= number)
                     {
                         if (!generateMissingAnims.HasValue)
-                            generateMissingAnims = DarkMessageBox.Show(this, "Animation batch contains animations with IDs spanning beyond existing animation count.\n" +
+                            generateMissingAnims = DarkMessageBox.Show(this, "Batch contains animations with IDs spanning beyond existing animation count.\n" +
                                 "Fill missing slots with empty animations (Yes) or skip missing slots (No)?", "Missing animation slots detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
 
                         if (generateMissingAnims.Value)
