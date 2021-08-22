@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
@@ -2263,6 +2264,117 @@ namespace WadTool
                 popup.ShowError(panelRendering, "Can't export current animation to XML file");
                 return;
             }
+        }
+
+        private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.Animations.Count == 0)
+            {
+                popup.ShowError(panelRendering, "No animations present. Nothing to export.");
+                return;
+            }
+
+            string path = LevelFileDialog.BrowseFolder(this, null, null, "Specify folder to save animations", null);
+
+            if (path == null)
+                return;
+
+            int errorCount = 0;
+            int exportCount = 0;
+            foreach (var i in lstAnimations.SelectedIndices)
+            {
+                try
+                {
+                    var anim = _editor.Animations[i];
+                    var fileName = Path.Combine(path, anim.Index.ToString("D4") + "_" + anim.WadAnimation.Name + ".xml");
+
+                    if (!WadActions.ExportAnimationToXml(_editor.Moveable, anim.WadAnimation, fileName))
+                        throw new Exception("There was an error batch-exporting animation " + anim.WadAnimation.Name + ".");
+
+                    exportCount++;
+                }
+                catch
+                {
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            if (errorCount > 0)
+                popup.ShowWarning(panelRendering, "Successfully exported " + exportCount + " animations.\n" +
+                                 errorCount + " animations were ignored. Check log file for details.");
+            else
+                popup.ShowInfo(panelRendering, "Successfully exported " + exportCount + " animations.");
+        }
+
+        private void importAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = LevelFileDialog.BrowseFolder(this, null, null, "Specify folder for batch import", null);
+
+            if (path == null)
+                return;
+
+            var files = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".xml" && f.TakeWhile(ch => char.IsDigit(ch)).Count() >= 1).ToList();
+
+            var undoList = new List<AnimationUndoInstance>();
+
+            bool? generateMissingAnims = null;
+            int errorCount  = 0;
+            int importCount = 0;
+            foreach (var file in files)
+            {
+                try
+                {
+                    var animation = WadActions.ImportAnimationFromXml(_editor.Tool, file);
+                    int number = -1;
+                    int.TryParse(Regex.Match(file, @"\d+").Value, out number);
+
+                    if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
+                        throw new Exception("Incorrect amount of bones in animation imported from file " + file);
+
+                    if (number == -1)
+                        throw new Exception("Incorrect animation index in animation imported from file " + file);
+
+                    if (_editor.Animations.Count <= number)
+                    {
+                        if (!generateMissingAnims.HasValue)
+                            generateMissingAnims = DarkMessageBox.Show(this, "Animation batch contains animations with IDs spanning beyond existing animation count.\n" +
+                                "Fill missing slots with empty animations (Yes) or skip missing slots (No)?", "Missing animation slots detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+
+                        if (generateMissingAnims.Value)
+                            while (_editor.Animations.Count <= number)
+                                _editor.Animations.Add(new AnimationNode(new WadAnimation(), new Animation(), _editor.Animations.Count));
+                        else
+                            throw new Exception("Animation index is out of range for animation file " + file);
+                    }
+
+                    undoList.Add(new AnimationUndoInstance(_editor, _editor.Animations[number]));
+
+                    _editor.Animations[number].WadAnimation = animation;
+                    _editor.Animations[number].DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
+
+                    if (number == _editor.CurrentAnim.Index)
+                    {
+                        UpdateAnimLabel(_editor.CurrentAnim);
+                        UpdateAnimListSelection(_editor.CurrentAnim.Index);
+                        timeline.Value = 0;
+                        panelRendering.Invalidate();
+                    }
+
+                    importCount++;
+                }
+                catch
+                {
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            if (errorCount > 0)
+                popup.ShowWarning(panelRendering, "Successfully imported " + importCount + " animations.\n" +
+                                 errorCount + " animations were ignored. Check log file for details.");
+            else
+                popup.ShowInfo(panelRendering, "Successfully imported " + importCount + " animations.");
         }
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
