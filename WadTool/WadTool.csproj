@@ -580,6 +580,10 @@
     <None Include="Resources\icons_general\general_axis-16.png" />
     <None Include="Resources\icons_general\general_Rotate.png" />
     <None Include="Resources\icons_general\general_search-texture-16.png" />
+    <None Include="Resources\icons_general\general_paste-new-16.png" />
+    <None Include="Resources\icons_general\general_paste-16.png" />
+    <None Include="Resources\icons_general\general_clipboard-16.png" />
+    <None Include="Resources\icons_general\general_box-16.png" />
     <Content Include="WT.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
