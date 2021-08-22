@@ -1270,7 +1270,7 @@ namespace WadTool
             this.butDeleteAnimation.Name = "butDeleteAnimation";
             this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
             this.butDeleteAnimation.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete animation");
+            this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete selected animations");
             this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
             // 
             // darkButton1
