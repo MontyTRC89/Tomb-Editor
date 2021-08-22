@@ -2,6 +2,7 @@
 using DarkUI.Controls;
 using DarkUI.Extensions;
 using DarkUI.Forms;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -75,6 +76,9 @@ namespace WadTool
 
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
+
+        // Logger
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
@@ -1901,8 +1905,9 @@ namespace WadTool
 
                     importCount++;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.Error(ex.Message);
                     errorCount++;
                     continue;
                 }
@@ -1911,7 +1916,7 @@ namespace WadTool
             _editor.Tool.UndoManager.Push(undoList);
 
             if (errorCount > 0)
-                popup.ShowWarning(panelRendering, "Successfully imported " + importCount + " animations.\n" +
+                popup.ShowWarning(panelRendering, (importCount == 0 ? "No animations were imported.\n" : "Successfully imported " + importCount + " animations.\n") +
                                  errorCount + " animations were ignored. Check log file for details.");
             else
                 popup.ShowInfo(panelRendering, "Successfully imported " + importCount + " animations.");
@@ -1955,8 +1960,9 @@ namespace WadTool
 
                     exportCount++;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.Error(ex.Message);
                     errorCount++;
                     continue;
                 }
