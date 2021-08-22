@@ -729,6 +729,24 @@ namespace WadTool
             Saved = false;
         }
 
+        private void DeleteSelectedAnimations()
+        {
+            if (lstAnimations.SelectedItems.Count <= 0)
+                return;
+
+            if (DarkMessageBox.Show(this, "Do you really want to delete all selected animations?",
+                                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            var listToDelete = lstAnimations.SelectedItems.Select(i => (AnimationNode)i.Tag).ToList();
+
+            for (int i = 0; i < listToDelete.Count; i++)
+            {
+                var anim = listToDelete[i];
+                DeleteAnimation(anim, (i == listToDelete.Count - 1));
+            }
+        }
+
         private void DeleteAnimation()
         {
             if (_editor.CurrentAnim == null) return;
@@ -737,7 +755,15 @@ namespace WadTool
                                     "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            int currentIndex = _editor.Animations.IndexOf(_editor.CurrentAnim);
+            DeleteAnimation(_editor.CurrentAnim);
+        }
+
+        private void DeleteAnimation(AnimationNode animToDelete, bool updateUI = true)
+        {
+            if (animToDelete == null || !_editor.Animations.Contains(animToDelete))
+                return;
+
+            int currentIndex = _editor.Animations.IndexOf(animToDelete);
 
             // Update all references
             for (int i = 0; i < _editor.Animations.Count; i++)
@@ -764,14 +790,17 @@ namespace WadTool
             }
 
             // Remove the animation
-            _editor.Animations.Remove(_editor.CurrentAnim);
+            _editor.Animations.Remove(animToDelete);
 
-            // Update GUI
-            RebuildAnimationsList();
-            panelRendering.Invalidate();
-            timeline.Invalidate();
+            if (updateUI)
+            {
+                // Update GUI
+                RebuildAnimationsList();
+                panelRendering.Invalidate();
+                timeline.Invalidate();
 
-            Saved = false;
+                Saved = false;
+            }
         }
 
         private void AddNewFrame(int index, bool undo)
@@ -1915,11 +1944,10 @@ namespace WadTool
             int errorCount = 0;
             int exportCount = 0;
 
-            foreach (var i in (all ? _editor.Animations.Select(a => a.Index) : lstAnimations.SelectedIndices))
+            foreach (var anim in (all ? _editor.Animations : lstAnimations.SelectedItems.Select(a => (AnimationNode)a.Tag)))
             {
                 try
                 {
-                    var anim = _editor.Animations[i];
                     var fileName = Path.Combine(path, anim.Index.ToString("D4") + "_" + anim.WadAnimation.Name + ".xml");
 
                     if (!WadActions.ExportAnimationToXml(_editor.Moveable, anim.WadAnimation, fileName))
@@ -2033,7 +2061,7 @@ namespace WadTool
         // General controls one-liners
 
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
-        private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
+        private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteSelectedAnimations();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
         private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
