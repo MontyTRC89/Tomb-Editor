@@ -1626,10 +1626,17 @@ namespace WadTool
                 existingWindow.Focus();
         }
 
-        private void FixAnimations(bool all)
+        private void FixAnimations(int mode)
         {
-            List<AnimationNode> anims = all ? _editor.Animations : new List<AnimationNode>() { _editor.CurrentAnim };
-
+            var anims = new List<AnimationNode>();
+            
+            switch (mode)
+            {
+                case 0: anims.Add(_editor.CurrentAnim); break;
+                case 1: anims.AddRange(lstAnimations.SelectedItems.Select(i => (AnimationNode)i.Tag)); break;
+                case 2: anims.AddRange(_editor.Animations); break;
+            }
+            
             using (var form = new FormAnimationFixer(_editor, anims))
             {
                 var result = form.ShowDialog();
@@ -1639,6 +1646,7 @@ namespace WadTool
                 {
                     var startMessage = (form.ChangedAnimations.Length < 50) ? "Animations (" + form.ChangedAnimations + ")" : "Multiple animations";
                     popup.ShowWarning(panelRendering, startMessage + " were fixed.\nPlease save your wad under new name and thoroughly test it.");
+                    SelectAnimation(_editor.CurrentAnim);
                 }
             }
         }
@@ -2027,8 +2035,9 @@ namespace WadTool
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
         private void mirrorAnimationToolStripMenuItem_Click(object sender, EventArgs e) => MirrorAnimation();
-        private void fixCurrentAnimationToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(false);
-        private void fixAllAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(true);
+        private void currentAnimationToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(0);
+        private void selectedAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(1);
+        private void allAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(2);
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, true);
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();

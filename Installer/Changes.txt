@@ -29,6 +29,7 @@ WadTool:
     - Individually edit vertex effects (glow and movement) and convert them from legacy vertex shades workflow.
 	- Edit and automatically calculate sphere.
  * Batch XML animation export and import.
+ * Multiple selection in animation editor list (Ctrl+click) for batch operations (fix, delete or import/export).
  * New function in animation fixer to restore original animation names for current game version.
  * Export meshes with single texture without shuffling texture pieces.
  * Animate main window item preview.

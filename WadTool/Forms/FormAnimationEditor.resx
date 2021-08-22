@@ -308,11 +308,11 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEtSURBVDhPzZK7LgVhFIUnjjiipFEplLyFkngMQkWDRsQr
-        nGoaCfECCi0dCbWpaKlMGHMxMlffmmyXkxiZ8qxk59971tq3/x9nNFDX9WRZlqdJkrwVRXFbVdWiUd1A
+        nGYqCfECCi0dCbWpaKlMGHMxMlffmmyXkxiZ8qxk59971tq3/x9nNFDX9WRZlqdJkrwVRXFbVdWiUd1A
         wm6api+cGxS4UhGjuoHuR9ilfIpsMlHQEL/A9xk0A8/zCs5zNPNGNeSq67pVlmVPWgPBsVFabxx+S0Xz
         PL/HXzZqGBD7URTFQRC842+T0ONcYp27MAwT4kPivsn/BqIpCX3f/1BHrLZx50zyPxB+FwDPdFwjnsBm
         TdIOxAcaVYavnXvYGBOcxXEc8W1PxUw+DMivS3xEpNFPjGouEVvXRFziA9oVo35AFz3jhXwEbc84jab1
-        GXf4kV6VzK1fYzdGdQOJfY2tzkomXjBq5OE4n+j3QMUfZeOUAAAAAElFTkSuQmCC
+        GXf4kV6VzK1fYzdGdQOJfY2tzkomXjBq5OE4n9xAQL+bZ1cZAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="butTbCopyAnimation.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -377,11 +377,11 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEtSURBVDhPzZK7LgVhFIUnjjiipFEplLyFkngMQkWDRsQr
-        nGoaCfECCi0dCbWpaKlMGHMxMlffmmyXkxiZ8qxk59971tq3/x9nNFDX9WRZlqdJkrwVRXFbVdWiUd1A
+        nGYqCfECCi0dCbWpaKlMGHMxMlffmmyXkxiZ8qxk59971tq3/x9nNFDX9WRZlqdJkrwVRXFbVdWiUd1A
         wm6api+cGxS4UhGjuoHuR9ilfIpsMlHQEL/A9xk0A8/zCs5zNPNGNeSq67pVlmVPWgPBsVFabxx+S0Xz
         PL/HXzZqGBD7URTFQRC842+T0ONcYp27MAwT4kPivsn/BqIpCX3f/1BHrLZx50zyPxB+FwDPdFwjnsBm
         TdIOxAcaVYavnXvYGBOcxXEc8W1PxUw+DMivS3xEpNFPjGouEVvXRFziA9oVo35AFz3jhXwEbc84jab1
-        GXf4kV6VzK1fYzdGdQOJfY2tzkomXjBq5OE4n+j3QMUfZeOUAAAAAElFTkSuQmCC
+        GXf4kV6VzK1fYzdGdQOJfY2tzkomXjBq5OE4n9xAQL+bZ1cZAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="butTbCopyFrame.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -564,7 +564,7 @@
     <value>385, 17</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>95</value>
+    <value>25</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

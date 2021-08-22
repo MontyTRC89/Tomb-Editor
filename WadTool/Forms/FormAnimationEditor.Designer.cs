@@ -38,14 +38,16 @@ namespace WadTool
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.batchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToKeyframesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mirrorAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reverseAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.fixCurrentAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixAllAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -196,10 +198,10 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.batchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectedAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -342,13 +344,12 @@ namespace WadTool
             this.mirrorAnimationToolStripMenuItem,
             this.reverseAnimationToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.fixCurrentAnimationToolStripMenuItem,
-            this.fixAllAnimationsToolStripMenuItem,
+            this.fixToolStripMenuItem,
             this.findReplaceAnimcommandsToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
-            this.animationToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
-            this.animationToolStripMenuItem.Text = "Animation";
+            this.animationToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.animationToolStripMenuItem.Text = "Animations";
             // 
             // addNewToolStripMenuItem
             // 
@@ -446,6 +447,45 @@ namespace WadTool
             this.exportToolStripMenuItem.Text = "Export...";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
+            // batchToolStripMenuItem
+            // 
+            this.batchToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.batchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importToolStripMenuItem1,
+            this.exportSelectedToolStripMenuItem,
+            this.exportAllToolStripMenuItem});
+            this.batchToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.batchToolStripMenuItem.Name = "batchToolStripMenuItem";
+            this.batchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.batchToolStripMenuItem.Text = "Batch";
+            // 
+            // importToolStripMenuItem1
+            // 
+            this.importToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importToolStripMenuItem1.Name = "importToolStripMenuItem1";
+            this.importToolStripMenuItem1.Size = new System.Drawing.Size(142, 22);
+            this.importToolStripMenuItem1.Text = "Import...";
+            this.importToolStripMenuItem1.Click += new System.EventHandler(this.importToolStripMenuItem1_Click);
+            // 
+            // exportSelectedToolStripMenuItem
+            // 
+            this.exportSelectedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exportSelectedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
+            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.exportSelectedToolStripMenuItem.Text = "Export selected...";
+            this.exportSelectedToolStripMenuItem.Click += new System.EventHandler(this.exportSelectedToolStripMenuItem_Click);
+            // 
+            // exportAllToolStripMenuItem
+            // 
+            this.exportAllToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exportAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
+            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.exportAllToolStripMenuItem.Text = "Export all...";
+            this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click_1);
+            // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -499,24 +539,6 @@ namespace WadTool
             this.toolStripMenuItem2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(212, 6);
-            // 
-            // fixCurrentAnimationToolStripMenuItem
-            // 
-            this.fixCurrentAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.fixCurrentAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.fixCurrentAnimationToolStripMenuItem.Name = "fixCurrentAnimationToolStripMenuItem";
-            this.fixCurrentAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.fixCurrentAnimationToolStripMenuItem.Text = "Fix current animation...";
-            this.fixCurrentAnimationToolStripMenuItem.Click += new System.EventHandler(this.fixCurrentAnimationToolStripMenuItem_Click);
-            // 
-            // fixAllAnimationsToolStripMenuItem
-            // 
-            this.fixAllAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.fixAllAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.fixAllAnimationsToolStripMenuItem.Name = "fixAllAnimationsToolStripMenuItem";
-            this.fixAllAnimationsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.fixAllAnimationsToolStripMenuItem.Text = "Fix all animations...";
-            this.fixAllAnimationsToolStripMenuItem.Click += new System.EventHandler(this.fixAllAnimationsToolStripMenuItem_Click);
             // 
             // findReplaceAnimcommandsToolStripMenuItem
             // 
@@ -2559,44 +2581,44 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
-            // batchToolStripMenuItem
+            // fixToolStripMenuItem
             // 
-            this.batchToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.batchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importToolStripMenuItem1,
-            this.exportSelectedToolStripMenuItem,
-            this.exportAllToolStripMenuItem});
-            this.batchToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.batchToolStripMenuItem.Name = "batchToolStripMenuItem";
-            this.batchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.batchToolStripMenuItem.Text = "Batch";
+            this.fixToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.fixToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.currentAnimationToolStripMenuItem,
+            this.selectedAnimationsToolStripMenuItem,
+            this.allAnimationsToolStripMenuItem});
+            this.fixToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.fixToolStripMenuItem.Name = "fixToolStripMenuItem";
+            this.fixToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.fixToolStripMenuItem.Text = "Fix";
             // 
-            // importToolStripMenuItem1
+            // currentAnimationToolStripMenuItem
             // 
-            this.importToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importToolStripMenuItem1.Name = "importToolStripMenuItem1";
-            this.importToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.importToolStripMenuItem1.Text = "Import...";
-            this.importToolStripMenuItem1.Click += new System.EventHandler(this.importToolStripMenuItem1_Click);
+            this.currentAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.currentAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.currentAnimationToolStripMenuItem.Name = "currentAnimationToolStripMenuItem";
+            this.currentAnimationToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.currentAnimationToolStripMenuItem.Text = "Current animation...";
+            this.currentAnimationToolStripMenuItem.Click += new System.EventHandler(this.currentAnimationToolStripMenuItem_Click);
             // 
-            // exportSelectedToolStripMenuItem
+            // selectedAnimationsToolStripMenuItem
             // 
-            this.exportSelectedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportSelectedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
-            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportSelectedToolStripMenuItem.Text = "Export selected...";
-            this.exportSelectedToolStripMenuItem.Click += new System.EventHandler(this.exportSelectedToolStripMenuItem_Click);
+            this.selectedAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.selectedAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.selectedAnimationsToolStripMenuItem.Name = "selectedAnimationsToolStripMenuItem";
+            this.selectedAnimationsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.selectedAnimationsToolStripMenuItem.Text = "Selected animations...";
+            this.selectedAnimationsToolStripMenuItem.Click += new System.EventHandler(this.selectedAnimationsToolStripMenuItem_Click);
             // 
-            // exportAllToolStripMenuItem
+            // allAnimationsToolStripMenuItem
             // 
-            this.exportAllToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
-            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportAllToolStripMenuItem.Text = "Export all...";
-            this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click_1);
+            this.allAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.allAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.allAnimationsToolStripMenuItem.Name = "allAnimationsToolStripMenuItem";
+            this.allAnimationsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.allAnimationsToolStripMenuItem.Text = "All animations...";
+            this.allAnimationsToolStripMenuItem.Click += new System.EventHandler(this.allAnimationsToolStripMenuItem_Click);
             // 
             // FormAnimationEditor
             // 
@@ -2842,8 +2864,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem restoreGridHeightToolStripMenuItem;
         private DarkUI.Controls.DarkNumericUpDown nudEndFrame;
         private DarkUI.Controls.DarkLabel darkLabel2;
-        private System.Windows.Forms.ToolStripMenuItem fixCurrentAnimationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fixAllAnimationsToolStripMenuItem;
         private DarkUI.Controls.DarkNumericUpDown nudEndHorVel;
         private DarkUI.Controls.DarkNumericUpDown nudStartHorVel;
         private DarkUI.Controls.DarkNumericUpDown nudEndVertVel;
@@ -2852,5 +2872,9 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem currentAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectedAnimationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allAnimationsToolStripMenuItem;
     }
 }
