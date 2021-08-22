@@ -219,6 +219,11 @@ namespace TombLib.Wad
                             attr.Glow = LEB128.ReadInt(chunkIO.Raw);
                             attr.Move = LEB128.ReadInt(chunkIO.Raw);
                             mesh.VertexAttributes.Add(attr);
+
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
+                            {
+                                return false;
+                            });
                         }
                         else
                             return false;
