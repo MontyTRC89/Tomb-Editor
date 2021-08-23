@@ -1866,7 +1866,7 @@ namespace WadTool
             if (path == null)
                 return;
 
-            var files = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".xml").ToList();
+            var files = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".anim").ToList();
 
             var undoList = new List<UndoRedoInstance>();
 
@@ -1961,7 +1961,7 @@ namespace WadTool
             {
                 try
                 {
-                    var fileName = Path.Combine(path, anim.Index.ToString("D4") + "_" + anim.WadAnimation.Name + ".xml");
+                    var fileName = Path.Combine(path, anim.Index.ToString("D4") + "_" + anim.WadAnimation.Name + ".anim");
 
                     if (!WadActions.ExportAnimationToXml(_editor.Moveable, anim.WadAnimation, fileName))
                         throw new Exception("There was an error batch-exporting animation " + anim.WadAnimation.Name + ".");
