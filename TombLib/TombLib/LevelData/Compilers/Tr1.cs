@@ -248,10 +248,6 @@ namespace TombLib.LevelData.Compilers
                 const ushort numDemo = 0;
                 writer.Write(numDemo);
 
-                // Dummy demodata
-                const ushort numDemo = 0;
-                writer.Write(numDemo);
-
                 // Write sound meta data
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);
