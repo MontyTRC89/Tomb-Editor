@@ -109,6 +109,16 @@ namespace TombEditor.ToolWindows
                 panelTextureMap.Invalidate();
             }
 
+            // Activate default control
+            if (obj is Editor.DefaultControlActivationEvent)
+            {
+                if (DockPanel != null && ((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
+                {
+                    MakeActive();
+                    comboCurrentTexture.Search();
+                }
+            }
+
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {

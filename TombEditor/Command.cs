@@ -2064,6 +2064,26 @@ namespace TombEditor
                 EditorActions.SelectObjectsInArea(args.Window, args.Editor.SelectedSectors);
             });
 
+            AddCommand("InPlaceSearchRooms", "Room in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.RoomOptions));
+            });
+
+            AddCommand("InPlaceSearchItems", "Item in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ItemBrowser));
+            });
+
+            AddCommand("InPlaceSearchTextures", "Texture in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.TexturePanel));
+            });
+
+            AddCommand("InPlaceSearchImportedGeometry", "Imported geometry in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ImportedGeometryBrowser));
+            });
+
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 
             {
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",

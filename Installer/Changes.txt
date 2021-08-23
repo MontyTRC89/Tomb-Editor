@@ -7,6 +7,7 @@ Tomb Editor:
 	- Bulk rotate individually or around root object by holding Alt key.
 	- Bulk delete and copy-paste.
 	- Batch triggering in dxtre3d style, including key/switch trigger type autodetection.
+ * Hotkeys for quick in-place search for rooms (Shift+F1), items (Shift+F2) and imported geometry (Shift+F3).
  * An option to toggle bilinear filter on or off (right-click and customize toolbar to see the button).
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.

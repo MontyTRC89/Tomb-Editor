@@ -762,6 +762,16 @@ namespace TombEditor
             RaiseEvent(new EditorFocusedEvent());
         }
 
+        // Default control engage event
+        public class DefaultControlActivationEvent : IEditorEvent
+        {
+            public string ContainerName { get; internal set; }
+        }
+        public void ActivateDefaultControl(string containerName)
+        {
+            RaiseEvent(new DefaultControlActivationEvent() { ContainerName = containerName });
+        }
+
         // Undo-redo manager
         public EditorUndoManager UndoManager { get; private set; }
 

@@ -11,78 +11,6 @@ namespace TombEditor.ToolWindows
 {
     public partial class RoomOptions : DarkToolWindow
     {
-        private static readonly List<string> _NGRoomTypes = new List<string>()
-        {
-            "Rain 1",
-            "Rain 2",
-            "Rain 3",
-            "Rain 4",
-            "Snow 1",
-            "Snow 2",
-            "Snow 3",
-            "Snow 4"
-        };
-
-        private static readonly string[] _reverberationTypes = new string[]
-        {
-            "None",
-            "Small",
-            "Medium",
-            "Large",
-            "Pipe",
-        };
-
-        private static readonly string[] _extraReverberationTypes = new string[]
-        {
-            "None",
-            "Default",
-            "Generic",
-            "Padded Cell",
-            "Room",
-            "Bathroom",
-            "Living Room",
-            "Stone Room",
-            "Auditorium",
-            "Concert Hall",
-            "Cave",
-            "Arena",
-            "Hangar",
-            "Carpeted Hallway",
-            "Hallway",
-            "Stone Corridor",
-            "Alley",
-            "Forest",
-            "City",
-            "Mountains",
-            "Quarry",
-            "Plain",
-            "Parking Lot",
-            "Sewer Pipe",
-            "Underwater",
-            "Small Room",
-            "Medium Room",
-            "Large Room",
-            "Medium Hall",
-            "Large Hall",
-            "Plate",
-            "Custom 1",
-            "Custom 2",
-            "Custom 3",
-            "Custom 4",
-            "Custom 5",
-            "Custom 6",
-            "Custom 7",
-            "Custom 8",
-            "Custom 9",
-            "Custom 10",
-            "Custom 11",
-            "Custom 12",
-            "Custom 13",
-            "Custom 14",
-            "Custom 15",
-            "Custom 16"
-        };
-
         private readonly Editor _editor;
 
         public RoomOptions()
@@ -127,7 +55,7 @@ namespace TombEditor.ToolWindows
                 cbNoLensflare.Enabled = isTR4or5;
                 comboReverberation.Enabled = isTR345;
                 comboReverberation.SelectedIndexChanged -= comboReverberation_SelectedIndexChanged; // Prevent SelectedIndexChanged event from DataSource assignment in next line
-                comboReverberation.DataSource = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? _extraReverberationTypes : _reverberationTypes;
+                comboReverberation.DataSource = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? StringEnums.ExtraReverberationTypes : StringEnums.ReverberationTypes;
                 comboReverberation.SelectedIndexChanged += comboReverberation_SelectedIndexChanged;
                 comboReverberation.SelectedIndex = _editor.SelectedRoom.Properties.Reverberation < comboReverberation.Items.Count ? _editor.SelectedRoom.Properties.Reverberation : -1;
                 comboReverberation.DropDownWidth = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? 121 : 71;
@@ -208,6 +136,16 @@ namespace TombEditor.ToolWindows
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
             }
 
+            // Activate default control
+            if (obj is Editor.DefaultControlActivationEvent)
+            {
+                if (DockPanel != null && ((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
+                {
+                    MakeActive();
+                    comboRoom.Search();
+                }
+            }
+
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {
@@ -229,7 +167,7 @@ namespace TombEditor.ToolWindows
                 comboRoomType.Items.Add("Quicksand");
 
             if (_editor.Level.IsNG)
-                _NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
+                StringEnums.NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
 
             ReadRoomType();
 
