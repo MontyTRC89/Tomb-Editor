@@ -19,7 +19,7 @@ namespace WadTool.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -296,16 +296,6 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap door_opened_16 {
             get {
                 object obj = ResourceManager.GetObject("door_opened-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap earth_element_16 {
-            get {
-                object obj = ResourceManager.GetObject("earth_element-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -813,36 +803,6 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap small_icons_16 {
-            get {
-                object obj = ResourceManager.GetObject("small_icons-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap small_icons_161 {
-            get {
-                object obj = ResourceManager.GetObject("small_icons-161", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap software_installer_16 {
-            get {
-                object obj = ResourceManager.GetObject("software_installer-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap split_16 {
             get {
                 object obj = ResourceManager.GetObject("split-16", resourceCulture);
@@ -856,16 +816,6 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap state_changes_16 {
             get {
                 object obj = ResourceManager.GetObject("state-changes-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap stones_16 {
-            get {
-                object obj = ResourceManager.GetObject("stones-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1106,16 +1056,6 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap trash_16 {
             get {
                 object obj = ResourceManager.GetObject("trash-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap trash_161 {
-            get {
-                object obj = ResourceManager.GetObject("trash-161", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

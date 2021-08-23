@@ -694,36 +694,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\Misc\Palette.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons_toolbox\toolbox_GridPaint2x2-16.png" />
-    <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
-    <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
-    <None Include="Resources\icons_general\general_filter-16.png" />
-    <None Include="Resources\icons_objects\objects_geometry-override-16.png" />
-    <None Include="Resources\icons_actions\actions_back-16.png" />
-    <None Include="Resources\icons_general\general_airplane-16.png" />
-    <None Include="Resources\icons_general\general_search-and-replace-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_MinecartLeft-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_MinecartRight_neg-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_MinecartRight-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_MinecartLeft_neg-16.png" />
-    <None Include="Resources\icons_objects\objects_LightPoint-161.png" />
-    <None Include="Resources\icons_objects\objects_volume-box-16.png" />
-    <None Include="Resources\icons_objects\objects_volume-sphere-16.png" />
-    <None Include="Resources\icons_objects\objects_volume-prism-16.png" />
-    <None Include="Resources\icons_actions\actions_StaticTint-16.png" />
-    <None Include="Resources\icons_actions\actions_HideHiddenRooms-16.png" />
-    <None Include="Resources\icons_actions\actions_AlphaTest-16.png" />
-    <None Include="Resources\icons_actions\actions_play_fast-16.png" />
-    <None Include="Resources\icons_objects\objects_Sprite-16.png" />
-    <None Include="Resources\icons_general\general_animcommand-16.png" />
-    <None Include="Resources\icons_objects\objects_Memo-16.png" />
-    <None Include="Resources\icons_actions\actions_DrawUntexturedLights-161.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
@@ -756,7 +729,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons_general\general_blur-16.png" />
     <Content Include="TE.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
