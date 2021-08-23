@@ -46,7 +46,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Deactivate += new System.EventHandler(this.FormPopUpSearch_Deactivate);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormPopUpSearch_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

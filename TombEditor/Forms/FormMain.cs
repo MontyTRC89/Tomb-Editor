@@ -766,10 +766,5 @@ namespace TombEditor.Forms
                     break;
             }
         }
-
-        private void addBoxVolumeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -178,8 +178,9 @@ namespace TombLib.Forms
                 Close();
         }
 
-        private void FormPopUpSearch_Deactivate(object sender, EventArgs e)
+        protected override void OnDeactivate(EventArgs e)
         {
+            base.OnDeactivate(e);
             Close();
         }
 
