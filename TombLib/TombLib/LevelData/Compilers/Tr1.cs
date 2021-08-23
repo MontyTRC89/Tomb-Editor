@@ -222,9 +222,34 @@ namespace TombLib.LevelData.Compilers
                 foreach (var c in palette)
                     c.write(writer);
 
-                const ushort numCinematicFrames = 0;
+                // Dummy cinematic frames
+                if (_level.Settings.WriteDummyCinematicFrames)
+                {
+                    ushort numCine = 2;
+                    writer.Write(numCine);
+                    for (var i = 0; i < numCine; i++)
+                    {
+                        var lara = _items.First(it => it.ObjectID == 0);
+                        var roomPos = _sortedRooms[lara.Room].Position;
+                        writer.Write((short)0);
+                        writer.Write((short)0);
+                        writer.Write((short)0);
+                        writer.Write((ushort)(roomPos.X - Level.WorldUnit * 1.5f));
+                        writer.Write((ushort)(roomPos.Y - Level.WorldUnit * 1.5f));
+                        writer.Write((ushort)(roomPos.Z - Level.WorldUnit * 1.5f));
+                        writer.Write((ushort)8736);
+                        writer.Write((ushort)0);
+                    }
+                }
+                else
+                    writer.Write((ushort)0);
+
+                // Dummy demodata
                 const ushort numDemo = 0;
-                writer.Write(numCinematicFrames);
+                writer.Write(numDemo);
+
+                // Dummy demodata
+                const ushort numDemo = 0;
                 writer.Write(numDemo);
 
                 // Write sound meta data
