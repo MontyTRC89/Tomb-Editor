@@ -1214,7 +1214,7 @@ namespace TombEditor
 
                 int count = 0;
 
-                foreach (var obj in args.Editor.Level.GetAllObjects().Where(o => o is PositionAndScriptBasedObjectInstance))
+                foreach (PositionAndScriptBasedObjectInstance obj in args.Editor.Level.GetAllObjects().Where(o => o is PositionAndScriptBasedObjectInstance))
                     if (string.IsNullOrEmpty(obj.LuaName))
                     {
                         obj.AllocateNewLuaName();
