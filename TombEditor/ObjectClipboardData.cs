@@ -59,7 +59,7 @@ namespace TombEditor
                 obj.CopyDependentLevelSettings(
                     new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
 
-                // A little workaround to detect script id collisions already
+                // A little workaround to detect collisions
 
                 var testRoom = editor.SelectedRoom;
 
@@ -83,6 +83,14 @@ namespace TombEditor
                     if (!luaObj.TrySetLuaName(luaObj.LuaName, null))
                         luaObj.AllocateNewLuaName();
                     testRoom.RemoveObject(editor.Level, obj);
+                }
+
+                if (obj is FlybyCameraInstance)
+                {
+                    var flyby = obj as FlybyCameraInstance;
+                    var existingItems = editor.Level.GetAllObjects().OfType<FlybyCameraInstance>().Where(f => f.Sequence == flyby.Sequence).ToList();
+                    if (existingItems.Count > 0 && existingItems.Any(f => f.Number == flyby.Number))
+                        flyby.Number = (ushort)(existingItems.Max(f => f.Number) + 1);
                 }
 
                 return obj;
