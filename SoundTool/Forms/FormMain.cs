@@ -73,7 +73,9 @@ namespace SoundTool
 
         private void CreateNewArchive()
         {
-            CheckForSavedChanges();
+            if (CheckForSavedChanges() == null)
+                return;
+
             dgvSoundInfos.Rows.Clear();
             soundInfoEditor.SoundInfo = null;
             _currentArchive = null;
@@ -82,7 +84,8 @@ namespace SoundTool
 
         private bool OpenArchive(string filename = null)
         {
-            CheckForSavedChanges();
+            if (CheckForSavedChanges() == null)
+                return false;
 
             if (filename == null)
                 filename = LevelFileDialog.BrowseFile(this, null, _configuration.SoundTool_LastCatalogPath, "Select archive to open",
@@ -262,18 +265,23 @@ namespace SoundTool
                 SelectSoundInfo(dgvSoundInfos.SelectedRows[0].Index);
         }
 
-        private bool CheckForSavedChanges()
+        private bool? CheckForSavedChanges()
         {
             if (!_saved)
             {
-                if (DarkMessageBox.Show(this, "Save changes to already opened file?",
-                                       "Confirm unsaved changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                switch (DarkMessageBox.Show(this, "Save changes to already opened file?",
+                         "Confirm unsaved changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                 {
-                    SaveArchive(_currentArchive);
-                    return true;
+                    case DialogResult.Yes:
+                        SaveArchive(_currentArchive);
+                        return true;
+
+                    case DialogResult.No:
+                        return false;
+
+                    case DialogResult.Cancel:
+                        return null;
                 }
-                else
-                    return false;
             }
             return true;
         }
@@ -521,7 +529,12 @@ namespace SoundTool
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            CheckForSavedChanges();
+            if (CheckForSavedChanges() == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             Configuration.SaveWindowProperties(this, _configuration);
             _configuration.SaveTry();
             WadSoundPlayer.StopSample();
