@@ -3814,7 +3814,7 @@ namespace TombEditor.Controls
             {
                 case TRVersion.Game.TR1:
                 case TRVersion.Game.TR2:
-                    return new Vector4(originalColor.GetLuma());
+                    return new Vector4(new Vector3(originalColor.GetLuma()), 1.0f);
 
                 case TRVersion.Game.TombEngine:
                     return new Vector4(originalColor, 1.0f);
