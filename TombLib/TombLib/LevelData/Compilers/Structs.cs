@@ -1226,9 +1226,9 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_cinematicFrame
     {
-        public ushort AngleX;
-        public ushort AngleY;
-        public ushort AngleZ;
+        public short TargetX;
+        public short TargetY;
+        public short TargetZ;
         public short PosX;
         public short PosY;
         public short PosZ;
@@ -1241,9 +1241,9 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var frame in frames)
             {
-                writer.Write(frame.AngleX);
-                writer.Write(frame.AngleY);
-                writer.Write(frame.AngleZ);
+                writer.Write(frame.TargetX);
+                writer.Write(frame.TargetY);
+                writer.Write(frame.TargetZ);
                 writer.Write(frame.PosX);
                 writer.Write(frame.PosY);
                 writer.Write(frame.PosZ);

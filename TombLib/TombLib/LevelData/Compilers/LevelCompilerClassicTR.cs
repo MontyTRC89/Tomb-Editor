@@ -564,7 +564,7 @@ namespace TombLib.LevelData.Compilers
                 return result;
 
             var lara = _level.Settings.WadTryGetMoveable(WadMoveableId.Lara);
-            if (lara == null || lara.Animations.Count == 0 || lara.Animations[0].KeyFrames.Count == 0)
+            if (lara == null)
                 return result;
 
             var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
@@ -572,7 +572,7 @@ namespace TombLib.LevelData.Compilers
             if (laraItem == null)
                 return result;
 
-            var origin = laraItem.WorldPosition + lara.Animations[0].KeyFrames[0].Offset;
+            var origin = laraItem.WorldPosition;
             var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
 
             _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames.");
@@ -580,14 +580,21 @@ namespace TombLib.LevelData.Compilers
             foreach (var flybys in groups)
             {
                 var positions = flybys.Select(f => f.WorldPosition).ToList();
-                var rotations = flybys.Select(f => new Vector3(f.RotationX, f.RotationY, 0)).ToList();
                 var settings  = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
+                var targets   = flybys.Select(f =>
+                {
+                    var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, 1024.0f);
+                    var trans = f.WorldPosition + (mxT * mxR).Translation;
+                    return trans;
+                }
+                ).ToList();
 
                 var grain = (int)Math.Round(30.0f / (flybys.First().Speed * 0.0333f));
 
                 var cPositions = Spline.Calculate(positions, grain);
-                var cRotations = Spline.Calculate(rotations, grain);
-                var cSettings = Spline.Calculate(settings, grain);
+                var cTargets   = Spline.Calculate(targets, grain);
+                var cSettings  = Spline.Calculate(settings, grain);
 
                 for (int i = 0; i < cPositions.Count; i++)
                 {
@@ -598,12 +605,12 @@ namespace TombLib.LevelData.Compilers
                     {
                         Fov = (ushort)(cSettings[i].Y * 100),
                         Roll = roll,
-                        AngleX = 0,
-                        AngleY = 0,
-                        AngleZ = 0,
-                        PosX = (short)(cPositions[i].X - origin.X),
-                        PosY = (short)(-(cPositions[i].Y - origin.Y)),
-                        PosZ = (short)(cPositions[i].Z - origin.Z)
+                        TargetX = (short) (cTargets[i].X   - origin.X),
+                        TargetY = (short)-(cTargets[i].Y   - origin.Y),
+                        TargetZ = (short) (cTargets[i].Z   - origin.Z),
+                        PosX    = (short) (cPositions[i].X - origin.X),
+                        PosY    = (short)-(cPositions[i].Y - origin.Y),
+                        PosZ    = (short) (cPositions[i].Z - origin.Z)
                     };
 
                     result.Add(frame);
