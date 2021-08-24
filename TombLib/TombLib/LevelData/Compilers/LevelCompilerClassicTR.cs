@@ -555,7 +555,6 @@ namespace TombLib.LevelData.Compilers
             var result = new List<tr_cinematicFrame>();
 
             var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
-
             if (allObjects.Count == 0)
                 return result;
 
@@ -579,7 +578,7 @@ namespace TombLib.LevelData.Compilers
 
             var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
 
-            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames.");
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames");
 
             foreach (var flybys in groups)
             {
@@ -635,6 +634,8 @@ namespace TombLib.LevelData.Compilers
                     result.Add(frame);
                 }
             }
+
+            _progressReporter.ReportInfo("    Num cinematic frames: " + result.Count);
 
             return result;
         }

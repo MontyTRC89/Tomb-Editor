@@ -3889,7 +3889,7 @@ namespace TombEditor
                         watch.Start();
                         var statistics = compiler.CompileLevel();
                         watch.Stop();
-                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                        progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
 
                         // Raise an event for statistics update
                         _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent

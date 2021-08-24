@@ -14,6 +14,7 @@ Tomb Editor:
  * Allow shiny effect on static meshes, if light type is set to dynamic.
  * Properly fit every item in item browser preview and optionally animate it.
  * Draw triangular portals in 2D grid.
+ * Automatically increase pasted flyby camera index.
  * Compile flyby sequences as cinematic frames for TR1-3 (use together with StartAnim script command).
  * Fix exception if level with missing merged statics is compiled.
  * Fix launching of SoundTool and WadTool from Tomb Editor in case project is opened from explorer.
@@ -41,6 +42,9 @@ WadTool:
  * Fix incorrect exporting of normals.
  * Fix wrong depiction of skinned model in skeleton editor.
  * Fix gizmo size in static mesh editor.
+ 
+TombIDE:
+ * Fix issue with non-standard symbols being corrupted after reloading strings file.
 
 Version 1.3.15
 ==============

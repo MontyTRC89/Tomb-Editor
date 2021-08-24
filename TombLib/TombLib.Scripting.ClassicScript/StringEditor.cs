@@ -271,7 +271,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		public void Load(string filePath, bool silentSession)
 		{
-			string[] fileLines = File.ReadAllLines(filePath);
+			string[] fileLines = File.ReadAllLines(filePath, Encoding.GetEncoding(1252));
 			UpdateContent(fileLines);
 
 			FilePath = filePath;
