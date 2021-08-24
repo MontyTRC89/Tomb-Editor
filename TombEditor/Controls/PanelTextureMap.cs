@@ -21,7 +21,7 @@ namespace TombEditor.Controls
 
         protected override float TileSelectionSize => _editor.Configuration.TextureMap_TileSelectionSize;
         protected override bool ResetAttributesOnNewSelection => _editor.Configuration.TextureMap_ResetAttributesOnNewSelection;
-        protected override bool MouseWheelMovesTheTextureInsteadOfZooming => _editor.Configuration.TextureMap_ResetAttributesOnNewSelection;
+        protected override bool MouseWheelMovesTheTextureInsteadOfZooming => _editor.Configuration.TextureMap_MouseWheelMovesTheTextureInsteadOfZooming;
         protected override float NavigationSpeedKeyMove => _editor.Configuration.TextureMap_NavigationSpeedKeyMove;
         protected override float NavigationSpeedKeyZoom => _editor.Configuration.TextureMap_NavigationSpeedKeyZoom;
         protected override float NavigationSpeedMouseZoom => _editor.Configuration.TextureMap_NavigationSpeedMouseZoom;
