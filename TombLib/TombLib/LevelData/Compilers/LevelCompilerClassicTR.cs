@@ -573,6 +573,10 @@ namespace TombLib.LevelData.Compilers
                 return result;
 
             var origin = laraItem.WorldPosition;
+            var rotationOffset = -(laraItem as IRotateableY).RotationY * Math.PI / 180.0f;
+            var sin = (float)Math.Sin(-rotationOffset);
+            var cos = (float)Math.Cos(-rotationOffset);
+
             var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
 
             _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames.");
@@ -580,10 +584,6 @@ namespace TombLib.LevelData.Compilers
             foreach (var flybys in groups)
             {
                 var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
-
-                var rotationOffset = (laraItem as IRotateableY).RotationY * Math.PI / 180.0f;
-                var sin = (float)Math.Sin(-rotationOffset);
-                var cos = (float)Math.Cos(-rotationOffset);
 
                 var positions = flybys.Select(f =>
                 {
@@ -595,7 +595,7 @@ namespace TombLib.LevelData.Compilers
                 }
                 ).ToList();
 
-                var targets   = flybys.Select(f =>
+                var targets = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
                     var mxT = Matrix4x4.CreateTranslation(0, 0, 1024.0f);
