@@ -579,14 +579,33 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var flybys in groups)
             {
-                var positions = flybys.Select(f => f.WorldPosition).ToList();
-                var settings  = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
+                var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
+
+                var rotationOffset = (laraItem as IRotateableY).RotationY * Math.PI / 180.0f;
+                var sin = (float)Math.Sin(-rotationOffset);
+                var cos = (float)Math.Cos(-rotationOffset);
+
+                var positions = flybys.Select(f =>
+                {
+                    var distance = f.WorldPosition - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x, f.WorldPosition.Y, z);
+                }
+                ).ToList();
+
                 var targets   = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
                     var mxT = Matrix4x4.CreateTranslation(0, 0, 1024.0f);
                     var trans = f.WorldPosition + (mxT * mxR).Translation;
-                    return trans;
+
+                    var distance = trans - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x , trans.Y, z);
                 }
                 ).ToList();
 
