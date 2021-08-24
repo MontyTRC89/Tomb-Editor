@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Parsers;
