@@ -33,7 +33,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 		{
 			string[] lines = File.ReadAllLines(filePath, Encoding.GetEncoding(1252));
 
-			foreach (string line in lines)pen
+			foreach (string line in lines)
 				if (LineParser.IsSectionHeaderLine(line))
 				{
 					string text = LineParser.GetSectionHeaderText(line);
