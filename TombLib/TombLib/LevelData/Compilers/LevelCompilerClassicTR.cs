@@ -555,7 +555,6 @@ namespace TombLib.LevelData.Compilers
             var result = new List<tr_cinematicFrame>();
 
             var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
-
             if (allObjects.Count == 0)
                 return result;
 
