@@ -42,6 +42,9 @@ WadTool:
  * Fix incorrect exporting of normals.
  * Fix wrong depiction of skinned model in skeleton editor.
  * Fix gizmo size in static mesh editor.
+ 
+TombIDE:
+ * Fix issue with non-standard symbols being corrupted after reloading strings file.
 
 Version 1.3.15
 ==============
