@@ -1238,7 +1238,6 @@ namespace TombEditor.Forms
             this.addBoxVolumeToolStripMenuItem.Tag = "AddBoxVolume";
             this.addBoxVolumeToolStripMenuItem.Text = "AddBoxVolume";
             this.addBoxVolumeToolStripMenuItem.Visible = false;
-            this.addBoxVolumeToolStripMenuItem.Click += new System.EventHandler(this.addBoxVolumeToolStripMenuItem_Click);
             // 
             // addSphereVolumeToolStripMenuItem
             // 

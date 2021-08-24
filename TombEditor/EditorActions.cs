@@ -309,7 +309,7 @@ namespace TombEditor
         public static void ResetObjectRotation(PositionBasedObjectInstance obj, RotationAxis axis = RotationAxis.None)
         {
             if (!(obj is IRotateableY || obj is IRotateableYX || obj is IRotateableYXRoll)) return;
-            _editor.UndoManager.PushObjectTransformed(obj);
+            _editor.UndoManager.PushObjectTransformed(obj); 
 
             if (obj is IRotateableYX)
             {
@@ -579,8 +579,8 @@ namespace TombEditor
             var objectList = new List<ObjectInstance>();
 
             // If object group is a group of moveables, batch-trigger it. Otherwise, add single object to list.
-            if (@object is ObjectGroup && ((ObjectGroup)@object).All(o => o is MoveableInstance))
-                objectList.AddRange(((ObjectGroup)@object));
+            if (@object is ObjectGroup && ((ObjectGroup)@object).Any(o => o is MoveableInstance))
+                objectList.AddRange(((ObjectGroup)@object).Where(i => i is MoveableInstance));
             else
                 objectList.Add(@object);
 
@@ -1002,9 +1002,6 @@ namespace TombEditor
             }
             else if (instance is FlybyCameraInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion > TRVersion.Game.TR3, "Flyby camera"))
-                    return;
-
                 using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
@@ -4635,7 +4632,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + fileName + "\".");
-                _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
+                _editor.SendMessage("There was an error while saving project file.\nException: " + exc.Message, PopupType.Error);
                 return false;
             }
 

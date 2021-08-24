@@ -125,7 +125,6 @@ namespace TombEditor.Forms
                 obj is Editor.LevelChangedEvent)
             {
                 addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
-                addFlybyCameraToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
 
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
 
@@ -765,11 +764,6 @@ namespace TombEditor.Forms
                     base.WndProc(ref message);
                     break;
             }
-        }
-
-        private void addBoxVolumeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

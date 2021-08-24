@@ -22,44 +22,29 @@ namespace WadTool
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAnimationEditor));
             this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.animationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.curToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.batchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
-            this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resampleAnimationToKeyframesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mirrorAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reverseAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.fixCurrentAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixAllAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectedAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertnFramesAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteEveryNthFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.interpolateFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,36 +69,15 @@ namespace WadTool
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.tbSearchAnimation = new DarkUI.Controls.DarkTextBox();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
-            this.butTbSaveAllChanges = new System.Windows.Forms.ToolStripButton();
-            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
-            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
-            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.labelAnims = new System.Windows.Forms.ToolStripLabel();
-            this.butTbAddAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbImport = new System.Windows.Forms.ToolStripButton();
-            this.butTbDeleteAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbCutAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbCopyAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbPasteAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbReplaceAnimation = new System.Windows.Forms.ToolStripButton();
-            this.butTbSplitAnimation = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.labelFrames = new System.Windows.Forms.ToolStripLabel();
-            this.butTbAddFrame = new System.Windows.Forms.ToolStripButton();
-            this.butTbDeleteFrame = new System.Windows.Forms.ToolStripButton();
-            this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
-            this.butTbCopyFrame = new System.Windows.Forms.ToolStripButton();
-            this.butTbPasteFrame = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.labelRoom = new System.Windows.Forms.ToolStripLabel();
             this.comboRoomList = new DarkUI.Controls.ToolStripDarkComboBox();
             this.lstAnimations = new DarkUI.Controls.DarkListView();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.butShowAll = new DarkUI.Controls.DarkButton();
-            this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
-            this.darkButton1 = new DarkUI.Controls.DarkButton();
-            this.butAddNewAnimation = new DarkUI.Controls.DarkButton();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.butSelectNoMeshes = new DarkUI.Controls.DarkButton();
@@ -141,22 +105,14 @@ namespace WadTool
             this.panelTransport = new System.Windows.Forms.Panel();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTransportStart = new System.Windows.Forms.ToolStripButton();
-            this.butTransportFrameBack = new System.Windows.Forms.ToolStripButton();
-            this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
-            this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
-            this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
-            this.butTransportSound = new System.Windows.Forms.ToolStripButton();
-            this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
             this.darkSectionPanel4 = new DarkUI.Controls.DarkSectionPanel();
+            this.nudEndHorVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudStartHorVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudEndVertVel = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudStartVertVel = new DarkUI.Controls.DarkNumericUpDown();
             this.nudEndFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.tbEndHorVel = new DarkUI.Controls.DarkTextBox();
-            this.tbStartHorVel = new DarkUI.Controls.DarkTextBox();
-            this.tbEndVertVel = new DarkUI.Controls.DarkTextBox();
-            this.tbStartVertVel = new DarkUI.Controls.DarkTextBox();
             this.nudNextFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.nudNextAnim = new DarkUI.Controls.DarkNumericUpDown();
             this.nudFramerate = new DarkUI.Controls.DarkNumericUpDown();
@@ -169,8 +125,6 @@ namespace WadTool
             this.panelLeft = new System.Windows.Forms.Panel();
             this.panelTransform = new DarkUI.Controls.DarkSectionPanel();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.picTransformPreview = new System.Windows.Forms.PictureBox();
-            this.cmbTransformMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel29 = new DarkUI.Controls.DarkLabel();
             this.darkLabel28 = new DarkUI.Controls.DarkLabel();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
@@ -186,7 +140,6 @@ namespace WadTool
             this.nudRotY = new DarkUI.Controls.DarkNumericUpDown();
             this.nudRotZ = new DarkUI.Controls.DarkNumericUpDown();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.cmTimelineContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.cmMarkInMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -196,6 +149,59 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.butShowAll = new DarkUI.Controls.DarkButton();
+            this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
+            this.butAddNewAnimation = new DarkUI.Controls.DarkButton();
+            this.picTransformPreview = new System.Windows.Forms.PictureBox();
+            this.cmbTransformMode = new DarkUI.Controls.DarkComboBox();
+            this.butTransportStart = new System.Windows.Forms.ToolStripButton();
+            this.butTransportFrameBack = new System.Windows.Forms.ToolStripButton();
+            this.butTransportPlay = new System.Windows.Forms.ToolStripButton();
+            this.butTransportFrameForward = new System.Windows.Forms.ToolStripButton();
+            this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
+            this.butTransportChained = new System.Windows.Forms.ToolStripButton();
+            this.butTransportSound = new System.Windows.Forms.ToolStripButton();
+            this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
+            this.butTbSaveAllChanges = new System.Windows.Forms.ToolStripButton();
+            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
+            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
+            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.butTbAddAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbImport = new System.Windows.Forms.ToolStripButton();
+            this.butTbDeleteAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbCutAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbCopyAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbPasteAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbReplaceAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbSplitAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbAddFrame = new System.Windows.Forms.ToolStripButton();
+            this.butTbDeleteFrame = new System.Windows.Forms.ToolStripButton();
+            this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
+            this.butTbCopyFrame = new System.Windows.Forms.ToolStripButton();
+            this.butTbPasteFrame = new System.Windows.Forms.ToolStripButton();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.curToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resampleAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mirrorAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findReplaceAnimcommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insertFrameAfterCurrentOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.interpolateFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.topMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -215,6 +221,10 @@ namespace WadTool
             this.panelTransport.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.darkSectionPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEndHorVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStartHorVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEndVertVel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStartVertVel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEndFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNextFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).BeginInit();
@@ -224,7 +234,6 @@ namespace WadTool
             this.panelRight.SuspendLayout();
             this.panelLeft.SuspendLayout();
             this.panelTransform.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransZ)).BeginInit();
@@ -232,6 +241,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudRotY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRotZ)).BeginInit();
             this.cmTimelineContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // topMenu
@@ -264,52 +274,20 @@ namespace WadTool
             this.fileeToolStripMenuItem.Size = new System.Drawing.Size(33, 20);
             this.fileeToolStripMenuItem.Text = "Edit";
             // 
-            // undoToolStripMenuItem
-            // 
-            this.undoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.undoToolStripMenuItem.Enabled = false;
-            this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.undoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_undo_16;
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.undoToolStripMenuItem.Text = "Undo";
-            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
-            // 
-            // redoToolStripMenuItem
-            // 
-            this.redoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.redoToolStripMenuItem.Enabled = false;
-            this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.redoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_redo_16;
-            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.redoToolStripMenuItem.Text = "Redo";
-            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
-            // 
-            // saveChangesToolStripMenuItem
-            // 
-            this.saveChangesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.saveChangesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveChangesToolStripMenuItem.Image")));
-            this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.saveChangesToolStripMenuItem.Text = "Save changes";
-            this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(127, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -327,49 +305,19 @@ namespace WadTool
             this.toolStripSeparator3,
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
+            this.batchToolStripMenuItem,
             this.toolStripMenuItem7,
             this.resampleAnimationToolStripMenuItem,
             this.resampleAnimationToKeyframesToolStripMenuItem,
             this.mirrorAnimationToolStripMenuItem,
             this.reverseAnimationToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.fixCurrentAnimationToolStripMenuItem,
-            this.fixAllAnimationsToolStripMenuItem,
+            this.fixToolStripMenuItem,
             this.findReplaceAnimcommandsToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
-            this.animationToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
-            this.animationToolStripMenuItem.Text = "Animation";
-            // 
-            // addNewToolStripMenuItem
-            // 
-            this.addNewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.addNewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addNewToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNewToolStripMenuItem.Image")));
-            this.addNewToolStripMenuItem.Name = "addNewToolStripMenuItem";
-            this.addNewToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.addNewToolStripMenuItem.Text = "New animation";
-            this.addNewToolStripMenuItem.Click += new System.EventHandler(this.addNewAnimationToolStripMenuItem_Click);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.deleteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.deleteToolStripMenuItem.Text = "Delete animation";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteAnimationToolStripMenuItem_Click);
-            // 
-            // splitAnimationToolStripMenuItem
-            // 
-            this.splitAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.splitAnimationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("splitAnimationToolStripMenuItem.Image")));
-            this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
-            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.splitAnimationToolStripMenuItem.Text = "Split animation";
-            this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
+            this.animationToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.animationToolStripMenuItem.Text = "Animations";
             // 
             // toolStripMenuItem5
             // 
@@ -379,36 +327,6 @@ namespace WadTool
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(212, 6);
             // 
-            // curToolStripMenuItem
-            // 
-            this.curToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.curToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.curToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("curToolStripMenuItem.Image")));
-            this.curToolStripMenuItem.Name = "curToolStripMenuItem";
-            this.curToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.curToolStripMenuItem.Text = "Cut";
-            this.curToolStripMenuItem.Click += new System.EventHandler(this.cutAnimationToolStripMenuItem_Click);
-            // 
-            // copyToolStripMenuItem1
-            // 
-            this.copyToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.copyToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.copyToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem1.Image")));
-            this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
-            this.copyToolStripMenuItem1.Text = "Copy";
-            this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyAnimationToolStripMenuItem_Click);
-            // 
-            // pasteToolStripMenuItem1
-            // 
-            this.pasteToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.pasteToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.pasteToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem1.Image")));
-            this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
-            this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
-            this.pasteToolStripMenuItem1.Text = "Paste";
-            this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.pasteAnimationToolStripMenuItem_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -417,25 +335,44 @@ namespace WadTool
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(212, 6);
             // 
-            // importToolStripMenuItem
+            // batchToolStripMenuItem
             // 
-            this.importToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("importToolStripMenuItem.Image")));
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.importToolStripMenuItem.Text = "Import...";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            this.batchToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.batchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importToolStripMenuItem1,
+            this.exportSelectedToolStripMenuItem,
+            this.exportAllToolStripMenuItem});
+            this.batchToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.batchToolStripMenuItem.Name = "batchToolStripMenuItem";
+            this.batchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.batchToolStripMenuItem.Text = "Batch";
             // 
-            // exportToolStripMenuItem
+            // importToolStripMenuItem1
             // 
-            this.exportToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.exportToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("exportToolStripMenuItem.Image")));
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.exportToolStripMenuItem.Text = "Export...";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            this.importToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importToolStripMenuItem1.Name = "importToolStripMenuItem1";
+            this.importToolStripMenuItem1.Size = new System.Drawing.Size(142, 22);
+            this.importToolStripMenuItem1.Text = "Import...";
+            this.importToolStripMenuItem1.Click += new System.EventHandler(this.importToolStripMenuItem1_Click);
+            // 
+            // exportSelectedToolStripMenuItem
+            // 
+            this.exportSelectedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exportSelectedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
+            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.exportSelectedToolStripMenuItem.Text = "Export selected...";
+            this.exportSelectedToolStripMenuItem.Click += new System.EventHandler(this.exportSelectedToolStripMenuItem_Click);
+            // 
+            // exportAllToolStripMenuItem
+            // 
+            this.exportAllToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exportAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
+            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.exportAllToolStripMenuItem.Text = "Export all...";
+            this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click_1);
             // 
             // toolStripMenuItem7
             // 
@@ -445,16 +382,6 @@ namespace WadTool
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.Size = new System.Drawing.Size(212, 6);
             // 
-            // resampleAnimationToolStripMenuItem
-            // 
-            this.resampleAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.resampleAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.resampleAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
-            this.resampleAnimationToolStripMenuItem.Name = "resampleAnimationToolStripMenuItem";
-            this.resampleAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.resampleAnimationToolStripMenuItem.Text = "Resample animation";
-            this.resampleAnimationToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToolStripMenuItem_Click);
-            // 
             // resampleAnimationToKeyframesToolStripMenuItem
             // 
             this.resampleAnimationToKeyframesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -463,16 +390,6 @@ namespace WadTool
             this.resampleAnimationToKeyframesToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.resampleAnimationToKeyframesToolStripMenuItem.Text = "Resample animation to framerate";
             this.resampleAnimationToKeyframesToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToKeyframesToolStripMenuItem_Click);
-            // 
-            // mirrorAnimationToolStripMenuItem
-            // 
-            this.mirrorAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.mirrorAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.mirrorAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Mirror;
-            this.mirrorAnimationToolStripMenuItem.Name = "mirrorAnimationToolStripMenuItem";
-            this.mirrorAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.mirrorAnimationToolStripMenuItem.Text = "Mirror animation";
-            this.mirrorAnimationToolStripMenuItem.Click += new System.EventHandler(this.mirrorAnimationToolStripMenuItem_Click);
             // 
             // reverseAnimationToolStripMenuItem
             // 
@@ -491,33 +408,44 @@ namespace WadTool
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(212, 6);
             // 
-            // fixCurrentAnimationToolStripMenuItem
+            // fixToolStripMenuItem
             // 
-            this.fixCurrentAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.fixCurrentAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.fixCurrentAnimationToolStripMenuItem.Name = "fixCurrentAnimationToolStripMenuItem";
-            this.fixCurrentAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.fixCurrentAnimationToolStripMenuItem.Text = "Fix current animation...";
-            this.fixCurrentAnimationToolStripMenuItem.Click += new System.EventHandler(this.fixCurrentAnimationToolStripMenuItem_Click);
+            this.fixToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.fixToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.currentAnimationToolStripMenuItem,
+            this.selectedAnimationsToolStripMenuItem,
+            this.allAnimationsToolStripMenuItem});
+            this.fixToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.fixToolStripMenuItem.Name = "fixToolStripMenuItem";
+            this.fixToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.fixToolStripMenuItem.Text = "Fix";
             // 
-            // fixAllAnimationsToolStripMenuItem
+            // currentAnimationToolStripMenuItem
             // 
-            this.fixAllAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.fixAllAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.fixAllAnimationsToolStripMenuItem.Name = "fixAllAnimationsToolStripMenuItem";
-            this.fixAllAnimationsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.fixAllAnimationsToolStripMenuItem.Text = "Fix all animations...";
-            this.fixAllAnimationsToolStripMenuItem.Click += new System.EventHandler(this.fixAllAnimationsToolStripMenuItem_Click);
+            this.currentAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.currentAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.currentAnimationToolStripMenuItem.Name = "currentAnimationToolStripMenuItem";
+            this.currentAnimationToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.currentAnimationToolStripMenuItem.Text = "Current animation...";
+            this.currentAnimationToolStripMenuItem.Click += new System.EventHandler(this.currentAnimationToolStripMenuItem_Click);
             // 
-            // findReplaceAnimcommandsToolStripMenuItem
+            // selectedAnimationsToolStripMenuItem
             // 
-            this.findReplaceAnimcommandsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.findReplaceAnimcommandsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.findReplaceAnimcommandsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReplaceAnimcommandsToolStripMenuItem.Image")));
-            this.findReplaceAnimcommandsToolStripMenuItem.Name = "findReplaceAnimcommandsToolStripMenuItem";
-            this.findReplaceAnimcommandsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
-            this.findReplaceAnimcommandsToolStripMenuItem.Click += new System.EventHandler(this.findReplaceAnimcommandsToolStripMenuItem_Click);
+            this.selectedAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.selectedAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.selectedAnimationsToolStripMenuItem.Name = "selectedAnimationsToolStripMenuItem";
+            this.selectedAnimationsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.selectedAnimationsToolStripMenuItem.Text = "Selected animations...";
+            this.selectedAnimationsToolStripMenuItem.Click += new System.EventHandler(this.selectedAnimationsToolStripMenuItem_Click);
+            // 
+            // allAnimationsToolStripMenuItem
+            // 
+            this.allAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.allAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.allAnimationsToolStripMenuItem.Name = "allAnimationsToolStripMenuItem";
+            this.allAnimationsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.allAnimationsToolStripMenuItem.Text = "All animations...";
+            this.allAnimationsToolStripMenuItem.Click += new System.EventHandler(this.allAnimationsToolStripMenuItem_Click);
             // 
             // frameToolStripMenuItem
             // 
@@ -541,16 +469,6 @@ namespace WadTool
             this.frameToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.frameToolStripMenuItem.Text = "Frames";
             // 
-            // insertFrameAfterCurrentOneToolStripMenuItem
-            // 
-            this.insertFrameAfterCurrentOneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.insertFrameAfterCurrentOneToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.insertFrameAfterCurrentOneToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("insertFrameAfterCurrentOneToolStripMenuItem.Image")));
-            this.insertFrameAfterCurrentOneToolStripMenuItem.Name = "insertFrameAfterCurrentOneToolStripMenuItem";
-            this.insertFrameAfterCurrentOneToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.insertFrameAfterCurrentOneToolStripMenuItem.Text = "Insert frame after current one";
-            this.insertFrameAfterCurrentOneToolStripMenuItem.Click += new System.EventHandler(this.insertFrameAfterCurrentOneToolStripMenuItem_Click);
-            // 
             // insertnFramesAfterCurrentOneToolStripMenuItem
             // 
             this.insertnFramesAfterCurrentOneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -559,16 +477,6 @@ namespace WadTool
             this.insertnFramesAfterCurrentOneToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.insertnFramesAfterCurrentOneToolStripMenuItem.Text = "Insert (n) frames after current one";
             this.insertnFramesAfterCurrentOneToolStripMenuItem.Click += new System.EventHandler(this.insertFramesAfterCurrentToolStripMenuItem_Click);
-            // 
-            // deleteFrameToolStripMenuItem
-            // 
-            this.deleteFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.deleteFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.deleteFrameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteFrameToolStripMenuItem.Image")));
-            this.deleteFrameToolStripMenuItem.Name = "deleteFrameToolStripMenuItem";
-            this.deleteFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.deleteFrameToolStripMenuItem.Text = "Delete frames";
-            this.deleteFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteFramesToolStripMenuItem_Click);
             // 
             // deleteEveryNthFrameToolStripMenuItem
             // 
@@ -587,36 +495,6 @@ namespace WadTool
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(214, 6);
             // 
-            // cutToolStripMenuItem
-            // 
-            this.cutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.cutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("cutToolStripMenuItem.Image")));
-            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.cutToolStripMenuItem.Text = "Cut";
-            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutFramesToolStripMenuItem_Click);
-            // 
-            // copyToolStripMenuItem
-            // 
-            this.copyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
-            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.copyToolStripMenuItem.Text = "Copy";
-            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyFramesToolStripMenuItem_Click);
-            // 
-            // pasteToolStripMenuItem
-            // 
-            this.pasteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
-            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.pasteToolStripMenuItem.Text = "Paste";
-            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteFramesToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -625,16 +503,6 @@ namespace WadTool
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(214, 6);
             // 
-            // interpolateFramesToolStripMenuItem
-            // 
-            this.interpolateFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.interpolateFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.interpolateFramesToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
-            this.interpolateFramesToolStripMenuItem.Name = "interpolateFramesToolStripMenuItem";
-            this.interpolateFramesToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.interpolateFramesToolStripMenuItem.Text = "Interpolate frames";
-            this.interpolateFramesToolStripMenuItem.Click += new System.EventHandler(this.interpolateFramesToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -642,16 +510,6 @@ namespace WadTool
             this.toolStripMenuItem6.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
             this.toolStripMenuItem6.Size = new System.Drawing.Size(214, 6);
-            // 
-            // calculateCollisionBoxForCurrentFrameToolStripMenuItem
-            // 
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image")));
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Name = "calculateCollisionBoxForCurrentFrameToolStripMenuItem";
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate bounding box";
-            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click);
             // 
             // deleteCollisionBoxForCurrentFrameToolStripMenuItem
             // 
@@ -785,7 +643,7 @@ namespace WadTool
             this.darkLabel22.Name = "darkLabel22";
             this.darkLabel22.Size = new System.Drawing.Size(60, 13);
             this.darkLabel22.TabIndex = 120;
-            this.darkLabel22.Text = "End H vel";
+            this.darkLabel22.Text = "End Z vel";
             // 
             // darkLabel23
             // 
@@ -794,7 +652,7 @@ namespace WadTool
             this.darkLabel23.Name = "darkLabel23";
             this.darkLabel23.Size = new System.Drawing.Size(64, 13);
             this.darkLabel23.TabIndex = 114;
-            this.darkLabel23.Text = "Start V vel";
+            this.darkLabel23.Text = "Start X vel";
             // 
             // darkLabel24
             // 
@@ -803,7 +661,7 @@ namespace WadTool
             this.darkLabel24.Name = "darkLabel24";
             this.darkLabel24.Size = new System.Drawing.Size(65, 13);
             this.darkLabel24.TabIndex = 118;
-            this.darkLabel24.Text = "Start H vel";
+            this.darkLabel24.Text = "Start Z vel";
             // 
             // darkLabel25
             // 
@@ -812,7 +670,7 @@ namespace WadTool
             this.darkLabel25.Name = "darkLabel25";
             this.darkLabel25.Size = new System.Drawing.Size(61, 13);
             this.darkLabel25.TabIndex = 116;
-            this.darkLabel25.Text = "End V vel";
+            this.darkLabel25.Text = "End X vel";
             // 
             // tbStateId
             // 
@@ -930,56 +788,6 @@ namespace WadTool
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
-            // butTbSaveAllChanges
-            // 
-            this.butTbSaveAllChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbSaveAllChanges.Enabled = false;
-            this.butTbSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbSaveAllChanges.Image = ((System.Drawing.Image)(resources.GetObject("butTbSaveAllChanges.Image")));
-            this.butTbSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
-            this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
-            this.butTbSaveAllChanges.Click += new System.EventHandler(this.butTbSaveChanges_Click);
-            // 
-            // butTbUndo
-            // 
-            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbUndo.Enabled = false;
-            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
-            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbUndo.Name = "butTbUndo";
-            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
-            this.butTbUndo.ToolTipText = "Undo";
-            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
-            // 
-            // butTbRedo
-            // 
-            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbRedo.Enabled = false;
-            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
-            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbRedo.Name = "butTbRedo";
-            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
-            this.butTbRedo.ToolTipText = "Redo";
-            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
-            // 
-            // butTbResetCamera
-            // 
-            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
-            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbResetCamera.Name = "butTbResetCamera";
-            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
-            this.butTbResetCamera.ToolTipText = "Reset camera";
-            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -996,109 +804,6 @@ namespace WadTool
             this.labelAnims.Size = new System.Drawing.Size(34, 25);
             this.labelAnims.Text = "Anims:";
             // 
-            // butTbAddAnimation
-            // 
-            this.butTbAddAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbAddAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbAddAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAddAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbAddAnimation.Image")));
-            this.butTbAddAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbAddAnimation.Name = "butTbAddAnimation";
-            this.butTbAddAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbAddAnimation.Text = "toolStripButton2";
-            this.butTbAddAnimation.ToolTipText = "Add animation";
-            this.butTbAddAnimation.Click += new System.EventHandler(this.butTbAddAnimation_Click);
-            // 
-            // butTbImport
-            // 
-            this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbImport.Image = ((System.Drawing.Image)(resources.GetObject("butTbImport.Image")));
-            this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbImport.Name = "butTbImport";
-            this.butTbImport.Size = new System.Drawing.Size(23, 25);
-            this.butTbImport.ToolTipText = "Import...";
-            this.butTbImport.Click += new System.EventHandler(this.butTbImport_Click);
-            // 
-            // butTbDeleteAnimation
-            // 
-            this.butTbDeleteAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbDeleteAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbDeleteAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbDeleteAnimation.Image")));
-            this.butTbDeleteAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbDeleteAnimation.Name = "butTbDeleteAnimation";
-            this.butTbDeleteAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbDeleteAnimation.Text = "toolStripButton3";
-            this.butTbDeleteAnimation.ToolTipText = "Delete animation";
-            this.butTbDeleteAnimation.Click += new System.EventHandler(this.butTbDeleteAnimation_Click);
-            // 
-            // butTbCutAnimation
-            // 
-            this.butTbCutAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbCutAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbCutAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutAnimation.Image")));
-            this.butTbCutAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbCutAnimation.Name = "butTbCutAnimation";
-            this.butTbCutAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbCutAnimation.Text = "toolStripButton8";
-            this.butTbCutAnimation.ToolTipText = "Cut animation";
-            this.butTbCutAnimation.Click += new System.EventHandler(this.butTbCutAnimation_Click);
-            // 
-            // butTbCopyAnimation
-            // 
-            this.butTbCopyAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbCopyAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbCopyAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCopyAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbCopyAnimation.Image")));
-            this.butTbCopyAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbCopyAnimation.Name = "butTbCopyAnimation";
-            this.butTbCopyAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbCopyAnimation.Text = "toolStripButton4";
-            this.butTbCopyAnimation.ToolTipText = "Copy animation";
-            this.butTbCopyAnimation.Click += new System.EventHandler(this.butTbCopyAnimation_Click);
-            // 
-            // butTbPasteAnimation
-            // 
-            this.butTbPasteAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbPasteAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbPasteAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbPasteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbPasteAnimation.Image")));
-            this.butTbPasteAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbPasteAnimation.Name = "butTbPasteAnimation";
-            this.butTbPasteAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbPasteAnimation.Text = "toolStripButton5";
-            this.butTbPasteAnimation.ToolTipText = "Paste animation";
-            this.butTbPasteAnimation.Click += new System.EventHandler(this.butTbPasteAnimation_Click);
-            // 
-            // butTbReplaceAnimation
-            // 
-            this.butTbReplaceAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbReplaceAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbReplaceAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbReplaceAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbReplaceAnimation.Image")));
-            this.butTbReplaceAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbReplaceAnimation.Name = "butTbReplaceAnimation";
-            this.butTbReplaceAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbReplaceAnimation.Text = "toolStripButton5";
-            this.butTbReplaceAnimation.ToolTipText = "Replace animation";
-            this.butTbReplaceAnimation.Click += new System.EventHandler(this.butTbReplaceAnimation_Click);
-            // 
-            // butTbSplitAnimation
-            // 
-            this.butTbSplitAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbSplitAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbSplitAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbSplitAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butTbSplitAnimation.Image")));
-            this.butTbSplitAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbSplitAnimation.Name = "butTbSplitAnimation";
-            this.butTbSplitAnimation.Size = new System.Drawing.Size(23, 25);
-            this.butTbSplitAnimation.Text = "toolStripButton5";
-            this.butTbSplitAnimation.ToolTipText = "Split animation";
-            this.butTbSplitAnimation.Click += new System.EventHandler(this.butTbSplitAnimation_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1114,71 +819,6 @@ namespace WadTool
             this.labelFrames.Name = "labelFrames";
             this.labelFrames.Size = new System.Drawing.Size(38, 25);
             this.labelFrames.Text = "Frames:";
-            // 
-            // butTbAddFrame
-            // 
-            this.butTbAddFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbAddFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbAddFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAddFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbAddFrame.Image")));
-            this.butTbAddFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbAddFrame.Name = "butTbAddFrame";
-            this.butTbAddFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbAddFrame.Text = "toolStripButton2";
-            this.butTbAddFrame.ToolTipText = "Add frame";
-            this.butTbAddFrame.Click += new System.EventHandler(this.butTbAddFrame_Click);
-            // 
-            // butTbDeleteFrame
-            // 
-            this.butTbDeleteFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbDeleteFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbDeleteFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbDeleteFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbDeleteFrame.Image")));
-            this.butTbDeleteFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbDeleteFrame.Name = "butTbDeleteFrame";
-            this.butTbDeleteFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbDeleteFrame.Text = "toolStripButton3";
-            this.butTbDeleteFrame.ToolTipText = "Delete frames";
-            this.butTbDeleteFrame.Click += new System.EventHandler(this.butTbDeleteFrame_Click);
-            // 
-            // butTbCutFrame
-            // 
-            this.butTbCutFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbCutFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbCutFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCutFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbCutFrame.Image")));
-            this.butTbCutFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbCutFrame.Name = "butTbCutFrame";
-            this.butTbCutFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbCutFrame.Text = "toolStripButton8";
-            this.butTbCutFrame.ToolTipText = "Cut frames";
-            this.butTbCutFrame.Click += new System.EventHandler(this.butTbCutFrame_Click);
-            // 
-            // butTbCopyFrame
-            // 
-            this.butTbCopyFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbCopyFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbCopyFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbCopyFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbCopyFrame.Image")));
-            this.butTbCopyFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbCopyFrame.Name = "butTbCopyFrame";
-            this.butTbCopyFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbCopyFrame.Text = "toolStripButton4";
-            this.butTbCopyFrame.ToolTipText = "Copy frames";
-            this.butTbCopyFrame.Click += new System.EventHandler(this.butTbCopyFrame_Click);
-            // 
-            // butTbPasteFrame
-            // 
-            this.butTbPasteFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbPasteFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbPasteFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbPasteFrame.Image = ((System.Drawing.Image)(resources.GetObject("butTbPasteFrame.Image")));
-            this.butTbPasteFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbPasteFrame.Name = "butTbPasteFrame";
-            this.butTbPasteFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbPasteFrame.Text = "toolStripButton5";
-            this.butTbPasteFrame.ToolTipText = "Paste frames";
-            this.butTbPasteFrame.Click += new System.EventHandler(this.butTbPasteFrame_Click);
             // 
             // toolStripSeparator4
             // 
@@ -1216,6 +856,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAnimations.Location = new System.Drawing.Point(4, 53);
             this.lstAnimations.MouseWheelScrollSpeedV = 0.2F;
+            this.lstAnimations.MultiSelect = true;
             this.lstAnimations.Name = "lstAnimations";
             this.lstAnimations.Size = new System.Drawing.Size(271, 151);
             this.lstAnimations.TabIndex = 3;
@@ -1238,55 +879,6 @@ namespace WadTool
             this.darkSectionPanel1.SectionHeader = "Animation List";
             this.darkSectionPanel1.Size = new System.Drawing.Size(280, 236);
             this.darkSectionPanel1.TabIndex = 9;
-            // 
-            // butShowAll
-            // 
-            this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butShowAll.Checked = false;
-            this.butShowAll.Image = global::WadTool.Properties.Resources.actions_delete_16;
-            this.butShowAll.Location = new System.Drawing.Point(253, 28);
-            this.butShowAll.Name = "butShowAll";
-            this.butShowAll.Size = new System.Drawing.Size(22, 22);
-            this.butShowAll.TabIndex = 2;
-            this.toolTip1.SetToolTip(this.butShowAll, "Reset filtering");
-            this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
-            // 
-            // butDeleteAnimation
-            // 
-            this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteAnimation.Checked = false;
-            this.butDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butDeleteAnimation.Image")));
-            this.butDeleteAnimation.Location = new System.Drawing.Point(252, 208);
-            this.butDeleteAnimation.Name = "butDeleteAnimation";
-            this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
-            this.butDeleteAnimation.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete animation");
-            this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
-            // 
-            // darkButton1
-            // 
-            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkButton1.Checked = false;
-            this.darkButton1.Image = ((System.Drawing.Image)(resources.GetObject("darkButton1.Image")));
-            this.darkButton1.Location = new System.Drawing.Point(228, 28);
-            this.darkButton1.Name = "darkButton1";
-            this.darkButton1.Size = new System.Drawing.Size(22, 22);
-            this.darkButton1.TabIndex = 1;
-            this.toolTip1.SetToolTip(this.darkButton1, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
-        "");
-            this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
-            // 
-            // butAddNewAnimation
-            // 
-            this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddNewAnimation.Checked = false;
-            this.butAddNewAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butAddNewAnimation.Image")));
-            this.butAddNewAnimation.Location = new System.Drawing.Point(225, 208);
-            this.butAddNewAnimation.Name = "butAddNewAnimation";
-            this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
-            this.butAddNewAnimation.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.butAddNewAnimation, "Add new animation");
-            this.butAddNewAnimation.Click += new System.EventHandler(this.butAddNewAnimation_Click);
             // 
             // panelRendering
             // 
@@ -1745,71 +1337,6 @@ namespace WadTool
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 36);
             // 
-            // butTransportStart
-            // 
-            this.butTransportStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportStart.Image = ((System.Drawing.Image)(resources.GetObject("butTransportStart.Image")));
-            this.butTransportStart.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportStart.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportStart.Name = "butTransportStart";
-            this.butTransportStart.Size = new System.Drawing.Size(28, 33);
-            this.butTransportStart.ToolTipText = "Go to start";
-            this.butTransportStart.Click += new System.EventHandler(this.butTransportStart_Click);
-            // 
-            // butTransportFrameBack
-            // 
-            this.butTransportFrameBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportFrameBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportFrameBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportFrameBack.Image = ((System.Drawing.Image)(resources.GetObject("butTransportFrameBack.Image")));
-            this.butTransportFrameBack.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportFrameBack.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportFrameBack.Name = "butTransportFrameBack";
-            this.butTransportFrameBack.Size = new System.Drawing.Size(28, 33);
-            this.butTransportFrameBack.ToolTipText = "Back 1 frame";
-            this.butTransportFrameBack.Click += new System.EventHandler(this.butTransportFrameBack_Click);
-            // 
-            // butTransportPlay
-            // 
-            this.butTransportPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportPlay.Image = ((System.Drawing.Image)(resources.GetObject("butTransportPlay.Image")));
-            this.butTransportPlay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportPlay.Name = "butTransportPlay";
-            this.butTransportPlay.Size = new System.Drawing.Size(28, 33);
-            this.butTransportPlay.ToolTipText = "Playback";
-            this.butTransportPlay.Click += new System.EventHandler(this.butTransportPlay_Click);
-            // 
-            // butTransportFrameForward
-            // 
-            this.butTransportFrameForward.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportFrameForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportFrameForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportFrameForward.Image = ((System.Drawing.Image)(resources.GetObject("butTransportFrameForward.Image")));
-            this.butTransportFrameForward.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportFrameForward.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportFrameForward.Name = "butTransportFrameForward";
-            this.butTransportFrameForward.Size = new System.Drawing.Size(28, 33);
-            this.butTransportFrameForward.ToolTipText = "Forward 1 frame";
-            this.butTransportFrameForward.Click += new System.EventHandler(this.butTransportFrameForward_Click);
-            // 
-            // butTransportEnd
-            // 
-            this.butTransportEnd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportEnd.Image = ((System.Drawing.Image)(resources.GetObject("butTransportEnd.Image")));
-            this.butTransportEnd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportEnd.Name = "butTransportEnd";
-            this.butTransportEnd.Size = new System.Drawing.Size(28, 33);
-            this.butTransportEnd.ToolTipText = "Go to end";
-            this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
-            // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1818,54 +1345,14 @@ namespace WadTool
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 36);
             // 
-            // butTransportChained
-            // 
-            this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportChained.Image = ((System.Drawing.Image)(resources.GetObject("butTransportChained.Image")));
-            this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportChained.Name = "butTransportChained";
-            this.butTransportChained.Size = new System.Drawing.Size(28, 33);
-            this.butTransportChained.ToolTipText = "Chain playback";
-            this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
-            // 
-            // butTransportSound
-            // 
-            this.butTransportSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportSound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportSound.Image = ((System.Drawing.Image)(resources.GetObject("butTransportSound.Image")));
-            this.butTransportSound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportSound.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportSound.Name = "butTransportSound";
-            this.butTransportSound.Size = new System.Drawing.Size(28, 33);
-            this.butTransportSound.ToolTipText = "Toggle sound preview";
-            this.butTransportSound.Click += new System.EventHandler(this.butTransportSound_Click);
-            // 
-            // butTransportLandWater
-            // 
-            this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportLandWater.DoubleClickEnabled = true;
-            this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportLandWater.Image = ((System.Drawing.Image)(resources.GetObject("butTransportLandWater.Image")));
-            this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportLandWater.Name = "butTransportLandWater";
-            this.butTransportLandWater.Size = new System.Drawing.Size(28, 33);
-            this.butTransportLandWater.ToolTipText = "Toggle sound conditions";
-            this.butTransportLandWater.Click += new System.EventHandler(this.butTransportLandWater_Click);
-            // 
             // darkSectionPanel4
             // 
+            this.darkSectionPanel4.Controls.Add(this.nudEndHorVel);
+            this.darkSectionPanel4.Controls.Add(this.nudStartHorVel);
+            this.darkSectionPanel4.Controls.Add(this.nudEndVertVel);
+            this.darkSectionPanel4.Controls.Add(this.nudStartVertVel);
             this.darkSectionPanel4.Controls.Add(this.nudEndFrame);
             this.darkSectionPanel4.Controls.Add(this.darkLabel2);
-            this.darkSectionPanel4.Controls.Add(this.tbEndHorVel);
-            this.darkSectionPanel4.Controls.Add(this.tbStartHorVel);
-            this.darkSectionPanel4.Controls.Add(this.tbEndVertVel);
-            this.darkSectionPanel4.Controls.Add(this.tbStartVertVel);
             this.darkSectionPanel4.Controls.Add(this.nudNextFrame);
             this.darkSectionPanel4.Controls.Add(this.nudNextAnim);
             this.darkSectionPanel4.Controls.Add(this.tbStateId);
@@ -1890,6 +1377,110 @@ namespace WadTool
             this.darkSectionPanel4.SectionHeader = "Current Animation";
             this.darkSectionPanel4.Size = new System.Drawing.Size(280, 197);
             this.darkSectionPanel4.TabIndex = 127;
+            // 
+            // nudEndHorVel
+            // 
+            this.nudEndHorVel.DecimalPlaces = 4;
+            this.nudEndHorVel.IncrementAlternate = new decimal(new int[] {
+            50,
+            0,
+            0,
+            65536});
+            this.nudEndHorVel.Location = new System.Drawing.Point(211, 141);
+            this.nudEndHorVel.LoopValues = true;
+            this.nudEndHorVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudEndHorVel.Minimum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            -2147483648});
+            this.nudEndHorVel.Name = "nudEndHorVel";
+            this.nudEndHorVel.Size = new System.Drawing.Size(64, 22);
+            this.nudEndHorVel.TabIndex = 130;
+            this.nudEndHorVel.ValueChanged += new System.EventHandler(this.nudEndHorVel_ValueChanged);
+            this.nudEndHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // nudStartHorVel
+            // 
+            this.nudStartHorVel.DecimalPlaces = 4;
+            this.nudStartHorVel.IncrementAlternate = new decimal(new int[] {
+            50,
+            0,
+            0,
+            65536});
+            this.nudStartHorVel.Location = new System.Drawing.Point(142, 141);
+            this.nudStartHorVel.LoopValues = true;
+            this.nudStartHorVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudStartHorVel.Minimum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            -2147483648});
+            this.nudStartHorVel.Name = "nudStartHorVel";
+            this.nudStartHorVel.Size = new System.Drawing.Size(64, 22);
+            this.nudStartHorVel.TabIndex = 129;
+            this.nudStartHorVel.ValueChanged += new System.EventHandler(this.nudStartHorVel_ValueChanged);
+            this.nudStartHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // nudEndVertVel
+            // 
+            this.nudEndVertVel.DecimalPlaces = 4;
+            this.nudEndVertVel.IncrementAlternate = new decimal(new int[] {
+            50,
+            0,
+            0,
+            65536});
+            this.nudEndVertVel.Location = new System.Drawing.Point(73, 141);
+            this.nudEndVertVel.LoopValues = true;
+            this.nudEndVertVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudEndVertVel.Minimum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            -2147483648});
+            this.nudEndVertVel.Name = "nudEndVertVel";
+            this.nudEndVertVel.Size = new System.Drawing.Size(64, 22);
+            this.nudEndVertVel.TabIndex = 128;
+            this.nudEndVertVel.ValueChanged += new System.EventHandler(this.nudEndVertVel_ValueChanged);
+            this.nudEndVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
+            // 
+            // nudStartVertVel
+            // 
+            this.nudStartVertVel.DecimalPlaces = 4;
+            this.nudStartVertVel.IncrementAlternate = new decimal(new int[] {
+            50,
+            0,
+            0,
+            65536});
+            this.nudStartVertVel.Location = new System.Drawing.Point(4, 141);
+            this.nudStartVertVel.LoopValues = true;
+            this.nudStartVertVel.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudStartVertVel.Minimum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            -2147483648});
+            this.nudStartVertVel.Name = "nudStartVertVel";
+            this.nudStartVertVel.Size = new System.Drawing.Size(64, 22);
+            this.nudStartVertVel.TabIndex = 127;
+            this.nudStartVertVel.ValueChanged += new System.EventHandler(this.nudStartVertVel_ValueChanged);
+            this.nudStartVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // nudEndFrame
             // 
@@ -1918,46 +1509,6 @@ namespace WadTool
             this.darkLabel2.Size = new System.Drawing.Size(64, 13);
             this.darkLabel2.TabIndex = 126;
             this.darkLabel2.Text = "End frame";
-            // 
-            // tbEndHorVel
-            // 
-            this.tbEndHorVel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbEndHorVel.Location = new System.Drawing.Point(211, 141);
-            this.tbEndHorVel.Name = "tbEndHorVel";
-            this.tbEndHorVel.Size = new System.Drawing.Size(64, 22);
-            this.tbEndHorVel.TabIndex = 15;
-            this.tbEndHorVel.TextChanged += new System.EventHandler(this.tbEndHorVel_ValueChanged);
-            this.tbEndHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
-            // 
-            // tbStartHorVel
-            // 
-            this.tbStartHorVel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbStartHorVel.Location = new System.Drawing.Point(142, 141);
-            this.tbStartHorVel.Name = "tbStartHorVel";
-            this.tbStartHorVel.Size = new System.Drawing.Size(64, 22);
-            this.tbStartHorVel.TabIndex = 14;
-            this.tbStartHorVel.TextChanged += new System.EventHandler(this.tbStartHorVel_ValueChanged);
-            this.tbStartHorVel.Validated += new System.EventHandler(this.animParameter_Validated);
-            // 
-            // tbEndVertVel
-            // 
-            this.tbEndVertVel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbEndVertVel.Location = new System.Drawing.Point(73, 141);
-            this.tbEndVertVel.Name = "tbEndVertVel";
-            this.tbEndVertVel.Size = new System.Drawing.Size(64, 22);
-            this.tbEndVertVel.TabIndex = 13;
-            this.tbEndVertVel.TextChanged += new System.EventHandler(this.tbEndVertVel_ValueChanged);
-            this.tbEndVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
-            // 
-            // tbStartVertVel
-            // 
-            this.tbStartVertVel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbStartVertVel.Location = new System.Drawing.Point(4, 141);
-            this.tbStartVertVel.Name = "tbStartVertVel";
-            this.tbStartVertVel.Size = new System.Drawing.Size(64, 22);
-            this.tbStartVertVel.TabIndex = 12;
-            this.tbStartVertVel.TextChanged += new System.EventHandler(this.tbStartVertVel_ValueChanged);
-            this.tbStartVertVel.Validated += new System.EventHandler(this.animParameter_Validated);
             // 
             // nudNextFrame
             // 
@@ -2136,34 +1687,6 @@ namespace WadTool
             this.darkLabel8.Size = new System.Drawing.Size(40, 13);
             this.darkLabel8.TabIndex = 101;
             this.darkLabel8.Text = "Mode:";
-            // 
-            // picTransformPreview
-            // 
-            this.picTransformPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picTransformPreview.Location = new System.Drawing.Point(198, 84);
-            this.picTransformPreview.Name = "picTransformPreview";
-            this.picTransformPreview.Size = new System.Drawing.Size(77, 23);
-            this.picTransformPreview.TabIndex = 100;
-            this.picTransformPreview.TabStop = false;
-            this.toolTip1.SetToolTip(this.picTransformPreview, "Transform graph preview");
-            // 
-            // cmbTransformMode
-            // 
-            this.cmbTransformMode.FormattingEnabled = true;
-            this.cmbTransformMode.Items.AddRange(new object[] {
-            "None",
-            "Smooth",
-            "Smooth reverse",
-            "Linear",
-            "Linear reverse",
-            "Symmetric smooth",
-            "Symmetric linear"});
-            this.cmbTransformMode.Location = new System.Drawing.Point(44, 84);
-            this.cmbTransformMode.Name = "cmbTransformMode";
-            this.cmbTransformMode.Size = new System.Drawing.Size(147, 23);
-            this.cmbTransformMode.TabIndex = 24;
-            this.toolTip1.SetToolTip(this.cmbTransformMode, "Transform interpolation mode");
-            this.cmbTransformMode.SelectedIndexChanged += new System.EventHandler(this.cmbTransformMode_SelectedIndexChanged);
             // 
             // darkLabel29
             // 
@@ -2390,17 +1913,6 @@ namespace WadTool
             this.nudRotZ.TabIndex = 20;
             this.nudRotZ.ValueChanged += new System.EventHandler(this.nudRotZ_ValueChanged);
             // 
-            // toolStripButton6
-            // 
-            this.toolStripButton6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(28, 35);
-            // 
             // darkContextMenu1
             // 
             this.darkContextMenu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -2485,6 +1997,629 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
+            // butShowAll
+            // 
+            this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butShowAll.Checked = false;
+            this.butShowAll.Image = global::WadTool.Properties.Resources.actions_delete_16;
+            this.butShowAll.Location = new System.Drawing.Point(253, 28);
+            this.butShowAll.Name = "butShowAll";
+            this.butShowAll.Size = new System.Drawing.Size(22, 22);
+            this.butShowAll.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.butShowAll, "Reset filtering");
+            this.butShowAll.Click += new System.EventHandler(this.butShowAll_Click);
+            // 
+            // butDeleteAnimation
+            // 
+            this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteAnimation.Checked = false;
+            this.butDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butDeleteAnimation.Image")));
+            this.butDeleteAnimation.Location = new System.Drawing.Point(252, 208);
+            this.butDeleteAnimation.Name = "butDeleteAnimation";
+            this.butDeleteAnimation.Size = new System.Drawing.Size(23, 24);
+            this.butDeleteAnimation.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.butDeleteAnimation, "Delete selected animations");
+            this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton1.Checked = false;
+            this.darkButton1.Image = global::WadTool.Properties.Resources.general_filter_16;
+            this.darkButton1.Location = new System.Drawing.Point(228, 28);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Size = new System.Drawing.Size(22, 22);
+            this.darkButton1.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.darkButton1, "Filter list.\r\nNumerical input - filter by state ID\r\nString input - filter by name" +
+        "");
+            this.darkButton1.Click += new System.EventHandler(this.butSearchByStateID_Click);
+            // 
+            // butAddNewAnimation
+            // 
+            this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddNewAnimation.Checked = false;
+            this.butAddNewAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butAddNewAnimation.Image")));
+            this.butAddNewAnimation.Location = new System.Drawing.Point(225, 208);
+            this.butAddNewAnimation.Name = "butAddNewAnimation";
+            this.butAddNewAnimation.Size = new System.Drawing.Size(23, 24);
+            this.butAddNewAnimation.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.butAddNewAnimation, "Add new animation");
+            this.butAddNewAnimation.Click += new System.EventHandler(this.butAddNewAnimation_Click);
+            // 
+            // picTransformPreview
+            // 
+            this.picTransformPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picTransformPreview.Location = new System.Drawing.Point(198, 84);
+            this.picTransformPreview.Name = "picTransformPreview";
+            this.picTransformPreview.Size = new System.Drawing.Size(77, 23);
+            this.picTransformPreview.TabIndex = 100;
+            this.picTransformPreview.TabStop = false;
+            this.toolTip1.SetToolTip(this.picTransformPreview, "Transform graph preview");
+            // 
+            // cmbTransformMode
+            // 
+            this.cmbTransformMode.FormattingEnabled = true;
+            this.cmbTransformMode.Items.AddRange(new object[] {
+            "None",
+            "Smooth",
+            "Smooth reverse",
+            "Linear",
+            "Linear reverse",
+            "Symmetric smooth",
+            "Symmetric linear"});
+            this.cmbTransformMode.Location = new System.Drawing.Point(44, 84);
+            this.cmbTransformMode.Name = "cmbTransformMode";
+            this.cmbTransformMode.Size = new System.Drawing.Size(147, 23);
+            this.cmbTransformMode.TabIndex = 24;
+            this.toolTip1.SetToolTip(this.cmbTransformMode, "Transform interpolation mode");
+            this.cmbTransformMode.SelectedIndexChanged += new System.EventHandler(this.cmbTransformMode_SelectedIndexChanged);
+            // 
+            // butTransportStart
+            // 
+            this.butTransportStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportStart.Image = global::WadTool.Properties.Resources.transport_start_24;
+            this.butTransportStart.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportStart.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportStart.Name = "butTransportStart";
+            this.butTransportStart.Size = new System.Drawing.Size(28, 33);
+            this.butTransportStart.ToolTipText = "Go to start";
+            this.butTransportStart.Click += new System.EventHandler(this.butTransportStart_Click);
+            // 
+            // butTransportFrameBack
+            // 
+            this.butTransportFrameBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportFrameBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportFrameBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportFrameBack.Image = global::WadTool.Properties.Resources.transport_frame_back_24;
+            this.butTransportFrameBack.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportFrameBack.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportFrameBack.Name = "butTransportFrameBack";
+            this.butTransportFrameBack.Size = new System.Drawing.Size(28, 33);
+            this.butTransportFrameBack.ToolTipText = "Back 1 frame";
+            this.butTransportFrameBack.Click += new System.EventHandler(this.butTransportFrameBack_Click);
+            // 
+            // butTransportPlay
+            // 
+            this.butTransportPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportPlay.Image = global::WadTool.Properties.Resources.transport_play_24;
+            this.butTransportPlay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportPlay.Name = "butTransportPlay";
+            this.butTransportPlay.Size = new System.Drawing.Size(28, 33);
+            this.butTransportPlay.ToolTipText = "Playback";
+            this.butTransportPlay.Click += new System.EventHandler(this.butTransportPlay_Click);
+            // 
+            // butTransportFrameForward
+            // 
+            this.butTransportFrameForward.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportFrameForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportFrameForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportFrameForward.Image = global::WadTool.Properties.Resources.transport_frame_forward_24;
+            this.butTransportFrameForward.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportFrameForward.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportFrameForward.Name = "butTransportFrameForward";
+            this.butTransportFrameForward.Size = new System.Drawing.Size(28, 33);
+            this.butTransportFrameForward.ToolTipText = "Forward 1 frame";
+            this.butTransportFrameForward.Click += new System.EventHandler(this.butTransportFrameForward_Click);
+            // 
+            // butTransportEnd
+            // 
+            this.butTransportEnd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportEnd.Image = global::WadTool.Properties.Resources.transport_end_24;
+            this.butTransportEnd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportEnd.Name = "butTransportEnd";
+            this.butTransportEnd.Size = new System.Drawing.Size(28, 33);
+            this.butTransportEnd.ToolTipText = "Go to end";
+            this.butTransportEnd.Click += new System.EventHandler(this.butTransportEnd_Click);
+            // 
+            // butTransportChained
+            // 
+            this.butTransportChained.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportChained.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportChained.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportChained.Image = global::WadTool.Properties.Resources.transport_chain_disabled_24;
+            this.butTransportChained.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportChained.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportChained.Name = "butTransportChained";
+            this.butTransportChained.Size = new System.Drawing.Size(28, 33);
+            this.butTransportChained.ToolTipText = "Chain playback";
+            this.butTransportChained.Click += new System.EventHandler(this.transportChained_Click);
+            // 
+            // butTransportSound
+            // 
+            this.butTransportSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportSound.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportSound.Image = global::WadTool.Properties.Resources.transport_mute_24;
+            this.butTransportSound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportSound.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportSound.Name = "butTransportSound";
+            this.butTransportSound.Size = new System.Drawing.Size(28, 33);
+            this.butTransportSound.ToolTipText = "Toggle sound preview";
+            this.butTransportSound.Click += new System.EventHandler(this.butTransportSound_Click);
+            // 
+            // butTransportLandWater
+            // 
+            this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportLandWater.DoubleClickEnabled = true;
+            this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
+            this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportLandWater.Name = "butTransportLandWater";
+            this.butTransportLandWater.Size = new System.Drawing.Size(28, 33);
+            this.butTransportLandWater.ToolTipText = "Toggle sound conditions";
+            this.butTransportLandWater.Click += new System.EventHandler(this.butTransportLandWater_Click);
+            // 
+            // butTbSaveAllChanges
+            // 
+            this.butTbSaveAllChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbSaveAllChanges.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbSaveAllChanges.Enabled = false;
+            this.butTbSaveAllChanges.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbSaveAllChanges.Image = global::WadTool.Properties.Resources.general_Save_16;
+            this.butTbSaveAllChanges.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbSaveAllChanges.Name = "butTbSaveAllChanges";
+            this.butTbSaveAllChanges.Size = new System.Drawing.Size(23, 25);
+            this.butTbSaveAllChanges.Click += new System.EventHandler(this.butTbSaveChanges_Click);
+            // 
+            // butTbUndo
+            // 
+            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbUndo.Enabled = false;
+            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbUndo.Name = "butTbUndo";
+            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
+            this.butTbUndo.ToolTipText = "Undo";
+            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
+            // 
+            // butTbRedo
+            // 
+            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRedo.Enabled = false;
+            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRedo.Name = "butTbRedo";
+            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
+            this.butTbRedo.ToolTipText = "Redo";
+            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
+            // 
+            // butTbResetCamera
+            // 
+            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
+            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbResetCamera.Name = "butTbResetCamera";
+            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
+            this.butTbResetCamera.ToolTipText = "Reset camera";
+            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
+            // 
+            // butTbAddAnimation
+            // 
+            this.butTbAddAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAddAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAddAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAddAnimation.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbAddAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAddAnimation.Name = "butTbAddAnimation";
+            this.butTbAddAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbAddAnimation.Text = "toolStripButton2";
+            this.butTbAddAnimation.ToolTipText = "Add animation";
+            this.butTbAddAnimation.Click += new System.EventHandler(this.butTbAddAnimation_Click);
+            // 
+            // butTbImport
+            // 
+            this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbImport.Image = global::WadTool.Properties.Resources.general_Import_16;
+            this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbImport.Name = "butTbImport";
+            this.butTbImport.Size = new System.Drawing.Size(23, 25);
+            this.butTbImport.ToolTipText = "Import...";
+            this.butTbImport.Click += new System.EventHandler(this.butTbImport_Click);
+            // 
+            // butTbDeleteAnimation
+            // 
+            this.butTbDeleteAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbDeleteAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbDeleteAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbDeleteAnimation.Image = global::WadTool.Properties.Resources.trash_16;
+            this.butTbDeleteAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbDeleteAnimation.Name = "butTbDeleteAnimation";
+            this.butTbDeleteAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbDeleteAnimation.Text = "toolStripButton3";
+            this.butTbDeleteAnimation.ToolTipText = "Delete animation";
+            this.butTbDeleteAnimation.Click += new System.EventHandler(this.butTbDeleteAnimation_Click);
+            // 
+            // butTbCutAnimation
+            // 
+            this.butTbCutAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbCutAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbCutAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbCutAnimation.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.butTbCutAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbCutAnimation.Name = "butTbCutAnimation";
+            this.butTbCutAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbCutAnimation.Text = "toolStripButton8";
+            this.butTbCutAnimation.ToolTipText = "Cut animation";
+            this.butTbCutAnimation.Click += new System.EventHandler(this.butTbCutAnimation_Click);
+            // 
+            // butTbCopyAnimation
+            // 
+            this.butTbCopyAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbCopyAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbCopyAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbCopyAnimation.Image = global::WadTool.Properties.Resources.copy_16;
+            this.butTbCopyAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbCopyAnimation.Name = "butTbCopyAnimation";
+            this.butTbCopyAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbCopyAnimation.Text = "toolStripButton4";
+            this.butTbCopyAnimation.ToolTipText = "Copy animation";
+            this.butTbCopyAnimation.Click += new System.EventHandler(this.butTbCopyAnimation_Click);
+            // 
+            // butTbPasteAnimation
+            // 
+            this.butTbPasteAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbPasteAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbPasteAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbPasteAnimation.Image = global::WadTool.Properties.Resources.general_paste_16;
+            this.butTbPasteAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbPasteAnimation.Name = "butTbPasteAnimation";
+            this.butTbPasteAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbPasteAnimation.Text = "toolStripButton5";
+            this.butTbPasteAnimation.ToolTipText = "Paste animation";
+            this.butTbPasteAnimation.Click += new System.EventHandler(this.butTbPasteAnimation_Click);
+            // 
+            // butTbReplaceAnimation
+            // 
+            this.butTbReplaceAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbReplaceAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbReplaceAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbReplaceAnimation.Image = global::WadTool.Properties.Resources.general_paste_new_16;
+            this.butTbReplaceAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbReplaceAnimation.Name = "butTbReplaceAnimation";
+            this.butTbReplaceAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbReplaceAnimation.Text = "toolStripButton5";
+            this.butTbReplaceAnimation.ToolTipText = "Replace animation";
+            this.butTbReplaceAnimation.Click += new System.EventHandler(this.butTbReplaceAnimation_Click);
+            // 
+            // butTbSplitAnimation
+            // 
+            this.butTbSplitAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbSplitAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbSplitAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbSplitAnimation.Image = global::WadTool.Properties.Resources.split_16;
+            this.butTbSplitAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbSplitAnimation.Name = "butTbSplitAnimation";
+            this.butTbSplitAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbSplitAnimation.Text = "toolStripButton5";
+            this.butTbSplitAnimation.ToolTipText = "Split animation";
+            this.butTbSplitAnimation.Click += new System.EventHandler(this.butTbSplitAnimation_Click);
+            // 
+            // butTbAddFrame
+            // 
+            this.butTbAddFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAddFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAddFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAddFrame.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butTbAddFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAddFrame.Name = "butTbAddFrame";
+            this.butTbAddFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbAddFrame.Text = "toolStripButton2";
+            this.butTbAddFrame.ToolTipText = "Add frame";
+            this.butTbAddFrame.Click += new System.EventHandler(this.butTbAddFrame_Click);
+            // 
+            // butTbDeleteFrame
+            // 
+            this.butTbDeleteFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbDeleteFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbDeleteFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbDeleteFrame.Image = global::WadTool.Properties.Resources.trash_16;
+            this.butTbDeleteFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbDeleteFrame.Name = "butTbDeleteFrame";
+            this.butTbDeleteFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbDeleteFrame.Text = "toolStripButton3";
+            this.butTbDeleteFrame.ToolTipText = "Delete frames";
+            this.butTbDeleteFrame.Click += new System.EventHandler(this.butTbDeleteFrame_Click);
+            // 
+            // butTbCutFrame
+            // 
+            this.butTbCutFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbCutFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbCutFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbCutFrame.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.butTbCutFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbCutFrame.Name = "butTbCutFrame";
+            this.butTbCutFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbCutFrame.Text = "toolStripButton8";
+            this.butTbCutFrame.ToolTipText = "Cut frames";
+            this.butTbCutFrame.Click += new System.EventHandler(this.butTbCutFrame_Click);
+            // 
+            // butTbCopyFrame
+            // 
+            this.butTbCopyFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbCopyFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbCopyFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbCopyFrame.Image = global::WadTool.Properties.Resources.copy_16;
+            this.butTbCopyFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbCopyFrame.Name = "butTbCopyFrame";
+            this.butTbCopyFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbCopyFrame.Text = "toolStripButton4";
+            this.butTbCopyFrame.ToolTipText = "Copy frames";
+            this.butTbCopyFrame.Click += new System.EventHandler(this.butTbCopyFrame_Click);
+            // 
+            // butTbPasteFrame
+            // 
+            this.butTbPasteFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbPasteFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbPasteFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbPasteFrame.Image = global::WadTool.Properties.Resources.general_paste_16;
+            this.butTbPasteFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbPasteFrame.Name = "butTbPasteFrame";
+            this.butTbPasteFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbPasteFrame.Text = "toolStripButton5";
+            this.butTbPasteFrame.ToolTipText = "Paste frames";
+            this.butTbPasteFrame.Click += new System.EventHandler(this.butTbPasteFrame_Click);
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.undoToolStripMenuItem.Enabled = false;
+            this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.undoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.redoToolStripMenuItem.Enabled = false;
+            this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.redoToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+            // 
+            // saveChangesToolStripMenuItem
+            // 
+            this.saveChangesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.saveChangesToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Save_16;
+            this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveChangesToolStripMenuItem.Text = "Save changes";
+            this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
+            // 
+            // addNewToolStripMenuItem
+            // 
+            this.addNewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.addNewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.addNewToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.addNewToolStripMenuItem.Name = "addNewToolStripMenuItem";
+            this.addNewToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.addNewToolStripMenuItem.Text = "New animation";
+            this.addNewToolStripMenuItem.Click += new System.EventHandler(this.addNewAnimationToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.deleteToolStripMenuItem.Text = "Delete animation";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteAnimationToolStripMenuItem_Click);
+            // 
+            // splitAnimationToolStripMenuItem
+            // 
+            this.splitAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.splitAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.split_16;
+            this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
+            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.splitAnimationToolStripMenuItem.Text = "Split animation";
+            this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
+            // 
+            // curToolStripMenuItem
+            // 
+            this.curToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.curToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.curToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.curToolStripMenuItem.Name = "curToolStripMenuItem";
+            this.curToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.curToolStripMenuItem.Text = "Cut";
+            this.curToolStripMenuItem.Click += new System.EventHandler(this.cutAnimationToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem1
+            // 
+            this.copyToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.copyToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.copyToolStripMenuItem1.Image = global::WadTool.Properties.Resources.copy_16;
+            this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
+            this.copyToolStripMenuItem1.Text = "Copy";
+            this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyAnimationToolStripMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem1
+            // 
+            this.pasteToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.pasteToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.pasteToolStripMenuItem1.Image = global::WadTool.Properties.Resources.general_paste_16;
+            this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
+            this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
+            this.pasteToolStripMenuItem1.Text = "Paste";
+            this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.pasteAnimationToolStripMenuItem_Click);
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Import_16;
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.importToolStripMenuItem.Text = "Import...";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Export_16;
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.exportToolStripMenuItem.Text = "Export...";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            // 
+            // resampleAnimationToolStripMenuItem
+            // 
+            this.resampleAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.resampleAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.resampleAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
+            this.resampleAnimationToolStripMenuItem.Name = "resampleAnimationToolStripMenuItem";
+            this.resampleAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.resampleAnimationToolStripMenuItem.Text = "Resample animation";
+            this.resampleAnimationToolStripMenuItem.Click += new System.EventHandler(this.resampleAnimationToolStripMenuItem_Click);
+            // 
+            // mirrorAnimationToolStripMenuItem
+            // 
+            this.mirrorAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.mirrorAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.mirrorAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Mirror;
+            this.mirrorAnimationToolStripMenuItem.Name = "mirrorAnimationToolStripMenuItem";
+            this.mirrorAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.mirrorAnimationToolStripMenuItem.Text = "Mirror animation";
+            this.mirrorAnimationToolStripMenuItem.Click += new System.EventHandler(this.mirrorAnimationToolStripMenuItem_Click);
+            // 
+            // findReplaceAnimcommandsToolStripMenuItem
+            // 
+            this.findReplaceAnimcommandsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.findReplaceAnimcommandsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.findReplaceAnimcommandsToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Find_and_replace_16;
+            this.findReplaceAnimcommandsToolStripMenuItem.Name = "findReplaceAnimcommandsToolStripMenuItem";
+            this.findReplaceAnimcommandsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.findReplaceAnimcommandsToolStripMenuItem.Text = "Find && replace animcommands...";
+            this.findReplaceAnimcommandsToolStripMenuItem.Click += new System.EventHandler(this.findReplaceAnimcommandsToolStripMenuItem_Click);
+            // 
+            // insertFrameAfterCurrentOneToolStripMenuItem
+            // 
+            this.insertFrameAfterCurrentOneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.insertFrameAfterCurrentOneToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.insertFrameAfterCurrentOneToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.insertFrameAfterCurrentOneToolStripMenuItem.Name = "insertFrameAfterCurrentOneToolStripMenuItem";
+            this.insertFrameAfterCurrentOneToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.insertFrameAfterCurrentOneToolStripMenuItem.Text = "Insert frame after current one";
+            this.insertFrameAfterCurrentOneToolStripMenuItem.Click += new System.EventHandler(this.insertFrameAfterCurrentOneToolStripMenuItem_Click);
+            // 
+            // deleteFrameToolStripMenuItem
+            // 
+            this.deleteFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteFrameToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
+            this.deleteFrameToolStripMenuItem.Name = "deleteFrameToolStripMenuItem";
+            this.deleteFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.deleteFrameToolStripMenuItem.Text = "Delete frames";
+            this.deleteFrameToolStripMenuItem.Click += new System.EventHandler(this.deleteFramesToolStripMenuItem_Click);
+            // 
+            // cutToolStripMenuItem
+            // 
+            this.cutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.cutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.cutToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_cut_16;
+            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.cutToolStripMenuItem.Text = "Cut";
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutFramesToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.copyToolStripMenuItem.Image = global::WadTool.Properties.Resources.copy_16;
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyFramesToolStripMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            this.pasteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.pasteToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_paste_16;
+            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.pasteToolStripMenuItem.Text = "Paste";
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteFramesToolStripMenuItem_Click);
+            // 
+            // interpolateFramesToolStripMenuItem
+            // 
+            this.interpolateFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.interpolateFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.interpolateFramesToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
+            this.interpolateFramesToolStripMenuItem.Name = "interpolateFramesToolStripMenuItem";
+            this.interpolateFramesToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.interpolateFramesToolStripMenuItem.Text = "Interpolate frames";
+            this.interpolateFramesToolStripMenuItem.Click += new System.EventHandler(this.interpolateFramesToolStripMenuItem_Click);
+            // 
+            // calculateCollisionBoxForCurrentFrameToolStripMenuItem
+            // 
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_box_16;
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Name = "calculateCollisionBoxForCurrentFrameToolStripMenuItem";
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Text = "Calculate bounding box";
+            this.calculateCollisionBoxForCurrentFrameToolStripMenuItem.Click += new System.EventHandler(this.calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click);
+            // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
+            this.toolStripButton6.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(28, 35);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2530,6 +2665,10 @@ namespace WadTool
             this.darkToolStrip1.PerformLayout();
             this.darkSectionPanel4.ResumeLayout(false);
             this.darkSectionPanel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEndHorVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStartHorVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEndVertVel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStartVertVel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEndFrame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNextFrame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNextAnim)).EndInit();
@@ -2540,7 +2679,6 @@ namespace WadTool
             this.panelLeft.ResumeLayout(false);
             this.panelTransform.ResumeLayout(false);
             this.panelTransform.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransZ)).EndInit();
@@ -2548,6 +2686,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)(this.nudRotY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRotZ)).EndInit();
             this.cmTimelineContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picTransformPreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2661,10 +2800,6 @@ namespace WadTool
         private DarkUI.Controls.DarkNumericUpDown nudNextFrame;
         private DarkUI.Controls.DarkNumericUpDown nudNextAnim;
         private DarkUI.Controls.DarkNumericUpDown nudFramerate;
-        private DarkUI.Controls.DarkTextBox tbEndHorVel;
-        private DarkUI.Controls.DarkTextBox tbStartHorVel;
-        private DarkUI.Controls.DarkTextBox tbEndVertVel;
-        private DarkUI.Controls.DarkTextBox tbStartVertVel;
         private System.Windows.Forms.ToolStripMenuItem deleteEveryNthFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findReplaceAnimcommandsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTbImport;
@@ -2729,7 +2864,17 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem restoreGridHeightToolStripMenuItem;
         private DarkUI.Controls.DarkNumericUpDown nudEndFrame;
         private DarkUI.Controls.DarkLabel darkLabel2;
-        private System.Windows.Forms.ToolStripMenuItem fixCurrentAnimationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fixAllAnimationsToolStripMenuItem;
+        private DarkUI.Controls.DarkNumericUpDown nudEndHorVel;
+        private DarkUI.Controls.DarkNumericUpDown nudStartHorVel;
+        private DarkUI.Controls.DarkNumericUpDown nudEndVertVel;
+        private DarkUI.Controls.DarkNumericUpDown nudStartVertVel;
+        private System.Windows.Forms.ToolStripMenuItem batchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exportSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem currentAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectedAnimationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allAnimationsToolStripMenuItem;
     }
 }

@@ -356,6 +356,21 @@ namespace TombLib
             return result;
         }
 
+        // A replica of phd_GetVectorAngles. Needed for cine frames calculation and maybe
+        // some other operations in TE.
+        public static Vector3 GetVectorAngles(Vector3 v1, Vector3 v2)
+        {
+            var dirVector = v1 - v2;
+            var angle = (float)Math.Atan2(dirVector.X, dirVector.Z);
+            var matrix = Matrix4x4.CreateRotationY(-angle);
+            var transformedVector = Vector3.Transform(dirVector, matrix);
+
+            var xRot = RadToDeg(angle);
+            var yRot = RadToDeg((float)-Math.Atan2(dirVector.Y, transformedVector.Z));
+
+            return new Vector3(xRot, yRot, 0); // Roll is null in phd math
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float RadToDeg(float r) => r * (180.0f / (float)Math.PI) + (r < 0 ? 360.0f : 0.0f);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

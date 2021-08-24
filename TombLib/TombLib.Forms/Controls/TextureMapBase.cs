@@ -195,6 +195,9 @@ namespace TombLib.Controls
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= selectionPrecision.Precision;
 
+            // Clamp texture coordinate to image bounds
+            texCoord = Vector2.Min(texCoord, VisibleTexture.Image.Size);
+
             return texCoord;
         }
 

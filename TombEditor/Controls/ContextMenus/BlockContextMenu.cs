@@ -46,7 +46,6 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PlaceObject(targetRoom, targetBlock, new SpriteInstance());
             }));
 
-            if (editor.Level.Settings.GameVersion >= TRVersion.Game.TR4)
             Items.Add(new ToolStripMenuItem("Add flyby camera", Properties.Resources.objects_movie_projector_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new FlybyCameraInstance(editor.SelectedObject));

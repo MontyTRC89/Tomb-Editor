@@ -115,6 +115,16 @@ namespace TombEditor.ToolWindows
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
 
+            // Activate default control
+            if (obj is Editor.DefaultControlActivationEvent)
+            {
+                if (DockPanel != null && ((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
+                {
+                    MakeActive();
+                    comboItems.Search();
+                }
+            }
+
             // Update UI
             if (obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.InitEvent)

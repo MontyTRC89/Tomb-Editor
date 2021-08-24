@@ -7,12 +7,14 @@ Tomb Editor:
 	- Bulk rotate individually or around root object by holding Alt key.
 	- Bulk delete and copy-paste.
 	- Batch triggering in dxtre3d style, including key/switch trigger type autodetection.
+ * Hotkeys for quick in-place search for rooms (Shift+F1), items (Shift+F2) and imported geometry (Shift+F3).
  * An option to toggle bilinear filter on or off (right-click and customize toolbar to see the button).
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
  * Allow shiny effect on static meshes, if light type is set to dynamic.
  * Properly fit every item in item browser preview and optionally animate it.
  * Draw triangular portals in 2D grid.
+ * Compile flyby sequences as cinematic frames for TR1-3 (use together with StartAnim script command).
  * Fix exception if level with missing merged statics is compiled.
  * Fix launching of SoundTool and WadTool from Tomb Editor in case project is opened from explorer.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
@@ -28,6 +30,8 @@ WadTool:
     - Individually edit vertex shades.
     - Individually edit vertex effects (glow and movement) and convert them from legacy vertex shades workflow.
 	- Edit and automatically calculate sphere.
+ * Batch XML animation export and import.
+ * Multiple selection in animation editor list (Ctrl+click) for batch operations (fix, delete or import/export).
  * New function in animation fixer to restore original animation names for current game version.
  * Export meshes with single texture without shuffling texture pieces.
  * Animate main window item preview.

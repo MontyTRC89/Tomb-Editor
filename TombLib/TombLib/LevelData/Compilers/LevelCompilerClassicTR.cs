@@ -549,5 +549,94 @@ namespace TombLib.LevelData.Compilers
             }
             return buffer;
         }
+
+        public List<tr_cinematicFrame> GetCinematicFrames()
+        {
+            var result = new List<tr_cinematicFrame>();
+
+            var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
+
+            if (allObjects.Count == 0)
+                return result;
+
+            var allFlybys = allObjects.OfType<FlybyCameraInstance>().OrderBy(f => f.Sequence).ThenBy(f => f.Number).ToList();
+            if (allFlybys.Count == 0)
+                return result;
+
+            var lara = _level.Settings.WadTryGetMoveable(WadMoveableId.Lara);
+            if (lara == null)
+                return result;
+
+            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
+                                    ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
+            if (laraItem == null)
+                return result;
+
+            var origin = laraItem.WorldPosition;
+            var rotationOffset = -(laraItem as IRotateableY).RotationY * Math.PI / 180.0f;
+            var sin = (float)Math.Sin(-rotationOffset);
+            var cos = (float)Math.Cos(-rotationOffset);
+
+            var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
+
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames.");
+
+            foreach (var flybys in groups)
+            {
+                var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
+
+                var positions = flybys.Select(f =>
+                {
+                    var distance = f.WorldPosition - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x, f.WorldPosition.Y, z);
+                }
+                ).ToList();
+
+                var targets = flybys.Select(f =>
+                {
+                    var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, 1024.0f);
+                    var trans = f.WorldPosition + (mxT * mxR).Translation;
+
+                    var distance = trans - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x , trans.Y, z);
+                }
+                ).ToList();
+
+                var grain = (int)Math.Round(30.0f / (flybys.First().Speed * 0.0333f));
+
+                var cPositions = Spline.Calculate(positions, grain);
+                var cTargets   = Spline.Calculate(targets, grain);
+                var cSettings  = Spline.Calculate(settings, grain);
+
+                for (int i = 0; i < cPositions.Count; i++)
+                {
+                    var roll = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                            Math.Round((cSettings[i].X) * (65536.0 / 360.0))));
+
+                    var frame = new tr_cinematicFrame()
+                    {
+                        Fov = (ushort)(cSettings[i].Y * 100),
+                        Roll = roll,
+                        TargetX = (short) (cTargets[i].X   - origin.X),
+                        TargetY = (short)-(cTargets[i].Y   - origin.Y),
+                        TargetZ = (short) (cTargets[i].Z   - origin.Z),
+                        PosX    = (short) (cPositions[i].X - origin.X),
+                        PosY    = (short)-(cPositions[i].Y - origin.Y),
+                        PosZ    = (short) (cPositions[i].Z - origin.Z)
+                    };
+
+                    result.Add(frame);
+                }
+            }
+
+            return result;
+        }
     }
 }

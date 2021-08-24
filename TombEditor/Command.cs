@@ -1107,9 +1107,6 @@ namespace TombEditor
 
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Flyby camera"))
-                    return;
-
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance(args.Editor.SelectedObject));
             });
 
@@ -2062,6 +2059,26 @@ namespace TombEditor
             AddCommand("SelectAllObjectsInArea", "Select all objects in selected area", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.SelectObjectsInArea(args.Window, args.Editor.SelectedSectors);
+            });
+
+            AddCommand("InPlaceSearchRooms", "Room in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.RoomOptions));
+            });
+
+            AddCommand("InPlaceSearchItems", "Item in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ItemBrowser));
+            });
+
+            AddCommand("InPlaceSearchTextures", "Texture in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.TexturePanel));
+            });
+
+            AddCommand("InPlaceSearchImportedGeometry", "Imported geometry in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ImportedGeometryBrowser));
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 

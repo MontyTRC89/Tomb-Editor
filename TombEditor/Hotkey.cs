@@ -376,6 +376,10 @@ namespace TombEditor
             this["Undo"] = new SortedSet<Hotkey> { Keys.Control | Z };
             this["Redo"] = new SortedSet<Hotkey> { Keys.Control | Y };
             this["ToggleFlyMode"] = new SortedSet<Hotkey> { Keys.Shift | Z };
+            this["InPlaceSearchRooms"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F1 };
+            this["InPlaceSearchItems"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F2 };
+            this["InPlaceSearchImportedGeometry"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F3 };
+            this["InPlaceSearchTextures"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F4 };
 
             // Check for conflicts
             var hotkeyList = _list

@@ -61,4 +61,80 @@ namespace TombLib.LevelData
         Rain = 1,
         Snow = 2
     }
+
+    public static class StringEnums
+    {
+        public static readonly List<string> NGRoomTypes = new List<string>()
+        {
+            "Rain 1",
+            "Rain 2",
+            "Rain 3",
+            "Rain 4",
+            "Snow 1",
+            "Snow 2",
+            "Snow 3",
+            "Snow 4"
+        };
+
+        public static readonly List<string> ReverberationTypes = new List<string>()
+        {
+            "None",
+            "Small",
+            "Medium",
+            "Large",
+            "Pipe",
+        };
+
+        public static readonly List<string> ExtraReverberationTypes = new List<string>()
+        {
+            "None",
+            "Default",
+            "Generic",
+            "Padded Cell",
+            "Room",
+            "Bathroom",
+            "Living Room",
+            "Stone Room",
+            "Auditorium",
+            "Concert Hall",
+            "Cave",
+            "Arena",
+            "Hangar",
+            "Carpeted Hallway",
+            "Hallway",
+            "Stone Corridor",
+            "Alley",
+            "Forest",
+            "City",
+            "Mountains",
+            "Quarry",
+            "Plain",
+            "Parking Lot",
+            "Sewer Pipe",
+            "Underwater",
+            "Small Room",
+            "Medium Room",
+            "Large Room",
+            "Medium Hall",
+            "Large Hall",
+            "Plate",
+            "Custom 1",
+            "Custom 2",
+            "Custom 3",
+            "Custom 4",
+            "Custom 5",
+            "Custom 6",
+            "Custom 7",
+            "Custom 8",
+            "Custom 9",
+            "Custom 10",
+            "Custom 11",
+            "Custom 12",
+            "Custom 13",
+            "Custom 14",
+            "Custom 15",
+            "Custom 16"
+        };
+
+    }
 }
