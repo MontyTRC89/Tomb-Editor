@@ -579,8 +579,8 @@ namespace TombEditor
             var objectList = new List<ObjectInstance>();
 
             // If object group is a group of moveables, batch-trigger it. Otherwise, add single object to list.
-            if (@object is ObjectGroup && ((ObjectGroup)@object).All(o => o is MoveableInstance))
-                objectList.AddRange(((ObjectGroup)@object));
+            if (@object is ObjectGroup && ((ObjectGroup)@object).Any(o => o is MoveableInstance))
+                objectList.AddRange(((ObjectGroup)@object).Where(i => i is MoveableInstance));
             else
                 objectList.Add(@object);
 
