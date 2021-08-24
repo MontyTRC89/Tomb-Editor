@@ -207,10 +207,6 @@ namespace TombLib.LevelData
         public bool EnableCustomSampleRate { get; set; } = false;
         public int CustomSampleRate { get; set; } = 44100;
 
-        // For TR1-3 only
-
-        public bool WriteDummyCinematicFrames = false;
-
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;

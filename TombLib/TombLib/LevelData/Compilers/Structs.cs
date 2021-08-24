@@ -1224,6 +1224,36 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr_cinematicFrame
+    {
+        public ushort AngleX;
+        public ushort AngleY;
+        public ushort AngleZ;
+        public short PosX;
+        public short PosY;
+        public short PosZ;
+        public ushort Fov;
+        public ushort Roll;
+
+        public static void Write(List<tr_cinematicFrame> frames, BinaryWriter writer)
+        {
+            writer.Write((ushort)frames.Count);
+
+            foreach (var frame in frames)
+            {
+                writer.Write(frame.AngleX);
+                writer.Write(frame.AngleY);
+                writer.Write(frame.AngleZ);
+                writer.Write(frame.PosX);
+                writer.Write(frame.PosY);
+                writer.Write(frame.PosZ);
+                writer.Write(frame.Fov);
+                writer.Write(frame.Roll);
+            }
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animatedTextures
     {
         public short NumTextureID;

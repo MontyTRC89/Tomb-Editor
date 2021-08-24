@@ -191,7 +191,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbCineFrames = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
@@ -238,14 +237,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -386,7 +385,7 @@
             // cbKeepSampleRate
             // 
             this.cbKeepSampleRate.AutoSize = true;
-            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 258);
+            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 235);
             this.cbKeepSampleRate.Name = "cbKeepSampleRate";
             this.cbKeepSampleRate.Size = new System.Drawing.Size(209, 17);
             this.cbKeepSampleRate.TabIndex = 114;
@@ -1875,7 +1874,7 @@
             this.panelLuaPath.Controls.Add(this.darkLabel10);
             this.panelLuaPath.Controls.Add(this.tbLuaPath);
             this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelLuaPath.Location = new System.Drawing.Point(0, 493);
+            this.panelLuaPath.Location = new System.Drawing.Point(0, 468);
             this.panelLuaPath.Name = "panelLuaPath";
             this.panelLuaPath.Size = new System.Drawing.Size(778, 50);
             this.panelLuaPath.TabIndex = 98;
@@ -1915,7 +1914,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 442);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 417);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1944,7 +1943,7 @@
             this.cbSampleRate.Controls.Add(this.comboLaraType);
             this.cbSampleRate.Controls.Add(this.lblLaraType);
             this.cbSampleRate.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSampleRate.Location = new System.Drawing.Point(0, 391);
+            this.cbSampleRate.Location = new System.Drawing.Point(0, 366);
             this.cbSampleRate.Name = "cbSampleRate";
             this.cbSampleRate.Size = new System.Drawing.Size(778, 51);
             this.cbSampleRate.TabIndex = 96;
@@ -1974,7 +1973,7 @@
             this.panelScripts.Controls.Add(this.darkLabel15);
             this.panelScripts.Controls.Add(this.tbScriptPath);
             this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelScripts.Location = new System.Drawing.Point(0, 341);
+            this.panelScripts.Location = new System.Drawing.Point(0, 316);
             this.panelScripts.Name = "panelScripts";
             this.panelScripts.Size = new System.Drawing.Size(778, 50);
             this.panelScripts.TabIndex = 95;
@@ -2015,7 +2014,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 289);
+            this.panel6.Location = new System.Drawing.Point(0, 264);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -2052,7 +2051,6 @@
             // 
             // panel12
             // 
-            this.panel12.Controls.Add(this.cbCineFrames);
             this.panel12.Controls.Add(this.cmbSampleRate);
             this.panel12.Controls.Add(this.cbKeepSampleRate);
             this.panel12.Controls.Add(this.cbRemoveObjects);
@@ -2072,7 +2070,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 289);
+            this.panel12.Size = new System.Drawing.Size(778, 264);
             this.panel12.TabIndex = 91;
             // 
             // cmbSampleRate
@@ -2083,7 +2081,7 @@
             "22050",
             "44100",
             "48000"});
-            this.cmbSampleRate.Location = new System.Drawing.Point(215, 256);
+            this.cmbSampleRate.Location = new System.Drawing.Point(215, 233);
             this.cmbSampleRate.Name = "cmbSampleRate";
             this.cmbSampleRate.Size = new System.Drawing.Size(81, 23);
             this.cmbSampleRate.TabIndex = 115;
@@ -2234,19 +2232,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // cbCineFrames
-            // 
-            this.cbCineFrames.AutoSize = true;
-            this.cbCineFrames.Location = new System.Drawing.Point(3, 235);
-            this.cbCineFrames.Name = "cbCineFrames";
-            this.cbCineFrames.Size = new System.Drawing.Size(182, 17);
-            this.cbCineFrames.TabIndex = 116;
-            this.cbCineFrames.Tag = "";
-            this.cbCineFrames.Text = "Write dummy cinematic frames";
-            this.pathToolTip.SetToolTip(this.cbCineFrames, "For TR1-TR3 levels, this allows usage of start animation script command with simp" +
-        "le camera angle.");
-            this.cbCineFrames.CheckedChanged += new System.EventHandler(this.cbCineFrames_CheckedChanged);
             // 
             // FormLevelSettings
             // 
@@ -2498,6 +2483,5 @@
         private DarkUI.Controls.DarkTextBox tbLuaPath;
         private DarkUI.Controls.DarkCheckBox cbKeepSampleRate;
         private DarkUI.Controls.DarkComboBox cmbSampleRate;
-        private DarkUI.Controls.DarkCheckBox cbCineFrames;
     }
 }

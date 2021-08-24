@@ -162,7 +162,9 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.RemapAnimatedTextures, settings.RemapAnimatedTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.RearrangeRooms, settings.RearrangeVerticalRooms);
 				chunkIO.WriteChunkBool(Prj2Chunks.RemoveUnusedObjects, settings.RemoveUnusedObjects);
-				chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
+                chunkIO.WriteChunkBool(Prj2Chunks.EnableCustomSampleRate, settings.EnableCustomSampleRate);
+                chunkIO.WriteChunkInt(Prj2Chunks.CustomSampleRate, settings.CustomSampleRate);
+                chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);

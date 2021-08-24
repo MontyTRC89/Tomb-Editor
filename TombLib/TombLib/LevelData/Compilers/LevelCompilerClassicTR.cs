@@ -549,5 +549,68 @@ namespace TombLib.LevelData.Compilers
             }
             return buffer;
         }
+
+        public List<tr_cinematicFrame> GetCinematicFrames()
+        {
+            var result = new List<tr_cinematicFrame>();
+
+            var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
+
+            if (allObjects.Count == 0)
+                return result;
+
+            var allFlybys = allObjects.OfType<FlybyCameraInstance>().OrderBy(f => f.Sequence).ThenBy(f => f.Number).ToList();
+            if (allFlybys.Count == 0)
+                return result;
+
+            var lara = _level.Settings.WadTryGetMoveable(WadMoveableId.Lara);
+            if (lara == null || lara.Animations.Count == 0 || lara.Animations[0].KeyFrames.Count == 0)
+                return result;
+
+            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
+                                    ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
+            if (laraItem == null)
+                return result;
+
+            var origin = laraItem.WorldPosition + lara.Animations[0].KeyFrames[0].Offset;
+            var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
+
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames.");
+
+            foreach (var flybys in groups)
+            {
+                var positions = flybys.Select(f => f.WorldPosition).ToList();
+                var rotations = flybys.Select(f => new Vector3(f.RotationX, f.RotationY, 0)).ToList();
+                var settings  = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
+
+                var grain = (int)Math.Round(30.0f / (flybys.First().Speed * 0.0333f));
+
+                var cPositions = Spline.Calculate(positions, grain);
+                var cRotations = Spline.Calculate(rotations, grain);
+                var cSettings = Spline.Calculate(settings, grain);
+
+                for (int i = 0; i < cPositions.Count; i++)
+                {
+                    var roll = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                            Math.Round((cSettings[i].X) * (65536.0 / 360.0))));
+
+                    var frame = new tr_cinematicFrame()
+                    {
+                        Fov = (ushort)(cSettings[i].Y * 100),
+                        Roll = roll,
+                        AngleX = 0,
+                        AngleY = 0,
+                        AngleZ = 0,
+                        PosX = (short)(cPositions[i].X - origin.X),
+                        PosY = (short)(-(cPositions[i].Y - origin.Y)),
+                        PosZ = (short)(cPositions[i].Z - origin.Z)
+                    };
+
+                    result.Add(frame);
+                }
+            }
+
+            return result;
+        }
     }
 }

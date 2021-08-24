@@ -628,7 +628,6 @@ namespace TombEditor.Forms
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
-            cbCineFrames.Checked = _levelSettings.WriteDummyCinematicFrames;
             cbKeepSampleRate.Checked = _levelSettings.EnableCustomSampleRate;
             cmbSampleRate.SelectedIndex = cmbSampleRate.Items.IndexOf(_levelSettings.CustomSampleRate.ToString());
             cmbSampleRate.Enabled = cbKeepSampleRate.Checked;
@@ -685,9 +684,6 @@ namespace TombEditor.Forms
             lblPathsPrompt.TextAlign = currentVersionToCheck ? ContentAlignment.MiddleCenter : ContentAlignment.TopLeft;
             lblPathsPrompt.AutoSize = !currentVersionToCheck;
             lblPathsPrompt.ForeColor = currentVersionToCheck ? Colors.DisabledText : Colors.LightText;
-
-            currentVersionToCheck = (_levelSettings.GameVersion <= Game.TR3);
-            cbCineFrames.Enabled = currentVersionToCheck;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1702,12 +1698,6 @@ namespace TombEditor.Forms
             if (cmbSampleRate.SelectedIndex != -1 &&
                 int.TryParse(cmbSampleRate.SelectedItem.ToString(), out result))
                 _levelSettings.CustomSampleRate = result;
-            UpdateDialog();
-        }
-
-        private void cbCineFrames_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.WriteDummyCinematicFrames = cbCineFrames.Checked;
             UpdateDialog();
         }
     }

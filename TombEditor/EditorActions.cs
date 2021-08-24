@@ -309,7 +309,7 @@ namespace TombEditor
         public static void ResetObjectRotation(PositionBasedObjectInstance obj, RotationAxis axis = RotationAxis.None)
         {
             if (!(obj is IRotateableY || obj is IRotateableYX || obj is IRotateableYXRoll)) return;
-            _editor.UndoManager.PushObjectTransformed(obj);
+            _editor.UndoManager.PushObjectTransformed(obj); 
 
             if (obj is IRotateableYX)
             {
@@ -1002,9 +1002,6 @@ namespace TombEditor
             }
             else if (instance is FlybyCameraInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion > TRVersion.Game.TR3, "Flyby camera"))
-                    return;
-
                 using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
