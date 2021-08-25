@@ -41,6 +41,15 @@ namespace TombLib.Wad
         public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.IsTriangle))
                                                        .Select(g => g.Key).Distinct().ToList();
 
+        public static readonly TextureArea EmptyTextureArea = new TextureArea()
+        {
+            Texture = new WadTexture(Texture.UnloadedPlaceholder),
+            TexCoord0 = Vector2.Zero,
+            TexCoord1 = new Vector2(0, Texture.UnloadedPlaceholder.Height),
+            TexCoord2 = new Vector2(Texture.UnloadedPlaceholder.Width, Texture.UnloadedPlaceholder.Height),
+            TexCoord3 = new Vector2(Texture.UnloadedPlaceholder.Width, 0),
+        };
+
         public WadMesh Clone()
         {
             var mesh = (WadMesh)MemberwiseClone();
@@ -189,7 +198,7 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings, WadTexture placeholderTexture = null)
+        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings, TextureArea placeholderTexture)
         {
             var list = ImportFromExternalModel(fileName, settings, true, placeholderTexture);
             if (list != null && list.Count > 0)
@@ -368,10 +377,10 @@ namespace TombLib.Wad
             return model;
         }
 
-        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne, WadTexture placeholderTexture = null)
+        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne, TextureArea placeholderTexture)
         {
-            if (placeholderTexture == null)
-                placeholderTexture = WadTexture.Empty;
+            if (placeholderTexture.TextureIsUnavailable) 
+                placeholderTexture = EmptyTextureArea;
 
             IOModel tmpModel = null;
             var meshList = new List<WadMesh>();
@@ -481,16 +490,7 @@ namespace TombLib.Wad
                         var area = new TextureArea();
 
                         if (tmpSubmesh.Value.Material.Texture == null)
-                        {
-                            area.Texture = placeholderTexture;
-                            area.TexCoord0 = Vector2.Zero;
-                            area.TexCoord1 = new Vector2(0, area.Texture.Image.Height);
-                            area.TexCoord2 = new Vector2(area.Texture.Image.Width, area.Texture.Image.Height);
-                            if (vertexCount == 4)
-                                area.TexCoord2 = new Vector2(area.Texture.Image.Width, 0);
-                            else
-                                area.TexCoord3 = area.TexCoord2;
-                        }
+                            area = placeholderTexture;
                         else
                         {
                             area.Texture = tmpSubmesh.Value.Material.Texture;

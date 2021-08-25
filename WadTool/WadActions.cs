@@ -526,7 +526,7 @@ namespace WadTool
                         return;
 
                     var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexturesUnique.FirstOrDefault());
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
                     if (mesh == null)
                     {
 
@@ -1377,7 +1377,7 @@ namespace WadTool
                         // A flag which allows to import untextured meshes
                         form.Settings.ProcessUntexturedGeometry = true;
 
-                        var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexturesUnique.FirstOrDefault()); ;
+                        var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault()); ;
                         if (mesh == null)
                         {
                             tool.SendMessage("Error loading 3D model. Check that the file format \n" +

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Numerics;
 using TombLib.Graphics;
 using TombLib.Utils;
 
@@ -29,8 +30,6 @@ namespace TombLib.Wad
                 Hash = Hash.FromByteArray(ms.ToArray());
             }
         }
-
-        public static readonly WadTexture Empty = new WadTexture(UnloadedPlaceholder);
 
         public override Texture Clone() => this;
 
