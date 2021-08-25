@@ -867,7 +867,6 @@
             this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelMain.Controls.Add(this.topBar);
             this.panelMain.Controls.Add(this.panelCenter);
             this.panelMain.Controls.Add(this.panelEditing);
             this.panelMain.Controls.Add(this.panelTree);
@@ -1091,6 +1090,7 @@
             // panelCenter
             // 
             this.panelCenter.Controls.Add(this.panelMesh);
+            this.panelCenter.Controls.Add(this.topBar);
             this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCenter.Location = new System.Drawing.Point(263, 0);
             this.panelCenter.Name = "panelCenter";
