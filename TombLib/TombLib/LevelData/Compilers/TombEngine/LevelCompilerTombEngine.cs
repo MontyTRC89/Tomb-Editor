@@ -186,22 +186,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(46, "Building cameras and sinks");
 
             {
-                int cameraSinkID = 0;
+                int sinkID = 0;
+                int camID = 0;
                 int flybyID = 0;
+
                 _cameraTable = new Dictionary<CameraInstance, int>(new ReferenceEqualityComparer<CameraInstance>());
                 _sinkTable = new Dictionary<SinkInstance, int>(new ReferenceEqualityComparer<SinkInstance>());
                 _flybyTable = new Dictionary<FlybyCameraInstance, int>(new ReferenceEqualityComparer<FlybyCameraInstance>());
+
                 foreach (var room in _level.Rooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<CameraInstance>())
-                        _cameraTable.Add(obj, cameraSinkID++);
+                        _cameraTable.Add(obj, camID++);
                     foreach (var obj in room.Objects.OfType<FlybyCameraInstance>())
                         _flybyTable.Add(obj, flybyID++);
-                }
-                foreach (var room in _level.Rooms.Where(room => room != null))
-                {
                     foreach (var obj in room.Objects.OfType<SinkInstance>())
-                        _sinkTable.Add(obj, cameraSinkID++);
+                        _sinkTable.Add(obj, sinkID++);
                 }
             }
 
