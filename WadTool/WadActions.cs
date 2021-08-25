@@ -1368,6 +1368,9 @@ namespace WadTool
                         if (form.ShowDialog(owner) != DialogResult.OK)
                             return null;
 
+                        // A flag which allows to import untextured meshes
+                        form.Settings.ProcessUntexturedGeometry = true;
+
                         var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                         if (mesh == null)
                         {

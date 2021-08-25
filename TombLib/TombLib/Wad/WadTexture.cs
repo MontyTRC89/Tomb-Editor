@@ -30,6 +30,8 @@ namespace TombLib.Wad
             }
         }
 
+        public static readonly WadTexture Empty = new WadTexture(ImageC.Dummy);
+
         public override Texture Clone() => this;
 
         public static bool operator==(WadTexture first, WadTexture second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);

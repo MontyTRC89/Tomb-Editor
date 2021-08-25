@@ -179,6 +179,14 @@ namespace TombLib.GeometryIO.Importers
                                             mesh.UV.Add(uv);
                                         }
                                     }
+                                    else
+                                    {
+                                        if (_settings.ProcessUntexturedGeometry)
+                                            for (var k = 0; k < numVerticesInFace; k++)
+                                                mesh.UV.Add(Vector2.Zero);
+                                        else
+                                            throw new Exception("Model has no texture coordinates and can't be loaded.");
+                                    }
 
                                     // Colors
                                     var stringColor = GetSubBlock(line, "COL");
@@ -205,6 +213,18 @@ namespace TombLib.GeometryIO.Importers
                                     var materialIndex = 0;
                                     if (stringMaterialIndex != "")
                                         materialIndex = int.Parse(stringMaterialIndex);
+
+                                    // Add dummy material in case we're importing untextured meshes
+                                    if (model.Materials.Count == 0)
+                                    {
+                                        if (_settings.ProcessUntexturedGeometry)
+                                            model.Materials.Add(new IOMaterial(mesh.Name));
+                                        else
+                                            throw new Exception("Model has no supported materials and can't be loaded.");
+                                    }
+
+                                    if (materialIndex > model.Materials.Count)
+                                        throw new Exception("Model has incorrect amount of materials and can't be loaded.");
 
                                     // Add polygon to the submesh (and add submesh if not existing yet)
                                     var material = model.Materials[materialIndex];

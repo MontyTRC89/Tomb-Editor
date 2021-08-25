@@ -10,7 +10,9 @@
     {
         public bool Export { get; set; } = false;
 
+        // Internal settings
         public bool ProcessGeometry { get; set; } = true;
+        public bool ProcessUntexturedGeometry { get; set; } = false;
         public bool ProcessAnimations { get; set; } = false;
 
         public bool SwapXY { get; set; } = false;

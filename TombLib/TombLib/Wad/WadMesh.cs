@@ -476,16 +476,30 @@ namespace TombLib.Wad
                         }
                         
                         var area = new TextureArea();
-                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
 
-                        if (vertexCount == 4)
-                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                        if (tmpSubmesh.Value.Material.Texture == null)
+                        {
+                            area.Texture = new WadTexture(Texture.UnloadedPlaceholder);
+                            area.TexCoord0 = Vector2.Zero;
+                            area.TexCoord1 = new Vector2(0, area.Texture.Image.Height);
+                            area.TexCoord2 = new Vector2(area.Texture.Image.Width, area.Texture.Image.Height);
+                            if (vertexCount == 4)
+                                area.TexCoord2 = new Vector2(area.Texture.Image.Width, 0);
+                            else
+                                area.TexCoord3 = area.TexCoord2;
+                        }
                         else
-                            area.TexCoord3 = area.TexCoord2;
+                        {
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            if (vertexCount == 4)
+                                area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                            else
+                                area.TexCoord3 = area.TexCoord2;
+                        }
 
-                        area.Texture = tmpSubmesh.Value.Material.Texture;
                         area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
                         area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
@@ -513,7 +527,7 @@ namespace TombLib.Wad
             return meshList;
         }
 
-        public static WadMesh Empty { get; } = new WadMesh();
+        public static WadMesh Empty { get; } = new WadMesh() { Name = string.Empty };
     }
 }
 
