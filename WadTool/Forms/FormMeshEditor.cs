@@ -259,7 +259,7 @@ namespace WadTool
                                     if (Control.ModifierKeys == Keys.None) // No modifiers - ordinary application
                                     {
                                         // If there's no currently selected texture, fall back to original poly texture
-                                        if (panelTextureMap.VisibleTexture.IsAvailable && panelTextureMap.SelectedTexture != TextureArea.None)
+                                        if ((panelTextureMap.VisibleTexture?.IsAvailable ?? false) && panelTextureMap.SelectedTexture != TextureArea.None)
                                         {
                                             currTexture = panelTextureMap.SelectedTexture;
                                             if (poly.IsTriangle)
