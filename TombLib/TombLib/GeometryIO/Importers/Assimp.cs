@@ -114,36 +114,35 @@ namespace TombLib.GeometryIO.Importers
                         continue;
                     }
 
-                    Texture faceTexture = null;
-
-                    if (!_settings.ProcessUntexturedGeometry)
+                    // Discard untextured meshes
+                    if (mesh.TextureCoordinateChannelCount == 0 || !mesh.HasTextureCoords(0))
                     {
-                        // Discard untextured meshes
-                        if (mesh.TextureCoordinateChannelCount == 0 || !mesh.HasTextureCoords(0))
-                        {
-                            logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no texture assigned.");
-                            continue;
-                        }
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no texture assigned.");
 
-                        // Import only textured meshes with valid materials
-                        if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
-                        {
-                            logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which is unsupported or can't be found.");
+                        if (!_settings.ProcessUntexturedGeometry)
                             continue;
-                        }
+                    }
+
+                    // Import only textured meshes with valid materials
+                    Texture faceTexture = null;
+                    if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
+                    {
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which is unsupported or can't be found.");
+
+                        if (!_settings.ProcessUntexturedGeometry)
+                            continue;
                     }
 
                     // Make sure we have appropriate material in list. If not, skip mesh and warn user.
                     var material = newModel.Materials.FirstOrDefault(mat => mat.Name.Equals(scene.Materials[mesh.MaterialIndex].Name));
                     if (material == null)
                     {
+                        logger.Warn("Can't find material with specified index (" + mesh.MaterialIndex + "). Probably you're missing textures or using non-diffuse materials only for this mesh.");
+
                         if (_settings.ProcessUntexturedGeometry)
                             material = new IOMaterial(mesh.Name);
                         else
-                        {
-                            logger.Warn("Can't find material with specified index (" + mesh.MaterialIndex + "). Probably you're missing textures or using non-diffuse materials only for this mesh.");
                             continue;
-                        }
                     }
 
                     // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
@@ -156,8 +155,7 @@ namespace TombLib.GeometryIO.Importers
                     bool hasTextures = mesh.HasTextureCoords(0) && (mesh.VertexCount == mesh.TextureCoordinateChannels[0].Count);
 
                     // Additional integrity checks
-                    if ((!_settings.ProcessUntexturedGeometry && !hasTextures) ||
-                        (hasColors  && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
+                    if ((hasColors  && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
                         (hasNormals && mesh.VertexCount != mesh.Normals.Count))
                     {
                         logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" data structure is inconsistent.");
@@ -187,8 +185,8 @@ namespace TombLib.GeometryIO.Importers
                         else
                             newMesh.CalculateNormals();
 
-                        // Create UV
-                        var currentUV = texCoords != null ? new Vector2(texCoords[i].X, texCoords[i].Y) : Vector2.Zero;
+                        // Create and scale up UV
+                        var currentUV = texCoords == null ? Vector2.Zero : new Vector2(texCoords[i].X, texCoords[i].Y);
                         if (faceTexture != null)
                             currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
                         newMesh.UV.Add(currentUV);
