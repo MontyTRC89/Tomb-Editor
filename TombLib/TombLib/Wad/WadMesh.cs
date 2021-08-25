@@ -189,9 +189,9 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
+        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings, WadTexture placeholderTexture = null)
         {
-            var list = ImportFromExternalModel(fileName, settings, true);
+            var list = ImportFromExternalModel(fileName, settings, true, placeholderTexture);
             if (list != null && list.Count > 0)
                 return list.First();
             else
@@ -368,8 +368,11 @@ namespace TombLib.Wad
             return model;
         }
 
-        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne)
+        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne, WadTexture placeholderTexture = null)
         {
+            if (placeholderTexture == null)
+                placeholderTexture = WadTexture.Empty;
+
             IOModel tmpModel = null;
             var meshList = new List<WadMesh>();
 
@@ -479,7 +482,7 @@ namespace TombLib.Wad
 
                         if (tmpSubmesh.Value.Material.Texture == null)
                         {
-                            area.Texture = new WadTexture(Texture.UnloadedPlaceholder);
+                            area.Texture = placeholderTexture;
                             area.TexCoord0 = Vector2.Zero;
                             area.TexCoord1 = new Vector2(0, area.Texture.Image.Height);
                             area.TexCoord2 = new Vector2(area.Texture.Image.Width, area.Texture.Image.Height);
