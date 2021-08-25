@@ -30,7 +30,7 @@ namespace TombLib.Wad
             }
         }
 
-        public static readonly WadTexture Empty = new WadTexture(ImageC.Dummy);
+        public static readonly WadTexture Empty = new WadTexture(ImageC.Black);
 
         public override Texture Clone() => this;
 
