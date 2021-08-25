@@ -531,32 +531,6 @@ namespace TombEditor.Controls
         private void AnimateCamera(Vector3 newPos, float speed = 0.5f)
             => AnimateCamera(newPos, new Vector2(Camera.RotationX, Camera.RotationY), Camera.Distance, speed);
 
-        private Vector2 WarpMouseCursor(Point coordinate, Vector2 delta)
-        {
-            if (_editor.Configuration.Rendering3D_CursorWarping)
-            {
-                if (coordinate.X <= 0)
-                    Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
-                else if (coordinate.X >= Width - 1)
-                    Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
-
-                if (coordinate.Y <= 0)
-                    Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
-                else if (coordinate.Y >= Height - 1)
-                    Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
-
-                if (coordinate.X - _lastMousePosition.X >=  (float)Width / 2 || 
-                    coordinate.X - _lastMousePosition.X <= -(float)Width / 2)
-                    delta.X = 0;
-
-                if (coordinate.Y - _lastMousePosition.Y >=  (float)Height / 2 || 
-                    coordinate.Y - _lastMousePosition.Y <= -(float)Height / 2)
-                    delta.Y = 0;
-            }
-
-            return delta;
-        }
-
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
             base.OnPreviewKeyDown(e);
@@ -956,21 +930,19 @@ namespace TombEditor.Controls
                     if (_movementTimer.Animating)
                         break;
 
-                    // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                    var relativeDelta = new Vector2((e.X - _lastMousePosition.X) / (float)Height,
-                                                    (e.Y - _lastMousePosition.Y) / (float)Height);
                     // Warp cursor
-                    relativeDelta = WarpMouseCursor(e.Location, relativeDelta);
+                    var delta = _editor.Configuration.Rendering3D_CursorWarping ?
+                        WarpMouseCursor(e, _lastMousePosition) : Delta(e, _lastMousePosition);
 
                     if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Middle)
-                        Camera.MoveCameraPlane(new Vector3(relativeDelta.X, relativeDelta.Y, 0) *
+                        Camera.MoveCameraPlane(new Vector3(delta.X, delta.Y, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                     else if (ModifierKeys.HasFlag(Keys.Control))
-                        Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDelta.Y : -relativeDelta.Y) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                        Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? delta.Y : -delta.Y) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                         Camera.Rotate(
-                            relativeDelta.X * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
-                           -relativeDelta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
+                            delta.X * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                           -delta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
                     _gizmo.MouseMoved(_viewProjection, GetRay(e.X, e.Y)); // Update gizmo
                     redrawWindow = true;

@@ -108,19 +108,29 @@ namespace TombLib.GeometryIO.Importers
                 foreach (var mesh in scene.Meshes)
                 {
                     // Discard nullmeshes
-                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3 ||
-                         mesh.TextureCoordinateChannelCount == 0 || !mesh.HasTextureCoords(0))
+                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3)
                     {
-                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no faces, no texture coordinates or wrong vertex count.");
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no faces or wrong vertex count.");
                         continue;
                     }
 
+                    // Discard untextured meshes
+                    if (mesh.TextureCoordinateChannelCount == 0 || !mesh.HasTextureCoords(0))
+                    {
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no texture assigned.");
+
+                        if (!_settings.ProcessUntexturedGeometry)
+                            continue;
+                    }
+
                     // Import only textured meshes with valid materials
-                    Texture faceTexture;
+                    Texture faceTexture = null;
                     if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
                     {
                         logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" does have material index " + mesh.MaterialIndex + " which is unsupported or can't be found.");
-                        continue;
+
+                        if (!_settings.ProcessUntexturedGeometry)
+                            continue;
                     }
 
                     // Make sure we have appropriate material in list. If not, skip mesh and warn user.
@@ -128,7 +138,11 @@ namespace TombLib.GeometryIO.Importers
                     if (material == null)
                     {
                         logger.Warn("Can't find material with specified index (" + mesh.MaterialIndex + "). Probably you're missing textures or using non-diffuse materials only for this mesh.");
-                        continue;
+
+                        if (_settings.ProcessUntexturedGeometry)
+                            material = new IOMaterial(mesh.Name);
+                        else
+                            continue;
                     }
 
                     // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
@@ -136,12 +150,12 @@ namespace TombLib.GeometryIO.Importers
                     var newSubmesh = new IOSubmesh(material);
                     newMesh.Submeshes.Add(material, newSubmesh);
 
-                    bool hasColors  = _settings.UseVertexColor && mesh.VertexColorChannelCount > 0 && mesh.HasVertexColors(0);
-                    bool hasNormals = mesh.HasNormals;
+                    bool hasColors   = _settings.UseVertexColor && mesh.VertexColorChannelCount > 0 && mesh.HasVertexColors(0);
+                    bool hasNormals  = mesh.HasNormals;
+                    bool hasTextures = mesh.HasTextureCoords(0) && (mesh.VertexCount == mesh.TextureCoordinateChannels[0].Count);
 
                     // Additional integrity checks
-                    if ((mesh.VertexCount != mesh.TextureCoordinateChannels[0].Count) ||
-                        (hasColors  && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
+                    if ((hasColors  && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
                         (hasNormals && mesh.VertexCount != mesh.Normals.Count))
                     {
                         logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" data structure is inconsistent.");
@@ -151,7 +165,7 @@ namespace TombLib.GeometryIO.Importers
                     // Source data
                     var positions = mesh.Vertices;
                     var normals = mesh.Normals;
-                    var texCoords = mesh.TextureCoordinateChannels[0];
+                    var texCoords = hasTextures ? mesh.TextureCoordinateChannels[0] : null;
                     var colors = mesh.VertexColorChannels[0];
 
                     for (int i = 0; i < mesh.VertexCount; i++)
@@ -171,8 +185,8 @@ namespace TombLib.GeometryIO.Importers
                         else
                             newMesh.CalculateNormals();
 
-                        // Create UV
-                        var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
+                        // Create and scale up UV
+                        var currentUV = texCoords == null ? Vector2.Zero : new Vector2(texCoords[i].X, texCoords[i].Y);
                         if (faceTexture != null)
                             currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
                         newMesh.UV.Add(currentUV);

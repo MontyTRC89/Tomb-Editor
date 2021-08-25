@@ -246,7 +246,7 @@ namespace WadTool
                                 if (cbTexture.Checked)
                                 {
                                     panelTextureMap.ShowTexture(poly.Texture);
-                                    if (comboCurrentTexture.Items.Contains(poly.Texture.Texture))
+                                    if (poly.Texture.Texture.IsAvailable && comboCurrentTexture.Items.Contains(poly.Texture.Texture))
                                         comboCurrentTexture.SelectedItem = poly.Texture.Texture;
                                 }
                             }
@@ -259,7 +259,7 @@ namespace WadTool
                                     if (Control.ModifierKeys == Keys.None) // No modifiers - ordinary application
                                     {
                                         // If there's no currently selected texture, fall back to original poly texture
-                                        if (panelTextureMap.VisibleTexture.IsAvailable && panelTextureMap.SelectedTexture != TextureArea.None)
+                                        if ((panelTextureMap.VisibleTexture?.IsAvailable ?? false) && panelTextureMap.SelectedTexture != TextureArea.None)
                                         {
                                             currTexture = panelTextureMap.SelectedTexture;
                                             if (poly.IsTriangle)
@@ -497,7 +497,8 @@ namespace WadTool
             if (lstMeshes.SelectedNodes.Count == 0)
                 return;
 
-            var newNode = (GetFirstChildNode(lstMeshes.SelectedNodes[0])).Tag as MeshTreeNode;
+            var realNode = GetFirstChildNode(lstMeshes.SelectedNodes[0]);
+            var newNode = realNode == null ? null : realNode.Tag as MeshTreeNode;
             if (newNode != null && newNode.WadMesh != panelMesh.Mesh)
             {
                 // Save current node state
@@ -722,14 +723,14 @@ namespace WadTool
 
             if (!NoMesh())
                 foreach (var poly in panelMesh.Mesh.Polys)
-                    if (!list.Exists(t => t == poly.Texture.Texture))
+                    if (poly.Texture.Texture.IsAvailable && !list.Exists(t => t == poly.Texture.Texture))
                         list.Add(poly.Texture.Texture);
 
             if (wholeWad)
             {
                 foreach (var mesh in _tool.DestinationWad.MeshesUnique)
                     foreach (var poly in mesh.Polys)
-                        if (!list.Exists(t => t == poly.Texture.Texture))
+                        if (poly.Texture.Texture.IsAvailable && !list.Exists(t => t == poly.Texture.Texture))
                             list.Add(poly.Texture.Texture);
             }
 
@@ -744,6 +745,8 @@ namespace WadTool
 
             if (comboCurrentTexture.Items.Count > 0)
                 comboCurrentTexture.SelectedIndex = 0;
+            else
+                comboCurrentTexture.SelectedIndex = -1;
 
             panelTextureMap.SelectedTexture = TextureArea.None;
         }

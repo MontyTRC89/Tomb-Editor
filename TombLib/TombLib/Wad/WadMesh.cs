@@ -41,6 +41,15 @@ namespace TombLib.Wad
         public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.IsTriangle))
                                                        .Select(g => g.Key).Distinct().ToList();
 
+        public static readonly TextureArea EmptyTextureArea = new TextureArea()
+        {
+            Texture = new WadTexture(Texture.UnloadedPlaceholder),
+            TexCoord0 = Vector2.Zero,
+            TexCoord1 = new Vector2(0, Texture.UnloadedPlaceholder.Height),
+            TexCoord2 = new Vector2(Texture.UnloadedPlaceholder.Width, Texture.UnloadedPlaceholder.Height),
+            TexCoord3 = new Vector2(Texture.UnloadedPlaceholder.Width, 0),
+        };
+
         public WadMesh Clone()
         {
             var mesh = (WadMesh)MemberwiseClone();
@@ -189,9 +198,9 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
+        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings, TextureArea placeholderTexture)
         {
-            var list = ImportFromExternalModel(fileName, settings, true);
+            var list = ImportFromExternalModel(fileName, settings, true, placeholderTexture);
             if (list != null && list.Count > 0)
                 return list.First();
             else
@@ -368,8 +377,11 @@ namespace TombLib.Wad
             return model;
         }
 
-        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne)
+        public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne, TextureArea placeholderTexture)
         {
+            if (placeholderTexture.TextureIsUnavailable) 
+                placeholderTexture = EmptyTextureArea;
+
             IOModel tmpModel = null;
             var meshList = new List<WadMesh>();
 
@@ -476,16 +488,21 @@ namespace TombLib.Wad
                         }
                         
                         var area = new TextureArea();
-                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
 
-                        if (vertexCount == 4)
-                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                        if (tmpSubmesh.Value.Material.Texture == null)
+                            area = placeholderTexture;
                         else
-                            area.TexCoord3 = area.TexCoord2;
+                        {
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            if (vertexCount == 4)
+                                area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                            else
+                                area.TexCoord3 = area.TexCoord2;
+                        }
 
-                        area.Texture = tmpSubmesh.Value.Material.Texture;
                         area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
                         area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
@@ -513,7 +530,7 @@ namespace TombLib.Wad
             return meshList;
         }
 
-        public static WadMesh Empty { get; } = new WadMesh();
+        public static WadMesh Empty { get; } = new WadMesh() { Name = string.Empty };
     }
 }
 

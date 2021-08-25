@@ -35,6 +35,39 @@ namespace TombLib.Controls
             }
         }
 
+        public Vector2 Delta(MouseEventArgs e, Point previousMousePosition)
+        {
+             return new Vector2((e.X - previousMousePosition.X) / (float)Height,
+                                (e.Y - previousMousePosition.Y) / (float)Height);
+        }
+
+        public Vector2 WarpMouseCursor(MouseEventArgs e, Point previousMousePosition)
+        {
+            // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+            var coordinate = e.Location;
+            var delta = Delta(e, previousMousePosition);
+
+            if (coordinate.X <= 0)
+                Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
+            else if (coordinate.X >= Width - 1)
+                Cursor.Position = new Point(Cursor.Position.X - Width + 2, Cursor.Position.Y);
+
+            if (coordinate.Y <= 0)
+                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y + Height - 2);
+            else if (coordinate.Y >= Height - 1)
+                Cursor.Position = new Point(Cursor.Position.X, Cursor.Position.Y - Height + 2);
+
+            if (coordinate.X - previousMousePosition.X >= (float)Width / 2 ||
+                coordinate.X - previousMousePosition.X <= -(float)Width / 2)
+                delta.X = 0;
+
+            if (coordinate.Y - previousMousePosition.Y >= (float)Height / 2 ||
+                coordinate.Y - previousMousePosition.Y <= -(float)Height / 2)
+                delta.Y = 0;
+
+            return delta;
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
