@@ -66,7 +66,7 @@ namespace TombLib.GeometryIO.Importers
                             var doubleSided = GetSubBlock(materialString, "dbls");
                             var diffuseColor = GetSubBlock(materialString, "col");
 
-                            if (texturePath != "")
+                            if (!string.IsNullOrEmpty(texturePath))
                             {
                                 string basePath = Path.GetDirectoryName(filename);
                                 string alternatePath = Path.Combine(Path.GetDirectoryName(filename), "Texture");
@@ -79,12 +79,12 @@ namespace TombLib.GeometryIO.Importers
 
                                 textures.Add(i, texture);
                             }
-                            else
-                                throw new FileNotFoundException("Texture for material " + material.Name + " is missing");
+                            else if (!_settings.ProcessUntexturedGeometry)
+                                    throw new FileNotFoundException("Texture for material " + material.Name + " is missing");
 
                             material.DoubleSided = (doubleSided == "1");
 
-                            if (diffuseColor != "")
+                            if (!string.IsNullOrEmpty(diffuseColor))
                             {
                                 string[] tokens = diffuseColor.Split(' ');
                                 float alpha;
@@ -95,8 +95,11 @@ namespace TombLib.GeometryIO.Importers
                                 }
                             }
 
-                            material.Texture = textures[i];
-                            model.Materials.Add(material);
+                            if (textures.Count > i)
+                            {
+                                material.Texture = textures[i];
+                                model.Materials.Add(material);
+                            }
                         }
                     }
                     else if (chunk == "Object")
@@ -151,7 +154,7 @@ namespace TombLib.GeometryIO.Importers
 
                                     // We MUST have vertices
                                     var stringVertices = GetSubBlock(line, "V");
-                                    if (stringVertices == "")
+                                    if (string.IsNullOrEmpty(stringVertices))
                                         return null;
                                     var tokensVertices = stringVertices.Split(' ');
                                     for (var k = 0; k < numVerticesInFace; k++)
@@ -167,7 +170,8 @@ namespace TombLib.GeometryIO.Importers
 
                                     // UV
                                     var stringUV = GetSubBlock(line, "UV");
-                                    if (stringUV != "")
+
+                                    if (!string.IsNullOrEmpty(stringUV) && textures.Count > 0)
                                     {
                                         var tokensUV = stringUV.Split(' ');
                                         for (var k = 0; k < numVerticesInFace; k++)
@@ -185,12 +189,12 @@ namespace TombLib.GeometryIO.Importers
                                             for (var k = 0; k < numVerticesInFace; k++)
                                                 mesh.UV.Add(Vector2.Zero);
                                         else
-                                            throw new Exception("Model has no texture coordinates and can't be loaded.");
+                                            throw new Exception("Model has no texture or texture coordinates and can't be loaded.");
                                     }
 
                                     // Colors
                                     var stringColor = GetSubBlock(line, "COL");
-                                    if (stringColor != "")
+                                    if (!string.IsNullOrEmpty(stringColor))
                                     {
                                         var tokensColor = stringColor.Split(' ');
                                         for (var k = 0; k < numVerticesInFace; k++)
@@ -211,7 +215,7 @@ namespace TombLib.GeometryIO.Importers
                                     // Material index
                                     var stringMaterialIndex = GetSubBlock(line, "M");
                                     var materialIndex = 0;
-                                    if (stringMaterialIndex != "")
+                                    if (!string.IsNullOrEmpty(stringMaterialIndex))
                                         materialIndex = int.Parse(stringMaterialIndex);
 
                                     // Add dummy material in case we're importing untextured meshes
