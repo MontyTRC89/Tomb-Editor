@@ -260,6 +260,7 @@ namespace WadTool.Controls
         private float _normalLength = 1.0f;
         private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
+        private WadStatic _dummyStatic = new WadStatic(new WadStaticId(0));
 
         // Rendering state
         private RenderingTextureAllocator _fontTexture;
@@ -373,7 +374,9 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
+            _dummyStatic.Mesh = VisibleMesh;
+            _dummyStatic.Version = DataVersion.GetNext();
+            var mesh = _wadRenderer.GetStatic(_dummyStatic);
             mesh.UpdateBuffers(Camera.GetPosition());
 
             var world  = Matrix4x4.Identity;

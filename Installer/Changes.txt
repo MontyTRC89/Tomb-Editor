@@ -1,3 +1,12 @@
+Version 1.4.1
+=============
+
+WadTool:
+ * Add support for importing untextured meshes.
+ * Fix exception while opening mesh editor on an empty wad.
+ * Fix memory leaks in skeleton and mesh editor.
+ * Fix incorrect state changes in .trw animation import.
+
 Version 1.4
 ===========
 
