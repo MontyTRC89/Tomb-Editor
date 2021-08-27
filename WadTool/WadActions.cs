@@ -1122,7 +1122,10 @@ namespace WadTool
                             var disp = new WadAnimDispatch();
                             disp.InFrame = reader.ReadUInt16();
                             disp.OutFrame = reader.ReadUInt16();
-                            disp.NextAnimation = reader.ReadUInt16();
+
+                            nextAnimation = reader.ReadInt16();
+                            disp.NextAnimation = (ushort)(MathC.Clamp(sourceAnimIndex + nextAnimation, 0, UInt16.MaxValue));
+
                             disp.NextFrame = reader.ReadUInt16();
 
                             sc.Dispatches.Add(disp);
