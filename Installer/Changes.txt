@@ -2,7 +2,7 @@ Version 1.4.1
 =============
 
 Tomb Editor:
- * Allow variable speed in TR1-3 flyby sequences.
+ * Support timer and variable speed in TR1-3 flyby sequences.
 
 WadTool:
  * Add support for importing untextured meshes.

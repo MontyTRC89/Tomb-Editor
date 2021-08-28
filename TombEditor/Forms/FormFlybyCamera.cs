@@ -63,7 +63,6 @@ namespace TombEditor.Forms
             }
             else if (_editor.Level.Settings.GameVersion <= TRVersion.Game.TR3)
             {
-                numTimer.Enabled = false;
                 Size = new System.Drawing.Size(205, 319);
             }
         }
