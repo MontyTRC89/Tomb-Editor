@@ -621,7 +621,7 @@ namespace TombLib.LevelData.Compilers
                 for (float pos = 0.0f; pos < cPositions.Count;)
                 {
                     var i = (int)Math.Round(pos);
-                    if (i > cPositions.Count)
+                    if (i >= cPositions.Count)
                         break;
 
                     var roll = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
