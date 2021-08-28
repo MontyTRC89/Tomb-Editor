@@ -578,7 +578,7 @@ namespace TombLib.LevelData.Compilers
 
             var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
 
-            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames");
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequence" + (groups.Count == 1 ? "" : "s") + " to cinematic frames");
 
             foreach (var flybys in groups)
             {
