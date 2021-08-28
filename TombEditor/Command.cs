@@ -978,32 +978,32 @@ namespace TombEditor
 
             AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, true, 12);
             });
 
             AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, true, 12);
             });
 
             AddCommand("NewRoomLeft", "New room left", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeX, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeX, true, 12);
             });
 
             AddCommand("NewRoomRight", "New room right", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveX, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveX, true, 12);
             });
 
             AddCommand("NewRoomFront", "New room front", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveZ, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveZ, true, 12);
             });
 
             AddCommand("NewRoomBack", "New room back", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeZ, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeZ, true, 12);
             });
 
             AddCommand("MergeRoomsHorizontally", "Merge rooms horizontally", CommandType.Rooms, delegate (CommandArgs args)

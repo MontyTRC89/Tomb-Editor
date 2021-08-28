@@ -674,14 +674,14 @@ namespace TombEditor.Controls
                                 {
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(BlockFaceExtensions.GetDirection(newBlockPicking.Face))),
+                                        PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(BlockFaceExtensions.GetDirection(newBlockPicking.Face))), false,
                                         1, !ModifierKeys.HasFlag(Keys.Control));
                                 }
                                 else
                                 {
                                     newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                         _editor.SelectedSectors,
-                                        newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling,
+                                        newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, false,
                                         (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control),
                                         ModifierKeys.HasFlag(Keys.Alt));
                                 }

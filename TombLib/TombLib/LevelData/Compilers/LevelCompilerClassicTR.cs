@@ -578,12 +578,12 @@ namespace TombLib.LevelData.Compilers
 
             var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
 
-            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequences to cinematic frames");
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequence" + (groups.Count == 1 ? "" : "s") + " to cinematic frames");
 
             foreach (var flybys in groups)
             {
-                var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, 0)).ToList();
-
+                var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, f.Speed)).ToList();
+                
                 var positions = flybys.Select(f =>
                 {
                     var distance = f.WorldPosition - laraItem.WorldPosition;
@@ -597,7 +597,7 @@ namespace TombLib.LevelData.Compilers
                 var targets = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
-                    var mxT = Matrix4x4.CreateTranslation(0, 0, 1024.0f);
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.WorldUnit);
                     var trans = f.WorldPosition + (mxT * mxR).Translation;
 
                     var distance = trans - laraItem.WorldPosition;
@@ -608,30 +608,49 @@ namespace TombLib.LevelData.Compilers
                 }
                 ).ToList();
 
-                var grain = (int)Math.Round(30.0f / (flybys.First().Speed * 0.0333f));
+                const float minFlybySpeed = 0.01f;
+                const float maxFlybySpeed = 100.0f;
+                const float framesPerUnit = 60.0f;
+
+                var grain = (int)Math.Round((framesPerUnit / minFlybySpeed)) * positions.Count;
 
                 var cPositions = Spline.Calculate(positions, grain);
-                var cTargets   = Spline.Calculate(targets, grain);
-                var cSettings  = Spline.Calculate(settings, grain);
+                var cTargets   = Spline.Calculate(targets,   grain);
+                var cSettings  = Spline.Calculate(settings,  grain);
 
-                for (int i = 0; i < cPositions.Count; i++)
+                var currentCamera = 0;
+                for (float pos = 0.0f; ;)
                 {
-                    var roll = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
-                            Math.Round((cSettings[i].X) * (65536.0 / 360.0))));
+                    var i = (int)Math.Round(pos);
+                    if (i >= cPositions.Count)
+                        break;
 
                     var frame = new tr_cinematicFrame()
                     {
-                        Fov = (ushort)(cSettings[i].Y * 100),
-                        Roll = roll,
                         TargetX = (short) (cTargets[i].X   - origin.X),
                         TargetY = (short)-(cTargets[i].Y   - origin.Y),
                         TargetZ = (short) (cTargets[i].Z   - origin.Z),
                         PosX    = (short) (cPositions[i].X - origin.X),
                         PosY    = (short)-(cPositions[i].Y - origin.Y),
-                        PosZ    = (short) (cPositions[i].Z - origin.Z)
+                        PosZ    = (short) (cPositions[i].Z - origin.Z),
+                        Fov     = (ushort)(cSettings[i].Y * 100),
+                        Roll    = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                          Math.Round((cSettings[i].X) * (65536.0 / 360.0))))
                     };
 
+                    var nextCamera = MathC.Clamp(i / (grain / positions.Count), 0, positions.Count - 1);
+                    if (nextCamera > currentCamera)
+                    {
+                        var flyby = flybys.ElementAt(nextCamera);
+                        if (flyby.Timer > 0)
+                            for (int t = 0; t < flyby.Timer; t++)
+                                result.Add(frame);
+
+                        currentCamera = nextCamera;
+                    }
+
                     result.Add(frame);
+                    pos += MathC.Clamp(cSettings[i].Z, minFlybySpeed, maxFlybySpeed) * maxFlybySpeed;
                 }
             }
 

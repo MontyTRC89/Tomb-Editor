@@ -3131,7 +3131,7 @@ namespace TombEditor
                 room.BuildGeometry();
         }
 
-        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!selection.Empty && !selection.Valid)
             {
@@ -3154,7 +3154,7 @@ namespace TombEditor
 
             int roomSizeX, roomSizeY, roomSizeZ;
             VectorInt3 roomPos;
-            RectangleInt2 portalArea;
+            RectangleInt2 portalArea, roomArea;
             var dirString = "";
 
             int selectionRefPoint = 0;
@@ -3190,11 +3190,13 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeX)
                     {
                         portalArea = new RectangleInt2(roomSizeX - 1, 1, roomSizeX - 1, roomSizeZ - 2);
+                        roomArea = new RectangleInt2(0, 0, roomSizeX - 2, roomSizeZ - 1);
                         dirString = "left";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(0, 1, 0, roomSizeZ - 2);
+                        roomArea = new RectangleInt2(1, 0, roomSizeX - 1, roomSizeZ - 1);
                         dirString = "right";
                     }
                     break;
@@ -3224,11 +3226,13 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeZ)
                     {
                         portalArea = new RectangleInt2(1, roomSizeZ - 1, roomSizeX - 2, roomSizeZ - 1);
+                        roomArea = new RectangleInt2(0, 0, roomSizeX - 1, roomSizeZ - 2);
                         dirString = "back";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(1, 0, roomSizeX - 2, 0);
+                        roomArea = new RectangleInt2(0, 1, roomSizeX - 1, roomSizeZ - 1);
                         dirString = "in front";
                     }
                     break;
@@ -3243,6 +3247,7 @@ namespace TombEditor
                                                              direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) - roomDepth : room.GetHighestCorner(selection.Area),
                                                              clampedSelection.Value.Area.Start.Y - 1);
                     portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
+                    roomArea = RectangleInt2.Zero;
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
@@ -3261,6 +3266,9 @@ namespace TombEditor
             
             if (_editor.Configuration.UI_GenerateRoomDescriptions)
                 newRoom.Name += " (digged " + dirString + ")";
+
+            if (grid && _editor.Configuration.Editor_GridNewRoom && roomArea.Size.X > 0 && roomArea.Size.Y > 0)
+                GridWallsSquares(newRoom, roomArea, false, false);
 
             _editor.RoomListChange();
 
