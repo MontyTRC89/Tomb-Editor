@@ -615,28 +615,26 @@ namespace TombLib.LevelData.Compilers
                 var grain = (int)Math.Round((framesPerUnit / minFlybySpeed)) * flybys.Count();
 
                 var cPositions = Spline.Calculate(positions, grain);
-                var cTargets   = Spline.Calculate(targets, grain);
-                var cSettings  = Spline.Calculate(settings, grain);
+                var cTargets   = Spline.Calculate(targets,   grain);
+                var cSettings  = Spline.Calculate(settings,  grain);
                 
-                for (float pos = 0.0f; pos < cPositions.Count;)
+                for (float pos = 0.0f; ;)
                 {
                     var i = (int)Math.Round(pos);
                     if (i >= cPositions.Count)
                         break;
 
-                    var roll = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
-                            Math.Round((cSettings[i].X) * (65536.0 / 360.0))));
-
                     var frame = new tr_cinematicFrame()
                     {
-                        Fov = (ushort)(cSettings[i].Y * 100),
-                        Roll = roll,
                         TargetX = (short) (cTargets[i].X   - origin.X),
                         TargetY = (short)-(cTargets[i].Y   - origin.Y),
                         TargetZ = (short) (cTargets[i].Z   - origin.Z),
                         PosX    = (short) (cPositions[i].X - origin.X),
                         PosY    = (short)-(cPositions[i].Y - origin.Y),
-                        PosZ    = (short) (cPositions[i].Z - origin.Z)
+                        PosZ    = (short) (cPositions[i].Z - origin.Z),
+                        Fov     = (ushort)(cSettings[i].Y * 100),
+                        Roll    = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                          Math.Round((cSettings[i].X) * (65536.0 / 360.0))))
                     };
 
                     result.Add(frame);
