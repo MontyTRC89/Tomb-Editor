@@ -162,7 +162,9 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.RemapAnimatedTextures, settings.RemapAnimatedTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.RearrangeRooms, settings.RearrangeVerticalRooms);
 				chunkIO.WriteChunkBool(Prj2Chunks.RemoveUnusedObjects, settings.RemoveUnusedObjects);
-				chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
+                chunkIO.WriteChunkBool(Prj2Chunks.EnableCustomSampleRate, settings.EnableCustomSampleRate);
+                chunkIO.WriteChunkInt(Prj2Chunks.CustomSampleRate, settings.CustomSampleRate);
+                chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
@@ -272,7 +274,7 @@ namespace TombLib.LevelData.IO
                             {
                                 foreach (AnimatedTextureFrame frame in set.Frames)
                                 {
-                                    if (levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
+                                    if (frame.Texture != null && levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
                                         using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
                                         {
                                             LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
@@ -382,7 +384,7 @@ namespace TombLib.LevelData.IO
                                             if (texture.Texture is LevelTexture)
                                             {
                                                 var t = (LevelTexture)texture.Texture;
-                                                if (levelSettingIds.LevelTextures.ContainsKey(t))
+                                                if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
                                                     using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
                                                     {
                                                         int textureIndex = levelSettingIds.LevelTextures[t];
@@ -766,7 +768,7 @@ namespace TombLib.LevelData.IO
                     else if (o is ImportedGeometryInstance)
                     {
                         var instance = (ImportedGeometryInstance)o;
-                        if (levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
+                        if (instance.Model == null || levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
                             {
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -786,7 +788,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
                             });
                         else
-                            logger.Warn("Imported geometry " + instance.ToString() + " refers to a model which is missing from project.");
+                            logger.Warn("Imported geometry in room " + instance.Room + " refers to a model which is missing from project.");
                     }
                     else
                         logger.Warn("Object " + o + " not supported.");

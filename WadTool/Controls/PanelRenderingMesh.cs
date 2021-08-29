@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -245,8 +246,7 @@ namespace WadTool.Controls
 
         // Interaction state
         private bool _actionStarted;
-        private float _lastX;
-        private float _lastY;
+        private Point _lastMousePosition;
         private List<Vector3> _lastElementPos = new List<Vector3>();
         private List<int> _clickchain = new List<int>();
 
@@ -260,6 +260,7 @@ namespace WadTool.Controls
         private float _normalLength = 1.0f;
         private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
+        private WadStatic _dummyStatic = new WadStatic(new WadStaticId(0));
 
         // Rendering state
         private RenderingTextureAllocator _fontTexture;
@@ -373,7 +374,9 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
+            _dummyStatic.Mesh = VisibleMesh;
+            _dummyStatic.Version = DataVersion.GetNext();
+            var mesh = _wadRenderer.GetStatic(_dummyStatic);
             mesh.UpdateBuffers(Camera.GetPosition());
 
             var world  = Matrix4x4.Identity;
@@ -723,8 +726,7 @@ namespace WadTool.Controls
         {
             base.OnMouseDown(e);
 
-            _lastX = e.X;
-            _lastY = e.Y;
+            _lastMousePosition = e.Location;
 
             if (DrawExtraInfo)
             {
@@ -744,24 +746,20 @@ namespace WadTool.Controls
 
             if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
-                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / Height;
-                float deltaY = (e.Y - _lastY) / Height;
-
-                _lastX = e.X;
-                _lastY = e.Y;
+                // Warp cursor
+                var delta = WarpMouseCursor(e, _lastMousePosition);
 
                 if (e.Button == MouseButtons.Right)
                 {
                     if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                        Camera.Zoom(-delta.Y * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                     else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
-                        Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                     -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                        Camera.Rotate(delta.X * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
+                                     -delta.Y * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 }
                 if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
                      e.Button == MouseButtons.Middle)
-                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(delta.X, delta.Y, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
 
                 Invalidate();
             }
@@ -788,6 +786,8 @@ namespace WadTool.Controls
                     }
                 }
             }
+
+            _lastMousePosition = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)

@@ -503,8 +503,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (doubleSided && !poly.Texture.DoubleSided)
                                     break;
 
-                                int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } :
-                                                                  new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
+                                int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
+                                                                  new int[] { index0, index1, index2, index3 };
                                 var key = poly;
 
                                 if (doubleSided)

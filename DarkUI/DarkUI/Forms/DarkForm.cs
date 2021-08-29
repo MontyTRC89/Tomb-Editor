@@ -64,6 +64,22 @@ namespace DarkUI.Forms
             base.Show(parent);
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            // Another hack which forces window to always accept first mouse click
+            // as an event, without requiring one extra click for activation.
+            // https://stackoverflow.com/questions/13836363/why-two-time-click-is-required-to-click-toolstripmenuitem
+
+            const int WM_PARENTNOTIFY = 0x0210;
+
+            if (m.Msg == WM_PARENTNOTIFY)
+            {
+                if (!Focused)
+                    Activate();
+            }
+            base.WndProc(ref m);
+        }
+
         #endregion
 
         #region Paint Region

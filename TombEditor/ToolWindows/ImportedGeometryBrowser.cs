@@ -69,6 +69,16 @@ namespace TombEditor.ToolWindows
                 }
             }
 
+            // Activate default control
+            if (obj is Editor.DefaultControlActivationEvent)
+            {
+                if (DockPanel != null && ((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
+                {
+                    MakeActive();
+                    comboItems.Search();
+                }
+            }
+
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {

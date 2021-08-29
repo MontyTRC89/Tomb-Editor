@@ -126,8 +126,10 @@ namespace TombLib.Controls
             Vector2 textureCoord = new Vector2(
                (pos.X - (ClientSize.Width - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.X,
                (pos.Y - (ClientSize.Height - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.Y);
-            if (limited)
+
+            if (limited && (VisibleTexture?.IsAvailable ?? false))
                 textureCoord = Vector2.Min(VisibleTexture.Image.Size, Vector2.Max(Vector2.Zero, textureCoord));
+
             return textureCoord;
         }
 
@@ -194,6 +196,9 @@ namespace TombLib.Controls
             else
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= selectionPrecision.Precision;
+
+            // Clamp texture coordinate to image bounds
+            texCoord = Vector2.Min(texCoord, VisibleTexture.Image.Size);
 
             return texCoord;
         }

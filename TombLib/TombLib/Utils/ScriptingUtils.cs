@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Utils
 {
@@ -16,7 +14,7 @@ namespace TombLib.Utils
             try
             {
                 var result = new List<string>();
-                var lines = File.ReadAllLines(path);
+                var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
 
                 foreach (string l in lines)
                 {

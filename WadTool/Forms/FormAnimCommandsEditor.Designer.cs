@@ -78,7 +78,7 @@
             // 
             this.butDeleteEffect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteEffect.Checked = false;
-            this.butDeleteEffect.Image = global::WadTool.Properties.Resources.trash_161;
+            this.butDeleteEffect.Image = global::WadTool.Properties.Resources.trash_16;
             this.butDeleteEffect.Location = new System.Drawing.Point(340, 96);
             this.butDeleteEffect.Name = "butDeleteEffect";
             this.butDeleteEffect.Size = new System.Drawing.Size(24, 24);

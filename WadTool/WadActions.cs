@@ -526,7 +526,7 @@ namespace WadTool
                         return;
 
                     var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
                     if (mesh == null)
                     {
 
@@ -1122,7 +1122,10 @@ namespace WadTool
                             var disp = new WadAnimDispatch();
                             disp.InFrame = reader.ReadUInt16();
                             disp.OutFrame = reader.ReadUInt16();
-                            disp.NextAnimation = reader.ReadUInt16();
+
+                            nextAnimation = reader.ReadInt16();
+                            disp.NextAnimation = (ushort)(MathC.Clamp(sourceAnimIndex + nextAnimation, 0, UInt16.MaxValue));
+
                             disp.NextFrame = reader.ReadUInt16();
 
                             sc.Dispatches.Add(disp);
@@ -1351,6 +1354,12 @@ namespace WadTool
 
         public static WadMesh ImportMesh(WadToolClass tool, IWin32Window owner)
         {
+            if (tool.DestinationWad == null)
+            {
+                tool.SendMessage("You must have a wad opened", PopupType.Error);
+                return null;
+            }
+
             using (var dialog = new OpenFileDialog())
             {
                 dialog.Title = "Select a 3D file that you want to see imported";
@@ -1368,7 +1377,10 @@ namespace WadTool
                         if (form.ShowDialog(owner) != DialogResult.OK)
                             return null;
 
-                        var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                        // A flag which allows to import untextured meshes
+                        form.Settings.ProcessUntexturedGeometry = true;
+
+                        var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault()); ;
                         if (mesh == null)
                         {
                             tool.SendMessage("Error loading 3D model. Check that the file format \n" +

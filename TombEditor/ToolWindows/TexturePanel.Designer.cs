@@ -233,7 +233,7 @@ namespace TombEditor.ToolWindows
             this.Controls.Add(this.textureSelectionPanel);
             this.Controls.Add(this.panelTextureTools);
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
-            this.DockText = "Texture Panel";
+            this.DockText = "Texturing";
             this.MinimumSize = new System.Drawing.Size(286, 100);
             this.Name = "TexturePanel";
             this.SerializationKey = "TexturePanel";

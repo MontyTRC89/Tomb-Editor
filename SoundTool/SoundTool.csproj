@@ -134,16 +134,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\actions_play-16.png" />
-    <None Include="Resources\general_trash-16.png" />
-    <None Include="Resources\general_Save-16.png" />
-    <None Include="Resources\general_plus_math-16.png" />
-    <None Include="Resources\general_Open-16.png" />
-    <None Include="Resources\general_edit-16.png" />
-    <None Include="Resources\general_create_new-16.png" />
-    <None Include="Resources\icons_general\general_search-16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ST.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

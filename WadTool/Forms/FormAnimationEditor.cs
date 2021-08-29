@@ -2,11 +2,13 @@
 using DarkUI.Controls;
 using DarkUI.Extensions;
 using DarkUI.Forms;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
@@ -74,6 +76,9 @@ namespace WadTool
 
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
+
+        // Logger
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
@@ -237,9 +242,10 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                    components.Dispose();
                 _editor.Tool.EditorEventRaised -= Tool_EditorEventRaised;
             }
             base.Dispose(disposing);
@@ -470,10 +476,10 @@ namespace WadTool
                     nudEndFrame.Value = node.WadAnimation.EndFrame;
                     nudNextAnim.Value = node.WadAnimation.NextAnimation;
                     nudNextFrame.Value = node.WadAnimation.NextFrame;
-                    tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
-                    tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
-                    tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
-                    tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
+                    nudStartVertVel.Value = (decimal)node.WadAnimation.StartVelocity;
+                    nudEndVertVel.Value = (decimal)node.WadAnimation.EndVelocity;
+                    nudStartHorVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
+                    nudEndHorVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
                     UpdateStateChange();
@@ -728,6 +734,24 @@ namespace WadTool
             Saved = false;
         }
 
+        private void DeleteSelectedAnimations()
+        {
+            if (lstAnimations.SelectedItems.Count <= 0)
+                return;
+
+            if (DarkMessageBox.Show(this, "Do you really want to delete all selected animations?",
+                                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            var listToDelete = lstAnimations.SelectedItems.Select(i => (AnimationNode)i.Tag).ToList();
+
+            for (int i = 0; i < listToDelete.Count; i++)
+            {
+                var anim = listToDelete[i];
+                DeleteAnimation(anim, (i == listToDelete.Count - 1));
+            }
+        }
+
         private void DeleteAnimation()
         {
             if (_editor.CurrentAnim == null) return;
@@ -736,7 +760,15 @@ namespace WadTool
                                     "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            int currentIndex = _editor.Animations.IndexOf(_editor.CurrentAnim);
+            DeleteAnimation(_editor.CurrentAnim);
+        }
+
+        private void DeleteAnimation(AnimationNode animToDelete, bool updateUI = true)
+        {
+            if (animToDelete == null || !_editor.Animations.Contains(animToDelete))
+                return;
+
+            int currentIndex = _editor.Animations.IndexOf(animToDelete);
 
             // Update all references
             for (int i = 0; i < _editor.Animations.Count; i++)
@@ -763,14 +795,17 @@ namespace WadTool
             }
 
             // Remove the animation
-            _editor.Animations.Remove(_editor.CurrentAnim);
+            _editor.Animations.Remove(animToDelete);
 
-            // Update GUI
-            RebuildAnimationsList();
-            panelRendering.Invalidate();
-            timeline.Invalidate();
+            if (updateUI)
+            {
+                // Update GUI
+                RebuildAnimationsList();
+                panelRendering.Invalidate();
+                timeline.Invalidate();
 
-            Saved = false;
+                Saved = false;
+            }
         }
 
         private void AddNewFrame(int index, bool undo)
@@ -1154,50 +1189,50 @@ namespace WadTool
             // Get actual old value
             switch (control.Name)
             {
-                case "nudNextAnim":
+                case nameof(nudNextAnim):
                     oldValue = _editor.CurrentAnim.WadAnimation.NextAnimation;
                     roundToShort = true;
                     break;
-                case "nudNextFrame":
+                case nameof(nudNextFrame):
                     oldValue = _editor.CurrentAnim.WadAnimation.NextFrame;
                     roundToShort = true;
                     break;
-                case "nudFramerate":
+                case nameof(nudFramerate):
                     oldValue = _editor.CurrentAnim.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
-                case "nudEndFrame":
+                case nameof(nudEndFrame):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndFrame;
                     roundToShort = true;
                     break;
-                case "tbStartVertVel":
+                case nameof(nudStartVertVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.StartVelocity;
                     break;
-                case "tbEndVertVel":
+                case nameof(nudEndVertVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndVelocity;
                     break;
-                case "tbStartHorVel":
+                case nameof(nudStartHorVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.StartLateralVelocity;
                     break;
-                case "tbEndHorVel":
+                case nameof(nudEndHorVel):
                     oldValue = _editor.CurrentAnim.WadAnimation.EndLateralVelocity;
                     break;
-                case "nudBBoxMinX":
+                case nameof(nudBBoxMinX):
                     oldValue = bb.Minimum.X;
                     break;
-                case "nudBBoxMinY":
+                case nameof(nudBBoxMinY):
                     oldValue = bb.Minimum.Y;
                     break;
-                case "nudBBoxMinZ":
+                case nameof(nudBBoxMinZ):
                     oldValue = bb.Minimum.Z;
                     break;
-                case "nudBBoxMaxX":
+                case nameof(nudBBoxMaxX):
                     oldValue = bb.Maximum.X;
                     break;
-                case "nudBBoxMaxY":
+                case nameof(nudBBoxMaxY):
                     oldValue = bb.Maximum.Y;
                     break;
-                case "nudBBoxMaxZ":
+                case nameof(nudBBoxMaxZ):
                     oldValue = bb.Maximum.Z;
                     break;
             }
@@ -1225,46 +1260,46 @@ namespace WadTool
             // Update actual values
             switch (control.Name)
             {
-                case "nudNextAnim":
+                case nameof(nudNextAnim):
                     _editor.CurrentAnim.WadAnimation.NextAnimation = (ushort)result;
                     break;
-                case "nudNextFrame":
+                case nameof(nudNextFrame):
                     _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)result;
                     break;
-                case "nudFramerate":
+                case nameof(nudFramerate):
                     _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
                     break;
-                case "nudEndFrame":
+                case nameof(nudEndFrame):
                     _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)result;
                     break;
-                case "tbStartVertVel":
+                case nameof(nudStartVertVel):
                     _editor.CurrentAnim.WadAnimation.StartVelocity = result;
                     break;
-                case "tbEndVertVel":
+                case nameof(nudEndVertVel):
                     _editor.CurrentAnim.WadAnimation.EndVelocity = result;
                     break;
-                case "tbStartHorVel":
+                case nameof(nudStartHorVel):
                     _editor.CurrentAnim.WadAnimation.StartLateralVelocity = result;
                     break;
-                case "tbEndHorVel":
+                case nameof(nudEndHorVel):
                     _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
                     break;
-                case "nudBBoxMinX":
+                case nameof(nudBBoxMinX):
                     EditBoundingBox(new Vector3(result, bb.Minimum.Y, bb.Minimum.Z), bb.Maximum);
                     break;
-                case "nudBBoxMinY":
+                case nameof(nudBBoxMinY):
                     EditBoundingBox(new Vector3(bb.Minimum.X, result, bb.Minimum.Z), bb.Maximum);
                     break;
-                case "nudBBoxMinZ":
+                case nameof(nudBBoxMinZ):
                     EditBoundingBox(new Vector3(bb.Minimum.X, bb.Minimum.Y, result), bb.Maximum);
                     break;
-                case "nudBBoxMaxX":
+                case nameof(nudBBoxMaxX):
                     EditBoundingBox(bb.Minimum, new Vector3(result, bb.Maximum.Y, bb.Maximum.Z));
                     break;
-                case "nudBBoxMaxY":
+                case nameof(nudBBoxMaxY):
                     EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, result, bb.Maximum.Z));
                     break;
-                case "nudBBoxMaxZ":
+                case nameof(nudBBoxMaxZ):
                     EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, bb.Maximum.Y, result));
                     break;
             }
@@ -1592,10 +1627,17 @@ namespace WadTool
                 existingWindow.Focus();
         }
 
-        private void FixAnimations(bool all)
+        private void FixAnimations(int mode)
         {
-            List<AnimationNode> anims = all ? _editor.Animations : new List<AnimationNode>() { _editor.CurrentAnim };
-
+            var anims = new List<AnimationNode>();
+            
+            switch (mode)
+            {
+                case 0: anims.Add(_editor.CurrentAnim); break;
+                case 1: anims.AddRange(lstAnimations.SelectedItems.Select(i => (AnimationNode)i.Tag)); break;
+                case 2: anims.AddRange(_editor.Animations); break;
+            }
+            
             using (var form = new FormAnimationFixer(_editor, anims))
             {
                 var result = form.ShowDialog();
@@ -1605,6 +1647,7 @@ namespace WadTool
                 {
                     var startMessage = (form.ChangedAnimations.Length < 50) ? "Animations (" + form.ChangedAnimations + ")" : "Multiple animations";
                     popup.ShowWarning(panelRendering, startMessage + " were fixed.\nPlease save your wad under new name and thoroughly test it.");
+                    SelectAnimation(_editor.CurrentAnim);
                 }
             }
         }
@@ -1817,6 +1860,130 @@ namespace WadTool
             return false;
         }
 
+        private void BatchImport()
+        {
+            string path = LevelFileDialog.BrowseFolder(this, null, null, "Specify folder for batch import", null);
+
+            if (path == null)
+                return;
+
+            var files = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".anim").ToList();
+
+            var undoList = new List<UndoRedoInstance>();
+
+            bool updateSelection = false;
+            bool? generateMissingAnims = null;
+            int errorCount = 0;
+            int importCount = 0;
+
+            foreach (var file in files)
+            {
+                int number = -1;
+                int.TryParse(Regex.Match(file, @"\d+").Value, out number);
+
+                if (number == -1)
+                    continue; // No number in the beginning of the file
+
+                try
+                {
+                    var animation = WadActions.ImportAnimationFromXml(_editor.Tool, file);
+
+                    if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
+                        throw new Exception("Incorrect amount of bones in animation imported from file " + file);
+
+                    if (_editor.Animations.Count <= number)
+                    {
+                        if (!generateMissingAnims.HasValue)
+                            generateMissingAnims = DarkMessageBox.Show(this, "Batch contains animations with IDs spanning beyond existing animation count.\n" +
+                                "Fill missing slots with empty animations (Yes) or skip missing slots (No)?", "Missing animation slots detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+
+                        if (generateMissingAnims.Value)
+                            while (_editor.Animations.Count <= number)
+                                _editor.Animations.Add(new AnimationNode(new WadAnimation() { Name = "Empty animation " + _editor.Animations.Count }, new Animation(), _editor.Animations.Count));
+                        else
+                            throw new Exception("Animation index is out of range for animation file " + file);
+                    }
+
+                    undoList.Add(new AnimationUndoInstance(_editor, _editor.Animations[number]));
+
+                    _editor.Animations[number].WadAnimation = animation;
+                    _editor.Animations[number].DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
+
+                    if (number == _editor.CurrentAnim.Index)
+                        updateSelection = true;
+
+                    importCount++;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.Message);
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            _editor.Tool.UndoManager.Push(undoList);
+
+            if (errorCount > 0)
+                popup.ShowWarning(panelRendering, (importCount == 0 ? "No animations were imported.\n" : "Successfully imported " + importCount + " animations.\n") +
+                                 errorCount + " animations were ignored. Check log file for details.");
+            else
+                popup.ShowInfo(panelRendering, "Successfully imported " + importCount + " animations.");
+
+            RebuildAnimationsList();
+            Saved = false;
+
+            if (updateSelection)
+            {
+                UpdateAnimLabel(_editor.CurrentAnim);
+                UpdateAnimListSelection(_editor.CurrentAnim.Index);
+                timeline.Value = 0;
+                panelRendering.Invalidate();
+            }
+        }
+
+        private void BatchExport(bool all = false)
+        {
+            if (_editor.Animations.Count == 0)
+            {
+                popup.ShowError(panelRendering, "No animations present. Nothing to export.");
+                return;
+            }
+
+            string path = LevelFileDialog.BrowseFolder(this, null, null, "Specify folder to save animations", null);
+
+            if (path == null)
+                return;
+
+            int errorCount = 0;
+            int exportCount = 0;
+
+            foreach (var anim in (all ? _editor.Animations : lstAnimations.SelectedItems.Select(a => (AnimationNode)a.Tag)))
+            {
+                try
+                {
+                    var fileName = Path.Combine(path, anim.Index.ToString("D4") + "_" + anim.WadAnimation.Name + ".anim");
+
+                    if (!WadActions.ExportAnimationToXml(_editor.Moveable, anim.WadAnimation, fileName))
+                        throw new Exception("There was an error batch-exporting animation " + anim.WadAnimation.Name + ".");
+
+                    exportCount++;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.Message);
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            if (errorCount > 0)
+                popup.ShowWarning(panelRendering, "Successfully exported " + exportCount + " animations.\n" +
+                                 errorCount + " animations were ignored. Check log file for details.");
+            else
+                popup.ShowInfo(panelRendering, "Successfully exported " + exportCount + " animations.");
+        }
+
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _editor.Tool.Configuration.AnimationEditor_ShowGrid = !_editor.Tool.Configuration.AnimationEditor_ShowGrid;
@@ -1869,8 +2036,9 @@ namespace WadTool
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
         private void mirrorAnimationToolStripMenuItem_Click(object sender, EventArgs e) => MirrorAnimation();
-        private void fixCurrentAnimationToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(false);
-        private void fixAllAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(true);
+        private void currentAnimationToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(0);
+        private void selectedAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(1);
+        private void allAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => FixAnimations(2);
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, true);
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
@@ -1882,6 +2050,9 @@ namespace WadTool
         private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_SmoothAnimation = !_editor.Tool.Configuration.AnimationEditor_SmoothAnimation;
         private void scrollGridToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_ScrollGrid = !_editor.Tool.Configuration.AnimationEditor_ScrollGrid;
         private void restoreGridHeightToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange = !_editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange;
+        private void importToolStripMenuItem1_Click(object sender, EventArgs e) => BatchImport();
+        private void exportSelectedToolStripMenuItem_Click(object sender, EventArgs e) => BatchExport();
+        private void exportAllToolStripMenuItem_Click_1(object sender, EventArgs e) => BatchExport(true);
 
         // Toolbox controls one-liners
 
@@ -1906,7 +2077,7 @@ namespace WadTool
         // General controls one-liners
 
         private void butAddNewAnimation_Click(object sender, EventArgs e) => AddNewAnimation();
-        private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteAnimation();
+        private void butDeleteAnimation_Click(object sender, EventArgs e) => DeleteSelectedAnimations();
         private void butSearchByStateID_Click(object sender, EventArgs e) => RebuildAnimationsList();
         private void butCalculateAnimCollision_Click(object sender, EventArgs e) => CalculateAnimationBoundingBox();
         private void butClearAnimCollision_Click(object sender, EventArgs e) => ClearAnimationBoundingBox();
@@ -1928,10 +2099,10 @@ namespace WadTool
         private void nudEndFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndFrame);
         private void nudNextAnim_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextAnim);
         private void nudNextFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextFrame);
-        private void tbStartVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbStartVertVel);
-        private void tbEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbEndVertVel);
-        private void tbStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbStartHorVel);
-        private void tbEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbEndHorVel);
+        private void nudStartVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartVertVel);
+        private void nudEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndVertVel);
+        private void nudStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartHorVel);
+        private void nudEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndHorVel);
 
         private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
         private void animParameter_Validated(object sender, EventArgs e) => ValidateAnimationParameter();
@@ -2264,6 +2435,10 @@ namespace WadTool
                 return;
             }
         }
+
+        private void exportAllToolStripMenuItem_Click(object sender, EventArgs e) => BatchExport(true);
+
+        private void importAllToolStripMenuItem_Click(object sender, EventArgs e) => BatchImport();
 
         private void comboRoomList_SelectedIndexChanged(object sender, EventArgs e)
         {

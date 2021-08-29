@@ -978,32 +978,32 @@ namespace TombEditor
 
             AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, true, 12);
             });
 
             AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, true, 12);
             });
 
             AddCommand("NewRoomLeft", "New room left", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeX, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeX, true, 12);
             });
 
             AddCommand("NewRoomRight", "New room right", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveX, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveX, true, 12);
             });
 
             AddCommand("NewRoomFront", "New room front", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveZ, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallPositiveZ, true, 12);
             });
 
             AddCommand("NewRoomBack", "New room back", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeZ, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.WallNegativeZ, true, 12);
             });
 
             AddCommand("MergeRoomsHorizontally", "Merge rooms horizontally", CommandType.Rooms, delegate (CommandArgs args)
@@ -1107,9 +1107,6 @@ namespace TombEditor
 
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Flyby camera"))
-                    return;
-
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance(args.Editor.SelectedObject));
             });
 
@@ -2062,6 +2059,26 @@ namespace TombEditor
             AddCommand("SelectAllObjectsInArea", "Select all objects in selected area", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.SelectObjectsInArea(args.Window, args.Editor.SelectedSectors);
+            });
+
+            AddCommand("InPlaceSearchRooms", "Room in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.RoomOptions));
+            });
+
+            AddCommand("InPlaceSearchItems", "Item in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ItemBrowser));
+            });
+
+            AddCommand("InPlaceSearchTextures", "Texture in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.TexturePanel));
+            });
+
+            AddCommand("InPlaceSearchImportedGeometry", "Imported geometry in-place search", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(ToolWindows.ImportedGeometryBrowser));
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 

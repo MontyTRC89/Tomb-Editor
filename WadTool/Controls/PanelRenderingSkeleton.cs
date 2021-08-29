@@ -65,6 +65,7 @@ namespace WadTool.Controls
         private GizmoSkeletonEditor _gizmo;
         private GeometricPrimitive _plane;
         private WadRenderer _wadRenderer; // TODO Remove internal hack that destroys rendering encapsulation
+        private WadStatic _dummyStatic = new WadStatic(new WadStaticId(0));
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
@@ -165,7 +166,11 @@ namespace WadTool.Controls
                 {
                     // TODO Keep data on GPU, optimize data upload
                     // Use new renderer
-                    var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.Mesh });
+
+                    _dummyStatic.Mesh = node.Mesh;
+                    _dummyStatic.Version = DataVersion.GetNext();
+                    var mesh = _wadRenderer.GetStatic(_dummyStatic);
+                    mesh.UpdateBuffers(Camera.GetPosition());
 
                     effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());

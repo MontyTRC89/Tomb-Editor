@@ -549,5 +549,114 @@ namespace TombLib.LevelData.Compilers
             }
             return buffer;
         }
+
+        public List<tr_cinematicFrame> GetCinematicFrames()
+        {
+            var result = new List<tr_cinematicFrame>();
+
+            var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
+            if (allObjects.Count == 0)
+                return result;
+
+            var allFlybys = allObjects.OfType<FlybyCameraInstance>().OrderBy(f => f.Sequence).ThenBy(f => f.Number).ToList();
+            if (allFlybys.Count == 0)
+                return result;
+
+            var lara = _level.Settings.WadTryGetMoveable(WadMoveableId.Lara);
+            if (lara == null)
+                return result;
+
+            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
+                                    ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
+            if (laraItem == null)
+                return result;
+
+            var origin = laraItem.WorldPosition;
+            var rotationOffset = -(laraItem as IRotateableY).RotationY * Math.PI / 180.0f;
+            var sin = (float)Math.Sin(-rotationOffset);
+            var cos = (float)Math.Cos(-rotationOffset);
+
+            var groups = allFlybys.GroupBy(f => f.Sequence).ToList();
+
+            _progressReporter.ReportInfo("Converting " + groups.Count + " flyby sequence" + (groups.Count == 1 ? "" : "s") + " to cinematic frames");
+
+            foreach (var flybys in groups)
+            {
+                var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, f.Speed)).ToList();
+                
+                var positions = flybys.Select(f =>
+                {
+                    var distance = f.WorldPosition - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x, f.WorldPosition.Y, z);
+                }
+                ).ToList();
+
+                var targets = flybys.Select(f =>
+                {
+                    var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.WorldUnit);
+                    var trans = f.WorldPosition + (mxT * mxR).Translation;
+
+                    var distance = trans - laraItem.WorldPosition;
+                    var x = distance.X * cos - distance.Z * sin + laraItem.WorldPosition.X;
+                    var z = distance.X * sin + distance.Z * cos + laraItem.WorldPosition.Z;
+
+                    return new Vector3(x , trans.Y, z);
+                }
+                ).ToList();
+
+                const float minFlybySpeed = 0.01f;
+                const float maxFlybySpeed = 100.0f;
+                const float framesPerUnit = 60.0f;
+
+                var grain = (int)Math.Round((framesPerUnit / minFlybySpeed)) * positions.Count;
+
+                var cPositions = Spline.Calculate(positions, grain);
+                var cTargets   = Spline.Calculate(targets,   grain);
+                var cSettings  = Spline.Calculate(settings,  grain);
+
+                var currentCamera = 0;
+                for (float pos = 0.0f; ;)
+                {
+                    var i = (int)Math.Round(pos);
+                    if (i >= cPositions.Count)
+                        break;
+
+                    var frame = new tr_cinematicFrame()
+                    {
+                        TargetX = (short) (cTargets[i].X   - origin.X),
+                        TargetY = (short)-(cTargets[i].Y   - origin.Y),
+                        TargetZ = (short) (cTargets[i].Z   - origin.Z),
+                        PosX    = (short) (cPositions[i].X - origin.X),
+                        PosY    = (short)-(cPositions[i].Y - origin.Y),
+                        PosZ    = (short) (cPositions[i].Z - origin.Z),
+                        Fov     = (ushort)(cSettings[i].Y * 100),
+                        Roll    = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                          Math.Round((cSettings[i].X) * (65536.0 / 360.0))))
+                    };
+
+                    var nextCamera = MathC.Clamp(i / (grain / positions.Count), 0, positions.Count - 1);
+                    if (nextCamera > currentCamera)
+                    {
+                        var flyby = flybys.ElementAt(nextCamera);
+                        if (flyby.Timer > 0)
+                            for (int t = 0; t < flyby.Timer; t++)
+                                result.Add(frame);
+
+                        currentCamera = nextCamera;
+                    }
+
+                    result.Add(frame);
+                    pos += MathC.Clamp(cSettings[i].Z, minFlybySpeed, maxFlybySpeed) * maxFlybySpeed;
+                }
+            }
+
+            _progressReporter.ReportInfo("    Num cinematic frames: " + result.Count);
+
+            return result;
+        }
     }
 }

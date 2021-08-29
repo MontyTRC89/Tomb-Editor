@@ -189,10 +189,12 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(97, "Calculating lightmap");
                 writer.Write(CalculateLightmap(palette));
 
+                // Cinematic frames
+                tr_cinematicFrame.Write(GetCinematicFrames(), writer);
+
+                // Dummy demodata
                 const ushort numDemo = 0;
-                const ushort numCinematicFrames = 0;
                 writer.Write(numDemo);
-                writer.Write(numCinematicFrames);
 
                 // Write sound meta data
                 PrepareSoundsData();

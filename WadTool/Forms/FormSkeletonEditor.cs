@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
@@ -74,9 +75,10 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                    components.Dispose();
                 _tool.EditorEventRaised -= Tool_EditorEventRaised;
             }
             base.Dispose(disposing);
@@ -444,7 +446,7 @@ namespace WadTool
                     if (form.ShowDialog(this) != DialogResult.OK)
                         return;
 
-                    var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false);
+                    var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false, _tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
                     if (meshes == null || meshes.Count == 0)
                     {
                         popup.ShowWarning(panelRendering, "No meshes were imported. Selected 3D file is broken or has no valid data.");

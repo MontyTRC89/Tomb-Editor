@@ -210,7 +210,7 @@
             // 
             this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butClipboardPaste.Checked = false;
-            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
+            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_16;
             this.butClipboardPaste.Location = new System.Drawing.Point(350, 31);
             this.butClipboardPaste.Name = "butClipboardPaste";
             this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
@@ -335,6 +335,7 @@
             this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SamplePathColumn,
             this.SampleFoundPathColumn});
+            this.dgvSamples.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvSamples.Location = new System.Drawing.Point(0, 206);
             this.dgvSamples.Name = "dgvSamples";
             this.dgvSamples.RowHeadersWidth = 41;

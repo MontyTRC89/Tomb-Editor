@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
-using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -22,7 +16,7 @@ namespace ProjectConverter
             try
             {
                 // Load new TombEngine reference Wad2
-                var referenceWad = Wad2Loader.LoadFromFile("TombEngine.wad2", true);
+                var referenceWad = Wad2Loader.LoadFromFile(Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2"), true);
 
                 // Load level and all related resources
                 var level = Prj2Loader.LoadFromPrj2(source, null);

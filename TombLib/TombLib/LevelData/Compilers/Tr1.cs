@@ -222,9 +222,11 @@ namespace TombLib.LevelData.Compilers
                 foreach (var c in palette)
                     c.write(writer);
 
-                const ushort numCinematicFrames = 0;
+                // Cinematic frames
+                tr_cinematicFrame.Write(GetCinematicFrames(), writer);
+
+                // Dummy demodata
                 const ushort numDemo = 0;
-                writer.Write(numCinematicFrames);
                 writer.Write(numDemo);
 
                 // Write sound meta data

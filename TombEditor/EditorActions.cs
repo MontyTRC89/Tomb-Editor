@@ -309,7 +309,7 @@ namespace TombEditor
         public static void ResetObjectRotation(PositionBasedObjectInstance obj, RotationAxis axis = RotationAxis.None)
         {
             if (!(obj is IRotateableY || obj is IRotateableYX || obj is IRotateableYXRoll)) return;
-            _editor.UndoManager.PushObjectTransformed(obj);
+            _editor.UndoManager.PushObjectTransformed(obj); 
 
             if (obj is IRotateableYX)
             {
@@ -579,8 +579,8 @@ namespace TombEditor
             var objectList = new List<ObjectInstance>();
 
             // If object group is a group of moveables, batch-trigger it. Otherwise, add single object to list.
-            if (@object is ObjectGroup && ((ObjectGroup)@object).All(o => o is MoveableInstance))
-                objectList.AddRange(((ObjectGroup)@object));
+            if (@object is ObjectGroup && ((ObjectGroup)@object).Any(o => o is MoveableInstance))
+                objectList.AddRange(((ObjectGroup)@object).Where(i => i is MoveableInstance));
             else
                 objectList.Add(@object);
 
@@ -1002,9 +1002,6 @@ namespace TombEditor
             }
             else if (instance is FlybyCameraInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion > TRVersion.Game.TR3, "Flyby camera"))
-                    return;
-
                 using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
@@ -3134,7 +3131,7 @@ namespace TombEditor
                 room.BuildGeometry();
         }
 
-        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!selection.Empty && !selection.Valid)
             {
@@ -3157,7 +3154,7 @@ namespace TombEditor
 
             int roomSizeX, roomSizeY, roomSizeZ;
             VectorInt3 roomPos;
-            RectangleInt2 portalArea;
+            RectangleInt2 portalArea, roomArea;
             var dirString = "";
 
             int selectionRefPoint = 0;
@@ -3193,11 +3190,13 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeX)
                     {
                         portalArea = new RectangleInt2(roomSizeX - 1, 1, roomSizeX - 1, roomSizeZ - 2);
+                        roomArea = new RectangleInt2(0, 0, roomSizeX - 2, roomSizeZ - 1);
                         dirString = "left";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(0, 1, 0, roomSizeZ - 2);
+                        roomArea = new RectangleInt2(1, 0, roomSizeX - 1, roomSizeZ - 1);
                         dirString = "right";
                     }
                     break;
@@ -3227,11 +3226,13 @@ namespace TombEditor
                     if (direction == PortalDirection.WallNegativeZ)
                     {
                         portalArea = new RectangleInt2(1, roomSizeZ - 1, roomSizeX - 2, roomSizeZ - 1);
+                        roomArea = new RectangleInt2(0, 0, roomSizeX - 1, roomSizeZ - 2);
                         dirString = "back";
                     }
                     else
                     {
                         portalArea = new RectangleInt2(1, 0, roomSizeX - 2, 0);
+                        roomArea = new RectangleInt2(0, 1, roomSizeX - 1, roomSizeZ - 1);
                         dirString = "in front";
                     }
                     break;
@@ -3246,6 +3247,7 @@ namespace TombEditor
                                                              direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) - roomDepth : room.GetHighestCorner(selection.Area),
                                                              clampedSelection.Value.Area.Start.Y - 1);
                     portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
+                    roomArea = RectangleInt2.Zero;
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
@@ -3264,6 +3266,9 @@ namespace TombEditor
             
             if (_editor.Configuration.UI_GenerateRoomDescriptions)
                 newRoom.Name += " (digged " + dirString + ")";
+
+            if (grid && _editor.Configuration.Editor_GridNewRoom && roomArea.Size.X > 0 && roomArea.Size.Y > 0)
+                GridWallsSquares(newRoom, roomArea, false, false);
 
             _editor.RoomListChange();
 
@@ -3892,7 +3897,7 @@ namespace TombEditor
                         watch.Start();
                         var statistics = compiler.CompileLevel();
                         watch.Stop();
-                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                        progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
 
                         // Raise an event for statistics update
                         _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
@@ -4635,7 +4640,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + fileName + "\".");
-                _editor.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
+                _editor.SendMessage("There was an error while saving project file.\nException: " + exc.Message, PopupType.Error);
                 return false;
             }
 
