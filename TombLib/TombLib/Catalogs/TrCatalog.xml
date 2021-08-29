@@ -2993,8 +2993,8 @@
       <moveable id="309" name="SWITCH_TYPE4" description="Switch Type4" t5m="SWITCH_TYPE4" essential="false" />
       <moveable id="310" name="SWITCH_TYPE5" description="Switch Type5" t5m="SWITCH_TYPE5" essential="false" />
       <moveable id="311" name="SWITCH_TYPE6" description="Switch Type6" t5m="SWITCH_TYPE6" essential="false" />
-      <moveable id="312" name="SWITCH_TYPE7" description="Switch Type7" t5m="SWITCH_TYPE7" essential="false" />
-      <moveable id="313" name="SWITCH_TYPE8" description="Switch Type8" t5m="SWITCH_TYPE8" essential="false" />
+      <moveable id="312" name="SWITCH_TYPE7" description="Switch Type7" t5m="SHOOT_SWITCH1" essential="false" />
+      <moveable id="313" name="SWITCH_TYPE8" description="Switch Type8" t5m="SHOOT_SWITCH2" essential="false" />
       <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" t5m="UNDERWATER_SWITCH1" essential="false" />
       <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" t5m="UNDERWATER_SWITCH2" essential="false" />
       <moveable id="316" name="TURN_SWITCH" description="Turn Switch" t5m="TURN_SWITCH" essential="false" />
@@ -4910,8 +4910,8 @@
       <moveable id="269" name="Switch type 4" t5m="SWITCH_TYPE4" />
       <moveable id="270" name="Switch type 5" t5m="SWITCH_TYPE5" />
       <moveable id="271" name="Switch type 6" t5m="SWITCH_TYPE6" />
-      <moveable id="272" name="Shoot switch 1" t5m="SHOOT_SWITCH1" />
-      <moveable id="273" name="Shoot switch 2" t5m="SHOOT_SWITCH2" />
+      <moveable id="272" name="Shoot switch 1" t5m="SHOOT_SWITCH3" />
+      <moveable id="273" name="Shoot switch 2" t5m="SHOOT_SWITCH4" />
       <moveable id="274" name="Airlock switch" t5m="AIRLOCK_SWITCH" />
       <moveable id="275" name="Underwater switch 1" t5m="UNDERWATER_SWITCH1" />
       <moveable id="276" name="Underwater switch 2" t5m="UNDERWATER_SWITCH2" />
