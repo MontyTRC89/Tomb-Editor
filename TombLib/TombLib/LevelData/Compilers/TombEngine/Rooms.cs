@@ -985,6 +985,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     sector.BoxIndex = -1;
                     sector.FloorDataIndex = 0;
 
+                    sector.Flags = new TombEngineSectorFlags()
+                    {
+                        ClimbEast     = (block.Flags & BlockFlags.ClimbPositiveX) != 0,
+                        ClimbNorth    = (block.Flags & BlockFlags.ClimbPositiveZ) != 0,
+                        ClimbSouth    = (block.Flags & BlockFlags.ClimbNegativeZ) != 0,
+                        ClimbWest     = (block.Flags & BlockFlags.ClimbNegativeX) != 0,
+                        Death         = (block.Flags & BlockFlags.DeathFire) != 0,
+                        MarkBeetle    = (block.Flags & BlockFlags.Beetle) != 0,
+                        Monkeyswing   = (block.Flags & BlockFlags.Monkey) != 0,
+                        MarkTriggerer = (block.Flags & BlockFlags.TriggerTriggerer) != 0
+                    };
+
                     // Setup portals
                     if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
