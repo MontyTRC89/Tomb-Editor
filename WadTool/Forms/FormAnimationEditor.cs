@@ -1707,11 +1707,18 @@ namespace WadTool
             var oldCommands = _editor.CurrentAnim.WadAnimation.AnimCommands;
             var oldChanges = _editor.CurrentAnim.WadAnimation.StateChanges;
 
-            _editor.CurrentAnim.WadAnimation = animation;
-
-            // Restore animcommands & state changes (only for generic imported anims)
-            if (!containsMetadata)
+            if (containsMetadata)
             {
+                _editor.CurrentAnim.WadAnimation = animation;
+            }
+            else
+            {
+                // Replace all frames of animation with new ones, this preserves metadata
+                _editor.CurrentAnim.WadAnimation.KeyFrames.Clear();
+                _editor.CurrentAnim.WadAnimation.KeyFrames.AddRange(animation.KeyFrames);
+                _editor.CurrentAnim.WadAnimation.EndFrame = animation.EndFrame;
+
+                // Restore animcommands & state changes (only for generic imported anims)
                 _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
                 _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
             }

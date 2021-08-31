@@ -7,6 +7,7 @@ Tomb Editor:
 
 WadTool:
  * Add support for importing untextured meshes.
+ * Import animations in generic formats preserving original animation properties.
  * Fix exception while opening mesh editor on an empty wad.
  * Fix memory leaks in skeleton and mesh editor.
  * Fix incorrect state changes in .trw animation import.
