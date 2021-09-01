@@ -529,14 +529,38 @@ namespace TombLib.LevelData.Compilers
                         var texture = poly.Texture;
                         FixWadTextureCoordinates(ref texture);
 
-                        if (poly.IsTriangle) {
+                        var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
+                        var copyFace = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+
+                        if (poly.IsTriangle) 
+                        {
                             var result = _textureInfoManager.AddTexture(texture, true, true);
-                            tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, poly.Texture.DoubleSided, 0);
+                            tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, doubleSided, 0);
                             roomTriangles.Add(tri);
-                        } else {
+                        } 
+                        else 
+                        {
                             var result = _textureInfoManager.AddTexture(texture, true, false);
-                            tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, poly.Texture.DoubleSided, 0);
+                            tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, doubleSided, 0);
                             roomQuads.Add(quad);
+                        }
+
+                        if (copyFace)
+                        {
+                            texture.Mirror();
+
+                            if (poly.IsTriangle)
+                            {
+                                var result = _textureInfoManager.AddTexture(texture, true, true);
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index2, index1, index0 }, doubleSided, 0);
+                                roomTriangles.Add(tri);
+                            }
+                            else
+                            {
+                                var result = _textureInfoManager.AddTexture(texture, true, false);
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index3, index3, index1, index0 }, doubleSided, 0);
+                                roomQuads.Add(quad);
+                            }
                         }
                     }
                 }
