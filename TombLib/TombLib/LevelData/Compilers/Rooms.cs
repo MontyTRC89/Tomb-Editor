@@ -558,7 +558,7 @@ namespace TombLib.LevelData.Compilers
                             else
                             {
                                 var result = _textureInfoManager.AddTexture(texture, true, false);
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index3, index3, index1, index0 }, doubleSided, 0);
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index3, index2, index1, index0 }, doubleSided, 0);
                                 roomQuads.Add(quad);
                             }
                         }
