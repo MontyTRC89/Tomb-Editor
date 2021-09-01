@@ -206,9 +206,9 @@ namespace TombLib.LevelData.Compilers
                     if (doubleSided) Array.Reverse(indices);
 
                     if (poly.IsTriangle)
-                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(indices, poly.Texture.DoubleSided, lightingEffect);
+                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(indices, false, lightingEffect);
                     else
-                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(indices, poly.Texture.DoubleSided, lightingEffect);
+                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(indices, false, lightingEffect);
 
                     var size = _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
                     if (!poly.IsTriangle) size += 2;
