@@ -107,14 +107,24 @@ namespace TombEditor.ToolWindows
 
         private void butItemUp_Click(object sender, EventArgs e)
         {
-            if(comboItems.Items.Count > 0 && comboItems.SelectedIndex > 0)
+            if (comboItems.Items.Count == 0)
+                return;
+
+            if (comboItems.SelectedIndex > 0)
                 comboItems.SelectedIndex--;
+            else
+                comboItems.SelectedIndex = comboItems.Items.Count - 1;
         }
 
         private void butItemDown_Click(object sender, EventArgs e)
         {
-            if (comboItems.Items.Count > 0 && comboItems.SelectedIndex != comboItems.Items.Count - 1)
+            if (comboItems.Items.Count == 0)
+                return;
+
+            if (comboItems.SelectedIndex < comboItems.Items.Count - 1)
                 comboItems.SelectedIndex++;
+            else
+                comboItems.SelectedIndex = 0;
         }
 
         private void butFindItem_Click(object sender, EventArgs e)

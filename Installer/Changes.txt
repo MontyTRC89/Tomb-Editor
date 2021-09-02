@@ -4,6 +4,8 @@ Version 1.4.1
 Tomb Editor:
  * Support timer and variable speed in TR1-3 flyby sequences.
  * Automatically grid walls when creating adjoining rooms, if option is set.
+ * Loop item list when pressing up/down buttons in item browser.
+ * Fix double sided wad polygons in TR1-2.
 
 WadTool:
  * Add support for importing untextured meshes.
