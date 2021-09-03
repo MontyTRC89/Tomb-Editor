@@ -247,6 +247,9 @@ namespace TombLib.Rendering.DirectX11
             // Provide a methode to update the buffer with new UV coordinates
             return delegate (RenderingTextureAllocator allocator2, RenderingTextureAllocator.Map map2)
             {
+                if (allocator2 == null || map2 == null)
+                    return;
+
                 Vector2 textureScaling2 = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
 
                 // Update data
@@ -258,10 +261,14 @@ namespace TombLib.Rendering.DirectX11
                         if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
                             continue;
                         var texture = map2.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
-                        Vector2 uv;
-                        uint highestBits;
-                        Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out highestBits);
-                        uvwAndBlendModesPtr[i] = Dx11RenderingDevice.CompressUvw(allocator2.Get(texture.Texture), textureScaling2, uv, highestBits);
+
+                        if (texture != null)
+                        {
+                            Vector2 uv;
+                            uint highestBits;
+                            Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out highestBits);
+                            uvwAndBlendModesPtr[i] = Dx11RenderingDevice.CompressUvw(allocator2.Get(texture.Texture), textureScaling2, uv, highestBits);
+                        }
                     }
                 }
 
@@ -272,8 +279,11 @@ namespace TombLib.Rendering.DirectX11
                     VertexBuffer = new Buffer(Device.Device, new IntPtr(dataPtr),
                         new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
                         CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                    oldVertexBuffer?.Dispose();
+
+                    if (oldVertexBuffer != null)
+                        oldVertexBuffer?.Dispose();
                 }
+
                 for (int i = 0; i < VertexBufferBindings.Length; ++i)
                     if (VertexBufferBindings[i].Buffer == oldVertexBuffer)
                         VertexBufferBindings[i].Buffer = VertexBuffer;
