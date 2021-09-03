@@ -182,7 +182,7 @@ namespace TombEditor.Controls
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
-        private IntPtr LastWindow { get; set; }
+        private IntPtr _lastWindow { get; set; }
 
         public PanelRendering3D()
         {
@@ -1499,10 +1499,10 @@ namespace TombEditor.Controls
 
         private void FlyModeTimer_Tick(object sender, EventArgs e)
         {
-            if (LastWindow != GetForegroundWindow() || filter.IsKeyPressed(Keys.Escape))
+            if (_lastWindow != GetForegroundWindow() || filter.IsKeyPressed(Keys.Escape))
             {
                 ToggleFlyMode(false);
-                LastWindow = GetForegroundWindow();
+                _lastWindow = GetForegroundWindow();
                 return;
             }
 
@@ -1577,7 +1577,7 @@ namespace TombEditor.Controls
         {
             if (state == true)
             {
-                LastWindow = GetForegroundWindow();
+                _lastWindow = GetForegroundWindow();
 
                 _oldCamera = Camera;
                 Camera = new FreeCamera(_oldCamera.GetPosition(), _oldCamera.RotationX, _oldCamera.RotationY - (float)Math.PI,
