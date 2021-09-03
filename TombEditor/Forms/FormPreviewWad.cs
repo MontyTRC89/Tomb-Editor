@@ -4,6 +4,7 @@ using System.Numerics;
 using TombLib.Controls;
 using TombLib.Rendering;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Forms
 {
@@ -18,6 +19,7 @@ namespace TombEditor.Forms
 
             panelItem.Editor = editor;
             panelItem.InitializeRendering(device, editor.Configuration.RenderingItem_Antialias);
+            panelItem.AnimatePreview = editor.Configuration.RenderingItem_Animate;
             wadTree.Wad = wad;
             wadTree.MultiSelect = false;
             wadTree.SelectFirst();
@@ -25,8 +27,24 @@ namespace TombEditor.Forms
 
         private void wadTree_SelectedWadObjectIdsChanged(object sender, System.EventArgs e)
         {
-            IWadObjectId selectedObjectId = wadTree.SelectedWadObjectIds.FirstOrDefault();
-            panelItem.CurrentObject = selectedObjectId == null ? null : _wad.TryGet(selectedObjectId);
+            var selectedObjectId = wadTree.SelectedWadObjectIds.FirstOrDefault();
+            var selectedObject = selectedObjectId == null ? null : _wad.TryGet(selectedObjectId);
+
+            if (selectedObject != null && selectedObject is WadMoveable)
+            {
+                var item = selectedObject as WadMoveable;
+                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(panelItem.Editor.Level.Settings.GameVersion, item.Id.TypeId));
+                var skin = panelItem.Editor.Level.Settings.WadTryGetMoveable(skinId);
+
+                if (skin != null && skin != item)
+                    panelItem.CurrentObject = item.ReplaceDummyMeshes(skin);
+                else
+                    panelItem.CurrentObject = item;
+            }
+            else
+                panelItem.CurrentObject = selectedObject;
+
+            panelItem.ResetCamera();
         }
 
         private void FormWadPreview_Deactivate(object sender, System.EventArgs e)

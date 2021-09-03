@@ -43,7 +43,7 @@
             this.panel1.Controls.Add(this.panelTextureMapForPreview);
             this.panel1.Location = new System.Drawing.Point(4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(322, 372);
+            this.panel1.Size = new System.Drawing.Size(370, 495);
             this.panel1.TabIndex = 0;
             // 
             // panelTextureMapForPreview
@@ -53,15 +53,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelTextureMapForPreview.Location = new System.Drawing.Point(7, 7);
             this.panelTextureMapForPreview.Name = "panelTextureMapForPreview";
-            this.panelTextureMapForPreview.Size = new System.Drawing.Size(306, 356);
+            this.panelTextureMapForPreview.Size = new System.Drawing.Size(354, 479);
             this.panelTextureMapForPreview.TabIndex = 0;
+            this.panelTextureMapForPreview.VisibleTexture = null;
             // 
             // FormPreviewTexture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(330, 380);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ClientSize = new System.Drawing.Size(378, 503);
             this.Controls.Add(this.panel1);
             this.FlatBorder = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
