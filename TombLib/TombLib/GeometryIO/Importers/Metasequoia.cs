@@ -230,8 +230,13 @@ namespace TombLib.GeometryIO.Importers
                                             throw new Exception("Model has no supported materials and can't be loaded.");
                                     }
 
-                                    if (materialIndex > model.Materials.Count)
-                                        throw new Exception("Model has incorrect amount of materials and can't be loaded.");
+                                    if (materialIndex >= model.Materials.Count)
+                                    {
+                                        if (_settings.ProcessUntexturedGeometry)
+                                            materialIndex = 0;
+                                        else
+                                            throw new Exception("Model has incorrect amount of materials and can't be loaded.");
+                                    }
 
                                     // Add polygon to the submesh (and add submesh if not existing yet)
                                     var material = model.Materials[materialIndex];
