@@ -3247,7 +3247,7 @@ namespace TombEditor
                                                              direction == PortalDirection.Floor ? room.GetLowestCorner(selection.Area) - roomDepth : room.GetHighestCorner(selection.Area),
                                                              clampedSelection.Value.Area.Start.Y - 1);
                     portalArea = new RectangleInt2(1, 1, roomSizeX - 2, roomSizeZ - 2);
-                    roomArea = RectangleInt2.Zero;
+                    roomArea = new RectangleInt2(0, 0, roomSizeX - 1, roomSizeZ - 1);
                     dirString = direction == PortalDirection.Floor ? "below" : "above";
 
                     // Reset parent floor or ceiling to adjoin new portal
