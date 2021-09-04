@@ -6,9 +6,6 @@ namespace TombEditor
     public interface IEditorAction
     { }
 
-    public interface IEditorActionDisableOnLostFocus : IEditorAction
-    { }
-
     public interface IEditorActionPlace : IEditorAction
     {
         ObjectInstance CreateInstance(Level level, Room room);
@@ -30,6 +27,6 @@ namespace TombEditor
         public bool ShouldBeActive => Repeat;
     }
 
-    public class EditorActionRelocateCamera : IEditorActionDisableOnLostFocus
+    public class EditorActionRelocateCamera : IEditorAction
     { }
 }

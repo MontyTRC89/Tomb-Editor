@@ -74,7 +74,7 @@ namespace DarkUI.Forms
 
             if (m.Msg == WM_PARENTNOTIFY)
             {
-                if (!Focused)
+                if (ActiveForm != this && !Focused)
                     Focus();
             }
             base.WndProc(ref m);

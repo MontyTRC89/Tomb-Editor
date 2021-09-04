@@ -581,7 +581,14 @@ namespace TombEditor.Controls
 
                 if (newPicking is PickingResultBlock)
                 {
-                    PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
+                    var newBlockPicking = (PickingResultBlock)newPicking;
+
+                    // Move camera to selected sector
+                    if (_editor.Action is EditorActionRelocateCamera)
+                    {
+                        _editor.MoveCameraToSector(newBlockPicking.Pos);
+                        return;
+                    }
 
                     // Ignore block picking if it's not from current room.
                     // Alternately, if room autoswitch is active, switch and select it.
@@ -592,13 +599,6 @@ namespace TombEditor.Controls
                             _editor.SelectedRoom = newBlockPicking.Room;
                         else
                             return;
-                    }
-
-                    // Move camera to selected sector
-                    if (_editor.Action is EditorActionRelocateCamera)
-                    {
-                        _editor.MoveCameraToSector(newBlockPicking.Pos);
-                        return;
                     }
 
                     // Place objects

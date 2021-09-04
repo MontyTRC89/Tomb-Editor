@@ -480,14 +480,6 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-
-            if (_editor.Action is IEditorActionDisableOnLostFocus)
-                _editor.Action = null;
-        }
-
         private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadWindowLayout(new Configuration());
