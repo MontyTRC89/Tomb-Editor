@@ -1702,11 +1702,7 @@ namespace WadTool
             }
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-
-            // Backup animcommands & state changes
-            var oldCommands = _editor.CurrentAnim.WadAnimation.AnimCommands;
-            var oldChanges = _editor.CurrentAnim.WadAnimation.StateChanges;
-
+            
             if (containsMetadata)
             {
                 _editor.CurrentAnim.WadAnimation = animation;
@@ -1717,10 +1713,6 @@ namespace WadTool
                 _editor.CurrentAnim.WadAnimation.KeyFrames.Clear();
                 _editor.CurrentAnim.WadAnimation.KeyFrames.AddRange(animation.KeyFrames);
                 _editor.CurrentAnim.WadAnimation.EndFrame = animation.EndFrame;
-
-                // Restore animcommands & state changes (only for generic imported anims)
-                _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
-                _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
             }
 
             _editor.CurrentAnim.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
