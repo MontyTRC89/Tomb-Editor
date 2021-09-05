@@ -71,12 +71,11 @@ namespace DarkUI.Forms
             // https://stackoverflow.com/questions/13836363/why-two-time-click-is-required-to-click-toolstripmenuitem
 
             const int WM_PARENTNOTIFY = 0x0210;
+            const int WM_LBUTTONDOWN  = 0x0201;
 
-            if (m.Msg == WM_PARENTNOTIFY)
-            {
-                if (ActiveForm != this && !Focused)
-                    Focus();
-            }
+            if (m.Msg == WM_PARENTNOTIFY && ((int)m.WParam & 0xFFFF) == WM_LBUTTONDOWN && ActiveForm != this && !Focused)
+                Focus();
+
             base.WndProc(ref m);
         }
 
