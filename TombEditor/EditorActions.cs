@@ -3601,6 +3601,12 @@ namespace TombEditor
             room = room.AlternateBaseRoom ?? room;
             RectangleInt2 area = _editor.SelectedSectors.Area.Inflate(1).Intersect(room.LocalArea);
 
+            if (area.Width < 2 || area.Height < 2)
+            {
+                _editor.SendMessage("Selected area is not suitable for splitting.", PopupType.Error);
+                return;
+            }
+
             // Split alternate room
             var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
             Room splitRoom = room.Split(_editor.Level, area);
