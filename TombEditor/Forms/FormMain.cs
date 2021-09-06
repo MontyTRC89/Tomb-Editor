@@ -269,7 +269,7 @@ namespace TombEditor.Forms
                 reloadWadsToolStripMenuItem.Enabled = _editor.Level.Settings.Wads.Count > 0;
 
             if (obj is Editor.LoadedSoundsCatalogsChangedEvent)
-                reloadSoundsToolStripMenuItem.Enabled = _editor.Level.Settings.SoundsCatalogs.Count > 0;
+                reloadSoundsToolStripMenuItem.Enabled = _editor.Level.Settings.SoundCatalogs.Count > 0;
 
             // Update object bookmarks
             if (obj is Editor.BookmarkedObjectChanged)

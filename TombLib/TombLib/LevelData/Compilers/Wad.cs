@@ -843,7 +843,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion.UsesMainSfx())
             {
                 // Additionally warn user if he uses several sound catalogs which is incompatible with MAIN.SFX workflow.
-                if (_level.Settings.SoundsCatalogs.Count > 1)
+                if (_level.Settings.SoundCatalogs.Count > 1)
                     _progressReporter.ReportWarn("Multiple sound catalogs can't be used with TR2 and TR3. Results are unpredictable. Remove all sound catalogs but one.");
                 return;
             }

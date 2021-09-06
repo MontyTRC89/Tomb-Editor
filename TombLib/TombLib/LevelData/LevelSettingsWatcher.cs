@@ -20,7 +20,7 @@ namespace TombEditor
 
         public EventHandler<ChangedEventArgs<LevelTexture>> TextureChanged { get; }
         public EventHandler<ChangedEventArgs<ReferencedWad>> WadChanged { get; }
-        public EventHandler<ChangedEventArgs<ReferencedSoundsCatalog>> SoundsCatalogChanged { get; }
+        public EventHandler<ChangedEventArgs<ReferencedSoundCatalog>> SoundsCatalogChanged { get; }
         public EventHandler<ChangedEventArgs<ImportedGeometry>> ImportedGeometryChanged { get; }
         public EventHandler<ChangedEventArgs<ImportedGeometryTexture>> ImportedGeometryTexturesChanged { get; }
         public SynchronizationContext SynchronizationContext { get; }
@@ -28,7 +28,7 @@ namespace TombEditor
         public LevelSettingsWatcher(
             EventHandler<ChangedEventArgs<LevelTexture>> textureChanged,
             EventHandler<ChangedEventArgs<ReferencedWad>> wadChanged,
-            EventHandler<ChangedEventArgs<ReferencedSoundsCatalog>> soundsCatalogChanged,
+            EventHandler<ChangedEventArgs<ReferencedSoundCatalog>> soundsCatalogChanged,
             EventHandler<ChangedEventArgs<ImportedGeometry>> importedGeometryChanged,
             SynchronizationContext synchronizationContext = null)
         {
@@ -192,7 +192,7 @@ namespace TombEditor
                 listOfWatchedObjs.Add(new WatchedTexture { Parent = this, Texture = texture });
             foreach (ReferencedWad wad in settings.Wads)
                 listOfWatchedObjs.Add(new WatchedWad { Parent = this, Wad = wad });
-            foreach (ReferencedSoundsCatalog catalog in settings.SoundsCatalogs)
+            foreach (ReferencedSoundCatalog catalog in settings.SoundCatalogs)
                 listOfWatchedObjs.Add(new WatchedSoundCatalog { Parent = this, SoundsCatalog = catalog });
             foreach (ImportedGeometry importedGeometry in settings.ImportedGeometries)
                 listOfWatchedObjs.Add(new WatchedImportedGeometry { Parent = this, ImportedGeometry = importedGeometry });
@@ -204,7 +204,7 @@ namespace TombEditor
         private class WatchedSoundCatalog : FileSystemWatcherManager.WatchedObj
         {
             public LevelSettingsWatcher Parent;
-            public ReferencedSoundsCatalog SoundsCatalog;
+            public ReferencedSoundCatalog SoundsCatalog;
             public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(SoundsCatalog.Path) };
             public override IEnumerable<string> Directories => Parent.Settings?.WadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
             public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(SoundsCatalog.Path));
@@ -215,12 +215,12 @@ namespace TombEditor
                 if (settings == null)
                     return;
 
-                ReferencedSoundsCatalog newCatalog = SoundsCatalog.Clone();
+                ReferencedSoundCatalog newCatalog = SoundsCatalog.Clone();
                 newCatalog.Reload(settings);
                 Parent.SynchronizationContext.Post(unused =>
                 {
                     SoundsCatalog.Assign(newCatalog);
-                    Parent?.SoundsCatalogChanged(null, new ChangedEventArgs<ReferencedSoundsCatalog> { Object = newCatalog });
+                    Parent?.SoundsCatalogChanged(null, new ChangedEventArgs<ReferencedSoundCatalog> { Object = newCatalog });
                 }, null);
             }
         }

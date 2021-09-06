@@ -95,9 +95,9 @@ namespace TombEditor.Forms
         private class ReferencedSoundsCatalogWrapper
         {
             private readonly FormLevelSettings _parent;
-            public ReferencedSoundsCatalog Sounds;
+            public ReferencedSoundCatalog Sounds;
 
-            public ReferencedSoundsCatalogWrapper(FormLevelSettings parent, ReferencedSoundsCatalog sounds)
+            public ReferencedSoundsCatalogWrapper(FormLevelSettings parent, ReferencedSoundCatalog sounds)
             {
                 _parent = parent;
                 Sounds = sounds;
@@ -108,7 +108,7 @@ namespace TombEditor.Forms
                 get { return Sounds.Path; }
                 set
                 {
-                    Sounds = new ReferencedSoundsCatalog(_parent._levelSettings, value);
+                    Sounds = new ReferencedSoundCatalog(_parent._levelSettings, value);
                     _parent.soundsCatalogsDataGridView.InvalidateRow(_parent._soundsCatalogsDataGridViewDataSource.IndexOf(this));
                 }
             }
@@ -327,12 +327,12 @@ namespace TombEditor.Forms
             objectFileDataGridViewControls.Enabled = true;
 
             // Initialize souns catalogs file data grid view
-            foreach (var soundRef in _levelSettings.SoundsCatalogs)
+            foreach (var soundRef in _levelSettings.SoundCatalogs)
                 _soundsCatalogsDataGridViewDataSource.Add(new ReferencedSoundsCatalogWrapper(this, soundRef)); // We don't need to clone because we don't modify the wad, we create new wads
             _soundsCatalogsDataGridViewDataSource.ListChanged += delegate
             {
-                _levelSettings.SoundsCatalogs.Clear();
-                _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(o => o.Sounds));
+                _levelSettings.SoundCatalogs.Clear();
+                _levelSettings.SoundCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(o => o.Sounds));
                 PopulateSoundInfoListAndResetFilter();
             };
             soundsCatalogsDataGridView.DataSource = _soundsCatalogsDataGridViewDataSource;
@@ -427,9 +427,9 @@ namespace TombEditor.Forms
             foreach (var reference in _objectFileDataGridViewDataSource)
                 settings.Wads.Add(reference.Wad);
 
-            settings.SoundsCatalogs.Clear();
+            settings.SoundCatalogs.Clear();
             foreach (var reference in _soundsCatalogsDataGridViewDataSource)
-                settings.SoundsCatalogs.Add(reference.Sounds);
+                settings.SoundCatalogs.Add(reference.Sounds);
 
             settings.Textures.Clear();
             foreach (var reference in _textureFileDataGridViewDataSource)
@@ -1011,7 +1011,7 @@ namespace TombEditor.Forms
                 }
 
             synchronizedDialog = new GraphicalDialogHandler(this);
-            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
+            ReferencedSoundCatalog[] soundsResults = new ReferencedSoundCatalog[paths.Count];
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i =>
                 {
@@ -1022,7 +1022,7 @@ namespace TombEditor.Forms
                         string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
                         if (File.Exists(sfxPath))
                         {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialog);
+                            soundsResults[i] = new ReferencedSoundCatalog(_editor.Level.Settings, sfxPath, synchronizedDialog);
                         }
                     }
                     else if (extension == ".wad2")
@@ -1030,7 +1030,7 @@ namespace TombEditor.Forms
                         string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
                         if (File.Exists(xmlPath))
                         {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialog);
+                            soundsResults[i] = new ReferencedSoundCatalog(_editor.Level.Settings, xmlPath, synchronizedDialog);
                         }
                     }
                 })))
@@ -1060,13 +1060,13 @@ namespace TombEditor.Forms
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
                 "Select new sound catalogs", WadSounds.FormatExtensions, VariableType.LevelDirectory)
                 // Filter out already loaded catalogs
-                .Where(path => !_levelSettings.SoundsCatalogs.Any(item => item.Path == path)).ToList();
+                .Where(path => !_levelSettings.SoundCatalogs.Any(item => item.Path == path)).ToList();
 
             // Load catalogs concurrently
             ReferencedSoundsCatalogWrapper[] results = new ReferencedSoundsCatalogWrapper[paths.Count];
             var synchronizedDialog = new GraphicalDialogHandler(this);
             using (var loadingTask = Task.Run(() =>
-                Parallel.For(0, paths.Count, i => results[i] = new ReferencedSoundsCatalogWrapper(this, new ReferencedSoundsCatalog(_levelSettings, paths[i], synchronizedDialog)))))
+                Parallel.For(0, paths.Count, i => results[i] = new ReferencedSoundsCatalogWrapper(this, new ReferencedSoundCatalog(_levelSettings, paths[i], synchronizedDialog)))))
                 while (!loadingTask.IsCompleted)
                 {
                     Thread.Sleep(1);
@@ -1466,7 +1466,7 @@ namespace TombEditor.Forms
         private void ToggleSelectionForAllSounds(bool toggleValue)
         {
             if (toggleValue == true)
-                foreach (var catalog in _levelSettings.SoundsCatalogs)
+                foreach (var catalog in _levelSettings.SoundCatalogs)
                     AssignAllSounds(catalog.Sounds, false);
             else
                 _levelSettings.SelectedSounds.Clear();
@@ -1522,7 +1522,7 @@ namespace TombEditor.Forms
         {
             if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
                 return;
-            ReferencedSoundsCatalog sounds = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
+            ReferencedSoundCatalog sounds = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
 
             if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogMessageColumn.Name)
             {
@@ -1571,7 +1571,7 @@ namespace TombEditor.Forms
         {
             if (e.RowIndex < 0 || e.RowIndex >= _soundsCatalogsDataGridViewDataSource.Count)
                 return;
-            ReferencedSoundsCatalog soundsCatalog = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
+            ReferencedSoundCatalog soundsCatalog = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
 
             if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
             {
@@ -1580,8 +1580,8 @@ namespace TombEditor.Forms
                 if (result != null)
                 {
                     _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
-                    _levelSettings.SoundsCatalogs.Clear();
-                    _levelSettings.SoundsCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(s => s.Sounds));
+                    _levelSettings.SoundCatalogs.Clear();
+                    _levelSettings.SoundCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(s => s.Sounds));
                     PopulateSoundInfoListAndResetFilter();
                 }
             }

@@ -159,7 +159,7 @@ namespace TombLib.LevelData.IO
 
             var levelSettingsIds = new LevelSettingsIds();
             var WadsToLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
-            var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
+            var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
 
@@ -235,15 +235,15 @@ namespace TombLib.LevelData.IO
                 {
                     progressReporter?.ReportInfo("Reading sound catalogs...");
 
-                    var toLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
-                    var list = new List<ReferencedSoundsCatalog>(); // Order matters
+                    var toLoad = new Dictionary<ReferencedSoundCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundCatalog>());
+                    var list = new List<ReferencedSoundCatalog>(); // Order matters
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 != Prj2Chunks.SoundsCatalog)
                             return false;
 
                         string path = "";
-                        ReferencedSoundsCatalog newSounds = new ReferencedSoundsCatalog();
+                        ReferencedSoundCatalog newSounds = new ReferencedSoundCatalog();
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Prj2Chunks.SoundsCatalogPath)
@@ -261,7 +261,7 @@ namespace TombLib.LevelData.IO
                     });
 
                     SoundsCatalogsToLoad = toLoad;
-                    settings.SoundsCatalogs = list;
+                    settings.SoundCatalogs = list;
                 }
                 else if (id == Prj2Chunks.GameDirectory)
                     settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);

@@ -187,7 +187,7 @@ namespace TombLib.LevelData.IO
                 }
                 using (var chunkSounds = chunkIO.WriteChunk(Prj2Chunks.SoundsCatalogs, long.MaxValue))
                 {
-                    foreach (ReferencedSoundsCatalog soundRef in settings.SoundsCatalogs)
+                    foreach (ReferencedSoundCatalog soundRef in settings.SoundCatalogs)
                         using (var chunkSound = chunkIO.WriteChunk(Prj2Chunks.SoundsCatalog))
                         {
                             chunkIO.WriteChunkString(Prj2Chunks.SoundsCatalogPath, soundRef.Path ?? "");

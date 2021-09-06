@@ -1279,7 +1279,7 @@ namespace TombLib.LevelData.IO
                     try
                     {
                         sounds = WadSounds.ReadFromFile(soundsPath);
-                        level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
+                        level.Settings.SoundCatalogs.Add(new ReferencedSoundCatalog(level.Settings,
                                                               level.Settings.MakeRelative(soundsPath, VariableType.LevelDirectory)));
                     }
                     catch (Exception exc)
@@ -1312,8 +1312,8 @@ namespace TombLib.LevelData.IO
                             level.Settings.GetVariable(VariableType.LevelDirectory),
                             sfxPath, 3, 2);
                         sfxPath = level.Settings.MakeRelative(sfxPath, VariableType.LevelDirectory);
-                        ReferencedSoundsCatalog sfx = new ReferencedSoundsCatalog(level.Settings, sfxPath);
-                        level.Settings.SoundsCatalogs.Add(sfx);
+                        ReferencedSoundCatalog sfx = new ReferencedSoundCatalog(level.Settings, sfxPath);
+                        level.Settings.SoundCatalogs.Add(sfx);
                         if (sfx.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonSoundsCatalogUnloadable { Settings = level.Settings, Sounds = sfx });
 

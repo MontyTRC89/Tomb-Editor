@@ -8,7 +8,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class ReferencedSoundsCatalog : ICloneable, IEquatable<ReferencedSoundsCatalog>
+    public class ReferencedSoundCatalog : ICloneable, IEquatable<ReferencedSoundCatalog>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -20,13 +20,13 @@ namespace TombLib.LevelData
         public WadSounds Sounds { get; private set; }
         public Exception LoadException { get; private set; }
 
-        public ReferencedSoundsCatalog()
+        public ReferencedSoundCatalog()
         {
             Path = null;
             Reload(null);
         }
 
-        public ReferencedSoundsCatalog(LevelSettings settings, string path, IDialogHandler progressReporter = null)
+        public ReferencedSoundCatalog(LevelSettings settings, string path, IDialogHandler progressReporter = null)
         {
             Path = path;
             Reload(settings, progressReporter);
@@ -68,17 +68,17 @@ namespace TombLib.LevelData
             Reload(settings);
         }
 
-        public void Assign(ReferencedSoundsCatalog other)
+        public void Assign(ReferencedSoundCatalog other)
         {
             Path = other.Path;
             Sounds = other.Sounds;
             LoadException = other.LoadException;
         }
 
-        public ReferencedSoundsCatalog Clone() => (ReferencedSoundsCatalog)MemberwiseClone(); // Don't copy the data pointer
+        public ReferencedSoundCatalog Clone() => (ReferencedSoundCatalog)MemberwiseClone(); // Don't copy the data pointer
         object ICloneable.Clone() => Clone();
 
-        public bool Equals(ReferencedSoundsCatalog other)
+        public bool Equals(ReferencedSoundCatalog other)
         {
             if (other == null) return false;
             return (UniqueID == other.UniqueID && Path?.ToLower() == other.Path?.ToLower());

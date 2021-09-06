@@ -3868,7 +3868,7 @@ namespace TombEditor
 
             var whatLoaded = string.Empty;
 
-            if (level.Settings.SoundsCatalogs.Count == 0)
+            if (level.Settings.SoundCatalogs.Count == 0)
             {
                 if (AutoLoadSoundCatalog(level.Settings))
                     whatLoaded += "Default sound catalog was preloaded automatically.";
@@ -4169,7 +4169,7 @@ namespace TombEditor
 
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
-            ReferencedSoundsCatalog[] soundsResults = new ReferencedSoundsCatalog[paths.Count];
+            ReferencedSoundCatalog[] soundsResults = new ReferencedSoundCatalog[paths.Count];
             
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
             using (var loadingTask = Task.Run(() =>
@@ -4209,7 +4209,7 @@ namespace TombEditor
                         string sfxPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".sfx";
                         if (File.Exists(sfxPath))
                         {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, sfxPath, synchronizedDialogHandler);
+                            soundsResults[i] = new ReferencedSoundCatalog(_editor.Level.Settings, sfxPath, synchronizedDialogHandler);
                         }
                     }
                     else if (extension == ".wad2")
@@ -4217,7 +4217,7 @@ namespace TombEditor
                         string xmlPath = Path.GetDirectoryName(currentPath) + "\\" + Path.GetFileNameWithoutExtension(currentPath) + ".xml";
                         if (File.Exists(xmlPath))
                         {
-                            soundsResults[i] = new ReferencedSoundsCatalog(_editor.Level.Settings, xmlPath, synchronizedDialogHandler);
+                            soundsResults[i] = new ReferencedSoundCatalog(_editor.Level.Settings, xmlPath, synchronizedDialogHandler);
                         }
                     }
                 })))
@@ -4240,7 +4240,7 @@ namespace TombEditor
             
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
-            _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
+            _editor.Level.Settings.SoundCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
             _editor.LoadedWadsChange();
 
             // Autoswitch game version if necessary
@@ -4385,7 +4385,7 @@ namespace TombEditor
         public static void ReloadSounds(IWin32Window owner)
         {
             var dialogHandler = new GraphicalDialogHandler(owner);
-            foreach (var catalog in _editor.Level.Settings.SoundsCatalogs)
+            foreach (var catalog in _editor.Level.Settings.SoundCatalogs)
                 catalog.Reload(_editor.Level.Settings, dialogHandler);
             _editor.LoadedSoundsCatalogsChange();
         }
@@ -5451,7 +5451,7 @@ namespace TombEditor
             {
                 try
                 {
-                    settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(settings, settings.MakeRelative(catalogName, VariableType.EditorDirectory)));
+                    settings.SoundCatalogs.Add(new ReferencedSoundCatalog(settings, settings.MakeRelative(catalogName, VariableType.EditorDirectory)));
                     return true;
                 }
                 catch (Exception ex)
@@ -5482,7 +5482,7 @@ namespace TombEditor
                 if (!settings.SelectedSounds.Contains(id))
                     settings.SelectedSounds.Add(id);
 
-            foreach (var catalog in settings.SoundsCatalogs)
+            foreach (var catalog in settings.SoundCatalogs)
                 if (catalog.Sounds != null)
                     foreach (var sound in catalog.Sounds.SoundInfos)
                         if (sound.Global)
@@ -5491,7 +5491,7 @@ namespace TombEditor
 
         }
 
-        public static void AssignCatalogSounds(LevelSettings settings, ReferencedSoundsCatalog catalog)
+        public static void AssignCatalogSounds(LevelSettings settings, ReferencedSoundCatalog catalog)
         {
             if (catalog.Sounds != null)
                 foreach (var soundInfo in catalog.Sounds.SoundInfos)

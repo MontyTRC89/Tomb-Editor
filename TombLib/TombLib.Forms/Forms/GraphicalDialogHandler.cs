@@ -81,7 +81,7 @@ namespace TombLib.Forms
                                 case DialogResult.Yes:
                                     dialogDescription.Sounds.SetPath(dialogDescription.Settings,
                                         LevelFileDialog.BrowseFile(owner, dialogDescription.Settings, dialogDescription.Sounds.Path,
-                                        "Load a sound catalog (*.sfx)", ReferencedSoundsCatalog.FileExtensions, VariableType.LevelDirectory, false));
+                                        "Load a sound catalog (*.sfx)", ReferencedSoundCatalog.FileExtensions, VariableType.LevelDirectory, false));
                                     break; // Don't unlock, we don't want to have other messages in the meantime.
                                 case DialogResult.No:
                                     return;

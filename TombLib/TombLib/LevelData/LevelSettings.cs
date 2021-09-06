@@ -128,7 +128,7 @@ namespace TombLib.LevelData
                 var soundmap = new SortedDictionary<int, WadSoundInfo>();
 
                 // Loop through all reference classes, collecting sounds
-                foreach (var soundsRef in SoundsCatalogs)
+                foreach (var soundsRef in SoundCatalogs)
                     if (soundsRef.LoadException == null)
                         foreach (var sound in soundsRef.Sounds.SoundInfos)
                             if (!soundmap.ContainsKey(sound.Id))
@@ -182,10 +182,8 @@ namespace TombLib.LevelData
         // All data lists
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
-        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
+        public List<ReferencedSoundCatalog> SoundCatalogs { get; set; } = new List<ReferencedSoundCatalog>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
-        public List<ImportedGeometry> ImportedRooms { get; set; } = new List<ImportedGeometry>();
-        public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
@@ -216,7 +214,7 @@ namespace TombLib.LevelData
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.Wads = Wads.ConvertAll(wad => wad.Clone());
             result.WadSoundPaths = WadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
-            result.SoundsCatalogs = SoundsCatalogs.ConvertAll(catalog => catalog.Clone());
+            result.SoundCatalogs = SoundCatalogs.ConvertAll(catalog => catalog.Clone());
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());

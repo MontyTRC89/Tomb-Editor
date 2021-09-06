@@ -29,6 +29,6 @@ namespace TombLib.Utils
     public class DialogDescriptonSoundsCatalogUnloadable : IDialogDescription
     {
         public LevelSettings Settings { get; set; }
-        public ReferencedSoundsCatalog Sounds { get; set; }
+        public ReferencedSoundCatalog Sounds { get; set; }
     }
 }

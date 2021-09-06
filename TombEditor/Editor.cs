@@ -871,7 +871,7 @@ namespace TombEditor
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
-            bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
+            bool soundsChanged = !newSettings.SoundCatalogs.SequenceEqual(_level.Settings.SoundCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool mergedStaticsChanged = !newSettings.AutoStaticMeshMerges.SequenceEqual(_level.Settings.AutoStaticMeshMerges);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
