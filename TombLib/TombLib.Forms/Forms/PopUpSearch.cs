@@ -126,6 +126,8 @@ namespace TombLib.Forms
         {
             if (e.KeyCode == Keys.Enter) // Search function. TODO: Implement TRTombLevBauer's cool search!
             {
+                var exactMatch = _searchItems.Any(s => s.IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1);
+
                 if (txtSearchString.Text != String.Empty && _searchItems.Count > 0)
                 {
                     if (_searchItems.Count == 1)
@@ -144,11 +146,12 @@ namespace TombLib.Forms
                                     continue; // Restart search
                                 }
                             }
-
+                            
                             int startIndex;
                             int levenshtein = Levenshtein.DistanceSubstring(_searchItems[i].ToLower(), txtSearchString.Text.ToLower(), out startIndex);
+                            var match = _searchItems[i].IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1;
 
-                            if (levenshtein < 2)
+                            if ((exactMatch && match) || (!exactMatch && levenshtein < 2))
                             {
                                 _currentIndex = i;
                                 break;

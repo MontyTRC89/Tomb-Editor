@@ -2,6 +2,7 @@ Version 1.4.2
 =============
 
 Tomb Editor:
+ * Use indirect in-place search only if no exact matches were found.
  * Fix possible issues with controls not acting properly on certain systems.
  * Fix exception while trying to split a room with incorrect selection area.
  
