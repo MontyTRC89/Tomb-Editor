@@ -2,7 +2,7 @@ Version 1.4.2
 =============
 
 Tomb Editor:
- * Fix possible issues with controls not acting properly on Windows 7 systems.
+ * Fix possible issues with controls not acting properly on certain systems.
  * Fix exception while trying to split a room with incorrect selection area.
  
 TombIDE:
