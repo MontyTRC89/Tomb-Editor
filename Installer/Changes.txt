@@ -3,6 +3,10 @@ Version 1.4.2
 
 Tomb Editor:
  * Fix possible issues with controls not acting properly on Windows 7 systems.
+ * Fix exception while trying to split a room with incorrect selection area.
+ 
+TombIDE:
+ * Update TRNG+FLEP package to fix issues with missing C++ dlls on latest Windows 10 builds.
 
 Version 1.4.1
 =============
