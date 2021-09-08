@@ -842,9 +842,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Flags = (ushort)(0x0001),
+                    Flags = (ushort)(0x0003), // FIXME: later let user choose if solid (0x0003) or soft (0x0001)!
                     Color = new Vector4(instance.Color.X,instance.Color.Y,instance.Color.Z,1.0f),
-                    HitPoints = 0, //(short)(sm != null ? sm.HitPoints : (short)1)
+                    HitPoints = 0,
                     LuaName = instance.LuaName ?? ""
                 }) ;
             }
