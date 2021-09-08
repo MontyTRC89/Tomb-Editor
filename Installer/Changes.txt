@@ -6,6 +6,9 @@ Tomb Editor:
  * Fix possible issues with controls not acting properly on certain systems.
  * Fix exception while trying to split a room with incorrect selection area.
  
+WadTool:
+ * Highlight first found face when searching for textures in mesh editor.
+ 
 TombIDE:
  * Update TRNG+FLEP package to fix issues with missing C++ dlls on latest Windows 10 builds.
 

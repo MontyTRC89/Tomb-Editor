@@ -817,11 +817,13 @@ namespace WadTool
                 var node = validNodes[i];
                 var mesh = (node.Tag as MeshTreeNode).WadMesh;
 
-                if (mesh.Polys.Any(p => p.Texture.Texture == panelTextureMap.VisibleTexture &&
-                                        p.Texture.GetRect().Intersects(panelTextureMap.SelectedTexture.GetRect())))
+                var index = mesh.Polys.IndexOf(p => p.Texture.Texture == panelTextureMap.VisibleTexture &&
+                                                    p.Texture.GetRect().Intersects(panelTextureMap.SelectedTexture.GetRect()));
+                if (index != -1)
                 {
                     lstMeshes.SelectNode(node);
                     lstMeshes.EnsureVisible();
+                    panelMesh.SelectElement(index, true);
                     return;
                 }
             }

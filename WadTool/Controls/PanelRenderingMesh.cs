@@ -80,14 +80,14 @@ namespace WadTool.Controls
                 {
                     case MeshEditingMode.FaceAttributes:
                         if (_currentElement == value) return;  // Face mode does not need continuous editing of same element
-                        _currentElement = (Mesh.Polys.Count > value) ? value : -1;
+                        SelectElement(value);
                         engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt);
                         break;
 
                     case MeshEditingMode.VertexEffects:
                     case MeshEditingMode.VertexColorsAndNormals:
                     case MeshEditingMode.VertexRemap:
-                        _currentElement = (Mesh.VertexPositions.Count > value) ? value : -1;
+                        SelectElement(value);
                         engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt) && EditingMode != MeshEditingMode.VertexRemap;
                         break;
 
@@ -103,9 +103,6 @@ namespace WadTool.Controls
                 }
 
                 _tool.MeshEditorElementChanged(_currentElement);
-
-                if (EditingMode != MeshEditingMode.None)
-                    Invalidate();
             }
         }
         private int _currentElement = -1;
@@ -246,6 +243,7 @@ namespace WadTool.Controls
 
         // Interaction state
         private bool _actionStarted;
+        private bool _highlightFace;
         private Point _lastMousePosition;
         private List<Vector3> _lastElementPos = new List<Vector3>();
         private List<int> _clickchain = new List<int>();
@@ -533,7 +531,7 @@ namespace WadTool.Controls
             {
                 // Accumulate and draw extra face info (for now, only shininess values)
 
-                if (DrawExtraInfo && _mesh.Polys.Count > 0)
+                if ((DrawExtraInfo || _highlightFace) && _mesh.Polys.Count > 0)
                 {
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                     _device.SetBlendState(_device.BlendStates.Opaque);
@@ -557,19 +555,25 @@ namespace WadTool.Controls
                             for (int v = 0; v < 3; v++)
                             {
                                 Vector3 pos = Vector3.Zero;
+                                Vector4 color = Vector4.Zero;
 
-                                switch (vn)
+                                if (DrawExtraInfo || (_highlightFace && i == _currentElement))
                                 {
-                                    case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
-                                    case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
-                                    case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                    switch (vn)
+                                    {
+                                        case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                        case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
+                                        case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
 
-                                    case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
-                                    case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
-                                    case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                        case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                        case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
+                                        case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                    }
+
+                                    color = DrawExtraInfo ? new Vector4(1, 1 - strength, 1 - strength, 1) : new Vector4(1, 0, 0, 1);
                                 }
 
-                                vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1 - strength, 1 - strength, 1) };
+                                vtxs[vertexCount] = new SolidVertex(pos) { Color = color };
                                 vn++;
                                 vertexCount++;
                             }
@@ -580,6 +584,12 @@ namespace WadTool.Controls
                     solidEffect.Parameters["Color"].SetValue(Vector4.One);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     solidEffect.Techniques[0].Passes[0].Apply();
+
+                    if (!DrawExtraInfo)
+                    {
+                        _device.SetRasterizerState(_rasterizerWireframe);
+                        _device.SetBlendState(_device.BlendStates.Opaque);
+                    }
 
                     _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
                 }
@@ -647,6 +657,19 @@ namespace WadTool.Controls
 
                 _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
             }
+        }
+
+        public void SelectElement(int element, bool highlight = false)
+        {
+            if (EditingMode == MeshEditingMode.FaceAttributes)
+                _currentElement = (Mesh.Polys.Count > element) ? element : -1;
+            else if (EditingMode != MeshEditingMode.Sphere)
+                _currentElement = (Mesh.VertexPositions.Count > element) ? element : -1;
+
+            _highlightFace = highlight;
+
+            if (EditingMode != MeshEditingMode.None)
+                Invalidate();
         }
 
         private void DrawModel(StaticModel mesh, Matrix4x4 world)
