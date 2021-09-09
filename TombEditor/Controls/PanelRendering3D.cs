@@ -1,5 +1,4 @@
 using DarkUI.Controls;
-using NLog;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
@@ -202,7 +201,7 @@ namespace TombEditor.Controls
                 _movementTimer = new MovementTimer(MoveTimer_Tick);
 
                 _flyModeTimer = new Timer { Interval = 1 };
-                _flyModeTimer.Tick += new EventHandler(FlyModeTimer_Tick);
+                _flyModeTimer.Tick += FlyModeTimer_Tick;
 
                 _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024,
                     delegate (Room room)
@@ -316,7 +315,7 @@ namespace TombEditor.Controls
                 _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleCubeRadius);
                 _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleSphereRadius, 8);
 
-                _cone = GeometricPrimitive.Cone.New(_legacyDevice, _coneRadius, _coneRadius, 18);
+                _cone = GeometricPrimitive.Cone.New(_legacyDevice, _coneRadius, _coneRadius);
 
                 // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
                 new BasicEffect(_legacyDevice);
@@ -1007,7 +1006,7 @@ namespace TombEditor.Controls
 
                                     case PortalDirection.WallNegativeZ:
                                     case PortalDirection.WallPositiveZ:
-                                        drag = new VectorInt2(0, TranslateCameraMouseMovement(invertedDragValue, false));
+                                        drag = new VectorInt2(0, TranslateCameraMouseMovement(invertedDragValue));
                                         if (portalDirection == PortalDirection.WallNegativeZ)
                                             resizeArea.Start += drag;
                                         else

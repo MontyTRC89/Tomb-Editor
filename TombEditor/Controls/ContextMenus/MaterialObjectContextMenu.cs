@@ -24,12 +24,12 @@ namespace TombEditor.Controls.ContextMenus
                 }
             }
 
-            if (!(targetObject is LightInstance ||  targetObject is GhostBlockInstance))
+            if (!(targetObject is LightInstance || targetObject is GhostBlockInstance))
             { 
                 Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
                 {
                     EditorActions.EditObject(targetObject, this);
-                }) { Enabled = !(targetObject is LightInstance) });
+                }));
             }
 
             Items.Add(new ToolStripMenuItem("Copy", Properties.Resources.general_copy_link_16, (o, e) =>

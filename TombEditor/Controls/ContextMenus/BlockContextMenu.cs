@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Controls.ContextMenus
 {
