@@ -78,7 +78,7 @@ namespace ProjectConverter
                             Console.WriteLine("    Copying mesh #14 to mesh #7 for " + newSlotName);
                             Console.ResetColor();
 
-                            var mesh = moveable.Value.Bones[14].Mesh.Clone(); ;
+                            var mesh = moveable.Value.Bones[14].Mesh.Clone();
                             for (int i = 0; i < mesh.VertexPositions.Count; i++)
                             {
                                 var pos = mesh.VertexPositions[i];

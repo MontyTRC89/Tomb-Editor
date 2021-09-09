@@ -25,7 +25,6 @@ namespace TombEditor.Controls
 {
     public class PanelRendering3D : RenderingPanel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly KeyMessageFilter filter = new KeyMessageFilter();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -178,7 +177,7 @@ namespace TombEditor.Controls
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
         // Render stats
-        private Stopwatch _watch = new Stopwatch();
+        private readonly Stopwatch _watch = new Stopwatch();
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -979,7 +978,7 @@ namespace TombEditor.Controls
                                 if (_toolHandler.ReferencePicking.IsVerticalPlane)
                                     portalDirection = PortalInstance.GetOppositeDirection
                                                      (PortalInstance.GetDirection
-                                                     (BlockFaceExtensions.GetDirection(_toolHandler.ReferencePicking.Face)));
+                                                     (_toolHandler.ReferencePicking.Face.GetDirection()));
                                 else
                                 {
                                     portalDirection = _toolHandler.ReferencePicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling;
@@ -1669,18 +1668,17 @@ namespace TombEditor.Controls
 
         private PickingResult DoPicking(Ray ray, bool pickAnyRoom = false)
         {
-            PickingResult result;
-
             // The gizmo has the priority because it always drawn on top
-            result = _gizmo.DoPicking(ray);
+            PickingResult result = _gizmo.DoPicking(ray);
             if (result != null)
                 return result;
 
             List<Room> rooms = pickAnyRoom ? CollectRoomsToDraw(_editor.SelectedRoom) : new List<Room> { _editor.SelectedRoom };
-            float distance;
 
             foreach (var room in rooms)
             {
+                float distance;
+
                 // First check for all objects in the room
                 foreach (var instance in room.Objects)
                     if (instance is MoveableInstance)
@@ -2132,7 +2130,6 @@ namespace TombEditor.Controls
             int selectedIndex = -1;
             int lastIndex = -1;
             bool selectedCornerDrawn = false;
-            bool lastSelectedCorner = false;
 
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
@@ -2168,7 +2165,7 @@ namespace TombEditor.Controls
                         bool floor = f == 0;
                         for (int j = 0; j < 4; j++)
                         {
-                            lastSelectedCorner = (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor);
+                            var lastSelectedCorner = (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor);
                             if (lastSelectedCorner == true || j == 4)
                                 _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
@@ -2214,9 +2211,8 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
             effect.Parameters["Color"].SetValue(Vector4.One);
 
-            for (int j = 0; j < ghostBlocksToDraw.Count; j++)
+            foreach (var instance in ghostBlocksToDraw)
             {
-                var instance = ghostBlocksToDraw[j];
                 var selected = _editor.SelectedObject == instance;
 
                 if (!instance.Valid)
@@ -2337,7 +2333,6 @@ namespace TombEditor.Controls
 
                     // Equality flags to further hide nonexistent triangle
                     bool[] equal = new bool[3];
-                    int ch = 0;
                     int r = 0;
 
                     switch (split)
@@ -2350,6 +2345,7 @@ namespace TombEditor.Controls
 
                     for (int i = 0; i < 2; i++)
                     {
+                        int ch = 0;
                         bool triShift = (i == 0 && (split == DiagonalSplit.XpZn || split == DiagonalSplit.XnZn)) ||
                                         (i != 0 && (split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp));
 
@@ -4017,19 +4013,18 @@ namespace TombEditor.Controls
                 float range = 1.0f;
                 float rough = 0.9f;
                 float average = 0.0f;
-                int sideLength, halfSide, x, y;
 
                 Random rndValue = new Random();
                 Array.Clear(RandomHeightMap, 0, RandomHeightMap.Length);
 
                 // While the side length is greater than 1
-                for (sideLength = s; sideLength > 1; sideLength /= 2)
+                for (int sideLength = s; sideLength > 1; sideLength /= 2)
                 {
-                    halfSide = sideLength / 2;
+                    int halfSide = sideLength / 2;
 
                     // Run Diamond Step
-                    for (x = 0; x < s; x += sideLength)
-                        for (y = 0; y < s; y += sideLength)
+                    for (int x = 0; x < s; x += sideLength)
+                        for (int y = 0; y < s; y += sideLength)
                         {
                             // Get the average of the corners
                             average = RandomHeightMap[x, y];
@@ -4044,8 +4039,8 @@ namespace TombEditor.Controls
                         }
 
                     // Run Square Step
-                    for (x = 0; x < s; x += halfSide)
-                        for (y = (x + halfSide) % sideLength; y < s; y += sideLength)
+                    for (int x = 0; x < s; x += halfSide)
+                        for (int y = (x + halfSide) % sideLength; y < s; y += sideLength)
                         {
                             // Get the average of the corners
                             average = RandomHeightMap[(x - halfSide + s) % s, y];

@@ -29,13 +29,9 @@ namespace TombLib.IO
 
         public void ReadBlock<T>(out T output)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT);
+            byte[] buffer = new byte[sizeOfT];
 
             Read(buffer, 0, sizeOfT);
             Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
@@ -46,18 +42,13 @@ namespace TombLib.IO
 
         public void ReadBlockArray<T>(out T[] output, uint count)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-            int i;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
+            byte[] buffer = new byte[sizeOfT];
 
             output = new T[count];
 
-            for (i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
@@ -68,18 +59,13 @@ namespace TombLib.IO
 
         public void ReadBlockArray<T>(out T[] output, int count)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-            int i;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
+            byte[]  buffer = new byte[sizeOfT];
 
             output = new T[count];
 
-            for (i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);

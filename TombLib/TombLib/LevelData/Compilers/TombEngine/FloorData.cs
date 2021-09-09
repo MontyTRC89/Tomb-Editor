@@ -155,7 +155,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
                                         if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
                                             continue;
-                                    };
+                                    }
                                 }
                             }
 
@@ -249,13 +249,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (!floorPortalAssigned)
                                         {
                                             var floorPortal = room.Blocks[xAround, zAround].FloorPortal;
-                                            if (!(floorPortal == null))
+                                            if (floorPortal != null)
                                             {
                                                 var adjoiningRoom = floorPortal.AdjoiningRoom;
                                                 var pos = new VectorInt2(x, z);
                                                 var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                                if (!(adjoiningBlock == null))
+                                                if (adjoiningBlock != null)
                                                 {
                                                     sector.FloorCollision.Portals[0] = _roomsRemappingDictionary[adjoiningRoom];
                                                     sector.FloorCollision.Portals[1] = sector.FloorCollision.Portals[0];
@@ -267,13 +267,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (!ceilingPortalAssigned)
                                         {
                                             var ceilingPortal = room.Blocks[xAround, zAround].CeilingPortal;
-                                            if (!(ceilingPortal == null))
+                                            if (ceilingPortal != null)
                                             {
                                                 var adjoiningRoom = ceilingPortal.AdjoiningRoom;
                                                 var pos = new VectorInt2(x, z);
                                                 var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                                if (!(adjoiningBlock == null))
+                                                if (adjoiningBlock != null)
                                                 {
                                                     sector.CeilingCollision.Portals[0] = _roomsRemappingDictionary[adjoiningRoom];
                                                     sector.CeilingCollision.Portals[1] = sector.CeilingCollision.Portals[0];
@@ -292,13 +292,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     {
                                         var neighborBlock = b == 0 ? room.Blocks[x2, z] : room.Blocks[x, z2];
 
-                                        if (!(neighborBlock.WallPortal == null) && neighborBlock.WallPortal.Opacity != PortalOpacity.SolidFaces)
+                                        if (neighborBlock.WallPortal != null && neighborBlock.WallPortal.Opacity != PortalOpacity.SolidFaces)
                                         {
                                             var adjoiningRoom = neighborBlock.WallPortal.AdjoiningRoom;
                                             var pos = new VectorInt2(x, z);
                                             var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                            if (!(adjoiningBlock == null) && (adjoiningBlock.Type != BlockType.BorderWall || !(adjoiningBlock.WallPortal == null) && adjoiningBlock.WallPortal.Opacity != PortalOpacity.SolidFaces))
+                                            if (adjoiningBlock != null && (adjoiningBlock.Type != BlockType.BorderWall || adjoiningBlock.WallPortal != null && adjoiningBlock.WallPortal.Opacity != PortalOpacity.SolidFaces))
                                             {
                                                 sector.WallPortal = _roomsRemappingDictionary[adjoiningRoom];
                                                 break;
@@ -872,7 +872,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (shape.SplitWallFirst)
                     {
-                        if (!(portal == null))
+                        if (portal != null)
                             newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[0].Z = -reportRoom.Position.Y;
@@ -890,7 +890,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                     if (shape.SplitWallSecond)
                     {
-                        if (!(portal == null))
+                        if (portal != null)
                             newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[1].Z = -reportRoom.Position.Y;
@@ -913,7 +913,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (shape.SplitWallSecond)
                     {
-                        if (!(portal == null))
+                        if (portal != null)
                             newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[0].Z = -reportRoom.Position.Y;
@@ -931,7 +931,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                     if (shape.SplitWallFirst)
                     {
-                        if (!(portal == null))
+                        if (portal != null)
                             newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[1].Z = -reportRoom.Position.Y;

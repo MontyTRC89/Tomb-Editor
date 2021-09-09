@@ -65,7 +65,7 @@ namespace TombLib.Utils
 
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }

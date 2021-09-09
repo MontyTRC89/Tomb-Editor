@@ -340,7 +340,6 @@ namespace SoundTool
 
         private void CompileMainSFX(TRVersion.Game version, bool onlyIndexed)
         {
-            LevelSettings settings;
             var sounds = Sounds.SoundInfos;
 
             if (sounds.Count == 0)
@@ -349,7 +348,7 @@ namespace SoundTool
                 return;
             }
 
-            settings = new LevelSettings() { GameVersion = version };
+            var settings = new LevelSettings() { GameVersion = version };
             settings.WadSoundPaths.Clear();
             var samplePath = LevelFileDialog.BrowseFolder(this, null, _configuration.SoundTool_LastMainSFXSamplePath,
                 "Choose a path where all samples are stored", null);

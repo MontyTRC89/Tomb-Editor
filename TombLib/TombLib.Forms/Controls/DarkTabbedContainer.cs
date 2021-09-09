@@ -19,7 +19,7 @@ namespace TombLib.Controls
             get { return _linkedControl; }
             set
             {
-                if (!(value is DarkListView) && !(value is DarkComboBox) && !(value == null))
+                if (!(value is DarkListView) && !(value is DarkComboBox) && value != null)
                     return;
 
                 // Unlink previous list view, if any

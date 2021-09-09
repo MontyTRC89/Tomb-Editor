@@ -317,7 +317,7 @@ namespace TombLib.LevelData.IO
                     }
                 }
                 chunkIO.WriteChunkEnd();
-            };
+            }
 
             return levelSettingIds;
         }
@@ -747,7 +747,7 @@ namespace TombLib.LevelData.IO
                                 else
                                 {
                                     LEB128.Write(chunkIO.Raw, -1);
-                                };
+                                }
                             };
 
                             var instance = (TriggerInstance)o;
@@ -794,7 +794,7 @@ namespace TombLib.LevelData.IO
                         logger.Warn("Object " + o + " not supported.");
                 }
                 chunkIO.WriteChunkEnd();
-            };
+            }
         }
     }
 }

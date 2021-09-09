@@ -460,9 +460,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(45, "    Number of items: " + _items.Count);
 
-            int maxSafeItemCount, maxItemCount;
-            maxSafeItemCount = 1023;
-            maxItemCount = 32767;
+            int maxSafeItemCount = 1023;
+            int maxItemCount = 32767;
 
             if (_items.Count > maxItemCount)
             {

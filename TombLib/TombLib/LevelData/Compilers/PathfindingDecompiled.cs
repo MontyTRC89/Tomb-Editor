@@ -125,9 +125,7 @@ namespace TombLib.LevelData.Compilers
             int i = 0;
             int j = 0;
 
-            i = 0;
-
-            // All boxes beloging to non flipped rooms have both flags set so they can be linked with
+            // All boxes belonging to non flipped rooms have both flags set so they can be linked with
             // boxes belonging to both rooms of normal-alternate pair.
             // Instead box of rooms that are member of a normal-alternate pair have just only one flag set,
             // 0x04 is for normal rooms and 0x02 is for flipped rooms.

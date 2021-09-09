@@ -79,7 +79,7 @@ namespace TombLib.Controls
                 _minimum = value;
                 if (_minimum > Value) Value = _minimum;
 
-                MinMaxChanged?.Invoke(this, new EventArgs());
+                MinMaxChanged?.Invoke(this, EventArgs.Empty);
                 picSlider.Invalidate();
             }
         }
@@ -101,7 +101,7 @@ namespace TombLib.Controls
                 _maximum = value;
                 if (_maximum < Value) Value = _maximum;
 
-                MinMaxChanged?.Invoke(this, new EventArgs());
+                MinMaxChanged?.Invoke(this, EventArgs.Empty);
                 picSlider.Invalidate();
             }
         }
@@ -123,7 +123,7 @@ namespace TombLib.Controls
                 if (_selectionEnd == -1) _selectionEnd = value;
                 else if (_selectionStart > _selectionEnd)  _selectionEnd = _selectionStart;
 
-                SelectionChanged?.Invoke(this, new EventArgs());
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
                 picSlider.Invalidate();
             }
         }
@@ -142,7 +142,7 @@ namespace TombLib.Controls
                 if (_selectionStart == -1) _selectionStart = value;
                 else if (_selectionStart > _selectionEnd) _selectionStart = _selectionEnd;
 
-                SelectionChanged?.Invoke(this, new EventArgs());
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
                 picSlider.Invalidate();
             }
         }
@@ -156,7 +156,7 @@ namespace TombLib.Controls
         public void ResetSelection()
         {
             _selectionStart = _selectionEnd = -1;
-            SelectionChanged?.Invoke(this, new EventArgs());
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
             Invalidate();
         }
 
@@ -164,7 +164,7 @@ namespace TombLib.Controls
         {
             _selectionStart = _minimum;
             _selectionEnd = _maximum;
-            SelectionChanged?.Invoke(this, new EventArgs());
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
             Invalidate();
         }
 
@@ -184,7 +184,7 @@ namespace TombLib.Controls
 
                 _value = value;
 
-                ValueChanged?.Invoke(this, new EventArgs());
+                ValueChanged?.Invoke(this, EventArgs.Empty);
                 picSlider.Invalidate();
             }
         }
@@ -240,7 +240,7 @@ namespace TombLib.Controls
         {
             _selectionStart = Value;
             _selectionEnd = Value;
-            SelectionChanged?.Invoke(this, new EventArgs());
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
@@ -318,7 +318,7 @@ namespace TombLib.Controls
                 if (!SelectionIsEmpty && potentialNewSelection != _selectionEnd && potentialNewSelection >= _minimum && potentialNewSelection <= _maximum)
                 {
                     _selectionEnd = XtoValue(e.X);
-                    SelectionChanged?.Invoke(this, new EventArgs());
+                    SelectionChanged?.Invoke(this, EventArgs.Empty);
                 }
 
                 Invalidate();
@@ -384,7 +384,7 @@ namespace TombLib.Controls
                 if ((passes == 0 && !SelectionIsEmpty) || (passes == 1 && _highlightTimer.Enabled))
                 {
                     int width = size == 0 ? _cursorWidth : size + _cursorWidth;
-                    Rectangle rect = new Rectangle(realX + picSlider.Padding.Left - halfCursorWidth, picSlider.Padding.Top, width, picSlider.ClientSize.Height - picSlider.Padding.Bottom); ;
+                    Rectangle rect = new Rectangle(realX + picSlider.Padding.Left - halfCursorWidth, picSlider.Padding.Top, width, picSlider.ClientSize.Height - picSlider.Padding.Bottom);
 
                     if (size == 0)
                     {

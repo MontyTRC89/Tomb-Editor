@@ -25,7 +25,7 @@ namespace TombLib.GeometryIO
         {
             var texturePath = _getTexturePathCallback(texture);
             var relativeTexturePath = PathC.GetRelativePath(baseDirectory, texturePath);
-            if (relativeTexturePath == null || relativeTexturePath == "") return texturePath;
+            if (string.IsNullOrEmpty(relativeTexturePath)) return texturePath;
             return relativeTexturePath;
         }
 

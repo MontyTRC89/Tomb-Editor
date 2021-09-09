@@ -238,7 +238,7 @@ namespace TombLib.Controls
                 UpdateUI(pastedInfo, onlyParams);
 
                 if (!_soundInfoCurrentlyChanging)
-                    SoundInfoChanged?.Invoke(this, new EventArgs());
+                    SoundInfoChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

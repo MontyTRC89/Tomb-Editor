@@ -144,7 +144,7 @@ namespace TombLib.LevelData.Compilers
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
         }
 
         private tr_room BuildRoom(Room room)

@@ -915,7 +915,6 @@ namespace WadTool.Controls
                 for (int i = 0; i < _mesh.Polys.Count; i++)
                 {
                     var poly = _mesh.Polys[i];
-                    float newDistance;
                     
                     for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
                     {
@@ -926,6 +925,7 @@ namespace WadTool.Controls
                             _mesh.VertexPositions[(j == 0 ? poly.Index2 : poly.Index0)]
                         };
 
+                        float newDistance;
                         if (Collision.RayIntersectsTriangle(ray, v[0], v[1], v[2], poly.Texture.DoubleSided, out newDistance))
                         {
                             if (newDistance <= distance || candidate == -1)

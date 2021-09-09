@@ -57,7 +57,7 @@ namespace TombLib.Rendering.DirectX11
             try
             {
                 Factory = new Factory();
-                if (Factory.Adapters.Count() == 0)
+                if (!Factory.Adapters.Any())
                 {
                     MessageBox.Show("Your system have no video adapters. Try to install video adapter.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("There are no valid video adapters in system.");
@@ -70,7 +70,7 @@ namespace TombLib.Rendering.DirectX11
                     throw new Exception("DirectX wasn't able to acquire video adapter.");
                 }
 
-                if (adapter.Outputs == null || adapter.Outputs.Count() == 0)
+                if (adapter.Outputs == null || !adapter.Outputs.Any())
                 {
                     MessageBox.Show("There are no video displays connected to your system. Try to connect a display.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("No connected displays found.");

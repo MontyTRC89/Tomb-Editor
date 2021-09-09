@@ -160,7 +160,7 @@ namespace TombLib.LevelData.Compilers
 
                                         if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
                                             continue;
-                                    };
+                                    }
                                 }
                             }
 

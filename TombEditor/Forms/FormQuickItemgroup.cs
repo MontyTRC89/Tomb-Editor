@@ -17,7 +17,7 @@ namespace TombEditor.Forms
             this._editor = _editor;
             dropDownValues = new List<IWadObjectId>();
 
-            cbSlots.SelectedValueChanged += CbSlots_SelectedValueChanged; ;
+            cbSlots.SelectedValueChanged += CbSlots_SelectedValueChanged;
             cbSlots.Format += new ListControlConvertEventHandler(cbSlots_Format);
             cbSlots.Items.Clear();
             foreach (var moveable in _editor.Level.Settings.WadGetAllMoveables().Keys)

@@ -641,7 +641,7 @@ namespace TombLib.Controls
             var available = VisibleTexture != null && VisibleTexture.IsAvailable;
 
             var x = available ? VisibleTexture.Image.Width * 0.5f : 128;
-            float y = (ClientSize.Height - _scrollSizeTotal) * 0.5f; ;
+            float y = (ClientSize.Height - _scrollSizeTotal) * 0.5f;
 
             var scale = 1.0f;
 

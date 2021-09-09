@@ -938,7 +938,7 @@ namespace TombEditor
             // 3. If game version is NOT TEN, always use "TombEditor.Forms" namespace
             // 4. If no window was found in either namespace, throw an exception, since there's no setup window for such object.
             
-            if (args.Count() == 0 || !(args[0] is ObjectInstance))
+            if (!args.Any() || !(args[0] is ObjectInstance))
                 throw new ArgumentException("Object instance was not provided as first argument for this function.");
 
             var triedAlternateNamespace = false;
@@ -1122,7 +1122,7 @@ namespace TombEditor
 
         public static void DeleteObjects(IEnumerable<ObjectInstance> objects, IWin32Window owner = null, bool undo = true)
         {
-            if (objects.Count() == 0)
+            if (!objects.Any())
                 return;
 
             bool silent = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
@@ -2246,7 +2246,7 @@ namespace TombEditor
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
         {
-            if (rooms_.Count() == 0)
+            if (!rooms_.Any())
                 return;
 
             rooms_ = rooms_.SelectMany(room => room.Versions).Distinct();
@@ -4236,7 +4236,7 @@ namespace TombEditor
             var loadedWads = results.Where(result => result != null);
 
             // Don't do anything if there's nothing to load
-            if (loadedWads.Count() == 0)
+            if (!loadedWads.Any())
                 return loadedWads; 
 
             // Check if there's unknown chunks present
@@ -4275,7 +4275,7 @@ namespace TombEditor
             wads = wads.Where(w => w != null);
 
             // No wads specified, no wads loaded, nothing to do
-            if (wads.Count() == 0)
+            if (!wads.Any())
                 return false;
 
             var incomingVersion = wads.First().GameVersion.Native();
@@ -4552,11 +4552,10 @@ namespace TombEditor
 		public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
-            MoveableInstance lara;
             foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects)
                 {
-                    lara = instance as MoveableInstance;
+                    var lara = instance as MoveableInstance;
                     if (lara != null && lara.WadObjectId == WadMoveableId.Lara)
                     {
                         _editor.UndoManager.PushObjectTransformed(lara);
@@ -5288,7 +5287,7 @@ namespace TombEditor
                     return;
 
                 string[] tags = formTags.tbTagSearch.Text.Split(' ');
-                if (tags.Count() < 1)
+                if (!tags.Any())
                     return;
 
                 bool findAllTags = formTags.findAllTags;
@@ -5305,7 +5304,7 @@ namespace TombEditor
 
         private static void TrySelectRooms(IEnumerable<Room> rooms)
         {
-            if(rooms.Count() > 0)
+            if (rooms.Any())
                 _editor.SelectRooms(rooms);
         }
 
@@ -5383,7 +5382,7 @@ namespace TombEditor
                     Clipboard.SetText(scriptString, TextDataFormat.Text);
                     _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
                 }
-            };
+            }
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)
