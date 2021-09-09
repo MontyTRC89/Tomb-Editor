@@ -374,14 +374,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         }
                     }
 
-                    // Font and sky textures
-                    Stream textureMiscData = PrepareFontAndSkyTexture();
-                    ImageC misc = ImageC.FromStreamRaw(textureMiscData, 256, 512);
+                    // Sky texture
+                    var sky = GetSkyTexture();
                     using (var ms = new MemoryStream())
                     {
-                        misc.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                        writer.Write(256);
-                        writer.Write(512);
+                        sky.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        writer.Write(sky.Width);
+                        writer.Write(sky.Height);
                         var output = RemoveColorChunks(ms);
                         writer.Write((int)output.Length);
                         writer.Write(output.ToArray());

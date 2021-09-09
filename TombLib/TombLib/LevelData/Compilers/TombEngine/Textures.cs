@@ -39,40 +39,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return TextureFootStepSound.Stone;
         }
 
-        private Stream PrepareFontAndSkyTexture()
+        private ImageC GetSkyTexture()
         {
-            ReportProgress(96, "Building font & sky textures");
-
-            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == TRVersion.Game.TR5 || _level.IsTombEngine ? 768 : 512);
-            int toY = 0;
-
-            // Read extra textures
-            if (_level.Settings.GameVersion == TRVersion.Game.TR5)
-            {
-                string extraFileName = _level.Settings.MakeAbsolute(_level.Settings.Tr5ExtraSpritesFilePath);
-                if (!string.IsNullOrEmpty(extraFileName) && !File.Exists(extraFileName))
-                {
-                    _progressReporter.ReportWarn("Specified extra TR5 texture not found, using default.");
-                    extraFileName = null;
-                }
-                else
-                    ReportProgress(96, "Reading extra TR5 texture: " + extraFileName);
-                image.CopyFrom(0, toY, _level.Settings.LoadTr5ExtraSprites(extraFileName));
-                toY += 256;
-            }
-
-            // Read font texture
-            string fontFileName = _level.Settings.MakeAbsolute(_level.Settings.FontTextureFilePath);
-            if (!string.IsNullOrEmpty(fontFileName) && !File.Exists(fontFileName))
-            {
-                _progressReporter.ReportWarn("Specified font texture not found, using default.");
-                fontFileName = null;
-            }
-            else
-                ReportProgress(96, "Reading font texture: " + fontFileName);
-            image.CopyFrom(0, toY, _level.Settings.LoadFontTexture(fontFileName));
-            toY += 256;
-
+            ReportProgress(96, "Building sky texture");
 
             // Read sky texture
             string skyFileName = _level.Settings.MakeAbsolute(_level.Settings.SkyTextureFilePath);
@@ -83,9 +52,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
             else
                 ReportProgress(96, "Reading sky texture: " + skyFileName);
-            image.CopyFrom(0, toY, _level.Settings.LoadSkyTexture(skyFileName));
 
-            return image.ToRawStream();
+            return _level.Settings.LoadSkyTexture(skyFileName);
         }
 
         private void BuildSprites()
