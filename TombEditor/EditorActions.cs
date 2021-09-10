@@ -4739,57 +4739,64 @@ namespace TombEditor
                 saveFileDialog.DefaultExt = "dae";
                 saveFileDialog.FileName = _editor.SelectedRoom.Name;
 
-                if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
+                if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+
+                if (!saveFileDialog.FileName.IsANSI())
                 {
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                    DarkMessageBox.Show(owner, "Filename is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
+                    ExportRooms(rooms, owner);
+                    return;
+                }
+
+                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                {
+                    settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                    settingsDialog.SelectPreset("Normal scale");
+
+                    if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale");
-
-                        if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                        BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                         {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
-                            {
-                                if (txt is LevelTexture)
-                                    return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
-                                else
-                                    return "";
-                            };
+                            if (txt is LevelTexture)
+                                return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
+                            else
+                                return "";
+                        };
 
-                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                            new Thread(() =>
-                            {
-                                bool exportInWorldCoordinates = rooms.Count() > 1;
-                                var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
+                        BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                        new Thread(() =>
+                        {
+                            bool exportInWorldCoordinates = rooms.Count() > 1;
+                            var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
 
-                                if (result.Errors.Count < 1)
+                            if (result.Errors.Count < 1)
+                            {
+                                IOModel resultModel = result.Model;
+                                if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
                                 {
-                                    IOModel resultModel = result.Model;
-                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                    if (result.Warnings.Count > 0)
                                     {
-                                        if (result.Warnings.Count > 0)
+                                        if (result.Warnings.Count < 5)
                                         {
-                                            if (result.Warnings.Count < 5)
-                                            {
-                                                string warningmessage = "";
-                                                result.Warnings.ForEach(warning => warningmessage += warning + "\n");
-                                                _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
-                                            }
-                                            else
-                                                _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
+                                            string warningmessage = "";
+                                            result.Warnings.ForEach(warning => warningmessage += warning + "\n");
+                                            _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
                                         }
                                         else
-                                            _editor.SendMessage("Room export successful.", PopupType.Info);
+                                            _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
                                     }
+                                    else
+                                        _editor.SendMessage("Room export successful.", PopupType.Info);
                                 }
-                                else
-                                {
-                                    string errorMessage = "";
-                                    result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
-                                    _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
-                                }
-                            }).Start();
-                        }
+                            }
+                            else
+                            {
+                                string errorMessage = "";
+                                result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
+                                _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
+                            }
+                        }).Start();
                     }
                 }
             }

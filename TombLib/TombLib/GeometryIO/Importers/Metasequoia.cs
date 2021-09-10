@@ -21,7 +21,6 @@ namespace TombLib.GeometryIO.Importers
         public override IOModel ImportFromFile(string filename)
         {
             var model = new IOModel();
-            var materials = new List<string>();
             var positions = new List<Vector3>();
             var textures = new Dictionary<int, Texture>();
 
