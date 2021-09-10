@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using TombLib.Rendering;
 
 namespace TombLib.Graphics
@@ -27,8 +28,15 @@ namespace TombLib.Graphics
                 LevelData.ImportedGeometry.Device = ___LegacyDevice;
 
                 // Load legacy effects
-                string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
-                IEnumerable<string> effectFiles = Directory.EnumerateFiles(dir + "\\Rendering\\Legacy", "*.fx");
+                string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + "\\Rendering\\Legacy";
+
+                if (!Directory.Exists(dir))
+                {
+                    MessageBox.Show("Shader files are missing. Please reinstall Tomb Editor.", "Error", MessageBoxButtons.OK);
+                    throw new FileNotFoundException();
+                }
+
+                IEnumerable<string> effectFiles = Directory.EnumerateFiles(dir, "*.fx");
                 foreach (string fileName in effectFiles)
                 {
                     string effectName = Path.GetFileNameWithoutExtension(fileName);
