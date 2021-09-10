@@ -557,7 +557,7 @@ namespace WadTool.Controls
                                 Vector3 pos = Vector3.Zero;
                                 Vector4 color = Vector4.Zero;
 
-                                if (DrawExtraInfo || (_highlightFace && i == _currentElement))
+                                if (DrawExtraInfo || i == _currentElement)
                                 {
                                     switch (vn)
                                     {

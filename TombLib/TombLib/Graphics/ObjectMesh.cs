@@ -71,7 +71,6 @@ namespace TombLib.Graphics
 
         public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
         {
-            Console.WriteLine(msh.Name);
             // Initialize the mesh
             var mesh = new ObjectMesh(device, msh.Name);
 
