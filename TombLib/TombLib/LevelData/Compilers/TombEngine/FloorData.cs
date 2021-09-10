@@ -43,7 +43,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         }
 
         // Triggers data
-        private List<VolumeScriptInstance> _volumeScripts;
         private List<string> _luaFunctions;
 
         private bool IsWallSurroundedByWalls(int x, int z, Room room)

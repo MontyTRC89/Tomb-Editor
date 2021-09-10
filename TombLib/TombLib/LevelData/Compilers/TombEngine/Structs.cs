@@ -545,7 +545,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineBoundingBox CollisionBox;
         public ushort Flags;
         public short ShatterType;
-        public short ShatterDamage;
         public short ShatterSound;
     }
 

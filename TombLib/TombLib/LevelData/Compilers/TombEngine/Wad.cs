@@ -529,13 +529,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
-                
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
-                newStaticMesh.ShatterType = 0; // (short)oldStaticMesh.ShatterType;
-                newStaticMesh.ShatterDamage = 0; //  (short)Math.Max(1, oldStaticMesh.HitPoints);
-                newStaticMesh.ShatterSound = 0; //  (short)oldStaticMesh.ShatterSound;
+                // TODO! replace with customizable data from trcatalog, properties, etc?
+                if (oldStaticMesh.ToString().ToLower().Contains("shatter"))
+                    newStaticMesh.ShatterType = (short)ShatterType.Fragment;
+                else
+                    newStaticMesh.ShatterType = (short)ShatterType.None;
+
+                newStaticMesh.ShatterSound = -1; // Default sound
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))

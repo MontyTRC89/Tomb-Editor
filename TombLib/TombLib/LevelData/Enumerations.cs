@@ -62,6 +62,14 @@ namespace TombLib.LevelData
         Snow = 2
     }
 
+    // Only for TEN
+    public enum ShatterType : short
+    {
+        None = 0,
+        Fragment = 1,
+        Explode = 2
+    }
+
     public static class StringEnums
     {
         public static readonly List<string> NGRoomTypes = new List<string>()
