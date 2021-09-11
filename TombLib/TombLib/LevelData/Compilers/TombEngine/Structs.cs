@@ -71,9 +71,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int BoxIndex;
         public int StepSound;
         public int Stopper;
-        public int RoomBelow;
         public int Floor;
-        public int RoomAbove;
         public int Ceiling;
         public TombEngineCollisionInfo FloorCollision;
         public TombEngineCollisionInfo CeilingCollision;
@@ -333,9 +331,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(s.BoxIndex);
                 writer.Write(s.StepSound);
                 writer.Write(s.Stopper);
-                writer.Write(s.RoomBelow);
                 writer.Write(s.Floor);
-                writer.Write(s.RoomAbove);
                 writer.Write(s.Ceiling);
                 writer.Write(s.FloorCollision.SplitAngle);
                 writer.Write(s.FloorCollision.Portals[0]);

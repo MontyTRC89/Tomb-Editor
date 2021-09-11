@@ -60,8 +60,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         sector.Floor = -127;
                         sector.Ceiling = -127;
                         sector.FloorDataIndex = 0;
-                        sector.RoomBelow = -1;
-                        sector.RoomAbove = -1;
 
                         if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
                         { 

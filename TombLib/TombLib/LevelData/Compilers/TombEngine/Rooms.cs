@@ -1000,20 +1000,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Setup portals
                     if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
-                        sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
                         aux.FloorPortal = block.FloorPortal;
                     }
                     else
                     {
-                        sector.RoomBelow = -1;
                         aux.FloorPortal = null;
                     }
-
-                    if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
-                        sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
-                    else
-                        sector.RoomAbove = -1;
 
                     if (block.WallPortal != null && block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                         aux.WallPortal = block.WallPortal.AdjoiningRoom;
