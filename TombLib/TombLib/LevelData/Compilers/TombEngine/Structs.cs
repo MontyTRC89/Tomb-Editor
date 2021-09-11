@@ -333,6 +333,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(s.Stopper);
                 writer.Write(s.Floor);
                 writer.Write(s.Ceiling);
+
                 writer.Write(s.FloorCollision.SplitAngle);
                 writer.Write(s.FloorCollision.Portals[0]);
                 writer.Write(s.FloorCollision.Portals[1]);
