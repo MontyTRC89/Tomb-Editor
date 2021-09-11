@@ -18,7 +18,6 @@ namespace TombEditor.Forms
             nudMoveTimer.Value = _instance.MoveTimer;
 
             ckFixed.Enabled      = (instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR4);
-            nudMoveTimer.Enabled = (instance.Room.Level.Settings.GameVersion <= TRVersion.Game.TR2);
         }
 
         private void butOk_Click(object sender, EventArgs e)
