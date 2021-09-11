@@ -333,7 +333,7 @@
             this.darkNumericUpDown6.Location = new System.Drawing.Point(254, 156);
             this.darkNumericUpDown6.LoopValues = false;
             this.darkNumericUpDown6.Maximum = new decimal(new int[] {
-            180,
+            179,
             0,
             0,
             0});
