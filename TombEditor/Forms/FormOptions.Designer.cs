@@ -2152,7 +2152,7 @@
             this.darkNumericUpDown6.Location = new System.Drawing.Point(165, 119);
             this.darkNumericUpDown6.LoopValues = false;
             this.darkNumericUpDown6.Maximum = new decimal(new int[] {
-            200,
+            179,
             0,
             0,
             0});
