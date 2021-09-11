@@ -8,56 +8,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        // Floordata sequence class is used OPTIONALLY, if agressive floordata
-        // packing is enabled in level settings. In this case, similar floordata
-        // sequences will be hashed and compared on compiling, which allows several
-        // sectors to reference same floordata entry, which in turn DRASTICALLY
-        // reduces floordata size (up to 4-5 times).
-
-        private class FloordataSequence
-        {
-            public List<ushort> FDList { get; private set; } = new List<ushort>();
-            private int _hash;
-
-            public void Add(ushort entry)
-            {
-                FDList.Add(entry);
-                RecalculateHash();
-            }
-
-            public void AddRange(List<ushort> entry)
-            {
-                FDList.AddRange(entry);
-                RecalculateHash();
-            }
-
-            private void RecalculateHash()
-            {
-                string hash = "";
-                FDList.ForEach(entry => hash += entry.ToString() + " ");
-                _hash = hash.GetHashCode();
-            }
-
-            public override int GetHashCode() => _hash;
-            public override bool Equals(object obj) => (obj != null) && (obj is FloordataSequence) && (((FloordataSequence)obj)._hash == _hash);
-        }
-
         // Triggers data
-        private List<VolumeScriptInstance> _volumeScripts;
         private List<string> _luaFunctions;
-
-        private bool IsWallSurroundedByWalls(int x, int z, Room room)
-        {
-            if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall)
-                return false;
-            if (z > 0 && !room.Blocks[x, z - 1].IsAnyWall)
-                return false;
-            if (x < room.NumXSectors - 1 && !room.Blocks[x + 1, z].IsAnyWall)
-                return false;
-            if (z < room.NumZSectors - 1 && !room.Blocks[x, z + 1].IsAnyWall)
-                return false;
-            return true;
-        }
 
         private void BuildFloorData()
         {
@@ -76,22 +28,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _luaFunctions.Add(volume.Scripts.OnLeave);
                 }
 
-            // Floordata sequence dictionary is used OPTIONALLY, if agressive floordata packing is on!
-            var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
-
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-
-            if (_level.Settings.AgressiveFloordataPacking)
-            {
-                if (!floorDataDictionary.ContainsValue(0))
-                {
-                    var dummy = new FloordataSequence();
-                    dummy.Add(0x0000);
-                    floorDataDictionary.Add(dummy, 0);
-                }
-            }
-            else
-                _floorData.Add(0x0000);
+            _floorData.Add(0x0000);
 
             for (var i = 0; i < _level.Rooms.Length; i++)
             {
@@ -117,89 +55,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         Block block = room.Blocks[x, z];
 
-                        // If a sector is a wall and this room is a water room,
-                        // It must be checked before if on the neighbour sector if there's a ceiling portal
-                        // because eventually a vertical portal will be added.
-
-                        Room isWallWithCeilingPortal = null;
-                        foreach (var portal in ceilingPortals)
-                        {
-                            // Check if x, z is inside the portal
-                            if (!(x >= portal.Area.X0 - 1 &&
-                                  z >= portal.Area.Y0 - 1 &&
-                                  x <= portal.Area.X0 + portal.Area.Width + 1 &&
-                                  z <= portal.Area.Y0 + portal.Area.Height + 1))
-                                continue;
-
-                            // Check if this is a wall
-                            if (!block.IsAnyWall)
-                                continue;
-                            
-                            // Check if ceiling is traversable or not (now I check only for walls inside rooms)
-                            if (x != 0 && z != 0 && x != room.NumXSectors - 1 && z != room.NumZSectors - 1)
-                            {
-                                var connectionInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
-                                if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal)
-                                {
-                                    // Last chance: is above block climbable?
-                                    if (block.CeilingPortal != null)
-                                    {
-                                        Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
-                                        VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
-                                        if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        Room adjoiningRoom = portal.AdjoiningRoom;
-                                        VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
-                                        if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
-                                            continue;
-                                    }
-                                }
-                            }
-
-                            // Check if current wall is surrounded by walls
-                            if (IsWallSurroundedByWalls(x, z, room))
-                                continue;
-
-                            // Get new coordinates
-                            Room adjoining = portal.AdjoiningRoom;
-                            int x2 = room.Position.X + x - adjoining.Position.X;
-                            int z2 = room.Position.Z + z - adjoining.Position.Z;
-
-                            // Check if we are outside the boundaries of adjoining room
-                            if (x2 < 0 || z2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 > adjoining.NumZSectors - 1)
-                                continue;
-
-                            var adjoiningBlock = adjoining.Blocks[x2, z2];
-
-                            // Now check for a ladder
-                            if (block.Type == BlockType.Wall)
-                            {
-                                // Simplest case, just check for ceiling rooms
-                                if (!adjoiningBlock.IsAnyWall)
-                                {
-                                    isWallWithCeilingPortal = portal.AdjoiningRoom;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                // For border walls, we must consider also possible wall portals on ceiling room
-                                if (adjoiningBlock.Type == BlockType.BorderWall && adjoiningBlock.WallPortal != null)
-                                {
-                                    isWallWithCeilingPortal = adjoiningBlock.WallPortal.AdjoiningRoom;
-                                    break;
-                                }
-                                else if (adjoiningBlock.Type == BlockType.Floor)
-                                {
-                                    isWallWithCeilingPortal = portal.AdjoiningRoom;
-                                    break;
-                                }
-                            }
-                        }
-
                         // Build sector info
                         var sector = GetSector(tempRoom, x, z);
                         sector.Floor = -127;
@@ -208,31 +63,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         sector.RoomBelow = -1;
                         sector.RoomAbove = -1;
 
-                        var newEntry = new FloordataSequence();
-
                         if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
-                        { // Sector is a complete wall
-                            if (block.WallPortal != null)
-                            { // Sector is a wall portal
-                                if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
-                                { // Only if the portal is not a Toggle Opacity 1
-                                    newEntry.Add(0x8001);
-                                    newEntry.Add((ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom]);
-                                }
-                            }
-                            else if (isWallWithCeilingPortal != null)
-                            { // Sector has a ceiling portal on it or near it
-
-                                // Convert sector type to floor with maxed out floor height, as tom2pc/winroomedit does it.
-                                // Otherwise, even if tomb4 will work correctly, meta2tr or other custom tools may fail here.
-                                sector.Floor = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                                sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-
-                                newEntry.Add(0x8001);
-                                newEntry.Add((ushort)_roomsRemappingDictionary[isWallWithCeilingPortal]);
-                            }
-
-                            // New TombEngine sector data
+                        { 
+                            // Sector is a complete wall
 
                             if (block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces)
                             {
@@ -318,69 +151,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             sector.CeilingCollision.Planes[1].Z = -room.Position.Y;
                         }
                         else
-                        { // Sector is not a complete wall
+                        { 
+                            // Sector is not a complete wall
+
                             Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
                             Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
                             var floorShape = new RoomSectorShape(block, true, floorPortalType, block.IsAnyWall);
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
-                            // Floor
-                            int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
-                            if (floorHeight < -127 || floorHeight > 127)
-                                throw new ApplicationException("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
-                            sector.Floor = (sbyte)floorHeight;
-                            if (floorPortalType != Room.RoomConnectionType.NoPortal)
-                            {
-                                var portal = block.FloorPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                sector.RoomBelow = (byte)roomIndex;
-                            }
-
-                            // Ceiling
-                            int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
-                            if (ceilingHeight < -127 || ceilingHeight > 127)
-                                throw new ApplicationException("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
-                            sector.Ceiling = (sbyte)ceilingHeight;
-                            if (ceilingPortalType != Room.RoomConnectionType.NoPortal)
-                            {
-                                var portal = block.CeilingPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                sector.RoomAbove = (byte)roomIndex;
-                            }
-
                             // Calculate the floordata now
                             tempFloorData.Clear();
                             BuildFloorDataForSector(room, block, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData);
                             if (tempFloorData.Count != 0)
-                                newEntry.AddRange(tempFloorData);
+                                _floorData.AddRange(tempFloorData);
                         }
 
-                        // Try to find similar floordata sequence and use it (ONLY if agressive FD packing is enabled)
-                        if(_level.Settings.AgressiveFloordataPacking)
-                        {
-                            ushort index = 0;
-                            if (newEntry.FDList.Count != 0 && !floorDataDictionary.TryGetValue(newEntry, out index))
-                            {
-                                index = (ushort)floorDataDictionary.Keys.Sum(list => list.FDList.Count);
-                                floorDataDictionary.Add(newEntry, index);
-                            }
-                            sector.FloorDataIndex = checked(index);
-                        }
-                        else if (newEntry.FDList.Count != 0)
-                        {
+                        if (tempFloorData.Count != 0)
                             sector.FloorDataIndex = checked((ushort)_floorData.Count);
-                            _floorData.AddRange(newEntry.FDList);
-                        }
 
                         // Update the sector
                         SaveSector(tempRoom, x, z, sector);
                     }
                 }
             }
-
-            // Build final floordata block
-            if (_level.Settings.AgressiveFloordataPacking)
-                floorDataDictionary.ToList().ForEach(entry => _floorData.AddRange(entry.Key.FDList));
 
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
@@ -508,9 +301,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             // Trigger for camera
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
                             outFloorData.Add(trigger2);
-
                             // Additional short
-                            // TODO: Reimplement move timer in TEN!
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                             outFloorData.Add(trigger3);
@@ -751,34 +542,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 DiagonalStep != 0 || SplitPortalSecond != SplitPortalFirst || SplitWallFirst != SplitWallSecond;
         }
 
-        // Portal type {no, first, second}, {Floor, Ceiling}, {Bisecting, NotBisecting}
-        private static readonly byte[,,] FunctionTriangleLookUp = new byte[3, 2, 2] {
-                        {{0x07, 0x08}, {0x09, 0x0a}},
-                        {{0x0b, 0x0d}, {0x0f, 0x11}},
-                        {{0x0c, 0x0e}, {0x10, 0x12}}};
-
-        private ushort TriangleCollisionGetSigned(int Value, Room reportRoom, VectorInt2 reportPos)
-        {
-            if (Value < -16 || Value > 15)
-            {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". Triangle is too steep, collision is inaccurate.");
-                Value = Math.Max(Math.Min(Value, 15), -16);
-            }
-            ushort Result = (ushort)Value;
-            Result &= 0x1f;
-            return Result;
-        }
-
-        private ushort TriangleCollisionGetUnsigned(int Value, Room reportRoom, VectorInt2 reportPos)
-        {
-            if (Value < 0 || Value > 15)
-            {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". Triangle is too steep, collision is inaccurate.");
-                Value = Math.Max(Math.Min(Value, 0), 15);
-            }
-            return (ushort)Value;
-        }
-
         private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
         {
             TombEngineRoom newRoom = _tempRooms[reportRoom];
@@ -788,83 +551,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
 
             if (shape.IsSplit && _level.Settings.GameVersion >= TRVersion.Game.TR3)
-            { // Build a triangulated slope
-                int bisectingIndex = shape.SplitDirectionIsXEqualsZ ? 1 : 0;
-                int portalIndex;
-                if (shape.SplitPortalFirst && !shape.SplitPortalSecond)
-                    portalIndex = 1;
-                else if (!shape.SplitPortalFirst && shape.SplitPortalSecond)
-                    portalIndex = 2;
-                else
-                    portalIndex = 0;
-
-                ushort data0 = FunctionTriangleLookUp[portalIndex, isCeiling ? 1 : 0, bisectingIndex];
-                ushort data1 = 0;
-
-                int heightXnZn = shape.HeightXnZn;
-                int heightXnZp = shape.HeightXnZp;
-                int heightXpZn = shape.HeightXpZn;
-                int heightXpZp = shape.HeightXpZp;
-                if (shape.SplitDirectionIsXEqualsZ)
-                    heightXpZn -= shape.DiagonalStep;
-                else
-                    heightXpZp -= shape.DiagonalStep;
-                if (!isCeiling)
-                {
-                    heightXnZn = -heightXnZn;
-                    heightXnZp = -heightXnZp;
-                    heightXpZn = -heightXpZn;
-                    heightXpZp = -heightXpZp;
-                }
-
-                // https://s18.postimg.org/i66wjol2h/Calculating_t1x.gif
-                int lowestY = Math.Max(Math.Max(heightXnZn, heightXpZn), Math.Max(heightXnZp, heightXpZp));
-
-                int t00;
-                int t01;
-                BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
-
-                // Equalize height for maximum step size
-                /*{
-                    int average = (t00 + t01) / 2;
-                    t00 -= average;
-                    t01 -= average;
-                }*/
-
-                int t10;
-                int t11;
-                int t12;
-                int t13;
-                if (isCeiling)
-                {
-                    t00 = -t00;
-                    t01 = -t01;
-                    t10 = lowestY - heightXpZp;
-                    t11 = lowestY - heightXnZp;
-                    t12 = lowestY - heightXnZn;
-                    t13 = lowestY - heightXpZn;
-                }
-                else
-                {
-                    t10 = lowestY - heightXpZn;
-                    t11 = lowestY - heightXnZn;
-                    t12 = lowestY - heightXnZp;
-                    t13 = lowestY - heightXpZp;
-                }
-
-                data0 |= (ushort)(TriangleCollisionGetSigned(t00, reportRoom, reportPos) << 5);
-                data0 |= (ushort)(TriangleCollisionGetSigned(t01, reportRoom, reportPos) << 10);
-                data1 |= TriangleCollisionGetUnsigned(t10, reportRoom, reportPos);
-                data1 |= (ushort)(TriangleCollisionGetUnsigned(t11, reportRoom, reportPos) << 4);
-                data1 |= (ushort)(TriangleCollisionGetUnsigned(t12, reportRoom, reportPos) << 8);
-                data1 |= (ushort)(TriangleCollisionGetUnsigned(t13, reportRoom, reportPos) << 12);
-
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(data0);
-                outFloorData.Add(data1);
-
-                // New TombEngine sector data
-
+            { 
                 if (shape.SplitDirectionIsXEqualsZ)
                 {
                     newCollision.SplitAngle = (float) (Math.PI / 4);
@@ -950,32 +637,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
             else
             {
-                if (!shape.IsFlat)
-                {
-                    // Build a quad slope
-                    int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
-                    int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
-                    if (isCeiling)
-                        heightDiffX = -heightDiffX;
-
-                    if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
-                    {
-                        _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
-                        heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
-                        heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
-                    }
-
-                    ushort result = 0;
-                    result |= (ushort)((ushort)heightDiffY & 0xff);
-                    result |= (ushort)(((ushort)heightDiffX & 0xff) << 8);
-
-                    lastFloorDataFunction = outFloorData.Count;
-                    outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));
-                    outFloorData.Add(result);
-                }
-
-                // New TombEngine sector data
-
                 if (shape.SplitPortalFirst && shape.SplitPortalSecond)
                 {
                     newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
@@ -995,93 +656,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             var plane = Plane.CreateFromVertices(p1, p2, p3);
             return new Vector3(-plane.Normal.X, -plane.Normal.Z, Vector3.Dot(plane.Normal, p1)) / plane.Normal.Y;
-        }
-
-        private void BuildRoomSectorShape_t00_t01(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, out int out_t00, out int out_t01)
-        {
-            int heightXnZn = shape.HeightXnZn;
-            int heightXnZp = shape.HeightXnZp;
-            int heightXpZn = shape.HeightXpZn;
-            int heightXpZp = shape.HeightXpZp;
-            if (shape.SplitDirectionIsXEqualsZ)
-                heightXpZn -= shape.DiagonalStep;
-            else
-                heightXpZp -= shape.DiagonalStep;
-            if (!isCeiling)
-            {
-                heightXnZn = -heightXnZn;
-                heightXnZp = -heightXnZp;
-                heightXpZn = -heightXpZn;
-                heightXpZp = -heightXpZp;
-            }
-
-            // https://s18.postimg.org/u82adt75l/Calculating_t0x.gif
-            int highestY = Math.Min(Math.Min(heightXnZn, heightXpZn), Math.Min(heightXnZp, heightXpZp));
-
-            // Extend triangle as an flat quad that covers the sector. Heighest point of this.
-            int highestY_Extended00;
-            int highestY_Extended01;
-            if (shape.SplitDirectionIsXEqualsZ)
-            {
-                int extended00 = heightXnZn + heightXpZp - heightXpZn;
-                int extended01 = heightXnZn + heightXpZp - heightXnZp;
-                highestY_Extended00 = Math.Min
-                    (Math.Min(heightXnZn, heightXpZp),
-                    Math.Min(heightXpZn, extended00));
-                highestY_Extended01 = Math.Min
-                    (Math.Min(heightXnZn, heightXpZp),
-                    Math.Min(heightXnZp, extended01));
-            }
-            else
-            {
-                int extended00 = heightXnZp + heightXpZn - heightXpZp;
-                int extended01 = heightXnZp + heightXpZn - heightXnZn;
-                highestY_Extended00 = Math.Min
-                    (Math.Min(heightXnZp, heightXpZn),
-                    Math.Min(heightXpZp, extended00));
-                highestY_Extended01 = Math.Min
-                    (Math.Min(heightXnZp, heightXpZn),
-                    Math.Min(heightXnZn, extended01));
-            }
-            out_t00 = highestY_Extended00 - highestY + (isCeiling ? shape.DiagonalStep : -shape.DiagonalStep);
-            out_t01 = highestY_Extended01 - highestY;
-
-            // Handle walls
-            if (shape.SplitWallFirst || shape.SplitWallSecond)
-            {
-                // Extend approximately a little over half the sector height from both the ceiling and the floor.
-                int proposal = Math.Max(Math.Abs(shape.Min - oppositeExtreme), Math.Abs(shape.Max - oppositeExtreme)) / 2 + 1;
-                if (shape.SplitWallFirst)
-                    out_t01 = out_t00 - proposal;
-                else if (shape.SplitWallSecond)
-                    out_t00 = out_t01 - proposal;
-            }
-        }
-
-        private int GetBalancedRealHeight(RoomSectorShape shape, int oppositeExtreme, bool isCeiling)
-        {
-            int heightXnZn = shape.HeightXnZn;
-            int heightXnZp = shape.HeightXnZp;
-            int heightXpZn = shape.HeightXpZn;
-            int heightXpZp = shape.HeightXpZp;
-            if (shape.SplitDirectionIsXEqualsZ)
-                heightXpZn -= shape.DiagonalStep;
-            else
-                heightXpZp -= shape.DiagonalStep;
-            int result = isCeiling ?
-                Math.Min(Math.Min(heightXnZn, heightXnZp), Math.Min(heightXpZn, heightXpZp)) :
-                Math.Max(Math.Max(heightXnZn, heightXnZp), Math.Max(heightXpZn, heightXpZp));
-
-            // Equalize height for maximum step size
-            if (shape.IsSplit)
-            {
-                int t00;
-                int t01;
-                BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
-                int average = (t00 + t01) / 2;
-                //result += isCeiling ? average : -average;
-            }
-            return result;
         }
     }
 }
