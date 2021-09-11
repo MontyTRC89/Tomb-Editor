@@ -511,6 +511,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int Room;
         public int Flags;
+        public int Speed;
         public string LuaName;
     }
 

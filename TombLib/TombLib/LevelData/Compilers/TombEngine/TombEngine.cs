@@ -141,6 +141,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(camera.Z);
                     writer.Write(camera.Room);
                     writer.Write(camera.Flags);
+                    writer.Write(camera.Speed);
                     writer.Write(camera.LuaName);
                 }
 

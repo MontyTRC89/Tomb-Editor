@@ -512,12 +512,7 @@ namespace TombLib.LevelData.Compilers
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-
-                            // Move timer exists only in TR1-2. Also, all values above 1 are ignored by TR2,
-                            // but we write them anyway.
-                            if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
-                                trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 9 ?? 0);
-
+                            trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 9 ?? 0);
                             outFloorData.Add(trigger3);
                             break;
                         case TriggerTargetType.Sink:

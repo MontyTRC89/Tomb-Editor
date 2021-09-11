@@ -215,6 +215,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
                     Flags = instance.Fixed ? 1 : 0,
+                    Speed = instance.MoveTimer,
                     LuaName = instance.LuaName ?? ""
                 });
             }
