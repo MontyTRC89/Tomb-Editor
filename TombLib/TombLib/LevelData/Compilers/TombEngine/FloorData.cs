@@ -28,9 +28,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _luaFunctions.Add(volume.Scripts.OnLeave);
                 }
 
-            // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            _floorData.Add(0x0000);
-
             for (var i = 0; i < _level.Rooms.Length; i++)
             {
                 var room = _level.Rooms[i];
@@ -49,7 +46,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         var sector = GetSector(tempRoom, x, z);
                         sector.Floor = -127;
                         sector.Ceiling = -127;
-                        sector.FloorDataIndex = 0;
+                        sector.TriggerIndex = -1;
 
                         if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
                         { 
@@ -169,7 +166,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             var triggers = BuildTriggers(room, block, new VectorInt2(x, z));
                             if (triggers.Count != 0)
                             {
-                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                                sector.TriggerIndex = checked((ushort)_floorData.Count);
                                 _floorData.AddRange(triggers);
                             }
                         }

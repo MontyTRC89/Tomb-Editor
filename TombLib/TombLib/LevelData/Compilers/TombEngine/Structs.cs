@@ -67,7 +67,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomSector
     {
-        public int FloorDataIndex;
+        public int TriggerIndex;
         public int BoxIndex;
         public int StepSound;
         public int Stopper;
