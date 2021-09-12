@@ -36,19 +36,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var room = _level.Rooms[i];
                 if (room == null)
                     continue;
+
                 var tempRoom = _tempRooms[room];
 
-                // Get all portals
-                var ceilingPortals = new List<PortalInstance>();
-                for (var z = 0; z < room.NumZSectors; z++)
-                    for (var x = 0; x < room.NumXSectors; x++)
-                    {
-                        var ceilingPortal = room.Blocks[x, z].CeilingPortal;
-                        if (ceilingPortal != null && !ceilingPortals.Contains(ceilingPortal))
-                            ceilingPortals.Add(ceilingPortal);
-                    }
-
-                var tempFloorData = new List<ushort>();
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
@@ -157,27 +147,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             var floorShape = new RoomSectorShape(block, true, floorPortalType, block.IsAnyWall);
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
-                            // Floor
+                            // Legacy floor (needed for some functions in TEN)
                             int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
                             if (floorHeight < -127 || floorHeight > 127)
                                 throw new ApplicationException("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
                             sector.Floor = (sbyte)floorHeight;
 
-                            // Ceiling
+                            // Ceiling (needed for some functions in TEN)
                             int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
                             if (ceilingHeight < -127 || ceilingHeight > 127)
                                 throw new ApplicationException("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
                             sector.Ceiling = (sbyte)ceilingHeight;
 
-                            // Calculate the floordata now
-                            tempFloorData.Clear();
-                            BuildFloorDataForSector(room, block, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData);
-                            if (tempFloorData.Count != 0)
-                                _floorData.AddRange(tempFloorData);
-                        }
+                            // Floor collision
+                            BuildFloorDataCollision(floorShape, false, room, new VectorInt2(x, z));
 
-                        if (tempFloorData.Count != 0)
-                            sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                            // Ceiling collision
+                            BuildFloorDataCollision(ceilingShape, true, room, new VectorInt2(x, z));
+
+                            // Triggers
+                            var triggers = BuildTriggers(room, block, new VectorInt2(x, z));
+                            if (triggers.Count != 0)
+                            {
+                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                                _floorData.AddRange(triggers);
+                            }
+                        }
 
                         // Update the sector
                         SaveSector(tempRoom, x, z, sector);
@@ -188,15 +183,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
 
-        private void BuildFloorDataForSector(Room room, Block block, VectorInt2 pos, RoomSectorShape floorShape, RoomSectorShape ceilingShape, List<ushort> outFloorData)
+        private List<ushort> BuildTriggers(Room room, Block block, VectorInt2 pos)
         {
-            int lastFloorDataFunction = -1;
-
-            // Floor collision
-            BuildFloorDataCollision(floorShape, ceilingShape.Max, false, outFloorData, ref lastFloorDataFunction, room, pos);
-
-            // Ceiling collision
-            BuildFloorDataCollision(ceilingShape, floorShape.Min, true, outFloorData, ref lastFloorDataFunction, room, pos);
+            var result = new List<ushort>();
 
             // Collect all valid triggers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
@@ -212,12 +201,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 if (triggers.Count > 1) TriggerInstance.SortTriggerList(ref triggers);
                 var setupTrigger = triggers[0];
-                lastFloorDataFunction = outFloorData.Count;
 
                 // Trigger type and setup are coming from the found setup trigger. 
                 // Other triggers are needed only for action.
 
-                ushort trigger1 = 0x04;
+                ushort trigger1 = 0;
                 switch (setupTrigger.TriggerType)
                 {
                     case TriggerType.Trigger:
@@ -257,33 +245,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         trigger1 |= 0x0b << 8;
                         break;
                     case TriggerType.Monkey:
-                    case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
                         trigger1 |= 0x0c << 8;
                         break;
-                    case TriggerType.Skeleton:
+                    case TriggerType.TightRope:
                         trigger1 |= 0x0d << 8;
                         break;
-                    case TriggerType.TightRope:
+                    case TriggerType.Crawl:
                         trigger1 |= 0x0e << 8;
                         break;
-                    case TriggerType.Crawl:
+                    case TriggerType.Climb:
                         trigger1 |= 0x0f << 8;
                         break;
-                    case TriggerType.Climb:
-                        trigger1 |= 0x10 << 8;
+                    case TriggerType.ConditionNg: // Not supported but still may be present in project
+                    case TriggerType.Skeleton:
+                        _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger type which is not supported in Tomb Engine.");
                         break;
                     default:
                         throw new Exception("Unknown trigger type found '" + setupTrigger + "'");
                 }
 
-                // Do some warnings in case user switches targets and some incompatible triggers are left behind
+                // Do some warnings in case user switches targets and some incompatible trigger targets are left behind
 
-                if (setupTrigger.TriggerType == TriggerType.ConditionNg ||
-                    setupTrigger.TargetType == TriggerTargetType.ActionNg ||
+                if (setupTrigger.TargetType == TriggerTargetType.ActionNg ||
                     setupTrigger.TargetType == TriggerTargetType.ParameterNg ||
                     setupTrigger.TargetType == TriggerTargetType.TimerfieldNg ||
                     setupTrigger.TargetType == TriggerTargetType.FmvNg)
-                    _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses TRNG trigger data which is not supported in Tomb Engine.");
+                    _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger target which is not supported in Tomb Engine.");
 
                 var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
 
@@ -292,8 +279,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write bitmask
                 triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
 
-                outFloorData.Add(trigger1);
-                outFloorData.Add(triggerSetup);
+                result.Add(trigger1);
+                result.Add(triggerSetup);
 
                 foreach (var trigger in triggers)
                 {
@@ -305,61 +292,61 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         case TriggerTargetType.Object:
                             // Trigger for object
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.Camera:
                             // Trigger for camera
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-                            outFloorData.Add(trigger3);
+                            result.Add(trigger3);
                             break;
                         case TriggerTargetType.Sink:
                             // Trigger for sink
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FlipMap:
                             // Trigger for flip map
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FlipOn:
                             // Trigger for flip map on
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FlipOff:
                             // Trigger for flip map off
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.Target:
                             // Trigger for look at item
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FinishLevel:
                             // Trigger for finish level
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.PlayAudio:
                             // Trigger for play soundtrack
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FlipEffect:
                             // Trigger for flip effect
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.Secret:
                             // Trigger for secret found
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         case TriggerTargetType.FlyByCamera:
                             // Trigger for fly by
@@ -367,22 +354,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
                             var flyByCamera = (FlybyCameraInstance)trigger.Target;
                             trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
 
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
-                            outFloorData.Add(trigger2);
+                            result.Add(trigger2);
                             break;
                         default:
                             throw new Exception("Unknown trigger target found '" + trigger + "'");
                     }
                 }
 
-                outFloorData[outFloorData.Count - 1] |= 0x8000; // End of the action list
+                result[result.Count - 1] |= 0x8000; // End of the action list
             }
 
-            // Set end of floor data function
-            if (lastFloorDataFunction != -1)
-                outFloorData[lastFloorDataFunction] |= 0x8000;
+            return result;
         }
 
         private ushort GetTriggerParameter(ITriggerParameter parameter, TriggerInstance triggerDiagnostic, ushort upperBound)
@@ -639,7 +624,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return result;
         }
 
-        private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
+        private void BuildFloorDataCollision(RoomSectorShape shape, bool isCeiling, Room reportRoom, VectorInt2 reportPos)
         {
             TombEngineRoom newRoom = _tempRooms[reportRoom];
             TombEngineRoomSector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
