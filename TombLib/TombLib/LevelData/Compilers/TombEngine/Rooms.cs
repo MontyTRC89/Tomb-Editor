@@ -983,7 +983,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     sector.WallPortal = -1;
                     sector.StepSound = (int)GetTextureSound(room, x, z);
                     sector.BoxIndex = -1;
-                    sector.FloorDataIndex = 0;
+                    sector.TriggerIndex = -1;
 
                     sector.Flags = new TombEngineSectorFlags()
                     {

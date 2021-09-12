@@ -327,7 +327,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(NumXSectors);
             foreach (var s in Sectors)
             {
-                writer.Write(s.FloorDataIndex);
+                writer.Write(s.TriggerIndex);
                 writer.Write(s.BoxIndex);
                 writer.Write(s.StepSound);
                 writer.Write(s.Stopper);
