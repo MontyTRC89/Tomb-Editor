@@ -202,7 +202,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Trigger type and setup are coming from the found setup trigger. 
                 // Other triggers are needed only for action.
 
-                ushort trigger1 = 0;
+                ushort trigger1 = 0x04;
                 switch (setupTrigger.TriggerType)
                 {
                     case TriggerType.Trigger:
