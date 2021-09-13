@@ -249,7 +249,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            //using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
             using (var inStream = new MemoryStream())
             {
                 using (var writer = new BinaryWriterEx(inStream, true))
