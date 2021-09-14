@@ -6273,12 +6273,12 @@
       <moveable id="871" name="DOOR_TYPE22" />
       <moveable id="872" name="DOOR_TYPE23" />
       <moveable id="873" name="DOOR_TYPE24" />
-      <moveable id="874" name="CLOSED_DOOR1" />
-      <moveable id="875" name="CLOSED_DOOR2" />
-      <moveable id="876" name="CLOSED_DOOR3" />
-      <moveable id="877" name="CLOSED_DOOR4" />
-      <moveable id="878" name="CLOSED_DOOR5" />
-      <moveable id="879" name="CLOSED_DOOR6" />
+      <moveable id="874" name="DOOR_TYPE25" />
+      <moveable id="875" name="DOOR_TYPE26" />
+      <moveable id="876" name="DOOR_TYPE27" />
+      <moveable id="877" name="DOOR_TYPE28" />
+      <moveable id="878" name="DOOR_TYPE29" />
+      <moveable id="879" name="DOOR_TYPE30" />
       <moveable id="880" name="LIFT_DOORS1" />
       <moveable id="881" name="LIFT_DOORS2" />
       <moveable id="882" name="PUSHPULL_DOOR1" />
