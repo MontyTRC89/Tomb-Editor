@@ -44,8 +44,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                         // Build sector info
                         var sector = GetSector(tempRoom, x, z);
-                        sector.Floor = -127;
-                        sector.Ceiling = -127;
                         sector.TriggerIndex = -1;
 
                         if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
@@ -143,18 +141,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
                             var floorShape = new RoomSectorShape(block, true, floorPortalType, block.IsAnyWall);
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
-
-                            // Legacy floor (needed for some functions in TEN)
-                            int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
-                            if (floorHeight < -127 || floorHeight > 127)
-                                throw new ApplicationException("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
-                            sector.Floor = (sbyte)floorHeight;
-
-                            // Ceiling (needed for some functions in TEN)
-                            int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
-                            if (ceilingHeight < -127 || ceilingHeight > 127)
-                                throw new ApplicationException("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
-                            sector.Ceiling = (sbyte)ceilingHeight;
 
                             // Floor collision
                             BuildFloorDataCollision(floorShape, false, room, new VectorInt2(x, z));

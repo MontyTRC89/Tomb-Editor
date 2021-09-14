@@ -1032,20 +1032,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    // Setup floor heights
-                    if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
-                        block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                        if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
-                    }
-                    else
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                    }
-
                     aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
