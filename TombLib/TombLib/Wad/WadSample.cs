@@ -452,7 +452,7 @@ namespace TombLib.Wad
                 loadedSamples.Add(i, currentSample);
             }
 
-            if (samples.Count == 0)
+            if (samples.Count == 0 && settings.GameVersion != TRVersion.Game.TombEngine)
                 reporter?.ReportWarn("All samples are missing. This may cause crashes. Make sure you have specified correct sample path.");
             else if (missing)
                 reporter?.ReportWarn("Some samples are missing. Make sure sample paths are specified correctly. Check level settings for details.");
