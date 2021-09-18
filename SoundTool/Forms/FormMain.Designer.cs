@@ -62,6 +62,7 @@
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
+            this.openRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -90,6 +91,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newXMLToolStripMenuItem,
             this.openToolStripMenuItem,
+            this.openRecentToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveXMLAsToolStripMenuItem,
             this.toolStripMenuItem1,
@@ -98,7 +100,7 @@
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newXMLToolStripMenuItem
@@ -108,7 +110,7 @@
             this.newXMLToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_create_new_16;
             this.newXMLToolStripMenuItem.Name = "newXMLToolStripMenuItem";
             this.newXMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.newXMLToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.newXMLToolStripMenuItem.Text = "New XML";
             this.newXMLToolStripMenuItem.Click += new System.EventHandler(this.NewXMLToolStripMenuItem_Click);
             // 
@@ -119,7 +121,7 @@
             this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.openToolStripMenuItem.Text = "Open XML, TXT or SFX...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
@@ -130,7 +132,7 @@
             this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.saveToolStripMenuItem.Text = "Save XML";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -139,7 +141,7 @@
             this.saveXMLAsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.saveXMLAsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveXMLAsToolStripMenuItem.Name = "saveXMLAsToolStripMenuItem";
-            this.saveXMLAsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.saveXMLAsToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.saveXMLAsToolStripMenuItem.Text = "Save XML as...";
             this.saveXMLAsToolStripMenuItem.Click += new System.EventHandler(this.saveXMLAsToolStripMenuItem_Click);
             // 
@@ -149,14 +151,14 @@
             this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(207, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(242, 6);
             // 
             // loadReferenceLevelToolStripMenuItem
             // 
             this.loadReferenceLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.loadReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.loadReferenceLevelToolStripMenuItem.Name = "loadReferenceLevelToolStripMenuItem";
-            this.loadReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.loadReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.loadReferenceLevelToolStripMenuItem.Text = "Load reference project...";
             this.loadReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.loadReferenceLevelToolStripMenuItem_Click);
             // 
@@ -165,7 +167,7 @@
             this.unloadReferenceProjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.unloadReferenceProjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.unloadReferenceProjectToolStripMenuItem.Name = "unloadReferenceProjectToolStripMenuItem";
-            this.unloadReferenceProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.unloadReferenceProjectToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.unloadReferenceProjectToolStripMenuItem.Text = "Unload reference project";
             this.unloadReferenceProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadReferenceProjectToolStripMenuItem_Click);
             // 
@@ -175,7 +177,7 @@
             this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -187,7 +189,7 @@
             this.pasteToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(33, 20);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // copyToolStripMenuItem
@@ -196,7 +198,7 @@
             this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -206,7 +208,7 @@
             this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -223,7 +225,7 @@
             this.unindexStripMenuItem});
             this.optionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.optionToolStripMenuItem.Text = "Tools";
             // 
             // optionsToolStripMenuItem
@@ -231,7 +233,7 @@
             this.optionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionToolStripMenuItem_Click);
             // 
@@ -241,14 +243,14 @@
             this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(211, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(245, 6);
             // 
             // buildMSFX2StripMenuItem
             // 
             this.buildMSFX2StripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.buildMSFX2StripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.buildMSFX2StripMenuItem.Name = "buildMSFX2StripMenuItem";
-            this.buildMSFX2StripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.buildMSFX2StripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.buildMSFX2StripMenuItem.Text = "Build MAIN.SFX for TR2";
             this.buildMSFX2StripMenuItem.Click += new System.EventHandler(this.buildMSFX2StripMenuItem_Click);
             // 
@@ -257,7 +259,7 @@
             this.buildMSFX3StripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.buildMSFX3StripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.buildMSFX3StripMenuItem.Name = "buildMSFX3StripMenuItem";
-            this.buildMSFX3StripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.buildMSFX3StripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.buildMSFX3StripMenuItem.Text = "Build MAIN.SFX for TR3";
             this.buildMSFX3StripMenuItem.Click += new System.EventHandler(this.buildMSFX3StripMenuItem_Click);
             // 
@@ -266,7 +268,7 @@
             this.unpackMAINSFXToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.unpackMAINSFXToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.unpackMAINSFXToolStripMenuItem.Name = "unpackMAINSFXToolStripMenuItem";
-            this.unpackMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.unpackMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.unpackMAINSFXToolStripMenuItem.Text = "Unpack MAIN.SFX";
             this.unpackMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.unpackMAINSFXToolStripMenuItem_Click);
             // 
@@ -275,7 +277,7 @@
             this.indexStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.indexStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.indexStripMenuItem.Name = "indexStripMenuItem";
-            this.indexStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.indexStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.indexStripMenuItem.Text = "Select all sounds for MAIN.SFX";
             this.indexStripMenuItem.Click += new System.EventHandler(this.indexStripMenuItem3_Click);
             // 
@@ -284,7 +286,7 @@
             this.unindexStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.unindexStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.unindexStripMenuItem.Name = "unindexStripMenuItem";
-            this.unindexStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.unindexStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.unindexStripMenuItem.Text = "Deselect all sounds for MAIN.SFX";
             this.unindexStripMenuItem.Click += new System.EventHandler(this.unindexStripMenuItem3_Click);
             // 
@@ -295,7 +297,7 @@
             this.aboutSoundToolToolStripMenuItem});
             this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutSoundToolToolStripMenuItem
@@ -303,7 +305,7 @@
             this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
-            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
             this.aboutSoundToolToolStripMenuItem.Click += new System.EventHandler(this.AboutSoundToolToolStripMenuItem_Click);
             // 
@@ -434,6 +436,14 @@
             this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
             // 
+            // openRecentToolStripMenuItem
+            // 
+            this.openRecentToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.openRecentToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
+            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.openRecentToolStripMenuItem.Text = "Open recent...";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -499,6 +509,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackMAINSFXToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
     }
 }
 
