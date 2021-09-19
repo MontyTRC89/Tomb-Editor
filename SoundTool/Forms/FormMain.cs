@@ -80,6 +80,7 @@ namespace SoundTool
             soundInfoEditor.SoundInfo = null;
             _currentArchive = null;
             Saved = true;
+            RefreshRecentFilesList();
         }
 
         private bool OpenArchive(string filename = null)
@@ -125,12 +126,14 @@ namespace SoundTool
                 {
                     _currentArchive = filename;
                     Saved = true;
+                    AddFileToRecent(filename);
                 }
                 else
                 {
                     _currentArchive = null;
                     Saved = false;
                 }
+                RefreshRecentFilesList();
                 return true;
             }
             catch (Exception ex)
@@ -154,6 +157,8 @@ namespace SoundTool
 
             _currentArchive = filename;
             Saved = true;
+            RefreshRecentFilesList();
+            AddFileToRecent(filename);
         }
 
         private int FindFreeSoundID()
@@ -470,6 +475,52 @@ namespace SoundTool
         {
             Sounds.SoundInfos.ForEach(s => s.Indexed = false);
             UpdateUI();
+        }
+
+        private static void AddFileToRecent(string fileName)
+        {
+            if (Properties.Settings.Default.RecentProjects == null)
+                Properties.Settings.Default.RecentProjects = new List<string>();
+
+            Properties.Settings.Default.RecentProjects.RemoveAll(s => s == fileName);
+            Properties.Settings.Default.RecentProjects.Insert(0, fileName);
+
+            if (Properties.Settings.Default.RecentProjects.Count > 10)
+                Properties.Settings.Default.RecentProjects.RemoveRange(10, Properties.Settings.Default.RecentProjects.Count - 10);
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void RefreshRecentFilesList()
+        {
+            openRecentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0)
+                foreach (var fileName in Properties.Settings.Default.RecentProjects)
+                {
+                    if (fileName == _currentArchive)   // Skip currently loaded file
+                        continue;
+
+                    if (!File.Exists(fileName)) // Skip nonexistent wads
+                        continue;
+
+                    var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };
+                    item.Click += (s, e) =>
+                    {
+                        OpenArchive(((ToolStripMenuItem)s).Text);
+                        RefreshRecentFilesList();
+                    };
+                    openRecentToolStripMenuItem.DropDownItems.Add(item);
+                }
+
+            // Add "Clear recent files" option
+            openRecentToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            var item2 = new ToolStripMenuItem() { Name = "clearRecentMenuItem", Text = "Clear recent file list" };
+            item2.Click += (s, e) => { Properties.Settings.Default.RecentProjects.Clear(); RefreshRecentFilesList(); Properties.Settings.Default.Save(); };
+            openRecentToolStripMenuItem.DropDownItems.Add(item2);
+
+            // Disable menu item, if list is empty
+            openRecentToolStripMenuItem.Enabled = openRecentToolStripMenuItem.DropDownItems.Count > 2;
         }
 
         private void NewXMLToolStripMenuItem_Click(object sender, EventArgs e) => CreateNewArchive();

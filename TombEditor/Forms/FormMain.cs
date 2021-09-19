@@ -312,7 +312,10 @@ namespace TombEditor.Forms
             if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0)
                 foreach(var fileName in Properties.Settings.Default.RecentProjects)
                 {
-                    if (fileName == _editor.Level.Settings.LevelFilePath)   // Skip currently loaded level
+                    if (fileName == _editor.Level.Settings.LevelFilePath) // Skip currently loaded level
+                        continue;
+
+                    if (!File.Exists(fileName)) // Skip nonexistent levels
                         continue;
 
                     var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };

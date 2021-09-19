@@ -278,6 +278,9 @@ namespace WadTool
                     if (fileName == _tool.DestinationWad?.FileName)   // Skip currently loaded wad
                         continue;
 
+                    if (!File.Exists(fileName)) // Skip nonexistent wads
+                        continue;
+
                     var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };
                     item.Click += (s, e) =>
                     {

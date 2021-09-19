@@ -24,6 +24,7 @@ namespace TombLib.Controls
         private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 100, 170, 255));
         private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 110, 110));
 
+        private static readonly Brush _lblEndFrameBrush = new SolidBrush(Colors.BlueHighlight);
         private static readonly Brush _lblKeyframeBrush = new SolidBrush(Colors.LightText);
         private static readonly Brush _lblFrameBrush = new SolidBrush(Colors.LightText.MultiplyAlpha(0.3f));
 
@@ -508,7 +509,7 @@ namespace TombLib.Controls
                             if (i % period != 0) drawCurrentLabel = false;
                         }
 
-                        if (drawCurrentLabel)
+                        if (drawCurrentLabel || i == Animation.WadAnimation.EndFrame)
                         {
                             // Align first and last numerical entries so they are not concealed by control border
                             StringAlignment align = StringAlignment.Center;
@@ -524,8 +525,10 @@ namespace TombLib.Controls
                                 align = StringAlignment.Far;
                             }
 
+                            var brush = (i == Animation.WadAnimation.EndFrame) ? _lblEndFrameBrush : (isKeyFrame ? _lblKeyframeBrush : _lblFrameBrush);
+
                             // Finally draw it after all these tests
-                            e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? _lblKeyframeBrush : _lblFrameBrush), currX + shift, picSlider.Height,
+                            e.Graphics.DrawString(i.ToString(), Font, brush, currX + shift, picSlider.Height,
                                                     new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
                         }
                     }
