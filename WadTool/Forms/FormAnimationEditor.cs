@@ -600,10 +600,20 @@ namespace WadTool
                 _frameCount = timeline.Value * _editor.CurrentAnim.WadAnimation.FrameRate;
                 timeline.Minimum = 0;
                 timeline.Maximum = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
+                nudEndFrame.Value = _editor.CurrentAnim.WadAnimation.EndFrame;
                 UpdateStatusLabel();
             }
             else
                 statusFrame.Text = string.Empty;
+        }
+
+        private void FixEndFrame(int delta)
+        {
+            var desiredEndFrame = _editor.CurrentAnim.WadAnimation.EndFrame + delta;
+            _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)desiredEndFrame;
+
+            if (_editor.CurrentAnim.WadAnimation.EndFrame < 0)
+                _editor.CurrentAnim.WadAnimation.EndFrame = 0;
         }
 
         private void CalculateAnimationBoundingBox(bool clear = false)
@@ -832,6 +842,7 @@ namespace WadTool
 
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
             OnKeyframesListChanged();
+            FixEndFrame(1);
             Saved = false;
         }
 
@@ -881,11 +892,14 @@ namespace WadTool
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
 
             Saved = false;
+            FixEndFrame(-timeline.SelectionSize);
+
             if (!updateGUI) return;
 
             // Update GUI
             timeline.ResetSelection();
             OnKeyframesListChanged();
+
             if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count != 0)
             {
                 int insertEnd = selectionStart + _editor.ClipboardKeyFrames.Count - 1;
@@ -954,6 +968,7 @@ namespace WadTool
             _editor.ClipboardKeyFrames.ForEach(frame => pastedFrames.Add(frame.Clone()));
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.InsertRange(startIndex, pastedFrames);
             OnKeyframesListChanged();
+            FixEndFrame(pastedFrames.Count - timeline.SelectionSize);
 
             int insertEnd = startIndex + _editor.ClipboardKeyFrames.Count - 1;
             if (cursorPos != -1 && cursorPos <= timeline.Maximum)
@@ -1168,7 +1183,7 @@ namespace WadTool
         private void ValidateAnimationParameter() => _editor.MadeChanges = false;
         private void UpdateAnimationParameter(Control control)
         {
-            if (!_allowUpdate || _editor.CurrentAnim == null) return;
+            if (!_allowUpdate || _editor.CurrentAnim == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0) return;
 
             float result = 0;
             if (control is DarkTextBox)
@@ -1383,6 +1398,7 @@ namespace WadTool
             }
 
             Saved = false;
+            FixEndFrame(numFrames);
 
             if (updateGUI)
             {
