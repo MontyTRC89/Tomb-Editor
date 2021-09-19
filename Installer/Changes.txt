@@ -1,8 +1,18 @@
 Version 1.4.3
 =============
 
+Tomb Editor:
+ * Allow fixed camera move timer editing for all game versions.
+ * Reduce memory usage after saving project.
+ * Don't show missing recent files in list.
+ * Fix overflow exception for FOV setting in options.
+
+SoundTool:
+ * Added recent file list.
+
 WadTool:
  * Highlight and automatically update end frame on frame add/remove action.
+ * Prevent and warn about mesh files with incorrect (non-Latin) file paths when importing.
 
 
 Version 1.4.2
