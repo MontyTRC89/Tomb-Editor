@@ -584,6 +584,8 @@ namespace TombEditor.Controls
                     // Move camera to selected sector
                     if (_editor.Action is EditorActionRelocateCamera)
                     {
+                        if (newBlockPicking.Room != _editor.SelectedRoom)
+                            _editor.SelectedRoom = newBlockPicking.Room;
                         _editor.MoveCameraToSector(newBlockPicking.Pos);
                         return;
                     }

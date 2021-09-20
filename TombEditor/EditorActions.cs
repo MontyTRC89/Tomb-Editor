@@ -4641,6 +4641,7 @@ namespace TombEditor
             try
             {
                 Prj2Writer.SaveToPrj2(fileName, _editor.Level);
+                GC.Collect();
             }
             catch (Exception exc)
             {

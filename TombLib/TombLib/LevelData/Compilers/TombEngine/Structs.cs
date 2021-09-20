@@ -67,14 +67,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomSector
     {
-        public int FloorDataIndex;
+        public int TriggerIndex;
         public int BoxIndex;
         public int StepSound;
         public int Stopper;
-        public int RoomBelow;
-        public int Floor;
-        public int RoomAbove;
-        public int Ceiling;
         public TombEngineCollisionInfo FloorCollision;
         public TombEngineCollisionInfo CeilingCollision;
         public int WallPortal;
@@ -329,14 +325,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(NumXSectors);
             foreach (var s in Sectors)
             {
-                writer.Write(s.FloorDataIndex);
+                writer.Write(s.TriggerIndex);
                 writer.Write(s.BoxIndex);
                 writer.Write(s.StepSound);
                 writer.Write(s.Stopper);
-                writer.Write(s.RoomBelow);
-                writer.Write(s.Floor);
-                writer.Write(s.RoomAbove);
-                writer.Write(s.Ceiling);
+
                 writer.Write(s.FloorCollision.SplitAngle);
                 writer.Write(s.FloorCollision.Portals[0]);
                 writer.Write(s.FloorCollision.Portals[1]);
@@ -546,7 +539,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineBoundingBox CollisionBox;
         public ushort Flags;
         public short ShatterType;
-        public short ShatterDamage;
         public short ShatterSound;
     }
 

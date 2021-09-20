@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.IO
 {

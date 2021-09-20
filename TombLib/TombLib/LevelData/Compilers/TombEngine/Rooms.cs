@@ -983,7 +983,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     sector.WallPortal = -1;
                     sector.StepSound = (int)GetTextureSound(room, x, z);
                     sector.BoxIndex = -1;
-                    sector.FloorDataIndex = 0;
+                    sector.TriggerIndex = -1;
 
                     sector.Flags = new TombEngineSectorFlags()
                     {
@@ -1000,20 +1000,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Setup portals
                     if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
-                        sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
                         aux.FloorPortal = block.FloorPortal;
                     }
                     else
                     {
-                        sector.RoomBelow = -1;
                         aux.FloorPortal = null;
                     }
-
-                    if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
-                        sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
-                    else
-                        sector.RoomAbove = -1;
 
                     if (block.WallPortal != null && block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                         aux.WallPortal = block.WallPortal.AdjoiningRoom;
@@ -1038,20 +1031,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
-
-                    // Setup floor heights
-                    if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
-                        block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                        if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
-                    }
-                    else
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                    }
 
                     aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
                     var q0 = block.Floor.XnZp;
