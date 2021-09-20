@@ -501,6 +501,9 @@ namespace SoundTool
                     if (fileName == _currentArchive)   // Skip currently loaded file
                         continue;
 
+                    if (!File.Exists(fileName)) // Skip nonexistent wads
+                        continue;
+
                     var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };
                     item.Click += (s, e) =>
                     {
