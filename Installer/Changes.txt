@@ -13,6 +13,9 @@ SoundTool:
 WadTool:
  * Highlight and automatically update end frame on frame add/remove action.
  * Prevent and warn about mesh files with incorrect (non-Latin) file paths when importing.
+ 
+TombIDE:
+ * Don't trim leading and trailing spaces in strings.
 
 
 Version 1.4.2

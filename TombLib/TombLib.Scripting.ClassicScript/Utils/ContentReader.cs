@@ -42,7 +42,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			line = LineParser.RemoveComments(line);
 			line = line.Replace("\\x3B", ";");
 			line = line.Replace("\\n", Environment.NewLine);
-			line = line.Trim();
 
 			return line;
 		}
