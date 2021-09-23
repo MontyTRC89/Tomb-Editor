@@ -5,6 +5,7 @@ Tomb Editor:
  * Allow fixed camera move timer editing for all game versions.
  * Reduce memory usage after saving project.
  * Don't show missing recent files in list.
+ * Fix vertex lights not resetting when editing mode is changed.
  * Fix overflow exception for FOV setting in options.
 
 SoundTool:

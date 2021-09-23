@@ -3061,7 +3061,10 @@ namespace TombEditor.Controls
                                 }
                             }
                             else
+                            {
+                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
                                 skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
+                            }
                         }
 
                         var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
@@ -3265,7 +3268,10 @@ namespace TombEditor.Controls
                                     staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
                             }
                             else
+                            {
                                 staticMeshEffect.Parameters["Color"].SetValue(Vector4.One);
+                                staticMeshEffect.Parameters["StaticLighting"].SetValue(false);
+                            }
                         }
 
                         staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
