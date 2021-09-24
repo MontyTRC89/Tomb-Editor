@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
@@ -117,6 +118,24 @@ namespace ProjectConverter
                             moveable.Value.Bones.AddRange(newBones);
                             moveable.Value.Meshes.Clear();
                             moveable.Value.Meshes.AddRange(newMeshes);
+                        }
+
+                        if (newSlotName == "TWOBLOCK_PLATFORM" || newSlotName == "FALLING_BLOCK" || newSlotName.ToLower().Contains("trapdoor"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("    Adjusting bridge object collision box " + newSlotName);
+                            Console.ResetColor();
+
+                            if (moveable.Value.Animations.Count > 0)
+                            {
+                                var anim = moveable.Value.Animations[0];
+                                for (int f = 0; f < anim.KeyFrames.Count; f++)
+                                {
+                                    var oldBB = anim.KeyFrames[f].BoundingBox;
+                                    oldBB.Maximum = new Vector3(oldBB.Maximum.X, oldBB.Maximum.Y * 0.8f, oldBB.Maximum.Z);
+                                    anim.KeyFrames[f].BoundingBox = oldBB;
+                                }
+                            }
                         }
 
                         if (!addedTimex && 
