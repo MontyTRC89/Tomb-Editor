@@ -892,9 +892,10 @@ namespace WadTool
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(timeline.Selection.X, timeline.SelectionSize);
 
             Saved = false;
-            FixEndFrame(-timeline.SelectionSize);
 
             if (!updateGUI) return;
+
+            FixEndFrame(-timeline.SelectionSize);
 
             // Update GUI
             timeline.ResetSelection();

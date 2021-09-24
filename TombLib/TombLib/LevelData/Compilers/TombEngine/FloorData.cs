@@ -528,7 +528,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var newCollision = isCeiling ? newSector.CeilingCollision : newSector.FloorCollision;
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
 
-            if (shape.IsSplit && _level.Settings.GameVersion >= TRVersion.Game.TR3)
+            if (shape.IsSplit)
             { 
                 if (shape.SplitDirectionIsXEqualsZ)
                 {
@@ -552,6 +552,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 new Vector3(-Level.HalfWorldUnit, (-reportRoom.Position.Y - shape.HeightXnZn) * Level.QuarterWorldUnit, -Level.HalfWorldUnit)
                             );
                     }
+
                     if (shape.SplitWallSecond)
                     {
                         if (portal != null)
