@@ -732,8 +732,8 @@ namespace TombEditor
 
             var box = new BoxVolumeInstance()
             {
-                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.WorldUnit,
-                Level.WorldUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.WorldUnit)
+                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.BlockSizeUnit,
+                Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit)
             };
 
 
@@ -747,7 +747,7 @@ namespace TombEditor
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
             PlaceObjectWithoutUpdate(_editor.SelectedRoom, localCenter, box);
-            box.Position += new Vector3(0, Level.HalfWorldUnit, 0); // Lift it up a bit
+            box.Position += new Vector3(0, Level.HalfBlockSizeUnit, 0); // Lift it up a bit
             _editor.UndoManager.PushObjectCreated(box);
             AllocateScriptIds(box);
         }
@@ -823,8 +823,8 @@ namespace TombEditor
             // Limit movement area
             if (!canGoOutsideRoom)
             {
-                float x = (float)Math.Floor(pos.X / Level.WorldUnit);
-                float z = (float)Math.Floor(pos.Z / Level.WorldUnit);
+                float x = (float)Math.Floor(pos.X / Level.BlockSizeUnit);
+                float z = (float)Math.Floor(pos.Z / Level.BlockSizeUnit);
 
                 if (x < 0.0f || x > instance.Room.NumXSectors - 1 ||
                     z < 0.0f || z > instance.Room.NumZSectors - 1)

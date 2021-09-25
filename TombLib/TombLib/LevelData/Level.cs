@@ -12,9 +12,9 @@ namespace TombLib.LevelData
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const float WorldUnit = 1024.0f;
-        public const float HalfWorldUnit = WorldUnit / 2.0f;
-        public const float QuarterWorldUnit = HalfWorldUnit / 2.0f;
+        public const float BlockSizeUnit = 1024.0f;
+        public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
+        public const float HeightUnit = HalfBlockSizeUnit / 2.0f;
 
         public const short MaxNumberOfRooms = 1024;
 
@@ -236,7 +236,7 @@ namespace TombLib.LevelData
         {
             roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
             Room[] oldRooms = roomsToRotate.ToArray();
-            var worldCenter = new VectorInt3(center.X, 0, center.Y) * (int)WorldUnit;
+            var worldCenter = new VectorInt3(center.X, 0, center.Y) * (int)BlockSizeUnit;
 
             // Copy rooms and sectors
             var newRooms = new Room[oldRooms.Length];

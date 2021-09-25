@@ -188,8 +188,8 @@ namespace TombLib.Rendering
             var alignment = new Rectangle2(new Vector2(-width / 2.0f, -height / 2.0f), new Vector2(width / 2.0f, height / 2.0f));
 
             // Calculate screen-space position
-            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.WorldUnit;
-            var scale = (Level.WorldUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
+            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.BlockSizeUnit;
+            var scale = (Level.BlockSizeUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
             var pos = (posMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
 
@@ -198,8 +198,8 @@ namespace TombLib.Rendering
                 color *= distance / _fadeDistance;
 
             // Calculate final viewport coordinates
-            var start = screenPos - scale * new Vector2(alignment.End.X / heightRatio, alignment.End.Y / Level.WorldUnit);
-            var end   = screenPos - scale * new Vector2(alignment.Start.X / heightRatio, alignment.Start.Y / Level.WorldUnit);
+            var start = screenPos - scale * new Vector2(alignment.End.X / heightRatio, alignment.End.Y / Level.BlockSizeUnit);
+            var end   = screenPos - scale * new Vector2(alignment.Start.X / heightRatio, alignment.Start.Y / Level.BlockSizeUnit);
 
             // Make the sprite
             var result = new Sprite()

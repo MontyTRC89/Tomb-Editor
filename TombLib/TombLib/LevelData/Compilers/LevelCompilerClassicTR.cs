@@ -254,8 +254,8 @@ namespace TombLib.LevelData.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys)
             {
-                int xSector = (int)Math.Floor(instance.Position.X / Level.WorldUnit);
-                int zSector = (int)Math.Floor(instance.Position.Z / Level.WorldUnit);
+                int xSector = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
+                int zSector = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -294,9 +294,9 @@ namespace TombLib.LevelData.Compilers
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
                     Flags = instance.Flags,
-                    DirectionX = (int) Math.Round(position.X + Level.WorldUnit * direction.X),
-                    DirectionY = (int)-Math.Round(position.Y + Level.WorldUnit * direction.Y),
-                    DirectionZ = (int) Math.Round(position.Z + Level.WorldUnit * direction.Z),
+                    DirectionX = (int) Math.Round(position.X + Level.BlockSizeUnit * direction.X),
+                    DirectionY = (int)-Math.Round(position.Y + Level.BlockSizeUnit * direction.Y),
+                    DirectionZ = (int) Math.Round(position.Z + Level.BlockSizeUnit * direction.Z),
                 });
             }
             _flyByCameras.Sort(new ComparerFlyBy());
@@ -414,7 +414,7 @@ namespace TombLib.LevelData.Compilers
         private short GetMostDownFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * (short)Level.QuarterWorldUnit);
+            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * (short)Level.HeightUnit);
         }
 
         private bool FindMonkeyFloor(Room room, int x, int z)
@@ -597,7 +597,7 @@ namespace TombLib.LevelData.Compilers
                 var targets = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
-                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.WorldUnit);
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.BlockSizeUnit);
                     var trans = f.WorldPosition + (mxT * mxR).Translation;
 
                     var distance = trans - laraItem.WorldPosition;

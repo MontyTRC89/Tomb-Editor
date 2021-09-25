@@ -458,7 +458,7 @@ namespace TombEditor.Controls
                 var e = (Editor.MoveCameraToSectorEvent)obj;
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                var nextPos = new Vector3(e.Sector.X * Level.WorldUnit + Level.HalfWorldUnit, center.Y, e.Sector.Y * Level.WorldUnit + Level.HalfWorldUnit) + _editor.SelectedRoom.WorldPos;
+                var nextPos = new Vector3(e.Sector.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, center.Y, e.Sector.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit) + _editor.SelectedRoom.WorldPos;
 
                 if (_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
                     AnimateCamera(nextPos);
@@ -485,7 +485,7 @@ namespace TombEditor.Controls
             // Calculate camera distance
             Vector2 roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
 
-            var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * Level.WorldUnit;
+            var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * Level.BlockSizeUnit;
             var rotX = 0.6f;
             var rotY = (float)Math.PI;
 
@@ -878,7 +878,7 @@ namespace TombEditor.Controls
                                 if (_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && (ModifierKeys == Keys.None))
                                 {
                                     Vector3 center = block.Room.GetLocalCenter();
-                                    var nextPos = new Vector3(block.Pos.X * Level.WorldUnit + Level.HalfWorldUnit, center.Y, block.Pos.Y * Level.WorldUnit + Level.HalfWorldUnit) + block.Room.WorldPos;
+                                    var nextPos = new Vector3(block.Pos.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, center.Y, block.Pos.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit) + block.Room.WorldPos;
                                     AnimateCamera(nextPos);
                                 }
                             }
@@ -1595,13 +1595,13 @@ namespace TombEditor.Controls
                 var d = Camera.GetDirection();
                 var t = Camera.GetTarget();
 
-                t = p + d * Level.WorldUnit;
+                t = p + d * Level.BlockSizeUnit;
 
                 _oldCamera.RotationX = Camera.RotationX;
                 _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
 
                 Camera = _oldCamera;
-                Camera.Distance = Level.WorldUnit;
+                Camera.Distance = Level.BlockSizeUnit;
                 Camera.Position = p;
                 Camera.Target = t;
 
@@ -1967,9 +1967,9 @@ namespace TombEditor.Controls
 
             float height = room.GetHighestCorner() - room.GetLowestCorner();
             Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height, room.NumZSectors * 4.0f);
-            float boxX = room.WorldPos.X + (room.NumXSectors * Level.WorldUnit) / 2.0f;
-            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) * Level.QuarterWorldUnit / 2.0f;
-            float boxZ = room.WorldPos.Z + (room.NumZSectors * Level.WorldUnit) / 2.0f;
+            float boxX = room.WorldPos.X + (room.NumXSectors * Level.BlockSizeUnit) / 2.0f;
+            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) * Level.HeightUnit / 2.0f;
+            float boxZ = room.WorldPos.Z + (room.NumZSectors * Level.BlockSizeUnit) / 2.0f;
             Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
             solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * _viewProjection).ToSharpDX());
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -2926,10 +2926,10 @@ namespace TombEditor.Controls
 
             Vector3[] positions = new Vector3[4]
                 {
-                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors *  Level.HalfWorldUnit),
-                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors * -Level.HalfWorldUnit),
-                        new Vector3(_editor.SelectedRoom.NumXSectors *  Level.HalfWorldUnit, 0, 0),
-                        new Vector3(_editor.SelectedRoom.NumXSectors * -Level.HalfWorldUnit, 0, 0)
+                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors *  Level.HalfBlockSizeUnit),
+                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors * -Level.HalfBlockSizeUnit),
+                        new Vector3(_editor.SelectedRoom.NumXSectors *  Level.HalfBlockSizeUnit, 0, 0),
+                        new Vector3(_editor.SelectedRoom.NumXSectors * -Level.HalfBlockSizeUnit, 0, 0)
                  };
 
             var center = _editor.SelectedRoom.GetLocalCenter();
@@ -3665,11 +3665,11 @@ namespace TombEditor.Controls
 
         private static float GetFloorHeight(Room room, Vector3 position)
         {
-            int xBlock = (int)Math.Max(0, Math.Min(room.NumXSectors - 1, Math.Floor(position.X / Level.WorldUnit)));
-            int zBlock = (int)Math.Max(0, Math.Min(room.NumZSectors - 1, Math.Floor(position.Z / Level.WorldUnit)));
+            int xBlock = (int)Math.Max(0, Math.Min(room.NumXSectors - 1, Math.Floor(position.X / Level.BlockSizeUnit)));
+            int zBlock = (int)Math.Max(0, Math.Min(room.NumZSectors - 1, Math.Floor(position.Z / Level.BlockSizeUnit)));
 
             // Get the base floor height
-            return room.Blocks[xBlock, zBlock].Floor.Min * Level.QuarterWorldUnit;
+            return room.Blocks[xBlock, zBlock].Floor.Min * Level.HeightUnit;
         }
 
         private string GetObjectScriptIDString(PositionAndScriptBasedObjectInstance instance)
@@ -3685,7 +3685,7 @@ namespace TombEditor.Controls
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
         {
             // Get the distance between point and floor in units
-            int height = (int)(instance.Position.Y - GetFloorHeight(room, instance.Position)) / (int)Level.QuarterWorldUnit;
+            int height = (int)(instance.Position.Y - GetFloorHeight(room, instance.Position)) / (int)Level.HeightUnit;
 
             string message = "Pos: [" + Math.Round(instance.Position.X) + ", " + Math.Round(instance.Position.Y) + ", " + Math.Round(instance.Position.Z) + "]";
             message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "], " + height + " clicks";

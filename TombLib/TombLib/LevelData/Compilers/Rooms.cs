@@ -128,7 +128,7 @@ namespace TombLib.LevelData.Compilers
             Vector3 output = ambientColor;
 
             if (position.X >= 0 && position.Z >= 0 &&
-                position.X < room.NumXSectors * Level.WorldUnit && position.Z < room.NumZSectors * Level.WorldUnit)
+                position.X < room.NumXSectors * Level.BlockSizeUnit && position.Z < room.NumZSectors * Level.BlockSizeUnit)
                 foreach (var obj in room.Objects)
                     if (obj is LightInstance)
                     {
@@ -165,8 +165,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     X = room.WorldPos.X,
                     Z = room.WorldPos.Z,
-                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * Level.QuarterWorldUnit),
-                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * Level.QuarterWorldUnit)
+                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * Level.HeightUnit),
+                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * Level.HeightUnit)
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
@@ -734,8 +734,8 @@ namespace TombLib.LevelData.Compilers
 
                     foreach (var portal in room.Portals)
                     {
-                        var xv = trVertex.Position.X / (int)Level.WorldUnit;
-                        var zv = trVertex.Position.Z / (int)Level.WorldUnit;
+                        var xv = trVertex.Position.X / (int)Level.BlockSizeUnit;
+                        var zv = trVertex.Position.Z / (int)Level.BlockSizeUnit;
 
                         var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
                         if (otherRoomLightEffect == RoomLightEffect.Default)
@@ -1140,20 +1140,20 @@ namespace TombLib.LevelData.Compilers
                 {
                     case LightType.Point:
                         newLight.LightType = 1;
-                        newLight.In  = light.InnerRange * Level.WorldUnit;
-                        newLight.Out = light.OuterRange * Level.WorldUnit;
+                        newLight.In  = light.InnerRange * Level.BlockSizeUnit;
+                        newLight.Out = light.OuterRange * Level.BlockSizeUnit;
                         break;
                     case LightType.Shadow:
                         newLight.LightType = 3;
-                        newLight.In  = light.InnerRange * Level.WorldUnit;
-                        newLight.Out = light.OuterRange * Level.WorldUnit;
+                        newLight.In  = light.InnerRange * Level.BlockSizeUnit;
+                        newLight.Out = light.OuterRange * Level.BlockSizeUnit;
                         break;
                     case LightType.Spot:
                         newLight.LightType = 2;
                         newLight.In = (float)Math.Cos(light.InnerAngle * (Math.PI / 180));
                         newLight.Out = (float)Math.Cos(light.OuterAngle * (Math.PI / 180));
-                        newLight.Length = light.InnerRange * Level.WorldUnit;
-                        newLight.CutOff = light.OuterRange * Level.WorldUnit;
+                        newLight.Length = light.InnerRange * Level.BlockSizeUnit;
+                        newLight.CutOff = light.OuterRange * Level.BlockSizeUnit;
                         Vector3 spotDirection = light.GetDirection();
                         newLight.DirectionX = -spotDirection.X;
                         newLight.DirectionY =  spotDirection.Y;
@@ -1172,8 +1172,8 @@ namespace TombLib.LevelData.Compilers
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
-                        newLight.In  = light.InnerRange * Level.WorldUnit;
-                        newLight.Out = light.OuterRange * Level.WorldUnit;
+                        newLight.In  = light.InnerRange * Level.BlockSizeUnit;
+                        newLight.Out = light.OuterRange * Level.BlockSizeUnit;
                         newLight.Length = light.Intensity; // Store float intensity as length
                         break;
                     case LightType.Effect:
@@ -1418,11 +1418,11 @@ namespace TombLib.LevelData.Compilers
                         var relevantDirection = relevantEdges[i];
                         var oppositeRelevantDirection = oppositeRelevantEdges[i];
 
-                        var floor   = Level.QuarterWorldUnit * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
-                        var ceiling = Level.QuarterWorldUnit * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var floor   = Level.HeightUnit * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = Level.HeightUnit * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
 
-                        var floorOpposite   = Level.QuarterWorldUnit * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-                        var ceilingOpposite = Level.QuarterWorldUnit * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var floorOpposite   = Level.HeightUnit * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = Level.HeightUnit * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
 
                         floor = Math.Min(floor, floorOpposite);
                         ceiling = Math.Max(ceiling, ceilingOpposite);
@@ -1434,10 +1434,10 @@ namespace TombLib.LevelData.Compilers
             yMin = (float)Math.Floor(yMin);
             yMax = (float)Math.Ceiling(yMax);
 
-            var xMin = portal.Area.X0 * Level.WorldUnit;
-            var xMax = (portal.Area.X1 + 1) * Level.WorldUnit;
-            var zMin = portal.Area.Y0 * Level.WorldUnit;
-            var zMax = (portal.Area.Y1 + 1) * Level.WorldUnit;
+            var xMin = portal.Area.X0 * Level.BlockSizeUnit;
+            var xMax = (portal.Area.X1 + 1) * Level.BlockSizeUnit;
+            var zMin = portal.Area.Y0 * Level.BlockSizeUnit;
+            var zMax = (portal.Area.Y1 + 1) * Level.BlockSizeUnit;
 
             // Determine normal and portal vertices
             tr_vertex[] portalVertices = new tr_vertex[4];
@@ -1446,31 +1446,31 @@ namespace TombLib.LevelData.Compilers
             {
                 case PortalDirection.WallPositiveZ:
                     normal = new tr_vertex(0, 0, -1);
-                    portalVertices[0] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMax - Level.WorldUnit));
-                    portalVertices[1] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMax - Level.WorldUnit));
-                    portalVertices[2] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMax - Level.WorldUnit));
-                    portalVertices[3] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMax - Level.WorldUnit));
+                    portalVertices[0] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMax - Level.BlockSizeUnit));
+                    portalVertices[1] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMax - Level.BlockSizeUnit));
+                    portalVertices[2] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMax - Level.BlockSizeUnit));
+                    portalVertices[3] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMax - Level.BlockSizeUnit));
                     break;
                 case PortalDirection.WallPositiveX:
                     normal = new tr_vertex(-1, 0, 0);
-                    portalVertices[0] = new tr_vertex((short)(xMax - Level.WorldUnit), (short)-yMin, (short)zMax);
-                    portalVertices[1] = new tr_vertex((short)(xMax - Level.WorldUnit), (short)-yMax, (short)zMax);
-                    portalVertices[2] = new tr_vertex((short)(xMax - Level.WorldUnit), (short)-yMax, (short)zMin);
-                    portalVertices[3] = new tr_vertex((short)(xMax - Level.WorldUnit), (short)-yMin, (short)zMin);
+                    portalVertices[0] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMin, (short)zMax);
+                    portalVertices[1] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMax, (short)zMax);
+                    portalVertices[2] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMax, (short)zMin);
+                    portalVertices[3] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMin, (short)zMin);
                     break;
                 case PortalDirection.WallNegativeZ:
                     normal = new tr_vertex(0, 0, 1);
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + Level.WorldUnit - 1));
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + Level.WorldUnit - 1));
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + Level.WorldUnit - 1));
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + Level.WorldUnit - 1));
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + Level.BlockSizeUnit - 1));
                     break;
                 case PortalDirection.WallNegativeX:
                     normal = new tr_vertex(1, 0, 0);
-                    portalVertices[0] = new tr_vertex((short)(xMin + Level.WorldUnit - 1), (short)-yMin, (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)(xMin + Level.WorldUnit - 1), (short)-yMax, (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)(xMin + Level.WorldUnit - 1), (short)-yMax, (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)(xMin + Level.WorldUnit - 1), (short)-yMin, (short)zMax);
+                    portalVertices[0] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMin, (short)zMin);
+                    portalVertices[1] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMax, (short)zMin);
+                    portalVertices[2] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMax, (short)zMax);
+                    portalVertices[3] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMin, (short)zMax);
                     break;
                 default:
                     throw new ApplicationException("Unknown PortalDirection");
@@ -1596,15 +1596,15 @@ namespace TombLib.LevelData.Compilers
                 PortalPlane portalPlane = portalPlanes[i];
                 RectangleInt2 portalArea = portalAreas[i];
 
-                float xMin = portalArea.X0 * Level.WorldUnit;
-                float xMax = (portalArea.X1 + 1) * Level.WorldUnit;
-                float zMin = portalArea.Y0 * Level.WorldUnit;
-                float zMax = (portalArea.Y1 + 1) * Level.WorldUnit;
+                float xMin = portalArea.X0 * Level.BlockSizeUnit;
+                float xMax = (portalArea.X1 + 1) * Level.BlockSizeUnit;
+                float zMin = portalArea.Y0 * Level.BlockSizeUnit;
+                float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * Level.QuarterWorldUnit;
-                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * Level.QuarterWorldUnit;
-                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * Level.QuarterWorldUnit;
-                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.QuarterWorldUnit;
+                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * Level.HeightUnit;
+                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * Level.HeightUnit;
+                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * Level.HeightUnit;
+                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.HeightUnit;
 
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];
@@ -1804,8 +1804,8 @@ namespace TombLib.LevelData.Compilers
             outSharedRooms.Add(currentRoom);
 
             Vector3 localPos = worldPos - currentRoom.WorldPos;
-            int sectorPosX = (int)(localPos.X * (1.0f / Level.WorldUnit) + 0.5f);
-            int sectorPosZ = (int)(localPos.Z * (1.0f / Level.WorldUnit) + 0.5f);
+            int sectorPosX = (int)(localPos.X * (1.0f / Level.BlockSizeUnit) + 0.5f);
+            int sectorPosZ = (int)(localPos.Z * (1.0f / Level.BlockSizeUnit) + 0.5f);
             int sectorPosX2 = sectorPosX - 1;
             int sectorPosZ2 = sectorPosZ - 1;
 

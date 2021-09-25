@@ -253,13 +253,13 @@ namespace TombLib.LevelData
                     break;
             }
 
-            compX0 *= (int)Level.WorldUnit;
-            compX1 *= (int)Level.WorldUnit;
-            compY0 *= (int)Level.WorldUnit;
-            compY1 *= (int)Level.WorldUnit;
+            compX0 *= (int)Level.BlockSizeUnit;
+            compX1 *= (int)Level.BlockSizeUnit;
+            compY0 *= (int)Level.BlockSizeUnit;
+            compY1 *= (int)Level.BlockSizeUnit;
 
-            if (((Direction == PortalDirection.Floor   && pos.Y == -(Room.GetLowestCorner()  * (int)Level.QuarterWorldUnit + Room.WorldPos.Y))  ||
-                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * (int)Level.QuarterWorldUnit + Room.WorldPos.Y))) ||
+            if (((Direction == PortalDirection.Floor   && pos.Y == -(Room.GetLowestCorner()  * (int)Level.HeightUnit + Room.WorldPos.Y))  ||
+                 (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() * (int)Level.HeightUnit + Room.WorldPos.Y))) ||
                   Direction  > PortalDirection.Ceiling)
             {
                 if (detectInside)

@@ -69,6 +69,6 @@ namespace WadTool
         protected override bool SupportRotationX => false;
         protected override bool SupportRotationZ => false;
 
-        private float _UIscale => Math.Max(_control.Static.Mesh.CalculateBoundingSphere().Radius / (Level.WorldUnit * 2), 0.1f);
+        private float _UIscale => Math.Max(_control.Static.Mesh.CalculateBoundingSphere().Radius / (Level.BlockSizeUnit * 2), 0.1f);
     }
 }

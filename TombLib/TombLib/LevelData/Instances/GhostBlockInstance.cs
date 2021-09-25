@@ -75,13 +75,13 @@ namespace TombLib.LevelData
         {
             var result = new Vector3[4];
 
-            var localCenter = new Vector3(SectorPosition.X * Level.WorldUnit + Level.HalfWorldUnit, 0, SectorPosition.Y * Level.WorldUnit + Level.HalfWorldUnit);
+            var localCenter = new Vector3(SectorPosition.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, 0, SectorPosition.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
             var type = floor ? BlockVertical.Floor : BlockVertical.Ceiling;
 
-            var hXnZn = (Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn)) * Level.QuarterWorldUnit + (floor ? -margin : margin);
-            var hXpZp = (Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp)) * Level.QuarterWorldUnit + (floor ? -margin : margin);
-            var hXnZp = (Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp)) * Level.QuarterWorldUnit + (floor ? -margin : margin);
-            var hXpZn = (Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn)) * Level.QuarterWorldUnit + (floor ? -margin : margin);
+            var hXnZn = (Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn)) * Level.HeightUnit + (floor ? -margin : margin);
+            var hXpZp = (Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp)) * Level.HeightUnit + (floor ? -margin : margin);
+            var hXnZp = (Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp)) * Level.HeightUnit + (floor ? -margin : margin);
+            var hXpZn = (Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn)) * Level.HeightUnit + (floor ? -margin : margin);
 
             var shift = new Vector3();
 
@@ -89,10 +89,10 @@ namespace TombLib.LevelData
             {
                 switch (i)
                 {
-                    case 0: shift.X = -Level.HalfWorldUnit - margin; shift.Y = hXnZp; shift.Z =  Level.HalfWorldUnit + margin; break;
-                    case 1: shift.X =  Level.HalfWorldUnit + margin; shift.Y = hXpZp; shift.Z =  Level.HalfWorldUnit + margin; break;
-                    case 2: shift.X =  Level.HalfWorldUnit + margin; shift.Y = hXpZn; shift.Z = -Level.HalfWorldUnit - margin; break;
-                    case 3: shift.X = -Level.HalfWorldUnit - margin; shift.Y = hXnZn; shift.Z = -Level.HalfWorldUnit - margin; break;
+                    case 0: shift.X = -Level.HalfBlockSizeUnit - margin; shift.Y = hXnZp; shift.Z =  Level.HalfBlockSizeUnit + margin; break;
+                    case 1: shift.X =  Level.HalfBlockSizeUnit + margin; shift.Y = hXpZp; shift.Z =  Level.HalfBlockSizeUnit + margin; break;
+                    case 2: shift.X =  Level.HalfBlockSizeUnit + margin; shift.Y = hXpZn; shift.Z = -Level.HalfBlockSizeUnit - margin; break;
+                    case 3: shift.X = -Level.HalfBlockSizeUnit - margin; shift.Y = hXnZn; shift.Z = -Level.HalfBlockSizeUnit - margin; break;
                 }
                 result[i] = (Room?.WorldPos ?? new Vector3()) + (localCenter + shift);
             }

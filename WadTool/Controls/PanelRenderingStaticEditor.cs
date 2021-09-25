@@ -575,7 +575,7 @@ namespace WadTool.Controls
                         continue;
 
                     newShade += dot * light.Intensity * (1.0f - (light.Position - p).Length() /
-                                (light.Radius * Level.WorldUnit));
+                                (light.Radius * Level.BlockSizeUnit));
                 }
 
                 Static.Mesh.VertexColors.Add(new Vector3(Math.Min(newShade, 1.0f)));

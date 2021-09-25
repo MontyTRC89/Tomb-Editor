@@ -376,62 +376,62 @@ namespace TombLib.LevelData
                     case DiagonalSplit.XpZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         break;
                     case DiagonalSplit.XnZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         break;
                     case DiagonalSplit.XnZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
                         break;
                     case DiagonalSplit.XpZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                                new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                                new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         break;
                     default:
@@ -441,42 +441,42 @@ namespace TombLib.LevelData
             else if (BlockSurface.IsQuad2(h0, h1, h2, h3) && portalMode == Room.RoomConnectionType.NoPortal)
             {
                 AddQuad(x, z, face1,
-                    new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                    new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                    new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                    new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                    new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                    new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                    new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                    new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                     room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                     AddTriangle(x, z, face2,
-                        new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                        new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                        new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                     AddTriangle(x, z, face1,
-                        new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                        new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                        new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
             }
             else
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                     AddTriangle(x, z, face1,
-                        new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                        new Vector3((x + 1) * Level.WorldUnit, h1 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
-                        new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                     AddTriangle(x, z, face2,
-                        new Vector3((x + 1) * Level.WorldUnit, h2 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                        new Vector3(x * Level.WorldUnit, h3 * Level.QuarterWorldUnit, z * Level.WorldUnit),
-                        new Vector3(x * Level.WorldUnit, h0 * Level.QuarterWorldUnit, (z + 1) * Level.WorldUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
             }
         }
@@ -1304,22 +1304,22 @@ namespace TombLib.LevelData
                 // QA
                 if (qA > yA && qB > yB)
                     AddQuad(x, z, qaFace,
-                        new Vector3(xA * Level.WorldUnit, qA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, qB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                         face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
                 else if (qA == yA && qB > yB)
                     AddTriangle(x, z, qaFace,
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, qB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                         face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
                 else if (qA > yA && qB == yB)
                     AddTriangle(x, z, qaFace,
-                        new Vector3(xA * Level.WorldUnit, qA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                         face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
                 // ED
@@ -1332,22 +1332,22 @@ namespace TombLib.LevelData
 
                     if (eA > yA && eB > yB)
                         AddQuad(x, z, edFace,
-                            new Vector3(xA * Level.WorldUnit, eA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, eB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, eA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, eB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
                     else if (eA > yA && eB == yB)
                         AddTriangle(x, z, edFace,
-                            new Vector3(xA * Level.WorldUnit, eA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, eA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                     else if (eA == yA && eB > yB)
                         AddTriangle(x, z, edFace,
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, eB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, eB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
                 }
             }
@@ -1373,22 +1373,22 @@ namespace TombLib.LevelData
                 // WS
                 if (wA < yA && wB < yB)
                     AddQuad(x, z, wsFace,
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, wB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xA * Level.WorldUnit, wA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                         face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
                 else if (wA < yA && wB == yB)
                     AddTriangle(x, z, wsFace,
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xA * Level.WorldUnit, wA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                         face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                 else if (wA == yA && wB < yB)
                     AddTriangle(x, z, wsFace,
-                        new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                        new Vector3(xB * Level.WorldUnit, wB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
+                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                        new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                         face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
 
                 // RF
@@ -1401,22 +1401,22 @@ namespace TombLib.LevelData
 
                     if (rA < yA && rB < yB)
                         AddQuad(x, z, rfFace,
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, rB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xA * Level.WorldUnit, rA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, rB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, rA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
                     else if (rA < yA && rB == yB)
                         AddTriangle(x, z, rfFace,
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xA * Level.WorldUnit, rA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, rA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                     else if (rA == yA && rB < yB)
                         AddTriangle(x, z, rfFace,
-                            new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                            new Vector3(xB * Level.WorldUnit, rB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, rB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
                 }
             }
@@ -1434,24 +1434,24 @@ namespace TombLib.LevelData
             // Middle
             if (yA != yD && yB != yC)
                 AddQuad(x, z, middleFace,
-                    new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                    new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                    new Vector3(xB * Level.WorldUnit, yC * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                    new Vector3(xA * Level.WorldUnit, yD * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                    new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                    new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                    new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                    new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
 
             else if (yA != yD && yB == yC)
                 AddTriangle(x, z, middleFace,
-                    new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                    new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                    new Vector3(xA * Level.WorldUnit, yD * Level.QuarterWorldUnit, zA * Level.WorldUnit),
+                    new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                    new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                    new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
             else if (yA == yD && yB != yC)
                 AddTriangle(x, z, middleFace,
-                    new Vector3(xA * Level.WorldUnit, yA * Level.QuarterWorldUnit, zA * Level.WorldUnit),
-                    new Vector3(xB * Level.WorldUnit, yB * Level.QuarterWorldUnit, zB * Level.WorldUnit),
-                    new Vector3(xB * Level.WorldUnit, yC * Level.QuarterWorldUnit, zB * Level.WorldUnit),
+                    new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                    new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                    new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
                     face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
         }
 
@@ -1512,8 +1512,8 @@ namespace TombLib.LevelData
 
         private static bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
         {
-            int currentX = x / (int)Level.WorldUnit - (x > xLight ? 1 : 0);
-            int currentZ = z / (int)Level.WorldUnit - (z > zLight ? 1 : 0);
+            int currentX = x / (int)Level.BlockSizeUnit - (x > xLight ? 1 : 0);
+            int currentZ = z / (int)Level.BlockSizeUnit - (z > zLight ? 1 : 0);
 
             if (currentX < 0 || currentX >= room.NumXSectors ||
                 currentZ < 0 || currentZ >= room.NumZSectors)
@@ -1523,7 +1523,7 @@ namespace TombLib.LevelData
             int floorMin = block.Floor.Min;
             int ceilingMax = block.Ceiling.Max;
 
-            return floorMin <= y / (int)Level.QuarterWorldUnit && ceilingMax >= y / (int)Level.QuarterWorldUnit;
+            return floorMin <= y / (int)Level.HeightUnit && ceilingMax >= y / (int)Level.HeightUnit;
         }
 
         private static bool RayTraceX(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
@@ -1576,8 +1576,8 @@ namespace TombLib.LevelData
 
             do
             {
-                int currentXblock = currentX / (int)Level.WorldUnit;
-                int currentZblock = currentZ / (int)Level.WorldUnit;
+                int currentXblock = currentX / (int)Level.BlockSizeUnit;
+                int currentZblock = currentZ / (int)Level.BlockSizeUnit;
 
                 if (currentZblock < 0 || currentXblock >= room.NumXSectors || currentZblock >= room.NumZSectors)
                 {
@@ -1586,7 +1586,7 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)Level.QuarterWorldUnit;
+                    int currentYclick = currentY / -(int)Level.HeightUnit;
 
                     if (currentXblock > 0)
                     {
@@ -1622,7 +1622,7 @@ namespace TombLib.LevelData
                     }
                 }
 
-                currentX += (int)Level.WorldUnit;
+                currentX += (int)Level.BlockSizeUnit;
                 currentZ += (deltaZ << 10) / (deltaX + 1);
                 currentY += (deltaY << 10) / (deltaX + 1);
             }
@@ -1681,8 +1681,8 @@ namespace TombLib.LevelData
 
             do
             {
-                int currentXblock = currentX / (int)Level.WorldUnit;
-                int currentZblock = currentZ / (int)Level.WorldUnit;
+                int currentXblock = currentX / (int)Level.BlockSizeUnit;
+                int currentZblock = currentZ / (int)Level.BlockSizeUnit;
 
                 if (currentXblock < 0 || currentZblock >= room.NumZSectors || currentXblock >= room.NumXSectors)
                 {
@@ -1691,7 +1691,7 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)Level.QuarterWorldUnit;
+                    int currentYclick = currentY / -(int)Level.HeightUnit;
 
                     if (currentZblock > 0)
                     {
@@ -1727,7 +1727,7 @@ namespace TombLib.LevelData
                     }
                 }
 
-                currentZ += (int)Level.WorldUnit;
+                currentZ += (int)Level.BlockSizeUnit;
                 currentX += (deltaX << 10) / (deltaZ + 1);
                 currentY += (deltaY << 10) / (deltaZ + 1);
             }
@@ -1852,17 +1852,17 @@ namespace TombLib.LevelData
                     // Normalize the light vector
                     lightVector = Vector3.Normalize(lightVector);
 
-                    if (distance + 64.0f <= light.OuterRange * Level.WorldUnit)
+                    if (distance + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
                     {     
                         // If distance is greater than light out radius, then skip this light
-                        if (distance > light.OuterRange * Level.WorldUnit)
+                        if (distance > light.OuterRange * Level.BlockSizeUnit)
                             return Vector3.Zero;
 
                         // Calculate light diffuse value
                         int diffuse = (int)(light.Intensity * 8192);
 
                         // Calculate the attenuation
-                        float attenuaton = (light.OuterRange * Level.WorldUnit - distance) / (light.OuterRange * Level.WorldUnit - light.InnerRange * Level.WorldUnit);
+                        float attenuaton = (light.OuterRange * Level.BlockSizeUnit - distance) / (light.OuterRange * Level.BlockSizeUnit - light.InnerRange * Level.BlockSizeUnit);
                         if (attenuaton > 1.0f)
                             attenuaton = 1.0f;
                         if (attenuaton <= 0.0f)
@@ -1885,12 +1885,12 @@ namespace TombLib.LevelData
                     break;
 
                 case LightType.Effect:
-                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.WorldUnit)
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
                     {
-                        int x1 = (int)(Math.Floor(light.Position.X / Level.WorldUnit)   * Level.WorldUnit);
-                        int z1 = (int)(Math.Floor(light.Position.Z / Level.WorldUnit)   * Level.WorldUnit);
-                        int x2 = (int)(Math.Ceiling(light.Position.X / Level.WorldUnit) * Level.WorldUnit);
-                        int z2 = (int)(Math.Ceiling(light.Position.Z / Level.WorldUnit) * Level.WorldUnit);
+                        int x1 = (int)(Math.Floor(light.Position.X / Level.BlockSizeUnit)   * Level.BlockSizeUnit);
+                        int z1 = (int)(Math.Floor(light.Position.Z / Level.BlockSizeUnit)   * Level.BlockSizeUnit);
+                        int x2 = (int)(Math.Ceiling(light.Position.X / Level.BlockSizeUnit) * Level.BlockSizeUnit);
+                        int z2 = (int)(Math.Ceiling(light.Position.Z / Level.BlockSizeUnit) * Level.BlockSizeUnit);
 
                         // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
                         if ((position.X == x1 && position.Z == z1 || position.X == x1 && position.Z == z2 || position.X == x2 && position.Z == z1 ||
@@ -1925,7 +1925,7 @@ namespace TombLib.LevelData
                     }
 
                 case LightType.Spot:
-                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.WorldUnit)
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
                     {
                         // Calculate the ray from light to vertex
                         lightVector = Vector3.Normalize(position - light.Position);
@@ -1934,7 +1934,7 @@ namespace TombLib.LevelData
                         distance = Math.Abs((position - light.Position).Length());
 
                         // If distance is greater than light length, then skip this light
-                        if (distance > light.OuterRange * Level.WorldUnit)
+                        if (distance > light.OuterRange * Level.BlockSizeUnit)
                             return Vector3.Zero;
 
                         // Calculate the light direction
@@ -1956,8 +1956,8 @@ namespace TombLib.LevelData
                             return Vector3.Zero;
 
                         float attenuation = 1.0f;
-                        if (distance >= light.InnerRange * Level.WorldUnit)
-                            attenuation = 1.0f - (distance - light.InnerRange * Level.WorldUnit) / (light.OuterRange * Level.WorldUnit - light.InnerRange * Level.WorldUnit);
+                        if (distance >= light.InnerRange * Level.BlockSizeUnit)
+                            attenuation = 1.0f - (distance - light.InnerRange * Level.BlockSizeUnit) / (light.OuterRange * Level.BlockSizeUnit - light.InnerRange * Level.BlockSizeUnit);
 
                         if (attenuation > 1.0f)
                             attenuation = 1.0f;

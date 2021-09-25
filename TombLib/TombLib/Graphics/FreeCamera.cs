@@ -54,7 +54,7 @@ namespace TombLib.Graphics
             Vector3 right = MathC.HomogenousTransform(Vector3.UnitX, rotation);
             Vector3 up = Vector3.Cross(look, right);
 
-            Target = Position + Level.WorldUnit * look;
+            Target = Position + Level.BlockSizeUnit * look;
 
             Matrix4x4 View = MathC.Matrix4x4CreateLookAtLH(Position, Target, up);
 
