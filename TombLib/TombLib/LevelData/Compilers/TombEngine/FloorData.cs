@@ -539,7 +539,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (portal != null)
                             newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
-                        newCollision.Planes[0].Z = -reportRoom.Position.Y;
+                        newCollision.Planes[0].Z = -float.MaxValue;
                     }
                     else
                     {
@@ -558,7 +558,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (portal != null)
                             newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
-                        newCollision.Planes[1].Z = -reportRoom.Position.Y;
+                        newCollision.Planes[1].Z = -float.MaxValue;
                     }
                     else
                     {
@@ -581,7 +581,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (portal != null)
                             newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
-                        newCollision.Planes[0].Z = -reportRoom.Position.Y;
+                        newCollision.Planes[0].Z = -float.MaxValue;
                     }
                     else
                     {
@@ -599,7 +599,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (portal != null)
                             newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
-                        newCollision.Planes[1].Z = -reportRoom.Position.Y;
+                        newCollision.Planes[1].Z = -float.MaxValue;
                     }
                     else
                     {
