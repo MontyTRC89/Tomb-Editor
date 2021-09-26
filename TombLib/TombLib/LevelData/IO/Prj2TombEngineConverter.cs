@@ -28,8 +28,7 @@ namespace TombLib.LevelData.IO
 
             if (string.IsNullOrEmpty(newProject))
             {
-                progressReporter.ReportWarn("There was an error while converting your project.");
-                return string.Empty;
+                throw new Exception("There was an error while converting your project.");
             }
 
             progressReporter.ReportInfo("Project was converted successfully!");
