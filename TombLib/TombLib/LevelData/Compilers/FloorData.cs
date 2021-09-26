@@ -512,7 +512,7 @@ namespace TombLib.LevelData.Compilers
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-                            trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 6 ?? 0);
+                            trigger3 |= (ushort)((trigger.Target as CameraInstance)?.MoveTimer << 9 ?? 0);
                             outFloorData.Add(trigger3);
                             break;
                         case TriggerTargetType.Sink:
