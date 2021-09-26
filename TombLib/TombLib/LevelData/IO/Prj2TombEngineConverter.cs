@@ -31,6 +31,7 @@ namespace TombLib.LevelData.IO
                 throw new Exception("There was an error while converting your project.");
             }
 
+            progressReporter.ReportInfo(" ");
             progressReporter.ReportInfo("Project was converted successfully!");
             progressReporter.ReportInfo("Notes about the conversion:");
             progressReporter.ReportInfo(" ");
