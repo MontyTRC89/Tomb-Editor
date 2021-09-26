@@ -170,31 +170,14 @@ namespace TombLib.Wad
             // Add object
             if (newId is WadMoveableId)
             {
-                // Find texture duplicates
                 var mov = (WadMoveable)wadObject;
-                foreach (var mesh in mov.Meshes)
-                    for (int i = 0; i < mesh.Polys.Count; i++)
-                    {
-                        var poly = mesh.Polys[i];
-                        if (textures.Contains(poly.Texture.Texture))
-                            poly.Texture.Texture = textures.First(t => t.GetHashCode() == poly.Texture.Texture.GetHashCode());
-                        mesh.Polys[i] = poly;
-                    }
-                
+                mov.Meshes.ForEach(m => MergeSimilarTextures(m)); // Find texture duplicates
                 Moveables.Add((WadMoveableId)newId, mov);
             }
             else if (newId is WadStaticId)
             {
-                // Find texture duplicates
                 var st = (WadStatic)wadObject;
-                for (int i = 0; i < st.Mesh.Polys.Count; i++)
-                {
-                    var poly = st.Mesh.Polys[i];
-                    if (textures.Contains(poly.Texture.Texture))
-                        poly.Texture.Texture = textures.First(t => t.GetHashCode() == poly.Texture.Texture.GetHashCode());
-                    st.Mesh.Polys[i] = poly;
-                }
-
+                MergeSimilarTextures(st.Mesh); // Find texture duplicates
                 Statics.Add((WadStaticId)newId, st);
             }
             else if (newId is WadSpriteSequenceId)
@@ -229,6 +212,19 @@ namespace TombLib.Wad
                 throw new KeyNotFoundException("Id " + newId.ToString(GameVersion) + " not found.");
             Remove(oldId);
             Add(newId, @object);
+        }
+
+        public void MergeSimilarTextures(WadMesh mesh)
+        {
+            var textures = MeshTexturesUnique;
+
+            for (int i = 0; i < mesh.Polys.Count; i++)
+            {
+                var poly = mesh.Polys[i];
+                if (textures.Contains(poly.Texture.Texture))
+                    poly.Texture.Texture = textures.First(t => t.GetHashCode() == poly.Texture.Texture.GetHashCode());
+                mesh.Polys[i] = poly;
+            }
         }
 
         public static IReadOnlyList<FileFormat> WadFormatExtensions { get; } = new List<FileFormat>()
