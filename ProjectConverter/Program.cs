@@ -20,7 +20,7 @@ namespace ProjectConverter
                 var referenceWad = Wad2Loader.LoadFromFile(Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2"), true);
 
                 // Load level and all related resources
-                var level = Prj2Loader.LoadFromPrj2(source, null);
+                var level = Path.GetExtension(source).ToLower() == ".prj" ? PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
                 if (level == null)
                 {
                     Console.WriteLine("Error while loading level");
@@ -266,8 +266,6 @@ namespace ProjectConverter
                     Path.GetFileNameWithoutExtension(source) + "_TombEngine.prj2");
 
                 Prj2Writer.SaveToPrj2(newPath, level);
-
-
             }
             catch (Exception ex)
             {
@@ -297,7 +295,7 @@ namespace ProjectConverter
             {
                 using (var dialog = new OpenFileDialog())
                 {
-                    dialog.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
+                    dialog.Filter = "All Supported Files|*.prj;*.prj2|TRLE Project(*.prj)|*.prj|Tomb Editor Project (*.prj2)|*.prj2";
                     dialog.Title = "Select project to convert";
                     if (dialog.ShowDialog() == DialogResult.Cancel)
                         return;

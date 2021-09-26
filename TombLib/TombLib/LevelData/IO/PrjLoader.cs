@@ -106,13 +106,13 @@ namespace TombLib.LevelData.IO
             level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");
 
             string gameDirectory = FindGameDirectory(filename, progressReporter);
-            progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
+            progressReporter?.ReportProgress(0, "Game directory: " + gameDirectory);
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
             // Open file
             using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
+                progressReporter?.ReportProgress(0, "Begin of PRJ import from " + filename);
                 logger.Debug("Opening Winroomedit PRJ file " + filename);
 
                 // Identify if project is NGLE or classic TRLE one
@@ -123,14 +123,14 @@ namespace TombLib.LevelData.IO
                 if (ngFooter == 0x454C474E)
                     isNg = true;
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                progressReporter.ReportProgress(1, "PRJ is a" + (isNg ? "n NGLE" : " TRLE") + " project");
+                progressReporter?.ReportProgress(1, "PRJ is a" + (isNg ? "n NGLE" : " TRLE") + " project");
 
                 // Version
                 reader.BaseStream.Seek(8, SeekOrigin.Begin);
                 var bigTexture = reader.ReadByte();
                 bool isBigTexturePrj = bigTexture == 0x32 ? true : false;
 
-                progressReporter.ReportProgress(2, "PRJ is a " + (isBigTexturePrj ? "big textures" : "normal textures") + " project");
+                progressReporter?.ReportProgress(2, "PRJ is a " + (isBigTexturePrj ? "big textures" : "normal textures") + " project");
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 reader.ReadBytes(12);
 
@@ -145,7 +145,7 @@ namespace TombLib.LevelData.IO
                 var tempRooms = new Dictionary<int, PrjRoom>();
                 var tempPortals = new Dictionary<int, PrjPortal>();
 
-                progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
+                progressReporter?.ReportProgress(2, "Number of rooms: " + numRooms);
 
                 var tempObjects = new Dictionary<int, List<PrjObject>>();
 
@@ -233,7 +233,7 @@ namespace TombLib.LevelData.IO
                                 directionEnum = PortalDirection.Ceiling;
                                 break;
                             default:
-                                progressReporter.ReportWarn("Unknown portal direction value " + direction + " encountered in room #" + i + " '" + roomName + "'");
+                                progressReporter?.ReportWarn("Unknown portal direction value " + direction + " encountered in room #" + i + " '" + roomName + "'");
                                 continue;
                         }
 
@@ -380,7 +380,7 @@ namespace TombLib.LevelData.IO
                                         triggerTypeEnum = TriggerType.ConditionNg;  // @FIXME: really? NGLE used 2 different IDs for same trigger type?
                                         break;
                                     default:
-                                        progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
+                                        progressReporter?.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
                                         continue;
                                 }
 
@@ -437,7 +437,7 @@ namespace TombLib.LevelData.IO
                                         break;
                                     default:
                                         triggerTargetTypeEnum = TriggerTargetType.FlipEffect;
-                                        progressReporter.ReportWarn("Unknown trigger target type " + triggerItemType + " encountered in room #" + i + " '" + roomName + "'");
+                                        progressReporter?.ReportWarn("Unknown trigger target type " + triggerItemType + " encountered in room #" + i + " '" + roomName + "'");
                                         continue;
                                 }
 
@@ -450,7 +450,7 @@ namespace TombLib.LevelData.IO
                                 // Identify NG fake collision triggers and ditch them
                                 if (isNg && triggerTargetTypeEnum == TriggerTargetType.FlipEffect &&
                                     triggerItemNumber >= 310 && triggerItemNumber <= 330)
-                                    progressReporter.ReportWarn("Found and filtered out fake NG collision trigger (F" + triggerItemNumber + ") in room " + room + ". Use ghost blocks instead.");
+                                    progressReporter?.ReportWarn("Found and filtered out fake NG collision trigger (F" + triggerItemNumber + ") in room " + room + ". Use ghost blocks instead.");
                                 else
                                 {
                                     var trigger = new TriggerInstance(GetArea(room, 1, objPosX, objPosZ, objSizeX, objSizeZ))
@@ -469,7 +469,7 @@ namespace TombLib.LevelData.IO
                                 break;
 
                             default:
-                                progressReporter.ReportWarn("Unknown object (first *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
+                                progressReporter?.ReportWarn("Unknown object (first *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
                                 continue;
                         }
                     }
@@ -558,7 +558,7 @@ namespace TombLib.LevelData.IO
                                         lightType = LightType.FogBulb;
                                         break;
                                     default:
-                                        progressReporter.ReportWarn("Unknown light type " + objectType + " found inside *.prj file.");
+                                        progressReporter?.ReportWarn("Unknown light type " + objectType + " found inside *.prj file.");
                                         continue;
                                 }
 
@@ -643,7 +643,7 @@ namespace TombLib.LevelData.IO
                                 room.AddObject(level, flybyCamera);
                                 break;
                             default:
-                                progressReporter.ReportWarn("Unknown object (second *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
+                                progressReporter?.ReportWarn("Unknown object (second *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
                                 continue;
                         }
                     }
@@ -808,13 +808,13 @@ namespace TombLib.LevelData.IO
                     tempRooms.Add(i, tempRoom);
                     level.Rooms[i] = room;
 
-                    progressReporter.ReportProgress(i / (float)numRooms * 28.0f, "");
+                    progressReporter?.ReportProgress(i / (float)numRooms * 28.0f, "");
                 }
-                progressReporter.ReportProgress(30, "Rooms loaded");
+                progressReporter?.ReportProgress(30, "Rooms loaded");
 
                 // Link alternate rooms
                 {
-                    progressReporter.ReportProgress(31, "Link alternate rooms");
+                    progressReporter?.ReportProgress(31, "Link alternate rooms");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
@@ -830,12 +830,12 @@ namespace TombLib.LevelData.IO
                             alternateRoom.Position = new VectorInt3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
                         }
                     }
-                    progressReporter.ReportProgress(31, "Alternate rooms linked");
+                    progressReporter?.ReportProgress(31, "Alternate rooms linked");
                 }
 
                 // Link portals
                 {
-                    progressReporter.ReportProgress(32, "Link portals");
+                    progressReporter?.ReportProgress(32, "Link portals");
                     for (int roomIndex = 0; roomIndex < level.Rooms.GetLength(0); ++roomIndex)
                     {
                         Room room = level.Rooms[roomIndex];
@@ -858,7 +858,7 @@ namespace TombLib.LevelData.IO
                             // Link to the opposite room
                             if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
                             {
-                                progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
+                                progressReporter?.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                 return;
                             }
                             Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
@@ -903,7 +903,7 @@ namespace TombLib.LevelData.IO
 
                             // Output diagonostics
                             if (errorMessage != null)
-                                progressReporter.ReportWarn(errorMessage);
+                                progressReporter?.ReportWarn(errorMessage);
                         };
                         foreach (var portalId in tempRoom._portals)
                             processPortal(portalId, false);
@@ -950,7 +950,7 @@ namespace TombLib.LevelData.IO
                                         {
                                             // Oops, we have contradiction that can't be resolved in our system:
                                             // The base room and the alternate room link to *different* rooms on the same sector.
-                                            progressReporter.ReportWarn("In room '" + room + "' at [" + x + ", " + z + "] the base room and the alternate room have portals " +
+                                            progressReporter?.ReportWarn("In room '" + room + "' at [" + x + ", " + z + "] the base room and the alternate room have portals " +
                                                 "to different adjoining rooms! This is unsuppored in Tomb Editor. The portal in the base room will be preserved.\n" +
                                                 "    Base room portal destination: " + basePortalLinks[x, z].Key + "' (Direction: " + basePortalLinks[x, z].Value + ")\n" +
                                                 "    Alternate room portal destination: " + alternatePortalLinks[x, z].Key + "' (Direction: " + alternatePortalLinks[x, z].Value + ")");
@@ -1061,17 +1061,17 @@ namespace TombLib.LevelData.IO
                             catch (Exception exc)
                             {
                                 string message = "Unable to link portal " + portal + " in room " + room + ".";
-                                progressReporter.ReportProgress(35, message);
+                                progressReporter?.ReportProgress(35, message);
                                 logger.Error(exc, message);
                             }
                         }
                     }
-                    progressReporter.ReportProgress(35, "Portals linked");
+                    progressReporter?.ReportProgress(35, "Portals linked");
                 }
 
                 // Setup portals
                 {
-                    progressReporter.ReportProgress(32, "Setup portals");
+                    progressReporter?.ReportProgress(32, "Setup portals");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
@@ -1152,12 +1152,12 @@ namespace TombLib.LevelData.IO
                             }
                         }
                     }
-                    progressReporter.ReportProgress(35, "Portals setup");
+                    progressReporter?.ReportProgress(35, "Portals setup");
                 }
 
                 // Transform the no collision tiles into the ForceFloorSolid option.
                 {
-                    progressReporter.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
+                    progressReporter?.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
 
                     // Promote NoCollision
                     foreach (var tempRoom in tempRooms)
@@ -1205,7 +1205,7 @@ namespace TombLib.LevelData.IO
                         }
                     }
 
-                    progressReporter.ReportProgress(40, "Converted NoCollision to ForceFloorSolid");
+                    progressReporter?.ReportProgress(40, "Converted NoCollision to ForceFloorSolid");
                 }
 
                 // Ignore unused things indices
@@ -1242,8 +1242,8 @@ namespace TombLib.LevelData.IO
                         texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed*/
                     level.Settings.Textures.Add(texture);
                     if (texture.LoadException != null)
-                        progressReporter.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture });
-                    progressReporter.ReportProgress(50, "Loaded texture '" + texture.Path + "'");
+                        progressReporter?.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture });
+                    progressReporter?.ReportProgress(50, "Loaded texture '" + texture.Path + "'");
                 }
 
                 // Read texture tiles
@@ -1252,8 +1252,8 @@ namespace TombLib.LevelData.IO
                 {
                     int numTextures = reader.ReadInt32();
 
-                    progressReporter.ReportProgress(52, "Loading textures");
-                    progressReporter.ReportProgress(52, "    Number of textures: " + numTextures);
+                    progressReporter?.ReportProgress(52, "Loading textures");
+                    progressReporter?.ReportProgress(52, "    Number of textures: " + numTextures);
 
                     for (int t = 0; t < numTextures; t++)
                     {
@@ -1302,7 +1302,7 @@ namespace TombLib.LevelData.IO
                         ReferencedWad newWad = new ReferencedWad(level.Settings, level.Settings.MakeRelative(wadPath, VariableType.LevelDirectory), progressReporter);
                         level.Settings.Wads.Add(newWad);
                         if (newWad.LoadException != null)
-                            progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
+                            progressReporter?.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
 
                         // SFX is a valid catalog source so let's add it (SAM is implicitly loaded)
                         string sfxPath = (newWad.LoadException == null ?
@@ -1315,7 +1315,7 @@ namespace TombLib.LevelData.IO
                         ReferencedSoundCatalog sfx = new ReferencedSoundCatalog(level.Settings, sfxPath);
                         level.Settings.SoundCatalogs.Add(sfx);
                         if (sfx.LoadException != null)
-                            progressReporter.RaiseDialog(new DialogDescriptonSoundsCatalogUnloadable { Settings = level.Settings, Sounds = sfx });
+                            progressReporter?.RaiseDialog(new DialogDescriptonSoundsCatalogUnloadable { Settings = level.Settings, Sounds = sfx });
 
                         // We actually have a valid WAD loaded, let's change names using the catalog and mark them automatically for compilation
                         if (sfx.Sounds != null)
@@ -1334,7 +1334,7 @@ namespace TombLib.LevelData.IO
                                 level.Settings.SelectedSounds.Add(soundInfo.Id);
                             }
 
-                        progressReporter.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
+                        progressReporter?.ReportProgress(60, "Loaded WAD '" + wadPath + "'");
 
                         // Setup paths to customized fonts and the skys
                         string objectFilePath = level.Settings.MakeAbsolute(wadPath);
@@ -1396,7 +1396,7 @@ namespace TombLib.LevelData.IO
 
                         if (index == null)
                         {
-                            progressReporter.ReportWarn("Unknown slot name '" + slotName + "' used for object with id '" + currentObj.ScriptId + "' in room '" + level.Rooms[i] + "' at " + currentObj.Position + ". It was removed.");
+                            progressReporter?.ReportWarn("Unknown slot name '" + slotName + "' used for object with id '" + currentObj.ScriptId + "' in room '" + level.Rooms[i] + "' at " + currentObj.Position + ". It was removed.");
                             continue;
                         }
 
@@ -1434,7 +1434,7 @@ namespace TombLib.LevelData.IO
 
                 // Link triggers
                 {
-                    progressReporter.ReportProgress(31, "Link triggers");
+                    progressReporter?.ReportProgress(31, "Link triggers");
 
                     // Build lookup table for IDs
                     Dictionary<uint, PositionBasedObjectInstance> objectLookup =
@@ -1466,11 +1466,11 @@ namespace TombLib.LevelData.IO
                                     instance.TargetType = TriggerTargetType.Camera;
                             }
                         }
-                    progressReporter.ReportProgress(35, "Triggers linked");
+                    progressReporter?.ReportProgress(35, "Triggers linked");
                 }
 
                 // Read animated textures
-                progressReporter.ReportProgress(61, "Loading animated textures and foot step sounds");
+                progressReporter?.ReportProgress(61, "Loading animated textures and foot step sounds");
                 int numAnimationRanges = reader.ReadInt32();
                 for (int i = 0; i < 40; i++)
                     reader.ReadInt32();
@@ -1546,7 +1546,7 @@ namespace TombLib.LevelData.IO
 
                 // Try to parse bump mapping and recognize *.prj TRNG's
                 if (reader.BaseStream.Length - reader.BaseStream.Position < 256)
-                    progressReporter.ReportWarn("256 characteristic 0 bytes are missing at the end of the *.prj file.");
+                    progressReporter?.ReportWarn("256 characteristic 0 bytes are missing at the end of the *.prj file.");
                 else
                 {
                     // Read bump mapping data
@@ -1559,7 +1559,7 @@ namespace TombLib.LevelData.IO
                     if (reader.BaseStream.Length - reader.BaseStream.Position < 2)
                     { // No header of any sorts
                         level.Settings.GameVersion = TRVersion.Game.TR4;
-                        progressReporter.ReportInfo("No header of any sorts found. The *.prj file ends at " + offsetString);
+                        progressReporter?.ReportInfo("No header of any sorts found. The *.prj file ends at " + offsetString);
                     }
                     else
                     { // Check for extra headers
@@ -1567,7 +1567,7 @@ namespace TombLib.LevelData.IO
                         if (binaryIdentifier == 0x474E)
                         { // NG header
                             level.Settings.GameVersion = TRVersion.Game.TRNG;
-                            progressReporter.ReportInfo("NG header found at " + offsetString);
+                            progressReporter?.ReportInfo("NG header found at " + offsetString);
 
                             // Parse NG chunks
                             while (reader.BaseStream.Position < reader.BaseStream.Length)
@@ -1605,14 +1605,14 @@ namespace TombLib.LevelData.IO
                                                 case 0xA000:    // RiverRotate. Faulty animation type, disable it.
                                                 case 0xC000:    // HalfRotate.  Faulty animation type, disable it.
                                                     if(animationType != 0x8000)
-                                                        progressReporter.ReportWarn("Faulty NG texture animation type encountered (RiverRotate or HalfRotate). Converted to classic UVRotate.");
+                                                        progressReporter?.ReportWarn("Faulty NG texture animation type encountered (RiverRotate or HalfRotate). Converted to classic UVRotate.");
                                                     level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.UVRotate;
                                                     level.Settings.AnimatedTextureSets[i].Fps = ((data & 0x1F00) == 0) ? 32 : (sbyte)((data & 0x1F00) >> 8); // Because of the limited bits available, FPS is directly encoded in 1 to 31 FPS. 0 means "max FPS", which we are currently interpreting as 32 FPS.
                                                     level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                     break;
 
                                                 default:
-                                                    progressReporter.ReportWarn("Unknown NG animation type with ID " + animationType + " has been encountered. It has been ignored.");
+                                                    progressReporter?.ReportWarn("Unknown NG animation type with ID " + animationType + " has been encountered. It has been ignored.");
                                                     break;
                                             }
                                         }
@@ -1628,19 +1628,19 @@ namespace TombLib.LevelData.IO
                         else
                         { // Unknown header
                             level.Settings.GameVersion = TRVersion.Game.TR4;
-                            progressReporter.ReportInfo("Unknown header 0x" + binaryIdentifier.ToString("x") + " found at " + offsetString);
+                            progressReporter?.ReportInfo("Unknown header 0x" + binaryIdentifier.ToString("x") + " found at " + offsetString);
                         }
                     }
                 }
-                progressReporter.ReportInfo("Game version: " + level.Settings.GameVersion);
+                progressReporter?.ReportInfo("Game version: " + level.Settings.GameVersion);
 
                 // Build geometry
-                progressReporter.ReportProgress(80, "Building geometry");
+                progressReporter?.ReportProgress(80, "Building geometry");
                 foreach (var room in level.Rooms.Where(room => room != null))
                     room.BuildGeometry();
 
                 // Build faces
-                progressReporter.ReportProgress(85, "Texturize faces");
+                progressReporter?.ReportProgress(85, "Texturize faces");
                 for (int i = 0; i < level.Rooms.GetLength(0); i++)
                 {
                     var room = level.Rooms[i];
@@ -1932,12 +1932,12 @@ namespace TombLib.LevelData.IO
             }
 
             if (adjustUV)
-                progressReporter.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");
+                progressReporter?.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");
 
             // Update level geometry
-            progressReporter.ReportProgress(95, "Building rooms");
+            progressReporter?.ReportProgress(95, "Building rooms");
             Parallel.ForEach(level.ExistingRooms, room => room.BuildGeometry());
-            progressReporter.ReportProgress(100, "Level loaded correctly!");
+            progressReporter?.ReportProgress(100, "Level loaded correctly!");
 
             return level;
         }
@@ -2041,7 +2041,7 @@ namespace TombLib.LevelData.IO
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
                     if (texIndex >= tempTextures.Count)
                     {
-                        progressReporter.ReportWarn("Invalid texture ID found in Room " + room.Name + " (" + x + ", " + z + "): " + texIndex);
+                        progressReporter?.ReportWarn("Invalid texture ID found in Room " + room.Name + " (" + x + ", " + z + "): " + texIndex);
                         return;
                     }
 
@@ -2218,7 +2218,7 @@ namespace TombLib.LevelData.IO
 
             // Error
             string result = Path.GetDirectoryName(filename);
-            progressReporter.ReportWarn("Tomb Editor was not able to find the game directory. The game directory defaulted to '" + result +
+            progressReporter?.ReportWarn("Tomb Editor was not able to find the game directory. The game directory defaulted to '" + result +
                 "'. It should be customized under 'Tools' -> 'Level Settings' before using 'play'.");
             return result;
         }
