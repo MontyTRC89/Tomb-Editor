@@ -47,7 +47,7 @@
 			// 
 			this.button_BrowseLevels.Checked = false;
 			this.button_BrowseLevels.Enabled = false;
-			this.button_BrowseLevels.Location = new System.Drawing.Point(363, 266);
+			this.button_BrowseLevels.Location = new System.Drawing.Point(363, 267);
 			this.button_BrowseLevels.Margin = new System.Windows.Forms.Padding(0, 2, 6, 8);
 			this.button_BrowseLevels.Name = "button_BrowseLevels";
 			this.button_BrowseLevels.Size = new System.Drawing.Size(75, 22);
@@ -58,7 +58,7 @@
 			// button_BrowseProject
 			// 
 			this.button_BrowseProject.Checked = false;
-			this.button_BrowseProject.Location = new System.Drawing.Point(363, 102);
+			this.button_BrowseProject.Location = new System.Drawing.Point(363, 103);
 			this.button_BrowseProject.Margin = new System.Windows.Forms.Padding(0, 3, 6, 8);
 			this.button_BrowseProject.Name = "button_BrowseProject";
 			this.button_BrowseProject.Size = new System.Drawing.Size(75, 22);
@@ -70,7 +70,7 @@
 			// 
 			this.button_BrowseScript.Checked = false;
 			this.button_BrowseScript.Enabled = false;
-			this.button_BrowseScript.Location = new System.Drawing.Point(363, 184);
+			this.button_BrowseScript.Location = new System.Drawing.Point(363, 185);
 			this.button_BrowseScript.Margin = new System.Windows.Forms.Padding(0, 2, 6, 8);
 			this.button_BrowseScript.Name = "button_BrowseScript";
 			this.button_BrowseScript.Size = new System.Drawing.Size(75, 22);
@@ -96,7 +96,7 @@
 			this.button_Help.Location = new System.Drawing.Point(363, 54);
 			this.button_Help.Margin = new System.Windows.Forms.Padding(0, 6, 6, 23);
 			this.button_Help.Name = "button_Help";
-			this.button_Help.Size = new System.Drawing.Size(75, 22);
+			this.button_Help.Size = new System.Drawing.Size(75, 23);
 			this.button_Help.TabIndex = 17;
 			this.button_Help.Text = "Need Help?";
 			this.button_Help.Click += new System.EventHandler(this.button_Help_Click);

@@ -38,8 +38,8 @@ namespace TombIDE
 
 		private void button_Help_Click(object sender, EventArgs e)
 		{
-			using (FormEngineHelp form = new FormEngineHelp(Cursor.Position))
-				form.ShowDialog(this);
+            var form = new FormEngineHelp(Cursor.Position);
+			form.Show(this);
 		}
 
 		private void radio_Script_01_CheckedChanged(object sender, EventArgs e)

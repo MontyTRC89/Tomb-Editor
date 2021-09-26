@@ -41,7 +41,7 @@
 			// button_BrowseLevels
 			// 
 			this.button_BrowseLevels.Checked = false;
-			this.button_BrowseLevels.Location = new System.Drawing.Point(363, 123);
+			this.button_BrowseLevels.Location = new System.Drawing.Point(363, 124);
 			this.button_BrowseLevels.Margin = new System.Windows.Forms.Padding(3, 3, 6, 8);
 			this.button_BrowseLevels.Name = "button_BrowseLevels";
 			this.button_BrowseLevels.Size = new System.Drawing.Size(75, 22);
@@ -52,7 +52,7 @@
 			// button_BrowseScript
 			// 
 			this.button_BrowseScript.Checked = false;
-			this.button_BrowseScript.Location = new System.Drawing.Point(363, 75);
+			this.button_BrowseScript.Location = new System.Drawing.Point(363, 76);
 			this.button_BrowseScript.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.button_BrowseScript.Name = "button_BrowseScript";
 			this.button_BrowseScript.Size = new System.Drawing.Size(75, 22);
