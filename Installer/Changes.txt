@@ -12,6 +12,7 @@ SoundTool:
  * Added recent file list.
 
 WadTool:
+ * Don't copy textures from source wad if there's already same textures in destination.
  * Highlight and automatically update end frame on frame add/remove action.
  * Prevent and warn about mesh files with incorrect (non-Latin) file paths when importing.
  

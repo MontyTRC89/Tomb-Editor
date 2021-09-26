@@ -165,11 +165,38 @@ namespace TombLib.Wad
                 property.SetValue(wadObject, newId);
             }
 
+            var textures = MeshTexturesUnique;
+
             // Add object
             if (newId is WadMoveableId)
-                Moveables.Add((WadMoveableId)newId, (WadMoveable)wadObject);
+            {
+                // Find texture duplicates
+                var mov = (WadMoveable)wadObject;
+                foreach (var mesh in mov.Meshes)
+                    for (int i = 0; i < mesh.Polys.Count; i++)
+                    {
+                        var poly = mesh.Polys[i];
+                        if (textures.Contains(poly.Texture.Texture))
+                            poly.Texture.Texture = textures.First(t => t.GetHashCode() == poly.Texture.Texture.GetHashCode());
+                        mesh.Polys[i] = poly;
+                    }
+                
+                Moveables.Add((WadMoveableId)newId, mov);
+            }
             else if (newId is WadStaticId)
-                Statics.Add((WadStaticId)newId, (WadStatic)wadObject);
+            {
+                // Find texture duplicates
+                var st = (WadStatic)wadObject;
+                for (int i = 0; i < st.Mesh.Polys.Count; i++)
+                {
+                    var poly = st.Mesh.Polys[i];
+                    if (textures.Contains(poly.Texture.Texture))
+                        poly.Texture.Texture = textures.First(t => t.GetHashCode() == poly.Texture.Texture.GetHashCode());
+                    st.Mesh.Polys[i] = poly;
+                }
+
+                Statics.Add((WadStaticId)newId, st);
+            }
             else if (newId is WadSpriteSequenceId)
                 SpriteSequences.Add((WadSpriteSequenceId)newId, (WadSpriteSequence)wadObject);
             else
