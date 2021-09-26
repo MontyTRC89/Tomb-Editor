@@ -17,7 +17,7 @@ WadTool:
  
 TombIDE:
  * Don't trim leading and trailing spaces in strings.
-
+ * Load default sound catalog for new levels created within Project Master.
 
 Version 1.4.2
 =============

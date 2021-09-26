@@ -3876,7 +3876,7 @@ namespace TombEditor
 
             if (level.Settings.SoundCatalogs.Count == 0)
             {
-                if (AutoLoadSoundCatalog(level.Settings))
+                if (level.Settings.LoadDefaultSoundCatalog())
                     whatLoaded += "Default sound catalog was preloaded automatically.";
             }
 
@@ -5431,49 +5431,6 @@ namespace TombEditor
             }
             else
                 return true;
-        }
-
-        public static bool AutoLoadSoundCatalog(LevelSettings settings)
-        {
-            var catalogName = string.Empty;
-
-            switch (settings.GameVersion)
-            {
-                case TRVersion.Game.TR1:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr1.xml";
-                    break;
-
-                case TRVersion.Game.TR2:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
-                    break;
-
-                case TRVersion.Game.TR3:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr3.xml";
-                    break;
-
-                case TRVersion.Game.TR4:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
-                    break;
-
-                case TRVersion.Game.TR5:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr5.xml";
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(catalogName) && File.Exists(catalogName))
-            {
-                try
-                {
-                    settings.SoundCatalogs.Add(new ReferencedSoundCatalog(settings, settings.MakeRelative(catalogName, VariableType.EditorDirectory)));
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Unable to load default sound catalog! Exception: " + ex);
-                }
-            }
-
-            return false;
         }
 
         public static void AutodetectAndAssignSounds(LevelSettings settings, IWin32Window owner = null) // No owner - no confirmation

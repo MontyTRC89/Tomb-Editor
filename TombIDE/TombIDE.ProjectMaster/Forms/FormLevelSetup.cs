@@ -123,6 +123,8 @@ namespace TombIDE.ProjectMaster
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
 
+                level.Settings.LoadDefaultSoundCatalog();
+
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
 				if (checkBox_GenerateSection.Checked)

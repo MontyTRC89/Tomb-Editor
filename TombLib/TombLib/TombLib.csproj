@@ -138,6 +138,9 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\GlobalPaths.cs">
+      <Link>GlobalPaths.cs</Link>
+    </Compile>
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
     <Compile Include="LevelData\Compilers\TombEngine\FloorData.cs" />

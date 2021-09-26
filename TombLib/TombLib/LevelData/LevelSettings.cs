@@ -448,6 +448,49 @@ namespace TombLib.LevelData
             }
         }
 
+        public bool LoadDefaultSoundCatalog()
+        {
+            var catalogName = string.Empty;
+
+            switch (GameVersion.Native())
+            {
+                case TRVersion.Game.TR1:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr1.xml";
+                    break;
+
+                case TRVersion.Game.TR2:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr2.xml";
+                    break;
+
+                case TRVersion.Game.TR3:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr3.xml";
+                    break;
+
+                case TRVersion.Game.TR4:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr4.xml";
+                    break;
+
+                case TRVersion.Game.TR5:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr5.xml";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(catalogName) && File.Exists(catalogName))
+            {
+                try
+                {
+                    SoundCatalogs.Add(new ReferencedSoundCatalog(this, MakeRelative(catalogName, VariableType.EditorDirectory)));
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Unable to load default sound catalog! Exception: " + ex);
+                }
+            }
+
+            return false;
+        }
+
         public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
         {
             var absolutePathTextureLookup = new Dictionary<string, Texture>();
