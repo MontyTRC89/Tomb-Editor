@@ -41,7 +41,6 @@ namespace TombLib.LevelData.IO
             progressReporter.ReportInfo("   - TRNG triggers are not supported and won't be compiled.");
             progressReporter.ReportInfo("   - TEN requires new LARA object which was copied from reference Wad2.");
             progressReporter.ReportInfo("   - Weapon anims and holsters objects have changed and were also converted.");
-            progressReporter.ReportInfo(" ");
 
             return newProject;
         }
