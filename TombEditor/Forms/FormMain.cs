@@ -49,7 +49,7 @@ namespace TombEditor.Forms
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
-            // Only how debug menu when a debugger is attached...
+            // Only show debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
             this.SetActualSize();
@@ -303,6 +303,8 @@ namespace TombEditor.Forms
             ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
             statisticsToolStripMenuItem.Checked = _editor.Configuration.UI_ShowStats;
+
+            convertToTENToolstripMenuItem.Visible = _editor.Configuration.Editor_AllowExperimentalFeatures;
         }
 
         private void RefreshRecentProjectsList()
@@ -617,14 +619,7 @@ namespace TombEditor.Forms
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var batchList = new BatchCompileList();
-            batchList.Location = "D:\\FMAP";
-            batchList.Files.Add("test1.prj2");
-            batchList.Files.Add("test2.prj2");
-            batchList.Files.Add("test3.prj2");
-            batchList.Files.Add("test4.prj2");
-            batchList.Files.Add("test5.prj2");
-            BatchCompileList.SaveToXml("BATCH.xml", batchList);
+            EditorActions.ConvertLevelToTombEngine(this);
         }
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1,18 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib.LevelData;
-using TombLib.LevelData.IO;
+using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace ProjectConverter
+namespace TombLib.LevelData.IO
 {
-    class Program
+    public static class Prj2TombEngineConverter
     {
-        static bool ConvertProject(string source)
+
+        public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter)
+        {
+            if (!File.Exists(fileName))
+            {
+                progressReporter.ReportWarn("The specified project doesn't exist.");
+                return string.Empty;
+            }
+
+            progressReporter.ReportInfo("TombEngine Project Converter");
+            progressReporter.ReportInfo(" ");
+
+            var newProject = ConvertProject(fileName, progressReporter);
+
+            if (string.IsNullOrEmpty(newProject))
+            {
+                progressReporter.ReportWarn("There was an error while converting your project.");
+                return string.Empty;
+            }
+
+            progressReporter.ReportInfo("Project was converted successfully!");
+            progressReporter.ReportInfo("Notes about the conversion:");
+            progressReporter.ReportInfo(" ");
+            progressReporter.ReportInfo("   - Enemies now have MESHSWAP slots (e.g., BADDY2 -> MESHSWAP_BADDY2), use WadTool for remapping these slots.");
+            progressReporter.ReportInfo("   - Some slots are not supported and were added as ANIMATING above 16.");
+            progressReporter.ReportInfo("   - TEN uses different slots for every sprite (fire, smoke). They were added from a reference Wad2.");
+            progressReporter.ReportInfo("   - Soundmap is similar to WAD130 and should work by default.");
+            progressReporter.ReportInfo("   - TRNG triggers are not supported and won't be compiled.");
+            progressReporter.ReportInfo("   - TEN requires new LARA object which was copied from reference Wad2.");
+            progressReporter.ReportInfo("   - Weapon anims and holsters objects have changed and were also converted.");
+            progressReporter.ReportInfo(" ");
+
+            return newProject;
+        }
+
+        private static string ConvertProject(string source, IProgressReporter progressReporter)
         {
             try
             {
@@ -23,14 +58,14 @@ namespace ProjectConverter
                 var level = Path.GetExtension(source).ToLower() == ".prj" ? PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
                 if (level == null)
                 {
-                    Console.WriteLine("Error while loading level");
-                    return false;
+                    progressReporter.ReportWarn("Error while loading level.");
+                    return string.Empty;
                 }
 
                 // Now convert resources to new format
                 var newWads = new List<ReferencedWad>();
                 Dictionary<uint, uint> remappedSlots = new Dictionary<uint, uint>();
- 
+
                 string newFileName;
                 string newPath;
                 bool addedTimex = false;
@@ -46,15 +81,12 @@ namespace ProjectConverter
                     foreach (var moveable in wad.Moveables)
                     {
                         var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, moveable.Key.TypeId);
-                         uint newSlot;
-                        if (newId == "")
+                        uint newSlot;
+                        if (string.IsNullOrEmpty(newId))
                         {
                             newSlot = animating;
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    Slot " + TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId) +
-                                              " is not supported by TombEngine and it will be remapped to ANIMATING" + (animating - 1231 + 32));
-                            Console.ResetColor();
-
+                            progressReporter.ReportWarn("    Slot " + TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId) +
+                                                        " is not supported by TombEngine and it will be remapped to ANIMATING" + (animating - 1231 + 32));
                             animating++;
                         }
                         else
@@ -75,9 +107,7 @@ namespace ProjectConverter
                         if (newSlotName == "SHOTGUN_ANIM" || newSlotName == "CROSSBOW_ANIM" || newSlotName == "HK_ANIM" ||
                             newSlotName == "HARPOON_ANIM" || newSlotName == "GRENADE_ANIM" || newSlotName == "ROCKET_ANIM")
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    Copying mesh #14 to mesh #7 for " + newSlotName);
-                            Console.ResetColor();
+                            progressReporter.ReportInfo("    Copying mesh #14 to mesh #7 for " + newSlotName);
 
                             var mesh = moveable.Value.Bones[14].Mesh.Clone();
                             for (int i = 0; i < mesh.VertexPositions.Count; i++)
@@ -94,9 +124,7 @@ namespace ProjectConverter
                         if (newSlotName == "LARA_HOLSTERS" || newSlotName == "LARA_HOLSTERS_PISTOLS" ||
                             newSlotName == "LARA_HOLSTERS_UZIS" || newSlotName == "LARA_HOLSTERS_REVOLVER")
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    Copying holsters meshes for " + newSlotName);
-                            Console.ResetColor();
+                            progressReporter.ReportInfo("    Copying holsters meshes for " + newSlotName);
 
                             var laraMoveable = referenceWad.Moveables[new WadMoveableId(0)];
                             var newBones = new List<WadBone>();
@@ -122,9 +150,7 @@ namespace ProjectConverter
 
                         if (newSlotName == "TWOBLOCK_PLATFORM" || newSlotName == "FALLING_BLOCK" || newSlotName.ToLower().Contains("trapdoor"))
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    Adjusting bridge object collision box " + newSlotName);
-                            Console.ResetColor();
+                            progressReporter.ReportInfo("    Adjusting bridge object collision box " + newSlotName);
 
                             if (moveable.Value.Animations.Count > 0)
                             {
@@ -138,13 +164,11 @@ namespace ProjectConverter
                             }
                         }
 
-                        if (!addedTimex && 
-                            (newSlotName== "MEMCARD_LOAD_INV_ITEM" || newSlotName== "MEMCARD_SAVE_INV_ITEM" ||
-                            newSlotName == "PC_LOAD_INV_ITEM" || newSlotName == "PC_SAVE_INV_ITEM"))
+                        if (!addedTimex &&
+                            (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
+                             newSlotName == "PC_LOAD_INV_ITEM" || newSlotName == "PC_SAVE_INV_ITEM"))
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    Adding TIMEX from reference Wad2");
-                            Console.ResetColor();
+                            progressReporter.ReportInfo("    Adding TIMEX from reference Wad2");
 
                             newWad.Add(new WadMoveableId(987), referenceWad.Moveables[new WadMoveableId(987)]);
                             addedTimex = true;
@@ -152,18 +176,18 @@ namespace ProjectConverter
 
                         if (!addedTimex && newSlotName == "TIMEX_ITEM")
                         {
-                            Console.WriteLine(newId + " => [" + newSlot + "] " + newSlotName);
+                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
                             newWad.Add(new WadMoveableId(newSlot), moveable.Value);
                             addedTimex = true;
                         }
                         else if (newSlotName == "LARA")
                         {
-                            Console.WriteLine(newId + " => [" + newSlot + "] " + newSlotName);
+                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
                             newWad.Add(new WadMoveableId(0), referenceWad.Moveables[new WadMoveableId(0)]);
                         }
                         else
                         {
-                            Console.WriteLine(newId + " => [" + newSlot + "] " + newSlotName);
+                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
                             newWad.Add(new WadMoveableId(newSlot), moveable.Value);
                         }
 
@@ -180,7 +204,7 @@ namespace ProjectConverter
                     {
                         var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
                         uint newSlot;
-                        if (newId == "")
+                        if (string.IsNullOrEmpty(newId))
                         {
                             newSlot = animating;
                             animating++;
@@ -198,24 +222,19 @@ namespace ProjectConverter
                         }
 
                         string newSlotName = TrCatalog.GetSpriteSequenceName(TRVersion.Game.TombEngine, newSlot);
-                        
-                        Console.WriteLine(newId + ": => [" + newSlot + "] " + newSlotName);
+
+                        progressReporter.ReportInfo(newId + ": → [" + newSlot + "] " + newSlotName);
 
                         if (newSlotName == "DEFAULT_SPRITES")
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("    DEFAULT_SPRITES found, adding new sprites slots from a reference Wad2");
-                            Console.ResetColor();
+                            progressReporter.ReportInfo("    DEFAULT_SPRITES found, adding new sprites slots from a reference Wad2");
 
                             // Open TombEngine sprites Wad2
                             foreach (var spr in referenceWad.SpriteSequences)
                             {
                                 if (!newWad.Contains(spr.Key))
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine("    Adding " + TrCatalog.GetSpriteSequenceName(TRVersion.Game.TombEngine, spr.Key.TypeId));
-                                    Console.ResetColor();
-
+                                    progressReporter.ReportInfo("    Adding " + TrCatalog.GetSpriteSequenceName(TRVersion.Game.TombEngine, spr.Key.TypeId));
                                     newWad.Add(spr.Key, spr.Value);
                                 }
                             }
@@ -237,7 +256,8 @@ namespace ProjectConverter
                         );
 
 
-                    Console.WriteLine("Saving " + wadRef.Path + " to " + newPath);
+                    progressReporter.ReportInfo("Saving " + wadRef.Path + " to " + newPath);
+
                     Wad2Writer.SaveToFile(newWad, newPath);
 
                     newWads.Add(new ReferencedWad(
@@ -255,105 +275,26 @@ namespace ProjectConverter
                         {
                             if (instance is MoveableInstance)
                                 if (!remappedSlots.ContainsKey(((MoveableInstance)instance).WadObjectId.TypeId))
-                                    Console.WriteLine("Slot not found! " + ((MoveableInstance)instance).WadObjectId.TypeId);
+                                    progressReporter.ReportWarn("Slot not found! " + ((MoveableInstance)instance).WadObjectId.TypeId);
                                 else
                                     ((MoveableInstance)instance).WadObjectId = new WadMoveableId(remappedSlots[((MoveableInstance)instance).WadObjectId.TypeId]);
                         }
+
                 level.Settings.GameVersion = TRVersion.Game.TombEngine;
 
                 newPath = Path.Combine(
-                    Path.GetDirectoryName(source), 
+                    Path.GetDirectoryName(source),
                     Path.GetFileNameWithoutExtension(source) + "_TombEngine.prj2");
 
                 Prj2Writer.SaveToPrj2(newPath, level);
+
+                return newPath;
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.ResetColor();
-                return false;
+                progressReporter.ReportWarn(ex.Message);
+                return string.Empty;
             }
-
-            return true;
-        }
-
-        [STAThread]
-        static void Main(string[] args)
-        {
-            Console.WriteLine("TombEngine Project Converter Beta");
-            Console.WriteLine("Created by MontyTRC");
-            Console.WriteLine("=================================");
-            Console.WriteLine("");
-
-            string fileName = "";
-            if (args.Length >= 1)
-            {
-                fileName = args[0];
-            }
-            else
-            {
-                using (var dialog = new OpenFileDialog())
-                {
-                    dialog.Filter = "All Supported Files|*.prj;*.prj2|TRLE Project(*.prj)|*.prj|Tomb Editor Project (*.prj2)|*.prj2";
-                    dialog.Title = "Select project to convert";
-                    if (dialog.ShowDialog() == DialogResult.Cancel)
-                        return;
-                    fileName = dialog.FileName;
-                }
-            }
-
-            if (!File.Exists(fileName))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("The specified project doesn't exist");
-                Console.ResetColor();
-                Console.WriteLine("Press a key to exit");
-                Console.ReadKey();
-                return;
-            }
-
-            Console.WriteLine("This tool will convert your project to TombEngine format");
-            Console.WriteLine("It will be saved in the same path with a different name");
-            Console.WriteLine("Do you want to continue? [yn]");
-            
-            var key = Console.ReadKey();
-            if (key.Key != ConsoleKey.Y)
-            {
-                return;
-            }
-
-            Console.WriteLine("");
-
-            TrCatalog.LoadCatalog("Catalogs\\TRCatalog.xml");
-            
-            if (!ConvertProject(fileName))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("There was an error while converting your project");
-                Console.ResetColor();
-                Console.WriteLine("Press a key to exit");
-                Console.ReadKey();
-                return;
-            }
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("");
-            Console.WriteLine("Your project was converted successfully!");
-            Console.WriteLine("Some notes about the conversion:");
-            Console.WriteLine("");
-            Console.WriteLine("- Enemies now have their MESHSWAP slots (for example, BADDY2 -> MESHSWAP_BADDY2), please use WadTool for remapping manually these slots");
-            Console.WriteLine("- A very few number of slots are not supported, and they are added as ANIMATING above 16");
-            Console.WriteLine("- TombEngine uses different slots for every kind of sprite (fire, smoke...). They were already added from a reference Wad2");
-            Console.WriteLine("- The soundmap works like WAD130, so you will not have troubles with sounds, but you could need to open level settings and adjust paths of SFX, XML and samples");
-            Console.WriteLine("- NG triggers will not be compild as they are not supported by TombEngine");
-            Console.WriteLine("- TombEngine requires our LARA object because we have fixed state changes and added new states for new moves, so please copy again your animations with WadTool");
-            Console.WriteLine("- Weapon anims and holsters objects have changed a bit but the converter already converted them automatically to the new format");
-            Console.WriteLine("");
-            Console.ResetColor();
-
-            Console.WriteLine("Press a key to exit");
-            Console.ReadKey();
         }
     }
 }

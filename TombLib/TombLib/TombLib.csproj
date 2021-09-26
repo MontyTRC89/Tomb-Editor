@@ -160,6 +160,7 @@
     <Compile Include="LevelData\Instances\SpriteInstance.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />
     <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
+    <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
     <Compile Include="LevelData\LuaScriptID.cs" />
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />

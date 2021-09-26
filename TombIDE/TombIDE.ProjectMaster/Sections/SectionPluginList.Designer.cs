@@ -17,7 +17,8 @@
 
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
+            this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip();
             this.button_ManagePlugins = new DarkUI.Controls.DarkButton();
             this.button_OpenInExplorer = new DarkUI.Controls.DarkButton();
             this.label_01 = new DarkUI.Controls.DarkLabel();
@@ -36,8 +37,6 @@
             this.textBox_Title = new System.Windows.Forms.TextBox();
             this.tabPage_Description = new System.Windows.Forms.TabPage();
             this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
-            this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panel_List.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.panel_Logo.SuspendLayout();
@@ -45,8 +44,17 @@
             this.tabControl.SuspendLayout();
             this.tabPage_Overview.SuspendLayout();
             this.tabPage_Description.SuspendLayout();
-            this.sectionPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // sectionPanel
+            // 
+            this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sectionPanel.Location = new System.Drawing.Point(0, 0);
+            this.sectionPanel.Name = "sectionPanel";
+            this.sectionPanel.SectionHeader = "Project Plugins";
+            this.sectionPanel.Size = new System.Drawing.Size(662, 320);
+            this.sectionPanel.TabIndex = 0;
             // 
             // button_ManagePlugins
             // 
@@ -283,9 +291,9 @@
             // 
             this.tabPage_Description.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabPage_Description.Controls.Add(this.richTextBox_Description);
-            this.tabPage_Description.Location = new System.Drawing.Point(4, 23);
+            this.tabPage_Description.Location = new System.Drawing.Point(4, 26);
             this.tabPage_Description.Name = "tabPage_Description";
-            this.tabPage_Description.Size = new System.Drawing.Size(392, 263);
+            this.tabPage_Description.Size = new System.Drawing.Size(392, 260);
             this.tabPage_Description.TabIndex = 1;
             this.tabPage_Description.Text = "Description";
             // 
@@ -299,21 +307,9 @@
             this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
             this.richTextBox_Description.Name = "richTextBox_Description";
             this.richTextBox_Description.ReadOnly = true;
-            this.richTextBox_Description.Size = new System.Drawing.Size(392, 263);
+            this.richTextBox_Description.Size = new System.Drawing.Size(392, 260);
             this.richTextBox_Description.TabIndex = 0;
             this.richTextBox_Description.Text = "";
-            // 
-            // sectionPanel
-            // 
-            this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sectionPanel.Controls.Add(this.panel_Properties);
-            this.sectionPanel.Controls.Add(this.panel_List);
-            this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-            this.sectionPanel.Name = "sectionPanel";
-            this.sectionPanel.SectionHeader = "Project Plugins";
-            this.sectionPanel.Size = new System.Drawing.Size(662, 320);
-            this.sectionPanel.TabIndex = 0;
             // 
             // SectionPluginList
             // 
@@ -331,7 +327,6 @@
             this.tabPage_Overview.ResumeLayout(false);
             this.tabPage_Overview.PerformLayout();
             this.tabPage_Description.ResumeLayout(false);
-            this.sectionPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}

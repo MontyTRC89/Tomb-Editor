@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
@@ -53,8 +53,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj", "{87D4149C-E716-49F6-848F-ACA345D11B30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAssociation", "FileAssociation\FileAssociation.csproj", "{934E79A8-2B20-4E0E-A145-08404493A7F6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectConverter", "ProjectConverter\ProjectConverter.csproj", "{8A070E56-E472-4FD3-A753-ED668FB25760}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -282,18 +280,6 @@ Global
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x64.Build.0 = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.Build.0 = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x64.Build.0 = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x86.Build.0 = Debug|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x64.ActiveCfg = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x64.Build.0 = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x86.ActiveCfg = Release|Any CPU
-		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

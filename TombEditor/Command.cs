@@ -671,6 +671,11 @@ namespace TombEditor
                 EditorActions.OpenLevelPrj(args.Window);
             });
 
+            AddCommand("ConvertLevelToTombEngine", "Convert level to TombEngine...", CommandType.File, delegate (CommandArgs args)
+            {
+                EditorActions.ConvertLevelToTombEngine(args.Window);
+            });
+
             AddCommand("BuildLevel", "Build level", CommandType.File, delegate (CommandArgs args)
             {
                 EditorActions.BuildLevel(false, args.Window);

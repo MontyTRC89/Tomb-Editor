@@ -4921,6 +4921,30 @@ namespace TombEditor
             }
         }
 
+        public static bool ConvertLevelToTombEngine(IWin32Window owner)
+        {
+            var fileName = LevelFileDialog.BrowseFile(owner, "Select project to convert",
+                LevelSettings.FileFormatsLevelPrj.Concat(LevelSettings.FileFormatsLevel),
+                false);
+
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+
+            var newLevel = string.Empty;
+
+            using (var form = new FormOperationDialog("TombEngine level converter", false, true, progressReporter =>
+                newLevel = Prj2TombEngineConverter.Start(fileName, owner, progressReporter)))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK || string.IsNullOrEmpty(newLevel))
+                    return false;
+                else
+                {
+                    OpenLevel(owner, newLevel);
+                    return true;
+                }
+            }
+        }
+
         public static bool OpenLevel(IWin32Window owner, string fileName = null, bool silent = false)
         {
             if (!ContinueOnFileDrop(owner, "Open level"))
