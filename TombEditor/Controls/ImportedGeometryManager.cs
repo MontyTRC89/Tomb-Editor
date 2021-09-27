@@ -145,6 +145,9 @@ namespace TombEditor.Controls
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
                 foreach (string path in paths)
                 {
+                    if (!path.CheckAndWarnIfNotANSI(this))
+                        continue;
+
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);

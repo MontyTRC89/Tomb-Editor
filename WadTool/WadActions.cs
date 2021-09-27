@@ -1317,9 +1317,8 @@ namespace WadTool
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.IsANSI())
+                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
                 {
-                    DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
                     ExportMesh(mesh, tool, owner);
                     return;
                 }
@@ -1376,11 +1375,8 @@ namespace WadTool
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return null;
 
-                if (!dialog.FileName.IsANSI())
-                {
-                    DarkMessageBox.Show(owner, "Filename or path is invalid. Rename using standard characters.", "Wrong filename", MessageBoxIcon.Error);
+                if (!dialog.FileName.CheckAndWarnIfNotANSI(owner))
                     return ImportMesh(tool, owner);
-                }
 
                 try
                 {

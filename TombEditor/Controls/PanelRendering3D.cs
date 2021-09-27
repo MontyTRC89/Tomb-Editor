@@ -1440,6 +1440,9 @@ namespace TombEditor.Controls
                         if (!ImportedGeometry.FileExtensions.Matches(file))
                             continue;
 
+                        if (!file.CheckAndWarnIfNotANSI(this))
+                            continue;
+
                         EditorActions.AddAndPlaceImportedGeometry(this, newBlockPicking.Pos, file);
                     }
                 }

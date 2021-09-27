@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using DarkUI.Forms;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace TombLib.Utils
 {
@@ -15,6 +17,17 @@ namespace TombLib.Utils
         {
             var regex = new Regex("^[a-zA-Z0-9. -_?]*$");
             return regex.IsMatch(source);
+        }
+
+        public static bool CheckAndWarnIfNotANSI(this string source, IWin32Window owner)
+        {
+            if (!source.IsANSI())
+            {
+                DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
+                return false;
+            }
+            else
+                return true;
         }
     }
 }
