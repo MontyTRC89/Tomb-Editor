@@ -161,6 +161,34 @@ namespace TombLib.LevelData.IO
                                 }
                             }
                         }
+                        
+                        if (newSlotName == "EXPANDING_PLATFORM")
+                        {
+                            progressReporter.ReportInfo("    Adjusting mesh and pivot point for " + newSlotName);
+
+                            for (int m = 0; m < moveable.Value.Bones.Count; m++)
+                            {
+                                var mesh = moveable.Value.Bones[m].Mesh.Clone();
+
+                                for (int i = 0; i < mesh.VertexPositions.Count; i++)
+                                {
+                                    var pos = mesh.VertexPositions[i];
+                                    pos.Z += 512;
+                                    mesh.VertexPositions[i] = pos;
+                                }
+                                moveable.Value.Bones[m].Mesh = mesh;
+                                moveable.Value.Meshes[m] = mesh;
+                            }
+
+                            foreach (var anim in moveable.Value.Animations)
+                                foreach (var frame in anim.KeyFrames)
+                                {
+                                    var bb = frame.BoundingBox;
+                                    bb.Maximum.Z += 512;
+                                    bb.Minimum.Z += 512;
+                                    frame.BoundingBox = bb;
+                                }
+                        }
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
