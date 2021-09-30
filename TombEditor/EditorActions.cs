@@ -2089,7 +2089,6 @@ namespace TombEditor
 
                 PlaceObjectWithoutUpdate(room, pos, posInstance);
                 _editor.UndoManager.PushObjectCreated(posInstance);
-                AllocateScriptIds(posInstance);
             }
             else if (instance is GhostBlockInstance)
             {
@@ -2110,6 +2109,7 @@ namespace TombEditor
             room.AddObject(_editor.Level, instance);
 
             RebuildLightsForObject(instance);
+            AllocateScriptIds(instance);
 
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;

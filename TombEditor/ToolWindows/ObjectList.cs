@@ -32,7 +32,9 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the trigger control
-            if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ObjectChangedEvent)
+            if (obj is Editor.SelectedRoomChangedEvent || 
+                obj is Editor.ObjectChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
             {
                 // Disable events
                 _lockList = true;
