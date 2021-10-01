@@ -5381,8 +5381,26 @@ namespace TombEditor
                 _editor.SendMessage("Itemgroup is TRNG-only feature.", PopupType.Info);
                 return;
             }
+            
+            if (_editor.SelectedObject is ObjectGroup)
+            {
+                var items = (_editor.SelectedObject as ObjectGroup).Where(o => o is MoveableInstance).ToList();
 
-            using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) {
+                if (items.Count > 0)
+                {
+                    // Create ItemGroup string
+                    string scriptString = string.Format(";Multiselection itemgroup\n");
+                    scriptString += "ItemGroup= 1";
+                    foreach (PositionAndScriptBasedObjectInstance item in items)
+                        scriptString += "," + item.ScriptId;
+                    Clipboard.SetText(scriptString, TextDataFormat.Text);
+                    _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
+                    return;
+                }
+            }
+
+            using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) 
+            {
                 if (form.ShowDialog(owner) == DialogResult.OK &&
                     form.SelectedValue != null)
                 {
