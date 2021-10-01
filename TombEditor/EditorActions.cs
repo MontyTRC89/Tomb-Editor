@@ -5381,57 +5381,43 @@ namespace TombEditor
                 _editor.SendMessage("Itemgroup is TRNG-only feature.", PopupType.Info);
                 return;
             }
+
+            var items = new List<PositionBasedObjectInstance>();
             
             if (_editor.SelectedObject is ObjectGroup)
-            {
-                var items = (_editor.SelectedObject as ObjectGroup).Where(o => o is MoveableInstance).ToList();
+                items.AddRange((_editor.SelectedObject as ObjectGroup).Where(o => o is ItemInstance));
 
-                if (items.Count > 0)
-                {
-                    // Create ItemGroup string
-                    string scriptString = string.Format(";Multiselection itemgroup\n");
-                    scriptString += "ItemGroup= 1";
-                    foreach (PositionAndScriptBasedObjectInstance item in items)
-                        scriptString += "," + item.ScriptId;
-                    Clipboard.SetText(scriptString, TextDataFormat.Text);
-                    _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
-                    return;
-                }
-            }
-
-            using (FormQuickItemgroup form = new FormQuickItemgroup(_editor)) 
+            if (items.Count <= 1)
             {
-                if (form.ShowDialog(owner) == DialogResult.OK &&
-                    form.SelectedValue != null)
+                using (var form = new FormQuickItemgroup(_editor))
                 {
-                    ConcurrentBag<ItemInstance> objects = new ConcurrentBag<ItemInstance>();
-                    Parallel.ForEach(_editor.Level.Rooms.Where((Room r) => { return r != null;}), (Room r) => {
-                        foreach (var item in r.Objects.OfType<ItemInstance>())
+                    if (form.ShowDialog(owner) == DialogResult.OK &&
+                        form.SelectedValue != null)
+                    {
+                        foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
                         {
-                            if (item is StaticInstance)
+                            if (item is StaticInstance && form.SelectedValue is WadStaticId)
                             {
-                                if (form.SelectedValue is WadStaticId)
-                                    if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
-                                        objects.Add(item);
+                                if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
+                                    items.Add(item);
                             }
-                            else
+                            else if (item is MoveableInstance && form.SelectedValue is WadMoveableId)
                             {
-                                if (form.SelectedValue is WadMoveableId)
-                                    if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
-                                        objects.Add(item);
+                                if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
+                                    items.Add(item);
                             }
                         }
-                    });
-
-                    // Create ItemGroup string
-                    string scriptString = string.Format(";Itemgroup of type {0}\n", form.SelectedValue.ToString(_editor.Level.Settings.GameVersion));
-                    scriptString += "ItemGroup= 1";
-                    foreach (ItemInstance item in objects)
-                        scriptString +=  "," + item.ScriptId;
-                    Clipboard.SetText(scriptString, TextDataFormat.Text);
-                    _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
+                    }
                 }
             }
+
+            // Create ItemGroup string
+            string scriptString = string.Format(";Itemgroup of {0} objects\n", items.Count.ToString());
+            scriptString += "ItemGroup= 1";
+            foreach (ItemInstance item in items)
+                scriptString += "," + item.ScriptId;
+            Clipboard.SetText(scriptString, TextDataFormat.Text);
+            _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)

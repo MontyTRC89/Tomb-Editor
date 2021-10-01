@@ -80,6 +80,7 @@
             // 
             // FormQuickItemgroup
             // 
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(292, 103);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
