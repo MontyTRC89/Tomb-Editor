@@ -190,6 +190,15 @@ namespace TombLib.LevelData.IO
                                 }
                         }
 
+                        if (newSlotName == "ANIMATING16")
+                        {
+                            progressReporter.ReportInfo("    Setting hardcoded collision for " + newSlotName);
+
+                            foreach (var anim in moveable.Value.Animations)
+                                foreach (var frame in anim.KeyFrames)
+                                    frame.BoundingBox = new BoundingBox();
+                        }
+
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
                              newSlotName == "PC_LOAD_INV_ITEM" || newSlotName == "PC_SAVE_INV_ITEM"))
