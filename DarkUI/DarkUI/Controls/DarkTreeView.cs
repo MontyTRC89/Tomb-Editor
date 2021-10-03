@@ -177,8 +177,7 @@ namespace DarkUI.Controls
 
                 _nodes?.Dispose();
 
-                if (SelectedNodes != null)
-                    SelectedNodes.CollectionChanged -= SelectedNodes_CollectionChanged;
+                SelectedNodes.CollectionChanged -= SelectedNodes_CollectionChanged;
 
                 _disposed = true;
             }
@@ -494,6 +493,13 @@ namespace DarkUI.Controls
                 UnhookNodeEvents(childNode);
         }
 
+        private void ClearNodes()
+        {
+            SelectedNodes.CollectionChanged -= SelectedNodes_CollectionChanged;
+            SelectedNodes.Clear();
+            SelectedNodes.CollectionChanged += SelectedNodes_CollectionChanged;
+        }
+
         private void UpdateNodes()
         {
             if (IsDragging)
@@ -746,7 +752,7 @@ namespace DarkUI.Controls
 
         public void SelectNode(DarkTreeNode node)
         {
-            SelectedNodes.Clear();
+            ClearNodes();
             SelectedNodes.Add(node);
 
             _anchoredNodeStart = node;
@@ -788,7 +794,7 @@ namespace DarkUI.Controls
 
         public void SelectNodes(List<DarkTreeNode> nodes, bool updateAnchors = true)
         {
-            SelectedNodes.Clear();
+            ClearNodes();
 
             foreach (var node in nodes)
                 SelectedNodes.Add(node);
