@@ -3057,8 +3057,8 @@
       <moveable id="373" name="FLARE_INV_ITEM" description="Flare Inv Item" t5m="FLARE_INV_ITEM" />
       <moveable id="374" name="DIARY_ITEM" description="Diary Item" t5m="DIARY_ITEM" />
       <moveable id="375" name="COMPASS_ITEM" description="Compass Item" t5m="COMPASS_ITEM" />
-      <moveable id="376" name="MEMCARD_LOAD_INV_ITEM" description="Memcard Load Inv Item" hidden="true" />
-      <moveable id="377" name="MEMCARD_SAVE_INV_ITEM" description="Memcard Save Inv Item" hidden="true" />
+      <moveable id="376" name="MEMCARD_LOAD_INV_ITEM" description="Memcard Load Inv Item" t5m="PC_LOAD_INV_ITEM" hidden="true" />
+      <moveable id="377" name="MEMCARD_SAVE_INV_ITEM" description="Memcard Save Inv Item" t5m="PC_SAVE_INV_ITEM" hidden="true" />
       <moveable id="378" name="PC_LOAD_INV_ITEM" description="Pc Load Inv Item" hidden="true" />
       <moveable id="379" name="PC_SAVE_INV_ITEM" description="Pc Save Inv Item" hidden="true" />
       <moveable id="380" name="SMOKE_EMITTER_WHITE" description="Smoke Emitter White" t5m="SMOKE_EMITTER_WHITE" essential="false" />
@@ -6344,7 +6344,7 @@
       <moveable id="988" name="MEMCARD_LOAD_INV_ITEM" />
       <moveable id="989" name="MEMCARD_SAVE_INV_ITEM" />
       <moveable id="990" name="PC_LOAD_INV_ITEM" />
-      <moveable id="991" name="PC_LOAD_SAVE_ITEM" />
+      <moveable id="991" name="PC_SAVE_INV_ITEM" />
       <moveable id="992" name="DIARY_OPEN" />
       <moveable id="1000" name="INVENTORY_PASSPORT" />
       <moveable id="1001" name="INVENTORY_SUNGLASSES" />
