@@ -69,6 +69,7 @@
             this.butSearchMeshes = new DarkUI.Controls.DarkButton();
             this.tbSearchMeshes = new DarkUI.Controls.DarkTextBox();
             this.panelMain = new DarkUI.Controls.DarkPanel();
+            this.panelCenter = new DarkUI.Controls.DarkPanel();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.butTbUndo = new System.Windows.Forms.ToolStripButton();
             this.butTbRedo = new System.Windows.Forms.ToolStripButton();
@@ -86,7 +87,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbRotateTexture = new System.Windows.Forms.ToolStripButton();
             this.butTbMirrorTexture = new System.Windows.Forms.ToolStripButton();
-            this.panelCenter = new DarkUI.Controls.DarkPanel();
             this.panelEditing = new DarkUI.Controls.DarkPanel();
             this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
@@ -117,8 +117,8 @@
             this.darkSectionPanel2.SuspendLayout();
             this.panelSearchTree.SuspendLayout();
             this.panelMain.SuspendLayout();
-            this.topBar.SuspendLayout();
             this.panelCenter.SuspendLayout();
+            this.topBar.SuspendLayout();
             this.panelEditing.SuspendLayout();
             this.panelTexturing.SuspendLayout();
             this.panelTexturingTools.SuspendLayout();
@@ -147,9 +147,9 @@
             // 
             this.panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(0, 1);
+            this.panelMesh.Location = new System.Drawing.Point(0, 29);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(380, 559);
+            this.panelMesh.Size = new System.Drawing.Size(380, 531);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -875,6 +875,17 @@
             this.panelMain.Size = new System.Drawing.Size(973, 561);
             this.panelMain.TabIndex = 56;
             // 
+            // panelCenter
+            // 
+            this.panelCenter.Controls.Add(this.panelMesh);
+            this.panelCenter.Controls.Add(this.topBar);
+            this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelCenter.Location = new System.Drawing.Point(263, 0);
+            this.panelCenter.Name = "panelCenter";
+            this.panelCenter.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.panelCenter.Size = new System.Drawing.Size(380, 561);
+            this.panelCenter.TabIndex = 57;
+            // 
             // topBar
             // 
             this.topBar.AutoSize = false;
@@ -898,7 +909,7 @@
             this.toolStripSeparator4,
             this.butTbRotateTexture,
             this.butTbMirrorTexture});
-            this.topBar.Location = new System.Drawing.Point(263, 0);
+            this.topBar.Location = new System.Drawing.Point(0, 1);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
             this.topBar.Size = new System.Drawing.Size(380, 28);
@@ -1087,17 +1098,6 @@
             this.butTbMirrorTexture.ToolTipText = "Mirror current texture (Shift+~)";
             this.butTbMirrorTexture.Click += new System.EventHandler(this.butTbMirrorTexture_Click);
             // 
-            // panelCenter
-            // 
-            this.panelCenter.Controls.Add(this.panelMesh);
-            this.panelCenter.Controls.Add(this.topBar);
-            this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelCenter.Location = new System.Drawing.Point(263, 0);
-            this.panelCenter.Name = "panelCenter";
-            this.panelCenter.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.panelCenter.Size = new System.Drawing.Size(380, 561);
-            this.panelCenter.TabIndex = 57;
-            // 
             // panelEditing
             // 
             this.panelEditing.Controls.Add(this.panelTexturing);
@@ -1269,9 +1269,9 @@
             this.panelSearchTree.ResumeLayout(false);
             this.panelSearchTree.PerformLayout();
             this.panelMain.ResumeLayout(false);
+            this.panelCenter.ResumeLayout(false);
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
-            this.panelCenter.ResumeLayout(false);
             this.panelEditing.ResumeLayout(false);
             this.panelTexturing.ResumeLayout(false);
             this.panelTexturingTools.ResumeLayout(false);

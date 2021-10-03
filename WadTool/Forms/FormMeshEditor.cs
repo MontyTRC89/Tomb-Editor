@@ -505,8 +505,6 @@ namespace WadTool
             var newNode = realNode == null ? null : realNode.Tag as MeshTreeNode;
             if (newNode != null && newNode.WadMesh != panelMesh.Mesh)
             {
-                // Save current node state
-                SaveCurrentMesh();
                 _tool.UndoManager.ClearAll();
                 panelMesh.Mesh = newNode.WadMesh;
                 _currentNode = newNode;
@@ -1245,6 +1243,7 @@ namespace WadTool
 
         private void lstMeshes_SelectedNodesChanged(object sender, EventArgs e)
         {
+            SaveCurrentMesh();
             ShowSelectedMesh();
         }
 
