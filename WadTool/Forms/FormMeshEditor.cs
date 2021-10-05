@@ -1091,6 +1091,17 @@ namespace WadTool
             foreach (var path in paths)
             {
                 var image = ImageC.FromFile(path);
+
+                // Ignore textures with sizes more than 2048x2048 because they may cause issues with UV precision loss
+                // and also not processed correctly by renderer.
+
+                if (image.Width > 2048 || image.Height > 2048)
+                {
+                    DarkMessageBox.Show(this, (Path.GetFileName(path) + " is oversized. UV precision loss may occur.\nResize texture up to 2048px and repeat."),
+                        "Texture is oversized", MessageBoxIcon.Error);
+                    continue;
+                }
+
                 image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
 
                 var newTexture = new WadTexture(image);

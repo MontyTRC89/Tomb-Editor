@@ -6,6 +6,7 @@ Tomb Editor:
  * Fix script IDs not updating properly in object list.
  
 WadTool:
+ * Prevent and warn about loading oversized textures into mesh editor due to precision loss.
  * Fix possible issues with saving progress in Mesh editor when used from Tools menu.
 
 Version 1.4.3
