@@ -131,6 +131,7 @@ namespace TombEditor.Forms
                 addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
                 addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
                 generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                TENLabel.Visible = _editor.Level.IsTombEngine;
             }
 
             // Clear autosave information
