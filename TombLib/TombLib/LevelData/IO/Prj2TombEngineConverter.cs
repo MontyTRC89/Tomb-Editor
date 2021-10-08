@@ -11,6 +11,7 @@ namespace TombLib.LevelData.IO
 {
     public static class Prj2TombEngineConverter
     {
+        private static string _tenReferenceWad = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
         public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter)
         {
@@ -50,7 +51,7 @@ namespace TombLib.LevelData.IO
             try
             {
                 // Load new TombEngine reference Wad2
-                var referenceWad = Wad2Loader.LoadFromFile(Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2"), true);
+                var referenceWad = Wad2Loader.LoadFromFile(_tenReferenceWad, true);
 
                 // Load level and all related resources
                 var level = Path.GetExtension(source).ToLower() == ".prj" ? PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
