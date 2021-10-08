@@ -910,6 +910,8 @@ namespace TombEditor
             // Update file watchers
             if (importedGeometryChanged || texturesChanged || wadsChanged || soundsChanged)
                 _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
+
+            HasUnsavedChanges = true;
         }
 
         // Configuration
