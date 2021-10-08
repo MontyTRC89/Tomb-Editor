@@ -167,6 +167,9 @@ namespace TombLib.Utils
 
         public ColorC GetPixel(int x, int y)
         {
+            x = MathC.Clamp(x, 0, Width - 1);
+            y = MathC.Clamp(y, 0, Height - 1);
+
             int index = (y * Width + x) * PixelSize;
             if (index + 3 >= _data.Length || index < 0)
                 return new ColorC(255, 0, 0);
