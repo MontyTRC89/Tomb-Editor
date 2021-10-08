@@ -737,8 +737,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     var pos = new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z);
 
-                    // Completely disable movement for portal faces
-                    if (portal.PositionOnPortal(pos, false, false))
+                    // Preemptively disable movement for all portal faces
+                    if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
                         trVertex.Locked = true;
 
                     // A bit complex but working code for water surface movement.
@@ -756,6 +756,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
                             !room.Blocks[xv - 1, zv - 1].IsAnyWall)
                         {
+                            trVertex.Locked = false;
                             trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
                         }
                     }
