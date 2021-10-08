@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.cbSlots = new DarkUI.Controls.DarkComboBox();
+            this.cbSlots = new TombLib.Controls.DarkSearchableComboBox();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
@@ -101,7 +101,7 @@
         #endregion
 
         private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkComboBox cbSlots;
+        private TombLib.Controls.DarkSearchableComboBox cbSlots;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butOk;
     }

@@ -5391,21 +5391,20 @@ namespace TombEditor
             {
                 using (var form = new FormQuickItemgroup(_editor))
                 {
-                    if (form.ShowDialog(owner) == DialogResult.OK &&
-                        form.SelectedValue != null)
+                    if (form.ShowDialog(owner) != DialogResult.OK || form.SelectedValue == null)
+                        return;
+
+                    foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
                     {
-                        foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
+                        if (item is StaticInstance && form.SelectedValue is WadStaticId)
                         {
-                            if (item is StaticInstance && form.SelectedValue is WadStaticId)
-                            {
-                                if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
-                                    items.Add(item);
-                            }
-                            else if (item is MoveableInstance && form.SelectedValue is WadMoveableId)
-                            {
-                                if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
-                                    items.Add(item);
-                            }
+                            if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
+                                items.Add(item);
+                        }
+                        else if (item is MoveableInstance && form.SelectedValue is WadMoveableId)
+                        {
+                            if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
+                                items.Add(item);
                         }
                     }
                 }
@@ -5419,8 +5418,10 @@ namespace TombEditor
                 foreach (ItemInstance item in items)
                     scriptString += "," + item.ScriptId;
                 Clipboard.SetText(scriptString, TextDataFormat.Text);
-                _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
+                _editor.SendMessage("Itemgroup copied into clipboard.", PopupType.Info);
             }
+            else
+                _editor.SendMessage("No items were selected. Itemgroup was not created.", PopupType.Warning);
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)
