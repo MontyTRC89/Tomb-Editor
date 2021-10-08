@@ -783,15 +783,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
                     {
-                        // Apply effect on all faces, if room light interp mode is sharp-cut
-                        if (interpMode != RoomLightInterpolationMode.NoInterpolate)
+                        if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
                         {
-                            // Disable glow for portal faces
-                            if (portal.PositionOnPortal(pos, false, false) ||
-                                portal.PositionOnPortal(pos, true, false))
-                            {
+                            // Disable glow for portal faces, if room light interp mode is not sharp-cut
+                            if (interpMode != RoomLightInterpolationMode.NoInterpolate)
                                 allowGlow = false;
-                            }
+
+                            // Disable effect if adjoining room effect strength is different
+                            if ((otherRoomLightEffect == RoomLightEffect.Glow || otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
+                                portal.AdjoiningRoom.Properties.LightEffectStrength != room.Properties.LightEffectStrength)
+                                allowGlow = false;
                         }
                     }
                 }
