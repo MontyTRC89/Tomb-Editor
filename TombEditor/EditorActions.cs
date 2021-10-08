@@ -5411,13 +5411,16 @@ namespace TombEditor
                 }
             }
 
-            // Create ItemGroup string
-            string scriptString = string.Format(";Itemgroup of {0} objects\n", items.Count.ToString());
-            scriptString += "ItemGroup= 1";
-            foreach (ItemInstance item in items)
-                scriptString += "," + item.ScriptId;
-            Clipboard.SetText(scriptString, TextDataFormat.Text);
-            _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
+            if (items.Count > 0)
+            {
+                // Create ItemGroup string
+                string scriptString = string.Format(";Itemgroup of {0} objects\n", items.Count.ToString());
+                scriptString += "ItemGroup= 1";
+                foreach (ItemInstance item in items)
+                    scriptString += "," + item.ScriptId;
+                Clipboard.SetText(scriptString, TextDataFormat.Text);
+                _editor.SendMessage("Itemgroup copied into clipboard", PopupType.Info);
+            }
         }
 
         public static bool AutoLoadSamplePath(LevelSettings settings)
