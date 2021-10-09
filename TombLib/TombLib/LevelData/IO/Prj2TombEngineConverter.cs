@@ -166,7 +166,9 @@ namespace TombLib.LevelData.IO
                             moveable.Value.Meshes.AddRange(newMeshes);
                         }
 
-                        if (newSlotName == "TWOBLOCK_PLATFORM" || newSlotName == "FALLING_BLOCK" || newSlotName.ToLower().Contains("trapdoor"))
+                        if (newSlotName == "TWOBLOCK_PLATFORM" || 
+                            newSlotName.ToLower().Contains("falling_block") || 
+                            newSlotName.ToLower().Contains("trapdoor"))
                         {
                             progressReporter.ReportInfo("    Adjusting bridge object collision box " + newSlotName);
 
