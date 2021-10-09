@@ -74,7 +74,9 @@ namespace TombLib.LevelData.IO
                     var wad = wadRef.Wad;
                     var newWad = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
 
-                    uint animating = 1231;
+                    // Get base remap object which is ANIMATING33 (first animating which doesn't exist in any legacy engines)
+                    bool isMoveable;
+                    var remappedObjectIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "ANIMATING33", out isMoveable).Value;
 
                     // Copy all objects to new wad
                     foreach (var moveable in wad.Moveables)
@@ -83,14 +85,14 @@ namespace TombLib.LevelData.IO
                         uint newSlot;
                         if (string.IsNullOrEmpty(newId))
                         {
-                            newSlot = animating;
+                            newSlot = remappedObjectIndex;
+                            newId = TrCatalog.GetMoveableName(TRVersion.Game.TombEngine, newSlot);
                             progressReporter.ReportWarn("    Slot " + TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId) +
-                                                        " is not supported by TombEngine and it will be remapped to ANIMATING" + (animating - 1231 + 32));
-                            animating++;
+                                                        " is not supported by TombEngine and it will be remapped to " + newId);
+                            remappedObjectIndex++;
                         }
                         else
                         {
-                            bool isMoveable;
                             var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out isMoveable);
                             if (!found.HasValue)
                             {
@@ -248,12 +250,11 @@ namespace TombLib.LevelData.IO
                         uint newSlot;
                         if (string.IsNullOrEmpty(newId))
                         {
-                            newSlot = animating;
-                            animating++;
+                            newSlot = remappedObjectIndex;
+                            remappedObjectIndex++;
                         }
                         else
                         {
-                            bool isMoveable;
                             var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out isMoveable);
                             if (!found.HasValue)
                             {
