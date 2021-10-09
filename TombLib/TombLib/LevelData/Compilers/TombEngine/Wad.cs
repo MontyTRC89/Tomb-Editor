@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
-using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -497,9 +496,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _animDispatches[i] = dispatch;
             }
 
-            _progressReporter.ReportInfo("    Number of model mesh references: " + _meshPointers.Count);
-            //_progressReporter.ReportInfo("    Number of unique model meshes: " + _meshPointerLookup.Count);
-
             // Convert static meshes
             int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
@@ -615,14 +611,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.WriteLine("    Y: " + _meshTrees[jj + 2]);
                         writer.WriteLine("    Z: " + _meshTrees[jj + 3]);
                         writer.WriteLine();
-
-                        n++;
-                    }
-
-                    n = 0;
-                    for (int jj = 0; jj < _meshPointers.Count; jj++)
-                    {
-                        writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
 
                         n++;
                     }
