@@ -131,7 +131,10 @@ namespace WadTool
                 }
             }
 
-            if (DialogResult == DialogResult.OK)
+            // Save everything either if multimesh mode in all cases 
+            // or if OK is pressed in single-mesh mode
+
+            if (lstMeshes.Visible || DialogResult == DialogResult.OK)
             {
                 SaveCurrentMesh();
                 SelectedMesh = panelMesh.Mesh;
