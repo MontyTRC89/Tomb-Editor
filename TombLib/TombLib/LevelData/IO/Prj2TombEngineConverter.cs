@@ -54,10 +54,18 @@ namespace TombLib.LevelData.IO
                 var referenceWad = Wad2Loader.LoadFromFile(_tenReferenceWad, true);
 
                 // Load level and all related resources
-                var level = Path.GetExtension(source).ToLower() == ".prj" ? PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
+                var level = Path.GetExtension(source).ToLower() == ".prj" ? 
+                    PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
+
                 if (level == null)
                 {
                     progressReporter.ReportWarn("Error while loading level.");
+                    return string.Empty;
+                }
+
+                if (level.Settings.GameVersion.Native() != TRVersion.Game.TR4)
+                {
+                    progressReporter.ReportWarn("Only TR4 and TRNG projects can be converted to TEN at this time.");
                     return string.Empty;
                 }
 
@@ -81,14 +89,15 @@ namespace TombLib.LevelData.IO
                     // Copy all objects to new wad
                     foreach (var moveable in wad.Moveables)
                     {
-                        var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, moveable.Key.TypeId);
                         uint newSlot;
+                        var oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId);
+                        var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, moveable.Key.TypeId);
+
                         if (string.IsNullOrEmpty(newId))
                         {
                             newSlot = remappedObjectIndex;
                             newId = TrCatalog.GetMoveableName(TRVersion.Game.TombEngine, newSlot);
-                            progressReporter.ReportWarn("    Slot " + TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId) +
-                                                        " is not supported by TombEngine and it will be remapped to " + newId);
+                            progressReporter.ReportWarn("    Slot " + oldId + " is not supported by TombEngine and it will be remapped to " + newId);
                             remappedObjectIndex++;
                         }
                         else
@@ -103,6 +112,8 @@ namespace TombLib.LevelData.IO
                         }
 
                         string newSlotName = TrCatalog.GetMoveableName(TRVersion.Game.TombEngine, newSlot);
+
+                        progressReporter.ReportInfo(oldId + " → [" + newSlot + "] " + newSlotName);
 
                         if (newSlotName == "BINOCULAR_GRAPHICS" || newSlotName == "TARGET_GRAPHICS")
                         {
@@ -214,25 +225,20 @@ namespace TombLib.LevelData.IO
                         {
                             progressReporter.ReportInfo("    Adding TIMEX from reference Wad2");
 
-                            newWad.Add(new WadMoveableId(987), referenceWad.Moveables[new WadMoveableId(987)]);
+                            var timexIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "TIMEX_ITEM", out isMoveable).Value;
+                            newWad.Add(new WadMoveableId(timexIndex), referenceWad.Moveables[new WadMoveableId(timexIndex)]);
                             addedTimex = true;
                         }
 
-                        if (!addedTimex && newSlotName == "TIMEX_ITEM")
+                        if (newSlotName == "LARA")
                         {
-                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
-                            newWad.Add(new WadMoveableId(newSlot), moveable.Value);
-                            addedTimex = true;
-                        }
-                        else if (newSlotName == "LARA")
-                        {
-                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
                             newWad.Add(new WadMoveableId(0), referenceWad.Moveables[new WadMoveableId(0)]);
                         }
                         else
                         {
-                            progressReporter.ReportInfo(newId + " → [" + newSlot + "] " + newSlotName);
                             newWad.Add(new WadMoveableId(newSlot), moveable.Value);
+                            if (!addedTimex && newSlotName == "TIMEX_ITEM")
+                                addedTimex = true;
                         }
 
                         if (!remappedSlots.ContainsKey(moveable.Key.TypeId))
@@ -246,8 +252,10 @@ namespace TombLib.LevelData.IO
                     // Copy all sprite sequences
                     foreach (var sequence in wad.SpriteSequences)
                     {
-                        var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
                         uint newSlot;
+                        var oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, sequence.Key.TypeId);
+                        var newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
+
                         if (string.IsNullOrEmpty(newId))
                         {
                             newSlot = remappedObjectIndex;
@@ -266,7 +274,7 @@ namespace TombLib.LevelData.IO
 
                         string newSlotName = TrCatalog.GetSpriteSequenceName(TRVersion.Game.TombEngine, newSlot);
 
-                        progressReporter.ReportInfo(newId + ": → [" + newSlot + "] " + newSlotName);
+                        progressReporter.ReportInfo(oldId + ": → [" + newSlot + "] " + newSlotName);
 
                         if (newSlotName == "DEFAULT_SPRITES")
                         {
@@ -295,9 +303,7 @@ namespace TombLib.LevelData.IO
                     newFileName = Path.GetFileNameWithoutExtension(wad.FileName);
                     newPath = Path.Combine(
                         Path.GetDirectoryName(source),
-                        Path.GetFileNameWithoutExtension(wadRef.Path) + "_TombEngine.wad2"
-                        );
-
+                        Path.GetFileNameWithoutExtension(wadRef.Path) + "_TombEngine.wad2");
 
                     progressReporter.ReportInfo("Saving " + wadRef.Path + " to " + newPath);
 
