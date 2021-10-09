@@ -631,13 +631,14 @@ namespace TombLib.LevelData.IO
                         }
                         else
                         {
-                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, LEB128.MaximumSize1Byte))
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSourceReallyFinal, LEB128.MaximumSize1Byte))
                             {
                                 var instance = (SoundSourceInstance)o;
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.SoundId);
                                 chunkIO.Raw.Write((int)instance.PlayMode);
+                                LEB128.Write(chunkIO.Raw, ((long?)instance.ScriptId ?? -1));
                             }
                         }
                     }

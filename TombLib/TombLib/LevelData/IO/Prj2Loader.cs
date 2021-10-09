@@ -1182,6 +1182,16 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectSoundSourceReallyFinal)
+                {
+                    var instance = new SoundSourceInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SoundId = chunkIO.Raw.ReadInt32();
+                    instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectSoundSourceTombEngine)
                 {
                     var instance = new SoundSourceInstance();
