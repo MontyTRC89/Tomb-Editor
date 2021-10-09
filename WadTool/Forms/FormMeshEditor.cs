@@ -60,6 +60,7 @@ namespace WadTool
         private bool _readingValues = false;
         private MeshTreeNode _currentNode = null;
         private int _currentIndex = -1;
+        private bool _unsavedChanges = false;
 
         // Preserve user-loaded textures until user leaves editor
         private List<WadTexture> _userTextures = new List<WadTexture>();
@@ -108,6 +109,38 @@ namespace WadTool
 
             UpdateUI();
             RepopulateTextureList(butAllTextures.Checked);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!lstMeshes.Visible && DialogResult != DialogResult.OK && _unsavedChanges)
+            {
+                var result = DarkMessageBox.Show(this, "You have unsaved changes. Do you want to save changes to current mesh?",
+                                                    "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                switch (result)
+                {
+                    case DialogResult.Yes:
+                        DialogResult = DialogResult.OK;
+                        break;
+                    case DialogResult.No:
+                        DialogResult = DialogResult.Cancel;
+                        break;
+                    default:
+                        e.Cancel = true;
+                        return;
+                }
+            }
+
+            if (DialogResult == DialogResult.OK)
+            {
+                SaveCurrentMesh();
+                SelectedMesh = panelMesh.Mesh;
+                _tool.ToggleUnsavedChanges();
+                _tool.WadChanged(WadArea.Destination);
+            }
+
+            _tool.UndoManager.ClearAll();
+            base.OnClosing(e);
         }
 
         protected override void Dispose(bool disposing)
@@ -312,6 +345,7 @@ namespace WadTool
                 var stackEvent = (WadToolClass.UndoStackChangedEvent)obj;
                 butTbUndo.Enabled = stackEvent.UndoPossible;
                 butTbRedo.Enabled = stackEvent.RedoPossible;
+                _unsavedChanges = true;
                 UpdateUI();
             }
 
@@ -467,6 +501,9 @@ namespace WadTool
 
             statusLabel.Text = prompt;
             Text = "Mesh editor" + (NoMesh() ? "" : " - " + panelMesh.Mesh.Name);
+
+            if (!lstMeshes.Visible && _unsavedChanges)
+                Text += " *";
         }
 
         private void CalculateWindowDimensions()
@@ -523,16 +560,16 @@ namespace WadTool
             if (!lstMeshes.Visible)
                 return;
 
-            // Save current node state
-            if (_currentNode != null)
-            {
-                var obj = _wad.TryGet(_currentNode.ObjectId);
+            // No need to update because no mesh is selected.
+            if (_currentNode == null)
+                return;
 
-                if (obj is WadMoveable)
-                    (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
-                else if (obj is WadStatic)
-                    (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
-            }
+            var obj = _wad.TryGet(_currentNode.ObjectId);
+
+            if (obj is WadMoveable)
+                (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
+            else if (obj is WadStatic)
+                (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
         }
 
         private DarkTreeNode GetFirstChildNode(DarkTreeNode node)
@@ -841,11 +878,6 @@ namespace WadTool
 
         private void btOk_Click(object sender, EventArgs e)
         {
-            SaveCurrentMesh();
-            SelectedMesh = panelMesh.Mesh;
-            _tool.ToggleUnsavedChanges();
-            _tool.WadChanged(WadArea.Destination);
-
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -1233,12 +1265,6 @@ namespace WadTool
         private void butTbMirrorTexture_Click(object sender, EventArgs e)
         {
             MirrorTexture();
-        }
-
-        private void FormMeshEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveCurrentMesh();
-            _tool.UndoManager.ClearAll();
         }
 
         private void butSearchMeshes_Click(object sender, EventArgs e)

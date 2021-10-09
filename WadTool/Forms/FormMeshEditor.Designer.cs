@@ -1243,7 +1243,6 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Mesh editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMeshEditor_FormClosing);
             this.panelEditingTools.ResumeLayout(false);
             this.panelEditingTools.PerformLayout();
             this.tabsModes.ResumeLayout(false);
