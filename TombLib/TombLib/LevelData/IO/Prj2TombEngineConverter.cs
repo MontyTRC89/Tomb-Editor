@@ -102,6 +102,12 @@ namespace TombLib.LevelData.IO
 
                         string newSlotName = TrCatalog.GetMoveableName(TRVersion.Game.TombEngine, newSlot);
 
+                        if (newSlotName == "BINOCULAR_GRAPHICS" || newSlotName == "TARGET_GRAPHICS")
+                        {
+                            progressReporter.ReportInfo("    Skipping unneeded " + newSlotName + " slot");
+                            continue;
+                        }
+
                         // We need to copy mesh 14 to 7 for {WEAPON}_ANIM for back weapons
                         if (newSlotName == "SHOTGUN_ANIM" || newSlotName == "CROSSBOW_ANIM" || newSlotName == "HK_ANIM" ||
                             newSlotName == "HARPOON_ANIM" || newSlotName == "GRENADE_ANIM" || newSlotName == "ROCKET_ANIM")
