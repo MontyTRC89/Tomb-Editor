@@ -1210,6 +1210,7 @@ namespace TombEditor
                     selectedObj.AllocateNewScriptId();
                 Clipboard.SetText(selectedObj.ScriptId.Value.ToString());
                 args.Editor.SendMessage("Script ID for selected object is " + selectedObj.ScriptId + ".\nCopied to clipboard.", PopupType.Info);
+                args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);
             });
 
             AddCommand("GenerateObjectNames", "Generate Lua names for unnamed objects", CommandType.Objects, delegate (CommandArgs args)
