@@ -1,3 +1,15 @@
+Version 1.4.5
+=============
+
+Tomb Editor:
+ * Preserve sound source script IDs in project files.
+ * Fix sink strength value indication in 3D view.
+ * Update item indication when new script ID is assigned.
+ * Fix item order in search window.
+
+WadTool:
+ * Indicate unsaved changes in single-mesh mode of mesh editor.
+
 Version 1.4.4
 =============
 
