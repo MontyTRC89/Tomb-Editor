@@ -2640,7 +2640,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 "Camera " + (instance.Fixed ? "(Locked)" : "") +
-                                GetObjectScriptIDString(instance) + "\n" +
+                                instance.GetScriptIDOrName() + "\n" +
                                 GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
@@ -2668,7 +2668,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
-                                GetObjectScriptIDString(instance) + "\n" +
+                                instance.GetScriptIDOrName() + "\n" +
                                 GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
@@ -2714,8 +2714,7 @@ namespace TombEditor.Controls
                         {
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
-                                "Sink (Strength = " + instance.Strength + ") " +
-                                GetObjectScriptIDString(instance) + "\n" +
+                                instance.ToShortString() + "\n" +
                                 GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
@@ -2743,7 +2742,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") +
-                                GetObjectScriptIDString(instance) + "\n" +
+                                instance.GetScriptIDOrName() + "\n" +
                                 GetObjectPositionString(instance.Room, instance)));
 
                             // Add the line height of the object
@@ -2774,7 +2773,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ShortName() + "\nUnavailable " + instance.ItemType +
-                                GetObjectScriptIDString(instance) + "\n" +
+                                instance.GetScriptIDOrName() + "\n" +
                                 GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                                 // Add the line height of the object
@@ -3086,7 +3085,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                                GetObjectScriptIDString(instance) + "\n" + 
+                                instance.GetScriptIDOrName() + "\n" + 
                                 GetObjectPositionString(instance.Room, instance) +
                                 "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
                                 (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
@@ -3292,7 +3291,7 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
-                            GetObjectScriptIDString(instance) + "\n" + 
+                            instance.GetScriptIDOrName() + "\n" + 
                             GetObjectPositionString(_editor.SelectedRoom, instance) +
                                 "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
                                 BuildTriggeredByMessage(instance)));
@@ -3673,16 +3672,6 @@ namespace TombEditor.Controls
 
             // Get the base floor height
             return room.Blocks[xBlock, zBlock].Floor.Min * Level.HeightUnit;
-        }
-
-        private string GetObjectScriptIDString(PositionAndScriptBasedObjectInstance instance)
-        {
-            if (_editor.Level.IsNG)
-                return " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-            else if (_editor.Level.IsTombEngine)
-                return " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]";
-            else
-                return string.Empty;
         }
 
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
