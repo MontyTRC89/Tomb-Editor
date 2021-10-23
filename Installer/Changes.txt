@@ -2,6 +2,8 @@ Version 1.4.5
 =============
 
 Tomb Editor:
+ * Add hotkey commands for flipping floor and ceiling splits.
+ * Flip floor and ceiling split only if block is triangulated.
  * Preserve sound source script IDs in project files.
  * Fix sink strength value indication in 3D view.
  * Update item indication when new script ID is assigned.

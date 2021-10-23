@@ -1425,6 +1425,20 @@ namespace TombEditor
                 EditorActions.AverageSectors(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockVertical.Ceiling);
             });
 
+            AddCommand("FlipFloorSplit", "Flip floor split in selected area", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return; 
+                EditorActions.FlipFloorSplit(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
+            AddCommand("FlipCeilingSplit", "Flip ceiling split in selected area", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                EditorActions.FlipCeilingSplit(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+            });
+
             AddCommand("GridWallsIn3", "Grid walls in 3", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
