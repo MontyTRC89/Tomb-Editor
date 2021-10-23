@@ -10,7 +10,9 @@ Tomb Editor:
  * Fix item order in search window.
 
 WadTool:
+ * Add option to pack textures when exporting meshes.
  * Indicate unsaved changes in single-mesh mode of mesh editor.
+ * Fix imported mesh not being saved for moveables when imported using multimesh mode.
 
 Version 1.4.4
 =============

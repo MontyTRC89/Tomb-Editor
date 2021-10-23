@@ -28,5 +28,6 @@
         public bool InvertFaces { get; set; } = false;
         public bool UseVertexColor { get; set; } = true;
         public bool SortByName { get; set; } = true;
+        public bool PackTextures { get; set; } = true;
     }
 }

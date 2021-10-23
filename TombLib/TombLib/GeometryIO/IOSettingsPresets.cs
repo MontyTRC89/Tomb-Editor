@@ -6,14 +6,14 @@ namespace TombLib.GeometryIO
     public static class IOSettingsPresets
     {
         public static List<IOGeometrySettingsPreset> GeometryImportSettingsPresets { get; private set; }
-        public static List<IOGeometrySettingsPreset> RoomExportSettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> GeometryExportSettingsPresets { get; private set; }
         public static List<IOGeometrySettingsPreset> AnimationSettingsPresets { get; private set; }
 
         static IOSettingsPresets()
         {
-            RoomExportSettingsPresets = new List<IOGeometrySettingsPreset>();
+            GeometryExportSettingsPresets = new List<IOGeometrySettingsPreset>();
 
-            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Normal scale",
                 Settings = new IOGeometrySettings
@@ -24,7 +24,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Keep original TR scale",
                 Settings = new IOGeometrySettings

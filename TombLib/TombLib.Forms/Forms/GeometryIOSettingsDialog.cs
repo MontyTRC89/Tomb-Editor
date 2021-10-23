@@ -129,6 +129,7 @@ namespace TombLib.Forms
             cbInvertFaces.Checked = settings.InvertFaces;
             cbImportBakedLight.Checked = settings.UseVertexColor;
             cbSortByName.Checked = settings.SortByName;
+            cbPackTextures.Checked = settings.PackTextures;
         }
 
         private void UpdateSettings()
@@ -146,6 +147,7 @@ namespace TombLib.Forms
             Settings.InvertFaces = cbInvertFaces.Checked;
             Settings.UseVertexColor = cbImportBakedLight.Checked;
             Settings.SortByName = cbSortByName.Checked;
+            Settings.PackTextures = cbPackTextures.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -183,6 +185,7 @@ namespace TombLib.Forms
 
             cbImportBakedLight.CheckedChanged += ModifiedPresetEvent;
             cbSortByName.CheckedChanged += ModifiedPresetEvent;
+            cbPackTextures.CheckedChanged += ModifiedPresetEvent;
         }
 
         private void SuspendControlListening()
@@ -200,6 +203,7 @@ namespace TombLib.Forms
 
             cbImportBakedLight.CheckedChanged -= ModifiedPresetEvent;
             cbSortByName.CheckedChanged -= ModifiedPresetEvent;
+            cbPackTextures.CheckedChanged -= ModifiedPresetEvent;
         }
 
         private void ModifiedPresetEvent(object sender, EventArgs e)

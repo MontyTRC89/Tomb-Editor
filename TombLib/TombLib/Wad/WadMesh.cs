@@ -207,11 +207,34 @@ namespace TombLib.Wad
                 return null;
         }
 
-        public static IOModel PrepareForExport(string filePath, WadMesh m)
+        public static IOModel PrepareForExport(string filePath, IOGeometrySettings settings, WadMesh m)
         {
             var model = new IOModel();
             var mesh = new IOMesh(m.Name);
             model.Meshes.Add(mesh);
+
+            if (settings.PackTextures)
+            {
+                m = m.Clone();
+                for (int i = 0; i < m.Polys.Count; i++)
+                {
+                    var p = m.Polys[i];
+
+                    var rect = p.Texture.GetRect();
+                    var image = ImageC.CreateNew((int)rect.Width, (int)rect.Height);
+                    image.CopyFrom(0, 0, p.Texture.Texture.Image, (int)rect.TopLeft.X, (int)rect.TopLeft.Y, (int)rect.Width, (int)rect.Height);
+
+                    var texture = p.Texture;
+                    texture.Texture = new WadTexture(image);
+                    texture.TexCoord0 -= rect.Start;
+                    texture.TexCoord1 -= rect.Start;
+                    texture.TexCoord2 -= rect.Start;
+                    texture.TexCoord3 -= rect.Start;
+
+                    p.Texture = texture;
+                    m.Polys[i] = p;
+                }
+            }
 
             // Collect all textures
             var tempTextures = new Dictionary<Hash, WadTexture>();
@@ -250,7 +273,8 @@ namespace TombLib.Wad
             // for comparison, not just bluntly hash whole image. This way algorithm will never get
             // to a point when incoming texture fragment is bigger than 256.
 
-            bool mergeIntoPages = m.Polys.All(p => p.Texture.Texture.Image.Size.X <= 256 &&
+            bool mergeIntoPages = settings.PackTextures &&
+                                  m.Polys.All(p => p.Texture.Texture.Image.Size.X <= 256 &&
                                                    p.Texture.Texture.Image.Size.Y <= 256);
             List<WadTexture> pages;
 

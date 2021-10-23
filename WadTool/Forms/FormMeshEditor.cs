@@ -570,9 +570,14 @@ namespace WadTool
             var obj = _wad.TryGet(_currentNode.ObjectId);
 
             if (obj is WadMoveable)
-                (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
+            {
+                (obj as WadMoveable).Meshes[_currentNode.MeshIndex] =
+                (obj as WadMoveable).Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+            }
             else if (obj is WadStatic)
+            {
                 (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+            }
         }
 
         private DarkTreeNode GetFirstChildNode(DarkTreeNode node)
@@ -1295,6 +1300,7 @@ namespace WadTool
 
             _tool.UndoManager.PushMeshChanged(panelMesh);
             panelMesh.Mesh = mesh;
+            SaveCurrentMesh();
             GetSphereValues();
             UpdateUI();
             RepopulateTextureList(butAllTextures.Checked);

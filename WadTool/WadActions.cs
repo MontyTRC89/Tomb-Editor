@@ -240,7 +240,7 @@ namespace WadTool
                 {
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
                         settingsDialog.SelectPreset("Normal scale");
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
@@ -1328,7 +1328,7 @@ namespace WadTool
 
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
                         settingsDialog.SelectPreset("Normal scale");
 
                         if (settingsDialog.ShowDialog(owner) != DialogResult.OK)
@@ -1338,7 +1338,7 @@ namespace WadTool
                         BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
                         new Thread(() =>
                         {
-                            var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, mesh);
+                            var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, settingsDialog.Settings, mesh);
                             if (resultModel != null)
                             {
                                 if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))

@@ -35,6 +35,7 @@
             this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             this.cbImportBakedLight = new DarkUI.Controls.DarkCheckBox();
             this.groupTextures = new DarkUI.Controls.DarkGroupBox();
+            this.cbPackTextures = new DarkUI.Controls.DarkCheckBox();
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
@@ -50,7 +51,7 @@
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(141, 269);
+            this.butOK.Location = new System.Drawing.Point(141, 291);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 16;
@@ -62,7 +63,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(227, 269);
+            this.butCancel.Location = new System.Drawing.Point(227, 291);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 17;
@@ -197,7 +198,7 @@
             this.lblPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 232);
+            this.lblPreset.Location = new System.Drawing.Point(5, 254);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -208,7 +209,7 @@
             this.cmbPresetList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 228);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 250);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
             this.cmbPresetList.TabIndex = 15;
@@ -228,16 +229,17 @@
             this.panelContents.Location = new System.Drawing.Point(6, 6);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(301, 257);
+            this.panelContents.Size = new System.Drawing.Size(301, 279);
             this.panelContents.TabIndex = 7;
             // 
             // groupMisc
             // 
+            this.groupMisc.Controls.Add(this.cbPackTextures);
             this.groupMisc.Controls.Add(this.cbSortByName);
             this.groupMisc.Controls.Add(this.cbImportBakedLight);
             this.groupMisc.Location = new System.Drawing.Point(140, 157);
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size(155, 65);
+            this.groupMisc.Size = new System.Drawing.Size(155, 88);
             this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
@@ -256,7 +258,7 @@
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
+            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
             this.cbImportBakedLight.TabIndex = 7;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
@@ -271,6 +273,15 @@
             this.groupTextures.TabIndex = 8;
             this.groupTextures.TabStop = false;
             this.groupTextures.Text = "Texture mapping";
+            // 
+            // cbPackTextures
+            // 
+            this.cbPackTextures.AutoSize = true;
+            this.cbPackTextures.Location = new System.Drawing.Point(6, 67);
+            this.cbPackTextures.Name = "cbPackTextures";
+            this.cbPackTextures.Size = new System.Drawing.Size(93, 17);
+            this.cbPackTextures.TabIndex = 9;
+            this.cbPackTextures.Text = "Pack textures";
             // 
             // groupSize
             // 
@@ -294,7 +305,7 @@
             this.groupAxis.Controls.Add(this.cbFlipX);
             this.groupAxis.Location = new System.Drawing.Point(6, 6);
             this.groupAxis.Name = "groupAxis";
-            this.groupAxis.Size = new System.Drawing.Size(128, 216);
+            this.groupAxis.Size = new System.Drawing.Size(128, 239);
             this.groupAxis.TabIndex = 8;
             this.groupAxis.TabStop = false;
             this.groupAxis.Text = "Axis";
@@ -315,7 +326,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(313, 298);
+            this.ClientSize = new System.Drawing.Size(313, 320);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -365,5 +376,6 @@
         private DarkUI.Controls.DarkGroupBox groupMisc;
         private DarkUI.Controls.DarkCheckBox cbImportBakedLight;
         private DarkUI.Controls.DarkCheckBox cbSortByName;
+        private DarkUI.Controls.DarkCheckBox cbPackTextures;
     }
 }
