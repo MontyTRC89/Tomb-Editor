@@ -32,10 +32,10 @@
             this.cmbPresetList = new DarkUI.Controls.DarkComboBox();
             this.panelContents = new DarkUI.Controls.DarkSectionPanel();
             this.groupMisc = new DarkUI.Controls.DarkGroupBox();
+            this.cbPackTextures = new DarkUI.Controls.DarkCheckBox();
             this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             this.cbImportBakedLight = new DarkUI.Controls.DarkCheckBox();
             this.groupTextures = new DarkUI.Controls.DarkGroupBox();
-            this.cbPackTextures = new DarkUI.Controls.DarkCheckBox();
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
@@ -244,10 +244,19 @@
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
             // 
+            // cbPackTextures
+            // 
+            this.cbPackTextures.AutoSize = true;
+            this.cbPackTextures.Location = new System.Drawing.Point(6, 44);
+            this.cbPackTextures.Name = "cbPackTextures";
+            this.cbPackTextures.Size = new System.Drawing.Size(93, 17);
+            this.cbPackTextures.TabIndex = 9;
+            this.cbPackTextures.Text = "Pack textures";
+            // 
             // cbSortByName
             // 
             this.cbSortByName.AutoSize = true;
-            this.cbSortByName.Location = new System.Drawing.Point(6, 44);
+            this.cbSortByName.Location = new System.Drawing.Point(6, 67);
             this.cbSortByName.Name = "cbSortByName";
             this.cbSortByName.Size = new System.Drawing.Size(93, 17);
             this.cbSortByName.TabIndex = 8;
@@ -273,15 +282,6 @@
             this.groupTextures.TabIndex = 8;
             this.groupTextures.TabStop = false;
             this.groupTextures.Text = "Texture mapping";
-            // 
-            // cbPackTextures
-            // 
-            this.cbPackTextures.AutoSize = true;
-            this.cbPackTextures.Location = new System.Drawing.Point(6, 67);
-            this.cbPackTextures.Name = "cbPackTextures";
-            this.cbPackTextures.Size = new System.Drawing.Size(93, 17);
-            this.cbPackTextures.TabIndex = 9;
-            this.cbPackTextures.Text = "Pack textures";
             // 
             // groupSize
             // 

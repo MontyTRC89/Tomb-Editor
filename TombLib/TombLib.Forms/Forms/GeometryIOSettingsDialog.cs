@@ -115,6 +115,7 @@ namespace TombLib.Forms
             nmScale.Enabled = settings.ProcessGeometry;
             cbImportBakedLight.Enabled = settings.ProcessGeometry;
             cbSortByName.Enabled = !settings.Export;
+            cbPackTextures.Enabled = settings.Export;
 
             cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
