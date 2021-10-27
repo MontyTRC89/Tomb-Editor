@@ -927,11 +927,19 @@ namespace TombLib.LevelData.Compilers
                             _progressReporter.ReportWarn(sprite.ToShortString() + " is not present in any of wads and won't be included.");
                             continue;
                         }
+
                         newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
+
+                        var spriteColor = PackLightColor(new Vector3(sprite.Color.Z, sprite.Color.Y, sprite.Color.X), _level.Settings.GameVersion);
+
                         roomVertices.Add(new tr_room_vertex()
-                        { Position = new tr_vertex((short) (sprite.Position.X), 
-                                                   (short)-(room.WorldPos.Y + sprite.Position.Y), 
-                                                   (short) (sprite.Position.Z)) });
+                        { 
+                            Position = new tr_vertex((short) (sprite.Position.X), 
+                                                     (short)-(room.WorldPos.Y + sprite.Position.Y), 
+                                                     (short) (sprite.Position.Z)),
+                            Lighting1 = spriteColor,
+                            Lighting2 = spriteColor
+                        });
                     }
 
                 newRoom.Vertices = roomVertices;

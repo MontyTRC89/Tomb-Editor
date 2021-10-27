@@ -1061,6 +1061,16 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectSprite3)
+                {
+                    var instance = new SpriteInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Sequence = chunkIO.Raw.ReadInt32();
+                    instance.Frame = chunkIO.Raw.ReadInt32();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectFlyBy)
                 {
                     var instance = new FlybyCameraInstance();

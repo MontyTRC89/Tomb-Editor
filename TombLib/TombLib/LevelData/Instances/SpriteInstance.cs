@@ -1,11 +1,13 @@
-﻿using TombLib.Wad.Catalog;
+﻿using System.Numerics;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData
 {
-    public class SpriteInstance : PositionBasedObjectInstance, IReplaceable
+    public class SpriteInstance : PositionBasedObjectInstance, IColorable, IReplaceable
     {
         public int Sequence { get; set; }
         public int Frame { get; set; }
+        public Vector3 Color { get; set; } = new Vector3(1.0f);
 
         public ushort SpriteID
         {

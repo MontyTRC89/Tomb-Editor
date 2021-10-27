@@ -2545,7 +2545,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawSprites(Room[] roomsWhoseObjectsToDraw, List<Sprite> sprites)
+        private void DrawSprites(Room[] roomsWhoseObjectsToDraw, List<Sprite> sprites, bool disableSelection)
         {
             if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2)
                 return;
@@ -2572,7 +2572,14 @@ namespace TombEditor.Controls
                                 PosEnd = pos.End,
                                 Depth = depth
                             };
-                            if (selected) newSprite.Tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+
+                            if (!disableSelection && selected)
+                                newSprite.Tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            else if (_editor.Mode == EditorMode.Lighting)
+                                newSprite.Tint = new Vector4(new Vector3(instance.Color.GetLuma()), 1.0f);
+                            else
+                                newSprite.Tint = Vector4.One;
+
                             sprites.Add(newSprite);
                         }
                     }
@@ -3601,7 +3608,7 @@ namespace TombEditor.Controls
             if (ShowOtherObjects)
             {
                 // Draw sprites
-                DrawSprites(roomsToDraw, spritesToDraw);
+                DrawSprites(roomsToDraw, spritesToDraw, hiddenSelection);
                 // Draw placeholder objects (sinks, cameras, fly-by cameras, sound sources and missing 3D objects)
                 DrawPlaceholders(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw light objects and bounding volumes
