@@ -2,7 +2,7 @@ Version 1.4.5
 =============
 
 Tomb Editor:
- * Implement tint for TR1-2 room sprites.
+ * Implement tint for TR1-2 room sprites and pickups.
  * Add hotkey commands for flipping floor and ceiling splits.
  * Flip floor and ceiling split only if block is triangulated.
  * Preserve sound source script IDs in project files.

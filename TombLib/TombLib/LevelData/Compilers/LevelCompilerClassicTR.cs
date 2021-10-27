@@ -488,8 +488,7 @@ namespace TombLib.LevelData.Compilers
 
                         // HACK: original tom2pc/winroomedit compiler forced tint to be reset to 1.0f in case
                         // it is applied to moveable objects with non-static lighting.
-                        var model = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
-                        if (model != null && model.Meshes.All(m => m.LightingType == WadMeshLightingType.Normals))
+                        if (!instance.CanBeColored())
                             instanceColor = Vector3.One;
 
                         // Calculate TR color

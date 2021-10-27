@@ -3028,6 +3028,7 @@ namespace TombEditor.Controls
                 var model = _wadRenderer.GetMoveable(movID);
                 var skin = model;
                 var version = _editor.Level.Settings.GameVersion;
+                var colored = version <= TRVersion.Game.TR2 && group.First().CanBeColored();
 
                 if (group.Key == WadMoveableId.Lara) // Show Lara
                 {
@@ -3058,15 +3059,15 @@ namespace TombEditor.Controls
                         {
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
                             {
-                                if (movID.Meshes[i].LightingType == WadMeshLightingType.Normals)
-                                {
-                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine);
-                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
-                                }
-                                else
+                                if (colored || movID.Meshes[i].LightingType != WadMeshLightingType.Normals)
                                 {
                                     skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
                                     skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
+                                }
+                                else
+                                {
+                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine);
+                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
                                 }
                             }
                             else

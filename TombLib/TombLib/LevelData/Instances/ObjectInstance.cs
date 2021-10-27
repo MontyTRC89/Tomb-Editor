@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData
 {
@@ -514,6 +515,17 @@ namespace TombLib.LevelData
                     var model = obj.Room.Level.Settings.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
                     if (model == null || !model.Meshes.Any(m => m.LightingType != Wad.WadMeshLightingType.Normals))
                         changeColor = false;
+
+                    // HACK: TR1-2 pickups can be colored because they are sprites.
+                    // Guess them by getting substitute ID.
+
+                    if (obj.Room.Level.Settings.GameVersion <= TRVersion.Game.TR2)
+                    {
+                        var id = (obj as MoveableInstance).WadObjectId.TypeId;
+                        var subId = TrCatalog.GetSubstituteID(obj.Room.Level.Settings.GameVersion, id);
+                        if (id != subId)
+                            changeColor = true;
+                    }
                 }
                 else if (obj is StaticInstance)
                 {

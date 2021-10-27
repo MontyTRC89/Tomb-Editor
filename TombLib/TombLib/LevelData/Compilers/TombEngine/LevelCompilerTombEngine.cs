@@ -431,15 +431,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         int flags = (instance.CodeBits << 9) | (instance.ClearBody ? 0x80 : 0) | (instance.Invisible ? 0x100 : 0);
                         ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackColorTo16Bit(instance.Color);
 
-                        // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
-                        var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);
-
                         _items.Add(new TombEngineItem
                         {
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = checked((ushort)realID),
+                            ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = color,
