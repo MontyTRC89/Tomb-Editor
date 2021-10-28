@@ -1283,6 +1283,8 @@ namespace WadTool
                     _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)result;
                     break;
                 case nameof(nudFramerate):
+                    nudEndFrame.Value = (decimal)Math.Round(_editor.CurrentAnim.WadAnimation.EndFrame  / 
+                                                           (_editor.CurrentAnim.WadAnimation.FrameRate / (float)result));
                     _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
                     break;
                 case nameof(nudEndFrame):
