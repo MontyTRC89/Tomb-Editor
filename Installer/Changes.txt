@@ -14,6 +14,7 @@ WadTool:
  * Add option to pack textures when exporting meshes.
  * Indicate unsaved changes in single-mesh mode of mesh editor.
  * Fix imported mesh not being saved for moveables when imported using multimesh mode.
+ * Scale end frame value along with frame rate.
 
 Version 1.4.4
 =============
