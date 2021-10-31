@@ -55,6 +55,7 @@ namespace TombEditor.Controls
             _palette.Clear();
             foreach (var c in palette) _palette.Add(new ColorC(c.R, c.G, c.B));
             PickColor();
+            Invalidate();
         }
 
         public void PickColor()
