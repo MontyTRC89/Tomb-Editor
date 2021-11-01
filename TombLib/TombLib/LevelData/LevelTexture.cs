@@ -69,6 +69,8 @@ namespace TombLib.LevelData
 
         public bool Equals(LevelTexture other)
         {
+            if ((Path == null) != (other.Path == null))
+                return false;
             if (!(Path == null && other.Path == null) && !Path.Equals(other?.Path, StringComparison.InvariantCultureIgnoreCase))
                 return false;
             if (!(BumpPath == null && other.BumpPath == null) && !BumpPath.Equals(other?.BumpPath, StringComparison.InvariantCultureIgnoreCase))
