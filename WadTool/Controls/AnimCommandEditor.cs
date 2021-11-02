@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.ComponentModel;
@@ -37,6 +38,8 @@ namespace WadTool
 
             butPlaySound.Enabled = (_editor.Tool.ReferenceLevel != null &&
                 _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Count > 0);
+
+            comboFlipeffectConditions.Enabled = _editor.Tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine;
 
             ReloadSounds();
         }
