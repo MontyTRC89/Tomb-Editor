@@ -7,11 +7,11 @@
       </FixedEnumeration>
       <LinearModel Start="1" End="511">
         <Linear Add="0" Factor="1" />
-        <Fixed> seconds       (Activate and wait &amp;lt;#&amp;gt; seconds before deactivating)</Fixed>
+        <Fixed> seconds       (Activate and wait &lt;#&gt; seconds before deactivating)</Fixed>
       </LinearModel>
       <LinearModel Start="65024" End="65535">
         <Linear Add="-65536" Factor="1" />
-        <Fixed> seconds       (Wait &amp;lt;#&amp;gt; seconds before activating)</Fixed>
+        <Fixed> seconds       (Wait &lt;#&gt; seconds before activating)</Fixed>
       </LinearModel>
     </Choice>
   </TimerFieldTrigger>
