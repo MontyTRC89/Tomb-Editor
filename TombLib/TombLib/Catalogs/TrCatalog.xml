@@ -512,7 +512,7 @@
       <anim item="0" id="97" name="CLIMB_ON" />
       <anim item="0" id="98" name="REACH_TO_FREEFALL" />
       <anim item="0" id="99" name="FALL_CROUCHING_LANDING_UNUSED" />
-      <anim item="0" id="100" name="FREEFALL_TO_REACH" />
+      <anim item="0" id="100" name="JUMP_FORWARD_TO_REACH_LATE" />
       <anim item="0" id="101" name="JUMP_FORWARD_START_TO_REACH_ALTERNATE_UNUSED" />
       <anim item="0" id="102" name="CLIMB_ON_END" />
       <anim item="0" id="103" name="STAND_IDLE" />
@@ -1969,6 +1969,7 @@
     </sounds>
     <animations>
       <!-- Lara -->
+        <anim item="0" id="100" name="JUMP_FORWARD_TO_REACH_LATE_UNUSED" />
         <anim item="0" id="214" name="ZIPLINE_GRAB" />
         <anim item="0" id="215" name="ZIPLINE_RIDE" />
         <anim item="0" id="216" name="ZIPLINE_FALL" />
