@@ -115,13 +115,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
+            return Vector3.Max(output, new Vector3()) * (1.0f / 255.0f);
         }
 
         private TombEngineRoom BuildRoom(Room room)
         {
-            tr_color roomAmbientColor = PackColorTo24Bit(room.Properties.AmbientLight);
-
             int maxDimensions = _limits[Limit.RoomDimensions];
             if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
                 _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
@@ -161,7 +159,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            newRoom.AmbientLight = new Vector3(roomAmbientColor.Red / 255.0f, roomAmbientColor.Green / 255.0f, roomAmbientColor.Blue / 255.0f);
+            newRoom.AmbientLight = room.Properties.AmbientLight;
 
             // Properly identify game version to swap light mode, quicksand and no lensflare flags
             bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
@@ -463,7 +461,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Vector3 color;
                             if (!entry.TintAsAmbient)
                             {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 255);
                                 // Apply Shade factor
                                 color *= shade;
                                 // Apply Instance Color
@@ -471,7 +469,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
                             else
                             {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 255);
                                 //Apply Shade factor
                                 color *= shade;
                             }
@@ -594,7 +592,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
+                                var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 255);
                                 trVertex.Color = color;
                             }
                             else
@@ -865,7 +863,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var trVertex = new TombEngineVertex();
 
             trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
-            trVertex.Color = color / 2.0f;
+            trVertex.Color = color;
             trVertex.IsOnPortal = false;
             trVertex.IndexInPoly = index;
 
@@ -876,20 +874,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             vertexIndex = roomVertices.Count;
             roomVertices.Add(trVertex);
             roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
-            return vertexIndex;
-        }
-
-        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices, TombEngineVertex trVertex)
-        {
-            // Do the check here, so we can save some time with unuseful calculations
-            int vertexIndex;
-            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
-                return vertexIndex;
-
-            // Add vertex
-            vertexIndex = (ushort)roomVertices.Count;
-            roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
-            roomVertices.Add(trVertex);
             return vertexIndex;
         }
 
@@ -1606,17 +1590,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
         }
 
-        private static ushort PackLightColor(Vector3 color, TRVersion.Game version)
-        {
-            if (version >= TRVersion.Game.TR3)
-                return PackColorTo16Bit(color);
-            else
-                return PackColorTo13BitGreyscale(color);
-        }
-
         private static ushort PackColorTo16Bit(Vector3 color)
         {
-            color *= 16.0f;
+            color *= 32.0f;
             color += new Vector3(0.5f); // Round correctly
             color = Vector3.Min(new Vector3(31), Vector3.Max(new Vector3(0), color));
 
@@ -1625,45 +1601,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             tmp |= (ushort)((ushort)color.Y << 5);
             tmp |= (ushort)color.Z;
             return tmp;
-        }
-
-        // Takes the average color value and packs it into an inversed 13 Bit luma value (Higher = Darker)
-        // Used for TR1? and TR2 and TR3 for AmbientInensity
-        private static ushort PackColorTo13BitGreyscale(Vector3 color)
-        {
-            // Normalize
-            float avg = MathC.Clamp((color / 2.0f).GetLuma(), 0.0f, 1.0f);
-            // Invert
-            avg = 1.0f - avg;
-            // Multiply by 255 to get 8 bits
-            avg *= 255.0f;
-            ushort value = (ushort)avg;
-            // Bitshift to left for whatever reason
-            value <<= 5;
-            return value;
-        }
-
-        private static uint PackColorTo32Bit(Vector3 color)
-        {
-            color *= 128.0f;
-            color += new Vector3(0.5f); // Round correctly
-            color = Vector3.Min(new Vector3(255), Vector3.Max(new Vector3(0), color));
-
-            uint result = (uint)(0xff000000 + ((byte)color.X << 16) + ((byte)color.Y << 8) + (byte)color.Z);
-            return result;
-        }
-
-        private static tr_color PackColorTo24Bit(Vector3 color)
-        {
-            color *= 128.0f;
-            color += new Vector3(0.5f); // Round correctly
-            color = Vector3.Min(new Vector3(255), Vector3.Max(new Vector3(0), color));
-
-            tr_color result;
-            result.Red = (byte)color.X;
-            result.Green = (byte)color.Y;
-            result.Blue = (byte)color.Z;
-            return result;
         }
 
         private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
