@@ -755,17 +755,35 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : 0));
                 writer.Write(light.CutOff);
 
-                writer.Write(light.DirectionX);
-                writer.Write(light.DirectionY);
-                writer.Write(light.DirectionZ);
+                if (light.LightType == 2)
+                {
+                    writer.Write(-light.DirectionX);
+                    writer.Write(-light.DirectionY);
+                    writer.Write(-light.DirectionZ);
+                }
+                else
+                {
+                    writer.Write(light.DirectionX);
+                    writer.Write(light.DirectionY);
+                    writer.Write(light.DirectionZ);
+                }
 
                 writer.Write(light.X);
                 writer.Write(light.Y);
                 writer.Write(light.Z);
 
-                writer.Write((int)(light.DirectionX * 16384.0f));
-                writer.Write((int)(light.DirectionY * 16384.0f));
-                writer.Write((int)(light.DirectionZ * 16384.0f));
+                if (light.LightType == 2)
+                {
+                    writer.Write((int)(-light.DirectionX * 16384.0f));
+                    writer.Write((int)(-light.DirectionY * 16384.0f));
+                    writer.Write((int)(-light.DirectionZ * 16384.0f));
+                }
+                else
+                {
+                    writer.Write((int)(light.DirectionX * 16384.0f));
+                    writer.Write((int)(light.DirectionY * 16384.0f));
+                    writer.Write((int)(light.DirectionZ * 16384.0f));
+                }
 
                 writer.Write(light.LightType);
 
