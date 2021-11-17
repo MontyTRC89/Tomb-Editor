@@ -27,6 +27,7 @@ namespace WadTool
         public bool AnimationEditor_SmoothAnimation { get; set; } = true;
         public bool AnimationEditor_ChainPlayback { get; set; } = false;
         public bool AnimationEditor_SoundPreview { get; set; } = false;
+        public bool AnimationEditor_ClampStateChangeValues { get; set; } = true;
         public SoundPreviewType AnimationEditor_SoundPreviewType { get; set; } = SoundPreviewType.Land;
 
         public bool MeshEditor_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;

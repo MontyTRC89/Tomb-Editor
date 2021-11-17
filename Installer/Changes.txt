@@ -10,6 +10,9 @@ Tomb Editor:
  * Fix Lara type and weather type not updating in level settings for TR5.
  * Fix spotlight compilation for TR5.
  
+WadTool:
+ * An option to disable automatic bound for state change editor values.
+ 
 Version 1.4.5
 =============
 

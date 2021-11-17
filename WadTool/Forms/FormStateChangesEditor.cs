@@ -136,7 +136,7 @@ namespace WadTool
         {
             base.OnShown(e);
 
-            if(_createdNew)
+            if (_createdNew)
             {
                 dgvStateChanges.ClearSelection();
                 dgvStateChanges.Rows[dgvStateChanges.Rows.Count - 1].Selected = true;
@@ -243,25 +243,28 @@ namespace WadTool
 
                 var limit = Int16.MaxValue;
 
-                if (name == columnNextAnimation.Name)
+                if (_editor.Tool.Configuration.AnimationEditor_ClampStateChangeValues)
                 {
-                    limit = (Int16)(_editor.Animations.Count - 1);
-                }
-                else if (name == columnNextFrame.Name)
-                {
-                    Int16 limitNew = 0;
-                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[4].Value.ToString(), out limitNew))
-                        limit = (Int16)(_editor.GetRealNumberOfFrames(limitNew));
-                }
-                else if (name == columnLowFrame.Name)
-                {
-                    Int16 limitNew = 0;
-                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
-                        limit = limitNew;
-                }
-                else if (name == columnHighFrame.Name)
-                {
-                    limit = (Int16)(_editor.GetRealNumberOfFrames() - 1);
+                    if (name == columnNextAnimation.Name)
+                    {
+                        limit = (Int16)(_editor.Animations.Count - 1);
+                    }
+                    else if (name == columnNextFrame.Name)
+                    {
+                        Int16 limitNew = 0;
+                        if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[4].Value.ToString(), out limitNew))
+                            limit = (Int16)(_editor.GetRealNumberOfFrames(limitNew));
+                    }
+                    else if (name == columnLowFrame.Name)
+                    {
+                        Int16 limitNew = 0;
+                        if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
+                            limit = limitNew;
+                    }
+                    else if (name == columnHighFrame.Name)
+                    {
+                        limit = (Int16)(_editor.GetRealNumberOfFrames() - 1);
+                    }
                 }
 
                 if (parsedValue > limit)
