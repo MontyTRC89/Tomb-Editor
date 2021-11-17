@@ -2,9 +2,11 @@ Version 1.4.6
 =============
 
 Tomb Editor:
+ * Add search textbox to top-side menu.
  * Fix exception when unloading textures.
  * Fix wrong depiction of some NG timer flipeffects.
- * Add TR2 Gold sound catalog.
+ * Add TR2 Gold sound catalog (by Danath).
+ * Add TR3 Gold sound catalog (by piano_raider).
  * Fix Lara type and weather type not updating in level settings for TR5.
  * Fix spotlight compilation for TR5.
  
