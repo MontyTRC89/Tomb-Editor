@@ -131,7 +131,6 @@ namespace TombEditor.Forms
                 addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
                 addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
                 generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                TENLabel.Visible = _editor.Level.IsTombEngine;
             }
 
             // Clear autosave information
@@ -366,6 +365,47 @@ namespace TombEditor.Forms
                     }
                 }
             }
+        }
+
+        private ToolStripMenuItem FindAndExpandMenu(ToolStripItemCollection dropDownItems, string searchRequest, ToolStripMenuItem parent = null)
+        {
+            if (string.IsNullOrEmpty(searchRequest))
+                return null;
+
+            ToolStripMenuItem result = null;
+
+            foreach (object obj in dropDownItems)
+            {
+                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
+
+                if (subMenu == null)
+                    continue;
+
+                if (subMenu.HasDropDownItems)
+                {
+                    result = FindAndExpandMenu(subMenu.DropDownItems, searchRequest, subMenu);
+                    if (result != null)
+                        break;
+                }
+                else
+                {
+
+                    if (subMenu.Enabled && subMenu.Text.IndexOf(searchRequest, 0, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    {
+                        subMenu.Select();
+                        result = parent;
+                        break;
+                    }
+                }
+            }
+
+            if (result != null)
+            {
+                result.ShowDropDown();
+                return parent;
+            }
+
+            return null;
         }
 
         private DarkDockContent FindDockContentByKey(string key)
@@ -755,6 +795,17 @@ namespace TombEditor.Forms
                     base.WndProc(ref message);
                     break;
             }
+        }
+
+        private void tbSearchMenu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+                FindAndExpandMenu(menuStrip.Items, tbSearchMenu.Text);
+        }
+
+        private void butFindMenu_Click(object sender, EventArgs e)
+        {
+            FindAndExpandMenu(menuStrip.Items, tbSearchMenu.Text);
         }
     }
 }
