@@ -244,7 +244,7 @@ namespace TombEditor.Forms
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(913, 30);
+            this.menuStrip.Size = new System.Drawing.Size(913, 29);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "darkMenuStrip1";
             // 
@@ -267,7 +267,7 @@ namespace TombEditor.Forms
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 25);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newLevelToolStripMenuItem
@@ -411,7 +411,7 @@ namespace TombEditor.Forms
             this.searchAndReplaceToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 26);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 25);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // undoToolStripMenuItem
@@ -582,7 +582,7 @@ namespace TombEditor.Forms
             this.ShowRealTintForObjectsToolStripMenuItem});
             this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 26);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 25);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resetCameraToolStripMenuItem
@@ -662,7 +662,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem9});
             this.roomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.roomsToolStripMenuItem.Name = "roomsToolStripMenuItem";
-            this.roomsToolStripMenuItem.Size = new System.Drawing.Size(56, 26);
+            this.roomsToolStripMenuItem.Size = new System.Drawing.Size(56, 25);
             this.roomsToolStripMenuItem.Text = "Rooms";
             // 
             // newRoomToolStripMenuItem
@@ -1077,7 +1077,7 @@ namespace TombEditor.Forms
             this.generateObjectNamesToolStripMenuItem});
             this.itemsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
-            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(48, 26);
+            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(48, 25);
             this.itemsToolStripMenuItem.Text = "Items";
             // 
             // addWadToolStripMenuItem
@@ -1463,7 +1463,7 @@ namespace TombEditor.Forms
             this.animationRangesToolStripMenuItem});
             this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
-            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(63, 26);
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(63, 25);
             this.texturesToolStripMenuItem.Text = "Textures";
             // 
             // loadTextureToolStripMenuItem
@@ -1647,7 +1647,7 @@ namespace TombEditor.Forms
             this.gridWallsIn5SquaresToolStripMenuItem});
             this.transformToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
-            this.transformToolStripMenuItem.Size = new System.Drawing.Size(74, 26);
+            this.transformToolStripMenuItem.Size = new System.Drawing.Size(74, 25);
             this.transformToolStripMenuItem.Text = "Transform";
             // 
             // smoothRandomFloorUpToolStripMenuItem
@@ -1853,7 +1853,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem6});
             this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(48, 26);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(48, 25);
             this.toolStripMenuItem4.Text = "Tools";
             // 
             // toolStripMenuItem5
@@ -1918,9 +1918,9 @@ namespace TombEditor.Forms
             this.butFindMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butFindMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butFindMenu.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butFindMenu.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.butFindMenu.Margin = new System.Windows.Forms.Padding(1, 2, 1, 0);
             this.butFindMenu.Name = "butFindMenu";
-            this.butFindMenu.Size = new System.Drawing.Size(28, 24);
+            this.butFindMenu.Size = new System.Drawing.Size(28, 23);
             this.butFindMenu.ToolTipText = "Search for menu entry";
             this.butFindMenu.Click += new System.EventHandler(this.butFindMenu_Click);
             // 
@@ -1943,7 +1943,7 @@ namespace TombEditor.Forms
             this.toolPaletteToolStripMenuItem});
             this.windowToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.Size = new System.Drawing.Size(63, 26);
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(63, 25);
             this.windowToolStripMenuItem.Text = "Window";
             // 
             // restoreDefaultLayoutToolStripMenuItem
@@ -2090,7 +2090,7 @@ namespace TombEditor.Forms
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 25);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
@@ -2109,7 +2109,7 @@ namespace TombEditor.Forms
             this.tbSearchMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tbSearchMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbSearchMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbSearchMenu.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.tbSearchMenu.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.tbSearchMenu.Name = "tbSearchMenu";
             this.tbSearchMenu.Size = new System.Drawing.Size(100, 23);
             this.tbSearchMenu.ToolTipText = "Search for menu entry";
@@ -2129,7 +2129,7 @@ namespace TombEditor.Forms
             this.debugScriptToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 26);
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 25);
             this.debugToolStripMenuItem.Text = "Debug";
             this.debugToolStripMenuItem.Visible = false;
             // 
@@ -2275,7 +2275,7 @@ namespace TombEditor.Forms
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
             this.dockArea.Name = "dockArea";
             this.dockArea.Padding = new System.Windows.Forms.Padding(2);
-            this.dockArea.Size = new System.Drawing.Size(913, 410);
+            this.dockArea.Size = new System.Drawing.Size(913, 411);
             this.dockArea.TabIndex = 90;
             this.dockArea.ContentAdded += new System.EventHandler<DarkUI.Docking.DockContentEventArgs>(this.ToolWindow_Added);
             this.dockArea.ContentRemoved += new System.EventHandler<DarkUI.Docking.DockContentEventArgs>(this.ToolWindow_Removed);
@@ -2284,9 +2284,9 @@ namespace TombEditor.Forms
             // 
             this.panelDockArea.Controls.Add(this.dockArea);
             this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelDockArea.Location = new System.Drawing.Point(0, 30);
+            this.panelDockArea.Location = new System.Drawing.Point(0, 29);
             this.panelDockArea.Name = "panelDockArea";
-            this.panelDockArea.Size = new System.Drawing.Size(913, 410);
+            this.panelDockArea.Size = new System.Drawing.Size(913, 411);
             this.panelDockArea.TabIndex = 26;
             // 
             // assToolStripMenuItem
