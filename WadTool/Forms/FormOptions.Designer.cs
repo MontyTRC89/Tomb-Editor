@@ -56,6 +56,7 @@
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox6 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox4 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
             this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
@@ -95,7 +96,6 @@
             this.darkNumericUpDown35 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkNumericUpDown34 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel37 = new DarkUI.Controls.DarkLabel();
-            this.darkCheckBox6 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabSubPanel2.SuspendLayout();
@@ -523,6 +523,16 @@
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "Editing";
+            // 
+            // darkCheckBox6
+            // 
+            this.darkCheckBox6.AutoSize = true;
+            this.darkCheckBox6.Location = new System.Drawing.Point(6, 67);
+            this.darkCheckBox6.Name = "darkCheckBox6";
+            this.darkCheckBox6.Size = new System.Drawing.Size(271, 17);
+            this.darkCheckBox6.TabIndex = 12;
+            this.darkCheckBox6.Tag = "AnimationEditor_ClampStateChangeValues";
+            this.darkCheckBox6.Text = "Automatically bound state change editor values";
             // 
             // darkCheckBox4
             // 
@@ -1100,16 +1110,6 @@
             this.darkLabel37.Size = new System.Drawing.Size(111, 13);
             this.darkLabel37.TabIndex = 35;
             this.darkLabel37.Text = "Centering cube size:";
-            // 
-            // darkCheckBox6
-            // 
-            this.darkCheckBox6.AutoSize = true;
-            this.darkCheckBox6.Location = new System.Drawing.Point(6, 67);
-            this.darkCheckBox6.Name = "darkCheckBox6";
-            this.darkCheckBox6.Size = new System.Drawing.Size(271, 17);
-            this.darkCheckBox6.TabIndex = 12;
-            this.darkCheckBox6.Tag = "AnimationEditor_ClampStateChangeValues";
-            this.darkCheckBox6.Text = "Automatically bound state change editor values";
             // 
             // FormOptions
             // 

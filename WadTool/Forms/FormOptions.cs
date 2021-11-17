@@ -11,7 +11,7 @@ namespace WadTool
         {
             InitializeComponent();
             InitializeDialog();
-            this.SetActualSize(631, 560);
+            this.SetActualSize(631, 580);
             this.LockWidth();
 
             _tool = tool;
