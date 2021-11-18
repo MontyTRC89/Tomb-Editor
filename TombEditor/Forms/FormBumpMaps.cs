@@ -167,8 +167,8 @@ namespace TombEditor.Forms
 
                 // Draw bumpmaps
                 using (Font bumpFont = new Font(Font.FontFamily, _bumpStringSize * _bumpProportion * LevelTexture.BumpMappingGranularity * Math.Min(100, ViewScale)))
-                    for (int y = bumpTileStartY; y <= bumpTileEndY; ++y)
-                        for (int x = bumpTileStartX; x <= bumpTileEndX; ++x)
+                    for (int y = bumpTileStartY; y < bumpTileEndY; ++y)
+                        for (int x = bumpTileStartX; x < bumpTileEndX; ++x)
                         {
                             if (x < 0 || x >= texture.BumpMappingWidth || y < 0 || y >= texture.BumpMappingHeight)
                                 continue;

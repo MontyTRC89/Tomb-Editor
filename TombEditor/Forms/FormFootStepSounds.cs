@@ -125,8 +125,8 @@ namespace TombEditor.Forms
 
                 // Draw texture sounds
                 using (Font textureSoundFont = new Font(Font.FontFamily, _textureSoundStringSize * _textureSoundProportion * LevelTexture.FootStepSoundGranularity * Math.Min(100, ViewScale)))
-                    for (int y = soundTileStartY; y <= soundTileEndY; ++y)
-                        for (int x = soundTileStartX; x <= soundTileEndX; ++x)
+                    for (int y = soundTileStartY; y < soundTileEndY; ++y)
+                        for (int x = soundTileStartX; x < soundTileEndX; ++x)
                         {
                             if (x < 0 || x >= texture.FootStepSoundWidth || y < 0 || y >= texture.FootStepSoundHeight)
                                 continue;
