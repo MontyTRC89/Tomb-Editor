@@ -18,7 +18,7 @@ namespace TombEditor.Forms
             this.cmbBump = new DarkUI.Controls.DarkComboBox();
             this.cbUseCustomFile = new DarkUI.Controls.DarkCheckBox();
             this.lblCustomMapPath = new DarkUI.Controls.DarkLabel();
-            this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
+            this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
             this.SuspendLayout();
             // 
             // textureMap
@@ -134,6 +134,6 @@ namespace TombEditor.Forms
         private DarkComboBox cmbBump;
         private DarkCheckBox cbUseCustomFile;
         private DarkLabel lblCustomMapPath;
-        private DarkComboBox comboCurrentTexture;
+        private TombLib.Controls.DarkSearchableComboBox comboCurrentTexture;
     }
 }

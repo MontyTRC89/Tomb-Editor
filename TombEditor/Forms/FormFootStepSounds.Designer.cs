@@ -16,7 +16,7 @@ namespace TombEditor.Forms
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
+            this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
             this.SuspendLayout();
             // 
             // textureMap
@@ -104,6 +104,6 @@ namespace TombEditor.Forms
         private DarkButton butAssignSound;
         private DarkComboBox comboSounds;
         private DarkButton butOk;
-        private DarkComboBox comboCurrentTexture;
+        private TombLib.Controls.DarkSearchableComboBox comboCurrentTexture;
     }
 }
