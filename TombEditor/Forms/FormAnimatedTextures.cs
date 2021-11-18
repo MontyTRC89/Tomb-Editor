@@ -237,7 +237,10 @@ namespace TombEditor.Forms
 
             // Populate texture list
             comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
-            comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
+            if (_editor.SelectedTexture != null)
+                comboCurrentTexture.SelectedItem = _editor.SelectedTexture.Texture;
+            else
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
 
             // Populate anim sets list
             while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)

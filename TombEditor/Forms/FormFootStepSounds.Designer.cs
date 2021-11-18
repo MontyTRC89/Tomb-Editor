@@ -16,6 +16,7 @@ namespace TombEditor.Forms
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
+            this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.SuspendLayout();
             // 
             // textureMap
@@ -23,14 +24,16 @@ namespace TombEditor.Forms
             this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureMap.Location = new System.Drawing.Point(8, 9);
+            this.textureMap.Location = new System.Drawing.Point(8, 39);
             this.textureMap.Name = "textureMap";
-            this.textureMap.Size = new System.Drawing.Size(409, 517);
+            this.textureMap.Size = new System.Drawing.Size(409, 487);
             this.textureMap.TabIndex = 0;
+            this.textureMap.VisibleTexture = null;
             // 
             // butAssignSound
             // 
             this.butAssignSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAssignSound.Checked = false;
             this.butAssignSound.Location = new System.Drawing.Point(218, 533);
             this.butAssignSound.Name = "butAssignSound";
             this.butAssignSound.Size = new System.Drawing.Size(113, 23);
@@ -52,6 +55,7 @@ namespace TombEditor.Forms
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(337, 533);
             this.butOk.Name = "butOk";
@@ -61,6 +65,17 @@ namespace TombEditor.Forms
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
+            // comboCurrentTexture
+            // 
+            this.comboCurrentTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboCurrentTexture.FormattingEnabled = true;
+            this.comboCurrentTexture.Location = new System.Drawing.Point(8, 10);
+            this.comboCurrentTexture.Name = "comboCurrentTexture";
+            this.comboCurrentTexture.Size = new System.Drawing.Size(409, 23);
+            this.comboCurrentTexture.TabIndex = 22;
+            this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
+            // 
             // FormFootStepSounds
             // 
             this.AcceptButton = this.butOk;
@@ -68,6 +83,7 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(424, 562);
+            this.Controls.Add(this.comboCurrentTexture);
             this.Controls.Add(this.comboSounds);
             this.Controls.Add(this.butAssignSound);
             this.Controls.Add(this.butOk);
@@ -88,5 +104,6 @@ namespace TombEditor.Forms
         private DarkButton butAssignSound;
         private DarkComboBox comboSounds;
         private DarkButton butOk;
+        private DarkComboBox comboCurrentTexture;
     }
 }

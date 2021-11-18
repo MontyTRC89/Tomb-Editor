@@ -7,6 +7,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
+using System.Linq;
 
 namespace TombEditor.Forms
 {
@@ -37,11 +38,12 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
-            // Initialize texture map
-            if (editor.SelectedTexture.TextureIsInvisible)
-                textureMap.ResetVisibleTexture(texture);
+            // Populate texture list
+            comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+            if (texture != null)
+                comboCurrentTexture.SelectedItem = texture;
             else
-                textureMap.ShowTexture(editor.SelectedTexture);
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
 
             // Add bumpmaps to combo box
             foreach (BumpMappingLevel bump in Enum.GetValues(typeof(BumpMappingLevel)))
@@ -217,6 +219,16 @@ namespace TombEditor.Forms
         private void lblCustomMapPath_Click(object sender, EventArgs e)
         {
             SwitchCustomBumpmap();
+        }
+
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (textureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
+            {
+                textureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+                textureMap.SelectedTexture = TextureArea.None;
+                UpdateDialog();
+            }
         }
     }
 }

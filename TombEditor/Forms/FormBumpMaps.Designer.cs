@@ -18,6 +18,7 @@ namespace TombEditor.Forms
             this.cmbBump = new DarkUI.Controls.DarkComboBox();
             this.cbUseCustomFile = new DarkUI.Controls.DarkCheckBox();
             this.lblCustomMapPath = new DarkUI.Controls.DarkLabel();
+            this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.SuspendLayout();
             // 
             // textureMap
@@ -25,14 +26,16 @@ namespace TombEditor.Forms
             this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureMap.Location = new System.Drawing.Point(8, 9);
+            this.textureMap.Location = new System.Drawing.Point(8, 40);
             this.textureMap.Name = "textureMap";
-            this.textureMap.Size = new System.Drawing.Size(409, 495);
+            this.textureMap.Size = new System.Drawing.Size(409, 464);
             this.textureMap.TabIndex = 0;
+            this.textureMap.VisibleTexture = null;
             // 
             // butAssignBumpmap
             // 
             this.butAssignBumpmap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAssignBumpmap.Checked = false;
             this.butAssignBumpmap.Location = new System.Drawing.Point(218, 533);
             this.butAssignBumpmap.Name = "butAssignBumpmap";
             this.butAssignBumpmap.Size = new System.Drawing.Size(113, 23);
@@ -44,6 +47,7 @@ namespace TombEditor.Forms
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(337, 533);
             this.butOk.Name = "butOk";
@@ -87,6 +91,17 @@ namespace TombEditor.Forms
             this.lblCustomMapPath.Text = "path to custom file";
             this.lblCustomMapPath.Click += new System.EventHandler(this.lblCustomMapPath_Click);
             // 
+            // comboCurrentTexture
+            // 
+            this.comboCurrentTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboCurrentTexture.FormattingEnabled = true;
+            this.comboCurrentTexture.Location = new System.Drawing.Point(8, 11);
+            this.comboCurrentTexture.Name = "comboCurrentTexture";
+            this.comboCurrentTexture.Size = new System.Drawing.Size(409, 23);
+            this.comboCurrentTexture.TabIndex = 21;
+            this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
+            // 
             // FormBumpMaps
             // 
             this.AcceptButton = this.butOk;
@@ -94,6 +109,7 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(424, 562);
+            this.Controls.Add(this.comboCurrentTexture);
             this.Controls.Add(this.lblCustomMapPath);
             this.Controls.Add(this.cbUseCustomFile);
             this.Controls.Add(this.cmbBump);
@@ -118,5 +134,6 @@ namespace TombEditor.Forms
         private DarkComboBox cmbBump;
         private DarkCheckBox cbUseCustomFile;
         private DarkLabel lblCustomMapPath;
+        private DarkComboBox comboCurrentTexture;
     }
 }
