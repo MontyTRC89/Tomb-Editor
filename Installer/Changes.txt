@@ -4,6 +4,7 @@ Version 1.4.6
 Tomb Editor:
  * Add search textbox to top-side menu.
  * Add texture selection lists to bumpmap and texture sound windows.
+ * Fix occasional ghost grid cells in bumpmap and texture sound windows.
  * Fix exception when unloading textures.
  * Fix wrong depiction of some NG timer flipeffects.
  * Add TR2 Gold sound catalog (by Danath).
