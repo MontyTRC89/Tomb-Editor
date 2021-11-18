@@ -282,8 +282,8 @@ namespace TombEditor.Forms
             {
                 if (((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
                 {
-                    tbSearchMenu.Text = string.Empty;
                     tbSearchMenu.Focus();
+                    tbSearchMenu.SelectAll();
                 }
             }
 
