@@ -278,6 +278,14 @@ namespace TombEditor.Forms
                 bookmarkRestoreObjectToolStripMenuItem.Enabled = @event.Current != null;
             }
 
+            if (obj is Editor.DefaultControlActivationEvent)
+            {
+                if (((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
+                {
+                    tbSearchMenu.Focus();
+                }
+            }
+
             if (obj is Editor.LevelFileNameChangedEvent)
                 RefreshRecentProjectsList();
 
