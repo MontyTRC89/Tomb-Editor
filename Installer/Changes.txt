@@ -10,7 +10,7 @@ Tomb Editor:
  * Add TR2 Gold sound catalog (by Danath).
  * Add TR3 Gold sound catalog (by piano_raider).
  * Fix Lara type and weather type not updating in level settings for TR5.
- * Fix spotlight compilation for TR5.
+ * Fix spotlight and sun light types compilation for TR5.
  
 WadTool:
  * An option to disable automatic bound for state change editor values.
