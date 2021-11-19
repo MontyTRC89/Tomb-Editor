@@ -516,12 +516,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     if (!poly.IsTriangle) key.Index3 = indices[3];
                                 }
 
+                                BlendMode realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
+                                {
+                                    realBlendMode = BlendMode.AlphaBlend;
+                                }
+
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(key))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[key];
                                     var face = poly.IsTriangle ? 
-                                        result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, roomVertices) :
-                                        result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, roomVertices);
+                                        result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
+                                        result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(face);
                                 }
@@ -529,8 +535,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 {
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle);
                                     var face = poly.IsTriangle ? 
-                                        result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, roomVertices) :
-                                        result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, roomVertices);
+                                        result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
+                                        result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(face);
                                     _mergedStaticMeshTextureInfos.Add(key, result);
@@ -644,6 +650,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
 
+                                BlendMode realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
+                                {
+                                    realBlendMode = BlendMode.AlphaBlend;
+                                }
+
                                 // TODO: what happens for flipped textures?
                                 if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
                                 if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
@@ -655,7 +667,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                 var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
+                                var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)realBlendMode, roomVertices);
                                 roomPolygons.Add(tri);
                                 roomVertices[index0].Polygons.Add(new NormalHelper(tri));
                                 roomVertices[index1].Polygons.Add(new NormalHelper(tri));

@@ -110,20 +110,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (doubleSided && !texture.DoubleSided)
                         break;
 
-                    if (doubleSided) texture.Mirror();
+                    if (doubleSided)
+                        texture.Mirror(poly.IsTriangle);
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
                                                       new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
 
-                    if (doubleSided) Array.Reverse(indices);
+                    if (doubleSided)
+                        Array.Reverse(indices);
+
+                    BlendMode realBlendMode = texture.BlendMode;
+                    if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
+                    {
+                        realBlendMode = BlendMode.AlphaBlend;
+                    }
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
 
                     newMesh.Polygons.Add(newPoly);
 

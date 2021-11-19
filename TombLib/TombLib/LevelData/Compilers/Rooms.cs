@@ -419,7 +419,7 @@ namespace TombLib.LevelData.Compilers
 
                                         if (copyFace)
                                         {
-                                            texture.Mirror();
+                                            texture.Mirror(true);
                                             result = _textureInfoManager.AddTexture(texture, true, true);
                                             roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
@@ -431,139 +431,139 @@ namespace TombLib.LevelData.Compilers
                 // Merge static meshes
 
                 if (!_level.Settings.FastMode)
-                foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
-                {
-                    // Сheck if static Mesh is in the Auto Merge list
-                    var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
-                        mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
-
-                    if (entry == null)
-                        continue;
-
-                    bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
-                    bool clearShades = entry.ClearShades;
-                    int meshVertexBase = roomVertices.Count;
-                    var worldTransform = staticMesh.RotationMatrix *
-                                         Matrix4x4.CreateTranslation(staticMesh.Position);
-                    var normalTransform = staticMesh.RotationMatrix;
-                    WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
-
-                    if (wadStatic == null || wadStatic.Mesh == null)
-                        continue;
-
-                    for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
+                    foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                     {
-                        // Apply the transform to the vertex
-                        Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
-                        Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
-                        normal = Vector3.Normalize(normal);
-                        int lightingEffect = 0;
-                        float shade = 1.0f;
-                        if (interpretShadesAsEffect &&
-                            _level.Settings.GameVersion >= TRVersion.Game.TR3)
+                        // Сheck if static Mesh is in the Auto Merge list
+                        var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                            mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+
+                        if (entry == null)
+                            continue;
+
+                        bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
+                        bool clearShades = entry.ClearShades;
+                        int meshVertexBase = roomVertices.Count;
+                        var worldTransform = staticMesh.RotationMatrix *
+                                             Matrix4x4.CreateTranslation(staticMesh.Position);
+                        var normalTransform = staticMesh.RotationMatrix;
+                        WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+
+                        if (wadStatic == null || wadStatic.Mesh == null)
+                            continue;
+
+                        for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
                         {
-                            if (j < wadStatic.Mesh.VertexColors.Count)
+                            // Apply the transform to the vertex
+                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
+                            normal = Vector3.Normalize(normal);
+                            int lightingEffect = 0;
+                            float shade = 1.0f;
+                            if (interpretShadesAsEffect &&
+                                _level.Settings.GameVersion >= TRVersion.Game.TR3)
                             {
-                                var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
-                                if (luma < 0.5f) lightingEffect = 0x2000;   // Movement
-                                else if (luma < 1.0f) lightingEffect = 0x4000; // Glow
+                                if (j < wadStatic.Mesh.VertexColors.Count)
+                                {
+                                    var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
+                                    if (luma < 0.5f) lightingEffect = 0x2000;   // Movement
+                                    else if (luma < 1.0f) lightingEffect = 0x4000; // Glow
+                                }
                             }
-                        }
-                        else
-                        {
-                            // If we have vertex colors, use them as a luma factor for the resulting vertex color
-                            if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
-                                shade = wadStatic.Mesh.VertexColors[j].GetLuma();
-
-                            // Use native wad2 vertex effect values to assign vertex flags.
-                            // Since legacy engines doesn't support individual values, we convert any value to a flag.
-                            
-                            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && wadStatic.Mesh.HasAttributes)
+                            else
                             {
-                                if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-                                    lightingEffect |= 0x2000; // Movement
+                                // If we have vertex colors, use them as a luma factor for the resulting vertex color
+                                if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
+                                    shade = wadStatic.Mesh.VertexColors[j].GetLuma();
 
-                                if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-                                    lightingEffect |= 0x4000; // Glow
+                                // Use native wad2 vertex effect values to assign vertex flags.
+                                // Since legacy engines doesn't support individual values, we convert any value to a flag.
+
+                                if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && wadStatic.Mesh.HasAttributes)
+                                {
+                                    if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                        lightingEffect |= 0x2000; // Movement
+
+                                    if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                        lightingEffect |= 0x4000; // Glow
+                                }
                             }
-                        }
-                        Vector3 color;
-                        if (!entry.TintAsAmbient)
-                        {
-                            color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
-                            // Apply Shade factor
-                            color *= shade;
-                            // Apply Instance Color
-                            color *= staticMesh.Color;
-                        }
-                        else
-                        {
-                            color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                            //Apply Shade factor
-                            color *= shade;
-                        }
-                        var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
-                        var trVertex = new tr_room_vertex
-                        {
-                            Position = new tr_vertex
+                            Vector3 color;
+                            if (!entry.TintAsAmbient)
                             {
-                                X = (short)position.X,
-                                Y = (short)-(position.Y + room.WorldPos.Y),
-                                Z = (short)position.Z
-                            },
-                            Lighting1 = vertexColor,
-                            Lighting2 = vertexColor,
-                            Attributes = (ushort)lightingEffect
-                        };
-                        roomVertices.Add(trVertex);
-                    }
-
-                    for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
-                    {
-                        WadPolygon poly = wadStatic.Mesh.Polys[i];
-                        ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
-                        ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
-                        ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
-                        ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
-
-                        var texture = poly.Texture;
-                        FixWadTextureCoordinates(ref texture);
-
-                        var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
-                        var copyFace = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
-
-                        if (poly.IsTriangle) 
-                        {
-                            var result = _textureInfoManager.AddTexture(texture, true, true);
-                            tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, doubleSided, 0);
-                            roomTriangles.Add(tri);
-                        } 
-                        else 
-                        {
-                            var result = _textureInfoManager.AddTexture(texture, true, false);
-                            tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, doubleSided, 0);
-                            roomQuads.Add(quad);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
+                                // Apply Shade factor
+                                color *= shade;
+                                // Apply Instance Color
+                                color *= staticMesh.Color;
+                            }
+                            else
+                            {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                //Apply Shade factor
+                                color *= shade;
+                            }
+                            var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
+                            var trVertex = new tr_room_vertex
+                            {
+                                Position = new tr_vertex
+                                {
+                                    X = (short)position.X,
+                                    Y = (short)-(position.Y + room.WorldPos.Y),
+                                    Z = (short)position.Z
+                                },
+                                Lighting1 = vertexColor,
+                                Lighting2 = vertexColor,
+                                Attributes = (ushort)lightingEffect
+                            };
+                            roomVertices.Add(trVertex);
                         }
 
-                        if (copyFace)
+                        for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
                         {
-                            texture.Mirror();
+                            WadPolygon poly = wadStatic.Mesh.Polys[i];
+                            ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
+                            ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
+                            ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
+                            ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+
+                            var texture = poly.Texture;
+                            FixWadTextureCoordinates(ref texture);
+
+                            var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
+                            var copyFace = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                             if (poly.IsTriangle)
                             {
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index2, index1, index0 }, doubleSided, 0);
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, doubleSided, 0);
                                 roomTriangles.Add(tri);
                             }
                             else
                             {
                                 var result = _textureInfoManager.AddTexture(texture, true, false);
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index3, index2, index1, index0 }, doubleSided, 0);
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, doubleSided, 0);
                                 roomQuads.Add(quad);
+                            }
+
+                            if (copyFace)
+                            {
+                                if (poly.IsTriangle)
+                                {
+                                    texture.Mirror(true);
+                                    var result = _textureInfoManager.AddTexture(texture, true, true);
+                                    tr_face3 tri = result.CreateFace3(new ushort[] { index2, index1, index0 }, doubleSided, 0);
+                                    roomTriangles.Add(tri);
+                                }
+                                else
+                                {
+                                    texture.Mirror();
+                                    var result = _textureInfoManager.AddTexture(texture, true, false);
+                                    tr_face4 quad = result.CreateFace4(new ushort[] { index3, index2, index1, index0 }, doubleSided, 0);
+                                    roomQuads.Add(quad);
+                                }
                             }
                         }
                     }
-                }
 
                 // Add geometry imported objects
 
@@ -700,7 +700,7 @@ namespace TombLib.LevelData.Compilers
 
                                 if (copyFace)
                                 {
-                                    texture.Mirror();
+                                    texture.Mirror(true);
                                     result = _textureInfoManager.AddTexture(texture, true, true);
                                     roomTriangles.Add(result.CreateFace3(new ushort[] { index2, index1, index0 }, doubleSided, 0));
                                 }

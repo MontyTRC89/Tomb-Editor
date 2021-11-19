@@ -196,7 +196,9 @@ namespace TombLib.LevelData.Compilers
                     if (doubleSided && !texture.DoubleSided)
                         break;
 
-                    if (doubleSided) texture.Mirror();
+                    if (doubleSided) 
+                        texture.Mirror(poly.IsTriangle);
+
                     var result = _textureInfoManager.AddTexture(texture, agressivePacking, poly.IsTriangle, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
