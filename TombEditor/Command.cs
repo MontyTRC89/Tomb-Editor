@@ -2101,6 +2101,11 @@ namespace TombEditor
                 args.Editor.ActivateDefaultControl(nameof(ToolWindows.ImportedGeometryBrowser));
             });
 
+            AddCommand("SearchMenus", "Search menu entries", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.ActivateDefaultControl(nameof(FormMain));
+            });
+
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 
             {
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",

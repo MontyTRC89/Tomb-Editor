@@ -17,7 +17,7 @@ namespace TombEditor.Forms
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
+            this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
             this.textureMap = new TombEditor.Forms.FormAnimatedTextures.PanelTextureMapForAnimations();
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkPanel1 = new DarkUI.Controls.DarkPanel();
@@ -855,7 +855,7 @@ namespace TombEditor.Forms
         private DarkLabel lblFps;
         private DarkComboBox comboFps;
         private Panel panel2;
-        private DarkComboBox comboCurrentTexture;
+        private TombLib.Controls.DarkSearchableComboBox comboCurrentTexture;
         private FormAnimatedTextures.PanelTextureMapForAnimations textureMap;
         private DarkLabel lblProcAnim;
         private DarkPanel panel3;

@@ -8,6 +8,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
+using System.Linq;
 
 namespace TombEditor.Forms
 {
@@ -49,11 +50,12 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
-            // Initialize texture map
-            if (editor.SelectedTexture.Texture == texture)
-                textureMap.ShowTexture(editor.SelectedTexture);
+            // Populate texture list
+            comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+            if (texture != null)
+                comboCurrentTexture.SelectedItem = texture;
             else
-                textureMap.ResetVisibleTexture(texture);
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
 
             // Add texture sounds to combo box
             foreach (TextureFootStepSound sound in Enum.GetValues(typeof(TextureFootStepSound)))
@@ -123,8 +125,8 @@ namespace TombEditor.Forms
 
                 // Draw texture sounds
                 using (Font textureSoundFont = new Font(Font.FontFamily, _textureSoundStringSize * _textureSoundProportion * LevelTexture.FootStepSoundGranularity * Math.Min(100, ViewScale)))
-                    for (int y = soundTileStartY; y <= soundTileEndY; ++y)
-                        for (int x = soundTileStartX; x <= soundTileEndX; ++x)
+                    for (int y = soundTileStartY; y < soundTileEndY; ++y)
+                        for (int x = soundTileStartX; x < soundTileEndX; ++x)
                         {
                             if (x < 0 || x >= texture.FootStepSoundWidth || y < 0 || y >= texture.FootStepSoundHeight)
                                 continue;
@@ -165,6 +167,15 @@ namespace TombEditor.Forms
                 e.Graphics.FillRectangle(_coverBrush, selArea);
 
                 base.OnPaintSelection(e);
+            }
+        }
+
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (textureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
+            {
+                textureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+                textureMap.SelectedTexture = TextureArea.None;
             }
         }
     }

@@ -111,7 +111,8 @@ namespace TombLib.Utils
                  activeControlType == "DarkAutocompleteTextBox" ||
                  activeControlType == "DarkComboBox" ||
                  activeControlType == "DarkListBox" ||
-                 activeControlType == "UpDownEdit"))
+                 activeControlType == "UpDownEdit" ||
+                 activeControlType == "ToolStripTextBoxControl"))
                 return true;
             else
                 return false;

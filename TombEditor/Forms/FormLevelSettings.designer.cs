@@ -1928,6 +1928,7 @@
             this.comboTr5Weather.Name = "comboTr5Weather";
             this.comboTr5Weather.Size = new System.Drawing.Size(658, 23);
             this.comboTr5Weather.TabIndex = 4;
+            this.comboTr5Weather.SelectedIndexChanged += new System.EventHandler(this.comboTr5Weather_SelectedIndexChanged);
             // 
             // lblTr5Weather
             // 
@@ -1957,6 +1958,7 @@
             this.comboLaraType.Name = "comboLaraType";
             this.comboLaraType.Size = new System.Drawing.Size(658, 23);
             this.comboLaraType.TabIndex = 4;
+            this.comboLaraType.SelectedIndexChanged += new System.EventHandler(this.comboLaraType_SelectedIndexChanged);
             // 
             // lblLaraType
             // 
