@@ -155,6 +155,9 @@ namespace TombLib.LevelData.Compilers
             if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
                 _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
 
+            if (room.Position.X <= -1 || room.Position.Z <= -1)
+                _progressReporter.ReportWarn("Room '" + room + "' is out of map bounds. Collision and AI errors may occur. Move room back into the map if it's reachable.");
+
             var newRoom = new tr_room
             {
                 OriginalRoom = room,
