@@ -387,7 +387,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
                                         if (texture.DoubleSided)
                                         {
-                                            texture.Mirror();
+                                            texture.Mirror(true);
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
@@ -511,7 +511,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (doubleSided)
                                 {
                                     Array.Reverse(indices);
-                                    texture.Mirror();
+                                    texture.Mirror(poly.IsTriangle);
                                     key.Index0 = indices[0]; key.Index1 = indices[1]; key.Index2 = indices[2];
                                     if (!poly.IsTriangle) key.Index3 = indices[3];
                                 }
