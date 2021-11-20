@@ -406,7 +406,13 @@
     <Content Include="Catalogs\Sounds.tr1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\Sounds.tr2.gold.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Catalogs\Sounds.tr2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\Sounds.tr3.gold.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Catalogs\Sounds.tr3.xml">
