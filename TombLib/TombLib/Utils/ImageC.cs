@@ -8,6 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using ColorThiefDotNet;
+using TombLib.LevelData;
 
 namespace TombLib.Utils
 {
@@ -627,49 +628,67 @@ namespace TombLib.Utils
             }
         }
 
-        public unsafe bool HasAlpha()
+        public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
         {
-            uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
+            var result = BlendMode.Normal;
 
-            fixed (void* ptr = _data)
-            {
-                uint* ptrUint = (uint*)ptr;
-                uint* ptrUintEnd = ptrUint + Width * Height;
-                while (ptrUint < ptrUintEnd)
-                {
-                    if ((*ptrUint & alphaBits) != alphaBits)
-                        return true;
-                    ++ptrUint;
-                }
-            }
-            return false;
-        }
-
-        public unsafe bool HasAlpha(int X, int Y, int width, int height)
-        {
             // Check coordinates
-            // TODO: check Woops bug
             if (X < 0 || Y < 0 || width < 0 || height < 0 ||
                 X + width > Width || Y + height > Height)
-                return false; // throw new ArgumentOutOfRangeException();
+                return result;
+
+            uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
 
             // Check for alpha
-            uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
 
             fixed (void* ptr = _data)
             {
                 uint* toPtrOffseted = (uint*)ptr + Y * Width + X;
-                for (int y = 0; y < height; ++y)
+
+                if (version == TRVersion.Game.TombEngine)
                 {
-                    uint* linePtr = toPtrOffseted + y * Width;
-                    for (int x = 0; x < width; ++x)
-                        if ((linePtr[x] & alphaBits) != alphaBits)
-                            return true;
+                    for (int y = 0; y < height; ++y)
+                    {
+                        uint* linePtr = toPtrOffseted + y * Width;
+                        for (int x = 0; x < width; ++x)
+                        {
+                            var alpha = (linePtr[x] & alphaBits);
+                            if (alpha == alphaBits)
+                                continue;
+
+                            if (alpha > 0)
+                                return BlendMode.AlphaBlend;
+                            else
+                                result = BlendMode.AlphaTest;
+                        }
+                    }
                 }
+                else
+                {
+                    for (int y = 0; y < height; ++y)
+                    {
+                        uint* linePtr = toPtrOffseted + y * Width;
+                        for (int x = 0; x < width; ++x)
+                            if ((linePtr[x] & alphaBits) != alphaBits)
+                                return BlendMode.AlphaTest;
+                    }
+                }
+
             }
 
-            return false;
+            return result;
         }
+
+        public unsafe BlendMode HasAlpha(TRVersion.Game version)
+        {
+            return HasAlpha(version, 0, 0, Width, Height);
+        }
+
+        public BlendMode HasAlpha(TRVersion.Game version, Rectangle2 rect)
+        {
+            return HasAlpha(version, (int)rect.Start.X, (int)rect.Start.Y, (int)rect.Width, (int)rect.Height);
+        }
+
         public void CopyFrom(int toX, int toY, ImageC fromImage)
         {
             CopyFrom(toX, toY, fromImage, 0, 0, fromImage.Width, fromImage.Height);
@@ -802,29 +821,6 @@ namespace TombLib.Utils
             }
 
             return result;
-        }
-
-        public bool HasAlphaInArea(Rectangle2 area)
-        {
-            RectangleInt2 rectArea = new RectangleInt2
-            {
-                X0 = (int)(area.TopLeft.X),
-                X1 = (int)(area.BottomRight.X),
-                Y0 = (int)(area.TopLeft.Y),
-                Y1 = (int)(area.BottomRight.Y),
-            };
-            for (int x = rectArea.X0; x <= rectArea.X1; x++)
-            {
-                for (int y = rectArea.Y0; y <= rectArea.Y1; y++)
-                {
-                    ColorC color = this.GetPixel(x, y);
-                    if (color.A < 255)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
     }
 }

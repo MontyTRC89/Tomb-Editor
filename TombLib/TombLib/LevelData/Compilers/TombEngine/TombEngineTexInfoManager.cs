@@ -971,20 +971,22 @@ namespace TombLib.LevelData.Compilers
         // Scan and set alpha-test blending mode for opaque textures.
         // To speed up the process, all children whose parent region contains alpha, is also marked as
         // alpha.
-
         private void SortOutAlpha(List<ParentTextureArea> parentList)
         {
             Parallel.For(0, parentList.Count, i =>
             {
                 var opaqueChildren = parentList[i].Children.Where(child => child.BlendMode < BlendMode.Additive);
-                if (opaqueChildren.Count() > 0 &&
-                   parentList[i].Texture.Image.HasAlpha((int)parentList[i].Area.X0,
-                                                        (int)parentList[i].Area.Y0,
-                                                        (int)parentList[i].Area.Width,
-                                                        (int)parentList[i].Area.Height))
+                if (opaqueChildren.Count() > 0)
                 {
-                    foreach (var children in opaqueChildren)
-                        children.BlendMode = BlendMode.AlphaTest;
+                    var realBlendMode = parentList[i].Texture.Image.HasAlpha(TRVersion.Game.TombEngine,
+                        (int)parentList[i].Area.X0,
+                        (int)parentList[i].Area.Y0,
+                        (int)parentList[i].Area.Width,
+                        (int)parentList[i].Area.Height);
+
+                    if (realBlendMode != BlendMode.Normal)
+                        foreach (var children in opaqueChildren)
+                            children.BlendMode = realBlendMode;
                 }
             });
         }

@@ -303,11 +303,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
                                     continue;
                                 }
-                                BlendMode realBlendMode = texture.BlendMode;
-                                if(texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
-                                {
-                                    realBlendMode = BlendMode.AlphaBlend;
-                                }
+
+                                var realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal)
+                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
                                 int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
@@ -503,11 +502,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     if (!poly.IsTriangle) key.Index3 = indices[3];
                                 }
 
-                                BlendMode realBlendMode = texture.BlendMode;
-                                if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
-                                {
-                                    realBlendMode = BlendMode.AlphaBlend;
-                                }
+                                var realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal)
+                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(key))
                                 {
@@ -637,11 +634,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
 
-                                BlendMode realBlendMode = texture.BlendMode;
-                                if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
-                                {
-                                    realBlendMode = BlendMode.AlphaBlend;
-                                }
+                                var realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal)
+                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
                                 // TODO: what happens for flipped textures?
                                 if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;

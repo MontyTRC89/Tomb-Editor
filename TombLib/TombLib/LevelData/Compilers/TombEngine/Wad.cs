@@ -121,11 +121,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (doubleSided)
                         Array.Reverse(indices);
 
-                    BlendMode realBlendMode = texture.BlendMode;
-                    if (texture.BlendMode == BlendMode.Normal && texture.Texture.Image.HasAlphaInArea(texture.GetRect()))
-                    {
-                        realBlendMode = BlendMode.AlphaBlend;
-                    }
+                    var realBlendMode = texture.BlendMode;
+                    if (texture.BlendMode == BlendMode.Normal)
+                        realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)

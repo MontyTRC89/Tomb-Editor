@@ -865,19 +865,22 @@ namespace TombLib.LevelData.Compilers.Util
         // To speed up the process, all children whose parent region contains alpha, is also marked as
         // alpha.
 
-        private void SortOutAlpha(List<ParentTextureArea> parentList)
+        private void SortOutAlpha(TRVersion.Game version, List<ParentTextureArea> parentList)
         {
             Parallel.For(0, parentList.Count, i =>
             {
                 var opaqueChildren = parentList[i].Children.Where(child => child.BlendMode < BlendMode.Additive);
-                if (opaqueChildren.Count() > 0 &&
-                   parentList[i].Texture.Image.HasAlpha((int)parentList[i].Area.X0,
-                                                        (int)parentList[i].Area.Y0,
-                                                        (int)parentList[i].Area.Width,
-                                                        (int)parentList[i].Area.Height))
+                if (opaqueChildren.Count() > 0)
                 {
-                    foreach (var children in opaqueChildren)
-                        children.BlendMode = BlendMode.AlphaTest;
+                    var realBlendMode = parentList[i].Texture.Image.HasAlpha(version,
+                                        (int)parentList[i].Area.X0,
+                                        (int)parentList[i].Area.Y0,
+                                        (int)parentList[i].Area.Width,
+                                        (int)parentList[i].Area.Height);
+
+                    if (realBlendMode != BlendMode.Normal)
+                        foreach (var children in opaqueChildren)
+                            children.BlendMode = realBlendMode;
                 }
             });
         }
@@ -1356,7 +1359,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             _objectTextures = new SortedDictionary<int, ObjectTexture>();
 
-            SortOutAlpha(_parentTextures);
+            SortOutAlpha(version, _parentTextures);
             foreach (var parent in _parentTextures)
                 foreach (var child in parent.Children)
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
@@ -1382,7 +1385,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             foreach (var animTexture in _actualAnimTextures)
             {
-                SortOutAlpha(animTexture.CompiledAnimation);
+                SortOutAlpha(version, animTexture.CompiledAnimation);
                 foreach (var parent in animTexture.CompiledAnimation)
                     foreach (var child in parent.Children)
                         if (!_objectTextures.ContainsKey(child.TexInfoIndex))
