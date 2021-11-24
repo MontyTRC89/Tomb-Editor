@@ -122,7 +122,7 @@
             this.comboLightingModel.Items.AddRange(new object[] {
             "No lights",
             "Vertex colors",
-            "Calculate from lights in room",
+            "Calculate from room lights",
             "Specified tint only"});
             this.comboLightingModel.Location = new System.Drawing.Point(128, 36);
             this.comboLightingModel.Name = "comboLightingModel";
