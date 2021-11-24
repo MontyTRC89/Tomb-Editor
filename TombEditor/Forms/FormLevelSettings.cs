@@ -669,7 +669,7 @@ namespace TombEditor.Forms
             }
 
             // TR4 and TombEngine platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4 || _levelSettings.GameVersion == Game.TombEngine);
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
             GameEnableExtraBlendingModesCheckBox.Visible = currentVersionToCheck;
 
             // TR4 and above
