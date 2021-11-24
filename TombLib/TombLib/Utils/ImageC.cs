@@ -656,7 +656,7 @@ namespace TombLib.Utils
                             if (alpha == alphaBits)
                                 continue;
 
-                            if (alpha > 0)
+                            if (alphaBits - alpha < alphaBits)
                                 return BlendMode.AlphaBlend;
                             else
                                 result = BlendMode.AlphaTest;
