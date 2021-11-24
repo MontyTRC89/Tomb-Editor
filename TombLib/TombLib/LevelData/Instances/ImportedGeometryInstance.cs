@@ -20,7 +20,7 @@ namespace TombLib.LevelData
         public Vector3 Color { get; set; } = Vector3.One;
         public bool SharpEdges { get; set; } = false;
         public bool Hidden { get; set; } = false;
-
+        public bool UseAlphaTestInsteadOfAlphaBlend { get; set; } = false;
 
         private float _roll { get; set; }
         private float _rotationX { get; set; }

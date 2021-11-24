@@ -29,6 +29,9 @@ namespace TombEditor.Forms
             panelColor.BackColor = (_instance.Color * 0.5f).ToWinFormsColor();
             cbSharpEdges.Checked = _instance.SharpEdges;
             cbHide.Checked = _instance.Hidden;
+            cbAlphaTest.Enabled = levelSettings.GameVersion == TRVersion.Game.TombEngine;
+            if (cbAlphaTest.Enabled)
+                cbAlphaTest.Checked = _instance.UseAlphaTestInsteadOfAlphaBlend;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
@@ -62,6 +65,7 @@ namespace TombEditor.Forms
             _instance.Color = panelColor.BackColor.ToFloat3Color() * 2.0f;
             _instance.SharpEdges = cbSharpEdges.Checked;
             _instance.Hidden = cbHide.Checked;
+            _instance.UseAlphaTestInsteadOfAlphaBlend = cbAlphaTest.Checked;
             DialogResult = DialogResult.OK;
             Close();
         }

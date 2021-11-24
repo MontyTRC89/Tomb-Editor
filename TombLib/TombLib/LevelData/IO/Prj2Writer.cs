@@ -788,6 +788,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
                                 chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometrySharpEdges, instance.SharpEdges);
                                 chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
+                                chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryUseAlphaTest, instance.UseAlphaTestInsteadOfAlphaBlend);
                             });
                         else
                             logger.Warn("Imported geometry in room " + instance.Room + " refers to a model which is missing from project.");

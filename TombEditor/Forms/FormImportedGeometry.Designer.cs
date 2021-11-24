@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -37,10 +38,12 @@
             this.comboLightingModel = new DarkUI.Controls.DarkComboBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.cbAlphaTest = new DarkUI.Controls.DarkCheckBox();
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.cbHide = new DarkUI.Controls.DarkCheckBox();
             this.cbSharpEdges = new DarkUI.Controls.DarkCheckBox();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.darkGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -123,7 +126,7 @@
             "Specified tint only"});
             this.comboLightingModel.Location = new System.Drawing.Point(128, 36);
             this.comboLightingModel.Name = "comboLightingModel";
-            this.comboLightingModel.Size = new System.Drawing.Size(309, 23);
+            this.comboLightingModel.Size = new System.Drawing.Size(175, 23);
             this.comboLightingModel.TabIndex = 3;
             // 
             // darkLabel4
@@ -140,6 +143,7 @@
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.cbAlphaTest);
             this.darkGroupBox1.Controls.Add(this.panelColor);
             this.darkGroupBox1.Controls.Add(this.cbHide);
             this.darkGroupBox1.Controls.Add(this.cbSharpEdges);
@@ -154,12 +158,24 @@
             this.darkGroupBox1.TabIndex = 7;
             this.darkGroupBox1.TabStop = false;
             // 
+            // cbAlphaTest
+            // 
+            this.cbAlphaTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbAlphaTest.AutoSize = true;
+            this.cbAlphaTest.Location = new System.Drawing.Point(497, 38);
+            this.cbAlphaTest.Name = "cbAlphaTest";
+            this.cbAlphaTest.Size = new System.Drawing.Size(128, 17);
+            this.cbAlphaTest.TabIndex = 14;
+            this.cbAlphaTest.Text = "Faster alpha testing";
+            this.toolTip1.SetToolTip(this.cbAlphaTest, "Use simple alpha test instead of blending.\r\nUseful for drawing foliage and grated" +
+        " textures.");
+            // 
             // panelColor
             // 
             this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColor.Location = new System.Drawing.Point(443, 36);
+            this.panelColor.Location = new System.Drawing.Point(309, 36);
             this.panelColor.Name = "panelColor";
             this.panelColor.Size = new System.Drawing.Size(59, 23);
             this.panelColor.TabIndex = 13;
@@ -175,16 +191,18 @@
             this.cbHide.Size = new System.Drawing.Size(97, 17);
             this.cbHide.TabIndex = 8;
             this.cbHide.Text = "Hide in editor";
+            this.toolTip1.SetToolTip(this.cbHide, "Hide mesh in editor only.\r\nMesh will be still visible in game.");
             // 
             // cbSharpEdges
             // 
             this.cbSharpEdges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSharpEdges.AutoSize = true;
-            this.cbSharpEdges.Location = new System.Drawing.Point(508, 38);
+            this.cbSharpEdges.Location = new System.Drawing.Point(373, 38);
             this.cbSharpEdges.Name = "cbSharpEdges";
             this.cbSharpEdges.Size = new System.Drawing.Size(120, 17);
             this.cbSharpEdges.TabIndex = 7;
             this.cbSharpEdges.Text = "Force sharp edges";
+            this.toolTip1.SetToolTip(this.cbSharpEdges, "Make all edges of a mesh sharp");
             // 
             // importedGeometryManager
             // 
@@ -239,5 +257,7 @@
         private DarkUI.Controls.DarkCheckBox cbSharpEdges;
         private DarkUI.Controls.DarkCheckBox cbHide;
         private DarkUI.Controls.DarkPanel panelColor;
+        private DarkUI.Controls.DarkCheckBox cbAlphaTest;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

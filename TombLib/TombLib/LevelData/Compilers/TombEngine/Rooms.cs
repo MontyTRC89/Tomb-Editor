@@ -638,6 +638,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
+                                if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
+                                    realBlendMode = BlendMode.AlphaTest;
+
                                 // TODO: what happens for flipped textures?
                                 if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
                                 if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
