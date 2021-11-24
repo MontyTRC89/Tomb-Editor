@@ -52,6 +52,9 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			if (IsRootNode())
 				return;
 
+			if (treeView.SelectedNodes.Count == 0)
+				return;
+
 			var item = treeView.SelectedNodes[0].Tag as FindReplaceItem;
 
 			if (_targetTabControl != null)

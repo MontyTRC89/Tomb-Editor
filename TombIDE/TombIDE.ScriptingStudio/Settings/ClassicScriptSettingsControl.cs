@@ -481,6 +481,9 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void UpdateColorButtonStyleText(DarkButton colorButton)
 		{
+			if (colorButton.Tag == null)
+				return;
+
 			var highlighting = (HighlightingObject)colorButton.Tag;
 
 			if (highlighting.IsBold && highlighting.IsItalic)
