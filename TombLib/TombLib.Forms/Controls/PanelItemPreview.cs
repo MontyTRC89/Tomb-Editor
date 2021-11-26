@@ -353,6 +353,7 @@ namespace TombLib.Controls
                 effect.Parameters["UseVertexColors"].SetValue(true);
                 effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
 
                 if (model != null && model.Meshes.Count > 0)
                     for (int i = 0; i < model.Meshes.Count; i++)
@@ -368,8 +369,6 @@ namespace TombLib.Controls
                         _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
 
                         effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        effect.Techniques[0].Passes[0].Apply();
-
 
                         foreach (var submesh in mesh.Submeshes)
                         {
@@ -379,11 +378,11 @@ namespace TombLib.Controls
                                 effect.Parameters["TextureEnabled"].SetValue(true);
                                 effect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
                                 effect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                                effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
                             }
                             else
                                 effect.Parameters["TextureEnabled"].SetValue(false);
 
+                            effect.Techniques[0].Passes[0].Apply();
                             submesh.Value.Material.SetStates(_legacyDevice, DrawTransparency);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
