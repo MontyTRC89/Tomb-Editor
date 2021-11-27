@@ -69,6 +69,36 @@ namespace WadTool
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
             : this(tool, deviceManager, wad, null) { }
+       
+        public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, IWadObjectId obj, Wad2 wad)
+            : this(tool, deviceManager, wad)
+        {
+            if (obj == null)
+                return;
+
+            var isStatic = obj is WadStaticId;
+            var nodes = lstMeshes.GetAllNodes();
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                var node = nodes[i];
+
+                if (node.Tag == null || !(node.Tag is MeshTreeNode))
+                    continue;
+
+                var objectId = (node.Tag as MeshTreeNode).ObjectId;
+
+                if (isStatic != (objectId is WadStaticId))
+                    continue;
+
+                if (( isStatic  && ((WadStaticId)obj).TypeId == ((WadStaticId)objectId).TypeId) ||
+                   ((!isStatic) && ((WadMoveableId)obj).TypeId == ((WadMoveableId)objectId).TypeId))
+                {
+                    lstMeshes.SelectNode(nodes[i]);
+                    lstMeshes.EnsureVisible();
+                }
+            }
+        }
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMesh mesh)
         {

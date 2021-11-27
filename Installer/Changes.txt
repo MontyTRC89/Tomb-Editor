@@ -5,6 +5,10 @@ Tomb Editor:
  * Fix quick start feature for new FLEP workflow.
  * Add some missing global sounds for TR1 sound catalog.
  
+WadTool:
+ * Jump to currently selected object when opening mesh editor from main window.
+ * Add context menus for editing currently selected object mesh in main window.
+ 
 TombIDE:
  * Fix exception when double-clicking on empty search results window.
  * Fix exception when setting textbox background colour in options window.
