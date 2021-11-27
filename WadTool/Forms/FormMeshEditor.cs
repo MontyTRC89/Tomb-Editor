@@ -96,6 +96,7 @@ namespace WadTool
                 {
                     lstMeshes.SelectNode(nodes[i]);
                     lstMeshes.EnsureVisible();
+                    return;
                 }
             }
         }
