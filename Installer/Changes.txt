@@ -7,6 +7,7 @@ Tomb Editor:
  * Add some missing global sounds for TR1 sound catalog.
  
 WadTool:
+ * Fix persistent issues with disjointed MQO vertices.
  * Jump to currently selected object when opening mesh editor from main window.
  * Add context menus for editing currently selected object mesh in main window.
  

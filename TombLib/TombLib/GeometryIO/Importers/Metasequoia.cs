@@ -260,8 +260,6 @@ namespace TombLib.GeometryIO.Importers
                 }
             }
 
-            CalculateNormals(model);
-
             return model;
          }
 
