@@ -21,6 +21,7 @@ namespace TombLib.GeometryIO.Importers
         public override IOModel ImportFromFile(string filename)
         {
             var model = new IOModel();
+            var positions = new List<Vector3>();
             var textures = new Dictionary<int, Texture>();
 
             using (var reader = new StreamReader(File.OpenRead(filename)))
@@ -108,10 +109,14 @@ namespace TombLib.GeometryIO.Importers
                         var name = line.Split(' ')[1];
                         var mesh = new IOMesh(name.Replace("\"", ""));
                         var tokensName = mesh.Name.Split('_');
+                        positions = new List<Vector3>();
 
                         if (name.Contains("TeRoom_"))
+                        {
                             model.HasMultipleRooms = true;
+                        }
 
+                        var lastVertex = 0;
                         var translation = Vector3.Zero;
 
                         while (!reader.EndOfStream)
@@ -133,8 +138,9 @@ namespace TombLib.GeometryIO.Importers
                                     var tokensPosition = reader.ReadLine().Trim().Split(' ');
                                     var newPos = ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokensPosition[0]),
                                                                                  ParseFloatCultureInvariant(tokensPosition[1]),
-                                                                                 ParseFloatCultureInvariant(tokensPosition[2])));
-                                    mesh.Positions.Add(newPos);
+                                                                                 ParseFloatCultureInvariant(tokensPosition[2]))
+                                                                      );
+                                    positions.Add(newPos);
                                 }
                                 line = reader.ReadLine().Trim();
                             }
@@ -148,13 +154,18 @@ namespace TombLib.GeometryIO.Importers
                                     var numVerticesInFace = int.Parse(line.Substring(0, line.IndexOf(' ')));
                                     var poly = new IOPolygon(numVerticesInFace == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
 
+                                    // We MUST have vertices
                                     var stringVertices = GetSubBlock(line, "V");
                                     if (string.IsNullOrEmpty(stringVertices))
                                         return null;
-
                                     var tokensVertices = stringVertices.Split(' ');
                                     for (var k = 0; k < numVerticesInFace; k++)
-                                        poly.Indices.Add(int.Parse(tokensVertices[k]));
+                                    {
+                                        var index = int.Parse(tokensVertices[k]);
+                                        mesh.Positions.Add(positions[index]);
+                                        poly.Indices.Add(lastVertex);
+                                        lastVertex++;
+                                    }
 
                                     // Change vertex winding
                                     if (_settings.InvertFaces) poly.Indices.Reverse();
