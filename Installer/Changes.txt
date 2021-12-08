@@ -3,6 +3,7 @@ Version 1.4.7
 
 Tomb Editor:
  * Fix quick start feature for new FLEP workflow.
+ * Fix rendering in imported geometry browser preview.
  * Add some missing global sounds for TR1 sound catalog.
  
 WadTool:
