@@ -1018,7 +1018,7 @@ namespace TombLib.LevelData.IO
                     var instance = new CameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.Fixed = chunkIO.Raw.ReadBoolean();
+                    instance.CameraMode = chunkIO.Raw.ReadBoolean() ? CameraInstanceMode.Locked : CameraInstanceMode.Default;
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1027,8 +1027,19 @@ namespace TombLib.LevelData.IO
                     var instance = new CameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.Fixed = chunkIO.Raw.ReadBoolean();
+                    instance.CameraMode = chunkIO.Raw.ReadBoolean() ? CameraInstanceMode.Locked : CameraInstanceMode.Default;
                     instance.MoveTimer = chunkIO.Raw.ReadByte();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectCamera3)
+                {
+                    var instance = new CameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.CameraMode = (CameraInstanceMode)chunkIO.Raw.ReadByte();
+                    instance.MoveTimer = chunkIO.Raw.ReadByte();
+                    instance.GlideOut = chunkIO.Raw.ReadBoolean();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1037,7 +1048,7 @@ namespace TombLib.LevelData.IO
                     var instance = new CameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.Fixed = chunkIO.Raw.ReadBoolean();
+                    instance.CameraMode = chunkIO.Raw.ReadBoolean() ? CameraInstanceMode.Locked : CameraInstanceMode.Default;
                     instance.MoveTimer = chunkIO.Raw.ReadByte();
                     instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);

@@ -14,16 +14,21 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _instance = instance;
-            ckFixed.Checked = _instance.Fixed;
+            comboCameraMode.SelectedIndex = (int)_instance.CameraMode;
             nudMoveTimer.Value = _instance.MoveTimer;
+            ckGlideOut.Checked = _instance.GlideOut;
 
-            ckFixed.Enabled      = (instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR4);
+            if (_instance.Room.Level.Settings.GameVersion != TRVersion.Game.TR5)
+                comboCameraMode.Items.RemoveAt((int)CameraInstanceMode.Sniper);
+            if (_instance.Room.Level.Settings.GameVersion <= TRVersion.Game.TR3)
+                comboCameraMode.Items.RemoveAt((int)CameraInstanceMode.Locked);
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _instance.Fixed = ckFixed.Checked;
+            _instance.CameraMode = (CameraInstanceMode)comboCameraMode.SelectedIndex;
             _instance.MoveTimer = (byte)nudMoveTimer.Value;
+            _instance.GlideOut = ckGlideOut.Checked;
 
             DialogResult = DialogResult.OK;
             Close();
@@ -33,6 +38,12 @@ namespace TombEditor.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void comboCameraMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            nudMoveTimer.Enabled = (comboCameraMode.SelectedIndex != (int)CameraInstanceMode.Sniper);
+            ckGlideOut.Enabled = nudMoveTimer.Enabled;
         }
     }
 }
