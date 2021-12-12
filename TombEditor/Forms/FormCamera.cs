@@ -44,11 +44,5 @@ namespace TombEditor.Forms
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-        private void comboCameraMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            nudMoveTimer.Enabled = (comboCameraMode.SelectedIndex != (int)CameraInstanceMode.Sniper);
-            ckGlideOut.Enabled = nudMoveTimer.Enabled;
-        }
     }
 }

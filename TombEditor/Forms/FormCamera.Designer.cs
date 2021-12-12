@@ -112,7 +112,6 @@
             this.comboCameraMode.Name = "comboCameraMode";
             this.comboCameraMode.Size = new System.Drawing.Size(130, 23);
             this.comboCameraMode.TabIndex = 10;
-            this.comboCameraMode.SelectedIndexChanged += new System.EventHandler(this.comboCameraMode_SelectedIndexChanged);
             // 
             // darkLabel2
             // 
