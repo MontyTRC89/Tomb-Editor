@@ -43,7 +43,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(154, 76);
+            this.butCancel.Location = new System.Drawing.Point(139, 71);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -55,7 +55,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(68, 76);
+            this.butOk.Location = new System.Drawing.Point(53, 71);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -69,9 +69,9 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(7, 14);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(93, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(66, 13);
             this.darkLabel1.TabIndex = 7;
-            this.darkLabel1.Text = "Movement timer:";
+            this.darkLabel1.Text = "Glide timer:";
             // 
             // nudMoveTimer
             // 
@@ -81,7 +81,7 @@
             0,
             0,
             65536});
-            this.nudMoveTimer.Location = new System.Drawing.Point(106, 12);
+            this.nudMoveTimer.Location = new System.Drawing.Point(89, 12);
             this.nudMoveTimer.LoopValues = false;
             this.nudMoveTimer.Maximum = new decimal(new int[] {
             31,
@@ -89,13 +89,13 @@
             0,
             0});
             this.nudMoveTimer.Name = "nudMoveTimer";
-            this.nudMoveTimer.Size = new System.Drawing.Size(50, 22);
+            this.nudMoveTimer.Size = new System.Drawing.Size(54, 22);
             this.nudMoveTimer.TabIndex = 8;
             // 
             // ckGlideOut
             // 
             this.ckGlideOut.AutoSize = true;
-            this.ckGlideOut.Location = new System.Drawing.Point(162, 14);
+            this.ckGlideOut.Location = new System.Drawing.Point(151, 13);
             this.ckGlideOut.Name = "ckGlideOut";
             this.ckGlideOut.Size = new System.Drawing.Size(74, 17);
             this.ckGlideOut.TabIndex = 9;
@@ -108,9 +108,9 @@
             "Default",
             "Locked",
             "Sniper"});
-            this.comboCameraMode.Location = new System.Drawing.Point(93, 40);
+            this.comboCameraMode.Location = new System.Drawing.Point(89, 40);
             this.comboCameraMode.Name = "comboCameraMode";
-            this.comboCameraMode.Size = new System.Drawing.Size(121, 23);
+            this.comboCameraMode.Size = new System.Drawing.Size(130, 23);
             this.comboCameraMode.TabIndex = 10;
             this.comboCameraMode.SelectedIndexChanged += new System.EventHandler(this.comboCameraMode_SelectedIndexChanged);
             // 
@@ -130,7 +130,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(242, 107);
+            this.ClientSize = new System.Drawing.Size(227, 102);
             this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.comboCameraMode);
             this.Controls.Add(this.ckGlideOut);

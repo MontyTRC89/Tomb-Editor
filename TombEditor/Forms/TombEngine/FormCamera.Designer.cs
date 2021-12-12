@@ -43,7 +43,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(238, 105);
+            this.butCancel.Location = new System.Drawing.Point(183, 98);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -55,7 +55,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(152, 105);
+            this.butOk.Location = new System.Drawing.Point(97, 98);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -90,7 +90,7 @@
             0,
             0,
             65536});
-            this.nudMoveTimer.Location = new System.Drawing.Point(238, 12);
+            this.nudMoveTimer.Location = new System.Drawing.Point(183, 12);
             this.nudMoveTimer.LoopValues = false;
             this.nudMoveTimer.Maximum = new decimal(new int[] {
             31,
@@ -105,9 +105,9 @@
             // 
             this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaName.Location = new System.Drawing.Point(88, 66);
+            this.tbLuaName.Location = new System.Drawing.Point(73, 66);
             this.tbLuaName.Name = "tbLuaName";
-            this.tbLuaName.Size = new System.Drawing.Size(230, 22);
+            this.tbLuaName.Size = new System.Drawing.Size(190, 22);
             this.tbLuaName.TabIndex = 19;
             // 
             // labelLuaName
@@ -116,7 +116,7 @@
             this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelLuaName.Location = new System.Drawing.Point(7, 68);
             this.labelLuaName.Name = "labelLuaName";
-            this.labelLuaName.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaName.Size = new System.Drawing.Size(60, 13);
             this.labelLuaName.TabIndex = 20;
             this.labelLuaName.Text = "Lua Name:";
             // 
@@ -126,7 +126,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(326, 136);
+            this.ClientSize = new System.Drawing.Size(271, 129);
             this.Controls.Add(this.tbLuaName);
             this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.nudMoveTimer);

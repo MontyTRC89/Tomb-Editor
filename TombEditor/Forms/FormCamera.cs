@@ -22,6 +22,11 @@ namespace TombEditor.Forms
                 comboCameraMode.Items.RemoveAt((int)CameraInstanceMode.Sniper);
             if (_instance.Room.Level.Settings.GameVersion <= TRVersion.Game.TR3)
                 comboCameraMode.Items.RemoveAt((int)CameraInstanceMode.Locked);
+            if (_instance.Room.Level.Settings.GameVersion != TRVersion.Game.TRNG)
+                ckGlideOut.Enabled = false;
+            if (_instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR3 &&
+                _instance.Room.Level.Settings.GameVersion != TRVersion.Game.TRNG)
+                nudMoveTimer.Enabled = false;
         }
 
         private void butOk_Click(object sender, EventArgs e)
