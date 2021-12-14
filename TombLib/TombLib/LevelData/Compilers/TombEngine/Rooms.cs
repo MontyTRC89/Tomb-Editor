@@ -333,7 +333,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
                                         }
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                          (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -344,7 +344,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -364,7 +364,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
                                                         (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -374,7 +374,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror(true);
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -517,7 +517,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 }
                                 else
                                 {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode == BlendMode.AlphaBlend);
                                     var face = poly.IsTriangle ? 
                                         result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
                                         result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
@@ -617,46 +617,63 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         }
 
                         foreach (var submesh in mesh.Submeshes)
-                        {
-                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                        {                      
+                            //foreach (bool doubleSided in (submesh.Key.DoubleSided ? new[] { false, true } : new[] { false }))
                             {
-                                int index0 = (indexList[j + baseIndex + 0]);
-                                int index1 = (indexList[j + baseIndex + 1]);
-                                int index2 = (indexList[j + baseIndex + 2]);
+                                for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                                {
+                                    int index0 = (indexList[j + baseIndex + 0]);
+                                    int index1 = (indexList[j + baseIndex + 1]);
+                                    int index2 = (indexList[j + baseIndex + 2]);
 
-                                // TODO Move texture area into the mesh
-                                TextureArea texture = new TextureArea();
-                                texture.DoubleSided = false;
-                                texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
-                                texture.Texture = submesh.Value.Material.Texture;
-                                texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
-                                texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
-                                texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
-                                texture.TexCoord3 = texture.TexCoord2;
+                                    int[] indices = new int[] { index0, index1, index2 };
+                                    //if (doubleSided)
+                                    {
+                                    //    Array.Reverse(indices);
+                                    }
 
-                                var realBlendMode = texture.BlendMode;
-                                if (texture.BlendMode == BlendMode.Normal)
-                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+                                    // TODO Move texture area into the mesh
+                                    TextureArea texture = new TextureArea();
+                                    texture.DoubleSided = submesh.Key.DoubleSided;
+                                    texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
+                                    texture.Texture = submesh.Value.Material.Texture;
+                                    texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
+                                    texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
+                                    texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
+                                    texture.TexCoord3 = texture.TexCoord2;
 
-                                if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
-                                    realBlendMode = BlendMode.AlphaTest;
+                                    var realBlendMode = texture.BlendMode;
+                                    if (texture.BlendMode == BlendMode.Normal)
+                                        realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-                                // TODO: what happens for flipped textures?
-                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
-                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
-                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
-                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
-                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
-                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
-                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
-                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
+                                    if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
+                                        realBlendMode = BlendMode.AlphaTest;
 
-                                var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)realBlendMode, roomVertices);
-                                roomPolygons.Add(tri);
-                                roomVertices[index0].Polygons.Add(new NormalHelper(tri));
-                                roomVertices[index1].Polygons.Add(new NormalHelper(tri));
-                                roomVertices[index2].Polygons.Add(new NormalHelper(tri));
+                                    // TODO: what happens for flipped textures?
+                                    if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
+                                    if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
+                                    if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
+                                    if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
+                                    if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
+                                    if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
+                                    if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
+                                    if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
+
+                                    //if (doubleSided)
+                                    {
+                                    //    texture.Mirror(true);
+                                    }
+
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
+                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
+
+                                    tri.DoubleSided = submesh.Key.DoubleSided;
+                                    
+                                    roomPolygons.Add(tri);
+                                    roomVertices[index0].Polygons.Add(new NormalHelper(tri));
+                                    roomVertices[index1].Polygons.Add(new NormalHelper(tri));
+                                    roomVertices[index2].Polygons.Add(new NormalHelper(tri));
+                                }
                             }
                         }
 
@@ -1600,14 +1617,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return tmp;
         }
 
-        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, bool doubleSided, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
         {
             var material = new TombEngineMaterial
             {
                 Texture = texture,
                 BlendMode = blendMode,
                 Animated = animated,
-                AnimatedSequence = sequence
+                AnimatedSequence = sequence,
+                DoubleSided = doubleSided
             };
 
             if (!buckets.ContainsKey(material))
@@ -1643,7 +1661,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, room.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, poly.DoubleSided, room.Buckets);
 
                 var texture = textures[poly.TextureId];
 
