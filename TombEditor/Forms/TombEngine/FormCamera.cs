@@ -16,7 +16,7 @@ namespace TombEditor.Forms.TombEngine
             InitializeComponent();
 
             _instance = instance;
-            ckFixed.Checked = _instance.Fixed;
+            ckFixed.Checked = _instance.CameraMode == CameraInstanceMode.Locked;
             nudMoveTimer.Value = _instance.MoveTimer;
             tbLuaName.Text = _instance.LuaName;
         }
@@ -26,7 +26,7 @@ namespace TombEditor.Forms.TombEngine
             if (!_instance.TrySetLuaName(tbLuaName.Text, this)) 
                 return;
 
-            _instance.Fixed = ckFixed.Checked;
+            _instance.CameraMode = ckFixed.Checked ? CameraInstanceMode.Locked : CameraInstanceMode.Default;
             _instance.MoveTimer = (byte)nudMoveTimer.Value;
 
             DialogResult = DialogResult.OK;

@@ -241,13 +241,27 @@ namespace TombLib.LevelData.Compilers
             foreach (var instance in _cameraTable.Keys)
             {
                 Vector3 position = instance.Room.WorldPos + instance.Position;
+                ushort flags = 0x0;
+
+                if (instance.CameraMode == CameraInstanceMode.Sniper)
+                {
+                    flags = 0x3;
+                }
+                else
+                {
+                    if (instance.CameraMode == CameraInstanceMode.Locked)
+                        flags = 0x1;
+                    if (instance.GlideOut)
+                        flags |= 0x4;
+                }
+
                 _cameras.Add(new tr_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
-                    Flags = instance.Fixed ? (ushort)1 : (ushort)0
+                    Flags = flags
                 });
             }
 

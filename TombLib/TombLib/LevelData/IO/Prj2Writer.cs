@@ -537,21 +537,22 @@ namespace TombLib.LevelData.IO
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 LEB128.Write(chunkIO.Raw, (long)-1);
-                                chunkIO.Raw.Write(instance.Fixed);
+                                chunkIO.Raw.Write(instance.CameraMode == CameraInstanceMode.Locked);
                                 chunkIO.Raw.Write(instance.MoveTimer);
                                 chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
                             }
                         }
                         else
                         {
-                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera2, LEB128.MaximumSize1Byte))
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera3, LEB128.MaximumSize1Byte))
                             {
                                 var instance = (CameraInstance)o;
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                chunkIO.Raw.Write(instance.Fixed);
+                                chunkIO.Raw.Write((byte)instance.CameraMode);
                                 chunkIO.Raw.Write(instance.MoveTimer);
+                                chunkIO.Raw.Write(instance.GlideOut);
                             }
                         }
                     }

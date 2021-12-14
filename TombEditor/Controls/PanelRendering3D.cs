@@ -2646,7 +2646,7 @@ namespace TombEditor.Controls
                             // Add text message
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
-                                "Camera " + (instance.Fixed ? "(Locked)" : "") +
+                                "Camera " + (instance.CameraMode == CameraInstanceMode.Locked ? "(Locked)" : (instance.CameraMode == CameraInstanceMode.Sniper ? "(Sniper)" : "")) +
                                 instance.GetScriptIDOrName() + "\n" +
                                 GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 

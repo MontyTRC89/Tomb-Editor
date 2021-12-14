@@ -636,7 +636,7 @@
     <limits>
       <limit name="TexPages" value="32" />
       <limit name="TexInfos" value="2000" />
-      <limit name="SoundBitsPerSample" value="8" />
+      <limit name="SoundBitsPerSample" value="16" />
       <limit name="SoundSampleRate" value="11025" />
       <limit name="SoundSampleSize" value="256" />
       <limit name="SoundSampleCount" value="256" />
@@ -8488,5 +8488,25 @@
       <sound id="2007" name="TR5_GGOD_ATTACK" />
       <sound id="2008" name="TR5_PORTAL_LOOP" />
     </sounds>
+	<states>
+      <!-- Lara -->
+        <state item="0" id="139" name="SHIMMY_45_OUTER_LEFT" />
+        <state item="0" id="140" name="SHIMMY_45_OUTER_RIGHT" />
+        <state item="0" id="141" name="SHIMMY_45_INNER_LEFT" />
+        <state item="0" id="142" name="SHIMMY_45_INNER_RIGHT" />
+        <state item="0" id="143" name="UNUSED1" />
+        <state item="0" id="144" name="UNUSED2" />
+        <state item="0" id="145" name="UNUSED3" />
+        <state item="0" id="146" name="COGWHEEL_UNGRAB" />
+        <state item="0" id="147" name="STEP_UP" />
+        <state item="0" id="148" name="STEP_DOWN" />
+        <state item="0" id="149" name="STEP_BACK_DOWN" />
+        <state item="0" id="150" name="LADDER_DISMOUNT_LEFT" />
+        <state item="0" id="151" name="LADDER_DISMOUNT_RIGHT" />
+        <state item="0" id="152" name="TURN_LEFT_FAST" />
+        <state item="0" id="153" name="CRAWL_EXIT_DOWN_STEP" />
+        <state item="0" id="154" name="CRAWL_EXIT_JUMP" />
+        <state item="0" id="155" name="CRAWL_EXIT_FLIP" />
+	</states>
   </game>
 </xml>

@@ -620,7 +620,7 @@ namespace TombLib.LevelData.IO
                                 var camera = new CameraInstance()
                                 {
                                     ScriptId = unchecked((ushort)objectsThings2[j]),
-                                    Fixed = objectType == 0x4080,
+                                    CameraMode = objectType == 0x4080 ? CameraInstanceMode.Locked : CameraInstanceMode.Default,
                                     Position = position
                                 };
                                 room.AddObject(level, camera);
