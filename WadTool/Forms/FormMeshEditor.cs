@@ -473,6 +473,15 @@ namespace WadTool
                 btCancel.Visible = false;
                 btOk.Location = btCancel.Location;
             }
+            
+            // Update current mesh name
+            if (lstMeshes.Visible && 
+                lstMeshes.SelectedNodes.Count == 1 &&
+                panelMesh.Mesh != null &&
+                !lstMeshes.SelectedNodes[0].Text.Equals(panelMesh.Mesh.Name))
+            {
+                lstMeshes.SelectedNodes[0].Text = panelMesh.Mesh.Name;
+            }
 
             // Hide editing tools if flag is unset
             if (!ShowEditingTools)
@@ -907,6 +916,37 @@ namespace WadTool
             }
 
             popup.ShowInfo(panelMesh, "No meshes with any textures from enclosed area were found.");
+        }
+
+        private void RenameMesh()
+        {
+            if (panelMesh.Mesh == null)
+                return;
+
+            using (var form = new FormInputBox("Edit mesh name", "Mesh name:", panelMesh.Mesh.Name))
+            {
+                if (form.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                if (string.IsNullOrEmpty(form.Result))
+                    return;
+
+                if (panelMesh.Mesh.Name.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase))
+                    return;
+
+                var nodes = lstMeshes.GetAllNodes().Select(n => n.Text).ToList();
+
+                if (nodes.Any(n => n.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    popup.ShowError(panelMesh, "Specified name is already used in current wad. \nPlease use another name.");
+                    return;
+                }
+
+                _tool.UndoManager.PushMeshChanged(panelMesh);
+                panelMesh.Mesh.Name = form.Result;
+                SaveCurrentMesh();
+                UpdateUI();
+            }
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -1345,6 +1385,16 @@ namespace WadTool
         private void butTbFindSelectedTexture_Click(object sender, EventArgs e)
         {
             FindTexture();
+        }
+
+        private void butTbRename_Click(object sender, EventArgs e)
+        {
+            RenameMesh();
+        }
+
+        private void lstMeshes_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            RenameMesh();
         }
     }
 }

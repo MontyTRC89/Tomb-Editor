@@ -21,6 +21,45 @@
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.panelEditingTools = new DarkUI.Controls.DarkSectionPanel();
+            this.cbExtra = new DarkUI.Controls.DarkCheckBox();
+            this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelSearchTree = new DarkUI.Controls.DarkPanel();
+            this.butSearchMeshes = new DarkUI.Controls.DarkButton();
+            this.tbSearchMeshes = new DarkUI.Controls.DarkTextBox();
+            this.panelMain = new DarkUI.Controls.DarkPanel();
+            this.panelCenter = new DarkUI.Controls.DarkPanel();
+            this.topBar = new DarkUI.Controls.DarkToolStrip();
+            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
+            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbImport = new System.Windows.Forms.ToolStripButton();
+            this.butTbExport = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.butTbAxis = new System.Windows.Forms.ToolStripButton();
+            this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
+            this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
+            this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbFindSelectedTexture = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbRotateTexture = new System.Windows.Forms.ToolStripButton();
+            this.butTbMirrorTexture = new System.Windows.Forms.ToolStripButton();
+            this.panelEditing = new DarkUI.Controls.DarkPanel();
+            this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
+            this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
+            this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
+            this.butAllTextures = new DarkUI.Controls.DarkButton();
+            this.butExportTexture = new DarkUI.Controls.DarkButton();
+            this.butAddTexture = new DarkUI.Controls.DarkButton();
+            this.butDeleteTexture = new DarkUI.Controls.DarkButton();
+            this.panelTree = new DarkUI.Controls.DarkPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.statusLabel = new DarkUI.Controls.DarkLabel();
+            this.butTbRename = new System.Windows.Forms.ToolStripButton();
+            this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
             this.tabFaceAttributes = new System.Windows.Forms.TabPage();
             this.cbTexture = new DarkUI.Controls.DarkCheckBox();
@@ -61,45 +100,16 @@
             this.nudSphereY = new DarkUI.Controls.DarkNumericUpDown();
             this.nudSphereX = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.cbExtra = new DarkUI.Controls.DarkCheckBox();
-            this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.panelSearchTree = new DarkUI.Controls.DarkPanel();
-            this.butSearchMeshes = new DarkUI.Controls.DarkButton();
-            this.tbSearchMeshes = new DarkUI.Controls.DarkTextBox();
-            this.panelMain = new DarkUI.Controls.DarkPanel();
-            this.panelCenter = new DarkUI.Controls.DarkPanel();
-            this.topBar = new DarkUI.Controls.DarkToolStrip();
-            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
-            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbImport = new System.Windows.Forms.ToolStripButton();
-            this.butTbExport = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
-            this.butTbAxis = new System.Windows.Forms.ToolStripButton();
-            this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
-            this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
-            this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbFindSelectedTexture = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbRotateTexture = new System.Windows.Forms.ToolStripButton();
-            this.butTbMirrorTexture = new System.Windows.Forms.ToolStripButton();
-            this.panelEditing = new DarkUI.Controls.DarkPanel();
-            this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
-            this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
-            this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
-            this.butAllTextures = new DarkUI.Controls.DarkButton();
-            this.butExportTexture = new DarkUI.Controls.DarkButton();
-            this.butAddTexture = new DarkUI.Controls.DarkButton();
-            this.butDeleteTexture = new DarkUI.Controls.DarkButton();
-            this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
-            this.panelTree = new DarkUI.Controls.DarkPanel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.statusLabel = new DarkUI.Controls.DarkLabel();
             this.panelEditingTools.SuspendLayout();
+            this.darkSectionPanel2.SuspendLayout();
+            this.panelSearchTree.SuspendLayout();
+            this.panelMain.SuspendLayout();
+            this.panelCenter.SuspendLayout();
+            this.topBar.SuspendLayout();
+            this.panelEditing.SuspendLayout();
+            this.panelTexturing.SuspendLayout();
+            this.panelTexturingTools.SuspendLayout();
+            this.panelTree.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabFaceAttributes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).BeginInit();
@@ -114,15 +124,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).BeginInit();
-            this.darkSectionPanel2.SuspendLayout();
-            this.panelSearchTree.SuspendLayout();
-            this.panelMain.SuspendLayout();
-            this.panelCenter.SuspendLayout();
-            this.topBar.SuspendLayout();
-            this.panelEditing.SuspendLayout();
-            this.panelTexturing.SuspendLayout();
-            this.panelTexturingTools.SuspendLayout();
-            this.panelTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstMeshes
@@ -188,6 +189,458 @@
             this.panelEditingTools.SectionHeader = "Editing tools";
             this.panelEditingTools.Size = new System.Drawing.Size(326, 161);
             this.panelEditingTools.TabIndex = 54;
+            // 
+            // cbExtra
+            // 
+            this.cbExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbExtra.Location = new System.Drawing.Point(207, 31);
+            this.cbExtra.Name = "cbExtra";
+            this.cbExtra.Size = new System.Drawing.Size(112, 17);
+            this.cbExtra.TabIndex = 4;
+            this.cbExtra.Text = "All numbers";
+            this.toolTip.SetToolTip(this.cbExtra, "Show additional screen information");
+            this.cbExtra.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
+            // 
+            // cbEditingMode
+            // 
+            this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbEditingMode.FormattingEnabled = true;
+            this.cbEditingMode.Location = new System.Drawing.Point(45, 29);
+            this.cbEditingMode.Name = "cbEditingMode";
+            this.cbEditingMode.Size = new System.Drawing.Size(155, 23);
+            this.cbEditingMode.TabIndex = 9;
+            this.toolTip.SetToolTip(this.cbEditingMode, "Mesh editor operation mode");
+            this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(4, 32);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(40, 13);
+            this.darkLabel2.TabIndex = 8;
+            this.darkLabel2.Text = "Mode:";
+            // 
+            // darkSectionPanel2
+            // 
+            this.darkSectionPanel2.Controls.Add(this.lstMeshes);
+            this.darkSectionPanel2.Controls.Add(this.panelSearchTree);
+            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
+            this.darkSectionPanel2.Name = "darkSectionPanel2";
+            this.darkSectionPanel2.SectionHeader = "Mesh list";
+            this.darkSectionPanel2.Size = new System.Drawing.Size(259, 561);
+            this.darkSectionPanel2.TabIndex = 55;
+            // 
+            // panelSearchTree
+            // 
+            this.panelSearchTree.Controls.Add(this.butSearchMeshes);
+            this.panelSearchTree.Controls.Add(this.tbSearchMeshes);
+            this.panelSearchTree.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelSearchTree.Location = new System.Drawing.Point(1, 25);
+            this.panelSearchTree.Name = "panelSearchTree";
+            this.panelSearchTree.Size = new System.Drawing.Size(257, 30);
+            this.panelSearchTree.TabIndex = 2;
+            // 
+            // butSearchMeshes
+            // 
+            this.butSearchMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchMeshes.Checked = false;
+            this.butSearchMeshes.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.butSearchMeshes.Location = new System.Drawing.Point(233, 3);
+            this.butSearchMeshes.Name = "butSearchMeshes";
+            this.butSearchMeshes.Selectable = false;
+            this.butSearchMeshes.Size = new System.Drawing.Size(24, 23);
+            this.butSearchMeshes.TabIndex = 10;
+            this.toolTip.SetToolTip(this.butSearchMeshes, "Search for meshes by name");
+            this.butSearchMeshes.Click += new System.EventHandler(this.butSearchMeshes_Click);
+            // 
+            // tbSearchMeshes
+            // 
+            this.tbSearchMeshes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbSearchMeshes.Location = new System.Drawing.Point(0, 3);
+            this.tbSearchMeshes.Name = "tbSearchMeshes";
+            this.tbSearchMeshes.Size = new System.Drawing.Size(233, 23);
+            this.tbSearchMeshes.TabIndex = 11;
+            this.tbSearchMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchMeshes_KeyDown);
+            // 
+            // panelMain
+            // 
+            this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelMain.Controls.Add(this.panelCenter);
+            this.panelMain.Controls.Add(this.panelEditing);
+            this.panelMain.Controls.Add(this.panelTree);
+            this.panelMain.Location = new System.Drawing.Point(6, 4);
+            this.panelMain.Name = "panelMain";
+            this.panelMain.Size = new System.Drawing.Size(973, 561);
+            this.panelMain.TabIndex = 56;
+            // 
+            // panelCenter
+            // 
+            this.panelCenter.Controls.Add(this.topBar);
+            this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelCenter.Location = new System.Drawing.Point(263, 0);
+            this.panelCenter.Name = "panelCenter";
+            this.panelCenter.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.panelCenter.Size = new System.Drawing.Size(380, 561);
+            this.panelCenter.TabIndex = 57;
+            // 
+            // topBar
+            // 
+            this.topBar.AutoSize = false;
+            this.topBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.topBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.topBar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.butTbUndo,
+            this.butTbRedo,
+            this.toolStripSeparator3,
+            this.butTbImport,
+            this.butTbExport,
+            this.butTbRename,
+            this.toolStripSeparator1,
+            this.butTbResetCamera,
+            this.butTbAxis,
+            this.butTbWireframe,
+            this.butTbAlpha,
+            this.butTbBilinear,
+            this.toolStripSeparator2,
+            this.butTbFindSelectedTexture,
+            this.toolStripSeparator4,
+            this.butTbRotateTexture,
+            this.butTbMirrorTexture});
+            this.topBar.Location = new System.Drawing.Point(0, 1);
+            this.topBar.Name = "topBar";
+            this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
+            this.topBar.Size = new System.Drawing.Size(380, 28);
+            this.topBar.TabIndex = 59;
+            this.topBar.Text = "darkToolStrip1";
+            // 
+            // butTbUndo
+            // 
+            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbUndo.Enabled = false;
+            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbUndo.Name = "butTbUndo";
+            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
+            this.butTbUndo.ToolTipText = "Undo (Ctrl+Z)";
+            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
+            // 
+            // butTbRedo
+            // 
+            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRedo.Enabled = false;
+            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRedo.Name = "butTbRedo";
+            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
+            this.butTbRedo.ToolTipText = "Redo (Ctrl+Y)";
+            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbImport
+            // 
+            this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbImport.Image = global::WadTool.Properties.Resources.general_Import_16;
+            this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbImport.Name = "butTbImport";
+            this.butTbImport.Size = new System.Drawing.Size(23, 25);
+            this.butTbImport.ToolTipText = "Import mesh";
+            this.butTbImport.Click += new System.EventHandler(this.butTbImport_Click);
+            // 
+            // butTbExport
+            // 
+            this.butTbExport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbExport.Image = global::WadTool.Properties.Resources.general_Export_16;
+            this.butTbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbExport.Name = "butTbExport";
+            this.butTbExport.Size = new System.Drawing.Size(23, 25);
+            this.butTbExport.ToolTipText = "Export mesh";
+            this.butTbExport.Click += new System.EventHandler(this.butTbExport_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbResetCamera
+            // 
+            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
+            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbResetCamera.Name = "butTbResetCamera";
+            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
+            this.butTbResetCamera.ToolTipText = "Reset camera";
+            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
+            // 
+            // butTbAxis
+            // 
+            this.butTbAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAxis.CheckOnClick = true;
+            this.butTbAxis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAxis.Image = global::WadTool.Properties.Resources.general_axis_16;
+            this.butTbAxis.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAxis.Name = "butTbAxis";
+            this.butTbAxis.Size = new System.Drawing.Size(23, 25);
+            this.butTbAxis.ToolTipText = "Draw grid and axis";
+            this.butTbAxis.CheckedChanged += new System.EventHandler(this.butTbAxis_Click);
+            // 
+            // butTbWireframe
+            // 
+            this.butTbWireframe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbWireframe.CheckOnClick = true;
+            this.butTbWireframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbWireframe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbWireframe.Image = global::WadTool.Properties.Resources.wireframe_16;
+            this.butTbWireframe.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbWireframe.Name = "butTbWireframe";
+            this.butTbWireframe.Size = new System.Drawing.Size(23, 25);
+            this.butTbWireframe.ToolTipText = "Draw in wireframe mode";
+            this.butTbWireframe.CheckedChanged += new System.EventHandler(this.butTbWireframe_Click);
+            // 
+            // butTbAlpha
+            // 
+            this.butTbAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAlpha.CheckOnClick = true;
+            this.butTbAlpha.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAlpha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAlpha.Image = global::WadTool.Properties.Resources.actions_AlphaTest_16;
+            this.butTbAlpha.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAlpha.Name = "butTbAlpha";
+            this.butTbAlpha.Size = new System.Drawing.Size(23, 25);
+            this.butTbAlpha.ToolTipText = "Toggle transparency";
+            this.butTbAlpha.CheckedChanged += new System.EventHandler(this.butTbAlpha_Click);
+            // 
+            // butTbBilinear
+            // 
+            this.butTbBilinear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbBilinear.CheckOnClick = true;
+            this.butTbBilinear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbBilinear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbBilinear.Image = global::WadTool.Properties.Resources.general_blur_16;
+            this.butTbBilinear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbBilinear.Name = "butTbBilinear";
+            this.butTbBilinear.Size = new System.Drawing.Size(23, 25);
+            this.butTbBilinear.ToolTipText = "Toggle bilinear filter";
+            this.butTbBilinear.CheckedChanged += new System.EventHandler(this.butTbBilinear_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbFindSelectedTexture
+            // 
+            this.butTbFindSelectedTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbFindSelectedTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbFindSelectedTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbFindSelectedTexture.Image = global::WadTool.Properties.Resources.general_search_texture_16;
+            this.butTbFindSelectedTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbFindSelectedTexture.Name = "butTbFindSelectedTexture";
+            this.butTbFindSelectedTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbFindSelectedTexture.ToolTipText = "Search for mesh by selected texture area (Ctrl+F)";
+            this.butTbFindSelectedTexture.Click += new System.EventHandler(this.butTbFindSelectedTexture_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbRotateTexture
+            // 
+            this.butTbRotateTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRotateTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRotateTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRotateTexture.Image = global::WadTool.Properties.Resources.general_Rotate;
+            this.butTbRotateTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRotateTexture.Name = "butTbRotateTexture";
+            this.butTbRotateTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbRotateTexture.ToolTipText = "Rotate current texture (~)";
+            this.butTbRotateTexture.Click += new System.EventHandler(this.butTbRotateTexture_Click);
+            // 
+            // butTbMirrorTexture
+            // 
+            this.butTbMirrorTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbMirrorTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbMirrorTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbMirrorTexture.Image = global::WadTool.Properties.Resources.general_Mirror;
+            this.butTbMirrorTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbMirrorTexture.Name = "butTbMirrorTexture";
+            this.butTbMirrorTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbMirrorTexture.ToolTipText = "Mirror current texture (Shift+~)";
+            this.butTbMirrorTexture.Click += new System.EventHandler(this.butTbMirrorTexture_Click);
+            // 
+            // panelEditing
+            // 
+            this.panelEditing.Controls.Add(this.panelTexturing);
+            this.panelEditing.Controls.Add(this.panelEditingTools);
+            this.panelEditing.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelEditing.Location = new System.Drawing.Point(643, 0);
+            this.panelEditing.Name = "panelEditing";
+            this.panelEditing.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.panelEditing.Size = new System.Drawing.Size(330, 561);
+            this.panelEditing.TabIndex = 56;
+            // 
+            // panelTexturing
+            // 
+            this.panelTexturing.Controls.Add(this.panelTextureMap);
+            this.panelTexturing.Controls.Add(this.panelTexturingTools);
+            this.panelTexturing.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTexturing.Location = new System.Drawing.Point(4, 0);
+            this.panelTexturing.Name = "panelTexturing";
+            this.panelTexturing.SectionHeader = "Texturing";
+            this.panelTexturing.Size = new System.Drawing.Size(326, 400);
+            this.panelTexturing.TabIndex = 0;
+            // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.Location = new System.Drawing.Point(1, 55);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(324, 344);
+            this.panelTextureMap.TabIndex = 0;
+            // 
+            // panelTexturingTools
+            // 
+            this.panelTexturingTools.Controls.Add(this.butAllTextures);
+            this.panelTexturingTools.Controls.Add(this.butExportTexture);
+            this.panelTexturingTools.Controls.Add(this.butAddTexture);
+            this.panelTexturingTools.Controls.Add(this.butDeleteTexture);
+            this.panelTexturingTools.Controls.Add(this.comboCurrentTexture);
+            this.panelTexturingTools.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTexturingTools.Location = new System.Drawing.Point(1, 25);
+            this.panelTexturingTools.Name = "panelTexturingTools";
+            this.panelTexturingTools.Size = new System.Drawing.Size(324, 30);
+            this.panelTexturingTools.TabIndex = 1;
+            // 
+            // butAllTextures
+            // 
+            this.butAllTextures.Checked = false;
+            this.butAllTextures.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butAllTextures.Image = global::WadTool.Properties.Resources.actions_DrawAllRooms_16;
+            this.butAllTextures.Location = new System.Drawing.Point(1, 3);
+            this.butAllTextures.Name = "butAllTextures";
+            this.butAllTextures.Size = new System.Drawing.Size(24, 23);
+            this.butAllTextures.TabIndex = 8;
+            this.butAllTextures.Tag = "";
+            this.toolTip.SetToolTip(this.butAllTextures, "List all textures from wad");
+            this.butAllTextures.Click += new System.EventHandler(this.butAllTextures_Click);
+            // 
+            // butExportTexture
+            // 
+            this.butExportTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butExportTexture.Checked = false;
+            this.butExportTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butExportTexture.Image = global::WadTool.Properties.Resources.general_Export_16;
+            this.butExportTexture.Location = new System.Drawing.Point(270, 3);
+            this.butExportTexture.Name = "butExportTexture";
+            this.butExportTexture.Size = new System.Drawing.Size(24, 23);
+            this.butExportTexture.TabIndex = 7;
+            this.butExportTexture.Tag = "";
+            this.toolTip.SetToolTip(this.butExportTexture, "Export current texture to file");
+            this.butExportTexture.Click += new System.EventHandler(this.butExportTexture_Click);
+            // 
+            // butAddTexture
+            // 
+            this.butAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddTexture.Checked = false;
+            this.butAddTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butAddTexture.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butAddTexture.Location = new System.Drawing.Point(240, 3);
+            this.butAddTexture.Name = "butAddTexture";
+            this.butAddTexture.Size = new System.Drawing.Size(24, 23);
+            this.butAddTexture.TabIndex = 5;
+            this.butAddTexture.Tag = "";
+            this.toolTip.SetToolTip(this.butAddTexture, "Add new texture file");
+            this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
+            // 
+            // butDeleteTexture
+            // 
+            this.butDeleteTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteTexture.Checked = false;
+            this.butDeleteTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDeleteTexture.Image = global::WadTool.Properties.Resources.trash_16;
+            this.butDeleteTexture.Location = new System.Drawing.Point(300, 3);
+            this.butDeleteTexture.Name = "butDeleteTexture";
+            this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
+            this.butDeleteTexture.TabIndex = 6;
+            this.toolTip.SetToolTip(this.butDeleteTexture, "Delete texture");
+            this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
+            // 
+            // panelTree
+            // 
+            this.panelTree.Controls.Add(this.darkSectionPanel2);
+            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelTree.Location = new System.Drawing.Point(0, 0);
+            this.panelTree.Name = "panelTree";
+            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panelTree.Size = new System.Drawing.Size(263, 561);
+            this.panelTree.TabIndex = 0;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.statusLabel.Location = new System.Drawing.Point(3, 576);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(284, 13);
+            this.statusLabel.TabIndex = 57;
+            this.statusLabel.Text = "This label will contain useful info about current mesh.";
+            // 
+            // butTbRename
+            // 
+            this.butTbRename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRename.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butTbRename.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRename.Name = "butTbRename";
+            this.butTbRename.Size = new System.Drawing.Size(23, 25);
+            this.butTbRename.ToolTipText = "Rename mesh";
+            this.butTbRename.Click += new System.EventHandler(this.butTbRename_Click);
+            // 
+            // comboCurrentTexture
+            // 
+            this.comboCurrentTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboCurrentTexture.Location = new System.Drawing.Point(30, 3);
+            this.comboCurrentTexture.Name = "comboCurrentTexture";
+            this.comboCurrentTexture.Size = new System.Drawing.Size(204, 23);
+            this.comboCurrentTexture.TabIndex = 4;
+            this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
             // tabsModes
             // 
@@ -345,6 +798,7 @@
             // 
             // nudVertexNum
             // 
+            this.panelCenter.Controls.Add(this.panelMesh);
             this.nudVertexNum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudVertexNum.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -786,451 +1240,11 @@
             this.darkLabel8.TabIndex = 8;
             this.darkLabel8.Text = "X:";
             // 
-            // cbExtra
-            // 
-            this.cbExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbExtra.Location = new System.Drawing.Point(207, 31);
-            this.cbExtra.Name = "cbExtra";
-            this.cbExtra.Size = new System.Drawing.Size(112, 17);
-            this.cbExtra.TabIndex = 4;
-            this.cbExtra.Text = "All numbers";
-            this.toolTip.SetToolTip(this.cbExtra, "Show additional screen information");
-            this.cbExtra.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
-            // 
-            // cbEditingMode
-            // 
-            this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbEditingMode.FormattingEnabled = true;
-            this.cbEditingMode.Location = new System.Drawing.Point(45, 29);
-            this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(155, 23);
-            this.cbEditingMode.TabIndex = 9;
-            this.toolTip.SetToolTip(this.cbEditingMode, "Mesh editor operation mode");
-            this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(4, 32);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(40, 13);
-            this.darkLabel2.TabIndex = 8;
-            this.darkLabel2.Text = "Mode:";
-            // 
-            // darkSectionPanel2
-            // 
-            this.darkSectionPanel2.Controls.Add(this.lstMeshes);
-            this.darkSectionPanel2.Controls.Add(this.panelSearchTree);
-            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
-            this.darkSectionPanel2.Name = "darkSectionPanel2";
-            this.darkSectionPanel2.SectionHeader = "Mesh list";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(259, 561);
-            this.darkSectionPanel2.TabIndex = 55;
-            // 
-            // panelSearchTree
-            // 
-            this.panelSearchTree.Controls.Add(this.butSearchMeshes);
-            this.panelSearchTree.Controls.Add(this.tbSearchMeshes);
-            this.panelSearchTree.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelSearchTree.Location = new System.Drawing.Point(1, 25);
-            this.panelSearchTree.Name = "panelSearchTree";
-            this.panelSearchTree.Size = new System.Drawing.Size(257, 30);
-            this.panelSearchTree.TabIndex = 2;
-            // 
-            // butSearchMeshes
-            // 
-            this.butSearchMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearchMeshes.Checked = false;
-            this.butSearchMeshes.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butSearchMeshes.Location = new System.Drawing.Point(233, 3);
-            this.butSearchMeshes.Name = "butSearchMeshes";
-            this.butSearchMeshes.Selectable = false;
-            this.butSearchMeshes.Size = new System.Drawing.Size(24, 23);
-            this.butSearchMeshes.TabIndex = 10;
-            this.toolTip.SetToolTip(this.butSearchMeshes, "Search for meshes by name");
-            this.butSearchMeshes.Click += new System.EventHandler(this.butSearchMeshes_Click);
-            // 
-            // tbSearchMeshes
-            // 
-            this.tbSearchMeshes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbSearchMeshes.Location = new System.Drawing.Point(0, 3);
-            this.tbSearchMeshes.Name = "tbSearchMeshes";
-            this.tbSearchMeshes.Size = new System.Drawing.Size(233, 23);
-            this.tbSearchMeshes.TabIndex = 11;
-            this.tbSearchMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchMeshes_KeyDown);
-            // 
-            // panelMain
-            // 
-            this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelMain.Controls.Add(this.panelCenter);
-            this.panelMain.Controls.Add(this.panelEditing);
-            this.panelMain.Controls.Add(this.panelTree);
-            this.panelMain.Location = new System.Drawing.Point(6, 4);
-            this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(973, 561);
-            this.panelMain.TabIndex = 56;
-            // 
-            // panelCenter
-            // 
-            this.panelCenter.Controls.Add(this.panelMesh);
-            this.panelCenter.Controls.Add(this.topBar);
-            this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelCenter.Location = new System.Drawing.Point(263, 0);
-            this.panelCenter.Name = "panelCenter";
-            this.panelCenter.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.panelCenter.Size = new System.Drawing.Size(380, 561);
-            this.panelCenter.TabIndex = 57;
-            // 
-            // topBar
-            // 
-            this.topBar.AutoSize = false;
-            this.topBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.topBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.topBar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.butTbUndo,
-            this.butTbRedo,
-            this.toolStripSeparator3,
-            this.butTbImport,
-            this.butTbExport,
-            this.toolStripSeparator1,
-            this.butTbResetCamera,
-            this.butTbAxis,
-            this.butTbWireframe,
-            this.butTbAlpha,
-            this.butTbBilinear,
-            this.toolStripSeparator2,
-            this.butTbFindSelectedTexture,
-            this.toolStripSeparator4,
-            this.butTbRotateTexture,
-            this.butTbMirrorTexture});
-            this.topBar.Location = new System.Drawing.Point(0, 1);
-            this.topBar.Name = "topBar";
-            this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.topBar.Size = new System.Drawing.Size(380, 28);
-            this.topBar.TabIndex = 59;
-            this.topBar.Text = "darkToolStrip1";
-            // 
-            // butTbUndo
-            // 
-            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbUndo.Enabled = false;
-            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
-            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbUndo.Name = "butTbUndo";
-            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
-            this.butTbUndo.ToolTipText = "Undo (Ctrl+Z)";
-            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
-            // 
-            // butTbRedo
-            // 
-            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbRedo.Enabled = false;
-            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
-            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbRedo.Name = "butTbRedo";
-            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
-            this.butTbRedo.ToolTipText = "Redo (Ctrl+Y)";
-            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbImport
-            // 
-            this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbImport.Image = global::WadTool.Properties.Resources.general_Import_16;
-            this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbImport.Name = "butTbImport";
-            this.butTbImport.Size = new System.Drawing.Size(23, 25);
-            this.butTbImport.ToolTipText = "Import mesh";
-            this.butTbImport.Click += new System.EventHandler(this.butTbImport_Click);
-            // 
-            // butTbExport
-            // 
-            this.butTbExport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbExport.Image = global::WadTool.Properties.Resources.general_Export_16;
-            this.butTbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbExport.Name = "butTbExport";
-            this.butTbExport.Size = new System.Drawing.Size(23, 25);
-            this.butTbExport.ToolTipText = "Export mesh";
-            this.butTbExport.Click += new System.EventHandler(this.butTbExport_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbResetCamera
-            // 
-            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
-            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbResetCamera.Name = "butTbResetCamera";
-            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
-            this.butTbResetCamera.ToolTipText = "Reset camera";
-            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
-            // 
-            // butTbAxis
-            // 
-            this.butTbAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbAxis.CheckOnClick = true;
-            this.butTbAxis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAxis.Image = global::WadTool.Properties.Resources.general_axis_16;
-            this.butTbAxis.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbAxis.Name = "butTbAxis";
-            this.butTbAxis.Size = new System.Drawing.Size(23, 25);
-            this.butTbAxis.ToolTipText = "Draw grid and axis";
-            this.butTbAxis.CheckedChanged += new System.EventHandler(this.butTbAxis_Click);
-            // 
-            // butTbWireframe
-            // 
-            this.butTbWireframe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbWireframe.CheckOnClick = true;
-            this.butTbWireframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbWireframe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbWireframe.Image = global::WadTool.Properties.Resources.wireframe_16;
-            this.butTbWireframe.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbWireframe.Name = "butTbWireframe";
-            this.butTbWireframe.Size = new System.Drawing.Size(23, 25);
-            this.butTbWireframe.ToolTipText = "Draw in wireframe mode";
-            this.butTbWireframe.CheckedChanged += new System.EventHandler(this.butTbWireframe_Click);
-            // 
-            // butTbAlpha
-            // 
-            this.butTbAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbAlpha.CheckOnClick = true;
-            this.butTbAlpha.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbAlpha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAlpha.Image = global::WadTool.Properties.Resources.actions_AlphaTest_16;
-            this.butTbAlpha.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbAlpha.Name = "butTbAlpha";
-            this.butTbAlpha.Size = new System.Drawing.Size(23, 25);
-            this.butTbAlpha.ToolTipText = "Toggle transparency";
-            this.butTbAlpha.CheckedChanged += new System.EventHandler(this.butTbAlpha_Click);
-            // 
-            // butTbBilinear
-            // 
-            this.butTbBilinear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbBilinear.CheckOnClick = true;
-            this.butTbBilinear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbBilinear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbBilinear.Image = global::WadTool.Properties.Resources.general_blur_16;
-            this.butTbBilinear.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbBilinear.Name = "butTbBilinear";
-            this.butTbBilinear.Size = new System.Drawing.Size(23, 25);
-            this.butTbBilinear.ToolTipText = "Toggle bilinear filter";
-            this.butTbBilinear.CheckedChanged += new System.EventHandler(this.butTbBilinear_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbFindSelectedTexture
-            // 
-            this.butTbFindSelectedTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbFindSelectedTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbFindSelectedTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbFindSelectedTexture.Image = global::WadTool.Properties.Resources.general_search_texture_16;
-            this.butTbFindSelectedTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbFindSelectedTexture.Name = "butTbFindSelectedTexture";
-            this.butTbFindSelectedTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbFindSelectedTexture.ToolTipText = "Search for mesh by selected texture area (Ctrl+F)";
-            this.butTbFindSelectedTexture.Click += new System.EventHandler(this.butTbFindSelectedTexture_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbRotateTexture
-            // 
-            this.butTbRotateTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbRotateTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbRotateTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbRotateTexture.Image = global::WadTool.Properties.Resources.general_Rotate;
-            this.butTbRotateTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbRotateTexture.Name = "butTbRotateTexture";
-            this.butTbRotateTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbRotateTexture.ToolTipText = "Rotate current texture (~)";
-            this.butTbRotateTexture.Click += new System.EventHandler(this.butTbRotateTexture_Click);
-            // 
-            // butTbMirrorTexture
-            // 
-            this.butTbMirrorTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbMirrorTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbMirrorTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbMirrorTexture.Image = global::WadTool.Properties.Resources.general_Mirror;
-            this.butTbMirrorTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbMirrorTexture.Name = "butTbMirrorTexture";
-            this.butTbMirrorTexture.Size = new System.Drawing.Size(23, 25);
-            this.butTbMirrorTexture.ToolTipText = "Mirror current texture (Shift+~)";
-            this.butTbMirrorTexture.Click += new System.EventHandler(this.butTbMirrorTexture_Click);
-            // 
-            // panelEditing
-            // 
-            this.panelEditing.Controls.Add(this.panelTexturing);
-            this.panelEditing.Controls.Add(this.panelEditingTools);
-            this.panelEditing.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelEditing.Location = new System.Drawing.Point(643, 0);
-            this.panelEditing.Name = "panelEditing";
-            this.panelEditing.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.panelEditing.Size = new System.Drawing.Size(330, 561);
-            this.panelEditing.TabIndex = 56;
-            // 
-            // panelTexturing
-            // 
-            this.panelTexturing.Controls.Add(this.panelTextureMap);
-            this.panelTexturing.Controls.Add(this.panelTexturingTools);
-            this.panelTexturing.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTexturing.Location = new System.Drawing.Point(4, 0);
-            this.panelTexturing.Name = "panelTexturing";
-            this.panelTexturing.SectionHeader = "Texturing";
-            this.panelTexturing.Size = new System.Drawing.Size(326, 400);
-            this.panelTexturing.TabIndex = 0;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(1, 55);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(324, 344);
-            this.panelTextureMap.TabIndex = 0;
-            // 
-            // panelTexturingTools
-            // 
-            this.panelTexturingTools.Controls.Add(this.butAllTextures);
-            this.panelTexturingTools.Controls.Add(this.butExportTexture);
-            this.panelTexturingTools.Controls.Add(this.butAddTexture);
-            this.panelTexturingTools.Controls.Add(this.butDeleteTexture);
-            this.panelTexturingTools.Controls.Add(this.comboCurrentTexture);
-            this.panelTexturingTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTexturingTools.Location = new System.Drawing.Point(1, 25);
-            this.panelTexturingTools.Name = "panelTexturingTools";
-            this.panelTexturingTools.Size = new System.Drawing.Size(324, 30);
-            this.panelTexturingTools.TabIndex = 1;
-            // 
-            // butAllTextures
-            // 
-            this.butAllTextures.Checked = false;
-            this.butAllTextures.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAllTextures.Image = global::WadTool.Properties.Resources.actions_DrawAllRooms_16;
-            this.butAllTextures.Location = new System.Drawing.Point(1, 3);
-            this.butAllTextures.Name = "butAllTextures";
-            this.butAllTextures.Size = new System.Drawing.Size(24, 23);
-            this.butAllTextures.TabIndex = 8;
-            this.butAllTextures.Tag = "";
-            this.toolTip.SetToolTip(this.butAllTextures, "List all textures from wad");
-            this.butAllTextures.Click += new System.EventHandler(this.butAllTextures_Click);
-            // 
-            // butExportTexture
-            // 
-            this.butExportTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butExportTexture.Checked = false;
-            this.butExportTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butExportTexture.Image = global::WadTool.Properties.Resources.general_Export_16;
-            this.butExportTexture.Location = new System.Drawing.Point(270, 3);
-            this.butExportTexture.Name = "butExportTexture";
-            this.butExportTexture.Size = new System.Drawing.Size(24, 23);
-            this.butExportTexture.TabIndex = 7;
-            this.butExportTexture.Tag = "";
-            this.toolTip.SetToolTip(this.butExportTexture, "Export current texture to file");
-            this.butExportTexture.Click += new System.EventHandler(this.butExportTexture_Click);
-            // 
-            // butAddTexture
-            // 
-            this.butAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddTexture.Checked = false;
-            this.butAddTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAddTexture.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddTexture.Location = new System.Drawing.Point(240, 3);
-            this.butAddTexture.Name = "butAddTexture";
-            this.butAddTexture.Size = new System.Drawing.Size(24, 23);
-            this.butAddTexture.TabIndex = 5;
-            this.butAddTexture.Tag = "";
-            this.toolTip.SetToolTip(this.butAddTexture, "Add new texture file");
-            this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
-            // 
-            // butDeleteTexture
-            // 
-            this.butDeleteTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteTexture.Checked = false;
-            this.butDeleteTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDeleteTexture.Image = global::WadTool.Properties.Resources.trash_16;
-            this.butDeleteTexture.Location = new System.Drawing.Point(300, 3);
-            this.butDeleteTexture.Name = "butDeleteTexture";
-            this.butDeleteTexture.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteTexture.TabIndex = 6;
-            this.toolTip.SetToolTip(this.butDeleteTexture, "Delete texture");
-            this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
-            // 
-            // comboCurrentTexture
-            // 
-            this.comboCurrentTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboCurrentTexture.Location = new System.Drawing.Point(30, 3);
-            this.comboCurrentTexture.Name = "comboCurrentTexture";
-            this.comboCurrentTexture.Size = new System.Drawing.Size(204, 23);
-            this.comboCurrentTexture.TabIndex = 4;
-            this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
-            // 
-            // panelTree
-            // 
-            this.panelTree.Controls.Add(this.darkSectionPanel2);
-            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelTree.Location = new System.Drawing.Point(0, 0);
-            this.panelTree.Name = "panelTree";
-            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panelTree.Size = new System.Drawing.Size(263, 561);
-            this.panelTree.TabIndex = 0;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.ForeColor = System.Drawing.Color.DarkGray;
-            this.statusLabel.Location = new System.Drawing.Point(3, 576);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(284, 13);
-            this.statusLabel.TabIndex = 57;
-            this.statusLabel.Text = "This label will contain useful info about current mesh.";
-            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 602);
+            this.ClientSize = new System.Drawing.Size(984, 605);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.btCancel);
@@ -1245,6 +1259,17 @@
             this.Text = "Mesh editor";
             this.panelEditingTools.ResumeLayout(false);
             this.panelEditingTools.PerformLayout();
+            this.darkSectionPanel2.ResumeLayout(false);
+            this.panelSearchTree.ResumeLayout(false);
+            this.panelSearchTree.PerformLayout();
+            this.panelMain.ResumeLayout(false);
+            this.panelCenter.ResumeLayout(false);
+            this.topBar.ResumeLayout(false);
+            this.topBar.PerformLayout();
+            this.panelEditing.ResumeLayout(false);
+            this.panelTexturing.ResumeLayout(false);
+            this.panelTexturingTools.ResumeLayout(false);
+            this.panelTree.ResumeLayout(false);
             this.tabsModes.ResumeLayout(false);
             this.tabFaceAttributes.ResumeLayout(false);
             this.tabFaceAttributes.PerformLayout();
@@ -1264,17 +1289,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereZ)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).EndInit();
-            this.darkSectionPanel2.ResumeLayout(false);
-            this.panelSearchTree.ResumeLayout(false);
-            this.panelSearchTree.PerformLayout();
-            this.panelMain.ResumeLayout(false);
-            this.panelCenter.ResumeLayout(false);
-            this.topBar.ResumeLayout(false);
-            this.topBar.PerformLayout();
-            this.panelEditing.ResumeLayout(false);
-            this.panelTexturing.ResumeLayout(false);
-            this.panelTexturingTools.ResumeLayout(false);
-            this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1365,5 +1379,6 @@
         private System.Windows.Forms.ToolStripButton butTbExport;
         private System.Windows.Forms.ToolStripButton butTbFindSelectedTexture;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton butTbRename;
     }
 }
