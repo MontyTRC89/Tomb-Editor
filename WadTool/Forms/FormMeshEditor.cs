@@ -473,16 +473,6 @@ namespace WadTool
                 btCancel.Visible = false;
                 btOk.Location = btCancel.Location;
             }
-            
-            // Update current mesh name
-            if (lstMeshes.Visible && 
-                lstMeshes.SelectedNodes.Count == 1 &&
-                panelMesh.Mesh != null &&
-                lstMeshes.SelectedNodes[0].Tag != null &&
-                !lstMeshes.SelectedNodes[0].Text.Equals(panelMesh.Mesh.Name))
-            {
-                lstMeshes.SelectedNodes[0].Text = panelMesh.Mesh.Name;
-            }
 
             // Hide editing tools if flag is unset
             if (!ShowEditingTools)
@@ -522,6 +512,7 @@ namespace WadTool
             // Disable I/O buttons if no current mesh is selected
             butTbExport.Enabled = !NoMesh();
             butTbImport.Enabled = !NoMesh();
+            butTbRename.Enabled = !NoMesh();
 
             // Update status label
             UpdateStatusLabel();
@@ -924,6 +915,9 @@ namespace WadTool
             if (panelMesh.Mesh == null)
                 return;
 
+            if (lstMeshes.Visible && lstMeshes.SelectedNodes.Count == 1 & lstMeshes.SelectedNodes[0].Tag == null)
+                return;
+
             using (var form = new FormInputBox("Edit mesh name", "Mesh name:", panelMesh.Mesh.Name))
             {
                 if (form.ShowDialog(this) == DialogResult.Cancel)
@@ -935,12 +929,18 @@ namespace WadTool
                 if (panelMesh.Mesh.Name.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
-                var nodes = lstMeshes.GetAllNodes().Select(n => n.Text).ToList();
-
-                if (nodes.Any(n => n.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase)))
+                if (lstMeshes.Visible)
                 {
-                    popup.ShowError(panelMesh, "Specified name is already used in current wad. \nPlease use another name.");
-                    return;
+                    var nodes = lstMeshes.GetAllNodes().Select(n => n.Text).ToList();
+
+                    if (nodes.Any(n => n.Equals(form.Result)))
+                    {
+                        popup.ShowError(panelMesh, "Specified name is already used in current wad. \nPlease use another name.");
+                        return;
+                    }
+
+                    if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag is MeshTreeNode)
+                        lstMeshes.SelectedNodes[0].Text = form.Result;
                 }
 
                 _tool.UndoManager.PushMeshChanged(panelMesh);
@@ -1395,7 +1395,8 @@ namespace WadTool
 
         private void lstMeshes_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            RenameMesh();
+            if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
+                RenameMesh();
         }
     }
 }
