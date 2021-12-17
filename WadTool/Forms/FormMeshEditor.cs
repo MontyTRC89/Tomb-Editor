@@ -478,6 +478,7 @@ namespace WadTool
             if (lstMeshes.Visible && 
                 lstMeshes.SelectedNodes.Count == 1 &&
                 panelMesh.Mesh != null &&
+                lstMeshes.SelectedNodes[0].Tag != null &&
                 !lstMeshes.SelectedNodes[0].Text.Equals(panelMesh.Mesh.Name))
             {
                 lstMeshes.SelectedNodes[0].Text = panelMesh.Mesh.Name;
