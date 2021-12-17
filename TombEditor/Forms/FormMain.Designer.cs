@@ -148,7 +148,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.clearAllTexturesInRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearAllTexturesInRoomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.findUntexturedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.animationRangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1458,7 +1458,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem3,
             this.clearAllTexturesInRoomToolStripMenuItem,
             this.clearAllTexturesInRoomToolStripMenuItem1,
-            this.findUntexturedToolStripMenuItem,
+            this.findTexturesToolStripMenuItem,
             this.toolStripMenuSeparator10,
             this.animationRangesToolStripMenuItem});
             this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -1594,14 +1594,14 @@ namespace TombEditor.Forms
             this.clearAllTexturesInRoomToolStripMenuItem1.Tag = "ClearAllTexturesInLevel";
             this.clearAllTexturesInRoomToolStripMenuItem1.Text = "ClearAllTexturesInLevel";
             // 
-            // findUntexturedToolStripMenuItem
+            // findTexturesToolStripMenuItem
             // 
-            this.findUntexturedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.findUntexturedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.findUntexturedToolStripMenuItem.Name = "findUntexturedToolStripMenuItem";
-            this.findUntexturedToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.findUntexturedToolStripMenuItem.Tag = "FindUntextured";
-            this.findUntexturedToolStripMenuItem.Text = "FindUntextured";
+            this.findTexturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.findTexturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.findTexturesToolStripMenuItem.Name = "findTexturesToolStripMenuItem";
+            this.findTexturesToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.findTexturesToolStripMenuItem.Tag = "FindTextures";
+            this.findTexturesToolStripMenuItem.Text = "FindTextures";
             // 
             // toolStripMenuSeparator10
             // 
@@ -2498,7 +2498,7 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripMenuItem makeQuickItemGroupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addImportedGeometryToolStripMenuItem;
         private ToolStripMenuItem searchAndReplaceToolStripMenuItem;
-        private ToolStripMenuItem findUntexturedToolStripMenuItem;
+        private ToolStripMenuItem findTexturesToolStripMenuItem;
         private ToolStripMenuItem addSphereVolumeToolStripMenuItem;
         private ToolStripMenuItem addBoxVolumeToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem8;

@@ -80,6 +80,14 @@ namespace TombLib.Utils
         XpYpCounterclockwise = 7
     }
 
+    public enum TextureSearchType
+    {
+        Empty,
+        Broken,
+        ExactMatch,
+        PartialMatch
+    }
+
     public static class TextureExtensions
     {
          // Helper procedures to convert between blending mode indices available to user

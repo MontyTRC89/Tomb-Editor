@@ -1294,7 +1294,7 @@ namespace TombEditor
             }
         }
 
-        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(bool onlySelectedRooms, uint maxEntries, out bool tooManyEntries)
+        public static List<KeyValuePair<Room, VectorInt2>> FindTextures(TextureSearchType type, TextureArea texture, bool onlySelectedRooms, uint maxEntries, out bool tooManyEntries)
         {
             var result = new ConcurrentBag<KeyValuePair<Room, VectorInt2>>();
             var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms.Where(item => item != null);
@@ -1318,9 +1318,31 @@ namespace TombEditor
                             // Filter out undefined faces
                             if (!room.IsFaceDefined(x, z, face)) continue;
 
-                            // Add entry, if no texture present
-                            if (block.GetFaceTexture(face) == TextureArea.None)
-                                result.Add(new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z)));
+                            var tex = block.GetFaceTexture(face);
+                            var entry = new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z));
+
+                            switch (type)
+                            {
+                                case TextureSearchType.Empty:
+                                    if (tex == TextureArea.None)
+                                        result.Add(entry);
+                                    break;
+
+                                case TextureSearchType.Broken:
+                                    if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds)
+                                        result.Add(entry);
+                                    break;
+
+                                case TextureSearchType.ExactMatch:
+                                    if (tex.GetCanonicalTexture(tex.TextureIsTriangle) == texture)
+                                        result.Add(entry);
+                                    break;
+
+                                case TextureSearchType.PartialMatch:
+                                    if (tex.GetRect().Intersects(texture.GetRect()))
+                                        result.Add(entry);
+                                    break;
+                            }
 
                             if (result.Count > maxEntries)
                             {

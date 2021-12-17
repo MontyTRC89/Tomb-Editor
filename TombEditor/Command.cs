@@ -1303,12 +1303,12 @@ namespace TombEditor
                     form.ShowDialog(args.Window);
             });
 
-            AddCommand("FindUntextured", "Find untextured faces...", CommandType.Textures, delegate (CommandArgs args)
+            AddCommand("FindTextures", "Find textures...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormFindUntextured)];
+                var existingWindow = Application.OpenForms[nameof(FormFindTextures)];
                 if (existingWindow == null)
                 {
-                    var findUntexturedForm = new FormFindUntextured(args.Editor);
+                    var findUntexturedForm = new FormFindTextures(args.Editor);
                     findUntexturedForm.Show(args.Window);
                 }
                 else
