@@ -915,9 +915,6 @@ namespace WadTool
             if (panelMesh.Mesh == null)
                 return;
 
-            if (lstMeshes.Visible && lstMeshes.SelectedNodes.Count == 1 & lstMeshes.SelectedNodes[0].Tag == null)
-                return;
-
             using (var form = new FormInputBox("Edit mesh name", "Mesh name:", panelMesh.Mesh.Name))
             {
                 if (form.ShowDialog(this) == DialogResult.Cancel)
@@ -939,8 +936,11 @@ namespace WadTool
                         return;
                     }
 
-                    if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag is MeshTreeNode)
-                        lstMeshes.SelectedNodes[0].Text = form.Result;
+                    foreach (var entry in lstMeshes.GetAllNodes())
+                    {
+                        if (entry.Tag != null && (entry.Tag as MeshTreeNode).WadMesh == panelMesh.Mesh)
+                            entry.Text = form.Result;
+                    }
                 }
 
                 _tool.UndoManager.PushMeshChanged(panelMesh);
