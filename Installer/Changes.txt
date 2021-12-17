@@ -6,6 +6,7 @@ Tomb Editor:
  * Add glide out camera flag to be used together with glidecam FLEP patch.
  * Fix quick start feature for new FLEP workflow.
  * Fix rendering in imported geometry browser preview.
+ * Fix occasional object ID changes when clicking around script controls in trigger window.
  * Add some missing global sounds for TR1 sound catalog.
  
 WadTool:
