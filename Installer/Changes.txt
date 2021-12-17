@@ -14,7 +14,7 @@ WadTool:
  * Add context menus for editing currently selected object mesh in main window.
  * Jump to currently selected object when opening mesh editor from main window.
  * Don't steal focus to item preview in main window.
- * Fix persistent issues with disjointed MQO vertices.
+ * Fix persistent issues with disjointed MQO vertices on mesh import.
  
 SoundTool:
  * Fix incorrect bit depth for TR2 samples when compiling MAIN.SFX.
