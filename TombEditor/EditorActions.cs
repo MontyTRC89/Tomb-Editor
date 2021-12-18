@@ -1329,7 +1329,7 @@ namespace TombEditor
                                     break;
 
                                 case TextureSearchType.Broken:
-                                    if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds)
+                                    if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds || tex.TextureIsUnavailable || (!tex.TextureIsInvisible && tex.TextureIsDegenerate))
                                         result.Add(entry);
                                     break;
 
