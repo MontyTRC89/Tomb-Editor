@@ -1329,8 +1329,20 @@ namespace TombEditor
                                     break;
 
                                 case TextureSearchType.Broken:
-                                    if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds || tex.TextureIsUnavailable || (!tex.TextureIsInvisible && tex.TextureIsDegenerate))
+                                    if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds)
                                         result.Add(entry);
+
+                                    if (!tex.TextureIsInvisible)
+                                    {
+                                        if (tex.TextureIsUnavailable)
+                                            result.Add(entry);
+
+                                        if (!tex.TextureIsTriangle && tex.QuadArea == tex.TriangleArea)
+                                            result.Add(entry);
+
+                                        if (tex.TextureIsDegenerate)
+                                            result.Add(entry);
+                                    }
                                     break;
 
                                 case TextureSearchType.ExactMatch:
