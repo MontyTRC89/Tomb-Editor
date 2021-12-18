@@ -340,7 +340,7 @@ namespace WadTool.Controls
                 {
                     Font = _fontDefault,
                     Overlay = true,
-                    PixelPos = new Vector2(10, 25),
+                    PixelPos = new Vector2(10, -10),
                     Alignment = new Vector2(0, 0),
                     String = debugMessage
                 });
