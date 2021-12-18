@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -586,7 +585,7 @@ namespace TombLib.LevelData.Compilers
                 MaxTileSize = (ushort)maxTileSize;
             else
             {
-                MaxTileSize = 256;
+                MaxTileSize = AtlasSize;
             }
 
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
