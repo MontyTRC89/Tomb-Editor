@@ -1303,7 +1303,7 @@ namespace TombEditor
                     form.ShowDialog(args.Window);
             });
 
-            AddCommand("FindTextures", "Find textures...", CommandType.Textures, delegate (CommandArgs args)
+            AddCommand("SearchTextures", "Search textures...", CommandType.Textures, delegate (CommandArgs args)
             {
                 var existingWindow = Application.OpenForms[nameof(FormFindTextures)];
                 if (existingWindow == null)
