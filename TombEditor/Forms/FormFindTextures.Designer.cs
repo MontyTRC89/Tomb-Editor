@@ -144,8 +144,9 @@
             this.cbSearchType.Items.AddRange(new object[] {
             "Untextured faces",
             "Broken faces",
-            "Faces with currently selected texture",
-            "Faces with any texture within selection"});
+            "Exact match with selected texture",
+            "Partial match with selected texture",
+            "Texture set only"});
             this.cbSearchType.Location = new System.Drawing.Point(43, 279);
             this.cbSearchType.Name = "cbSearchType";
             this.cbSearchType.Size = new System.Drawing.Size(265, 23);

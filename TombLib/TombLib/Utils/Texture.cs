@@ -85,7 +85,8 @@ namespace TombLib.Utils
         Empty,
         Broken,
         ExactMatch,
-        PartialMatch
+        PartialMatch,
+        TextureSet
     }
 
     public static class TextureExtensions

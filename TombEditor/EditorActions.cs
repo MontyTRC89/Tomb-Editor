@@ -1354,6 +1354,11 @@ namespace TombEditor
                                     if (tex.Texture == texture.Texture && tex.GetRect().Intersects(texture.GetRect()))
                                         result.Add(entry);
                                     break;
+
+                                case TextureSearchType.TextureSet:
+                                    if (tex.Texture == texture.Texture)
+                                        result.Add(entry);
+                                    break;
                             }
 
                             if (result.Count > maxEntries)
