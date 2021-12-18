@@ -1351,7 +1351,7 @@ namespace TombEditor
                                     break;
 
                                 case TextureSearchType.PartialMatch:
-                                    if (tex.GetRect().Intersects(texture.GetRect()))
+                                    if (tex.Texture == texture.Texture && tex.GetRect().Intersects(texture.GetRect()))
                                         result.Add(entry);
                                     break;
                             }
