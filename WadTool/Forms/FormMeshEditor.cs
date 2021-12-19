@@ -380,7 +380,9 @@ namespace WadTool
                 butTbUndo.Enabled = stackEvent.UndoPossible;
                 butTbRedo.Enabled = stackEvent.RedoPossible;
                 _unsavedChanges = true;
+                SaveCurrentMesh();
                 UpdateUI();
+                UpdateMeshTreeName();
             }
 
             if (obj is WadToolClass.MessageEvent)
@@ -926,27 +928,23 @@ namespace WadTool
                 if (panelMesh.Mesh.Name.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
-                if (lstMeshes.Visible)
-                {
-                    var nodes = lstMeshes.GetAllNodes().Select(n => n.Text).ToList();
-
-                    if (nodes.Any(n => n.Equals(form.Result)))
-                    {
-                        popup.ShowError(panelMesh, "Specified name is already used in current wad. \nPlease use another name.");
-                        return;
-                    }
-
-                    foreach (var entry in lstMeshes.GetAllNodes())
-                    {
-                        if (entry.Tag != null && (entry.Tag as MeshTreeNode).WadMesh == panelMesh.Mesh)
-                            entry.Text = form.Result;
-                    }
-                }
-
                 _tool.UndoManager.PushMeshChanged(panelMesh);
                 panelMesh.Mesh.Name = form.Result;
                 SaveCurrentMesh();
                 UpdateUI();
+                UpdateMeshTreeName();
+            }
+        }
+
+        private void UpdateMeshTreeName()
+        {
+            if (!lstMeshes.Visible || panelMesh.Mesh == null)
+                return;
+
+            foreach (var entry in lstMeshes.GetAllNodes().Where(n => n.Tag != null))
+            {
+                if ((entry.Tag as MeshTreeNode).WadMesh == panelMesh.Mesh)
+                    entry.Text = panelMesh.Mesh.Name;
             }
         }
 
