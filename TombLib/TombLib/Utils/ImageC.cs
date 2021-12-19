@@ -415,6 +415,7 @@ namespace TombLib.Utils
 
         public static ImageC FromFile(string path)
         {
+            Console.WriteLine(path);
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var result = FromStream(stream);

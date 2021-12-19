@@ -85,7 +85,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int TextureId;
         public byte BlendMode;
         public bool Animated;
-        public bool DoubleSided;
         public Vector3 Normal;
         public Vector3 Tangent;
         public Vector3 Bitangent;
@@ -130,6 +129,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Bone;
         public int IndexInPoly;
         public int OriginalIndex;
+        public bool DoubleSided;
 
         public float Glow;
         public float Move;
@@ -206,8 +206,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
             {
                 return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
-                    x.AnimatedSequence == y.AnimatedSequence && 
-                    x.DoubleSided == y.DoubleSided);
+                    x.AnimatedSequence == y.AnimatedSequence);
             }
 
             public int GetHashCode(TombEngineMaterial obj)
@@ -220,7 +219,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     hash = hash * 23 + obj.Animated.GetHashCode();
                     hash = hash * 23 + obj.NormalMapping.GetHashCode();
                     hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
-                    hash = hash * 23 + obj.DoubleSided.GetHashCode();
                     return hash;
                 }
             }
@@ -230,7 +228,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public byte BlendMode;
         public bool Animated;
         public bool NormalMapping;
-        public bool DoubleSided;
         public int AnimatedSequence;
     }
 
@@ -295,7 +292,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
                 writer.Write(bucket.Material.Animated);
-                writer.Write(bucket.Material.DoubleSided);
                 writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
                 {

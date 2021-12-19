@@ -44,8 +44,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Remove WaterScheme values for water rooms
             Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { 
-                for (int i=0;i<trRoom.Polygons.Count;i++)
+            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
+            {
+                for (int i = 0; i < trRoom.Polygons.Count; i++)
                 {
                     if (trRoom.Polygons[i].Animated)
                     {
@@ -409,86 +410,92 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (wadStatic == null || wadStatic.Mesh == null)
                             continue;
 
-                        for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
+                        foreach (bool doubleSided in new[] { false, true })
                         {
-                            // Apply the transform to the vertex
-                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
-                            Vector3 normal   = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform));
-                            Vector3 shade    = Vector3.One;
-
-                            var glow = 0f;
-                            var move = 0f;
-                            
-                            if (interpretShadesAsMovement)
+                            for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
                             {
-                                if (j < wadStatic.Mesh.VertexColors.Count)
+                                WadPolygon poly = wadStatic.Mesh.Polys[i];
+
+                                // Create vertices
+                                int[] tempIndices = new int[4];
+
+                                for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 4 : 3); j++)
                                 {
-                                    var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
-                                    if (luma < 0.5f) move = luma * 2.0f;   // Movement
-                                    else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
+                                    // Apply the transform to the vertex
+                                    Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
+                                    Vector3 normal = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform));
+                                    Vector3 shade = Vector3.One;
+
+                                    if (doubleSided)
+                                    {
+                                        normal = -normal;
+                                    }
+
+                                    var glow = 0f;
+                                    var move = 0f;
+
+                                    if (interpretShadesAsMovement)
+                                    {
+                                        if (j < wadStatic.Mesh.VertexColors.Count)
+                                        {
+                                            var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
+                                            if (luma < 0.5f) move = luma * 2.0f;   // Movement
+                                            else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // If we have vertex colors, use them as a luma factor for the resulting vertex color
+                                        if (!clearShades && wadStatic.Mesh.HasColors)
+                                            shade = wadStatic.Mesh.VertexColors[j];
+
+                                        if (wadStatic.Mesh.HasAttributes)
+                                        {
+                                            if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                                move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
+
+                                            if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                                glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
+                                        }
+                                    }
+
+                                    Vector3 color;
+                                    if (!entry.TintAsAmbient)
+                                    {
+                                        color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 255);
+                                        // Apply Shade factor
+                                        color *= shade;
+                                        // Apply Instance Color
+                                        color *= staticMesh.Color;
+                                    }
+                                    else
+                                    {
+                                        color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 255);
+                                        //Apply Shade factor
+                                        color *= shade;
+                                    }
+
+                                    var trVertex = new TombEngineVertex
+                                    {
+                                        Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
+                                        Color = color,
+                                        Normal = normal,
+                                        Glow = glow,
+                                        Move = move,
+                                        DoubleSided = doubleSided
+                                    };
+
+                                    tempIndices[j] = roomVertices.Count;
+                                    roomVertices.Add(trVertex);
                                 }
-                            }
-                            else
-                            {
-                                // If we have vertex colors, use them as a luma factor for the resulting vertex color
-                                if (!clearShades && wadStatic.Mesh.HasColors)
-                                    shade = wadStatic.Mesh.VertexColors[j];
 
-                                if (wadStatic.Mesh.HasAttributes)
-                                {
-                                    if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-                                        move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
+                                int index0 = tempIndices[0];
+                                int index1 = tempIndices[1];
+                                int index2 = tempIndices[2];
+                                int index3 = tempIndices[3];
 
-                                    if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-                                        glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
-                                }
-                            }
-
-                            Vector3 color;
-                            if (!entry.TintAsAmbient)
-                            {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 255);
-                                // Apply Shade factor
-                                color *= shade;
-                                // Apply Instance Color
-                                color *= staticMesh.Color;
-                            }
-                            else
-                            {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 255);
-                                //Apply Shade factor
-                                color *= shade;
-                            }
-
-                            var trVertex = new TombEngineVertex
-                            {
-                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
-                                Color = color,
-                                Normal = normal,
-                                Glow = glow,
-                                Move = move
-                            };
-
-                            roomVertices.Add(trVertex);
-                        }
-
-                        for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
-                        {
-                            WadPolygon poly = wadStatic.Mesh.Polys[i];
-                            int index0 = (poly.Index0 + meshVertexBase);
-                            int index1 = (poly.Index1 + meshVertexBase);
-                            int index2 = (poly.Index2 + meshVertexBase);
-                            int index3 = (poly.Index3 + meshVertexBase);
-
-                            var texture = poly.Texture;
-                            FixWadTextureCoordinates(ref texture);
-
-                            // TODO: Implement double-sided prebaking!!!!
-
-                            foreach (bool doubleSided in new[] { false, true })
-                            {
-                                if (doubleSided && !poly.Texture.DoubleSided)
-                                    break;
+                                var texture = poly.Texture;
+                                FixWadTextureCoordinates(ref texture);
 
                                 int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
                                                                   new int[] { index0, index1, index2, index3 };
@@ -509,7 +516,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(key))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[key];
-                                    var face = poly.IsTriangle ? 
+                                    var face = poly.IsTriangle ?
                                         result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
                                         result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
@@ -518,7 +525,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 else
                                 {
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode == BlendMode.AlphaBlend);
-                                    var face = poly.IsTriangle ? 
+                                    var face = poly.IsTriangle ?
                                         result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
                                         result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
@@ -553,83 +560,94 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         int currentMeshIndexCount = 0;
 
-                        for (int j = 0; j < mesh.Vertices.Count; j++)
-                        {
-                            var vertex = mesh.Vertices[j];
-
-                            // Since imported geometry can be used as reimported room mesh, we need to make sure
-                            // coordinates are integer to comply with portal positions, so MatchDoorShades function
-                            // will later work correctly. While technically rounding vertex positions is incorrect,
-                            // thankfully TR engines use large-scale coordinate system, so we can ignore such precision loss.
-
-                            vertex.Position = MathC.Round(vertex.Position);
-
-                            // Apply the transform to the vertex
-                            Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
-                            Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
-                            normal = Vector3.Normalize(normal);
-
-                            var trVertex = new TombEngineVertex
-                            {
-                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
-                                Normal = normal
-                            };
-
-                            // Pack the light according to chosen lighting model
-                            if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-                            {
-                                trVertex.Color = vertex.Color;
-                            }
-                            else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                            {
-                                var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 255);
-                                trVertex.Color = color;
-                            }
-                            else
-                            {
-                                var color = room.Properties.AmbientLight;
-                                trVertex.Color = color;
-                            }
-
-                            // HACK: Find a vertex with same coordinates and merge with it.
-                            // This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
-                            // strange behaviour which splits imported geometry based on materials.
-                            // We still preserve sharp edges if explicitly specified by flag though.
-
-                            int existingIndex;
-                            if (geometry.SharpEdges)
-                            {
-                                existingIndex = roomVertices.Count;
-                                roomVertices.Add(trVertex);
-                            }
-                            else
-                            {
-                                existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position && v.Color == trVertex.Color);
-                                if (existingIndex == -1)
-                                {
-                                    existingIndex = roomVertices.Count;
-                                    roomVertices.Add(trVertex);
-                                }
-                            }
-
-                            indexList.Add(existingIndex);
-                            currentMeshIndexCount++;
-                        }
-
                         foreach (var submesh in mesh.Submeshes)
-                        {                      
-                            //foreach (bool doubleSided in (submesh.Key.DoubleSided ? new[] { false, true } : new[] { false }))
+                        {
+                            foreach (bool doubleSided in (submesh.Key.DoubleSided ? new[] { false, true } : new[] { false }))
                             {
                                 for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                                 {
-                                    int index0 = (indexList[j + baseIndex + 0]);
-                                    int index1 = (indexList[j + baseIndex + 1]);
-                                    int index2 = (indexList[j + baseIndex + 2]);
+                                    int[] tempIndices = new int[3];
+
+                                    // We need to add vertices here
+                                    for (int k = 0; k < 3; k++)
+                                    {
+                                        var vertex = mesh.Vertices[submesh.Value.Indices[j + k]];
+
+                                        // Since imported geometry can be used as reimported room mesh, we need to make sure
+                                        // coordinates are integer to comply with portal positions, so MatchDoorShades function
+                                        // will later work correctly. While technically rounding vertex positions is incorrect,
+                                        // thankfully TR engines use large-scale coordinate system, so we can ignore such precision loss.
+
+                                        vertex.Position = MathC.Round(vertex.Position);
+
+                                        // Apply the transform to the vertex
+                                        Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
+                                        Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
+                                        normal = Vector3.Normalize(normal);
+
+                                        if (doubleSided)
+                                            normal = -normal;
+
+                                        var trVertex = new TombEngineVertex
+                                        {
+                                            Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
+                                            Normal = normal,
+                                            DoubleSided = doubleSided
+                                        };
+
+                                        // Pack the light according to chosen lighting model
+                                        if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                        {
+                                            trVertex.Color = vertex.Color;
+                                        }
+                                        else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
+                                        {
+                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 255);
+                                            trVertex.Color = color;
+                                        }
+                                        else
+                                        {
+                                            var color = room.Properties.AmbientLight;
+                                            trVertex.Color = color;
+                                        }
+
+                                        // HACK: Find a vertex with same coordinates and merge with it.
+                                        // This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
+                                        // strange behaviour which splits imported geometry based on materials.
+                                        // We still preserve sharp edges if explicitly specified by flag though.
+
+                                        int existingIndex;
+                                        if (geometry.SharpEdges)
+                                        {
+                                            existingIndex = roomVertices.Count;
+                                            roomVertices.Add(trVertex);
+                                        }
+                                        else
+                                        {
+                                            existingIndex = roomVertices.IndexOf(
+                                                v => v.Position == trVertex.Position
+                                                    && v.Color == trVertex.Color
+                                                    && v.DoubleSided == trVertex.DoubleSided);
+                                            if (existingIndex == -1)
+                                            {
+                                                existingIndex = roomVertices.Count;
+                                                roomVertices.Add(trVertex);
+                                            }
+                                        }
+
+                                        indexList.Add(existingIndex);
+                                        tempIndices[k] = existingIndex;
+                                        currentMeshIndexCount++;
+                                    }
+
+                                    int index0 = tempIndices[0];
+                                    int index1 = tempIndices[1];
+                                    int index2 = tempIndices[2];
 
                                     int[] indices = new int[] { index0, index1, index2 };
-                                    //if (doubleSided)
+                                    if (doubleSided)
                                     {
-                                    //    Array.Reverse(indices);
+                                        Array.Reverse(indices);
                                     }
 
                                     // TODO Move texture area into the mesh
@@ -659,16 +677,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
                                     if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
-                                    //if (doubleSided)
+                                    if (doubleSided)
                                     {
-                                    //    texture.Mirror(true);
+                                        texture.Mirror(true);
                                     }
 
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
                                     var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
 
-                                    tri.DoubleSided = submesh.Key.DoubleSided;
-                                    
                                     roomPolygons.Add(tri);
                                     roomVertices[index0].Polygons.Add(new NormalHelper(tri));
                                     roomVertices[index1].Polygons.Add(new NormalHelper(tri));
@@ -1617,15 +1633,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return tmp;
         }
 
-        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, bool doubleSided, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
         {
             var material = new TombEngineMaterial
             {
                 Texture = texture,
                 BlendMode = blendMode,
                 Animated = animated,
-                AnimatedSequence = sequence,
-                DoubleSided = doubleSided
+                AnimatedSequence = sequence
             };
 
             if (!buckets.ContainsKey(material))
@@ -1661,7 +1676,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, poly.DoubleSided, room.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, room.Buckets);
 
                 var texture = textures[poly.TextureId];
 
