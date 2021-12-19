@@ -143,7 +143,7 @@
             this.cbSearchType.FormattingEnabled = true;
             this.cbSearchType.Items.AddRange(new object[] {
             "Untextured faces",
-            "Broken faces",
+            "Textures missing or out of bounds",
             "Exact match with selected texture",
             "Partial match with selected texture",
             "Texture set only"});
