@@ -258,6 +258,10 @@ namespace TombLib.LevelData
                        // Loop for each mesh loaded in scene
                        foreach (var mesh in tmpModel.Meshes)
                        {
+                           // Make sure we always have correct normals
+                           if (mesh.Normals.Count == 0)
+                              mesh.CalculateNormals();
+
                            var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
 
                            modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
