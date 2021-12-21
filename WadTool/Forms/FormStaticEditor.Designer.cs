@@ -500,14 +500,10 @@
             // 
             // lstLights
             // 
-            this.lstLights.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.lstLights.ExpandOnDoubleClick = false;
-            this.lstLights.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstLights.Location = new System.Drawing.Point(6, 36);
             this.lstLights.MaxDragChange = 20;
             this.lstLights.Name = "lstLights";
-            this.lstLights.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-            this.lstLights.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.lstLights.Size = new System.Drawing.Size(87, 136);
             this.lstLights.TabIndex = 97;
             this.lstLights.Text = "darkTreeView1";

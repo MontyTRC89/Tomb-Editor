@@ -241,15 +241,11 @@
 			// 
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Enabled = false;
-			this.treeView.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView.Location = new System.Drawing.Point(6, 176);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.MultiSelect = true;
 			this.treeView.Name = "treeView";
-			this.treeView.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.treeView.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Size = new System.Drawing.Size(432, 138);
 			this.treeView.TabIndex = 8;
 			// 

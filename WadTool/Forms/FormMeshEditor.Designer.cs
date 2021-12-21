@@ -130,15 +130,11 @@
             // 
             this.lstMeshes.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.lstMeshes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstMeshes.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.lstMeshes.ExpandOnDoubleClick = false;
-            this.lstMeshes.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstMeshes.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lstMeshes.Location = new System.Drawing.Point(1, 55);
             this.lstMeshes.MaxDragChange = 20;
             this.lstMeshes.Name = "lstMeshes";
-            this.lstMeshes.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-            this.lstMeshes.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.lstMeshes.Size = new System.Drawing.Size(257, 505);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
