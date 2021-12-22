@@ -310,7 +310,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var newMoveable = new TombEngineMoveable();
                 newMoveable.Animation = oldMoveable.Animations.Count != 0 ? lastAnimation : -1;
-                newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
+                newMoveable.NumMeshes = oldMoveable.Meshes.Count();
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
 
@@ -445,7 +445,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 lastAnimation += oldMoveable.Animations.Count;
 
                 newMoveable.MeshTree = _meshTrees.Count;
-                newMoveable.StartingMesh = (short)_meshes.Count;
+                newMoveable.StartingMesh = _meshes.Count;
 
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];

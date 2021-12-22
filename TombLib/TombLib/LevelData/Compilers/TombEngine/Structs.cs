@@ -541,8 +541,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineMoveable
     {
         public int ObjectID;
-        public short NumMeshes;
-        public short StartingMesh;
+        public int NumMeshes;
+        public int StartingMesh;
         public int MeshTree;
         public int FrameOffset;
         public int Animation;
