@@ -309,7 +309,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new TombEngineMoveable();
-                newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
+                newMoveable.Animation = oldMoveable.Animations.Count != 0 ? lastAnimation : -1;
                 newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;

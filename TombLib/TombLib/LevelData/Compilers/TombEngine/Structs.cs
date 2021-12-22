@@ -545,7 +545,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public short StartingMesh;
         public int MeshTree;
         public int FrameOffset;
-        public short Animation;
+        public int Animation;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
