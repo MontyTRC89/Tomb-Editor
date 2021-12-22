@@ -16,6 +16,7 @@ WadTool:
  * Jump to currently selected object when opening mesh editor from main window.
  * Don't steal focus to item preview in main window.
  * Fix persistent issues with disjointed MQO vertices on mesh import.
+ * Fix UI brightness not affecting tree list views.
  
 SoundTool:
  * Fix incorrect bit depth for TR2 samples when compiling MAIN.SFX.
