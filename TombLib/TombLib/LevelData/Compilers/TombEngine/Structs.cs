@@ -549,23 +549,40 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineStateChange
+    {
+        public int StateID;
+        public int NumAnimDispatches;
+        public int AnimDispatch;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineAnimDispatch
+    {
+        public int Low;
+        public int High;
+        public int NextAnimation;
+        public int NextFrame;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineAnimation
     {
         public int FrameOffset;
-        public short FrameRate;
-        public ushort StateID;
+        public int FrameRate;
+        public int StateID;
         public int Speed;
         public int Accel;
         public int SpeedLateral;
         public int AccelLateral;
-        public ushort FrameStart;
-        public ushort FrameEnd;
-        public ushort NextAnimation;
-        public ushort NextFrame;
-        public ushort NumStateChanges;
-        public ushort StateChangeOffset;
-        public ushort NumAnimCommands;
-        public ushort AnimCommand;
+        public int FrameStart;
+        public int FrameEnd;
+        public int NextAnimation;
+        public int NextFrame;
+        public int NumStateChanges;
+        public int StateChangeOffset;
+        public int NumAnimCommands;
+        public int AnimCommand;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
