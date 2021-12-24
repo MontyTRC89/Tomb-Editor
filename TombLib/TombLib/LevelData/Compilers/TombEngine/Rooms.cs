@@ -116,7 +116,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            return Vector3.Max(output, new Vector3()) * (1.0f / 255.0f);
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
         }
 
         private TombEngineRoom BuildRoom(Room room)
@@ -462,7 +462,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     Vector3 color;
                                     if (!entry.TintAsAmbient)
                                     {
-                                        color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 255);
+                                        color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
                                         // Apply Shade factor
                                         color *= shade;
                                         // Apply Instance Color
@@ -470,7 +470,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
                                     else
                                     {
-                                        color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 255);
+                                        color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
                                         //Apply Shade factor
                                         color *= shade;
                                     }
@@ -602,7 +602,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         }
                                         else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                                         {
-                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 255);
+                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
                                             trVertex.Color = color;
                                         }
                                         else
