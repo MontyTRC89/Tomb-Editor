@@ -1582,7 +1582,33 @@ namespace TombEditor.Forms
                     _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
                     _levelSettings.SoundCatalogs.Clear();
                     _levelSettings.SoundCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(s => s.Sounds));
+
+                    bool searchForOthers = true;
+                    var toReplace = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
+                    var list = new Dictionary<ReferencedSoundCatalog, string>() { { toReplace, result } };
+
+                    foreach (var w in _levelSettings.SoundCatalogs.Where(g => g != toReplace && g != null && g.LoadException != null))
+                    {
+                        // Now recursively search down the folder structure
+                        var newPath = PathC.TryFindFile(Path.GetDirectoryName(_levelSettings.MakeAbsolute(result)), _levelSettings.MakeAbsolute(w.Path), 4, 4);
+                        if (File.Exists(newPath))
+                        {
+                            if (searchForOthers && DarkMessageBox.Show(this, "Other missing sound catalogs were found. Reconnect them?",
+                                "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                break;
+                            else
+                            {
+                                searchForOthers = false; // Unset flag so we don't prompt again
+                                list.Add(w, newPath);
+                            }
+                        }
+                    }
+
+                    _editor.SendMessage("Reconnecting " + list.Count + " wads...", PopupType.Info);
+                    Task.Run(() => list.ToList().ForEach(item => { item.Key.SetPath(_levelSettings, item.Value); _editor.LoadedWadsChange(); }));
+
                     PopulateSoundInfoListAndResetFilter();
+
                 }
             }
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)

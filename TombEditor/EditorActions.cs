@@ -5554,7 +5554,7 @@ namespace TombEditor
 
         public static void AssignWadSounds(LevelSettings settings)
         {
-            foreach (var wad in _editor.Level.Settings.Wads)
+            foreach (var wad in _editor.Level.Settings.Wads.Where(w => w.Wad != null))
                 foreach (var item in wad.Wad.Moveables)
                     foreach (var anim in item.Value.Animations)
                         foreach (var cmd in anim.AnimCommands)
