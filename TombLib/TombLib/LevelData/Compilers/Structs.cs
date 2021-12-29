@@ -686,7 +686,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)0);
 
             writer.Write((float)Info.X);
-            writer.Write((float)Info.YBottom);
+            writer.Write((float)0);
             writer.Write((float)Info.Z);
 
             writer.Write(0xcdcdcdcd);
