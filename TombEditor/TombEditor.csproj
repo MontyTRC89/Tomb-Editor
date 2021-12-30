@@ -179,11 +179,11 @@
     <Compile Include="Forms\FormSprite.Designer.cs">
       <DependentUpon>FormSprite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormFindUntextured.cs">
+    <Compile Include="Forms\FormFindTextures.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormFindUntextured.Designer.cs">
-      <DependentUpon>FormFindUntextured.cs</DependentUpon>
+    <Compile Include="Forms\FormFindTextures.Designer.cs">
+      <DependentUpon>FormFindTextures.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormImportPrj.cs">
       <SubType>Form</SubType>
@@ -538,8 +538,8 @@
     <EmbeddedResource Include="Forms\FormSprite.resx">
       <DependentUpon>FormSprite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFindUntextured.resx">
-      <DependentUpon>FormFindUntextured.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormFindTextures.resx">
+      <DependentUpon>FormFindTextures.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportPrj.resx">
       <DependentUpon>FormImportPrj.cs</DependentUpon>

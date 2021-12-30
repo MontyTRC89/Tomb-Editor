@@ -79,14 +79,10 @@
             // 
             this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeSkeleton.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.treeSkeleton.ExpandOnDoubleClick = false;
-            this.treeSkeleton.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.treeSkeleton.Location = new System.Drawing.Point(3, 28);
             this.treeSkeleton.MaxDragChange = 20;
             this.treeSkeleton.Name = "treeSkeleton";
-            this.treeSkeleton.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-            this.treeSkeleton.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.treeSkeleton.Size = new System.Drawing.Size(310, 354);
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);

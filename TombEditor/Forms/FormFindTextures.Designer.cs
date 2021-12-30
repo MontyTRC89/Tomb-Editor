@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Forms
 {
-    partial class FormFindUntextured
+    partial class FormFindTextures
     {
         /// <summary>
         /// Required designer variable.
@@ -23,6 +23,8 @@
             this.cbSelectedRooms = new DarkUI.Controls.DarkCheckBox();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.cbSearchType = new DarkUI.Controls.DarkComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUntextured)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -65,11 +67,12 @@
             this.dgvUntextured.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colRoom,
             this.colCoordinates});
+            this.dgvUntextured.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvUntextured.Location = new System.Drawing.Point(7, 6);
             this.dgvUntextured.MultiSelect = false;
             this.dgvUntextured.Name = "dgvUntextured";
             this.dgvUntextured.RowHeadersWidth = 41;
-            this.dgvUntextured.Size = new System.Drawing.Size(301, 296);
+            this.dgvUntextured.Size = new System.Drawing.Size(301, 267);
             this.dgvUntextured.TabIndex = 11;
             this.dgvUntextured.SelectionChanged += new System.EventHandler(this.dgvUntextured_SelectionChanged);
             // 
@@ -110,7 +113,7 @@
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 336);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 339);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(314, 26);
@@ -122,13 +125,42 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 13);
             // 
-            // FormFindUntextured
+            // darkLabel1
+            // 
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(4, 282);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(33, 13);
+            this.darkLabel1.TabIndex = 14;
+            this.darkLabel1.Text = "Find:";
+            // 
+            // cbSearchType
+            // 
+            this.cbSearchType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbSearchType.FormattingEnabled = true;
+            this.cbSearchType.Items.AddRange(new object[] {
+            "Untextured faces",
+            "Textures missing or out of bounds",
+            "Exact match with selected texture",
+            "Partial match with selected texture",
+            "Texture set only"});
+            this.cbSearchType.Location = new System.Drawing.Point(43, 279);
+            this.cbSearchType.Name = "cbSearchType";
+            this.cbSearchType.Size = new System.Drawing.Size(265, 23);
+            this.cbSearchType.TabIndex = 15;
+            // 
+            // FormFindTextures
             // 
             this.AcceptButton = this.butNewSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(314, 362);
+            this.ClientSize = new System.Drawing.Size(314, 365);
+            this.Controls.Add(this.cbSearchType);
+            this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.cbSelectedRooms);
             this.Controls.Add(this.dgvUntextured);
@@ -136,11 +168,11 @@
             this.Controls.Add(this.butCancel);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(330, 400);
-            this.Name = "FormFindUntextured";
+            this.Name = "FormFindTextures";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Find untextured faces";
+            this.Text = "Search textures";
             ((System.ComponentModel.ISupportInitialize)(this.dgvUntextured)).EndInit();
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
@@ -159,5 +191,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colCoordinates;
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkComboBox cbSearchType;
     }
 }

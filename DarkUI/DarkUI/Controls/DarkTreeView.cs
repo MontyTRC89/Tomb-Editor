@@ -1188,15 +1188,6 @@ namespace DarkUI.Controls
             }
         }
 
-        [Category("Appearance")]
-        public Color OddNodeColor { get; set; } = Colors.HeaderBackground;
-        [Category("Appearance")]
-        public Color EvenNodeColor { get; set; } = Colors.GreyBackground;
-        [Category("Appearance")]
-        public Color FocusedNodeColor { get; set; } = Colors.BlueSelection;
-        [Category("Appearance")]
-        public Color NonFocusedNodeColor { get; set; } = Colors.GreySelection;
-
         private void DrawNode(DarkTreeNode node, Graphics g)
         {
             var rect = GetNodeFullRowArea(node);
@@ -1205,13 +1196,13 @@ namespace DarkUI.Controls
             var bgColor = node.BackColor;
 
             if(bgColor == Color.Transparent)
-                bgColor = node.Odd ? OddNodeColor : EvenNodeColor;
+                bgColor = node.Odd ? Colors.HeaderBackground : Colors.GreyBackground;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
-                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
+                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
 
             if (IsDragging && _dropNode == node)
-                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
+                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
 
             using (var b = new SolidBrush(bgColor))
             {

@@ -380,7 +380,9 @@ namespace WadTool
                 butTbUndo.Enabled = stackEvent.UndoPossible;
                 butTbRedo.Enabled = stackEvent.RedoPossible;
                 _unsavedChanges = true;
+                SaveCurrentMesh();
                 UpdateUI();
+                UpdateMeshTreeName();
             }
 
             if (obj is WadToolClass.MessageEvent)
@@ -512,6 +514,7 @@ namespace WadTool
             // Disable I/O buttons if no current mesh is selected
             butTbExport.Enabled = !NoMesh();
             butTbImport.Enabled = !NoMesh();
+            butTbRename.Enabled = !NoMesh();
 
             // Update status label
             UpdateStatusLabel();
@@ -907,6 +910,42 @@ namespace WadTool
             }
 
             popup.ShowInfo(panelMesh, "No meshes with any textures from enclosed area were found.");
+        }
+
+        private void RenameMesh()
+        {
+            if (panelMesh.Mesh == null)
+                return;
+
+            using (var form = new FormInputBox("Edit mesh name", "Mesh name:", panelMesh.Mesh.Name))
+            {
+                if (form.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                if (string.IsNullOrEmpty(form.Result))
+                    return;
+
+                if (panelMesh.Mesh.Name.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase))
+                    return;
+
+                _tool.UndoManager.PushMeshChanged(panelMesh);
+                panelMesh.Mesh.Name = form.Result;
+                SaveCurrentMesh();
+                UpdateUI();
+                UpdateMeshTreeName();
+            }
+        }
+
+        private void UpdateMeshTreeName()
+        {
+            if (!lstMeshes.Visible || panelMesh.Mesh == null)
+                return;
+
+            foreach (var entry in lstMeshes.GetAllNodes().Where(n => n.Tag != null))
+            {
+                if ((entry.Tag as MeshTreeNode).WadMesh == panelMesh.Mesh)
+                    entry.Text = panelMesh.Mesh.Name;
+            }
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -1345,6 +1384,17 @@ namespace WadTool
         private void butTbFindSelectedTexture_Click(object sender, EventArgs e)
         {
             FindTexture();
+        }
+
+        private void butTbRename_Click(object sender, EventArgs e)
+        {
+            RenameMesh();
+        }
+
+        private void lstMeshes_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
+                RenameMesh();
         }
     }
 }
