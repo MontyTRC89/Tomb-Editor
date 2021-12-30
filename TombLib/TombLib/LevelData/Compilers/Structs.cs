@@ -178,7 +178,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Lighting2;
         
         // For TR5 only
-        public tr_vertex Normal;
+        public Vector3 Normal;
         public uint Color;
 
         // Used internally by Tomb Editor
@@ -686,7 +686,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)0);
 
             writer.Write((float)Info.X);
-            writer.Write((float)Info.YBottom);
+            writer.Write((float)0);
             writer.Write((float)Info.Z);
 
             writer.Write(0xcdcdcdcd);
