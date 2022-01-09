@@ -232,9 +232,9 @@ namespace TombEditor
         public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool  Window_FormTrigger_Maximized { get; set; } = false;
-        public Point Window_FormFindUntextured_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormFindUntextured_Size { get; set; } = new Size(330, 400);
-        public bool Window_FormFindUntextured_Maximized { get; set; } = false;
+        public Point Window_FormFindTextures_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormFindTextures_Size { get; set; } = new Size(330, 450);
+        public bool Window_FormFindTextures_Maximized { get; set; } = false;
         public Point Window_FormMemo_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;

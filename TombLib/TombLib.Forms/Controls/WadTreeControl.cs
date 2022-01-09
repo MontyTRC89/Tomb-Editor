@@ -249,15 +249,11 @@ namespace TombLib.Controls
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tree.Enabled = false;
-            this.tree.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tree.ExpandOnDoubleClick = false;
-            this.tree.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.tree.Location = new System.Drawing.Point(0, 30);
             this.tree.MaxDragChange = 20;
             this.tree.MultiSelect = true;
             this.tree.Name = "tree";
-            this.tree.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-            this.tree.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.tree.Size = new System.Drawing.Size(150, 120);
             this.tree.TabIndex = 1;
             this.tree.Click += new System.EventHandler(this.tree_Click);

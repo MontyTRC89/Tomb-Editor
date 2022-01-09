@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
-    public partial class FormFindUntextured : DarkForm
+    public partial class FormFindTextures : DarkForm
     {
         private const uint _maxEntries = 1000;
 
@@ -17,11 +17,13 @@ namespace TombEditor.Forms
         private bool _lockSelection = true;
         private bool _firstLaunch = true;
 
-        public FormFindUntextured(Editor editor)
+        public FormFindTextures(Editor editor)
         {
             _editor = editor;
             _editor.EditorEventRaised += _editor_EditorEventRaised;
             InitializeComponent();
+
+            cbSearchType.SelectedIndex = 0;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -51,15 +53,17 @@ namespace TombEditor.Forms
         private void InitializeNewSearch()
         {
             bool tooManyEntries = false;
-            _list = EditorActions.FindUntextured(cbSelectedRooms.Checked, _maxEntries, out tooManyEntries);
+            _list = EditorActions.FindTextures((TextureSearchType)cbSearchType.SelectedIndex, 
+                _editor.SelectedTexture.GetCanonicalTexture(_editor.SelectedTexture.TextureIsTriangle), 
+                cbSelectedRooms.Checked, _maxEntries, out tooManyEntries);
 
             lblStatus.Text = "Search finished. ";
             if (tooManyEntries)
                 lblStatus.Text += "Too many entries, showing first " + _list.Count + ".";
             else if (_list.Count == 0)
-                lblStatus.Text += "No untextured blocks found.";
+                lblStatus.Text += "No entries found.";
             else
-                lblStatus.Text += "Found " + _list.Count + " untextured blocks.";
+                lblStatus.Text += "Found " + _list.Count + " entries.";
 
             RefreshList();
         }

@@ -80,6 +80,15 @@ namespace TombLib.Utils
         XpYpCounterclockwise = 7
     }
 
+    public enum TextureSearchType
+    {
+        Empty,
+        Broken,
+        ExactMatch,
+        PartialMatch,
+        TextureSet
+    }
+
     public static class TextureExtensions
     {
          // Helper procedures to convert between blending mode indices available to user
@@ -291,7 +300,7 @@ namespace TombLib.Utils
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
         public bool TextureIsTriangle => TexCoord2 == TexCoord3;
-        public bool TextureIsDegenerate => QuadArea == 0 || TriangleArea == 0;
+        public bool TextureIsDegenerate => (!TextureIsTriangle && QuadArea == 0) || (TextureIsTriangle && TriangleArea == 0);
 
         public bool TriangleCoordsOutOfBounds
         {

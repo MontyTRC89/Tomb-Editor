@@ -185,16 +185,12 @@
 			// 
 			this.treeView_Installed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Installed.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView_Installed.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView_Installed.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_Installed.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Installed.ItemHeight = 40;
 			this.treeView_Installed.Location = new System.Drawing.Point(1, 25);
 			this.treeView_Installed.MaxDragChange = 40;
 			this.treeView_Installed.MultiSelect = true;
 			this.treeView_Installed.Name = "treeView_Installed";
-			this.treeView_Installed.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.treeView_Installed.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Installed.Size = new System.Drawing.Size(368, 492);
 			this.treeView_Installed.TabIndex = 0;
 			this.treeView_Installed.SelectedNodesChanged += new System.EventHandler(this.treeView_Installed_SelectedNodesChanged);
@@ -214,16 +210,12 @@
 			// 
 			this.treeView_Available.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Available.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView_Available.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView_Available.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_Available.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Available.ItemHeight = 40;
 			this.treeView_Available.Location = new System.Drawing.Point(1, 53);
 			this.treeView_Available.MaxDragChange = 40;
 			this.treeView_Available.MultiSelect = true;
 			this.treeView_Available.Name = "treeView_Available";
-			this.treeView_Available.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.treeView_Available.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Available.Size = new System.Drawing.Size(368, 464);
 			this.treeView_Available.TabIndex = 0;
 			this.treeView_Available.SelectedNodesChanged += new System.EventHandler(this.treeView_Available_SelectedNodesChanged);

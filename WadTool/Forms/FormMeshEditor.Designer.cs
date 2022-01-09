@@ -76,6 +76,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbImport = new System.Windows.Forms.ToolStripButton();
             this.butTbExport = new System.Windows.Forms.ToolStripButton();
+            this.butTbRename = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
             this.butTbAxis = new System.Windows.Forms.ToolStripButton();
@@ -129,27 +130,24 @@
             // 
             this.lstMeshes.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.lstMeshes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstMeshes.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.lstMeshes.ExpandOnDoubleClick = false;
-            this.lstMeshes.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstMeshes.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lstMeshes.Location = new System.Drawing.Point(1, 55);
             this.lstMeshes.MaxDragChange = 20;
             this.lstMeshes.Name = "lstMeshes";
-            this.lstMeshes.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-            this.lstMeshes.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.lstMeshes.Size = new System.Drawing.Size(257, 505);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.SelectedNodesChanged += new System.EventHandler(this.lstMeshes_SelectedNodesChanged);
+            this.lstMeshes.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstMeshes_MouseDoubleClick);
             // 
             // panelMesh
             // 
             this.panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(0, 29);
+            this.panelMesh.Location = new System.Drawing.Point(0, 1);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(380, 531);
+            this.panelMesh.Size = new System.Drawing.Size(380, 559);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -877,8 +875,8 @@
             // 
             // panelCenter
             // 
-            this.panelCenter.Controls.Add(this.panelMesh);
             this.panelCenter.Controls.Add(this.topBar);
+            this.panelCenter.Controls.Add(this.panelMesh);
             this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCenter.Location = new System.Drawing.Point(263, 0);
             this.panelCenter.Name = "panelCenter";
@@ -898,6 +896,7 @@
             this.toolStripSeparator3,
             this.butTbImport,
             this.butTbExport,
+            this.butTbRename,
             this.toolStripSeparator1,
             this.butTbResetCamera,
             this.butTbAxis,
@@ -973,6 +972,18 @@
             this.butTbExport.Size = new System.Drawing.Size(23, 25);
             this.butTbExport.ToolTipText = "Export mesh";
             this.butTbExport.Click += new System.EventHandler(this.butTbExport_Click);
+            // 
+            // butTbRename
+            // 
+            this.butTbRename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRename.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butTbRename.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRename.Name = "butTbRename";
+            this.butTbRename.Size = new System.Drawing.Size(23, 25);
+            this.butTbRename.ToolTipText = "Rename mesh";
+            this.butTbRename.Click += new System.EventHandler(this.butTbRename_Click);
             // 
             // toolStripSeparator1
             // 
@@ -1230,7 +1241,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 602);
+            this.ClientSize = new System.Drawing.Size(984, 605);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.btCancel);
@@ -1365,5 +1376,6 @@
         private System.Windows.Forms.ToolStripButton butTbExport;
         private System.Windows.Forms.ToolStripButton butTbFindSelectedTexture;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton butTbRename;
     }
 }

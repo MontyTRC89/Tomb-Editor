@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Numerics;
 using TombLib.Controls;
 
@@ -16,5 +17,10 @@ namespace WadTool.Controls
         public override float NavigationSpeedMouseWheelZoom => Configuration.RenderingItem_NavigationSpeedMouseWheelZoom;
         public override float NavigationSpeedMouseZoom => Configuration.RenderingItem_NavigationSpeedMouseZoom;
         public override bool ReadOnly => false;
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Absorb event to prevent focusing
+        }
     }
 }

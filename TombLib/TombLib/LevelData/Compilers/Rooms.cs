@@ -386,7 +386,28 @@ namespace TombLib.LevelData.Compilers
                                             vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         }
-                                    
+
+                                        if (room.Level.Settings.GameVersion == TRVersion.Game.TR5)
+                                        {
+                                            var normal = GetRoomNormal(vertexPositions[i + 0], vertexPositions[i + 1], vertexPositions[i + 2]);
+
+                                            var trVertex = roomVertices[vertex0Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex0Index] = trVertex;
+
+                                            trVertex = roomVertices[vertex1Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex1Index] = trVertex;
+
+                                            trVertex = roomVertices[vertex2Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex2Index] = trVertex;
+
+                                            trVertex = roomVertices[vertex3Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex3Index] = trVertex;
+                                        }
+
                                         var result = _textureInfoManager.AddTexture(texture, true, false);
                                         roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                         doubleSided, 0));
@@ -407,7 +428,24 @@ namespace TombLib.LevelData.Compilers
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                    
+
+                                        if (room.Level.Settings.GameVersion == TRVersion.Game.TR5)
+                                        {
+                                            var normal = GetRoomNormal(vertexPositions[i + 0], vertexPositions[i + 1], vertexPositions[i + 2]);
+
+                                            var trVertex = roomVertices[vertex0Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex0Index] = trVertex;
+
+                                            trVertex = roomVertices[vertex1Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex1Index] = trVertex;
+
+                                            trVertex = roomVertices[vertex2Index];
+                                            trVertex.Normal = normal;
+                                            roomVertices[vertex2Index] = trVertex;
+                                        }
+
                                         var result = _textureInfoManager.AddTexture(texture, true, true);
 
                                         if (result.ConvertToQuad)
@@ -1054,12 +1092,7 @@ namespace TombLib.LevelData.Compilers
             trVertex.Lighting2 = 0;
             trVertex.Color = 0;
             trVertex.IsOnPortal = false;
-            trVertex.Normal = new tr_vertex
-            {
-                X = 0,
-                Y = 0,
-                Z = 0
-            };
+            trVertex.Normal = new Vector3(0, 0, 0);
 
             // Ignore this for TRNG and TR4
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5)
@@ -1925,5 +1958,12 @@ namespace TombLib.LevelData.Compilers
             return result;
         }
 
+        private static Vector3 GetRoomNormal(Vector3 v0, Vector3 v1, Vector3 v2)
+        {
+            // Calculate the normal
+            Vector3 e1 = v1 - v0;
+            Vector3 e2 = v2 - v0;
+            return Vector3.Normalize(Vector3.Cross(e1, e2));
+        }
     }
 }

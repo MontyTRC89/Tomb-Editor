@@ -192,13 +192,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView_AllPrjFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.treeView_AllPrjFiles.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView_AllPrjFiles.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_AllPrjFiles.Location = new System.Drawing.Point(9, 57);
 			this.treeView_AllPrjFiles.MaxDragChange = 20;
 			this.treeView_AllPrjFiles.Name = "treeView_AllPrjFiles";
-			this.treeView_AllPrjFiles.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.treeView_AllPrjFiles.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_AllPrjFiles.Size = new System.Drawing.Size(290, 175);
 			this.treeView_AllPrjFiles.TabIndex = 2;
 			this.treeView_AllPrjFiles.SelectedNodesChanged += new System.EventHandler(this.treeView_AllPrjFiles_SelectedNodesChanged);
@@ -218,14 +214,10 @@
 			// 
 			this.treeView_Resources.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Resources.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView_Resources.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView_Resources.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_Resources.ItemHeight = 30;
 			this.treeView_Resources.Location = new System.Drawing.Point(0, 0);
 			this.treeView_Resources.MaxDragChange = 30;
 			this.treeView_Resources.Name = "treeView_Resources";
-			this.treeView_Resources.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.treeView_Resources.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Resources.ShowIcons = true;
 			this.treeView_Resources.Size = new System.Drawing.Size(308, 265);
 			this.treeView_Resources.TabIndex = 0;

@@ -29,6 +29,9 @@ namespace TombEditor.Forms
             _level = level;
             _trigger = trigger;
 
+            // Assign script IDs if necessary
+            AllocateNewScriptIds();
+
             // Setup events
             foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
             {
@@ -36,10 +39,6 @@ namespace TombEditor.Forms
                 control.ViewRoom += selectRoom;
                 control.Level = level;
             }
-
-            foreach (Control control in scriptExportPanel.Controls)
-                control.Click += scriptExportPanel_Click;
-            scriptExportPanel.Click += scriptExportPanel_Click;
 
             this.SetActualSize();
             this.LockHeight();
@@ -261,9 +260,17 @@ namespace TombEditor.Forms
 
         private void AllocateNewScriptIds()
         {
-            (paramTarget.Parameter as IHasScriptID)?.AllocateNewScriptId();
-            (paramTimer.Parameter as IHasScriptID)?.AllocateNewScriptId();
-            (paramExtra.Parameter as IHasScriptID)?.AllocateNewScriptId();
+            if (_level.Settings.GameVersion != TRVersion.Game.TRNG)
+                return;
+            
+            if (paramTarget.Parameter is IHasScriptID && !(paramTarget.Parameter as IHasScriptID).ScriptId.HasValue)
+                (paramTarget.Parameter as IHasScriptID).AllocateNewScriptId();
+
+            if (paramTimer.Parameter is IHasScriptID && !(paramTimer.Parameter as IHasScriptID).ScriptId.HasValue)
+                (paramTimer.Parameter as IHasScriptID)?.AllocateNewScriptId();
+
+            if (paramExtra.Parameter is IHasScriptID && !(paramExtra.Parameter as IHasScriptID).ScriptId.HasValue)
+                (paramExtra.Parameter as IHasScriptID)?.AllocateNewScriptId();
         }
 
         private void butCopyToClipboard_Click(object sender, EventArgs e)
@@ -301,15 +308,6 @@ namespace TombEditor.Forms
                             form2.ShowDialog(this);
                     }
                 }
-            }
-        }
-
-        private void scriptExportPanel_Click(object sender, EventArgs e)
-        {
-            if (tbScript.Enabled == false)
-            {
-                AllocateNewScriptIds();
-                UpdateExportToTrigger();
             }
         }
 
