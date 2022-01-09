@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -450,6 +451,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineMesh
     {
+        public WadMeshLightingType LightingType;
         public BoundingSphere Sphere;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public List<TombEnginePolygon> Polygons = new List<TombEnginePolygon>();

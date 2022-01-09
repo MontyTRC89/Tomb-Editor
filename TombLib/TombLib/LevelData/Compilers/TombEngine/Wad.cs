@@ -50,7 +50,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             var newMesh = new TombEngineMesh
             {
-                Sphere = oldMesh.BoundingSphere
+                Sphere = oldMesh.BoundingSphere,
+                LightingType = oldMesh.LightingType
             };
 
             var objectString = isStatic ? "Static" : "Moveable";
