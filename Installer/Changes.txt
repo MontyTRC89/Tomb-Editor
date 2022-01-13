@@ -18,6 +18,7 @@ WadTool:
  * Don't steal focus to item preview in main window.
  * Fix persistent issues with disjointed MQO vertices on mesh import.
  * Fix UI brightness not affecting tree list views.
+ * Fix occasional incorrect end frame values when importing compiled levels.
  
 SoundTool:
  * Fix incorrect bit depth for TR2 samples when compiling MAIN.SFX.

@@ -511,6 +511,11 @@ namespace TombLib.Wad.TrLevels
                     newAnimation.KeyFrames.Add(frame);
                 }
 
+
+                // Also correct animation out-point
+                if (newAnimation.EndFrame > newAnimation.GetRealNumberOfFrames())
+                    newAnimation.EndFrame = (ushort)newAnimation.GetRealNumberOfFrames();
+
                 frameBases.Add(newAnimation, oldAnimation.FrameStart);
 
                 // New velocities
