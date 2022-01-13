@@ -4350,7 +4350,7 @@ namespace TombEditor
                     else
                     {
                         searchForOthers = false; // Unset flag so we don't prompt again
-                        list.Add(item, newPath);
+                        list.Add(item, settings.MakeRelative(newPath, VariableType.LevelDirectory));
                     }
                 }
 
