@@ -4362,9 +4362,23 @@ namespace TombEditor
             else
                 _editor.SendMessage("Reconnecting " + resourceTypeString + "...", PopupType.Info);
 
-            SynchronizationContext.Current.Post(tmp =>
+            if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
             {
-                list.ToList().ForEach(item => 
+                // HACK: Because imp geo uses extremely hacky DX model workflow, we need
+                // to sync its update with UI thread, otherwise DX may lock up or throw DEVICE REMOVED exception.
+
+                list.ToList().ForEach(item =>
+                {
+                    SynchronizationContext.Current.Post(tmp =>
+                    {
+                        item.Key.SetPath(settings, item.Value);
+                        if (sendEvent) _editor.LoadedImportedGeometriesChange();
+                    }, null);
+                });
+            }
+            else
+            {
+                list.ToList().ForEach(item =>
                 {
                     item.Key.SetPath(settings, item.Value);
 
@@ -4380,7 +4394,7 @@ namespace TombEditor
                             _editor.LoadedSoundsCatalogsChange();
                     }
                 });
-            }, null);
+            }
 
             return true;
         }
