@@ -423,7 +423,7 @@ namespace TombLib.Utils
             }
         }
 
-        public static IReadOnlyList<FileFormat> FromFileFileExtensions { get; } = new List<FileFormat>()
+        public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
             new FileFormat("Portable Network Graphics", "png"),
             new FileFormat("Truevision Targa", "tga"),

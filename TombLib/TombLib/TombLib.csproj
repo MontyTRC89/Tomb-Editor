@@ -162,6 +162,7 @@
     <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
     <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
     <Compile Include="LevelData\LuaScriptID.cs" />
+    <Compile Include="LevelData\ReloadableResource.cs" />
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />

@@ -84,7 +84,7 @@ namespace TombEditor.Forms
                     using (OpenFileDialog dialog = new OpenFileDialog())
                     {
                         dialog.Multiselect = false;
-                        dialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                        dialog.Filter = ImageC.FileExtensions.GetFilter();
                         dialog.Title = "Open custom bump/normal map image";
 
                         if (!string.IsNullOrWhiteSpace(currentTexture.Path))

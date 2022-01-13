@@ -597,7 +597,7 @@ namespace TombLib.LevelData
         public List<WadSprite> WadGetAllSprites() => WadGetAllSpriteSequences().Values.SelectMany(s => s.Sprites).ToList();
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
-            new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
+            new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FileExtensions);
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new[] { new FileFormat("Tomb Editor Level", "prj2") };
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new[] { new FileFormat("Tomb Editor Level", "prj") };
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new[]

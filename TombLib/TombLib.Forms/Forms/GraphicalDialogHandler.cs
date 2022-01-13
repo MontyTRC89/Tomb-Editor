@@ -31,7 +31,7 @@ namespace TombLib.Forms
                                 case DialogResult.Yes:
                                     dialogDescription.Texture.SetPath(dialogDescription.Settings,
                                             LevelFileDialog.BrowseFile(owner, dialogDescription.Settings, dialogDescription.Texture.Path,
-                                                "Load a texture", LevelTexture.FileExtensions, VariableType.LevelDirectory, false));
+                                                "Load a texture", ImageC.FileExtensions, VariableType.LevelDirectory, false));
                                     break; // Don't unlock, we don't want to have other messages in the meantime.
                                 case DialogResult.No:
                                     return;
@@ -56,7 +56,7 @@ namespace TombLib.Forms
                                 case DialogResult.Yes:
                                     dialogDescription.Wad.SetPath(dialogDescription.Settings,
                                         LevelFileDialog.BrowseFile(owner, dialogDescription.Settings, dialogDescription.Wad.Path,
-                                        "Load an object file (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory, false));
+                                        "Load an object file (*.wad)", Wad2.FileExtensions, VariableType.LevelDirectory, false));
                                     break; // Don't unlock, we don't want to have other messages in the meantime.
                                 case DialogResult.No:
                                     return;
@@ -81,7 +81,7 @@ namespace TombLib.Forms
                                 case DialogResult.Yes:
                                     dialogDescription.Sounds.SetPath(dialogDescription.Settings,
                                         LevelFileDialog.BrowseFile(owner, dialogDescription.Settings, dialogDescription.Sounds.Path,
-                                        "Load a sound catalog (*.sfx)", ReferencedSoundCatalog.FileExtensions, VariableType.LevelDirectory, false));
+                                        "Load a sound catalog (*.sfx)", WadSounds.FileExtensions, VariableType.LevelDirectory, false));
                                     break; // Don't unlock, we don't want to have other messages in the meantime.
                                 case DialogResult.No:
                                     return;

@@ -139,7 +139,7 @@ namespace TombEditor.Controls
             dataGridViewControls.CreateNewRow = delegate
             {
                 List<string> paths = LevelFileDialog.BrowseFiles(this, null, PathC.GetDirectoryNameTry(LevelSettings.LevelFilePath),
-                    "Select 3D files that you want to see imported.", ImportedGeometry.FileExtensions).ToList();
+                    "Select 3D files that you want to see imported.", BaseGeometryImporter.FileExtensions).ToList();
 
                 // Load imported geometries
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
@@ -195,7 +195,7 @@ namespace TombEditor.Controls
                 return;
 
             if (dataGridView.Columns[e.ColumnIndex].Name == searchButtonColumn.Name)
-                EditorActions.UpdateImportedGeometryFilePath(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Object);
+                EditorActions.ReloadResource(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Object);
         }
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

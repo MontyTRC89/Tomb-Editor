@@ -912,7 +912,7 @@ namespace TombEditor.Forms
         private IEnumerable<ReferencedTextureWrapper> textureFileDataGridViewCreateNewRow()
         {
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select new texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory).ToList();
+                "Select new texture files", ImageC.FileExtensions, VariableType.LevelDirectory).ToList();
 
             // Load textures concurrently
             ReferencedTextureWrapper[] results = new ReferencedTextureWrapper[paths.Count];
@@ -974,10 +974,9 @@ namespace TombEditor.Forms
 
             if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewSearchColumn.Name)
             {
-                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new texture file", LevelTexture.FileExtensions, VariableType.LevelDirectory, false);
-                if (result != null)
-                    _textureFileDataGridViewDataSource[e.RowIndex].Path = result;
+                if (EditorActions.ReloadResource(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex].Texture, false, true))
+                    foreach (var item in _textureFileDataGridViewDataSource)
+                        item.Path = item.Texture.Path;
             }
             else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewShowColumn.Name)
             {
@@ -997,7 +996,7 @@ namespace TombEditor.Forms
         private IEnumerable<ReferencedWadWrapper> objectFileDataGridViewCreateNewRow()
         {
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select new object files", ReferencedWad.FileExtensions, VariableType.LevelDirectory).ToList();
+                "Select new object files", Wad2.FileExtensions, VariableType.LevelDirectory).ToList();
 
             // Load objects concurrently
             ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
@@ -1058,7 +1057,7 @@ namespace TombEditor.Forms
         private IEnumerable<ReferencedSoundsCatalogWrapper> soundsCatalogDataGridViewCreateNewRow()
         {
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select new sound catalogs", WadSounds.FormatExtensions, VariableType.LevelDirectory)
+                "Select new sound catalogs", WadSounds.FileExtensions, VariableType.LevelDirectory)
                 // Filter out already loaded catalogs
                 .Where(path => !_levelSettings.SoundCatalogs.Any(item => item.Path == path)).ToList();
 
@@ -1117,12 +1116,9 @@ namespace TombEditor.Forms
 
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewSearchColumn.Name)
             {
-                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new object file", ReferencedWad.FileExtensions, VariableType.LevelDirectory, false);
-                if (result != null)
-                {
-                    _objectFileDataGridViewDataSource[e.RowIndex].Path = result;
-                }
+                if (EditorActions.ReloadResource(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Wad, false, true))
+                    foreach (var item in _objectFileDataGridViewDataSource)
+                        item.Path = item.Wad.Path;
             }
             else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowColumn.Name)
             {
@@ -1575,40 +1571,12 @@ namespace TombEditor.Forms
 
             if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
             {
-                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new sound catalog file", WadSounds.FormatExtensions, VariableType.LevelDirectory, false);
-                if (result != null)
+                if (EditorActions.ReloadResource(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds, false, true))
                 {
-                    _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;
-                    _levelSettings.SoundCatalogs.Clear();
-                    _levelSettings.SoundCatalogs.AddRange(_soundsCatalogsDataGridViewDataSource.Select(s => s.Sounds));
-
-                    bool searchForOthers = true;
-                    var toReplace = _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds;
-                    var list = new Dictionary<ReferencedSoundCatalog, string>() { { toReplace, result } };
-
-                    foreach (var w in _levelSettings.SoundCatalogs.Where(g => g != toReplace && g != null && g.LoadException != null))
-                    {
-                        // Now recursively search down the folder structure
-                        var newPath = PathC.TryFindFile(Path.GetDirectoryName(_levelSettings.MakeAbsolute(result)), _levelSettings.MakeAbsolute(w.Path), 4, 4);
-                        if (File.Exists(newPath))
-                        {
-                            if (searchForOthers && DarkMessageBox.Show(this, "Other missing sound catalogs were found. Reconnect them?",
-                                "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                break;
-                            else
-                            {
-                                searchForOthers = false; // Unset flag so we don't prompt again
-                                list.Add(w, newPath);
-                            }
-                        }
-                    }
-
-                    _editor.SendMessage("Reconnecting " + list.Count + " wads...", PopupType.Info);
-                    Task.Run(() => list.ToList().ForEach(item => { item.Key.SetPath(_levelSettings, item.Value); _editor.LoadedWadsChange(); }));
+                    foreach (var item in _soundsCatalogsDataGridViewDataSource)
+                        item.Path = item.Sounds.Path;
 
                     PopulateSoundInfoListAndResetFilter();
-
                 }
             }
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)

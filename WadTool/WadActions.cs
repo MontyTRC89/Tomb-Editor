@@ -87,7 +87,7 @@ namespace WadTool
                         // ignored
                     }
 
-                dialog.Filter = Wad2.WadFormatExtensions.GetFilter();
+                dialog.Filter = Wad2.FileExtensions.GetFilter();
                 dialog.Title = "Open " + (destination ? "destination" : "source") + " WAD - Wad2 - Level";
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return;

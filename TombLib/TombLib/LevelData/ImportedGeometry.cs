@@ -3,6 +3,7 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -147,7 +148,7 @@ namespace TombLib.LevelData
     // ImportedGeometry is not actually IWadObject. This interface here is a hack against TRTombalization
     // unless whole item selection workflow is fully rewritten.
 
-    public class ImportedGeometry : IWadObject, ICloneable, IEquatable<ImportedGeometry>
+    public class ImportedGeometry : IWadObject, ICloneable, IReloadableResource, IEquatable<ImportedGeometry>
     {
         public static GraphicsDevice Device;
 
@@ -187,15 +188,26 @@ namespace TombLib.LevelData
             }
         }
 
-        public static IEnumerable<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public UniqueIDType UniqueID { get; } = new UniqueIDType();
-        public Exception LoadException { get; private set; }
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;
         public Model DirectXModel { get; private set; }
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
 
         public IWadObjectId Id => null;
         public string ToString(TRVersion.Game gameVersion) => Info.Name;
+
+        public string ResourceName { get { return "imported geometry"; } }
+        public Exception LoadException { get; set; }
+        public IEnumerable<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
+        public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.ImportedGeometries.Select(i => i as IReloadableResource).ToList();
+
+        public string GetPath() => Info.Path;
+        public void SetPath(LevelSettings settings, string path)
+        {
+            var newInfo = Info;
+            newInfo.Path = path;
+            settings.ImportedGeometryUpdate(this, newInfo);
+        }
 
         public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
         {

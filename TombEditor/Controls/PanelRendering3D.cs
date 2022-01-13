@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
 using TombLib.Controls;
+using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
@@ -1437,7 +1438,7 @@ namespace TombEditor.Controls
 
                     foreach (var file in files)
                     {
-                        if (!ImportedGeometry.FileExtensions.Matches(file))
+                        if (!BaseGeometryImporter.FileExtensions.Matches(file))
                             continue;
 
                         if (!file.CheckAndWarnIfNotANSI(this))
