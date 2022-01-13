@@ -6,6 +6,7 @@ Tomb Editor:
  * Add sniper camera type for TR5.
  * Add room normals calculation for TR5.
  * Add glide out camera flag to be used together with glidecam FLEP patch.
+ * Add option to always display memo text.
  * Add some missing global sounds for TR1 sound catalog.
  * Reconnect resources from level settings window.
  * Fix quick start feature for new FLEP workflow.

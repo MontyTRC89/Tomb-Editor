@@ -584,12 +584,13 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Timer);
                         });
                     else if (o is MemoInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMemo, LEB128.MaximumSize3Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMemo2, LEB128.MaximumSize3Byte))
                         {
                             var instance = (MemoInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.WriteStringUTF8(instance.Text);
+                            chunkIO.Raw.Write(instance.AlwaysDisplay);
                         }
                     else if (o is SinkInstance)
                     {

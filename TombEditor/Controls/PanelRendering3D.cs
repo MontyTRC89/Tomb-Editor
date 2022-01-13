@@ -2697,11 +2697,11 @@ namespace TombEditor.Controls
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                            // Add text message
-                            if (_editor.SelectedObject == instance)
-                                textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
                         }
+
+                        // Add text message
+                        if (_editor.SelectedObject == instance || instance.AlwaysDisplay)
+                            textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
 
                         RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
                     }
