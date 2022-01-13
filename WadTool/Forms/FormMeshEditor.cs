@@ -1194,7 +1194,7 @@ namespace WadTool
 
         private void butAddTexture_Click(object sender, EventArgs e)
         {
-            var paths = LevelFileDialog.BrowseFiles(this, null, null, "Load texture file", LevelTexture.FileExtensions).ToList();
+            var paths = LevelFileDialog.BrowseFiles(this, null, null, "Load texture file", ImageC.FileExtensions).ToList();
             if (paths.Count == 0)
                 return;
 
