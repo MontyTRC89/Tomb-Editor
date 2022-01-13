@@ -61,7 +61,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public string ResourceName { get { return "sound catalog"; } }
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.SoundCatalog; } }
         public Exception LoadException { get; set; }
         public IEnumerable<FileFormat> FileExtensions => WadSounds.FileExtensions;
         public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.SoundCatalogs.Select(i => i as IReloadableResource).ToList();

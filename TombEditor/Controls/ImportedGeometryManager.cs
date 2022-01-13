@@ -18,7 +18,7 @@ namespace TombEditor.Controls
         // Wrapper class around the ImportedGeometry object.
         // For every real "ImportedGeometry" object one of these is created and added to the data source.
         // This wrapper is necessary to support setting value.
-        private class ImportedGeometryWrapper
+        private class ImportedGeometryWrapper : IReloadableResource
         {
             private readonly ImportedGeometryManager _parent;
             [Browsable(false)]
@@ -113,6 +113,18 @@ namespace TombEditor.Controls
                 setValue(ref info);
                 _parent.LevelSettings.ImportedGeometryUpdate(Object, info);
             }
+
+            public ReloadableResourceType ResourceType => Object.ResourceType;
+            public Exception LoadException
+            { get
+                { return Object.LoadException; }
+                set
+                {
+                    Object.LoadException = value; } }
+            public IEnumerable<FileFormat> FileExtensions => Object.FileExtensions;
+            public List<IReloadableResource> GetResourceList(LevelSettings settings) => Object.GetResourceList(settings);
+            public string GetPath() => Object.GetPath();
+            public void SetPath(LevelSettings settings, string path) => Object.SetPath(settings, path);
         }
 
         private readonly SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
@@ -177,7 +189,27 @@ namespace TombEditor.Controls
                             break;
                     }
                 };
+
             Enabled = true;
+
+            Editor.Instance.EditorEventRaised += EditorEventRaised;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+                Editor.Instance.EditorEventRaised -= EditorEventRaised;
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent evt)
+        {
+            if (evt is Editor.LoadedImportedGeometriesChangedEvent)
+                dataGridView.Invalidate(true);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -195,7 +227,7 @@ namespace TombEditor.Controls
                 return;
 
             if (dataGridView.Columns[e.ColumnIndex].Name == searchButtonColumn.Name)
-                EditorActions.ReloadResource(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Object);
+                EditorActions.ReloadResource(this, LevelSettings, _dataGridViewDataSource[e.RowIndex], false);
         }
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

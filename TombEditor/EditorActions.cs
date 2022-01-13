@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -4328,10 +4329,12 @@ namespace TombEditor
         public static bool ReloadResource(IWin32Window owner, LevelSettings settings, IReloadableResource toReplace, bool sendEvent = true, bool searchForOthers = true)
         {
             string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.GetPath(),
-                "Select a new file for " + toReplace.ResourceName, toReplace.FileExtensions, VariableType.LevelDirectory, false);
+                "Select a new file for " + toReplace.ResourceType.ToString(), toReplace.FileExtensions, VariableType.LevelDirectory, false);
 
             if (string.IsNullOrEmpty(path) || (path == toReplace.GetPath() && toReplace?.LoadException == null))
                 return false;
+
+            var resourceTypeString = Regex.Replace(toReplace.ResourceType.ToString(), "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").ToLower();
 
             var list = new Dictionary<IReloadableResource, string>() { { toReplace, path } };
 
@@ -4344,7 +4347,7 @@ namespace TombEditor
                     if (!File.Exists(newPath))
                         continue;
 
-                    if (searchForOthers && DarkMessageBox.Show(owner, "Other missing " + toReplace.ResourceName + " was found. Reconnect other resources?",
+                    if (searchForOthers && DarkMessageBox.Show(owner, "Other missing " + resourceTypeString + " was found. Reconnect other resources?",
                                             "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         break;
                     else
@@ -4355,25 +4358,28 @@ namespace TombEditor
                 }
 
             if (list.Count > 1)
-                _editor.SendMessage("Reconnecting " + list.Count + " instances of " + toReplace.ResourceName + "...", PopupType.Info);
+                _editor.SendMessage("Reconnecting " + list.Count + " instances of " + resourceTypeString + "...", PopupType.Info);
             else
-                _editor.SendMessage("Reconnecting " + toReplace.ResourceName + "...", PopupType.Info);
+                _editor.SendMessage("Reconnecting " + resourceTypeString + "...", PopupType.Info);
 
             Task.Run(() =>
             {
-                list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); });
-
-                if (sendEvent)
+                list.ToList().ForEach(item => 
                 {
-                    if (toReplace is ImportedGeometry)
-                        _editor.LoadedImportedGeometriesChange();
-                    else if (toReplace is LevelTexture)
-                        _editor.LoadedTexturesChange(toReplace as LevelTexture);
-                    else if (toReplace is ReferencedWad)
-                        _editor.LoadedWadsChange();
-                    else if (toReplace is ReferencedSoundCatalog)
-                        _editor.LoadedSoundsCatalogsChange();
-                }
+                    item.Key.SetPath(settings, item.Value);
+
+                    if (sendEvent)
+                    {
+                        if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
+                            _editor.LoadedImportedGeometriesChange();
+                        else if (toReplace.ResourceType == ReloadableResourceType.Texture)
+                            _editor.LoadedTexturesChange(toReplace as LevelTexture);
+                        else if (toReplace.ResourceType == ReloadableResourceType.Wad)
+                            _editor.LoadedWadsChange();
+                        else if (toReplace.ResourceType == ReloadableResourceType.SoundCatalog)
+                            _editor.LoadedSoundsCatalogsChange();
+                    }
+                });
             });
 
             return true;

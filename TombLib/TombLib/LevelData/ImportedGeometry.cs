@@ -196,7 +196,7 @@ namespace TombLib.LevelData
         public IWadObjectId Id => null;
         public string ToString(TRVersion.Game gameVersion) => Info.Name;
 
-        public string ResourceName { get { return "imported geometry"; } }
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.ImportedGeometry; } }
         public Exception LoadException { get; set; }
         public IEnumerable<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.ImportedGeometries.Select(i => i as IReloadableResource).ToList();
@@ -248,7 +248,8 @@ namespace TombLib.LevelData
                 if (tmpModel.Meshes.Count == 0)
                     throw new Exception("No valid mesh data found");
 
-                SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
+                if (SynchronizationContext.Current != null)
+                    SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
                    {
                        if (Device == null)
                            return;

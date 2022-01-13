@@ -92,7 +92,7 @@ namespace TombEditor.Forms
             }
         }
 
-        private class ReferencedSoundsCatalogWrapper
+        private class ReferencedSoundsCatalogWrapper : IReloadableResource
         {
             private readonly FormLevelSettings _parent;
             public ReferencedSoundCatalog Sounds;
@@ -132,9 +132,16 @@ namespace TombEditor.Forms
                     return 0;
                 }
             }
+
+            public ReloadableResourceType ResourceType => Sounds.ResourceType;
+            public Exception LoadException { get { return Sounds.LoadException; } set { Sounds.LoadException = value; } }
+            public IEnumerable<FileFormat> FileExtensions => Sounds.FileExtensions;
+            public List<IReloadableResource> GetResourceList(LevelSettings settings) => Sounds.GetResourceList(settings);
+            public string GetPath() => Sounds.GetPath();
+            public void SetPath(LevelSettings settings, string path) => Sounds.SetPath(settings, path);
         }
 
-        private class ReferencedWadWrapper
+        private class ReferencedWadWrapper : IReloadableResource
         {
             private readonly FormLevelSettings _parent;
             public ReferencedWad Wad;
@@ -168,9 +175,16 @@ namespace TombEditor.Forms
                     return Wad.LoadException.Message + " (" + Wad.LoadException.GetType().Name + ")";
                 }
             }
+
+            public ReloadableResourceType ResourceType => Wad.ResourceType;
+            public Exception LoadException { get { return Wad.LoadException; } set { Wad.LoadException = value; } }
+            public IEnumerable<FileFormat> FileExtensions => Wad.FileExtensions;
+            public List<IReloadableResource> GetResourceList(LevelSettings settings) => Wad.GetResourceList(settings);
+            public string GetPath() => Wad.GetPath();
+            public void SetPath(LevelSettings settings, string path) => Wad.SetPath(settings, path);
         }
 
-        private class ReferencedTextureWrapper
+        private class ReferencedTextureWrapper : IReloadableResource
         {
             private readonly FormLevelSettings _parent;
             public LevelTexture Texture;
@@ -236,6 +250,13 @@ namespace TombEditor.Forms
                     _parent.textureFileDataGridView.InvalidateRow(_parent._textureFileDataGridViewDataSource.IndexOf(this));
                 }
             }
+
+            public ReloadableResourceType ResourceType => Texture.ResourceType;
+            public Exception LoadException { get { return Texture.LoadException; } set { Texture.LoadException = value; } }
+            public IEnumerable<FileFormat> FileExtensions => Texture.FileExtensions;
+            public List<IReloadableResource> GetResourceList(LevelSettings settings) => Texture.GetResourceList(settings);
+            public string GetPath() => Texture.GetPath();
+            public void SetPath(LevelSettings settings, string path) => Texture.SetPath(settings, path);
         }
         private struct TextureCachePreviewKey : IEquatable<TextureCachePreviewKey>
         {
@@ -401,9 +422,11 @@ namespace TombEditor.Forms
         private void EditorEventRaised(IEditorEvent evt)
         {
             if (evt is LoadedSoundsCatalogsChangedEvent)
-            {
                 PopulateSoundInfoList();
-            }
+            if (evt is LoadedTexturesChangedEvent)
+                textureFileDataGridView.Invalidate(true);
+            if (evt is LoadedWadsChangedEvent)
+                objectFileDataGridView.Invalidate(true);
         }
 
         protected override void Dispose(bool disposing)
@@ -974,9 +997,7 @@ namespace TombEditor.Forms
 
             if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewSearchColumn.Name)
             {
-                if (EditorActions.ReloadResource(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex].Texture, false, true))
-                    foreach (var item in _textureFileDataGridViewDataSource)
-                        item.Path = item.Texture.Path;
+                EditorActions.ReloadResource(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex]);
             }
             else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewShowColumn.Name)
             {
@@ -1116,9 +1137,7 @@ namespace TombEditor.Forms
 
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewSearchColumn.Name)
             {
-                if (EditorActions.ReloadResource(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Wad, false, true))
-                    foreach (var item in _objectFileDataGridViewDataSource)
-                        item.Path = item.Wad.Path;
+                EditorActions.ReloadResource(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex]);
             }
             else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowColumn.Name)
             {
@@ -1571,13 +1590,8 @@ namespace TombEditor.Forms
 
             if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
             {
-                if (EditorActions.ReloadResource(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds, false, true))
-                {
-                    foreach (var item in _soundsCatalogsDataGridViewDataSource)
-                        item.Path = item.Sounds.Path;
-
+                if (EditorActions.ReloadResource(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Sounds))
                     PopulateSoundInfoListAndResetFilter();
-                }
             }
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogsAssignColumn.Name)
                 AssignAllSounds(soundsCatalog.Sounds);

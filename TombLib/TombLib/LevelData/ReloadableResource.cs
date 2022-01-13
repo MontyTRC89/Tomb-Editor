@@ -4,9 +4,17 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
+    public enum ReloadableResourceType
+    {
+        Texture,
+        Wad,
+        SoundCatalog,
+        ImportedGeometry
+    }
+
     public interface IReloadableResource
     {
-        string ResourceName { get; }
+        ReloadableResourceType ResourceType { get; }
         Exception LoadException { get; set; }
         IEnumerable<FileFormat> FileExtensions { get; }
         List<IReloadableResource> GetResourceList(LevelSettings settings);

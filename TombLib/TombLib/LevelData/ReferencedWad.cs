@@ -56,7 +56,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public string ResourceName { get { return "wad"; } }
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.Wad; } }
         public Exception LoadException { get; set; }
         public IEnumerable<FileFormat> FileExtensions => Wad2.FileExtensions;
         public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.Wads.Select(i => i as IReloadableResource).ToList();

@@ -156,7 +156,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public string ResourceName { get { return "texture"; } }
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.Texture; } }
         public Exception LoadException { get; set; }
         public IEnumerable<FileFormat> FileExtensions => ImageC.FileExtensions;
         public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.Textures.Select(i => i as IReloadableResource).ToList();
