@@ -248,105 +248,12 @@ namespace TombLib.LevelData
                 if (tmpModel.Meshes.Count == 0)
                     throw new Exception("No valid mesh data found");
 
+                // If called from UI thread, synchronize DirectX, we can't 'send' because that may
+                // deadlock with the level settings reloader.
                 if (SynchronizationContext.Current != null)
-                    SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
-                   {
-                       if (Device == null)
-                           return;
-
-                       // Create a new static model
-                       DirectXModel = new Model(Device, info.Scale);
-                       DirectXModel.BoundingBox = tmpModel.BoundingBox;
-
-                       // Create materials
-                       foreach (var tmpMaterial in tmpModel.Materials)
-                       {
-                           var material = new Material(tmpMaterial.Name);
-                           material.Texture = tmpMaterial.Texture;
-                           material.AdditiveBlending = tmpMaterial.AdditiveBlending;
-                           material.DoubleSided = tmpMaterial.DoubleSided;
-                           DirectXModel.Materials.Add(material);
-                       }
-
-                       // Loop for each mesh loaded in scene
-                       foreach (var mesh in tmpModel.Meshes)
-                       {
-                           // Make sure we always have correct normals
-                           if (mesh.Normals.Count == 0)
-                              mesh.CalculateNormals();
-
-                           var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
-
-                           modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
-
-                           var currentIndex = 0;
-                           var currPoly = 0;
-                           foreach (var tmpSubmesh in mesh.Submeshes)
-                           {
-                               var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
-                               var submesh = new Submesh(material);
-
-                               foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
-                               {
-                                   if (tmpPoly.Shape == IOPolygonShape.Quad)
-                                   {
-                                       var vertexList = new List<ImportedGeometryVertex>();
-
-                                       for (var i = 0; i < 4; i++)
-                                       {
-                                           var vertex = new ImportedGeometryVertex();
-                                           vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                           vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
-                                           vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
-                                           vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
-                                           vertexList.Add(vertex);
-                                       }
-
-                                       // HACK: Triangulate and disjoint quad faces for imported geometry, because otherwise another hack which joints
-                                       // disjointed vertices together will fail in Rooms.cs
-
-                                       submesh.Indices.Add(currentIndex);
-                                       submesh.Indices.Add(currentIndex + 1);
-                                       submesh.Indices.Add(currentIndex + 2);
-                                       submesh.Indices.Add(currentIndex + 3);
-                                       submesh.Indices.Add(currentIndex + 4);
-                                       submesh.Indices.Add(currentIndex + 5);
-
-                                       modelMesh.Vertices.Add(vertexList[0]);
-                                       modelMesh.Vertices.Add(vertexList[1]);
-                                       modelMesh.Vertices.Add(vertexList[2]);
-                                       modelMesh.Vertices.Add(vertexList[0]);
-                                       modelMesh.Vertices.Add(vertexList[2]);
-                                       modelMesh.Vertices.Add(vertexList[3]);
-
-                                       currentIndex += 6;
-                                   }
-                                   else
-                                   {
-                                       for (var i = 0; i < 3; i++)
-                                       {
-                                           var vertex = new ImportedGeometryVertex();
-                                           vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                           vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
-                                           vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
-                                           vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
-                                           modelMesh.Vertices.Add(vertex);
-                                           submesh.Indices.Add(currentIndex);
-                                           currentIndex++;
-                                       }
-                                   }
-
-                                   currPoly++;
-                               }
-
-                               modelMesh.Submeshes.Add(material, submesh);
-                           }
-
-                           DirectXModel.Meshes.Add(modelMesh);
-                       }
-
-                       DirectXModel.UpdateBuffers();
-                   }, null);
+                    SynchronizationContext.Current.Post(unused => Update(tmpModel, info), null);
+                else
+                    Update(tmpModel, info);
             }
             catch (OperationCanceledException)
             {
@@ -358,6 +265,107 @@ namespace TombLib.LevelData
                 DirectXModel = null;
                 logger.Warn(exc, "Unable to load model \"" + info.Name + "\" from \"" + info.Path + "\" because an exception occurred during loading.");
             }
+        }
+
+        private bool Update(IOModel tmpModel, ImportedGeometryInfo info)
+        {
+            if (Device == null)
+                return false;
+
+            // Create a new static model
+            DirectXModel = new Model(Device, info.Scale);
+            DirectXModel.BoundingBox = tmpModel.BoundingBox;
+
+            // Create materials
+            foreach (var tmpMaterial in tmpModel.Materials)
+            {
+                var material = new Material(tmpMaterial.Name);
+                material.Texture = tmpMaterial.Texture;
+                material.AdditiveBlending = tmpMaterial.AdditiveBlending;
+                material.DoubleSided = tmpMaterial.DoubleSided;
+                DirectXModel.Materials.Add(material);
+            }
+
+            // Loop for each mesh loaded in scene
+            foreach (var mesh in tmpModel.Meshes)
+            {
+                // Make sure we always have correct normals
+                if (mesh.Normals.Count == 0)
+                    mesh.CalculateNormals();
+
+                var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
+
+                modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
+
+                var currentIndex = 0;
+                var currPoly = 0;
+                foreach (var tmpSubmesh in mesh.Submeshes)
+                {
+                    var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
+                    var submesh = new Submesh(material);
+
+                    foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
+                    {
+                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        {
+                            var vertexList = new List<ImportedGeometryVertex>();
+
+                            for (var i = 0; i < 4; i++)
+                            {
+                                var vertex = new ImportedGeometryVertex();
+                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
+                                vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
+                                vertexList.Add(vertex);
+                            }
+
+                            // HACK: Triangulate and disjoint quad faces for imported geometry, because otherwise another hack which joints
+                            // disjointed vertices together will fail in Rooms.cs
+
+                            submesh.Indices.Add(currentIndex);
+                            submesh.Indices.Add(currentIndex + 1);
+                            submesh.Indices.Add(currentIndex + 2);
+                            submesh.Indices.Add(currentIndex + 3);
+                            submesh.Indices.Add(currentIndex + 4);
+                            submesh.Indices.Add(currentIndex + 5);
+
+                            modelMesh.Vertices.Add(vertexList[0]);
+                            modelMesh.Vertices.Add(vertexList[1]);
+                            modelMesh.Vertices.Add(vertexList[2]);
+                            modelMesh.Vertices.Add(vertexList[0]);
+                            modelMesh.Vertices.Add(vertexList[2]);
+                            modelMesh.Vertices.Add(vertexList[3]);
+
+                            currentIndex += 6;
+                        }
+                        else
+                        {
+                            for (var i = 0; i < 3; i++)
+                            {
+                                var vertex = new ImportedGeometryVertex();
+                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
+                                vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
+                                modelMesh.Vertices.Add(vertex);
+                                submesh.Indices.Add(currentIndex);
+                                currentIndex++;
+                            }
+                        }
+
+                        currPoly++;
+                    }
+
+                    modelMesh.Submeshes.Add(material, submesh);
+                }
+
+                DirectXModel.Meshes.Add(modelMesh);
+            }
+
+            DirectXModel.UpdateBuffers();
+
+            return true;
         }
 
         private Texture GetOrAddTexture(Dictionary<string, Texture> absolutePathTextureLookup, string importedGeometryDirectory, string texturePath)

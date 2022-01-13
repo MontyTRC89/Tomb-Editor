@@ -4362,7 +4362,7 @@ namespace TombEditor
             else
                 _editor.SendMessage("Reconnecting " + resourceTypeString + "...", PopupType.Info);
 
-            Task.Run(() =>
+            SynchronizationContext.Current.Post(tmp =>
             {
                 list.ToList().ForEach(item => 
                 {
@@ -4380,7 +4380,7 @@ namespace TombEditor
                             _editor.LoadedSoundsCatalogsChange();
                     }
                 });
-            });
+            }, null);
 
             return true;
         }
