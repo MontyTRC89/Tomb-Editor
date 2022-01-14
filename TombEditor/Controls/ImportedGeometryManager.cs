@@ -115,12 +115,7 @@ namespace TombEditor.Controls
             }
 
             public ReloadableResourceType ResourceType => Object.ResourceType;
-            public Exception LoadException
-            { get
-                { return Object.LoadException; }
-                set
-                {
-                    Object.LoadException = value; } }
+            public Exception LoadException { get { return Object.LoadException; } set { Object.LoadException = value; } }
             public IEnumerable<FileFormat> FileExtensions => Object.FileExtensions;
             public List<IReloadableResource> GetResourceList(LevelSettings settings) => Object.GetResourceList(settings);
             public string GetPath() => Object.GetPath();
