@@ -772,7 +772,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>usekey.wav</FileName>
+          <FileName>TR4_Lara_Use_Key_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6237,7 +6237,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>crowgem.wav</FileName>
+          <FileName>TR4_Lara_Crowbar_Gem_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6256,7 +6256,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>cbar_clk.wav</FileName>
+          <FileName>TR4_Lara_Crowbar_Door_Open_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6275,10 +6275,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sqk1.wav</FileName>
+          <FileName>TR4_Lara_Lever_Squeak_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sqk2.wav</FileName>
+          <FileName>TR4_Lara_Lever_Squeak_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6449,7 +6449,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lev_pul1.wav</FileName>
+          <FileName>TR4_Lara_Lever_Pull_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6468,7 +6468,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lev_pul2.wav</FileName>
+          <FileName>TR4_Lara_Lever_Pull_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6544,7 +6544,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lar_plly.wav</FileName>
+          <FileName>TR4_Lara_Pulley_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6699,7 +6699,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>crow_try.wav</FileName>
+          <FileName>TR4_Lara_Crowbar_Wrench_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
