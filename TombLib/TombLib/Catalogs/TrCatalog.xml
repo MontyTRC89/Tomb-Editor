@@ -6995,14 +6995,14 @@
       <sound id="385" name="TR1_BEAR_SNARL" />
       <sound id="386" name="TR1_BEAR_HURT" />
       <sound id="387" name="TR1_BEAR_DEATH" />
-      <sound id="388" name="SOUND_NG_RESERVED_388" />
-      <sound id="389" name="SOUND_NG_RESERVED_389" />
-      <sound id="390" name="SOUND_NG_RESERVED_390" />
-      <sound id="391" name="SOUND_NG_RESERVED_391" />
-      <sound id="392" name="SOUND_NG_RESERVED_392" />
-      <sound id="393" name="SOUND_NG_RESERVED_393" />
-      <sound id="394" name="SOUND_NG_RESERVED_394" />
-      <sound id="395" name="SOUND_NG_RESERVED_395" />
+      <sound id="388" name="TR1_BAT_SQUEAK" />
+      <sound id="389" name="TR1_BAT_FLAP" />
+      <sound id="390" name="TR1_STONE_DOOR" />
+      <sound id="391" name="TR1_PENDULUM_BLADES" />
+      <sound id="392" name="TR1_T-REX_DEATH" />
+      <sound id="393" name="TR1_T-REX_FOOTSTOMP" />
+      <sound id="394" name="TR1_T-REX_ROAR" />
+      <sound id="395" name="TR1_T-REX_ATTACK" />
       <sound id="396" name="SOUND_NG_RESERVED_396" />
       <sound id="397" name="SOUND_NG_RESERVED_397" />
       <sound id="398" name="SOUND_NG_RESERVED_398" />
