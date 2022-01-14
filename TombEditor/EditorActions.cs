@@ -4378,21 +4378,24 @@ namespace TombEditor
             }
             else
             {
-                list.ToList().ForEach(item =>
+                Task.Run(() =>
                 {
-                    item.Key.SetPath(settings, item.Value);
-
-                    if (sendEvent)
+                    list.ToList().ForEach(item =>
                     {
-                        if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
-                            _editor.LoadedImportedGeometriesChange();
-                        else if (toReplace.ResourceType == ReloadableResourceType.Texture)
-                            _editor.LoadedTexturesChange(toReplace as LevelTexture);
-                        else if (toReplace.ResourceType == ReloadableResourceType.Wad)
-                            _editor.LoadedWadsChange();
-                        else if (toReplace.ResourceType == ReloadableResourceType.SoundCatalog)
-                            _editor.LoadedSoundsCatalogsChange();
-                    }
+                        item.Key.SetPath(settings, item.Value);
+
+                        if (sendEvent)
+                        {
+                            if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
+                                _editor.LoadedImportedGeometriesChange();
+                            else if (toReplace.ResourceType == ReloadableResourceType.Texture)
+                                _editor.LoadedTexturesChange();
+                            else if (toReplace.ResourceType == ReloadableResourceType.Wad)
+                                _editor.LoadedWadsChange();
+                            else if (toReplace.ResourceType == ReloadableResourceType.SoundCatalog)
+                                _editor.LoadedSoundsCatalogsChange();
+                        }
+                    });
                 });
             }
 
