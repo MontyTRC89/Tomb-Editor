@@ -4335,7 +4335,7 @@ namespace TombEditor
                 return false;
 
             var resourceTypeString = Regex.Replace(toReplace.ResourceType.ToString(), "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").ToLower();
-
+            var message = new Action<string>(s => _editor.SendMessage("Reconnecting " + Path.GetFileName(s) + "...", PopupType.Info));
             var list = new Dictionary<IReloadableResource, string>() { { toReplace, path } };
 
             if (searchForOthers)
@@ -4357,11 +4357,6 @@ namespace TombEditor
                     }
                 }
 
-            if (list.Count > 1)
-                _editor.SendMessage("Reconnecting " + list.Count + " instances of " + resourceTypeString + "...", PopupType.Info);
-            else
-                _editor.SendMessage("Reconnecting " + resourceTypeString + "...", PopupType.Info);
-
             if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
             {
                 // HACK: Because imp geo uses extremely hacky DX model workflow, we need
@@ -4371,6 +4366,7 @@ namespace TombEditor
                 {
                     SynchronizationContext.Current.Post(tmp =>
                     {
+                        message(item.Value);
                         item.Key.SetPath(settings, item.Value);
                         if (sendEvent) _editor.LoadedImportedGeometriesChange();
                     }, null);
@@ -4382,6 +4378,7 @@ namespace TombEditor
                 {
                     list.ToList().ForEach(item =>
                     {
+                        message(item.Value);
                         item.Key.SetPath(settings, item.Value);
 
                         if (sendEvent)
