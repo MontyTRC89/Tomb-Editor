@@ -2389,10 +2389,10 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_larel.wav</FileName>
+          <FileName>Tr4_Lara_Electric_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2408,16 +2408,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lar_el2.wav</FileName>
+          <FileName>TR4_Lara_Electric_Crackles_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>lar_el3.wav</FileName>
+          <FileName>Tr4_Lara_Electric_Crackles_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>lar_el4.wav</FileName>
+          <FileName>Tr4_Lara_Electric_Crackles_03.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
