@@ -422,10 +422,13 @@ namespace TombEditor.Forms
         private void EditorEventRaised(IEditorEvent evt)
         {
             if (evt is LoadedSoundsCatalogsChangedEvent)
+            {
+                soundsCatalogsDataGridView.Invalidate(true);
                 PopulateSoundInfoList();
-            if (evt is LoadedTexturesChangedEvent)
+            }
+            else if (evt is LoadedTexturesChangedEvent)
                 textureFileDataGridView.Invalidate(true);
-            if (evt is LoadedWadsChangedEvent)
+            else if (evt is LoadedWadsChangedEvent)
                 objectFileDataGridView.Invalidate(true);
         }
 
