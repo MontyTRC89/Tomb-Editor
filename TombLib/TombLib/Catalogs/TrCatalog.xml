@@ -6715,15 +6715,15 @@
       <sound id="105" name="EXPLOSION1" />
       <sound id="106" name="EXPLOSION2_VOLWAS80" />
       <sound id="107" name="EARTHQUAKE_LOOP" />
-      <sound id="108" name="MENU_ROTATE" />
-      <sound id="109" name="MENU_SELECT" />
+      <sound id="108" name="UI_ROTATE" />
+      <sound id="109" name="UI_SELECT" />
       <sound id="110" name="Menu_Empty" />
-      <sound id="111" name="MENU_CHOOSE" />
+      <sound id="111" name="UI_CHOOSE" />
       <sound id="112" name="TICK_TOCK" />
       <sound id="113" name="Menu_Empty" />
-      <sound id="114" name="MENU_COMBINE" />
+      <sound id="114" name="UI_COMBINE" />
       <sound id="115" name="Menu_Empty" />
-      <sound id="116" name="MENU_MEDI" />
+      <sound id="116" name="UI_MEDI" />
       <sound id="117" name="LARA_CLIMB_WALLS_NOISE" />
       <sound id="118" name="WATER_LOOP" />
       <sound id="119" name="VONCROY_JUMP" />

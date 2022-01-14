@@ -2074,7 +2074,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
-      <Name>MENU_ROTATE</Name>
+      <Name>UI_ROTATE</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2085,7 +2085,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>m_rotat.wav</FileName>
+          <FileName>UI_Menu_Rotate_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2093,7 +2093,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>109</Id>
-      <Name>MENU_SELECT</Name>
+      <Name>UI_SELECT</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2104,7 +2104,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>m_select.wav</FileName>
+          <FileName>UI_Menu_Select_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2112,7 +2112,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>111</Id>
-      <Name>MENU_CHOOSE</Name>
+      <Name>UI_CHOOSE</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2123,7 +2123,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>m_choose.wav</FileName>
+          <FileName>UI_Menu_Choose_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2150,7 +2150,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>114</Id>
-      <Name>MENU_COMBINE</Name>
+      <Name>UI_COMBINE</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2161,7 +2161,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>m_comb.wav</FileName>
+          <FileName>UI_Menu_Combine_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2169,7 +2169,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>116</Id>
-      <Name>MENU_MEDI</Name>
+      <Name>UI_MEDI</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2180,7 +2180,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>medi_fix.wav</FileName>
+          <FileName>UI_Medi_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
