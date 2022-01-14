@@ -6607,7 +6607,7 @@
       <sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
     </sprite_sequences>
     <sounds max="8192">
-      <sound id="0" name="LARA_FEET" />
+      <sound id="0" name="LARA_FOOTSTEPS" />
       <sound id="1" name="LARA_CLIMB2" />
       <sound id="2" name="LARA_NO" />
       <sound id="3" name="LARA_SLIPPING" />
@@ -6615,7 +6615,7 @@
       <sound id="5" name="LARA_CLIMB1" />
       <sound id="6" name="LARA_DRAW" />
       <sound id="7" name="LARA_HOLSTER" />
-      <sound id="8" name="LARA_FIRE" />
+      <sound id="8" name="LARA_PISTOL_FIRE" />
       <sound id="9" name="LARA_RELOAD" />
       <sound id="10" name="LARA_RICOCHET" />
       <sound id="11" name="PUSH_BLOCK_END" />
@@ -6652,7 +6652,7 @@
       <sound id="42" name="LARA_KNEES_DEATH" />
       <sound id="43" name="LARA_UZI_FIRE" />
       <sound id="44" name="LARA_UZI_STOP" />
-      <sound id="45" name="LARA_SHOTGUN" />
+      <sound id="45" name="LARA_SHOTGUN_FIRE" />
       <sound id="46" name="LARA_BLOCK_PUSH1" />
       <sound id="47" name="LARA_BLOCK_PUSH2" />
       <sound id="48" name="SARLID_PALACES" />
@@ -6660,7 +6660,7 @@
       <sound id="50" name="UNDERWATER_DOOR" />
       <sound id="51" name="LARA_BLKPULL" />
       <sound id="52" name="LARA_FLOATING" />
-      <sound id="53" name="LARA_FALLDETH" />
+      <sound id="53" name="LARA_HIGH_FALL_DEATH" />
       <sound id="54" name="LARA_GRABHAND" />
       <sound id="55" name="LARA_GRABBODY" />
       <sound id="56" name="LARA_GRABFEET" />
@@ -6684,8 +6684,8 @@
       <sound id="74" name="SWINGING_FLAMES" />
       <sound id="75" name="STONE_SCRAPE" />
       <sound id="76" name="BLAST_CIRCLE" />
-      <sound id="77" name="BAZOOKA_FIRE" />
-      <sound id="78" name="HECKLER_AND_KOCH_FIRE" />
+      <sound id="77" name="LARA_BAZOOKA_FIRE" />
+      <sound id="78" name="LARA_HK_FIRE" />
       <sound id="79" name="WATERFALL_LOOP" />
       <sound id="80" name="CROC_ATTACK" />
       <sound id="81" name="CROC_DEATH" />
@@ -6711,7 +6711,7 @@
       <sound id="101" name="BEETLE_CLK_WHIRR" />
       <sound id="102" name="BEETLE_CLK_EXP" />
       <sound id="103" name="MINE_EXP_OVERLAY" />
-      <sound id="104" name="HECKLER_AND_KOCH_STOP" />
+      <sound id="104" name="LARA_HK_STOP" />
       <sound id="105" name="EXPLOSION1" />
       <sound id="106" name="EXPLOSION2_VOLWAS80" />
       <sound id="107" name="EARTHQUAKE_LOOP" />
@@ -6842,7 +6842,7 @@
       <sound id="232" name="MUMMY_TAKE_HIT" />
       <sound id="233" name="SMALL_FAN" />
       <sound id="234" name="LARGE_FAN" />
-      <sound id="235" name="LARA_CROSSBOW" />
+      <sound id="235" name="LARA_CROSSBOW_FIRE" />
       <sound id="236" name="SMALL_CREATURE_FEET" />
       <sound id="237" name="SAS_GADGIE_DIE" />
       <sound id="238" name="WATER_FLUSHES" />
@@ -6895,13 +6895,13 @@
       <sound id="285" name="OBJ_GEM_SMASH" />
       <sound id="286" name="CATBLADES_DRAW" />
       <sound id="287" name="SWIRLY_LONG_MOVE_SFX" />
-      <sound id="288" name="FOOTSTEPS_MUD" />
+      <sound id="288" name="LARA_FOOTSTEPS_MUD" />
       <sound id="289" name="HORSEMAN_HORSE_NEIGH" />
-      <sound id="290" name="FOOTSTEPS_GRAVEL" />
-      <sound id="291" name="FOOTSTEPS_SAND_AND_GRASS" />
-      <sound id="292" name="FOOTSTEPS_WOOD" />
-      <sound id="293" name="FOOTSTEPS_MARBLE" />
-      <sound id="294" name="FOOTSTEPS_METAL" />
+      <sound id="290" name="LARA_FOOTSTEPS_GRAVEL" />
+      <sound id="291" name="LARA_FOOTSTEPS_SAND_GRASS" />
+      <sound id="292" name="LARA_FOOTSTEPS_WOOD" />
+      <sound id="293" name="LARA_FOOTSTEPS_MARBLE" />
+      <sound id="294" name="LARA_FOOTSTEPS_METAL" />
       <sound id="295" name="GEN_SPHINX_DOORTHD" />
       <sound id="296" name="SETT_PLASMA_1" />
       <sound id="297" name="SETT_BOLT_1" />
@@ -6977,14 +6977,14 @@
       <sound id="367" name="BIKE_HIT_ENEMIES" />
       <sound id="368" name="FLAME_EMITTER" />
       <sound id="369" name="LARA_CLICK_SWITCH" />
-      <sound id="370" name="SOUND_NG_RESERVED_370" />
-      <sound id="371" name="SOUND_NG_RESERVED_371" />
-      <sound id="372" name="SOUND_NG_RESERVED_372" />
-      <sound id="373" name="SOUND_NG_RESERVED_373" />
-      <sound id="374" name="SOUND_NG_RESERVED_374" />
-      <sound id="375" name="SOUND_NG_RESERVED_375" />
-      <sound id="376" name="SOUND_NG_RESERVED_376" />
-      <sound id="377" name="SOUND_NG_RESERVED_377" />
+      <sound id="370" name="LARA_FOOTSTEPS_ICE" />
+      <sound id="371" name="LARA_FOOTSTEPS_SNOW" />
+      <sound id="372" name="LARA_HK_SILENCED" />
+      <sound id="373" name="LARA_HARPOON_LOAD_LAND" />
+      <sound id="374" name="LARA_HARPOON_FIRE_LAND" />
+      <sound id="375" name="LARA_HARPOON_LOAD_WATER" />
+      <sound id="376" name="LARA_HARPOON_FIRE_WATER" />
+      <sound id="377" name="BINOCULARS_ZOOM" />
       <sound id="378" name="SOUND_NG_RESERVED_378" />
       <sound id="379" name="SOUND_NG_RESERVED_379" />
       <sound id="380" name="SOUND_NG_RESERVED_380" />
