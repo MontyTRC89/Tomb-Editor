@@ -4468,7 +4468,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>235</Id>
-      <Name>LARA_CROSSBOW</Name>
+      <Name>LARA_CROSSBOW_FIRE</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5540,7 +5540,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>291</Id>
-      <Name>LARA_FOOTSTEPS_SAND_&amp;_GRASS</Name>
+      <Name>LARA_FOOTSTEPS_SAND_GRASS</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7228,6 +7228,82 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>378</Id>
+      <Name>FLARE_BURN_LAND</Name>
+      <Volume>20</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-30</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>flare_burn_land_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>379</Id>
+      <Name>FLARE_IGNITE_LAND</Name>
+      <Volume>66</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>60</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>flare_ignite_land_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>380</Id>
+      <Name>FLARE_IGNITE_WATER</Name>
+      <Volume>60</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>flare_ignite_underwater.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>381</Id>
+      <Name>FLARE_BURN_WATER</Name>
+      <Volume>20</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>80</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>flare_burn_underwater_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
   </SoundInfos>

@@ -6985,10 +6985,10 @@
       <sound id="375" name="LARA_HARPOON_LOAD_WATER" />
       <sound id="376" name="LARA_HARPOON_FIRE_WATER" />
       <sound id="377" name="BINOCULARS_ZOOM" />
-      <sound id="378" name="SOUND_NG_RESERVED_378" />
-      <sound id="379" name="SOUND_NG_RESERVED_379" />
-      <sound id="380" name="SOUND_NG_RESERVED_380" />
-      <sound id="381" name="SOUND_NG_RESERVED_381" />
+      <sound id="378" name="FLARE_BURN_LAND" />
+      <sound id="379" name="FLARE_IGNITE_LAND" />
+      <sound id="380" name="FLARE_IGNITE_WATER" />
+      <sound id="381" name="FLARE_BURN_WATER" />
       <sound id="382" name="SOUND_NG_RESERVED_382" />
       <sound id="383" name="SOUND_NG_RESERVED_383" />
       <sound id="384" name="SOUND_NG_RESERVED_384" />
