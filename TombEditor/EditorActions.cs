@@ -4334,7 +4334,7 @@ namespace TombEditor
             if (string.IsNullOrEmpty(path) || (path == toReplace.GetPath() && toReplace?.LoadException == null))
                 return false;
 
-            var resourceTypeString = Regex.Replace(toReplace.ResourceType.ToString(), "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").ToLower();
+            var resourceTypeString = toReplace.ResourceType.ToString().SplitCamelcase().ToLower();
             var message = new Action<string>(s => _editor.SendMessage("Reconnecting " + Path.GetFileName(s) + "...", PopupType.Info));
             var list = new Dictionary<IReloadableResource, string>() { { toReplace, path } };
 

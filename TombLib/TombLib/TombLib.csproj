@@ -168,7 +168,7 @@
     <Compile Include="Types\BoundingSphere.cs" />
     <Compile Include="Utils\ImageQuantizer.cs" />
     <Compile Include="Utils\Levenshtein.cs" />
-    <Compile Include="Utils\TextEncoding.cs" />
+    <Compile Include="Utils\TextExtensions.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
