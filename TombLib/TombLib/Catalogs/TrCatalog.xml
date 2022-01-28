@@ -1,4 +1,4 @@
-<!-- TRCatalog 3.0, updated by MontyTRC, Lwmte and TRTombLevBauer for Tomb Editor -->
+<!-- TRCatalog 4.0, updated by MontyTRC, Lwmte, TRTombLevBauer and Stranger1992 for Tomb Editor -->
 <xml>
   <game id="TR1">
     <limits>
@@ -6634,7 +6634,7 @@
       <sound id="24" name="LARA_KNEES_SHUFFLE" />
       <sound id="25" name="PUSH_SPX_SWITCH" />
       <sound id="26" name="LARA_CLIMB3" />
-      <sound id="27" name="RESERVED" />
+      <sound id="27" name="LARA_BODYSLAM" />
       <sound id="28" name="LARA_SHIMMY2" />
       <sound id="29" name="LARA_JUMP" />
       <sound id="30" name="LARA_FALL" />
@@ -7003,121 +7003,121 @@
       <sound id="393" name="TR1_T-REX_FOOTSTOMP" />
       <sound id="394" name="TR1_T-REX_ROAR" />
       <sound id="395" name="TR1_T-REX_ATTACK" />
-      <sound id="396" name="SOUND_NG_RESERVED_396" />
-      <sound id="397" name="SOUND_NG_RESERVED_397" />
-      <sound id="398" name="SOUND_NG_RESERVED_398" />
-      <sound id="399" name="SOUND_NG_RESERVED_399" />
-      <sound id="400" name="SOUND_NG_RESERVED_400" />
-      <sound id="401" name="SOUND_NG_RESERVED_401" />
-      <sound id="402" name="SOUND_NG_RESERVED_402" />
-      <sound id="403" name="SOUND_NG_RESERVED_403" />
-      <sound id="404" name="SOUND_NG_RESERVED_404" />
-      <sound id="405" name="SOUND_NG_RESERVED_405" />
-      <sound id="406" name="SOUND_NG_RESERVED_406" />
-      <sound id="407" name="SOUND_NG_RESERVED_407" />
-      <sound id="408" name="SOUND_NG_RESERVED_408" />
-      <sound id="409" name="SOUND_NG_RESERVED_409" />
-      <sound id="410" name="SOUND_NG_RESERVED_410" />
-      <sound id="411" name="SOUND_NG_RESERVED_411" />
-      <sound id="412" name="SOUND_NG_RESERVED_412" />
-      <sound id="413" name="SOUND_NG_RESERVED_413" />
-      <sound id="414" name="SOUND_NG_RESERVED_414" />
-      <sound id="415" name="SOUND_NG_RESERVED_415" />
-      <sound id="416" name="SOUND_NG_RESERVED_416" />
-      <sound id="417" name="SOUND_NG_RESERVED_417" />
-      <sound id="418" name="SOUND_NG_RESERVED_418" />
-      <sound id="419" name="SOUND_NG_RESERVED_419" />
-      <sound id="420" name="SOUND_NG_RESERVED_420" />
-      <sound id="421" name="SOUND_NG_RESERVED_421" />
-      <sound id="422" name="SOUND_NG_RESERVED_422" />
-      <sound id="423" name="SOUND_NG_RESERVED_423" />
-      <sound id="424" name="SOUND_NG_RESERVED_424" />
-      <sound id="425" name="SOUND_NG_RESERVED_425" />
-      <sound id="426" name="SOUND_NG_RESERVED_426" />
-      <sound id="427" name="SOUND_NG_RESERVED_427" />
-      <sound id="428" name="SOUND_NG_RESERVED_428" />
-      <sound id="429" name="SOUND_NG_RESERVED_429" />
-      <sound id="430" name="SOUND_NG_RESERVED_430" />
-      <sound id="431" name="SOUND_NG_RESERVED_431" />
-      <sound id="432" name="SOUND_NG_RESERVED_432" />
-      <sound id="433" name="SOUND_NG_RESERVED_433" />
-      <sound id="434" name="SOUND_NG_RESERVED_434" />
-      <sound id="435" name="SOUND_NG_RESERVED_435" />
-      <sound id="436" name="SOUND_NG_RESERVED_436" />
-      <sound id="437" name="SOUND_NG_RESERVED_437" />
-      <sound id="438" name="SOUND_NG_RESERVED_438" />
-      <sound id="439" name="SOUND_NG_RESERVED_439" />
-      <sound id="440" name="SOUND_NG_RESERVED_440" />
-      <sound id="441" name="SOUND_NG_RESERVED_441" />
-      <sound id="442" name="SOUND_NG_RESERVED_442" />
-      <sound id="443" name="SOUND_NG_RESERVED_443" />
-      <sound id="444" name="SOUND_NG_RESERVED_444" />
-      <sound id="445" name="SOUND_NG_RESERVED_445" />
-      <sound id="446" name="SOUND_NG_RESERVED_446" />
-      <sound id="447" name="SOUND_NG_RESERVED_447" />
-      <sound id="448" name="SOUND_NG_RESERVED_448" />
-      <sound id="449" name="SOUND_NG_RESERVED_449" />
-      <sound id="450" name="SOUND_NG_RESERVED_450" />
-      <sound id="451" name="SOUND_NG_RESERVED_451" />
-      <sound id="452" name="SOUND_NG_RESERVED_452" />
-      <sound id="453" name="SOUND_NG_RESERVED_453" />
-      <sound id="454" name="SOUND_NG_RESERVED_454" />
-      <sound id="455" name="SOUND_NG_RESERVED_455" />
-      <sound id="456" name="SOUND_NG_RESERVED_456" />
-      <sound id="457" name="SOUND_NG_RESERVED_457" />
-      <sound id="458" name="SOUND_NG_RESERVED_458" />
-      <sound id="459" name="SOUND_NG_RESERVED_459" />
-      <sound id="460" name="SOUND_NG_RESERVED_460" />
-      <sound id="461" name="SOUND_NG_RESERVED_461" />
-      <sound id="462" name="SOUND_NG_RESERVED_462" />
-      <sound id="463" name="SOUND_NG_RESERVED_463" />
-      <sound id="464" name="SOUND_NG_RESERVED_464" />
-      <sound id="465" name="SOUND_NG_RESERVED_465" />
-      <sound id="466" name="SOUND_NG_RESERVED_466" />
-      <sound id="467" name="SOUND_NG_RESERVED_467" />
-      <sound id="468" name="SOUND_NG_RESERVED_468" />
-      <sound id="469" name="SOUND_NG_RESERVED_469" />
-      <sound id="470" name="SOUND_NG_RESERVED_470" />
-      <sound id="471" name="SOUND_NG_RESERVED_471" />
-      <sound id="472" name="SOUND_NG_RESERVED_472" />
-      <sound id="473" name="SOUND_NG_RESERVED_473" />
-      <sound id="474" name="SOUND_NG_RESERVED_474" />
-      <sound id="475" name="SOUND_NG_RESERVED_475" />
-      <sound id="476" name="SOUND_NG_RESERVED_476" />
-      <sound id="477" name="SOUND_NG_RESERVED_477" />
-      <sound id="478" name="SOUND_NG_RESERVED_478" />
-      <sound id="479" name="SOUND_NG_RESERVED_479" />
-      <sound id="480" name="SOUND_NG_RESERVED_480" />
-      <sound id="481" name="SOUND_NG_RESERVED_481" />
-      <sound id="482" name="SOUND_NG_RESERVED_482" />
-      <sound id="483" name="SOUND_NG_RESERVED_483" />
-      <sound id="484" name="SOUND_NG_RESERVED_484" />
-      <sound id="485" name="SOUND_NG_RESERVED_485" />
-      <sound id="486" name="SOUND_NG_RESERVED_486" />
-      <sound id="487" name="SOUND_NG_RESERVED_487" />
-      <sound id="488" name="SOUND_NG_RESERVED_488" />
-      <sound id="489" name="SOUND_NG_RESERVED_489" />
-      <sound id="490" name="SOUND_NG_RESERVED_490" />
-      <sound id="491" name="SOUND_NG_RESERVED_491" />
-      <sound id="492" name="SOUND_NG_RESERVED_492" />
-      <sound id="493" name="SOUND_NG_RESERVED_493" />
-      <sound id="494" name="SOUND_NG_RESERVED_494" />
-      <sound id="495" name="SOUND_NG_RESERVED_495" />
-      <sound id="496" name="SOUND_NG_RESERVED_496" />
-      <sound id="497" name="SOUND_NG_RESERVED_497" />
-      <sound id="498" name="SOUND_NG_RESERVED_498" />
-      <sound id="499" name="SOUND_NG_RESERVED_499" />
-      <sound id="500" name="SOUND_NG_CUST_ENV_500" />
-      <sound id="501" name="SOUND_NG_CUST_ENV_501" />
-      <sound id="502" name="SOUND_NG_CUST_ENV_502" />
-      <sound id="503" name="SOUND_NG_CUST_ENV_503" />
-      <sound id="504" name="SOUND_NG_CUST_ENV_504" />
-      <sound id="505" name="SOUND_NG_CUST_ENV_505" />
-      <sound id="506" name="SOUND_NG_CUST_ENV_506" />
-      <sound id="507" name="SOUND_NG_CUST_ENV_507" />
-      <sound id="508" name="SOUND_NG_CUST_ENV_508" />
-      <sound id="509" name="SOUND_NG_CUST_ENV_509" />
-      <sound id="510" name="SOUND_NG_CUST_ENV_510" />
+      <sound id="396" name="TR1_WOLF_JUMP" />
+      <sound id="397" name="TR1_WOLF_HURT" />
+      <sound id="398" name="TR1_WOLF_DEATH" />
+      <sound id="399" name="TR1_WOLF_HOWL" />
+      <sound id="400" name="TR1_WOLF_ATTACK" />
+      <sound id="401" name="TR1_RAPTOR_ROAR" />
+      <sound id="402" name="TR1_RAPTOR_ATTACK" />
+      <sound id="403" name="TR1_RAPTOR_FEET" />
+      <sound id="404" name="TR1_CHAINDOOR_UP" />
+      <sound id="405" name="TR1_CHAINDOOR_DOWN" />
+      <sound id="406" name="TR1_COG_PUZZLE" />
+      <sound id="407" name="TR1_LION_HURT" />
+      <sound id="408" name="TR1_LION_ATTACK" />
+      <sound id="409" name="TR1_LION_ROAR" />
+      <sound id="410" name="TR1_LION_DEATH" />
+      <sound id="411" name="TR1_GORILLA_FEET" />
+      <sound id="412" name="TR1_GORILLA_PANT" />
+      <sound id="413" name="TR1_GORILLA_DEATH" />
+      <sound id="414" name="TR1_GORILLA_ROAR" />
+      <sound id="415" name="TR1_GORILLA_GRUNTS" />
+      <sound id="416" name="TR1_CROC_FEET" />
+      <sound id="417" name="TR1_CROC_ATTACK" />
+      <sound id="418" name="TR1_CROC_DEATH" />
+      <sound id="419" name="TR1_RAT_FEET" />
+      <sound id="420" name="TR1_RAT_CHIRP" />
+      <sound id="421" name="TR1_RAT_ATTACK" />
+      <sound id="422" name="TR1_RAT_DEATH" />
+      <sound id="423" name="TR1_ATLANTEAN_EXPLODE" />
+      <sound id="424" name="TR1_ATLANTEAN_SNEAK" />
+      <sound id="425" name="TR1_ATLANTEAN_ATTACK" />
+      <sound id="426" name="TR1_ATLANTEAN_JUMP_ATTACK" />
+      <sound id="427" name="TR1_ATLANTEAN_NEEDLE" />
+      <sound id="428" name="TR1_ATLANTEAN_BALL" />
+      <sound id="429" name="TR1_ATLANTEAN_WINGS" />
+      <sound id="430" name="TR1_ATLANTEAN_FEET" />
+      <sound id="431" name="TR1_ATLANTEAN_EGG_LOOP" />
+      <sound id="432" name="TR1_ATLANTEAN_EGG_HATCH" />
+      <sound id="433" name="TR1_ATLANTEAN_DEATH" />
+      <sound id="434" name="TR1_CENTAUR_HOOVES" />
+      <sound id="435" name="TR1_CENTAUR_ROAR" />
+      <sound id="436" name="TR1_GIANT_MUTANT_HIT_GROUND" />
+      <sound id="437" name="TR1_GIANT_MUTANT_ATTACK1" />
+      <sound id="438" name="TR1_GIANT_MUTANT_ATTACK2" />
+      <sound id="439" name="TR1_GIANT_MUTANT_DEATH" />
+      <sound id="440" name="TR1_GIANT_MUTANT_ARM_SWING" />
+      <sound id="441" name="TR1_GIANT_MUTANT_MOVE" />
+      <sound id="442" name="TR1_GIANT_MUTANT_HIT" />
+      <sound id="443" name="TR1_MUMMY_GROWL" />
+      <sound id="444" name="TR1_LARSON_FIRE" />
+      <sound id="445" name="TR1_LARSON_RICOCHET" />
+      <sound id="446" name="TR1_SKATEBOARDKID_MOVE" />
+      <sound id="447" name="TR1_SKATEBOARDKID_STOP" />
+      <sound id="448" name="TR1_SKATEBOARDKID_SHOOT" />
+      <sound id="449" name="TR1_SKATEBOARDKID_HIT" />
+      <sound id="450" name="TR1_SKATEBOARDKID_START" />
+      <sound id="451" name="TR1_SKATEBOARDKID_DEATH" />
+      <sound id="452" name="TR1_SKATEBOARDKID_HIT_GROUND" />
+      <sound id="453" name="TR1_THOR_ROOM_THUNDER" />
+      <sound id="454" name="TR1_EXPLOSION" />
+      <sound id="455" name="TR1_DAMOCLES_ROOM_SWORD" />
+      <sound id="456" name="TR1_RAISINGBLOCK_FX" />
+      <sound id="457" name="TR1_SAND_FX" />
+      <sound id="458" name="TR1_STAIRS2SLOPE_FX" />
+      <sound id="459" name="TR1_LAVA_LOOP" />
+      <sound id="460" name="TR1_LAVA_FOUNTAIN" />
+      <sound id="461" name="TR1_SCION_ALTAR_LOOP" />
+      <sound id="462" name="TR1_SCION_POWERUP_FX" />
+      <sound id="463" name="TR1_NM_DRILL_ENGINE_START" />
+      <sound id="464" name="TR1_NM_DRILL_ENGINE_LOOP" />
+      <sound id="465" name="TR1_NM_CONVEYOR_BELT" />
+      <sound id="466" name="TR1_NM_HUT_LOWERED" />
+      <sound id="467" name="TR1_NM_HUT_HIT_GROUND" />
+      <sound id="468" name="TR1_CHAINDOOR_UP" />
+      <sound id="469" name="TR1_METAL_DOOR_OPEN" />
+      <sound id="470" name="TR1_METAL_DOOR_CLOSE" />
+      <sound id="471" name="TR1_PIERRE_DEATH" />
+      <sound id="472" name="TR1_PIERRE_SPEECH" />
+      <sound id="473" name="TR2_LARA_M16_FIRE" />
+      <sound id="474" name="TR2_LARA_M16_STOP" />
+      <sound id="475" name="TR2_HENCHMAN_AH_DYING" />
+      <sound id="476" name="TR2_HENCHMAN_BELT_JINGLE" />
+      <sound id="477" name="TR2_HENCHMAN_BREATH1" />
+      <sound id="478" name="TR2_HENCHMAN_BREATH2" />
+      <sound id="479" name="TR2_HENCHMAN_CHUCKLE" />
+      <sound id="480" name="TR2_HENCHMAN_CLIMBDOWN" />
+      <sound id="481" name="TR2_HENCHMAN_CLIMBUP" />
+      <sound id="482" name="TR2_HENCHMAN_LOADING_SHOTGUN" />
+      <sound id="483" name="TR2_HENCHMAN_DEATH1" />
+      <sound id="484" name="TR2_HENCHMAN_DEATH2" />
+      <sound id="485" name="TR2_HENCHMAN_DEATH3" />
+      <sound id="486" name="TR2_HENCHMAN_DEATH4" />
+      <sound id="487" name="TR2_HENCHMAN_FEET" />
+      <sound id="488" name="TR2_HENCHMAN_FEET_SNOW" />
+      <sound id="489" name="TR2_HENCHMAN_FIRE_SEMIAUTO" />
+      <sound id="490" name="TR2_HENCHMAN_FIRE_SILENCER" />
+      <sound id="491" name="TR2_HENCHMAN_FIRE_TWIRL" />
+      <sound id="492" name="TR2_HENCHMAN_FIRE1" />
+      <sound id="493" name="TR2_HENCHMAN_FIRE2" />
+      <sound id="494" name="TR2_HENCHMAN_FIRE3" />
+      <sound id="495" name="TR2_HENCHMAN_FLAMETHROWER_CLICK" />
+      <sound id="496" name="TR2_HENCHMAN_FLAMETHROWER_DEATH" />
+      <sound id="497" name="TR2_HENCHMAN_FLAMETHROWER_FALL" />
+      <sound id="498" name="TR2_HENCHMAN_FLAMETHROWER_FIRE" />
+      <sound id="499" name="TR2_HENCHMAN_FLAMETHROWER_SCRAPE" />
+      <sound id="500" name="TR2_HENCHMAN_GRUNT" />
+      <sound id="501" name="TR2_HENCHMAN_GUN_COCKING" />
+      <sound id="502" name="TR2_HENCHMAN_HEAVY_BREATH" />
+      <sound id="503" name="TR2_HENCHMAN_HEELS" />
+      <sound id="504" name="TR2_HENCHMAN_HIT1" />
+      <sound id="505" name="TR2_HENCHMAN_HIT2" />
+      <sound id="506" name="TR2_HENCHMAN_HOLSTER" />
+      <sound id="507" name="TR2_HENCHMAN_JUMP" />
+      <sound id="508" name="TR2_HENCHMAN_OOH_DYING" />
+      <sound id="509" name="TR2_HENCHMAN_THUMP" />
+      <sound id="510" name="TR2_HENCHMAN_WRENCH" />
       <sound id="511" name="SOUND_NG_CUST_ENV_511" />
       <sound id="512" name="SOUND_NG_CUST_ENV_512" />
       <sound id="513" name="SOUND_NG_CUST_ENV_513" />
@@ -7472,14 +7472,14 @@
       <sound id="924" name="TR2_ROCK_FALL_CRUMBLE" />
       <sound id="925" name="TR2_ROCK_FALL_LAND" />
       <sound id="926" name="TR2_ROCK_FALL_SOLID" />
-      <sound id="927" name="TR2_ENEMY_FEET" />
-      <sound id="928" name="TR2_ENEMY_GRUNT" />
-      <sound id="929" name="TR2_ENEMY_HIT1" />
-      <sound id="930" name="TR2_ENEMY_HIT2" />
-      <sound id="931" name="TR2_ENEMY_DEATH1" />
-      <sound id="932" name="TR2_ENEMY_JUMP" />
-      <sound id="933" name="TR2_ENEMY_CLIMBUP" />
-      <sound id="934" name="TR2_ENEMY_CLIMBDOWN" />
+      <sound id="927" name="TR2_HENCHMAN_FEET" />
+      <sound id="928" name="TR2_HENCHMAN_GRUNT" />
+      <sound id="929" name="TR2_HENCHMAN_HIT1" />
+      <sound id="930" name="TR2_HENCHMAN_HIT2" />
+      <sound id="931" name="TR2_HENCHMAN_DEATH1" />
+      <sound id="932" name="TR2_HENCHMAN_JUMP" />
+      <sound id="933" name="TR2_HENCHMAN_CLIMBUP" />
+      <sound id="934" name="TR2_HENCHMAN_CLIMBDOWN" />
       <sound id="935" name="TR2_WEAPON_CLATTER" />
       <sound id="936" name="TR2_M16_FIRE" />
       <sound id="937" name="TR2_WATERFALL_LOOP" />
@@ -7519,11 +7519,11 @@
       <sound id="972" name="TR2_MENU_GUNS" />
       <sound id="973" name="TR2_MENU_PASSPORT" />
       <sound id="974" name="TR2_MENU_MEDI" />
-      <sound id="975" name="TR2_ENEMY_HEELS" />
-      <sound id="976" name="TR2_ENEMY_FIRE_SILENCER" />
-      <sound id="977" name="TR2_ENEMY_AH_DYING" />
-      <sound id="978" name="TR2_ENEMY_OOH_DYING" />
-      <sound id="979" name="TR2_ENEMY_THUMP" />
+      <sound id="975" name="TR2_HENCHMAN_HEELS" />
+      <sound id="976" name="TR2_HENCHMAN_FIRE_SILENCER" />
+      <sound id="977" name="TR2_HENCHMAN_AH_DYING" />
+      <sound id="978" name="TR2_HENCHMAN_OOH_DYING" />
+      <sound id="979" name="TR2_HENCHMAN_THUMP" />
       <sound id="980" name="TR2_SPIDER_MOVING" />
       <sound id="981" name="TR2_LARA_MINI_LOAD" />
       <sound id="982" name="TR2_LARA_MINI_LOCK" />
@@ -7538,12 +7538,12 @@
       <sound id="991" name="TR2_CROW_WING_FLAP" />
       <sound id="992" name="TR2_CROW_DEATH" />
       <sound id="993" name="TR2_CROW_ATTACK" />
-      <sound id="994" name="TR2_ENEMY_GUN_COCKING" />
-      <sound id="995" name="TR2_ENEMY_FIRE1" />
-      <sound id="996" name="TR2_ENEMY_FIRE_TWIRL" />
-      <sound id="997" name="TR2_ENEMY_HOLSTER" />
-      <sound id="998" name="TR2_ENEMY_BREATH1" />
-      <sound id="999" name="TR2_ENEMY_CHUCKLE" />
+      <sound id="994" name="TR2_HENCHMAN_GUN_COCKING" />
+      <sound id="995" name="TR2_HENCHMAN_FIRE1" />
+      <sound id="996" name="TR2_HENCHMAN_FIRE_TWIRL" />
+      <sound id="997" name="TR2_HENCHMAN_HOLSTER" />
+      <sound id="998" name="TR2_HENCHMAN_BREATH1" />
+      <sound id="999" name="TR2_HENCHMAN_CHUCKLE" />
       <sound id="1000" name="TR2_MONK_POY" />
       <sound id="1001" name="TR2_MONK_DEATH" />
       <sound id="1003" name="TR2_LARA_SPIKE_DEATH" />
@@ -7557,9 +7557,9 @@
       <sound id="1012" name="TR2_SKIDOO_ACCELERATE" />
       <sound id="1013" name="TR2_SKIDOO_MOVING" />
       <sound id="1014" name="TR2_SKIDOO_STOP" />
-      <sound id="1015" name="TR2_ENEMY_FIRE2" />
-      <sound id="1016" name="TR2_ENEMY_DEATH2" />
-      <sound id="1017" name="TR2_ENEMY_BREATH2" />
+      <sound id="1015" name="TR2_HENCHMAN_FIRE2" />
+      <sound id="1016" name="TR2_HENCHMAN_DEATH2" />
+      <sound id="1017" name="TR2_HENCHMAN_BREATH2" />
       <sound id="1018" name="TR2_STICK_TAP" />
       <sound id="1019" name="TR2_TRAPDOOR_OPEN" />
       <sound id="1020" name="TR2_TRAPDOOR_CLOSE" />
@@ -7574,17 +7574,17 @@
       <sound id="1029" name="TR2_YETI_GRUNT2" />
       <sound id="1030" name="TR2_YETI_GROWL3" />
       <sound id="1031" name="TR2_YETI_FEET" />
-      <sound id="1032" name="TR2_ENEMY_HEAVY_BREATH" />
-      <sound id="1033" name="TR2_ENEMY_FLAMETHROWER_FIRE" />
-      <sound id="1034" name="TR2_ENEMY_FLAMETHROWER_SCRAPE" />
-      <sound id="1035" name="TR2_ENEMY_FLAMETHROWER_CLICK" />
-      <sound id="1036" name="TR2_ENEMY_FLAMETHROWER_DEATH" />
-      <sound id="1037" name="TR2_ENEMY_FLAMETHROWER_FALL" />
-      <sound id="1038" name="TR2_ENEMY_BELT_JINGLE" />
-      <sound id="1039" name="TR2_ENEMY_WRENCH" />
+      <sound id="1032" name="TR2_HENCHMAN_HEAVY_BREATH" />
+      <sound id="1033" name="TR2_HENCHMAN_FLAMETHROWER_FIRE" />
+      <sound id="1034" name="TR2_HENCHMAN_FLAMETHROWER_SCRAPE" />
+      <sound id="1035" name="TR2_HENCHMAN_FLAMETHROWER_CLICK" />
+      <sound id="1036" name="TR2_HENCHMAN_FLAMETHROWER_DEATH" />
+      <sound id="1037" name="TR2_HENCHMAN_FLAMETHROWER_FALL" />
+      <sound id="1038" name="TR2_HENCHMAN_BELT_JINGLE" />
+      <sound id="1039" name="TR2_HENCHMAN_WRENCH" />
       <sound id="1040" name="TR2_FOOTSTEP" />
       <sound id="1041" name="TR2_FOOTSTEP_HIT" />
-      <sound id="1042" name="TR2_ENEMY_COCKING_SHOTGUN" />
+      <sound id="1042" name="TR2_HENCHMAN_COCKING_SHOTGUN" />
       <sound id="1044" name="TR2_SCUBA_DIVER_FLIPPER" />
       <sound id="1046" name="TR2_SCUBA_DIVER_BREATH" />
       <sound id="1048" name="TR2_PULLEY_CRANE" />
@@ -7644,11 +7644,11 @@
       <sound id="1104" name="TR2_MONK_BREATH" />
       <sound id="1105" name="TR2_SPLASH_SURFACE" />
       <sound id="1106" name="TR2_WATERFALL1" />
-      <sound id="1107" name="TR2_ENEMY_FEET_SNOW" />
-      <sound id="1108" name="TR2_ENEMY_FIRE3" />
-      <sound id="1109" name="TR2_ENEMY_FIRE_SEMIAUTO" />
-      <sound id="1110" name="TR2_ENEMY_DEATH3" />
-      <sound id="1111" name="TR2_ENEMY_DEATH4" />
+      <sound id="1107" name="TR2_HENCHMAN_FEET_SNOW" />
+      <sound id="1108" name="TR2_HENCHMAN_FIRE3" />
+      <sound id="1109" name="TR2_HENCHMAN_FIRE_SEMIAUTO" />
+      <sound id="1110" name="TR2_HENCHMAN_DEATH3" />
+      <sound id="1111" name="TR2_HENCHMAN_DEATH4" />
       <sound id="1112" name="TR2_CIRCLE_BLADE" />
       <sound id="1113" name="TR2_KNIFETHROWER_FEET" />
       <sound id="1114" name="TR2_MONK_OYE" />
@@ -8488,7 +8488,7 @@
       <sound id="2007" name="TR5_GGOD_ATTACK" />
       <sound id="2008" name="TR5_PORTAL_LOOP" />
     </sounds>
-	<states>
+    <states>
       <!-- Lara -->
         <state item="0" id="139" name="SHIMMY_45_OUTER_LEFT" />
         <state item="0" id="140" name="SHIMMY_45_OUTER_RIGHT" />
@@ -8507,6 +8507,6 @@
         <state item="0" id="153" name="CRAWL_EXIT_DOWN_STEP" />
         <state item="0" id="154" name="CRAWL_EXIT_JUMP" />
         <state item="0" id="155" name="CRAWL_EXIT_FLIP" />
-	</states>
+    </states>
   </game>
 </xml>
