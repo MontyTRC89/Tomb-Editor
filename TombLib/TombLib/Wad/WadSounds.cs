@@ -88,19 +88,10 @@ namespace TombLib.Wad
                 if (newPath == null)
                     continue;
 
-                // Search root directory
-                var rootPath = Path.Combine(newPath, name);
+                newPath = Path.Combine(newPath, name);
 
-                if (File.Exists(rootPath))
-                    return rootPath;
-
-                // Search subdirectories
-                if (Directory.Exists(newPath))
-                {
-                    var files = Directory.GetFiles(newPath, name, SearchOption.AllDirectories).ToList();
-                    if (files.Count > 0)
-                        return files[0];
-                }
+                if (File.Exists(newPath))
+                    return newPath;
             }
 
             return null;
