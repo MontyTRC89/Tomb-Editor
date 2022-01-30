@@ -14,7 +14,7 @@ namespace TombLib.Rendering
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public class Description
         {
-            public VectorInt3 Size { get; set; } = new VectorInt3(2048, 2048, 8); // 128 MB
+            public VectorInt3 Size { get; set; } = new VectorInt3(2048, 2048, 16); // 256 MB
             public Func<VectorInt2, RectPacker> CreateRectPacker = size => new RectPackerTree(size);
         }
 
