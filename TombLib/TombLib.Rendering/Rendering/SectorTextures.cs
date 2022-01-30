@@ -449,6 +449,8 @@ namespace TombLib.Rendering
                     // West faces ------------------------------------------------------------------------------
                     case BlockFace.PositiveX_QA:
                     case BlockFace.PositiveX_ED:
+                    case BlockFace.DiagonalQA:
+                    case BlockFace.DiagonalED:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne; break;
@@ -464,6 +466,8 @@ namespace TombLib.Rendering
 
                     case BlockFace.PositiveX_WS:
                     case BlockFace.PositiveX_RF:
+                    case BlockFace.DiagonalWS:
+                    case BlockFace.DiagonalRF:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_se; break;
@@ -478,6 +482,7 @@ namespace TombLib.Rendering
                         break;
 
                     case BlockFace.PositiveX_Middle:
+                    case BlockFace.DiagonalMiddle:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;

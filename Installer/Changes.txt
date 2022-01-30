@@ -12,6 +12,7 @@ Tomb Editor:
  * Fix quick start feature for new FLEP workflow.
  * Fix rendering in imported geometry browser preview.
  * Fix occasional object ID changes when clicking around script controls in trigger window.
+ * Fix block arrows not displaying on diagonal faces.
  
 WadTool:
  * Add ability to rename meshes in mesh editor.
