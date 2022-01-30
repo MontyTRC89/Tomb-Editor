@@ -3,8 +3,8 @@ Version 1.4.7
 
 Tomb Editor:
  * Add different types of texture search (untextured, broken, full match, partial match).
- * Add sniper camera type for TR5.
  * Add room normals calculation for TR5.
+ * Add sniper camera type for TR5.
  * Add glide out camera flag to be used together with glidecam FLEP patch.
  * Add option to always display memo text.
  * Add some missing global sounds for TR1 sound catalog.
