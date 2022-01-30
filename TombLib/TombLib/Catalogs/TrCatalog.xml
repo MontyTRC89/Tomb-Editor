@@ -7080,8 +7080,8 @@
       <sound id="470" name="TR1_METAL_DOOR_CLOSE" />
       <sound id="471" name="TR1_PIERRE_DEATH" />
       <sound id="472" name="TR1_PIERRE_SPEECH" />
-      <sound id="473" name="TR2_LARA_M16_FIRE" />
-      <sound id="474" name="TR2_LARA_M16_STOP" />
+      <sound id="473" name="TR1_PIERRE_MAGNUM_FIRE" />
+      <sound id="474" name="TR2_LARA_M16_FIRE" />
       <sound id="475" name="TR2_HENCHMAN_AH_DYING" />
       <sound id="476" name="TR2_HENCHMAN_BELT_JINGLE" />
       <sound id="477" name="TR2_HENCHMAN_BREATH1" />
