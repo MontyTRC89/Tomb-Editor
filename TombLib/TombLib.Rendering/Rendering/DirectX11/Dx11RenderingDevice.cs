@@ -75,14 +75,14 @@ namespace TombLib.Rendering.DirectX11
                     throw new Exception("No connected displays found.");
                 }
 
-                logger.Info("Creating D3D device: " + adapter.Description.Description + ", " + 
+                logger.Info("Creating D3D device: " + adapter.Description.Description + ", " +
                     (adapter.Description.DedicatedVideoMemory / 1024 / 1024) + " MB GPU RAM.");
 
                 Device = new Device(adapter, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
             }
             catch (Exception exc)
             {
-                switch((uint)exc.HResult)
+                switch ((uint)exc.HResult)
                 {
                     case 0x887A0004:
                         MessageBox.Show("Your DirectX version, videocard or drivers are out of date.\nDirectX 11 installation and videocard with DirectX 10 support is required.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -98,7 +98,7 @@ namespace TombLib.Rendering.DirectX11
                         MessageBox.Show("Unknown error while creating Direct3D device!\nShutting down now.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 }
-                    
+
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
 
@@ -336,6 +336,64 @@ namespace TombLib.Rendering.DirectX11
             }
         }
 
+        public Texture2DDescription CreateTextureDescription(VectorInt3 size)
+        {
+            Texture2DDescription dx11Description;
+            dx11Description.Height = size.X;
+            dx11Description.Width = size.Y;
+            dx11Description.ArraySize = size.Z;
+            dx11Description.BindFlags = BindFlags.ShaderResource;
+            dx11Description.CpuAccessFlags = CpuAccessFlags.None;
+            dx11Description.Format = Format.B8G8R8A8_UNorm;
+            dx11Description.MipLevels = 1;
+            dx11Description.OptionFlags = ResourceOptionFlags.None;
+            dx11Description.SampleDescription = new SampleDescription(1, 0);
+            dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
+
+            return dx11Description;
+        }
+
+        public VectorInt3 GetAvailableTextureAllocatorSize(VectorInt3 size)
+        {
+            if (size.Z < RenderingTextureAllocator.MinimumPageCount) // Page count is below minimum page count, no need to process.
+                return size;
+
+            logger.Info("Trying to reserve " + size.Z + " " + size.X + "x" + size.Y + " pages of texture memory...");
+
+            var dx11Description = CreateTextureDescription(size);
+            bool outOfMemory = false;
+
+            while (dx11Description.ArraySize > 0)
+            {
+                try
+                {
+                    if (outOfMemory) // Previous test failed?
+                    {
+                        outOfMemory = false;
+                        if (dx11Description.ArraySize > RenderingTextureAllocator.MinimumPageCount)
+                            dx11Description.ArraySize--; // Remove one extra page to fit potential other textures, if page count is still above minimum.
+                    }
+
+                    // Try to allocate texture space and immediately dispose it.
+                    var test = new Texture2D(Device, dx11Description);
+                    test.Dispose();
+
+                    // Test succeeded, return current page count.
+                    logger.Info(dx11Description.ArraySize + " texture pages were successfully reserved.");
+                    return new VectorInt3(size.X, size.Y, dx11Description.ArraySize);
+                }
+                catch
+                {
+                    // Test failed, try to dispose texture, decrease page count and try again.
+                    logger.Warn("Not enough memory to allocate " + dx11Description.ArraySize + " texture pages. Trying to reduce page count...");
+                    dx11Description.ArraySize--;
+                    outOfMemory = true;
+                }
+            }
+
+            throw new NotSupportedException("Video system does not have enough video memory to create texture array. Please upgrade your graphics adapter.");
+        }
+
         public override RenderingSwapChain CreateSwapChain(RenderingSwapChain.Description description)
         {
             return new Dx11RenderingSwapChain(this, description);
@@ -353,6 +411,7 @@ namespace TombLib.Rendering.DirectX11
 
         public override RenderingTextureAllocator CreateTextureAllocator(RenderingTextureAllocator.Description description)
         {
+            description.Size = GetAvailableTextureAllocatorSize(description.Size);
             return new Dx11RenderingTextureAllocator(this, description);
         }
         public override RenderingFont CreateFont(RenderingFont.Description description)

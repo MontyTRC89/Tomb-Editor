@@ -8,8 +8,6 @@ namespace TombLib.Rendering.DirectX11
 {
     public class Dx11RenderingTextureAllocator : RenderingTextureAllocator
     {
-        private const int MipLevelCount = 1; // TODO Perhaps we can align the texture and allow mip levels?
-
         public readonly DeviceContext Context;
         public readonly Texture2D Texture;
         public readonly ShaderResourceView TextureView;
@@ -18,19 +16,7 @@ namespace TombLib.Rendering.DirectX11
             : base(device, description)
         {
             Context = device.Context;
-
-            Texture2DDescription dx11Description;
-            dx11Description.ArraySize = description.Size.Z;
-            dx11Description.BindFlags = BindFlags.ShaderResource;
-            dx11Description.CpuAccessFlags = CpuAccessFlags.None;
-            dx11Description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
-            dx11Description.Height = description.Size.X;
-            dx11Description.MipLevels = MipLevelCount;
-            dx11Description.OptionFlags = ResourceOptionFlags.None;
-            dx11Description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
-            dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
-            dx11Description.Width = description.Size.Y;
-            Texture = new Texture2D(device.Device, dx11Description);
+            Texture = new Texture2D(device.Device, device.CreateTextureDescription(description.Size));
             TextureView = new ShaderResourceView(device.Device, Texture);
         }
 
@@ -62,7 +48,7 @@ namespace TombLib.Rendering.DirectX11
             originalImage.GetIntPtr(ptr =>
             {
                 const int mipLevelToUpload = 0;
-                int subresourceIndex = MipLevelCount * pos.Z + mipLevelToUpload;
+                int subresourceIndex = pos.Z + mipLevelToUpload;
                 ResourceRegion region;
                 region.Left = pos.X;
                 region.Right = pos.X + originalImage.Width;
@@ -123,7 +109,7 @@ namespace TombLib.Rendering.DirectX11
                 byte[] result = new byte[bytesPerSlice * Size.Z];
                 for (int z = 0; z < Size.Z; ++z)
                 {
-                    int subresourceIndex = MipLevelCount * z + mipLevelToRetrieve;
+                    int subresourceIndex = z + mipLevelToRetrieve;
                     Context.CopySubresourceRegion(Texture, subresourceIndex, null, tempTexture, 0);
                     DataBox mappedBuffer = Context.MapSubresource(tempTexture, 0, MapMode.Read, MapFlags.None);
                     try
