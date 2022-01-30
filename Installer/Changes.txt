@@ -10,6 +10,7 @@ Tomb Editor:
  * Add some missing global sounds for TR1 sound catalog.
  * Reconnect all resources from level settings window.
  * Fix quick start feature for new FLEP workflow.
+ * Fix rendering bugs when editing very large levels in "Draw all rooms" mode.
  * Fix rendering in imported geometry browser preview.
  * Fix occasional object ID changes when clicking around script controls in trigger window.
  * Fix block arrows not displaying on diagonal faces.
