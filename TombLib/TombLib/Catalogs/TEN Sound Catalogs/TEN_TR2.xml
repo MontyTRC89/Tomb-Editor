@@ -2,27 +2,8 @@
 <WadSounds xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SoundInfos>
     <WadSoundInfo>
-      <Id>473</Id>
-      <Name>TR2_LARA_M16_FIRE</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>sn078_s0.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
       <Id>474</Id>
-      <Name>TR2_LARA_M16_STOP</Name>
+      <Name>TR2_LARA_M16_FIRE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -33,7 +14,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn104_s0.wav</FileName>
+          <FileName>TR2_LARA_M16_FIRE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -52,7 +33,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn119_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_AH_DYING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -71,7 +52,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn180_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_BELT_JINGLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -90,7 +71,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn140_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_BREATH1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -109,7 +90,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn159_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_BREATH2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -128,7 +109,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn141_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_CHUCKLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -147,7 +128,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn076_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_CLIMBDOWN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -166,7 +147,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn075_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_CLIMBUP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -185,7 +166,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn184_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_LOADING_SHOTGUN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -204,7 +185,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn073_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_DEATH1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -223,7 +204,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn158_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_DEATH2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -242,7 +223,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn252_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_DEATH3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -261,7 +242,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn253_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_DEATH4_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -280,13 +261,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn069_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn069_s1.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn069_s2.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -305,13 +286,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn249_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_SNOW_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn249_s1.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_SNOW_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn249_s2.wav</FileName>
+          <FileName>TR2_HENCHMAN_FEET_SNOW_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -330,7 +311,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn251_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE_SEMIAUTO_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -349,10 +330,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn118_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE_SILENCER_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn118_s1.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE_SILENCER_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -371,7 +352,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn138_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE_TWIRL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -390,7 +371,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn137_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -409,7 +390,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn157_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -428,7 +409,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn250_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FIRE3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -447,7 +428,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn177_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FLAMETHROWER_CLICK_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -466,7 +447,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn178_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FLAMETHROWER_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -485,7 +466,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn179_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FLAMETHROWER_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -504,7 +485,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn175_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FLAMETHROWER_FIRE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -523,7 +504,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn176_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_FLAMETHROWER_SCRAPE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -542,7 +523,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn070_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_GRUNT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -561,7 +542,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn136_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_GUN_COCKING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -580,7 +561,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn174_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_HEAVY_BREATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -599,16 +580,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn117_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_HEELS_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn117_s1.wav</FileName>
+          <FileName>TR2_HENCHMAN_HEELS_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn117_s2.wav</FileName>
+          <FileName>TR2_HENCHMAN_HEELS_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sn117_s3.wav</FileName>
+          <FileName>TR2_HENCHMAN_HEELS_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -627,7 +608,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn071_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_HIT1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -646,7 +627,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn072_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_HIT2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -665,7 +646,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn139_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_HOLSTER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -684,7 +665,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn074_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_JUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -703,7 +684,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn120_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_OOH_DYING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -722,7 +703,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn121_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_THUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -741,7 +722,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn181_s0.wav</FileName>
+          <FileName>TR2_HENCHMAN_WRENCH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
