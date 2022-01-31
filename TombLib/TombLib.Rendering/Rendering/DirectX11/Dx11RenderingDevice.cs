@@ -361,19 +361,11 @@ namespace TombLib.Rendering.DirectX11
             logger.Info("Trying to reserve " + size.Z + " " + size.X + "x" + size.Y + " pages of texture memory...");
 
             var dx11Description = CreateTextureDescription(size);
-            bool outOfMemory = false;
 
-            while (dx11Description.ArraySize > 0)
+            while (dx11Description.ArraySize >= RenderingTextureAllocator.MinimumPageCount)
             {
                 try
                 {
-                    if (outOfMemory) // Previous test failed?
-                    {
-                        outOfMemory = false;
-                        if (dx11Description.ArraySize > RenderingTextureAllocator.MinimumPageCount)
-                            dx11Description.ArraySize--; // Remove one extra page to fit potential other textures, if page count is still above minimum.
-                    }
-
                     // Try to allocate texture space and immediately dispose it.
                     var test = new Texture2D(Device, dx11Description);
                     test.Dispose();
@@ -386,8 +378,7 @@ namespace TombLib.Rendering.DirectX11
                 {
                     // Test failed, try to dispose texture, decrease page count and try again.
                     logger.Warn("Not enough memory to allocate " + dx11Description.ArraySize + " texture pages. Trying to reduce page count...");
-                    dx11Description.ArraySize--;
-                    outOfMemory = true;
+                    dx11Description.ArraySize -= 2;
                 }
             }
 
