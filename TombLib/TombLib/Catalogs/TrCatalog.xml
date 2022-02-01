@@ -7082,42 +7082,42 @@
       <sound id="472" name="TR1_PIERRE_SPEECH" />
       <sound id="473" name="TR1_PIERRE_MAGNUM_FIRE" />
       <sound id="474" name="TR2_LARA_M16_FIRE" />
-      <sound id="475" name="TR2_HENCHMAN_AH_DYING" />
+      <sound id="475" name="TR2_LARA_M16_STOP" />
       <sound id="476" name="TR2_HENCHMAN_BELT_JINGLE" />
-      <sound id="477" name="TR2_HENCHMAN_BREATH1" />
-      <sound id="478" name="TR2_HENCHMAN_BREATH2" />
-      <sound id="479" name="TR2_HENCHMAN_CHUCKLE" />
-      <sound id="480" name="TR2_HENCHMAN_CLIMBDOWN" />
-      <sound id="481" name="TR2_HENCHMAN_CLIMBUP" />
-      <sound id="482" name="TR2_HENCHMAN_LOADING_SHOTGUN" />
-      <sound id="483" name="TR2_HENCHMAN_DEATH1" />
-      <sound id="484" name="TR2_HENCHMAN_DEATH2" />
-      <sound id="485" name="TR2_HENCHMAN_DEATH3" />
-      <sound id="486" name="TR2_HENCHMAN_DEATH4" />
-      <sound id="487" name="TR2_HENCHMAN_FEET" />
-      <sound id="488" name="TR2_HENCHMAN_FEET_SNOW" />
-      <sound id="489" name="TR2_HENCHMAN_FIRE_SEMIAUTO" />
-      <sound id="490" name="TR2_HENCHMAN_FIRE_SILENCER" />
-      <sound id="491" name="TR2_HENCHMAN_FIRE_TWIRL" />
-      <sound id="492" name="TR2_HENCHMAN_FIRE1" />
-      <sound id="493" name="TR2_HENCHMAN_FIRE2" />
-      <sound id="494" name="TR2_HENCHMAN_FIRE3" />
-      <sound id="495" name="TR2_HENCHMAN_FLAMETHROWER_CLICK" />
-      <sound id="496" name="TR2_HENCHMAN_FLAMETHROWER_DEATH" />
-      <sound id="497" name="TR2_HENCHMAN_FLAMETHROWER_FALL" />
-      <sound id="498" name="TR2_HENCHMAN_FLAMETHROWER_FIRE" />
-      <sound id="499" name="TR2_HENCHMAN_FLAMETHROWER_SCRAPE" />
-      <sound id="500" name="TR2_HENCHMAN_GRUNT" />
-      <sound id="501" name="TR2_HENCHMAN_GUN_COCKING" />
-      <sound id="502" name="TR2_HENCHMAN_HEAVY_BREATH" />
-      <sound id="503" name="TR2_HENCHMAN_HEELS" />
-      <sound id="504" name="TR2_HENCHMAN_HIT1" />
-      <sound id="505" name="TR2_HENCHMAN_HIT2" />
-      <sound id="506" name="TR2_HENCHMAN_HOLSTER" />
-      <sound id="507" name="TR2_HENCHMAN_JUMP" />
-      <sound id="508" name="TR2_HENCHMAN_OOH_DYING" />
-      <sound id="509" name="TR2_HENCHMAN_THUMP" />
-      <sound id="510" name="TR2_HENCHMAN_WRENCH" />
+      <sound id="477" name="TR2_HENCHMAN_CHUCKLE" />
+      <sound id="478" name="TR2_HENCHMAN_CLIMBDOWN" />
+      <sound id="479" name="TR2_HENCHMAN_AH_DYING" />
+      <sound id="480" name="TR2_HENCHMAN_CLIMBUP" />
+      <sound id="481" name="TR2_HENCHMAN_LOADING_SHOTGUN" />
+      <sound id="482" name="TR2_HENCHMAN_DEATH1" />
+      <sound id="483" name="TR2_HENCHMAN_DEATH2" />
+      <sound id="484" name="TR2_HENCHMAN_DEATH3" />
+      <sound id="485" name="TR2_HENCHMAN_FEET" />
+      <sound id="486" name="TR2_HENCHMAN_FEET_SNOW" />
+      <sound id="487" name="TR2_HENCHMAN_FIRE_SEMIAUTO" />
+      <sound id="488" name="TR2_HENCHMAN_FIRE_SILENCER" />
+      <sound id="489" name="TR2_HENCHMAN_FIRE_TWIRL" />
+      <sound id="490" name="TR2_HENCHMAN_FIRE1" />
+      <sound id="491" name="TR2_HENCHMAN_FIRE2" />
+      <sound id="492" name="TR2_HENCHMAN_FLAMETHROWER_CLICK" />
+      <sound id="493" name="TR2_HENCHMAN_FLAMETHROWER_DEATH" />
+      <sound id="494" name="TR2_HENCHMAN_FLAMETHROWER_FIRE" />
+      <sound id="495" name="TR2_HENCHMAN_FLAMETHROWER_SCRAPE" />
+      <sound id="496" name="TR2_HENCHMAN_GRUNT" />
+      <sound id="497" name="TR2_HENCHMAN_GUN_COCKING" />
+      <sound id="498" name="TR2_HENCHMAN_HEAVY_BREATH" />
+      <sound id="499" name="TR2_HENCHMAN_HEELS" />
+      <sound id="500" name="TR2_HENCHMAN_HIT1" />
+      <sound id="501" name="TR2_HENCHMAN_HIT2" />
+      <sound id="502" name="TR2_HENCHMAN_HOLSTER" />
+      <sound id="503" name="TR2_HENCHMAN_JUMP" />
+      <sound id="504" name="TR2_HENCHMAN_OOH_DYING" />
+      <sound id="505" name="TR2_HENCHMAN_THUMP" />
+      <sound id="506" name="TR2_HENCHMAN_WRENCH" />
+      <sound id="507" name="empty" />
+      <sound id="508" name="empty" />
+      <sound id="509" name="empty" />
+      <sound id="510" name="empty" />
       <sound id="511" name="SOUND_NG_CUST_ENV_511" />
       <sound id="512" name="SOUND_NG_CUST_ENV_512" />
       <sound id="513" name="SOUND_NG_CUST_ENV_513" />

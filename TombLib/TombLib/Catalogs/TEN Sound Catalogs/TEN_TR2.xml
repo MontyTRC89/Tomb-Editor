@@ -22,21 +22,21 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>475</Id>
-      <Name>TR2_HENCHMAN_AH_DYING</Name>
-      <Volume>100</Volume>
+      <Name>TR2_LARA_M16_STOP</Name>
+      <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_AH_DYING_01.wav</FileName>
+          <FileName>TR2_LARA_M16_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -60,44 +60,6 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>477</Id>
-      <Name>TR2_HENCHMAN_BREATH1</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2_HENCHMAN_BREATH1_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>478</Id>
-      <Name>TR2_HENCHMAN_BREATH2</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2_HENCHMAN_BREATH2_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>479</Id>
       <Name>TR2_HENCHMAN_CHUCKLE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -116,7 +78,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>480</Id>
+      <Id>478</Id>
       <Name>TR2_HENCHMAN_CLIMBDOWN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -135,7 +97,26 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>481</Id>
+      <Id>479</Id>
+      <Name>TR2_HENCHMAN_AH_DYING</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_HENCHMAN_AH_DYING_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>480</Id>
       <Name>TR2_HENCHMAN_CLIMBUP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -154,7 +135,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>482</Id>
+      <Id>481</Id>
       <Name>TR2_HENCHMAN_LOADING_SHOTGUN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -173,7 +154,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>483</Id>
+      <Id>482</Id>
       <Name>TR2_HENCHMAN_DEATH1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -192,7 +173,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>484</Id>
+      <Id>483</Id>
       <Name>TR2_HENCHMAN_DEATH2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -211,7 +192,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>485</Id>
+      <Id>484</Id>
       <Name>TR2_HENCHMAN_DEATH3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -230,26 +211,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>486</Id>
-      <Name>TR2_HENCHMAN_DEATH4</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2_HENCHMAN_DEATH4_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>487</Id>
+      <Id>485</Id>
       <Name>TR2_HENCHMAN_FEET</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -274,7 +236,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>488</Id>
+      <Id>486</Id>
       <Name>TR2_HENCHMAN_FEET_SNOW</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -299,7 +261,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>489</Id>
+      <Id>487</Id>
       <Name>TR2_HENCHMAN_FIRE_SEMIAUTO</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -318,7 +280,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>490</Id>
+      <Id>488</Id>
       <Name>TR2_HENCHMAN_FIRE_SILENCER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -340,7 +302,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>491</Id>
+      <Id>489</Id>
       <Name>TR2_HENCHMAN_FIRE_TWIRL</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -359,7 +321,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>492</Id>
+      <Id>490</Id>
       <Name>TR2_HENCHMAN_FIRE1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -378,7 +340,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>493</Id>
+      <Id>491</Id>
       <Name>TR2_HENCHMAN_FIRE2</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -397,26 +359,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>494</Id>
-      <Name>TR2_HENCHMAN_FIRE3</Name>
-      <Volume>90</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE3_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>495</Id>
+      <Id>492</Id>
       <Name>TR2_HENCHMAN_FLAMETHROWER_CLICK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -435,7 +378,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>496</Id>
+      <Id>493</Id>
       <Name>TR2_HENCHMAN_FLAMETHROWER_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -454,26 +397,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>497</Id>
-      <Name>TR2_HENCHMAN_FLAMETHROWER_FALL</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2_HENCHMAN_FLAMETHROWER_FALL_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>498</Id>
+      <Id>494</Id>
       <Name>TR2_HENCHMAN_FLAMETHROWER_FIRE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -492,7 +416,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>499</Id>
+      <Id>495</Id>
       <Name>TR2_HENCHMAN_FLAMETHROWER_SCRAPE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -511,7 +435,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>500</Id>
+      <Id>496</Id>
       <Name>TR2_HENCHMAN_GRUNT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -530,7 +454,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>501</Id>
+      <Id>497</Id>
       <Name>TR2_HENCHMAN_GUN_COCKING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -549,7 +473,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>502</Id>
+      <Id>498</Id>
       <Name>TR2_HENCHMAN_HEAVY_BREATH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -568,7 +492,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>503</Id>
+      <Id>499</Id>
       <Name>TR2_HENCHMAN_HEELS</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -596,7 +520,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>504</Id>
+      <Id>500</Id>
       <Name>TR2_HENCHMAN_HIT1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -615,7 +539,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>505</Id>
+      <Id>501</Id>
       <Name>TR2_HENCHMAN_HIT2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -634,7 +558,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>506</Id>
+      <Id>502</Id>
       <Name>TR2_HENCHMAN_HOLSTER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -653,7 +577,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>507</Id>
+      <Id>503</Id>
       <Name>TR2_HENCHMAN_JUMP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -672,7 +596,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>508</Id>
+      <Id>504</Id>
       <Name>TR2_HENCHMAN_OOH_DYING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -691,7 +615,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>509</Id>
+      <Id>505</Id>
       <Name>TR2_HENCHMAN_THUMP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
@@ -710,7 +634,7 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>510</Id>
+      <Id>506</Id>
       <Name>TR2_HENCHMAN_WRENCH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
