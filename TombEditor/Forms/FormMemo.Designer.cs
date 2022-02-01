@@ -33,6 +33,7 @@ namespace TombEditor.Forms
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.tbText = new DarkUI.Controls.DarkTextBox();
+            this.cbAlwaysDisplayText = new DarkUI.Controls.DarkCheckBox();
             this.SuspendLayout();
             // 
             // butOK
@@ -71,12 +72,23 @@ namespace TombEditor.Forms
             this.tbText.Size = new System.Drawing.Size(529, 228);
             this.tbText.TabIndex = 11;
             // 
+            // cbAlwaysDisplayText
+            // 
+            this.cbAlwaysDisplayText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbAlwaysDisplayText.AutoSize = true;
+            this.cbAlwaysDisplayText.Location = new System.Drawing.Point(8, 246);
+            this.cbAlwaysDisplayText.Name = "cbAlwaysDisplayText";
+            this.cbAlwaysDisplayText.Size = new System.Drawing.Size(122, 17);
+            this.cbAlwaysDisplayText.TabIndex = 12;
+            this.cbAlwaysDisplayText.Text = "Always display text";
+            // 
             // FormMemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(544, 272);
+            this.Controls.Add(this.cbAlwaysDisplayText);
             this.Controls.Add(this.tbText);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -102,5 +114,6 @@ namespace TombEditor.Forms
         private DarkButton butOK;
         private DarkButton butCancel;
         private DarkTextBox tbText;
+        private DarkCheckBox cbAlwaysDisplayText;
     }
 }

@@ -2,23 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class ReferencedSoundCatalog : ICloneable, IEquatable<ReferencedSoundCatalog>
+    public class ReferencedSoundCatalog : ICloneable, IReloadableResource, IEquatable<ReferencedSoundCatalog>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public class UniqueIDType { }
         public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
-        public static IReadOnlyList<FileFormat> FileExtensions => WadSounds.FormatExtensions;
 
         public string Path { get; private set; }
         public WadSounds Sounds { get; private set; }
-        public Exception LoadException { get; private set; }
 
         public ReferencedSoundCatalog()
         {
@@ -62,6 +61,12 @@ namespace TombLib.LevelData
             }
         }
 
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.SoundCatalog; } }
+        public Exception LoadException { get; set; }
+        public IEnumerable<FileFormat> FileExtensions => WadSounds.FileExtensions;
+        public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.SoundCatalogs.Select(i => i as IReloadableResource).ToList();
+
+        public string GetPath() => Path;
         public void SetPath(LevelSettings settings, string path)
         {
             Path = path;

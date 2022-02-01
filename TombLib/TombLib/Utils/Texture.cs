@@ -158,7 +158,7 @@ namespace TombLib.Utils
 
             var result = new List<string>();
             for (int i = 0; i < blendCount; i++)
-                result.Add(ToBlendMode(i).ToString());
+                result.Add(ToBlendMode(i).ToString().SplitCamelcase());
 
             return result;
         }

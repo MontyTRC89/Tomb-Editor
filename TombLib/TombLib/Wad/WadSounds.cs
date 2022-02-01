@@ -325,7 +325,7 @@ namespace TombLib.Wad
             return sounds;
         }
 
-        public static IReadOnlyList<FileFormat> FormatExtensions { get; } = new List<FileFormat>()
+        public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
             new FileFormat("TRLE Txt format", "txt"),
             new FileFormat("Tomb Editor Xml format", "xml"),

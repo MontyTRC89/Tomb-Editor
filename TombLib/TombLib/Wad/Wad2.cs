@@ -227,7 +227,7 @@ namespace TombLib.Wad
             }
         }
 
-        public static IReadOnlyList<FileFormat> WadFormatExtensions { get; } = new List<FileFormat>()
+        public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
             new FileFormat("Winroomedit WAD", "wad"),
             new FileFormat("TombEditor WAD2", "wad2"),

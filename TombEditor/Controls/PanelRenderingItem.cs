@@ -105,7 +105,7 @@ namespace TombEditor.Controls
                     {
                         ReferencedWad wadToUpdate = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
                         if (wadToUpdate != null)
-                            EditorActions.UpdateWadFilepath(Parent, wadToUpdate);
+                            EditorActions.ReloadResource(Parent, settings, wadToUpdate);
                         else
                             EditorActions.AddWad(Parent);
                     }

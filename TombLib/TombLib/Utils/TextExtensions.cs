@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TombLib.Utils
 {
-    public static class TextEncoding
+    public static class TextExtensions
     {
         public static string ConvertToANSI(this string source)
         {
@@ -28,6 +28,11 @@ namespace TombLib.Utils
             }
             else
                 return true;
+        }
+
+        public static string SplitCamelcase(this string source)
+        {
+            return Regex.Replace(source, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
     }
 }

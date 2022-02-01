@@ -65,7 +65,7 @@ namespace WadTool
         {
             using (var fileDialog = new OpenFileDialog())
             {
-                fileDialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                fileDialog.Filter = ImageC.FileExtensions.GetFilter();
                 fileDialog.Multiselect = true;
                 if (!string.IsNullOrWhiteSpace(_currentPath))
                     try
@@ -245,7 +245,7 @@ namespace WadTool
 
             using (var fileDialog = new OpenFileDialog())
             {
-                fileDialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                fileDialog.Filter = ImageC.FileExtensions.GetFilter();
                 fileDialog.Multiselect = false;
                 if (!string.IsNullOrWhiteSpace(_currentPath))
                     try

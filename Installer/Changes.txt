@@ -6,7 +6,9 @@ Tomb Editor:
  * Add sniper camera type for TR5.
  * Add room normals calculation for TR5.
  * Add glide out camera flag to be used together with glidecam FLEP patch.
+ * Add option to always display memo text.
  * Add some missing global sounds for TR1 sound catalog.
+ * Reconnect all resources from level settings window.
  * Fix quick start feature for new FLEP workflow.
  * Fix rendering in imported geometry browser preview.
  * Fix occasional object ID changes when clicking around script controls in trigger window.
@@ -18,6 +20,7 @@ WadTool:
  * Don't steal focus to item preview in main window.
  * Fix persistent issues with disjointed MQO vertices on mesh import.
  * Fix UI brightness not affecting tree list views.
+ * Fix occasional incorrect end frame values when importing compiled levels.
  
 SoundTool:
  * Fix incorrect bit depth for TR2 samples when compiling MAIN.SFX.

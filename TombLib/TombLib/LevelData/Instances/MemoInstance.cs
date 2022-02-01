@@ -5,6 +5,7 @@
         private const int _trimWords = 25;
 
         public string Text { get; set; } = "New memo";
+        public bool AlwaysDisplay { get; set; } = false;
 
         public override string ToString()
         {

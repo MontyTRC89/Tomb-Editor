@@ -1,15 +1,14 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-    public class LevelTexture : Texture, IEquatable<LevelTexture>
+    public class LevelTexture : Texture, IReloadableResource, IEquatable<LevelTexture>
     {
-        public static IReadOnlyList<FileFormat> FileExtensions => ImageC.FromFileFileExtensions;
-
         public class UniqueIDType { }
         public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
 
@@ -19,7 +18,6 @@ namespace TombLib.LevelData
 
         public string Path { get; private set; }
 
-        public Exception LoadException { get; private set; }
         public bool Convert512PixelsToDoubleRows { get; private set; }
         public bool ReplaceMagentaWithTransparency { get; private set; }
 
@@ -158,6 +156,12 @@ namespace TombLib.LevelData
             }
         }
 
+        public ReloadableResourceType ResourceType { get { return ReloadableResourceType.Texture; } }
+        public Exception LoadException { get; set; }
+        public IEnumerable<FileFormat> FileExtensions => ImageC.FileExtensions;
+        public List<IReloadableResource> GetResourceList(LevelSettings settings) => settings.Textures.Select(i => i as IReloadableResource).ToList();
+
+        public string GetPath() => Path;
         public void SetPath(LevelSettings settings, string path)
         {
             Path = path;

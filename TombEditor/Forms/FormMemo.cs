@@ -17,6 +17,7 @@ namespace TombEditor.Forms
             _editor = Editor.Instance;
             _memo = memo;
             tbText.Text = _memo.Text;
+            cbAlwaysDisplayText.Checked = _memo.AlwaysDisplay;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -25,6 +26,7 @@ namespace TombEditor.Forms
         private void SaveChanges()
         {
             _memo.Text = tbText.Text;
+            _memo.AlwaysDisplay = cbAlwaysDisplayText.Checked;
             DialogResult = DialogResult.OK;
             Close();
         }

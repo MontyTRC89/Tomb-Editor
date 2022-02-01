@@ -1129,6 +1129,16 @@ namespace TombLib.LevelData.IO
                     var instance = new MemoInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.Text = chunkIO.Raw.ReadStringUTF8();
+                    instance.AlwaysDisplay = false;
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectMemo2)
+                {
+                    var instance = new MemoInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Text = chunkIO.Raw.ReadStringUTF8();
+                    instance.AlwaysDisplay = chunkIO.Raw.ReadBoolean();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

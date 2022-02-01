@@ -218,7 +218,7 @@ namespace TombEditor.ToolWindows
         {
             LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
             if (texture != null)
-                EditorActions.UpdateTextureFilepath(this, texture);
+                EditorActions.ReloadResource(this, _editor.Level.Settings, texture);
         }
 
         private void cmbTileSize_SelectionChangeCommitted(object sender, EventArgs e) => EditorActions.SetSelectionTileSize((float)cmbTileSize.SelectedItem);
