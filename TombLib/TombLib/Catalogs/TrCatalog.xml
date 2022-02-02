@@ -7114,24 +7114,24 @@
       <sound id="504" name="TR2_HENCHMAN_OOH_DYING" />
       <sound id="505" name="TR2_HENCHMAN_THUMP" />
       <sound id="506" name="TR2_HENCHMAN_WRENCH" />
-      <sound id="507" name="empty" />
-      <sound id="508" name="empty" />
-      <sound id="509" name="empty" />
-      <sound id="510" name="empty" />
-      <sound id="511" name="SOUND_NG_CUST_ENV_511" />
-      <sound id="512" name="SOUND_NG_CUST_ENV_512" />
-      <sound id="513" name="SOUND_NG_CUST_ENV_513" />
-      <sound id="514" name="SOUND_NG_CUST_ENV_514" />
-      <sound id="515" name="SOUND_NG_CUST_ENV_515" />
-      <sound id="516" name="SOUND_NG_CUST_ENV_516" />
-      <sound id="517" name="SOUND_NG_CUST_ENV_517" />
-      <sound id="518" name="SOUND_NG_CUST_ENV_518" />
-      <sound id="519" name="SOUND_NG_CUST_ENV_519" />
-      <sound id="520" name="SOUND_NG_CUST_ENV_520" />
-      <sound id="521" name="SOUND_NG_CUST_ENV_521" />
-      <sound id="522" name="SOUND_NG_CUST_ENV_522" />
-      <sound id="523" name="SOUND_NG_CUST_ENV_523" />
-      <sound id="524" name="SOUND_NG_CUST_ENV_524" />
+      <sound id="507" name="TR2_BIG_SPIDER_FEET" />
+      <sound id="508" name="TR2_BIG_SPIDER_SNARL" />
+      <sound id="509" name="TR2_BIG_SPIDER_DEATH" />
+      <sound id="510" name="TR2_SPIDER_JUMP" />
+      <sound id="511" name="TR2_SPIDER_MOVING" />
+      <sound id="512" name="TR2_SPIDER_BITE" />
+      <sound id="513" name="TR2_SPIDER_EXPLODE" />
+      <sound id="514" name="TR2_LEOPARD+TIGER_FEET" />
+      <sound id="515" name="TR2_LEOPARD_ROAR" />
+      <sound id="516" name="TR2_LEOPARD_BITE" />
+      <sound id="517" name="TR2_LEOPARD_STRIKE" />
+      <sound id="518" name="TR2_LEOPARD_DEATH" />
+      <sound id="519" name="TR2_LEOPARD_GROWL" />
+      <sound id="520" name="TR2_TIGER_ROAR" />
+      <sound id="521" name="TR2_TIGER_BITE" />
+      <sound id="522" name="TR2_TIGER_STRIKE" />
+      <sound id="523" name="TR2_TIGER_DEATH" />
+      <sound id="524" name="TR2_TIGER_GROWL" />
       <sound id="525" name="SOUND_NG_CUST_ANIM_525" />
       <sound id="526" name="SOUND_NG_CUST_ANIM_526" />
       <sound id="527" name="SOUND_NG_CUST_ANIM_527" />
