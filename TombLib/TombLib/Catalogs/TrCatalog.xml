@@ -7132,32 +7132,32 @@
       <sound id="522" name="TR2_TIGER_STRIKE" />
       <sound id="523" name="TR2_TIGER_DEATH" />
       <sound id="524" name="TR2_TIGER_GROWL" />
-      <sound id="525" name="SOUND_NG_CUST_ANIM_525" />
-      <sound id="526" name="SOUND_NG_CUST_ANIM_526" />
-      <sound id="527" name="SOUND_NG_CUST_ANIM_527" />
-      <sound id="528" name="SOUND_NG_CUST_ANIM_528" />
-      <sound id="529" name="SOUND_NG_CUST_ANIM_529" />
-      <sound id="530" name="SOUND_NG_CUST_ANIM_530" />
-      <sound id="531" name="SOUND_NG_CUST_ANIM_531" />
-      <sound id="532" name="SOUND_NG_CUST_ANIM_532" />
-      <sound id="533" name="SOUND_NG_CUST_ANIM_533" />
-      <sound id="534" name="SOUND_NG_CUST_ANIM_534" />
-      <sound id="535" name="SOUND_NG_CUST_ANIM_535" />
-      <sound id="536" name="SOUND_NG_CUST_ANIM_536" />
-      <sound id="537" name="SOUND_NG_CUST_ANIM_537" />
-      <sound id="538" name="SOUND_NG_CUST_ANIM_538" />
-      <sound id="539" name="SOUND_NG_CUST_ANIM_539" />
-      <sound id="540" name="SOUND_NG_CUST_ANIM_540" />
-      <sound id="541" name="SOUND_NG_CUST_ANIM_541" />
-      <sound id="542" name="SOUND_NG_CUST_ANIM_542" />
-      <sound id="543" name="SOUND_NG_CUST_ANIM_543" />
-      <sound id="544" name="SOUND_NG_CUST_ANIM_544" />
-      <sound id="545" name="SOUND_NG_CUST_ANIM_545" />
-      <sound id="546" name="SOUND_NG_CUST_ANIM_546" />
-      <sound id="547" name="SOUND_NG_CUST_ANIM_547" />
-      <sound id="548" name="SOUND_NG_CUST_ANIM_548" />
-      <sound id="549" name="SOUND_NG_CUST_ANIM_549" />
-      <sound id="550" name="SOUND_NG_CUST_ANIM_550" />
+      <sound id="525" name="TR2_DOG_FEET" />
+      <sound id="526" name="TR2_DOG_BARK1" />
+      <sound id="527" name="TR2_DOG_BARK2" />
+      <sound id="528" name="TR2_DOG_PANT" />
+      <sound id="529" name="TR2_DOG_DEATH" />
+      <sound id="530" name="TR2_DOG_GROWL" />
+      <sound id="531" name="TR2_RAT_ATTACK" />
+      <sound id="532" name="TR2_RAT_DEATH" />
+      <sound id="533" name="TR2_EAGLE_SQUAWK" />
+      <sound id="534" name="TR2_EAGLE_WING_FLAP" />
+      <sound id="535" name="TR2_EAGLE_DEATH" />
+      <sound id="536" name="TR2+3_CROW_CAW" />
+      <sound id="537" name="TR2+3_CROW_WING_FLAP" />
+      <sound id="538" name="TR2+3_CROW_DEATH" />
+      <sound id="539" name="TR2+3_CROW_ATTACK" />
+      <sound id="540" name="TR2_YETI_CHEST_BEAT" />
+      <sound id="541" name="TR2_YETI_GROWL" />
+      <sound id="542" name="TR2_YETI_FEET" />
+      <sound id="543" name="TR2_YETI_GROWL1" />
+      <sound id="544" name="TR2_YETI_GROWL2" />
+      <sound id="545" name="TR2_YETI_GROWL3" />
+      <sound id="546" name="TR2_YETI_GRUNT1" />
+      <sound id="547" name="TR2_YETI_GRUNT2" />
+      <sound id="548" name="TR2_YETI_SCREAM" />
+      <sound id="549" name="TR2_YETI_THUMP" />
+      <sound id="550" name="TR2_YETI_DEATH" />
       <sound id="551" name="SOUND_NG_CUST_ANIM_551" />
       <sound id="552" name="SOUND_NG_CUST_ANIM_552" />
       <sound id="553" name="SOUND_NG_CUST_ANIM_553" />
