@@ -12,7 +12,6 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.Graphics;
-using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -139,7 +138,7 @@ namespace WadTool
                 lstMeshes.EnsureVisible();
 
             UpdateUI();
-            RepopulateTextureList(butAllTextures.Checked);
+            RepopulateTextureList();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -311,11 +310,7 @@ namespace WadTool
                                 }
 
                                 if (cbTexture.Checked)
-                                {
-                                    panelTextureMap.ShowTexture(poly.Texture);
-                                    if (poly.Texture.Texture.IsAvailable && comboCurrentTexture.Items.Contains(poly.Texture.Texture))
-                                        comboCurrentTexture.SelectedItem = poly.Texture.Texture;
-                                }
+                                    SelectTexture(poly.Texture);
                             }
                             else // Editing
                             {
@@ -438,7 +433,9 @@ namespace WadTool
                 // Always show all textures in tree mode
 
                 butAllTextures.Checked = true;
-                butAllTextures.Enabled = false;
+                butAllTextures.Visible = false;
+                comboCurrentTexture.Width += comboCurrentTexture.Left - butAllTextures.Left;
+                comboCurrentTexture.Left = butAllTextures.Left;
             }
             else 
             {
@@ -450,6 +447,13 @@ namespace WadTool
                 toolStripSeparator4.Visible = false;
                 GetSphereValues();
             }
+        }
+
+        private void SelectTexture(TextureArea tex)
+        {
+            panelTextureMap.ShowTexture(tex);
+            if (tex.Texture.IsAvailable && comboCurrentTexture.Items.Contains(tex.Texture))
+                comboCurrentTexture.SelectedItem = tex.Texture;
         }
 
         private void UpdateUI()
@@ -570,6 +574,18 @@ namespace WadTool
             _readingValues = false;
         }
 
+        private bool CheckTextureSize(ImageC image)
+        {
+            if (image.Width > 2048 || image.Height > 2048)
+            {
+                DarkMessageBox.Show(this, (Path.GetFileName(image.FileName) + " is oversized. UV precision loss may occur.\nResize texture up to 2048px and repeat."),
+                    "Texture is oversized", MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
         private void ShowSelectedMesh()
         {
             if (lstMeshes.SelectedNodes.Count == 0)
@@ -587,7 +603,7 @@ namespace WadTool
                 UpdateUI();
 
                 // Keep texture list the same if we're listing all textures
-                RepopulateTextureList(butAllTextures.Checked);
+                RepopulateTextureList();
             }
         }
 
@@ -792,8 +808,10 @@ namespace WadTool
             panelTextureMap.SelectedTexture = tr;
         }
 
-        private void RepopulateTextureList(bool wholeWad)
+        private void RepopulateTextureList(bool force = false)
         {
+            bool wholeWad = butAllTextures.Checked;
+
             if (NoMesh() && !wholeWad)
             {
                 comboCurrentTexture.Items.Clear();
@@ -818,18 +836,25 @@ namespace WadTool
             // If count is the same it means no changes were made in texture list
             // and there's no need to actually repopulate.
 
-            if (wholeWad && comboCurrentTexture.Items.Count == list.Count)
+            if (!force && wholeWad && comboCurrentTexture.Items.Count == list.Count)
                 return;
 
             comboCurrentTexture.Items.Clear();
             comboCurrentTexture.Items.AddRange(list.ToArray());
 
-            if (comboCurrentTexture.Items.Count > 0)
-                comboCurrentTexture.SelectedIndex = 0;
-            else
+            if (list.Count == 0)
+            {
                 comboCurrentTexture.SelectedIndex = -1;
-
-            panelTextureMap.SelectedTexture = TextureArea.None;
+            }
+            else if (panelTextureMap.SelectedTexture == TextureArea.None || !list.Contains(panelTextureMap.SelectedTexture.Texture))
+            {
+                panelTextureMap.SelectedTexture = TextureArea.None;
+                comboCurrentTexture.SelectedIndex = 0;
+            }
+            else
+            {
+                comboCurrentTexture.SelectedIndex = list.IndexOf(panelTextureMap.SelectedTexture.Texture);
+            }
         }
 
         private void SearchTree()
@@ -1205,12 +1230,8 @@ namespace WadTool
                 // Ignore textures with sizes more than 2048x2048 because they may cause issues with UV precision loss
                 // and also not processed correctly by renderer.
 
-                if (image.Width > 2048 || image.Height > 2048)
-                {
-                    DarkMessageBox.Show(this, (Path.GetFileName(path) + " is oversized. UV precision loss may occur.\nResize texture up to 2048px and repeat."),
-                        "Texture is oversized", MessageBoxIcon.Error);
+                if (!CheckTextureSize(image))
                     continue;
-                }
 
                 image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
 
@@ -1224,6 +1245,110 @@ namespace WadTool
 
                 _userTextures.Add(newTexture);
             }
+        }
+
+        private void butReplaceTexture_Click(object sender, EventArgs e)
+        {
+            if (panelTextureMap.VisibleTexture == null ||
+                panelTextureMap.VisibleTexture.IsUnavailable ||
+                panelTextureMap.VisibleTexture.Image == null)
+            {
+                popup.ShowError(panelMesh, "Unable to replace texture.\nSelected texture is invalid.");
+                return;
+            }
+
+            var path = LevelFileDialog.BrowseFile(this, null, null, "Load texture file", ImageC.FileExtensions, null, false);
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            var image = ImageC.FromFile(path);
+
+            if (!CheckTextureSize(image))
+                return;
+
+            image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
+            var newTexture = new WadTexture(image);
+
+            if (!lstMeshes.Visible)
+            {
+                // Push undo
+                _tool.UndoManager.PushMeshChanged(panelMesh);
+
+                // Replace textures in mesh panel, if we're in single-mesh mode
+
+                for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
+                {
+                    if (panelMesh.Mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
+                    {
+                        var newPoly = panelMesh.Mesh.Polys[i];
+                        newPoly.Texture.Texture = newTexture;
+                        panelMesh.Mesh.Polys[i] = newPoly;
+                    }
+                }
+            }
+            else
+            {
+                bool textureIsUsed = false;
+
+                // Check if incoming texture encloses all existing texinfos in wad. If not, reject import.
+
+                foreach (var tex in _tool.DestinationWad.MeshTexInfosUnique)
+                {
+                    if (tex.Texture == panelTextureMap.VisibleTexture)
+                    {
+                        textureIsUsed = true;
+
+                        for (int i = 0; i < 4; i++)
+                            if (tex.TexCoords[i].X > image.Width || tex.TexCoords[i].Y > image.Height)
+                            {
+                                popup.ShowError(panelMesh, "New texture is smaller than existing one.\nPlease specify another texture.");
+                                return;
+                            }
+                    }
+                }
+
+                if (textureIsUsed && DarkMessageBox.Show(this, "Replacing current texture will affect all meshes using it.\n" +
+                                                               "This action can't be undone. Continue?",
+                                                               "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+
+                // Deep replace
+
+                foreach (var moveable in _tool.DestinationWad.Moveables.Values)
+                    foreach (var mesh in moveable.Meshes)
+                        for (int i = 0; i < mesh.Polys.Count; i++)
+                        {
+                            if (mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
+                            {
+                                var newPoly = mesh.Polys[i];
+                                newPoly.Texture.Texture = newTexture;
+                                mesh.Polys[i] = newPoly;
+                            }
+                        }
+
+                foreach (var stat in _tool.DestinationWad.Statics.Values)
+                    for (int i = 0; i < stat.Mesh.Polys.Count; i++)
+                    {
+                        if (stat.Mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
+                        {
+                            var newPoly = stat.Mesh.Polys[i];
+                            newPoly.Texture.Texture = newTexture;
+                            stat.Mesh.Polys[i] = newPoly;
+                        }
+                    }
+            }
+
+            // Visually update
+            RepopulateTextureList(true);
+            UpdateUI();
+
+            if (panelTextureMap.SelectedTexture == TextureArea.None)
+                return;
+
+            // Restore selection if needed
+            var newSelectedTexture = panelTextureMap.SelectedTexture;
+            newSelectedTexture.Texture = newTexture;
+            SelectTexture(newSelectedTexture);
         }
 
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
@@ -1293,7 +1418,7 @@ namespace WadTool
         private void butAllTextures_Click(object sender, EventArgs e)
         {
             butAllTextures.Checked = !butAllTextures.Checked;
-            RepopulateTextureList(butAllTextures.Checked);
+            RepopulateTextureList();
         }
         
         private void butTbUndo_Click(object sender, EventArgs e)
@@ -1373,7 +1498,7 @@ namespace WadTool
             SaveCurrentMesh();
             GetSphereValues();
             UpdateUI();
-            RepopulateTextureList(butAllTextures.Checked);
+            RepopulateTextureList();
         }
 
         private void butTbExport_Click(object sender, EventArgs e)
