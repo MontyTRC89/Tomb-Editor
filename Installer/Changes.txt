@@ -23,6 +23,7 @@ WadTool:
  * Jump to currently selected object when opening mesh editor from main window.
  * Don't steal focus to item preview in main window.
  * Fix persistent issues with disjointed MQO vertices on mesh import.
+ * Fix orphaned textures not showing on texture list after delete and redo.
  * Fix UI brightness not affecting tree list views.
  * Fix occasional incorrect end frame values when importing compiled levels.
  

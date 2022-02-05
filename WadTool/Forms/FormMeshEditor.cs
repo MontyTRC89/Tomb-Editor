@@ -586,6 +586,12 @@ namespace WadTool
             return true;
         }
 
+        private bool CheckTextureExistence()
+        {
+            var textures = new HashSet<WadTexture>(panelMesh.Mesh.TextureAreas.Select(t => t.Texture as WadTexture).Distinct());
+            return _tool.DestinationWad.MeshTexturesUnique.SetEquals(textures);
+        }
+
         private void ShowSelectedMesh()
         {
             if (lstMeshes.SelectedNodes.Count == 0)
@@ -808,7 +814,13 @@ namespace WadTool
             panelTextureMap.SelectedTexture = tr;
         }
 
-        private void RepopulateTextureList(bool force = false)
+        private void RepopulateTextureListIfChanged()
+        {
+            if (!CheckTextureExistence())
+                RepopulateTextureList();
+        }
+
+        private void RepopulateTextureList()
         {
             bool wholeWad = butAllTextures.Checked;
 
@@ -836,7 +848,7 @@ namespace WadTool
             // If count is the same it means no changes were made in texture list
             // and there's no need to actually repopulate.
 
-            if (!force && wholeWad && comboCurrentTexture.Items.Count == list.Count)
+            if (wholeWad && comboCurrentTexture.Items.Count == list.Count)
                 return;
 
             comboCurrentTexture.Items.Clear();
@@ -1339,7 +1351,7 @@ namespace WadTool
             }
 
             // Visually update
-            RepopulateTextureList(true);
+            RepopulateTextureList();
             UpdateUI();
 
             if (panelTextureMap.SelectedTexture == TextureArea.None)
@@ -1424,11 +1436,13 @@ namespace WadTool
         private void butTbUndo_Click(object sender, EventArgs e)
         {
             _tool.UndoManager.Undo();
+            RepopulateTextureListIfChanged();
         }
 
         private void butTbRedo_Click(object sender, EventArgs e)
         {
             _tool.UndoManager.Redo();
+            RepopulateTextureListIfChanged();
         }
 
         private void butTbWireframe_Click(object sender, EventArgs e)
