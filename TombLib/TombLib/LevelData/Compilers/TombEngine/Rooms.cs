@@ -399,7 +399,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (entry == null)
                             continue;
 
-                        bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
+                        bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
                         bool clearShades = entry.ClearShades;
                         int meshVertexBase = roomVertices.Count;
                         var worldTransform = staticMesh.RotationMatrix *
@@ -417,13 +417,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 WadPolygon poly = wadStatic.Mesh.Polys[i];
 
                                 // Create vertices
+                                int[] oldIndices = new int[] {poly.Index0, poly.Index1, poly.Index2, poly.Index3};
                                 int[] tempIndices = new int[4];
 
                                 for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 4 : 3); j++)
                                 {
                                     // Apply the transform to the vertex
-                                    Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
-                                    Vector3 normal = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform));
+                                    Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[oldIndices[j]], worldTransform);
+                                    Vector3 normal = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[oldIndices[j]], normalTransform));
                                     Vector3 shade = Vector3.One;
 
                                     if (doubleSided)
@@ -434,7 +435,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     var glow = 0f;
                                     var move = 0f;
 
-                                    if (interpretShadesAsMovement)
+                                    if (interpretShadesAsEffect)
                                     {
                                         if (j < wadStatic.Mesh.VertexColors.Count)
                                         {
