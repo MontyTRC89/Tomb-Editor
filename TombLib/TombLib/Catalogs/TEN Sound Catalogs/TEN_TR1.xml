@@ -198,7 +198,7 @@
       <Id>392</Id>
       <Name>TR1_T-REX_DEATH</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -207,7 +207,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_TREX_DIE_01.wav</FileName>
+          <FileName>tr1_t-rex_death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -236,7 +236,7 @@
       <Id>394</Id>
       <Name>TR1_T-REX_ROAR</Name>
       <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -255,7 +255,7 @@
       <Id>395</Id>
       <Name>TR1_T-REX_ATTACK</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -378,7 +378,7 @@
       <Id>401</Id>
       <Name>TR1_RAPTOR_ROAR</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -419,7 +419,7 @@
       <Id>403</Id>
       <Name>TR1_RAPTOR_FEET</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
