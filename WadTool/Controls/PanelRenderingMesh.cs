@@ -32,7 +32,7 @@ namespace WadTool.Controls
                     return;
 
                 _mesh = value;
-                _previewMesh = _mesh.Clone();
+                _previewMesh = _mesh == null ? null : _mesh.Clone();
                 InitializeVertexBuffer();
 
                 if (ResetCameraOnMeshChange)
@@ -954,7 +954,7 @@ namespace WadTool.Controls
 
         public void InitializeVertexBuffer()
         {
-            if (_mesh.Polys.Count > 0)
+            if (_mesh?.Polys.Count > 0)
             {
                 var vertexCount = 0;
                 foreach (var poly in _mesh.Polys)

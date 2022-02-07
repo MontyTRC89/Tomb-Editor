@@ -3,22 +3,27 @@ Version 1.4.7
 
 Tomb Editor:
  * Add different types of texture search (untextured, broken, full match, partial match).
- * Add sniper camera type for TR5.
  * Add room normals calculation for TR5.
+ * Add sniper camera type for TR5.
  * Add glide out camera flag to be used together with glidecam FLEP patch.
  * Add option to always display memo text.
  * Add some missing global sounds for TR1 sound catalog.
  * Reconnect all resources from level settings window.
  * Fix quick start feature for new FLEP workflow.
+ * Fix rendering bugs when editing very large levels in "Draw all rooms" mode.
  * Fix rendering in imported geometry browser preview.
+ * Fix crash when reconnecting duplicated resources.
  * Fix occasional object ID changes when clicking around script controls in trigger window.
+ * Fix block arrows not displaying on diagonal faces.
  
 WadTool:
  * Add ability to rename meshes in mesh editor.
+ * Add ability to replace any texture in mesh editor.
  * Add context menus for editing currently selected object mesh in main window.
  * Jump to currently selected object when opening mesh editor from main window.
  * Don't steal focus to item preview in main window.
  * Fix persistent issues with disjointed MQO vertices on mesh import.
+ * Fix orphaned textures not showing on texture list after delete and redo.
  * Fix UI brightness not affecting tree list views.
  * Fix occasional incorrect end frame values when importing compiled levels.
  
