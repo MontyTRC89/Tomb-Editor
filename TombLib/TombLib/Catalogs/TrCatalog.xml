@@ -6999,10 +6999,10 @@
       <sound id="389" name="TR1_BAT_FLAP" />
       <sound id="390" name="TR1_STONE_DOOR" />
       <sound id="391" name="TR1_PENDULUM_BLADES" />
-      <sound id="392" name="TR1_T-REX_DEATH" />
-      <sound id="393" name="TR1_T-REX_FOOTSTOMP" />
-      <sound id="394" name="TR1_T-REX_ROAR" />
-      <sound id="395" name="TR1_T-REX_ATTACK" />
+      <sound id="392" name="TR1_TREX_DEATH" />
+      <sound id="393" name="TR1_TREX_FOOTSTOMP" />
+      <sound id="394" name="TR1_TREX_ROAR" />
+      <sound id="395" name="TR1_TREX_ATTACK" />
       <sound id="396" name="TR1_WOLF_JUMP" />
       <sound id="397" name="TR1_WOLF_HURT" />
       <sound id="398" name="TR1_WOLF_DEATH" />
