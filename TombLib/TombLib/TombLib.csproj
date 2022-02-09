@@ -425,6 +425,10 @@
     <Content Include="Catalogs\Sounds.tr4.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_BASE.xml" />
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR1.xml" />
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR2.xml" />
+    <Content Include="Catalogs\TEN Sound Catalogs\Tr1_Override.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
