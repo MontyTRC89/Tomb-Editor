@@ -7000,7 +7000,7 @@
       <sound id="390" name="TR1_STONE_DOOR" />
       <sound id="391" name="TR1_PENDULUM_BLADES" />
       <sound id="392" name="TR1_TREX_DEATH" />
-      <sound id="393" name="TR1_TREX_FOOTSTOMP" />
+      <sound id="393" name="TR1_TREX_FOOTSTOMPS" />
       <sound id="394" name="TR1_TREX_ROAR" />
       <sound id="395" name="TR1_TREX_ATTACK" />
       <sound id="396" name="TR1_WOLF_JUMP" />
@@ -7216,32 +7216,36 @@
       <sound id="606" name="TR2+3_WINSTON_GRUNT2" />
       <sound id="607" name="TR2+3_WINSTON_GRUNT3" />
       <sound id="608" name="TR2+3_WINSTON_SHUFFLE" />
-      <sound id="609" name="n" />
-      <sound id="610" name="n" />
-      <sound id="611" name="n" />
-      <sound id="612" name="n" />
-      <sound id="613" name="n" />
-      <sound id="614" name="n" />
-      <sound id="615" name="n" />
-      <sound id="616" name="n" />
-      <sound id="618" name="n" />
-      <sound id="620" name="n" />
-      <sound id="621" name="n" />
-      <sound id="622" name="n" />
-      <sound id="624" name="n" />
-      <sound id="626" name="n" />
-      <sound id="627" name="n" />
-      <sound id="628" name="n" />
-      <sound id="629" name="n" />
-      <sound id="630" name="n" />
-      <sound id="631" name="n" />
-      <sound id="632" name="n" />
-      <sound id="633" name="n" />
-      <sound id="634" name="n" />
-      <sound id="635" name="n" />
-      <sound id="636" name="TR1_LARA_GETOUT" />
-      <sound id="637" name="TR1_LARA_SWIM" />
-      <sound id="638" name="TR1_LARA_BREATH" />
+      <sound id="609" name="TR2_SPEEDBOAT_ACCELERATE" />
+      <sound id="610" name="TR2_SPEEDBOAT_ENGINE" />
+      <sound id="611" name="TR2_SPEEDBOAT_HIT" />
+      <sound id="612" name="TR2_SPEEDBOAT_INTO_WATER" />
+      <sound id="613" name="TR2_SPEEDBOAT_IDLE" />
+      <sound id="614" name="TR2_SPEEDBOAT_MOVING" />
+      <sound id="615" name="TR2_SPEEDBOAT_SLOWDOWN" />
+      <sound id="616" name="TR2_SPEEDBOAT_START" />
+      <sound id="617" name="TR2_SPEEDBOAT_STOP" />
+	  <sound id="618" name="TR2_SPEEDBOAT_ENGINE_HIT" />
+      <sound id="619" name="TR2_SNOWMOBILE_ACCELERATE" />
+      <sound id="620" name="TR2_SNOWMOBILE_IDLE" />
+      <sound id="621" name="TR2_SNOWMOBILE_MOVING" />
+      <sound id="622" name="TR2_SNOWMOBILE_START" />
+      <sound id="623" name="TR2_SNOWMOBILE_STOP" />
+      <sound id="624" name="TR2_ZIPLINE_GO" />
+      <sound id="625" name="TR2_ZIPLINE_GRAB" />
+      <sound id="626" name="TR2_ZIPLINE_STOP" />
+      <sound id="627" name="TR2_JUMP_PAD_UP" />
+      <sound id="628" name="TR2_JUMP_PAD_DOWN" />
+      <sound id="629" name="TR2_KNIFETHROWER_FEET" />
+      <sound id="630" name="TR2_KNIFETHROWER_HICCUP" />
+      <sound id="631" name="TR2_KNIFETHROWER_WARRIOR_FEET" />
+      <sound id="632" name="TR2_MINISUB_CLATTER1" />
+      <sound id="633" name="TR2_MINISUB_CLATTER2" />
+      <sound id="634" name="TR2_MINISUB_CLATTER3" />
+      <sound id="635" name="TR2_HAND_WHEEL_LOOSE" />
+      <sound id="636" name="TR2_HAND_WHEEL_TURN" />
+      <sound id="637" name="TR2_HAND_WHEEL_OPEN" />
+      <sound id="638" name="TR2_HAND_WHEEL_CREAK" />
       <sound id="639" name="TR1_LARA_BUBBLES" />
       <sound id="640" name="TR1_SWITCH" />
       <sound id="641" name="TR1_LARA_KEY" />
