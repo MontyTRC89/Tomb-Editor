@@ -215,7 +215,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>393</Id>
-      <Name>TR1_T-REX_FOOTSTOMP</Name>
+      <Name>TR1_T-REX_FOOTSTOMPS</Name>
       <Volume>100</Volume>
       <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
@@ -1687,25 +1687,6 @@
       <Samples>
         <WadSample>
           <FileName>TR1_NM_HUT_HIT_GROUND_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>468</Id>
-      <Name>TR1_CHAINDOOR_UP</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>OneShotWait</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR1_CHAINDOOR_UP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
