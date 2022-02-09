@@ -7246,11 +7246,11 @@
       <sound id="636" name="TR2_HAND_WHEEL_TURN" />
       <sound id="637" name="TR2_HAND_WHEEL_OPEN" />
       <sound id="638" name="TR2_HAND_WHEEL_CREAK" />
-      <sound id="639" name="TR1_LARA_BUBBLES" />
-      <sound id="640" name="TR1_SWITCH" />
-      <sound id="641" name="TR1_LARA_KEY" />
-      <sound id="642" name="TR1_LARA_OBJECT" />
-      <sound id="643" name="TR1_LARA_GENERAL_DEATH" />
+      <sound id="639" name="TR2_VEHICLE_IMPACT_1" />
+      <sound id="640" name="TR2_VEHICLE_IMPACT_2" />
+      <sound id="641" name="TR2_VEHICLE_IMPACT_3" />
+      <sound id="642" name="TR2_CRUNCH_1" />
+      <sound id="643" name="TR2_CRUNCH_2" />
       <sound id="644" name="TR1_LARA_KNEES_DEATH" />
       <sound id="645" name="TR1_LARA_UZI_FIRE" />
       <sound id="646" name="TR1_LARA_MAGNUMS" />
