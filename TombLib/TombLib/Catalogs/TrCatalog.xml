@@ -7291,19 +7291,19 @@
       <sound id="681" name="TR2_SLAM_DOOR_CLOSE" />
       <sound id="682" name="TR2_SWINGING" />
       <sound id="683" name="TR2_SWINGING_TRAP" /> 
-      <sound id="684" name="TR1_CHAINDOOR_UP" />
-      <sound id="685" name="TR1_CHAINDOOR_DOWN" />
-      <sound id="686" name="TR1_COGS" />
-      <sound id="687" name="TR1_LION_HURT" />
-      <sound id="688" name="TR1_LION_ATTACK" />
-      <sound id="689" name="TR1_LION_ROAR" />
-      <sound id="690" name="TR1_LION_DEATH" />
-      <sound id="691" name="TR1_GORILLA_FEET" />
-      <sound id="692" name="TR1_GORILLA_PANT" />
-      <sound id="693" name="TR1_GORILLA_DEATH" />
-      <sound id="694" name="TR1_CROC_FEET" />
-      <sound id="695" name="TR1_CROC_ATTACK" />
-      <sound id="696" name="TR1_RAT_FEET" />
+      <sound id="684" name="TR3_TR3_TONY_ATTACK" />
+      <sound id="685" name="TR3_TONY_LAUGH" />
+      <sound id="686" name="TR3_TONY_NORMAL_DEATH" />
+      <sound id="687" name="TR3_TONY_SHOOT_1" />
+      <sound id="688" name="TR3_TONY_SHOOT_2" />
+      <sound id="689" name="TR3_TONY_SHOOT_3" />
+      <sound id="690" name="TR3_TONY_ARTEFACT_DEATH" />
+      <sound id="691" name="TR3_PUNA_BOSS_ATTACK" />
+      <sound id="692" name="TR3_PUNA_BOSS_CHAIR_2" />
+      <sound id="693" name="TR3_PUNA_BOSS_DEATH" />
+      <sound id="694" name="TR3_PUNA_BOSS_SHOOT" />
+      <sound id="695" name="TR3_PUNA_BOSS_TAKE_HIT" />
+      <sound id="696" name="TR3_PUNA_BOSS_TURN_CHAIR" />
       <sound id="697" name="TR1_RAT_CHIRP" />
       <sound id="698" name="TR1_RAT_ATTACK" />
       <sound id="699" name="TR1_RAT_DEATH" />
