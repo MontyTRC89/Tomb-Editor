@@ -7304,43 +7304,46 @@
       <sound id="694" name="TR3_PUNA_BOSS_SHOOT" />
       <sound id="695" name="TR3_PUNA_BOSS_TAKE_HIT" />
       <sound id="696" name="TR3_PUNA_BOSS_TURN_CHAIR" />
-      <sound id="697" name="TR1_RAT_CHIRP" />
-      <sound id="698" name="TR1_RAT_ATTACK" />
-      <sound id="699" name="TR1_RAT_DEATH" />
-      <sound id="700" name="TR1_THUNDER" />
-      <sound id="701" name="TR1_EXPLOSION_TNT" />
-      <sound id="702" name="TR1_GORILLA_GRUNT" />
-      <sound id="703" name="TR1_GORILLA_GRUNTS" />
-      <sound id="704" name="TR1_CROC_DEATH" />
-      <sound id="705" name="TR1_DAMOCLES_SWORD" />
-      <sound id="706" name="TR1_EXPLOSION" />
-      <sound id="710" name="TR1_MENU_ROTATE" />
-      <sound id="711" name="TR1_MENU_CHOOSE" />
-      <sound id="712" name="TR1_MENU_GAMEBOY" />
-      <sound id="713" name="TR1_MENU_SPININ" />
-      <sound id="714" name="TR1_MENU_SPINOUT" />
-      <sound id="715" name="TR1_MENU_COMPASS" />
-      <sound id="716" name="TR1_MENU_GUNS" />
-      <sound id="717" name="TR1_MENU_PASSPORT" />
-      <sound id="718" name="TR1_MENU_MEDI" />
-      <sound id="719" name="TR1_EGYPT_BLOCK" />
-      <sound id="720" name="TR1_SAND" />
-      <sound id="721" name="TR1_EGYPT_SLIDE" />
-      <sound id="722" name="TR1_ATLANTEAN_FEET" />
-      <sound id="723" name="TR1_ATLANTEAN_ATTACK" />
-      <sound id="724" name="TR1_ATLANTEAN_JUMP_ATTACK" />
-      <sound id="725" name="TR1_ATLANTEAN_NEEDLE" />
-      <sound id="726" name="TR1_ATLANTEAN_BALL" />
-      <sound id="727" name="TR1_ATLANTEAN_WINGS" />
-      <sound id="728" name="TR1_ATLANTEAN_WING_FEET	" />
-      <sound id="729" name="TR1_SLAMDOOR_CLOSE" />
-      <sound id="730" name="TR1_SLAMDOOR_OPEN" />
-      <sound id="731" name="TR1_SKATEBOARD_MOVE" />
-      <sound id="732" name="TR1_SKATEBOARD_STOP" />
-      <sound id="733" name="TR1_SKATEBOARD_SHOOT" />
-      <sound id="734" name="TR1_SKATEBOARD_HIT" />
-      <sound id="735" name="TR1_SKATEBOARD_START" />
-      <sound id="736" name="TR1_SKATEBOARD_DEATH" />
+      <sound id="697" name="TR3_SOFIALEE_DEATH_PART_1" />
+      <sound id="698" name="TR3_SOFIALEE_DEATH_PART_2" />
+      <sound id="699" name="TR3_SOFIALEE_FIRE" />
+      <sound id="700" name="TR3_SOFIALEE_LAUGH" />
+      <sound id="701" name="TR3_SOFIALEE_SHOOTER" />
+      <sound id="702" name="TR3_SOFIALEE_SUMMON" />
+      <sound id="703" name="TR3_SOFIALEE_SUMMON_FAIL" />
+      <sound id="704" name="TR3_SOFIALEE_TAKE_HIT" />
+      <sound id="705" name="TR3_SOFIALEE_VAULT" />
+      <sound id="706" name="TR3_WILLARD_ATTACK" />
+	  <sound id="707" name="TR3_WILLARD_FIRE_CHARGE" />
+	  <sound id="708" name="TR3_WILLARD_FIRE_SHOOT" />
+	  <sound id="709" name="TR3_WILLARD_FOOT_STEPS" />
+      <sound id="710" name="TR3_WILLARD_LEGS_SHUFFLE" />
+      <sound id="711" name="TR3_WILLARD_ODD_NOISE" />
+      <sound id="712" name="TR3_WILLARD_STAB" />
+      <sound id="713" name="TR3_WILLARD_TAKE_HIT" />
+      <sound id="714" name="TR3_BLAST_CIRCLE" />
+      <sound id="715" name="TR3_QUADBIKE_ACCELERATE" />
+      <sound id="716" name="TR3_QUADBIKE_FRONT_IMPACT" />
+      <sound id="717" name="TR3_QUADBIKE_IDLE" />
+      <sound id="718" name="TR3_QUADBIKE_LAND" />
+      <sound id="719" name="TR3_QUADBIKE_MOVE" />
+      <sound id="720" name="TR3_QUADBIKE_SIDE_IMPACT" />
+      <sound id="721" name="TR3_QUADBIKE_START" />
+      <sound id="722" name="TR3_QUADBIKE_STOP" />
+      <sound id="723" name="TR3_RUBBERBOAT_ACCELERATE" />
+      <sound id="724" name="TR3_RUBBERBOAT_IDLE" />
+      <sound id="725" name="TR3_RUBBERBOAT_MOVING" />
+      <sound id="726" name="TR3_RUBBERBOAT_SCRAPE" />
+      <sound id="727" name="TR3_RUBBERBOAT_SLOW_DOWN" />
+      <sound id="728" name="TR3_RUBBERBOAT_START	" />
+      <sound id="729" name="TR3_RUBBERBOAT_STOP" />
+      <sound id="730" name="TR3_UPV_LOOP" />
+      <sound id="731" name="TR3_UPV_START" />
+      <sound id="732" name="TR3_UPV_STOP" />
+      <sound id="733" name="TR3_MINE_CART_START" />
+      <sound id="734" name="TR3_MINE_CART_PULLY_LOOP" />
+      <sound id="735" name="TR3_MINE_CART_BRAKE" />
+      <sound id="736" name="TR3_MINE_CART_TRACK_LOOP" />
       <sound id="737" name="TR1_SKATEBOART_HIT_GROUND" />
       <sound id="738" name="TR1_TORSO_HIT_GROUND" />
       <sound id="739" name="TR1_TORSO_ATTACK1" />
