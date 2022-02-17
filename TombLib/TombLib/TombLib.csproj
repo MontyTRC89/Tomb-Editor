@@ -428,6 +428,7 @@
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_BASE.xml" />
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR1.xml" />
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR2.xml" />
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR3.xml" />
     <Content Include="Catalogs\TEN Sound Catalogs\Tr1_Override.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
