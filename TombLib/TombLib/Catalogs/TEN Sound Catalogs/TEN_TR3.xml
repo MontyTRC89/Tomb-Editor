@@ -1670,25 +1670,6 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>769</Id>
-      <Name>TR3_METEOR</Name>
-      <Volume>70</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-30</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_METEOR_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
       <Id>768</Id>
       <Name>TR3_HYBRID_SWOOSH</Name>
       <Volume>60</Volume>
@@ -1702,6 +1683,25 @@
       <Samples>
         <WadSample>
           <FileName>TR3_HYBRID_SWOOSH_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>769</Id>
+      <Name>TR3_METEOR</Name>
+      <Volume>70</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-30</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR3_METEOR_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1998,7 +1998,7 @@
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
+      <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
@@ -2017,7 +2017,7 @@
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
+      <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
