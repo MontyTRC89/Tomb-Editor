@@ -7344,39 +7344,39 @@
       <sound id="734" name="TR3_MINE_CART_PULLY_LOOP" />
       <sound id="735" name="TR3_MINE_CART_BRAKE" />
       <sound id="736" name="TR3_MINE_CART_TRACK_LOOP" />
-      <sound id="737" name="TR1_SKATEBOART_HIT_GROUND" />
-      <sound id="738" name="TR1_TORSO_HIT_GROUND" />
-      <sound id="739" name="TR1_TORSO_ATTACK1" />
-      <sound id="740" name="TR1_TORSO_ATTACK2" />
-      <sound id="741" name="TR1_TORSO_DEATH" />
-      <sound id="742" name="TR1_TORSO_ARM_SWING" />
-      <sound id="743" name="TR1_TORSO_MOVE" />
-      <sound id="744" name="TR1_TORSO_HIT" />
-      <sound id="745" name="TR1_CENTAUR_FEET" />
-      <sound id="746" name="TR1_CENTAUR_ROAR" />
-      <sound id="747" name="TR1_LARA_SPIKE_DEATH" />
-      <sound id="748" name="TR1_LARA_DEATH3" />
-      <sound id="749" name="TR1_ROLLING_BALL" />
-      <sound id="750" name="TR1_LAVA_LOOP" />
-      <sound id="751" name="TR1_LAVA_FOUNTAIN" />
-      <sound id="752" name="TR1_FIRE" />
-      <sound id="753" name="TR1_DARTS" />
-      <sound id="754" name="TR1_METAL_DOOR_CLOSE" />
-      <sound id="755" name="TR1_METAL_DOOR_OPEN" />
-      <sound id="756" name="TR1_ALTAR_LOOP" />
-      <sound id="757" name="TR1_LOW_HUM" />
-      <sound id="758" name="TR1_COWBOY_DEATH" />
-      <sound id="759" name="TR1_BLACK_GOON_DEATH" />
-      <sound id="760" name="TR1_LARSON_DEATH" />
-      <sound id="761" name="TR1_PIERRE_DEATH" />
-      <sound id="762" name="TR1_NATLA_DEATH" />
-      <sound id="763" name="TR1_TRAPDOOR_OPEN" />
-      <sound id="764" name="TR1_TRAPDOOR_CLOSE" />
-      <sound id="765" name="TR1_ATLANTEAN_EGG" />
-      <sound id="766" name="TR1_ATLANTEAN_EGG_HATCH	" />
-      <sound id="767" name="TR1_DRILL_ENGINE_START" />
-      <sound id="768" name="TR1_DRILL_ENGINE_LOOP" />
-      <sound id="769" name="TR1_CONVEYOR_BELT" />
+      <sound id="737" name="TR3_AMERCAN_HOY" />
+      <sound id="738" name="TR3_ARMY_SMG_FOOTSTEPS" />
+      <sound id="739" name="TR3_ARMY_SMG_FIRE" />
+      <sound id="740" name="TR3_ARMY_SMG_DEATH" />
+      <sound id="741" name="TR3_BLOWPIPE_NATIVE_ATTACK" />
+      <sound id="742" name="TR3_BLOWPIPE_NATIVE_BLOW" />
+      <sound id="743" name="TR3_BLOWPIPE_NATIVE_DEATH" />
+      <sound id="744" name="TR3_BLOWPIPE_NATIVE_FEET" />
+      <sound id="745" name="TR3_BLOWPIPE_NATIVE_SWOOSH" />
+      <sound id="746" name="TR3_THEDAMNED_ATTACK" />
+      <sound id="747" name="TR3_THEDAMNED_CLIMB" />
+      <sound id="748" name="TR3_THEDAMNED_DEATH" />
+      <sound id="749" name="TR3_THEDAMNED_FEET" />
+      <sound id="750" name="TR3_THEDAMNED_GET_DOWN" />
+      <sound id="751" name="TR3_CLAW_MUTANT_ATTACK" />
+      <sound id="752" name="TR3_CLAW_MUTANT_BODY_THUD" />
+      <sound id="753" name="TR3_CLAW_MUTANT_CLAW" />
+      <sound id="754" name="TR3_CLAW_MUTANT_DEATH" />
+      <sound id="755" name="TR3_CLAW_MUTANT_FOOTSTEPS" />
+      <sound id="756" name="TR3_CLAW_MUTANT_LASER" />
+      <sound id="757" name="TR3_CLAW_MUTANT_SWOOSH" />
+      <sound id="758" name="TR3_COBRA_HISS" />
+      <sound id="759" name="TR3_COMPY_ATTACK" />
+      <sound id="760" name="TR3_COMPY_DEATH" />
+      <sound id="761" name="TR3_COMPY_JUMP" />
+      <sound id="762" name="TR3_COMPY_RUN_WALK" />
+      <sound id="763" name="TR3_COMPY_WAIT" />
+	  <sound id="764" name="TR3_HYBRID_ATTACK" />
+      <sound id="765" name="TR3_HYBRID_DEATH" />
+      <sound id="766" name="TR3_HYBRID_FOOT	" />
+      <sound id="767" name="TR3_HYBRID_HOOF" />
+      <sound id="768" name="TR3_HYBRID_SWOOSH" />
+      <sound id="769" name="TR3_ENGLISH_HOY" />
       <sound id="770" name="TR1_HUT_LOWERED" />
       <sound id="771" name="TR1_HUT_HIT_GROUND" />
       <sound id="772" name="TR1_TNT" />
