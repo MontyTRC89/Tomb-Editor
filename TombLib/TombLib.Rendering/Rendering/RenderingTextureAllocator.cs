@@ -12,9 +12,14 @@ namespace TombLib.Rendering
     public abstract class RenderingTextureAllocator : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public const int MinimumPageCount = 4;
+        public const int MaximumPageCount = 32;
+        public const int PageSize = 2048;
+
         public class Description
         {
-            public VectorInt3 Size { get; set; } = new VectorInt3(2048, 2048, 8); // 128 MB
+            public VectorInt3 Size { get; set; } = new VectorInt3(PageSize, PageSize, MaximumPageCount);
             public Func<VectorInt2, RectPacker> CreateRectPacker = size => new RectPackerTree(size);
         }
 

@@ -257,7 +257,7 @@ namespace TombEditor.Forms
             this.numericUpDownFPS.Size = new System.Drawing.Size(71, 23);
             this.numericUpDownFPS.TabIndex = 18;
             this.numericUpDownFPS.Value = new decimal(new int[] {
-            15,
+            16,
             0,
             0,
             0});

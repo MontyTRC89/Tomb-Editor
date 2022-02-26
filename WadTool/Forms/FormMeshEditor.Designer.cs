@@ -92,6 +92,7 @@
             this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
+            this.butReplaceTexture = new DarkUI.Controls.DarkButton();
             this.butAllTextures = new DarkUI.Controls.DarkButton();
             this.butExportTexture = new DarkUI.Controls.DarkButton();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
@@ -227,7 +228,7 @@
             this.cbTexture.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbTexture.Location = new System.Drawing.Point(7, 34);
             this.cbTexture.Name = "cbTexture";
-            this.cbTexture.Size = new System.Drawing.Size(63, 17);
+            this.cbTexture.Size = new System.Drawing.Size(62, 17);
             this.cbTexture.TabIndex = 15;
             this.cbTexture.Text = "Texture";
             this.toolTip.SetToolTip(this.cbTexture, "Apply textures to faces");
@@ -370,7 +371,7 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(3, 6);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(85, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(84, 13);
             this.darkLabel1.TabIndex = 1;
             this.darkLabel1.Text = "Vertex number:";
             // 
@@ -462,7 +463,7 @@
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel7.Location = new System.Drawing.Point(3, 35);
             this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(111, 13);
+            this.darkLabel7.Size = new System.Drawing.Size(110, 13);
             this.darkLabel7.TabIndex = 21;
             this.darkLabel7.Text = "Vertex shade (color):";
             // 
@@ -1141,6 +1142,7 @@
             // 
             // panelTexturingTools
             // 
+            this.panelTexturingTools.Controls.Add(this.butReplaceTexture);
             this.panelTexturingTools.Controls.Add(this.butAllTextures);
             this.panelTexturingTools.Controls.Add(this.butExportTexture);
             this.panelTexturingTools.Controls.Add(this.butAddTexture);
@@ -1151,6 +1153,20 @@
             this.panelTexturingTools.Name = "panelTexturingTools";
             this.panelTexturingTools.Size = new System.Drawing.Size(324, 30);
             this.panelTexturingTools.TabIndex = 1;
+            // 
+            // butReplaceTexture
+            // 
+            this.butReplaceTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceTexture.Checked = false;
+            this.butReplaceTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butReplaceTexture.Image = global::WadTool.Properties.Resources.actions_refresh_16;
+            this.butReplaceTexture.Location = new System.Drawing.Point(244, 3);
+            this.butReplaceTexture.Name = "butReplaceTexture";
+            this.butReplaceTexture.Size = new System.Drawing.Size(24, 23);
+            this.butReplaceTexture.TabIndex = 9;
+            this.butReplaceTexture.Tag = "";
+            this.toolTip.SetToolTip(this.butReplaceTexture, "Replace current texture");
+            this.butReplaceTexture.Click += new System.EventHandler(this.butReplaceTexture_Click);
             // 
             // butAllTextures
             // 
@@ -1171,7 +1187,7 @@
             this.butExportTexture.Checked = false;
             this.butExportTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butExportTexture.Image = global::WadTool.Properties.Resources.general_Export_16;
-            this.butExportTexture.Location = new System.Drawing.Point(270, 3);
+            this.butExportTexture.Location = new System.Drawing.Point(272, 3);
             this.butExportTexture.Name = "butExportTexture";
             this.butExportTexture.Size = new System.Drawing.Size(24, 23);
             this.butExportTexture.TabIndex = 7;
@@ -1185,7 +1201,7 @@
             this.butAddTexture.Checked = false;
             this.butAddTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddTexture.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddTexture.Location = new System.Drawing.Point(240, 3);
+            this.butAddTexture.Location = new System.Drawing.Point(216, 3);
             this.butAddTexture.Name = "butAddTexture";
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
             this.butAddTexture.TabIndex = 5;
@@ -1212,7 +1228,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboCurrentTexture.Location = new System.Drawing.Point(30, 3);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
-            this.comboCurrentTexture.Size = new System.Drawing.Size(204, 23);
+            this.comboCurrentTexture.Size = new System.Drawing.Size(181, 23);
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
@@ -1377,5 +1393,6 @@
         private System.Windows.Forms.ToolStripButton butTbFindSelectedTexture;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripButton butTbRename;
+        private DarkUI.Controls.DarkButton butReplaceTexture;
     }
 }

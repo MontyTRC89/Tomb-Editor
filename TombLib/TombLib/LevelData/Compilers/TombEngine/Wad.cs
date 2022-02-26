@@ -50,7 +50,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             var newMesh = new TombEngineMesh
             {
-                Sphere = oldMesh.BoundingSphere
+                Sphere = oldMesh.BoundingSphere,
+                LightingType = oldMesh.LightingType
             };
 
             var objectString = isStatic ? "Static" : "Moveable";
@@ -65,7 +66,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var pos    = oldMesh.VertexPositions[i];
                 var normal = oldMesh.VertexNormals[i];
-                var color  = (oldMesh.HasColors) ? oldMesh.VertexColors[i] / 2.0f : new Vector3(0.5f);
+                var color  = (oldMesh.HasColors) ? oldMesh.VertexColors[i] : new Vector3(1.0f);
 
                 var v = new TombEngineVertex() 
                 { 
@@ -309,13 +310,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new TombEngineMoveable();
-                newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
-                newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
+                newMoveable.Animation = oldMoveable.Animations.Count != 0 ? lastAnimation : -1;
+                newMoveable.NumMeshes = oldMoveable.Meshes.Count();
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
 
                 // Add animations
-                uint realFrameBase = 0;
+                int realFrameBase = 0;
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
@@ -346,19 +347,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         frameCount = maxFrame;
 
                     // Setup the final animation
-                    newAnimation.FrameOffset = checked(offset);
+                    newAnimation.FrameOffset = offset;
                     newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.Speed = speed;
                     newAnimation.Accel = acceleration;
                     newAnimation.SpeedLateral = lateralSpeed;
                     newAnimation.AccelLateral = lateralAcceleration;
-                    newAnimation.FrameStart = unchecked((ushort)realFrameBase);
-                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (frameCount == 0 ? 0 : frameCount - 1)));
-                    newAnimation.AnimCommand = checked((ushort)_animCommands.Count);
-                    newAnimation.StateChangeOffset = checked((ushort)_stateChanges.Count);
-                    newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
-                    newAnimation.NumStateChanges = checked((ushort)oldAnimation.StateChanges.Count);
-                    newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
+                    newAnimation.FrameStart = realFrameBase;
+                    newAnimation.FrameEnd = realFrameBase + (frameCount == 0 ? 0 : frameCount - 1);
+                    newAnimation.AnimCommand = _animCommands.Count;
+                    newAnimation.StateChangeOffset = _stateChanges.Count;
+                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
+                    newAnimation.NumStateChanges = oldAnimation.StateChanges.Count;
+                    newAnimation.NextAnimation = oldAnimation.NextAnimation + lastAnimation;
                     newAnimation.NextFrame = oldAnimation.NextFrame;
                     newAnimation.StateID = oldAnimation.StateId;
 
@@ -415,20 +416,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add state changes
                     foreach (var stateChange in oldAnimation.StateChanges)
                     {
-                        var newStateChange = new tr_state_change();
+                        var newStateChange = new TombEngineStateChange();
 
-                        newStateChange.AnimDispatch = checked((ushort)lastAnimDispatch);
-                        newStateChange.StateID = stateChange.StateId;
-                        newStateChange.NumAnimDispatches = checked((ushort)stateChange.Dispatches.Count);
+                        newStateChange.AnimDispatch = lastAnimDispatch;
+                        newStateChange.StateID = (int)stateChange.StateId;
+                        newStateChange.NumAnimDispatches = stateChange.Dispatches.Count;
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
-                            var newAnimDispatch = new tr_anim_dispatch();
+                            var newAnimDispatch = new TombEngineAnimDispatch();
 
-                            newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
-                            newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
-                            newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = dispatch.NextFrame;
+                            newAnimDispatch.Low = unchecked((int)(dispatch.InFrame + newAnimation.FrameStart));
+                            newAnimDispatch.High = unchecked((int)(dispatch.OutFrame + newAnimation.FrameStart));
+                            newAnimDispatch.NextAnimation = checked((int)(dispatch.NextAnimation + lastAnimation));
+                            newAnimDispatch.NextFrame = (int)dispatch.NextFrame;
 
                             _animDispatches.Add(newAnimDispatch);
                         }
@@ -440,12 +441,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     _animations.Add(newAnimation);
 
-                    realFrameBase += frameCount < 0 ? (ushort)0 : (ushort)frameCount; // FIXME: Not really needed?
+                    realFrameBase += frameCount < 0 ? 0 : frameCount; // FIXME: Not really needed?
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
                 newMoveable.MeshTree = _meshTrees.Count;
-                newMoveable.StartingMesh = (short)_meshes.Count;
+                newMoveable.StartingMesh = _meshes.Count;
 
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];

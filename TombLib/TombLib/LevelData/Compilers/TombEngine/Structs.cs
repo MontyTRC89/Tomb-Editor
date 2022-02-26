@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -129,6 +130,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Bone;
         public int IndexInPoly;
         public int OriginalIndex;
+        public bool DoubleSided;
 
         public float Glow;
         public float Move;
@@ -449,6 +451,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineMesh
     {
+        public WadMeshLightingType LightingType;
         public BoundingSphere Sphere;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public List<TombEnginePolygon> Polygons = new List<TombEnginePolygon>();
@@ -541,31 +544,48 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineMoveable
     {
         public int ObjectID;
-        public short NumMeshes;
-        public short StartingMesh;
+        public int NumMeshes;
+        public int StartingMesh;
         public int MeshTree;
         public int FrameOffset;
-        public short Animation;
+        public int Animation;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineStateChange
+    {
+        public int StateID;
+        public int NumAnimDispatches;
+        public int AnimDispatch;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineAnimDispatch
+    {
+        public int Low;
+        public int High;
+        public int NextAnimation;
+        public int NextFrame;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineAnimation
     {
         public int FrameOffset;
-        public short FrameRate;
-        public ushort StateID;
+        public int FrameRate;
+        public int StateID;
         public int Speed;
         public int Accel;
         public int SpeedLateral;
         public int AccelLateral;
-        public ushort FrameStart;
-        public ushort FrameEnd;
-        public ushort NextAnimation;
-        public ushort NextFrame;
-        public ushort NumStateChanges;
-        public ushort StateChangeOffset;
-        public ushort NumAnimCommands;
-        public ushort AnimCommand;
+        public int FrameStart;
+        public int FrameEnd;
+        public int NextAnimation;
+        public int NextFrame;
+        public int NumStateChanges;
+        public int StateChangeOffset;
+        public int NumAnimCommands;
+        public int AnimCommand;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

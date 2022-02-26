@@ -706,8 +706,8 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)lights.Count);
             writer.Write((uint)bulbs.Count);
 
-            writer.Write(Info.YTop);
-            writer.Write(Info.YBottom);
+            writer.Write((float)Info.YTop);
+            writer.Write((float)Info.YBottom);
 
             writer.Write((uint)1); // Dummy layer
 
