@@ -7444,7 +7444,7 @@
         <sound id="834" name="TR3_CITY_PORTCULLIS" />
         <sound id="835" name="TR3_CLEANER_FUSEBOX" />
         <sound id="836" name="TR3_CLEANER_LOOP" />
-        <sound id="837" name="TR3_CLEANER_LOOP" />
+        <sound id="837" name="TR3_CRICKET_LOOP" />
         <sound id="838" name="TR3_USER_838" />
         <sound id="839" name="TR3_DOORBELL" />
         <sound id="840" name="TR3_DRILL_BIT_1" />
@@ -7492,7 +7492,7 @@
         <sound id="882" name="TR3_SWINGING_FLAMES" />
         <sound id="883" name="TR3_USER_883" />
         <sound id="884" name="TR3_SWITCH_COVER" />
-        <sound id="885" name="TR3_SWITCH_COVER" />
+        <sound id="885" name="TR3_TARGET_HITS" />
         <sound id="886" name="TR3_TARGET_SMASH" />
         <sound id="887" name="TR3_TICK_TOCK" />
         <sound id="888" name="TR3_TICKET_BARRIER" />
