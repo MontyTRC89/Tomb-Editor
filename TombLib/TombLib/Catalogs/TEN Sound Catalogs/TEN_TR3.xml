@@ -50,7 +50,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -126,7 +126,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -224,7 +224,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -303,7 +303,7 @@
       <Chance>100</Chance>
       <PitchFactor>-20</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -322,8 +322,8 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -341,7 +341,7 @@
       <Chance>100</Chance>
       <PitchFactor>-20</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -2315,13 +2315,13 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>cmndr1.wav</FileName>
+          <FileName>TR3_COMMANDER_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>cmndr2.wav</FileName>
+          <FileName>TR3_COMMANDER_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>cmndr3.wav</FileName>
+          <FileName>TR3_COMMANDER_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3023,7 +3023,7 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-       <WadSoundInfo>
+    <WadSoundInfo>
       <Id>839</Id>
       <Name>TR3_DOORBELL</Name>
       <Volume>85</Volume>
@@ -3406,7 +3406,7 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-      <WadSoundInfo>
+    <WadSoundInfo>
       <Id>860</Id>
       <Name>TR3_RADAR_BLIP</Name>
       <Volume>60</Volume>
@@ -3557,7 +3557,7 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
-    </WadSoundInfo>      
+    </WadSoundInfo>
     <WadSoundInfo>
       <Id>870</Id>
       <Name>TR3_SMALL_DOOR_SUBWAY</Name>
@@ -3615,7 +3615,7 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-      <WadSoundInfo>
+    <WadSoundInfo>
       <Id>874</Id>
       <Name>TR3_SMALL_METAL_SHUTTERS</Name>
       <Volume>70</Volume>
@@ -3770,7 +3770,7 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-      <WadSoundInfo>
+    <WadSoundInfo>
       <Id>883</Id>
       <Name>TR3_SWINGING_FLAMES</Name>
       <Volume>40</Volume>
@@ -3944,7 +3944,7 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-      <WadSoundInfo>
+    <WadSoundInfo>
       <Id>893</Id>
       <Name>TR3_VENDING_MACHINE_LOOP</Name>
       <Volume>90</Volume>
