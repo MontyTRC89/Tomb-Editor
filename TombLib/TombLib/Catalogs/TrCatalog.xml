@@ -6770,7 +6770,7 @@
         <sound id="160" name="LAUNCHER_2" />
         <sound id="161" name="TRAPDOOR_OPEN" />
         <sound id="162" name="TRAPDOOR_CLOSE" />
-        <sound id="163" name="Empty" />
+        <sound id="163" name="LARA_HK_STOP" />
         <sound id="164" name="BABOON_STAND_WAIT" />
         <sound id="165" name="BABOON_ATTACK_LOW" />
         <sound id="166" name="BABOON_ATTACK_JUMP" />

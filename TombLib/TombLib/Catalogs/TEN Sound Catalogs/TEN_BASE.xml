@@ -3165,8 +3165,8 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>163</Id>
-      <Name>EMPTY</Name>
-      <Volume>100</Volume>
+      <Name>LARA_HK_STOP</Name>
+      <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3174,9 +3174,13 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>HK_Stop_01.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>164</Id>
