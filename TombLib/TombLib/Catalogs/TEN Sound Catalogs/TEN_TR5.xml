@@ -2740,13 +2740,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>boot_ft1.wav</FileName>
+          <FileName>TR5_GENERIC_BOOT_STEPS_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>boot_ft2.wav</FileName>
+          <FileName>TR5_GENERIC_BOOT_STEPS_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>boot_ft3.wav</FileName>
+          <FileName>TR5_GENERIC_BOOT_STEPS_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2765,7 +2765,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>g_knefal.wav</FileName>
+          <FileName>TR5_GENERIC_KNEES_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2784,10 +2784,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sqk1.wav</FileName>
+          <FileName>TR5_GENERIC_SQKS_LOW_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sqk2.wav</FileName>
+          <FileName>TR5_GENERIC_SQKS_LOW_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2806,10 +2806,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sqk1.wav</FileName>
+          <FileName>TR5_GENERIC_SQKS_LOW_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>sqk2.wav</FileName>
+          <FileName>TR5_GENERIC_SQKS_LOW_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2817,7 +2817,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1042</Id>
-      <Name>TR5_GRAB_DROP</Name>
+      <Name>TR5_BASE_CLAW_DROP</Name>
       <Volume>95</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -2828,7 +2828,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grab_drp.wav</FileName>
+          <FileName>TR5_BASE_CLAW_DROP.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2836,7 +2836,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1043</Id>
-      <Name>TR5_GRAB_IMPACT</Name>
+      <Name>TR5_BASE_CLAW_CRASH</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -2847,7 +2847,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrned.wav</FileName>
+          <FileName>TR5_BASE_CLAW_CRASH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2855,7 +2855,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1044</Id>
-      <Name>TR5_GRAB_MOTOR_A</Name>
+      <Name>TR5_BASE_CLAW_MOTOR_A</Name>
       <Volume>65</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2866,7 +2866,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrnea.wav</FileName>
+          <FileName>TR5_BASE_CLAW_MOTOR_A_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2874,7 +2874,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1045</Id>
-      <Name>TR5_GRAB_MOTOR_B_LP</Name>
+      <Name>TR5_BASE_CLAW_MOTOR_B_LOOP</Name>
       <Volume>65</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2885,7 +2885,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrneb.wav</FileName>
+          <FileName>TR5_BASE_CLAW_MOTOR_B_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2893,7 +2893,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1046</Id>
-      <Name>TR5_GRAB_MOTOR_C</Name>
+      <Name>TR5_BASE_CLAW_MOTOR_C</Name>
       <Volume>65</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2904,7 +2904,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrnec.wav</FileName>
+          <FileName>TR5_BASE_CLAW_MOTOR_C_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2912,7 +2912,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1047</Id>
-      <Name>TR5_GRAB_TOP_IMPACT</Name>
+      <Name>TR5_BASE_CLAW_TOP_IMPACT</Name>
       <Volume>35</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2923,7 +2923,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrned.wav</FileName>
+          <FileName>TR5_BASE_CLAW_CRASH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2931,7 +2931,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1048</Id>
-      <Name>TR5_GRAB_WINCH_UP_LP</Name>
+      <Name>TR5_BASE_CLAW_WINCH_UP_LOOP</Name>
       <Volume>55</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -2942,7 +2942,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_jcrne1.wav</FileName>
+          <FileName>TR5_BASE_CLAW_WINCH_UP_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2950,7 +2950,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1049</Id>
-      <Name>TR5_HANGAR_DOOR_GRAB_OPEN</Name>
+      <Name>TR5_BASE_CLAW_HANGAR_DOOR_OPEN</Name>
       <Volume>70</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -2961,7 +2961,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grab_opn.wav</FileName>
+          <FileName>TR5_BASE_CLAW_HANGAR_DOOR_OPEN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2980,7 +2980,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_hiss.wav</FileName>
+          <FileName>TR5_HISS_LOOP_SMALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2999,7 +2999,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>hologram.wav</FileName>
+          <FileName>TR5_HOLOGRAM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3018,7 +3018,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_indus1.wav</FileName>
+          <FileName>TR5_INDUSTRY_AMBIENCE_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3037,7 +3037,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_iris.wav</FileName>
+          <FileName>TR5_IRIS_ELEC_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3045,7 +3045,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1054</Id>
-      <Name>TR5_JOBY2_CRANE_END</Name>
+      <Name>TR5_CRANE_END</Name>
       <Volume>95</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -3056,7 +3056,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>j_crnend.wav</FileName>
+          <FileName>TR5_CRANE_END_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3075,7 +3075,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_hob.wav</FileName>
+          <FileName>TR5_KITCHEN_HOB_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3094,7 +3094,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>klaxon.wav</FileName>
+          <FileName>TR5_KLAXON_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3113,7 +3113,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_lazer.wav</FileName>
+          <FileName>TR5_LASER_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3132,7 +3132,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>liftbrke.wav</FileName>
+          <FileName>TR5_LIFT_BRAKE_SQUEAL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3151,7 +3151,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lift_dor.wav</FileName>
+          <FileName>TR5_LIFT_DOORS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3170,7 +3170,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_fall.wav</FileName>
+          <FileName>TR5_LIFT_HIT_FLOOR1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3189,7 +3189,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grate_3.wav</FileName>
+          <FileName>TR5_GRILL_3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3208,7 +3208,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>liftmove.wav</FileName>
+          <FileName>TR5_LIFT_MOVE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3227,7 +3227,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>liftmove.wav</FileName>
+          <FileName>TR5_LIFT_MOVE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3246,7 +3246,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_lockc.wav</FileName>
+          <FileName>TR5_LOCKER_CLOSE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3265,7 +3265,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_locko.wav</FileName>
+          <FileName>TR5_LOCKER_OPEN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3284,7 +3284,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>low_rumb.wav</FileName>
+          <FileName>TR5_LOW_RUMBLE_LOWER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -3303,7 +3303,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mtcl1.wav</FileName>
+          <FileName>TR5_METAL_CABINET_CLOSE_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3322,7 +3322,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mtcl2.wav</FileName>
+          <FileName>TR5_METAL_CABINET_CLOSE_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3341,7 +3341,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mtcl1.wav</FileName>
+          <FileName>TR5_METAL_CABINET_CLOSE_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3360,7 +3360,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mtcl2.wav</FileName>
+          <FileName>TR5_METAL_CABINET_CLOSE_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3379,7 +3379,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_modem.wav</FileName>
+          <FileName>TR5_MODEM_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3387,7 +3387,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1072</Id>
-      <Name>TR5_OFFICE_DOOR_CLSE</Name>
+      <Name>TR5_OFFICE_DOOR_CLOSE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3398,7 +3398,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>d_corec.wav</FileName>
+          <FileName>TR5_OFFICE_DOOR_CLOSE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3417,7 +3417,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>d_corea.wav</FileName>
+          <FileName>TR5_OFFICE_DOOR_OPEN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3436,14 +3436,14 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>d_coreb.wav</FileName>
+          <FileName>TR5_OFFICE_DOOR_SQUEAK_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>1074</Id>
+      <Id>1096</Id>
       <Name>TR5_PHILOSPHER_STONE</Name>
       <Volume>78</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3455,7 +3455,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_philos.wav</FileName>
+          <FileName>TR5_PHILOSPHER_STONE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3474,7 +3474,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_portal.wav</FileName>
+          <FileName>TR5_PORTAL_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3482,7 +3482,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1076</Id>
-      <Name>TR5_POUR_DUST_INSERTANIM</Name>
+      <Name>TR5_POUR_DUST</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -3493,7 +3493,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>pourdust.wav</FileName>
+          <FileName>TR5_POUR_DUST_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3512,7 +3512,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_tech1.wav</FileName>
+          <FileName>TR5_HITECH_ROOM_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3531,7 +3531,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_tech1.wav</FileName>
+          <FileName>TR5_HITECH_ROOM_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3550,25 +3550,25 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>rat_fs1.wav</FileName>
+          <FileName>TR5_RATS_1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>rat_fs2.wav</FileName>
+          <FileName>TR5_RATS_1_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>r1.wav</FileName>
+          <FileName>TR5_RATS_1_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>r2.wav</FileName>
+          <FileName>TR5_RATS_1_04.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>r3.wav</FileName>
+          <FileName>TR5_RATS_1_05.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>r4.wav</FileName>
+          <FileName>TR5_RATS_1_06.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>r5.wav</FileName>
+          <FileName>TR5_RATS_1_07.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3587,7 +3587,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>ratsplsh.wav</FileName>
+          <FileName>TR5_RATSPLASH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3595,7 +3595,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1081</Id>
-      <Name>TR5_RAVENSWITCH_EXP</Name>
+      <Name>TR5_RAVENSWITCH_EXPLODE</Name>
       <Volume>55</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -3606,7 +3606,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>exp_rock.wav</FileName>
+          <FileName>TR5_RAVENSWITCH_EXPLODE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3625,7 +3625,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_drbeam.wav</FileName>
+          <FileName>TR5_DOOR_BEAM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3633,7 +3633,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1083</Id>
-      <Name>TR5_LOWER_BEAMX</Name>
+      <Name>TR5_LOWER_BEAM</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3644,7 +3644,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>beamlowr.wav</FileName>
+          <FileName>TR5_ENERGY_BEAM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3663,7 +3663,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>rich_nrg.wav</FileName>
+          <FileName>TR5_ENERGY_BEAM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3682,7 +3682,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>targetup.wav</FileName>
+          <FileName>TR5_TARGET_RISE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3701,7 +3701,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>alarm.wav</FileName>
+          <FileName>TR5_SEARCHER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3720,7 +3720,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lncher1.wav</FileName>
+          <FileName>TR5_SERVO_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3739,7 +3739,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lncher2.wav</FileName>
+          <FileName>TR5_AUTOGUN_UNFOLD_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3758,7 +3758,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_shower.wav</FileName>
+          <FileName>TR5_SHOWER_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3777,7 +3777,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mslde.wav</FileName>
+          <FileName>TR5_SLIDEDOOR_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3796,7 +3796,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>d_smlvnt.wav</FileName>
+          <FileName>TR5_SMALL_METAL_VENT_HINGE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3815,7 +3815,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>glass_sm.wav</FileName>
+          <FileName>TR5_SMASH_GLASS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3834,7 +3834,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sm_metal.wav</FileName>
+          <FileName>TR5_SMASH_METAL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3853,7 +3853,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sm_rock.wav</FileName>
+          <FileName>TR5_SMASH_ROCK_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3872,32 +3872,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sm_wood.wav</FileName>
+          <FileName>TR5_SMASH_WOOD_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1096</Id>
-      <Name>TR5_SNIPER_RIFLE</Name>
-      <Volume>75</Volume>
-      <RangeInSectors>15</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>44</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>sniper.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
+      <WadSoundInfo>
       <Id>1097</Id>
       <Name>TR5_STAIR_BANISTER_BEND</Name>
       <Volume>75</Volume>
@@ -3910,7 +3891,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>strbend.wav</FileName>
+          <FileName>TR5_STAIR_BANISTER_BEND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3929,7 +3910,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>stairfll.wav</FileName>
+          <FileName>TR5_STAIR_SNAP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3948,7 +3929,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_subcon.wav</FileName>
+          <FileName>TR5_SUB_CONTROLROOM_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3967,7 +3948,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>swch_ele.wav</FileName>
+          <FileName>TR5_SWITCH_ELEC_SWAP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3986,7 +3967,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_telep.wav</FileName>
+          <FileName>TR5_TELEPORT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4005,10 +3986,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>elec_2.wav</FileName>
+          <FileName>TR5_ELEC_LIGHT_CRACKLES_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>elec_3.wav</FileName>
+          <FileName>TR5_ELEC_LIGHT_CRACKLES_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4027,7 +4008,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>teleflsh.wav</FileName>
+          <FileName>TR5_TELEPORT_FLASH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4046,7 +4027,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>thun_rum.wav</FileName>
+          <FileName>TR5_THUNDER_RUMBLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4065,7 +4046,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_tv.wav</FileName>
+          <FileName>TR5_TV_WHITENOISE_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4084,7 +4065,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uw_chaff.wav</FileName>
+          <FileName>TR5_UNDERWATER_CHAFF_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4103,7 +4084,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uw_door.wav</FileName>
+          <FileName>TR5_UNDERWATER_DOOR_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4122,7 +4103,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uw_exp2.wav</FileName>
+          <FileName>TR5_UNDERWATER_EXPLOSION_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4141,7 +4122,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uw_fan.wav</FileName>
+          <FileName>TR5_UNDERWATER_FAN_ON_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4160,7 +4141,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>torpedo2.wav</FileName>
+          <FileName>TR5_UNDERWATER_TORPEDO_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4179,7 +4160,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_scicl.wav</FileName>
+          <FileName>TR5_VCI_DOOR_CLOSE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4198,7 +4179,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_sciop.wav</FileName>
+          <FileName>TR5_VCI_DOOR_OPEN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4217,7 +4198,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grate_3.wav</FileName>
+          <FileName>TR5_GRILL_3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4236,7 +4217,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>v_stress.wav</FileName>
+          <FileName>TR5_VENT_STRESS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4255,7 +4236,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>autog_op.wav</FileName>
+          <FileName>TR5_AUTOGUN_DOOR_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4274,7 +4255,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_wtrlap.wav</FileName>
+          <FileName>TR5_WATER_LAPS_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4293,7 +4274,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_welddr.wav</FileName>
+          <FileName>TR5_WELD_THRU_DOOR_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4312,7 +4293,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_xscan.wav</FileName>
+          <FileName>TR5_XRAY_SCAN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4331,7 +4312,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_mhole.wav</FileName>
+          <FileName>TR5_MANHOLE_METAL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4339,7 +4320,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1120</Id>
-      <Name>TR5_2GUNTEX_DIE</Name>
+      <Name>TR5_2GUNTEX_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -4350,7 +4331,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_die.wav</FileName>
+          <FileName>TR5_2GUNTEX_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4369,7 +4350,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_fall.wav</FileName>
+          <FileName>TR5_2GUNTEX_STAIR_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4388,7 +4369,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_fall.wav</FileName>
+          <FileName>TR5_2GUNTEX_STAIR_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4396,7 +4377,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1123</Id>
-      <Name>TR5_2GUNTEX_FEET_LD</Name>
+      <Name>TR5_2GUNTEX_FEET_LOUD</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -4407,13 +4388,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_f1.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>2gt_f2.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>2gt_f3.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4421,7 +4402,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1124</Id>
-      <Name>TR5_2GUNTEX_FEET_QT</Name>
+      <Name>TR5_2GUNTEX_FEET_QUIET</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4432,13 +4413,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_f1.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>2gt_f2.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>2gt_f3.wav</FileName>
+          <FileName>TR5_2GUNTEX_FEET_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4457,7 +4438,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_bash.wav</FileName>
+          <FileName>TR5_2GUNTEX_HIT_GUNS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4476,7 +4457,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_lasr.wav</FileName>
+          <FileName>TR5_2GUNTEX_LASER_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4495,7 +4476,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_lasr.wav</FileName>
+          <FileName>TR5_2GUNTEX_LASER_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -4514,49 +4495,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>2gt_misf.wav</FileName>
+          <FileName>TR5_2GUNTEX_LASER_MISFIRE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1129</Id>
-      <Name>TR5_2GUNTEX_LASER_START</Name>
-      <Volume>80</Volume>
-      <RangeInSectors>15</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>18</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>2gt_las2.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1130</Id>
-      <Name>TR5_2GUNTEX_STAIR_FALL</Name>
-      <Volume>80</Volume>
-      <RangeInSectors>25</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-15</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>2gt_argh.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-  </SoundInfos>
+    </SoundInfos>
 </WadSounds>
