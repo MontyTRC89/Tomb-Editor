@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TombLib.LevelData;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.NG
@@ -30,7 +31,8 @@ namespace TombLib.NG
         StringsList255, // STRING_LIST_255
         WadSlots, // WAD-SLOTS
         StaticsSlots, // STATIC_SLOTS
-        LaraStartPosOcb // LARA_POS_OCB
+        LaraStartPosOcb, // LARA_POS_OCB
+        LuaFunctions
     }
 
     public struct NgLinearParameter
@@ -197,9 +199,10 @@ namespace TombLib.NG
                     return parameter is SinkInstance;
                 case NgParameterKind.FlybyCamerasInLevel:
                     return parameter is FlybyCameraInstance;
-
                 case NgParameterKind.Rooms255:
                     return parameter is Room;
+                case NgParameterKind.LuaFunctions:
+                    return parameter is TriggerParameterString;
 
                 default:
                     if (IsNumber)
@@ -244,7 +247,7 @@ namespace TombLib.NG
                 else
                     return new TriggerParameterUshort((ushort)i, (add + i) + ": --- Not present ---");
             };
-            Func<int, TriggerParameterUshort> formatSounds1 = i => formatSounds(0,   i);
+            Func<int, TriggerParameterUshort> formatSounds1 = i => formatSounds(0, i);
             Func<int, TriggerParameterUshort> formatSounds2 = i => formatSounds(256, i);
 
             switch (Kind)
@@ -313,17 +316,17 @@ namespace TombLib.NG
                 case NgParameterKind.WadSlots:
                     if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Settings.WadGetAllMoveables().Select(p => 
+                    return level.Settings.WadGetAllMoveables().Select(p =>
                         new TriggerParameterUshort(
-                            checked((ushort)p.Key.TypeId), 
+                            checked((ushort)p.Key.TypeId),
                             p.Value.ToString(level.Settings.GameVersion.Native())));
 
                 case NgParameterKind.StaticsSlots:
                     if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Settings.WadGetAllStatics().Select(p => 
+                    return level.Settings.WadGetAllStatics().Select(p =>
                         new TriggerParameterUshort(
-                            checked((ushort)p.Key.TypeId), 
+                            checked((ushort)p.Key.TypeId),
                             p.Value.ToString(level.Settings.GameVersion.Native())));
 
                 case NgParameterKind.LaraStartPosOcb:
@@ -331,6 +334,18 @@ namespace TombLib.NG
                         .SelectMany(room => room.Objects)
                         .OfType<MoveableInstance>().Where(obj => obj.WadObjectId.TypeId == 406) // Lara start pos
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
+
+                case NgParameterKind.LuaFunctions:
+                    string path = level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile);
+                    var functions = ScriptingUtils.GetAllFunctionsNames(path);
+                    if (functions != null)
+                    {
+                        return functions.Select(f => new TriggerParameterString(f));
+                    }
+                    else
+                    {
+                        return null;
+                    }
 
                 default:
                     throw new ArgumentException("Unknown NgListKind \"" + Kind + "\"");

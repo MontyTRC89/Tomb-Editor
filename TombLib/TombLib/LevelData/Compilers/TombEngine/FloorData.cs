@@ -17,7 +17,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Collect all LUA functions
             _luaFunctions = new List<string>();
-            foreach (var room in _level.Rooms.Where(r => r!= null).ToList())
+            foreach (var room in _level.Rooms.Where(r => r != null).ToList())
                 foreach (var volume in room.Volumes)
                 {
                     if (volume.Scripts.OnEnter != null && !_luaFunctions.Contains(volume.Scripts.OnEnter))
@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         sector.TriggerIndex = -1;
 
                         if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
-                        { 
+                        {
                             // Sector is a complete wall
 
                             if (block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces)
@@ -134,7 +134,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             sector.CeilingCollision.Planes[1].Z = -room.Position.Y;
                         }
                         else
-                        { 
+                        {
                             // Sector is not a complete wall
 
                             Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
@@ -257,8 +257,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
 
-                triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0); 
-                
+                triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
+
                 // Write bitmask
                 triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
 
@@ -342,6 +342,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                             result.Add(trigger2);
                             break;
+                        case TriggerTargetType.LuaScript:
+                            // Trigger for LUA script
+                            if (!(trigger.Target is TriggerParameterString))
+                                throw new Exception("A LUA Script trigger must reference a LUA function! ('" + trigger + "')");
+                           
+                            var luaFunctionPointer = (TriggerParameterString)trigger.Target;
+                            string luaFunctionName = luaFunctionPointer.Value;
+                            if (!_luaFunctions.Contains(luaFunctionName))
+                            {
+                                _luaFunctions.Add(luaFunctionName);
+                            }
+
+                            trigger2 = (ushort)((_luaFunctions.IndexOf(luaFunctionName)) & 0x3ff | (16 << 10));
+                            result.Add(trigger2);
+
+                            trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
+                            result.Add(trigger2);
+
+                            break;
+
                         default:
                             throw new Exception("Unknown trigger target found '" + trigger + "'");
                     }
@@ -529,10 +549,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
 
             if (shape.IsSplit)
-            { 
+            {
                 if (shape.SplitDirectionIsXEqualsZ)
                 {
-                    newCollision.SplitAngle = (float) (Math.PI / 4);
+                    newCollision.SplitAngle = (float)(Math.PI / 4);
 
                     if (shape.SplitWallFirst)
                     {
@@ -547,8 +567,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
-                                new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit,  Level.HalfBlockSizeUnit),
-                                new Vector3( Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit,  Level.HalfBlockSizeUnit),
+                                new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
+                                new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
                                 new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit)
                             );
                     }
@@ -566,15 +586,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
-                            new Vector3( Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
+                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
                             new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn - shape.DiagonalStep) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
-                            new Vector3( Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep) * Level.HeightUnit,  Level.HalfBlockSizeUnit)
+                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep) * Level.HeightUnit, Level.HalfBlockSizeUnit)
                         );
                     }
                 }
                 else
                 {
-                    newCollision.SplitAngle = (float) (3 * Math.PI / 4);
+                    newCollision.SplitAngle = (float)(3 * Math.PI / 4);
 
                     if (shape.SplitWallSecond)
                     {

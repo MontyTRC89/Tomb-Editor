@@ -244,6 +244,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.LuaName);
                 }
 
+                // Write LUA function names
+                writer.Write((uint)_luaFunctions.Count);
+                foreach (string functionName in _luaFunctions)
+                {
+                    writer.Write(functionName);
+                }
+
                 // Write sound meta data
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);

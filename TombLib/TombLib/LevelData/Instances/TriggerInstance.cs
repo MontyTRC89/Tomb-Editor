@@ -43,7 +43,8 @@ namespace TombLib.LevelData
         FlyByCamera = 12,
         ParameterNg = 13,
         FmvNg = 14,
-        TimerfieldNg = 15
+        TimerfieldNg = 15,
+        LuaScript = 16
     }
 
     public interface ITriggerParameter : IEquatable<ITriggerParameter>
@@ -104,13 +105,13 @@ namespace TombLib.LevelData
 
         public static bool operator ==(TriggerParameterString first, TriggerParameterString second)
         {
-            return (first.Equals(second));
+            return first.Value == second.Value;
         }
         public static bool operator !=(TriggerParameterString first, TriggerParameterString second) => !(first == second);
         public override int GetHashCode() => base.GetHashCode();
         public override bool Equals(object other)
         {
-            if (!(other is TriggerParameterUshort))
+            if (!(other is TriggerParameterString))
                 return false;
             return this == (TriggerParameterString)other;
         }

@@ -76,6 +76,11 @@ namespace TombLib.NG
                     yield return TriggerTargetType.FmvNg;
                     yield return TriggerTargetType.TimerfieldNg;
                 }
+
+                if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
+                {
+                    yield return TriggerTargetType.LuaScript;
+                }
             }
         }
 
@@ -135,6 +140,12 @@ namespace TombLib.NG
 
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.TimerFieldTrigger;
+
+                        case TriggerTargetType.LuaScript:
+                            if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
+                                return new NgParameterRange(NgParameterKind.LuaFunctions);
+                           else
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
 
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);
