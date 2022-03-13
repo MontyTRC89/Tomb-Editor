@@ -55,9 +55,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 var floorPortalAssigned = false;
                                 var ceilingPortalAssigned = false;
 
-                                for (var xAround = 0; (!floorPortalAssigned || !ceilingPortalAssigned) && xAround < room.NumXSectors; ++xAround)
+                                for (var xAround = Math.Max(0, x - 1); (!floorPortalAssigned || !ceilingPortalAssigned) && xAround <= Math.Min(room.NumXSectors - 1, x + 1); ++xAround)
                                 {
-                                    for (var zAround = 0; (!floorPortalAssigned || !ceilingPortalAssigned) && zAround < room.NumZSectors; ++zAround)
+                                    for (var zAround = Math.Max(0, z - 1); (!floorPortalAssigned || !ceilingPortalAssigned) && zAround <= Math.Min(room.NumZSectors - 1, z + 1); ++zAround)
                                     {
                                         if (xAround == x && zAround == z)
                                             continue;
