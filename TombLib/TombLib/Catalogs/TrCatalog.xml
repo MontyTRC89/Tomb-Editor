@@ -43,7 +43,7 @@
         <moveable id="16" name="Giant Rat (on land)" essential="false" />
         <moveable id="17" name="Giant Rat (in water)" essential="false"/>
         <moveable id="18" name="Tyrannosaur" essential="false" />
-        <moveable id="19" name="Raptor" essential="false" />
+        <moveable id="19" name="Raptor" essential="false" t5m="RAPTOR"/>
         <moveable id="20" name="Winged mutant" essential="false" />
         <moveable id="21" name="Mutant with gun spawn point" essential="false" />
         <moveable id="22" name="Mutant spawn point" essential="false" />
@@ -213,9 +213,9 @@
         <sprite_sequence id="239" name="Pottery 6" />
     </sprite_sequences>
     <sounds max="256">
-        <sound id="0" name="LARA_FEET" description="Lara footstep" />
-        <sound id="1" name="LARA_GRUNT" description="Lara grunt" />
-        <sound id="2" name="LARA_NO" description="Lara no" />
+        <sound id="0" name="LARA_FEET" description="Lara footstep" t5m="0" /> 
+        <sound id="1" name="LARA_GRUNT" description="Lara grunt" t5m="1" />
+        <sound id="2" name="LARA_NO" description="Lara no" t5m="2"/>
         <sound id="3" name="LARA_SLIPPING" description="Lara sliding" />
         <sound id="4" name="LARA_LAND" description="Lara landing on feet" />
         <sound id="5" name="LARA_CLIMB1" description="Lara hut (stepping up)" />
@@ -280,9 +280,9 @@
         <sound id="70" name="T-REX_FOOTSTOMP" description="T-rex footstep" />
         <sound id="71" name="T-REX_ROAR" description="T-rex roar" />
         <sound id="72" name="T-REX_ATTACK" description="T-rex growl (biting)" />
-        <sound id="73" name="RAPTOR_ROAR" description="Raptor howl" />
-        <sound id="74" name="RAPTOR_ATTACK" description="Raptor snarl (biting)" />
-        <sound id="75" name="RAPTOR_FEET" description="Raptor footstep" />
+        <sound id="73" name="RAPTOR_ROAR" description="Raptor howl" t5m="TR1_RAPTOR_ROAR" />
+        <sound id="74" name="RAPTOR_ATTACK" description="Raptor snarl (biting)" t5m="TR1_TREX_ATTACK" />
+        <sound id="75" name="RAPTOR_FEET" description="Raptor footstep" t5m="TR1_RAPTOR_FEET"/>
         <sound id="76" name="MUMMY_GROWL" description="Mummy/Mutant low groan" />
         <sound id="77" name="LARSON_FIRE" description="Larson firing gun" />
         <sound id="78" name="LARSON_RICOCHET" description="High-pitched flyby" />
@@ -1845,7 +1845,7 @@
         <sound id="241" name="COMPY_WAIT" description="Compy chitter" />
         <sound id="242" name="COMPY_DIE" description="Compy chirp 3 " />
         <sound id="243" name="COMPY_RUN_WALK" description="Compy footstep" />
-        <sound id="244" name="BLOWPIPE_NATIVE_FEET" description="Tribesman footstep" />
+        <sound id="244" name="BLOWPIPE_NATIVE_FEET" description="Tribesman footstep" t5m="744"/>
         <sound id="245" name="BLOWPIPE_NATIVE_ATTACK" description="Tribesman attack" />
         <sound id="246" name="BLOWPIPE_NATIVE_DEATH" description="Tribesman dying" />
         <sound id="247" name="BLOWPIPE_NATIVE_BLOW" description="Dartgun firing" />
