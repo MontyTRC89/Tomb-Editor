@@ -6792,7 +6792,7 @@
         <sound id="182" name="THUNDER_RUMBLE" />
         <sound id="183" name="THUNDER_CRACK" />
         <sound id="184" name="WRAITH_WHISPERS" />
-        <sound id="185" name="Empty" />
+        <sound id="185" name="LARA_FOOTSTEPS_SAND" />
         <sound id="186" name="Empty" />
         <sound id="187" name="SKEL_FOOTSTEPS" />
         <sound id="188" name="SKEL_ATTACK" />
@@ -6898,7 +6898,7 @@
         <sound id="288" name="LARA_FOOTSTEPS_MUD" />
         <sound id="289" name="HORSEMAN_HORSE_NEIGH" />
         <sound id="290" name="LARA_FOOTSTEPS_GRAVEL" />
-        <sound id="291" name="LARA_FOOTSTEPS_SAND_GRASS" />
+        <sound id="291" name="LARA_FOOTSTEPS_GRASS" />
         <sound id="292" name="LARA_FOOTSTEPS_WOOD" />
         <sound id="293" name="LARA_FOOTSTEPS_MARBLE" />
         <sound id="294" name="LARA_FOOTSTEPS_METAL" />
