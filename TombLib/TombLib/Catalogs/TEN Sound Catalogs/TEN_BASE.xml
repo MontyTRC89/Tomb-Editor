@@ -3610,14 +3610,14 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>185</Id>
-      <Name>EMPTY</Name>
-      <Volume>100</Volume>
+      <Name>LARA_FOOSTEPS_SAND</Name>
+      <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
       <Global>false</Global>
@@ -5695,7 +5695,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>291</Id>
-      <Name>LARA_FOOTSTEPS_SAND_GRASS</Name>
+      <Name>LARA_FOOTSTEPS_GRASS</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5740,7 +5740,7 @@
     <WadSoundInfo>
       <Id>293</Id>
       <Name>LARA_FOOTSTEPS_MARBLE</Name>
-      <Volume>18</Volume>
+      <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>55</PitchFactor>
