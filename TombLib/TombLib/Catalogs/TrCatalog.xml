@@ -234,7 +234,6 @@
 <sound id="20" name="WOLF_HURT" description="Wolf hurt" t5m="397"/>
 <sound id="22" name="WOLF_DEATH" description="Wolf whimper (dying)" t5m="398" />
 <sound id="24" name="WOLF_HOWL" description="Wolf snarling/biting" t5m="399"/>
-<sound id="24" name="WOLF_HOWL" description="Wolf snarling/biting" t5m="399"/>
 <sound id="25" name="WOLF_ATTACK" description="Wolf biting" t5m="400"/>
 <sound id="26" name="LARA_CLIMB3" description="Lara grunt (pulling up)" />
 <sound id="27" name="LARA_BODYSL" description="Lara oof (hitting wall)" />
