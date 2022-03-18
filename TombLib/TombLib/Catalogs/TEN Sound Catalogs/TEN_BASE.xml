@@ -3619,7 +3619,14 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+		<Samples>
+			<WadSample>
+				<FileName>tr4_lara_footsteps_sandgrass_01.wav</FileName>
+			</WadSample>
+			<WadSample>
+				<FileName>tr4_lara_footsteps_sandgrass_02.wav</FileName>
+			</WadSample>
+		</Samples>
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
