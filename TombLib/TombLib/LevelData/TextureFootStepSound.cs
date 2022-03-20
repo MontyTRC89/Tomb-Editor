@@ -16,7 +16,14 @@
         Concrete = 11,
         OldWood = 12,
         OldMetal = 13,
-        Unknown14 = 14,
-        Unknown15 = 15
+        CustomSound1 = 14,
+        CustomSound2 = 15,
+        CustomSound3 = 16,
+        CustomSound4 = 17,
+        CustomSound5 = 18,
+        CustomSound6 = 19,
+        CustomSound7 = 20,
+        CustomSound8 = 21,
+
     }
 }

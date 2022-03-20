@@ -3619,14 +3619,14 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>tr4_lara_footsteps_sandgrass_01.wav</FileName>
-			</WadSample>
-			<WadSample>
-				<FileName>tr4_lara_footsteps_sandgrass_02.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples>
+        <WadSample>
+          <FileName>tr4_lara_footsteps_sandgrass_01.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>tr4_lara_footsteps_sandgrass_02.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -7467,6 +7467,126 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1129</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_1</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1130</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_2</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1131</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_3</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1132</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_4</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1133</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_5</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1134</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_6</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1135</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_7</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1136</Id>
+      <Name>CUSTOM_FOOTSTEP_SOUNDS_8</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
   </SoundInfos>
 </WadSounds>
