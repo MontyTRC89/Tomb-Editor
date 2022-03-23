@@ -31,37 +31,37 @@
         <moveable id="4" name="Lara Uzi animation" use_body_from="0" hidden="true" />
         <moveable id="5" name="Lara misc animations" use_body_from="0" hidden="true" />
         <moveable id="6" name="Lara's evil twin mutant" essential="false" />
-        <moveable id="7" name="Wolf" essential="false" />
-        <moveable id="8" name="Bear" essential="false" />
-        <moveable id="9" name="Bat" essential="false" />
-        <moveable id="10" name="Crocodile (on land)" essential="false" />
-        <moveable id="11" name="Crocodile (in water)" essential="false" />
-        <moveable id="12" name="Lion (male)" essential="false" />
-        <moveable id="13" name="Lion (female)" essential="false" />
-        <moveable id="14" name="Panther" essential="false" />
-        <moveable id="15" name="Gorilla" essential="false" />
-        <moveable id="16" name="Giant Rat (on land)" essential="false" />
-        <moveable id="17" name="Giant Rat (in water)" essential="false"/>
-        <moveable id="18" name="Tyrannosaur" essential="false" />
-        <moveable id="19" name="Raptor" essential="false" t5m="RAPTOR"/>
-        <moveable id="20" name="Winged mutant" essential="false" />
+        <moveable id="7" name="Wolf" essential="false" t5m="WOLF"/>
+        <moveable id="8" name="Bear" essential="false" t5m="BEAR" />
+        <moveable id="9" name="Bat" essential="false" t5m="BAT"/>
+        <moveable id="10" name="Crocodile (on land)" essential="false" t5m="Crocodile" />
+        <moveable id="11" name="Crocodile (in water)" essential="false" t5m="Crocodile"/>
+        <moveable id="12" name="Lion (male)" essential="false" t5m="LION" />
+        <moveable id="13" name="Lion (female)" essential="false" t5m="LION"/>
+        <moveable id="14" name="Panther" essential="false" t5m="LION"/>
+        <moveable id="15" name="Gorilla" essential="false" t5m="APE"/>
+        <moveable id="16" name="Giant Rat (on land)" essential="false" t5m="BIG_RAT"/>
+        <moveable id="17" name="Giant Rat (in water)" essential="false" t5m="BIG_RAT"/>
+        <moveable id="18" name="Tyrannosaur" essential="false" t5m="Tyrannosaur"/>
+        <moveable id="19" name="Raptor" essential="false" t5m="Raptor"/>
+        <moveable id="20" name="Winged mutant" essential="false" t5m="Winged_MUMMY"/>
         <moveable id="21" name="Mutant with gun spawn point" essential="false" />
         <moveable id="22" name="Mutant spawn point" essential="false" />
-        <moveable id="23" name="Centaur mutant" essential="false" />
-        <moveable id="24" name="Mummy" essential="false" />
+        <moveable id="23" name="Centaur mutant" essential="false" t5m="Centaur_mutant"/>
+        <moveable id="24" name="Mummy" essential="false" t5m="Mummy" />
         <moveable id="25" name="DinoWarrior" essential="false" />
-        <moveable id="27" name="Larson" essential="false" />
-        <moveable id="28" name="Pierre" essential="false" />
+        <moveable id="27" name="Larson" essential="false" t5m="Larson"/>
+        <moveable id="28" name="Pierre" essential="false" t5m="Pierre" />
         <moveable id="29" name="Skateboard" show_with="30" hidden="true" essential="false" />
         <moveable id="30" name="Skateboard kid" show_with="29" essential="false" />
         <moveable id="31" name="Cowboy" essential="false" />
         <moveable id="32" name="Mr. T" essential="false" />
-        <moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" />
-        <moveable id="34" name="Giant mutant" essential="false" />
-        <moveable id="35" name="Collapsible floor" essential="false" />
-        <moveable id="36" name="Swinging blade" essential="false"/>
-        <moveable id="37" name="Spikes" essential="false"/>
-        <moveable id="38" name="Boulder" essential="false"/>
+        <moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="Winged_Natla" />
+        <moveable id="34" name="Giant mutant" essential="false" t5m="Giant_mutant"/>
+        <moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR"/>
+        <moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE"/>
+        <moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES"/>
+        <moveable id="38" name="Boulder" essential="false" t5m="ROLLINGBALL"/>
         <moveable id="39" name="Dart" hidden="true" />
         <moveable id="40" name="Wall-mounted dartgun" essential="false"/>
         <moveable id="41" name="Door (opens upward)" essential="false" />
@@ -70,78 +70,78 @@
         <moveable id="44" name="Thor's hammer's handle" essential="false" />
         <moveable id="45" name="Thor's hammer's block" essential="false" />
         <moveable id="46" name="Lightning ball / Some kind of box?" essential="false" />
-        <moveable id="47" name="Metal rod / Powered mining cart" essential="false" />
-        <moveable id="48" name="Movable cubical block (pushable)" essential="false" />
-        <moveable id="49" name="Movable cubical block (pushable)" essential="false" />
-        <moveable id="50" name="Movable cubical block (pushable)" essential="false" />
-        <moveable id="51" name="Movable cubical block (pushable)" essential="false" />
-        <moveable id="52" name="Movable tall block" essential="false" />
-        <moveable id="53" name="Falling ceiling" essential="false" />
+        <moveable id="47" name="Metal rod / Powered mining cart" essential="false" t5m="PUSHABLE_OBJECT1" />
+        <moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2"/>
+        <moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3"/>
+		<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4"/>
+		<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT5"/>
+        <moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100"/>
+        <moveable id="53" name="Falling ceiling" essential="false" t5m="Falling_ceiling"/>
         <moveable id="54" name="Sword of Damocles" essential="false" />
         <moveable id="55" name="Above-water switch" essential="false" />
         <moveable id="56" name="Underwater switch" essential="false" />
-        <moveable id="57" name="Door" essential="false" />
-        <moveable id="58" name="Door" essential="false"/>
-        <moveable id="59" name="Door" essential="false"/>
-        <moveable id="60" name="Door" essential="false"/>
-        <moveable id="61" name="Door" essential="false"/>
-        <moveable id="62" name="Door" essential="false"/>
-        <moveable id="63" name="Door" essential="false"/>
-        <moveable id="64" name="Door" essential="false"/>
-        <moveable id="65" name="Trapdoor (opens downward)" essential="false"/>
-        <moveable id="66" name="Trapdoor (opens downward)" essential="false"/>
-        <moveable id="68" name="Bridge (flat)" essential="false"/>
-        <moveable id="69" name="Bridge (tilt = 1)" essential="false"/>
-        <moveable id="70" name="Bridge (tilt = 2)" essential="false"/>
+        <moveable id="57" name="Door" essential="false" t5m="DOOR_TYPE1" />
+        <moveable id="58" name="Door" essential="false" t5m="DOOR_TYPE2"/>
+        <moveable id="59" name="Door" essential="false" t5m="DOOR_TYPE3"/>
+        <moveable id="60" name="Door" essential="false" t5m="DOOR_TYPE4"/>
+        <moveable id="61" name="Door" essential="false" t5m="DOOR_TYPE5"/>
+        <moveable id="62" name="Door" essential="false" t5m="DOOR_TYPE6"/>
+        <moveable id="63" name="Door" essential="false" t5m="DOOR_TYPE7"/>
+        <moveable id="64" name="Door" essential="false" t5m="DOOR_TYPE8"/>
+        <moveable id="65" name="Trapdoor (opens downward)" essential="false" t5m="FLOOR_TRAPDOOR1"/>
+        <moveable id="66" name="Trapdoor (opens downward)" essential="false" t5m="FLOOR_TRAPDOOR2"/>
+        <moveable id="68" name="Bridge (flat)" essential="false" t5m="BRIDGE_FLAT"/>
+        <moveable id="69" name="Bridge (tilt = 1)" essential="false" t5m="BRIDGE_TILT1"/>
+        <moveable id="70" name="Bridge (tilt = 2)" essential="false" t5m="BRIDGE_TILT2"/>
         <moveable id="71" name="Passport (opening up)" hidden="true" />
-        <moveable id="72" name="Compass" hidden="true" />
+        <moveable id="72" name="Compass" hidden="true" t5m="COMPASS_ITEM" />
         <moveable id="73" name="Lara's home polaroid" hidden="true" />
-        <moveable id="74" name="Cogs (animated)" essential="false"/>
-        <moveable id="75" name="Cogs (animated)" essential="false"/>
-        <moveable id="76" name="Cogs (animated)" essential="false"/>
-        <moveable id="81" name="Passport (closed)" hidden="true" />
+        <moveable id="74" name="Cogs (animated)" essential="false" t5m="ANIMATING_101"/>
+        <moveable id="75" name="Cogs (animated)" essential="false" t5m="ANIMATING_102"/>
+        <moveable id="76" name="Cogs (animated)" essential="false" t5m="ANIMATING_103"/>
+        <moveable id="81" name="Passport (closed)" hidden="true" t5m="PC_SAVE_INV_ITEM"/>
         <moveable id="82" name="Natla's logo" hidden="true" essential="false"/>
         <moveable id="83" name="Save crystal" />
         <moveable id="95" name="Sunglasses" hidden="true" />
         <moveable id="96" name="Cassette player and headphones" hidden="true" />
         <moveable id="97" name="Direction keys" hidden="true" />
         <moveable id="98" name="Flashlight" hidden="true" />
-        <moveable id="99" name="Pistol" id2="84" />
-        <moveable id="100" name="Shotgun" id2="85" />
-        <moveable id="101" name="Magnum" id2="86" />
-        <moveable id="102" name="Uzi" id2="87" />
-        <moveable id="103" name="Pistol ammo" />
-        <moveable id="104" name="Shotgun ammo" id2="89" />
-        <moveable id="105" name="Magnum ammo" id2="90" />
-        <moveable id="106" name="Uzi ammo" id2="91" />
-        <moveable id="108" name="Small medipack" id2="93" />
-        <moveable id="109" name="Large medipack" id2="94" />
-        <moveable id="114" name="Puzzle 1" id2="110" />
-        <moveable id="115" name="Puzzle 2" id2="111" />
-        <moveable id="116" name="Puzzle 3" id2="112" />
-        <moveable id="117" name="Puzzle 4" id2="113" />
-        <moveable id="118" name="Slot 1 empty" />
-        <moveable id="119" name="Slot 2 empty" />
-        <moveable id="120" name="Slot 3 empty" />
-        <moveable id="121" name="Slot 4 empty" />
-        <moveable id="122" name="Slot 1 full" />
-        <moveable id="123" name="Slot 2 full" />
-        <moveable id="124" name="Slot 3 full" />
-        <moveable id="125" name="Slot 4 full" />
-        <moveable id="127" name="Pickup 1" id2="126" />
+        <moveable id="99" name="Pistol" t5m="PISTOL_ITEM"/>
+        <moveable id="100" name="Shotgun" t5m="SHOTGUN_ITEM"/>
+        <moveable id="101" name="Magnum" />
+        <moveable id="102" name="Uzi" t5m="UZI_ITEM"/>
+        <moveable id="103" name="Pistol ammo" t5m="PISTOL_AMMO_ITEM"/>
+        <moveable id="104" name="Shotgun ammo" t5m="SHOTGUN_AMMO_ITEM"/>
+        <moveable id="105" name="Magnum ammo" />
+        <moveable id="106" name="Uzi ammo" t5m="UZI_AMMO_ITEM"/>
+        <moveable id="108" name="Small medipack" t5m="SMALLMEDI_ITEM" />
+        <moveable id="109" name="Large medipack" t5m="BIGMEDI_ITEM"/>
+        <moveable id="114" name="Puzzle 1" t5m="PUZZLE_ITEM_1" />
+        <moveable id="115" name="Puzzle 2" t5m="PUZZLE_ITEM_2" />
+        <moveable id="116" name="Puzzle 3" t5m="PUZZLE_ITEM_3"  />
+        <moveable id="117" name="Puzzle 4" t5m="PUZZLE_ITEM_4"  />
+        <moveable id="118" name="Slot 1 empty" t5m="PUZZLE_HOLE_1" />
+        <moveable id="119" name="Slot 2 empty" t5m="PUZZLE_HOLE_2"/>
+        <moveable id="120" name="Slot 3 empty" t5m="PUZZLE_HOLE_3"/>
+        <moveable id="121" name="Slot 4 empty" t5m="PUZZLE_HOLE_4"/>
+        <moveable id="122" name="Slot 1 full" t5m="PUZZLE_DONE_1"/>
+        <moveable id="123" name="Slot 2 full" t5m="PUZZLE_DONE_2"/>
+        <moveable id="124" name="Slot 3 full" t5m="PUZZLE_DONE_3" />
+        <moveable id="125" name="Slot 4 full" t5m="PUZZLE_DONE_4"/>
+        <moveable id="127" name="Pickup 1" t5m="PICKUP_ITEM1" />
         <moveable id="128" name="Midas gold touch" essential="false"/>
-        <moveable id="133" name="Key 1" id2="129" essential="false"/>
-        <moveable id="134" name="Key 2" id2="130" essential="false"/>
-        <moveable id="135" name="Key 3" id2="131" essential="false"/>
-        <moveable id="136" name="Key 4" id2="132" essential="false"/>
-        <moveable id="137" name="Lock 1" essential="false"/>
-        <moveable id="138" name="Lock 2" essential="false"/>
-        <moveable id="139" name="Lock 3" essential="false"/>
-        <moveable id="140" name="Lock 4" essential="false"/>
-        <moveable id="145" name="Complete Scion" id2="141" />
-        <moveable id="146" name="Complete Scion" id2="142" />
+        <moveable id="133" name="Key 1"  essential="false" t5m="KEY_ITEM1"/>
+        <moveable id="134" name="Key 2"  essential="false" t5m="KEY_ITEM2"/>
+        <moveable id="135" name="Key 3"  essential="false" t5m="KEY_ITEM3"/>
+        <moveable id="136" name="Key 4"  essential="false" t5m="KEY_ITEM4"/>
+        <moveable id="137" name="Lock 1" essential="false" t5m="KEY_HOLE1"/>
+        <moveable id="138" name="Lock 2" essential="false" t5m="KEY_HOLE2"/>
+        <moveable id="139" name="Lock 3" essential="false" t5m="KEY_HOLE3"/>
+        <moveable id="140" name="Lock 4" essential="false" t5m="KEY_HOLE4"/>
+        <moveable id="145" name="Complete Scion"  />
+        <moveable id="146" name="Complete Scion"  />
         <moveable id="147" name="Scion Holder" essential="false"/>
-        <moveable id="150" name="Scion Piece" id2="143" id3="144" />
+        <moveable id="150" name="Scion Piece"  />
         <moveable id="161" name="Centaur statue" essential="false"/>
         <moveable id="162" name="Shack suspended from wire rope" essential="false"/>
         <moveable id="163" name="Mutant egg and holder (normal size)" essential="false"/>
@@ -154,7 +154,7 @@
         <moveable id="179" name="Flame emitter" essential="false"/>
         <moveable id="180" name="Flowing Atlantean lava" essential="false"/>
         <moveable id="181" name="Mutant egg and holder (big)" essential="false"/>
-        <moveable id="182" name="Motorboat" essential="false"/>
+        <moveable id="182" name="Motorboat" essential="false" t5m="ANIMATING102"/>
         <moveable id="183" name="Earthquake" essential="false"/>
         <moveable id="189" name="Lara's ponytail" hidden="true" />
         <moveable id="207" name="Gunflare" hidden="true" />
