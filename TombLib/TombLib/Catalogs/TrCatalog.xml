@@ -1158,7 +1158,7 @@
 	<sound id="259" name="KNIFETHROWER_WARRIOR_FEET" description="Knifethrower/warrior footstep" t5m="631"/>
 	<sound id="260" name="WARRIOR_BLADE_SWING1" description="Warrior blade swing?" t5m="579"/>
 	<sound id="261" name="WARRIOR_BLADE_SWING2" description="Warrior blade swing?" t5m="580"/>
-	<sound id="262" name="WARRIOR_GROWL" description="Warrior growl" />
+	<sound id="262" name="WARRIOR_GROWL" description="Warrior growl" t5m="566"/>
 	<sound id="263" name="KNIFETHROWER_HICCUP" description="Knifethrower hiccup (throwing a knife)" t5m="601"/>
 	<sound id="264" name="WARROPR_BURP" description="Warrior burp, wuuhh!" t5m="589"/>
 	<sound id="265" name="WARRIOR_GROWL1" description="Warrior growl-burp" t5m="582"/>
