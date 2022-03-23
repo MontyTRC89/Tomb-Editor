@@ -2805,9 +2805,9 @@
       <Volume>30</Volume>
       <RangeInSectors>11</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-45</PitchFactor>
+      <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -3508,7 +3508,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>doorbell.wav</FileName>
+          <FileName>tr2_doorbell_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
