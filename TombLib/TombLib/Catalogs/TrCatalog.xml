@@ -907,339 +907,339 @@
         <sprite_sequence id="291" name="Cellar artifact 3 (flattened statue)" />
     </sprite_sequences>
     <sounds max="370">
-        <sound id="0" name="LARA_FEET" description="Lara footstep" />
-        <sound id="1" name="LARA_CLIMB2" description="Lara grunt" />
-        <sound id="2" name="LARA_NO" description="Lara no" />
-        <sound id="3" name="LARA_SLIPPING" description="Lara sliding" />
-        <sound id="4" name="LARA_LAND" description="Lara landing on feet" />
-        <sound id="5" name="LARA_CLIMB1" description="Lara hut (stepping up)" />
-        <sound id="6" name="LARA_DRAW" description="Lara unholstering pistols/magnums/UZIs" />
-        <sound id="7" name="LARA_HOLSTER" description="Lara holstering pistols/magnums/UZIs" />
-        <sound id="8" name="LARA_FIRE" description="Lara firing pistols" />
-        <sound id="9" name="LARA_RELOAD" description="Lara cocking shotgun/pistol" />
-        <sound id="10" name="LARA_RICOCHET" description="Bullet ricochet" />
-        <sound id="11" name="LARA_FLARE_IGNITE" description="Lara lighting flare" />
-        <sound id="12" name="LARA_FLARE_BURN" description="Flare burning" /> t5m="373"
-        <sound id="15" name="LARA_HARPOON_FIRE" description="Harpoon firing" t5m="374"/>
-        <sound id="16" name="LARA_HARPOON_LOAD" description="Harpoon reload" />
-        <sound id="17" name="LARA_WET_FEET" description="Lara footstep in shallow water" />
-        <sound id="18" name="LARA_WADE" description="Lara wading in shallow water" />
-        <sound id="20" name="LARA_TREAD" description="Lara treading water" />
-        <sound id="21" name="LARA_FIRE_MAGNUMS" description="Lara firing magnums" />
-        <sound id="22" name="LARA_HARPOON_LOAD_WATER" description="Harpoon reload (underwater)" t5m="375" />
-        <sound id="23" name="LARA_HARPOON_FIRE_WATER" description="Harpoon firing (underwater)" t5m="376"/>
-        <sound id="24" name="MASSIVE_CRASH" description="Massive crash" />
-        <sound id="25" name="PUSH_SWITCH" description="Lara pressing button" />
-        <sound id="26" name="LARA_CLIMB3" description="Lara uhhh (pulling up)" />
-        <sound id="27" name="LARA_BODYSL" description="Lara oof (hitting wall)" />
-        <sound id="28" name="LARA_SHIMMY" description="Lara shimmy" />
-        <sound id="29" name="LARA_JUMP" description="Lara hut (jumping)" />
-        <sound id="30" name="LARA_FALL" description="Lara scream (falling)" />
-        <sound id="31" name="LARA_INJURY" description="Lara getting hurt" />
-        <sound id="32" name="LARA_ROLL" description="Lara roll" />
-        <sound id="33" name="LARA_SPLASH" description="Splash (Lara into water)" />
-        <sound id="34" name="LARA_GETOUT" description="Splash (Lara surfacing)" />
-        <sound id="35" name="LARA_SWIM" description="Swim (Lara underwater)" />
-        <sound id="36" name="LARA_BREATH" description="Lara catching breath" />
-        <sound id="37" name="LARA_BUBBLES" description="Underwater gurgle" />
-        <sound id="38" name="LARA_SWITCH" description="Lara pulling metal lever" />
-        <sound id="39" name="LARA_KEY" description="Lara inserting key/card" />
-        <sound id="40" name="LARA_OBJECT" description="Lara inserting chip/pryr-whl/scroll/gem/etc." />
-        <sound id="41" name="LARA_GENERAL_DEATH" description="Lara dying 1" />
-        <sound id="42" name="LARA_KNEES_DEATH" description="Lara dying 2" />
-        <sound id="43" name="LARA_UZI_FIRE" description="Lara firing Uzis" />
-        <sound id="44" name="LARA_UZI_STOP" description="Gunshot echo?" />
-        <sound id="45" name="LARA_SHOTGUN" description="Lara firing shotgun" />
-        <sound id="46" name="LARA_BLOCK_PUSH1" description="Lara grunt (starting to push block)" />
-        <sound id="47" name="LARA_BLOCK_PUSH2" description="Lara grunt (pushing block)" />
-        <sound id="48" name="CLICK" description="Click (?)" />
-        <sound id="49" name="LARA_HIT" description="Something hitting Lara?" />
-        <sound id="50" name="LARA_BULLETHIT" description="Bullet hitting Lara?" />
-        <sound id="51" name="LARA_BLKPULL" description="Lara heh! (pulling up)" />
-        <sound id="52" name="LARA_FLOATING" description="Lara treading water" />
-        <sound id="53" name="LARA_FALLDETH" description="Lara's bones breaking (dying)" />
-        <sound id="54" name="LARA_GRABHAND" description="Ledge grab by Lara" />
-        <sound id="55" name="LARA_GRABBODY" description="Lara oomph! (hitting wall after grabbing ledge)" />
-        <sound id="56" name="LARA_GRABFEET" description="Footstep/ledge shimmy by Lara?" />
-        <sound id="57" name="LARA_SWITCHUP" description="Metal-lever reset" />
-        <sound id="58" name="GLASS_BREAK" description="Glass breaking" />
-        <sound id="59" name="WATER_LOOP" description="Waterfall and gurgle" />
-        <sound id="60" name="UNDERWATER" description="Underwater ambience" />
-        <sound id="61" name="UNDERWATER_SWITCH" description="Underwater lever pull" />
-        <sound id="62" name="LARA_PICKUP" description="Lara aha! (picked up something)" />
-        <sound id="63" name="BLOCK_SOUND" description="Block sliding" />
-        <sound id="64" name="DOOR" description="Door opening" />
-        <sound id="65" name="SWING" description="Something swinging" />
-        <sound id="66" name="ROCK_FALL_CRUMBLE" description="Brittle ground" />
-        <sound id="67" name="ROCK_FALL_LAND" description="Brittle ground breaking away/falling" />
-        <sound id="68" name="ROCK_FALL_SOLID" description="Brittle ground hitting solid ground" />
-        <sound id="69" name="ENEMY_FEET" description="Enemy footstep" t5m="485"/>
-        <sound id="70" name="ENEMY_GRUNT" description="Enemy hoo-uh" t5m="496"/>
-        <sound id="71" name="ENEMY_HIT1" description="Enemy hitting Lara 1" t5m="500"/>
-        <sound id="72" name="ENEMY_HIT2" description="Enemy hitting Lara 2" t5m="501"/>
-        <sound id="73" name="ENEMY_DEATH1" description="Enemy wuoh-uoh (dying)" t5m="482"/>
-        <sound id="74" name="ENEMY_JUMP" description="Enemy hoo-eh (jumping up)" t5m="503"/>
-        <sound id="75" name="ENEMY_CLIMBUP" description="Enemy grunt (climbing up)" t5m="480" />
-        <sound id="76" name="ENEMY_CLIMBDOWN" description="Enemy grunt (climbing down)" t5m="478"/>
-        <sound id="77" name="WEAPON_CLATTER" description="Weapon clatter?" t5m="476"/>
-        <sound id="78" name="M16_FIRE" description="Lara firing M-16" t5m="474"/>
-        <sound id="79" name="WATERFALL_LOOP" description="Waterfall" />
-        <sound id="80" name="SWORD_STATUE_DROP" description="Sword statue (drop)" />
-        <sound id="81" name="SWORD_STATUE_LIFT" description="Sword statue (lift)" />
-        <sound id="82" name="PORTCULLIS_UP" description="Metal gate open" />
-        <sound id="83" name="PORTCULLIS_DOWN" description="Metal gate close" />
-        <sound id="84" name="DOG_FEET1" description="Dog footstep?" t5m="525"/>
-        <sound id="85" name="BODY_SLAM" description="Enemy body hitting ground (dying)" />
-        <sound id="86" name="DOG_BARK1" description="Dog bark 1" t5m="526"/>
-        <sound id="87" name="DOG_FEET2" description="Dog footstep"  t5m="525"/>
-        <sound id="88" name="DOG_BARK2" description="Dog bark 2" t5m="527"/>
-        <sound id="89" name="DOG_DEATH" description="Dog yelp (dying)" t5m="529"/>
-        <sound id="90" name="DOG_PANT" description="Dog pant" t5m="528"/>
-        <sound id="91" name="LEOPARD_FEET" description="Leopard/Tiger footstep" t5m="514"/>
-        <sound id="92" name="LEOPARD_ROAR" description="Leopard growl 1" t5m="515"/>
-        <sound id="93" name="LEOPARD_BITE" description="Leopard snarl" t5m="516"/>
-        <sound id="94" name="LEOPARD_STRIKE" description="Leopard growl 2" t5m="517"/>
-        <sound id="95" name="LEOPARD_DEATH" description="Leopard growl-twitch (dying)" t5m="518"/>
-        <sound id="96" name="LEOPARD_GROWL" description="Leopard growl 3" t5m="519"/>
-        <sound id="97" name="RAT_ATTACK" description="Rat squeak" t5m="531"/>
-        <sound id="98" name="RAT_DEATH" description="Rat squeal (dying)" t5m="532"/>
-        <sound id="99" name="TIGER_ROAR" description="Tiger growl 1"  t5m="580"/>
-        <sound id="100" name="TIGER_BITE" description="Tiger growl 2" t5m="521"/>
-        <sound id="101" name="TIGER_STRIKE" description="Tiger growl 3" t5m="522"/>
-        <sound id="102" name="TIGER_DEATH" description="Tiger dying" t5m="523"/>
-        <sound id="103" name="TIGER_GROWL" description="Tiger growl 4" t5m="524" />
-        <sound id="104" name="M16_STOP" description="Echo?" t5m="475"/>
-        <sound id="105" name="EXPLOSION1" description="Explosion" />
-        <sound id="106" name="GROWL" description="Growl?" />
-        <sound id="107" name="SPIDER_JUMP" description="Spider jump" t5m="510"/>
-        <sound id="108" name="MENU_ROTATE" description="Menu-option movement" />
-        <sound id="109" name="MENU_LARA_HOME" description="Menu option: Lara's home" />
-        <sound id="111" name="MENU_SPININ" description="Menu/menu-option popup" />
-        <sound id="112" name="MENU_SPINOUT" description="Menu-option escape" />
-        <sound id="113" name="MENU_STOPWATCH" description="Menu-option select?" />
-        <sound id="114" name="MENU_GUNS" description="Menu-option select" />
-        <sound id="115" name="MENU_PASSPORT" description="Menu game-page turn" />
-        <sound id="116" name="MENU_MEDI" description="Lara sigh (The-e-ere!) from recharge" />
-        <sound id="117" name="ENEMY_HEELS" description="Enemy footstep (clicking)" t5m="499"/>
-        <sound id="118" name="ENEMY_FIRE_SILENCER" description="Enemy firing gun with silencer" t5m="488"/>
-        <sound id="119" name="ENEMY_AH_DYING" description="Enemy ah! (dying)" t5m="479"/>
-        <sound id="120" name="ENEMY_OOH_DYING" description="Enemy oo! (dying)" t5m="484"/>
-        <sound id="121" name="ENEMY_THUMP" description="Enemy thump" t5m="505"/>
-        <sound id="122" name="SPIDER_MOVING" description="Spider moving" t5m="511" />
-        <sound id="123" name="LARA_MINI_LOAD" description="Grenade launcher load (grenade entering)" />
-        <sound id="124" name="LARA_MINI_LOCK" description="Grenade launcher load (grenade settling)" />
-        <sound id="125" name="LARA_MINI_FIRE" description="Fire grenade launcher" />
-        <sound id="126" name="SPIDER_BITE" description="Spider biting Lara?" t5m="512"/>
-        <sound id="127" name="SLAM_DOOR_SLIDE" description="Slamming door slide" />
-        <sound id="128" name="SLAM_DOOR_CLOSE" description="Slamming door close" />
-        <sound id="129" name="EAGLE_SQUAWK" description="Eagle squawk" t5m="533"/>
-        <sound id="130" name="EAGLE_WING_FLAP" description="Eagle-wing flap" t5m="534"/>
-        <sound id="131" name="EAGLE_DEATH" description="Eagle dying squawk" t5m="535"/>
-        <sound id="132" name="CROW_CAW" description="Crow grok!" t5m="536"/>
-        <sound id="133" name="CROW_WING_FLAP" description="Crow-wing flap" t5m="537"/>
-        <sound id="134" name="CROW_DEATH" description="Crow grak! (dying)" t5m="538"/>
-        <sound id="135" name="CROW_ATTACK" description="Crunch?" t5m="539"/>
-        <sound id="136" name="ENEMY_GUN_COCKING" description="Enemy gun cocking" t5m="497"/>
-        <sound id="137" name="ENEMY_FIRE1" description="Enemy gunshot" t5m="490"/>
-        <sound id="138" name="ENEMY_FIRE_TWIRL" description="Enemy gun twirling" t5m="489" />
-        <sound id="139" name="ENEMY_HOLSTER" description="Enemy holstering/unholstering guns" t5m="502"/>
-        <sound id="140" name="ENEMY_BREATH1" description="Enemy heavy breathing" t5m="498"/>
-        <sound id="141" name="ENEMY_CHUCKLE" description="Enemy chuckling (after killing Lara)" t5m="477"/>
-        <sound id="142" name="MONK_POY" description="Monk poy-yaw!" t5m="571"/>
-        <sound id="143" name="MONK_DEATH" description="Monk awu! (dying?)" t5m="568"/>
-        <sound id="145" name="LARA_SPIKE_DEATH" description="Lara oi-ah! (killed by spikes)" />
-        <sound id="146" name="LARA_DEATH3" description="Lara groan (killed by flames/lava)" />
-        <sound id="147" name="ROLLING_BALL" description="Boulder(s)/oildrum(s)/snowballs/etc. rolling" />
-        <sound id="148" name="SANDBAG_SNAP" description="Sandbag snapping" />
-        <sound id="149" name="SANDBAG_HIT" description="Sandbag hitting ground" />
-        <sound id="150" name="LOOP_FOR_SMALL_FIRES" description="Burning" />
-        <sound id="152" name="SKIDOO_START" description="Snowmobile start" />
-        <sound id="153" name="SKIDOO_IDLE" description="Snowmobile idle" />
-        <sound id="154" name="SKIDOO_ACCELERATE" description="Snowmobile accelerate" />
-        <sound id="155" name="SKIDOO_MOVING" description="Snowmobile (high engine RPM)" />
-        <sound id="156" name="SKIDOO_STOP" description="Snowmobile shut off" />
-        <sound id="157" name="ENEMY_FIRE2" description="Enemy gunshot" t5m="491"/>
-        <sound id="158" name="ENEMY_DEATH2" description="Enemy oo-ah (dying)" t5m="483"/>
-        <sound id="159" name="ENEMY_BREATH2" description="Enemy heavy breathing" t5m="498"/>
-        <sound id="160" name="STICK_TAP" description="Stick tapping" />
-        <sound id="161" name="TRAPDOOR_OPEN" description="Floor trapdoor open" />
-        <sound id="162" name="TRAPDOOR_CLOSE" description="Floor trapdoor close" />
-        <sound id="163" name="YETI_GROWL" description="Yeti growl" t5m="542"/>
-        <sound id="164" name="YETI_CHEST_BEAT" description="Yeti chest beat" t5m="540"/>
-        <sound id="165" name="YETI_THUMP" description="Yeti thump?" t5m="549"/>
-        <sound id="166" name="YETI_GRUNT1" description="Yeti grunt and chest beat" t5m="546" />
-        <sound id="167" name="YETI_SCREAM" description="Yeti scream" t5m="548"/>
-        <sound id="168" name="YETI_DEATH" description="Yeti scream (dying)" t5m="550"/>
-        <sound id="169" name="YETI_GROWL1" description="Yeti growl 1" t5m="543"/>
-        <sound id="170" name="YETI_GROWL2" description="Yeti growl 2" t5m="544"/>
-        <sound id="171" name="YETI_GRUNT2" description="Yeti grunt" t5m="547"/>
-        <sound id="172" name="YETI_GROWL3" description="Yeti growl 3 (also bird monster)" t5m="545"/>
-        <sound id="173" name="YETI_FEET" description="Yeti footstep" t5m="541"/>
-        <sound id="174" name="ENEMY_HEAVY_BREATH" description="Enemy heavy breathing" t5m="498"/>
-        <sound id="175" name="ENEMY_FLAMETHROWER_FIRE" description="Enemy flamethrower flame" t5m="494"/>
-        <sound id="176" name="ENEMY_FLAMETHROWER_SCRAPE" description="Enemy flamethrower scrape" t5m="495"/>
-        <sound id="177" name="ENEMY_FLAMETHROWER_CLICK" description="Enemy flamethrower click" t5m="492"/>
-        <sound id="178" name="ENEMY_FLAMETHROWER_DEATH" description="Enemy fshoo-ah-oo-we (dying)" t5m="493"/>
-        <sound id="179" name="ENEMY_FLAMETHROWER_FALL" description="Enemy flamethrower pack hitting ground (dying)" t5m="493"/>
-        <sound id="180" name="ENEMY_BELT_JINGLE" description="Enemy belt jingle" t5m="476"/>
-        <sound id="181" name="ENEMY_WRENCH" description="Wrench ching (enemy)" t5m="506"/>
-        <sound id="182" name="FOOTSTEP" description="Footstep?" />
-        <sound id="183" name="FOOTSTEP_HIT" description="Footstep/Lara hit?" />
-        <sound id="184" name="ENEMY_COCKING_SHOTGUN" description="Enemy cocking shotgun" t5m="481"/>
-        <sound id="186" name="SCUBA_DIVER_FLIPPER" description="Underwater bubbles" />
-        <sound id="188" name="SCUBA_DIVER_BREATH" description="Scuba-diver airflow" />
-        <sound id="190" name="PULLEY_CRANE" description="Pulley crane-block movement" />
-        <sound id="191" name="CURTAIN" description="Curtain open/close" />
-        <sound id="192" name="SCUBA_DIVER_DEATH" description="Scuba diver dying" />
-        <sound id="193" name="SCUBA_DIVER_DIVING" description="Underwater gurgle" />
-        <sound id="194" name="BOAT_START" description="Boat start" />
-        <sound id="195" name="BOAT_IDLE" description="Boat idle" />
-        <sound id="196" name="BOAT_ACCELERATE" description="Boat accelerate" />
-        <sound id="197" name="BOAT_MOVING" description="Boat (high engine RPM)" />
-        <sound id="198" name="BOAT_STOP" description="Boat shut off" />
-        <sound id="199" name="BOAT_SLOW_DOWN" description="Boat (engine hit)" />
-        <sound id="200" name="BOAT_HIT" description="Boat (body hit)" />
-        <sound id="201" name="CLATTER_1" description="Clatter 1" />
-        <sound id="202" name="CLATTER_2" description="Clatter 2" />
-        <sound id="203" name="CLATTER_3" description="Clatter 3" />
-        <sound id="204" name="DOOR_SLIDE" description="Door slide" />
-        <sound id="205" name="LARA_FLESH_WOUND" description="Lara flesh wound" />
-        <sound id="206" name="SAW_REVVING" description="saw (high RPM)" />
-        <sound id="207" name="SAW_STOP" description="saw switched off" />
-        <sound id="208" name="DOOR_CHIME" description="Bell chime" />
-        <sound id="209" name="CHAIN_CREAK_SNAP" description="? chain creaking / something snapping?" />
-        <sound id="210" name="SWINGING" description="? swinging" />
-        <sound id="211" name="BREAKING1" description="? breaking?" />
-        <sound id="212" name="PULLEY_MOVE" description="Pulley movement" />
-        <sound id="213" name="AIRPLANE_IDLE" description="Airplane engine idle" />
-        <sound id="215" name="UNDERWATER_FAN_ON" description="Underwater fan" />
-        <sound id="217" name="SMALL_FAN_ON" description="Vent fan" />
-        <sound id="218" name="SWINGING_BOX_BAG" description="Swinging box/sandbag/spiky ball" />
-        <sound id="219" name="JUMP_PAD_UP" description="Jump pad upward" />
-        <sound id="220" name="JUMP_PAD_DOWN" description="Jump pad downward" />
-        <sound id="221" name="BREAKING2" description="Something breaking?" />
-        <sound id="222" name="SNOWBALL_ROLL" description="ball/rock/snowballs/etc rolling" />
-        <sound id="223" name="SNOWBALL_STOP" description="ball/rock/snowballs/etc settling" />
-        <sound id="224" name="ROLLING" description="Rolling?" />
-        <sound id="225" name="ROLLING_STOP1" description="Crash?" />
-        <sound id="226" name="ROLLING_STOP2" description="Crash?" />
-        <sound id="227" name="ROLLING2" description="Something rolling" />
-        <sound id="228" name="ROLLING2_HIT" description="Something hitting wall/settling" />
-        <sound id="229" name="SIDE_BLADE_SWING" description="Blade slice-hit" />
-        <sound id="230" name="SIDE_BLADE_BACK" description="Blade ching" />
-        <sound id="231" name="ROLLING_BLADE" description="Rolling spike-wheel" />
-        <sound id="232" name="ICILE_DETACH" description="Icicle detaching" />
-        <sound id="233" name="ICICLE_HIT" description="Icicle hitting ground" />
-        <sound id="234" name="ROTATING_HANDLE_LOOSE" description="Rotating-handle loosen" />
-        <sound id="235" name="ROTATING_HANDLE_TURN" description="Rotating-handle turn" />
-        <sound id="236" name="ROTATING_HANDLE_OPEN" description="Rotating-handle door-latch open" />
-        <sound id="237" name="ROTATING_HANDLE_CREAK" description="Rotating-handle door creak and latch" />
-        <sound id="238" name="MONK_FEET" description="Monk footstep" t5m="569"/>
-        <sound id="239" name="MONK_SWORD_SWING1" description="Monk sword swing (single)" t5m="576"/>
-        <sound id="240" name="MONK_SWORD_SWING2" description="Monk sword swing (multi)" t5m="577"/>
-        <sound id="241" name="MONK_SHOUT1" description="Monk shout 1" t5m="572"/>
-        <sound id="242" name="MONK_SHOUT2" description="Monk shout 2" t5m="573"/>
-        <sound id="243" name="MONK_SHOUT3" description="Monk shout 3" t5m="574"/>
-        <sound id="244" name="MONK_SHOUT4" description="Monk shout 4" t5m="575"/>
-        <sound id="245" name="MONK_CRUNCH" description="Crunch?" />
-        <sound id="246" name="MONK_BREATH" description="Enemy/monk heavy breathing" t5m="566"/>
-        <sound id="247" name="SPLASH_SURFACE" description="Splash (surfacing)" />
-        <sound id="248" name="WATERFALL1" description="Waterfall" />
-        <sound id="249" name="ENEMY_FEET_SNOW" description="Enemy footstep in snow" t5m="486"/>
-        <sound id="250" name="ENEMY_FIRE3" description="Enemy gunshot" />
-        <sound id="251" name="ENEMY_FIRE_SEMIAUTO" description="Enemy semiauto gunshot" t5m="487"/>
-        <sound id="252" name="ENEMY_DEATH3" description="Enemy ahaga-hoog-uh! (dying)" />
-        <sound id="253" name="ENEMY_DEATH4" description="Enemy euuuh! (dying)" />
-        <sound id="254" name="CIRCLE_BLADE" description="Shooting-circle blade" />
-        <sound id="255" name="KNIFETHROWER_FEET" description="Knifethrower footstep" />
-        <sound id="256" name="MONK_OYE" description="Monk oye!" t5m="570"/>
-        <sound id="257" name="MONK_AWEH" description="Monk aweh!" t5m="567"/>
-        <sound id="258" name="CIRCLE_BLADE_HIT" description="Shooting circle blade hit" />
-        <sound id="259" name="KNIFETHROWER_WARRIOR_FEET" description="Knifethrower/warrior footstep" />
-        <sound id="260" name="WARRIOR_BLADE_SWING1" description="Warrior blade swing?" t5m="579"/>
-        <sound id="261" name="WARRIOR_BLADE_SWING2" description="Warrior blade swing?" t5m="580"/>
-        <sound id="262" name="WARRIOR_GROWL" description="Warrior growl" />
-        <sound id="263" name="KNIFETHROWER_HICCUP" description="Knifethrower hiccup (throwing a knife)" />
-        <sound id="264" name="WARROPR_BURP" description="Warrior burp, wuuhh!" t5m="589"/>
-        <sound id="265" name="WARRIOR_GROWL1" description="Warrior growl-burp" t5m="582"/>
-        <sound id="267" name="WARRIOR_WAKE" description="Warrior awaken" t5m="588"/>
-        <sound id="268" name="WARRIOR_GROWL2" description="Warrior growl-burp?" t5m="583"/>
-        <sound id="269" name="SMALL_SWITCH" description="Lever pull" />
-        <sound id="278" name="CHAIN_PULLEY" description="Chain pulley" />
-        <sound id="279" name="DEATH_SLIDE_GRAB" description="Lara zipline handle grab" />
-        <sound id="280" name="DEATH_SLIDE_GO" description="Lara zipline slide" />
-        <sound id="281" name="DEATH_SLIDE_STOP" description="Lara zipline handle hit" />
-        <sound id="282" name="BODY_SLUMP" description="Body slump?" />
-        <sound id="283" name="BOWL_TIPPING" description="Big bowl tipping" />
-        <sound id="284" name="BOWL_POUR" description="Pouring from big bowl" />
-        <sound id="285" name="WATERFALL2" description="Waterfall?" />
-        <sound id="286" name="ELEVATOR_OPEN" description="Elevator door open" />
-        <sound id="287" name="ELEVATOR_CLOSE" description="Elevator door close" />
-        <sound id="288" name="MINISUB_CLATTER1" description="Minisub clatter 1" />
-        <sound id="289" name="MINISUB_CLATTER2" description="Minisub clatter 2" />
-        <sound id="290" name="MINISUB_CLATTER3" description="Minisub clatter 3" />
-        <sound id="291" name="BIRD_MONSTER_SCREAM" description="Bird monster scream" t5m="551"/>
-        <sound id="292" name="BIRD_MONSTER_GASP" description="Bird monster gasp, growl?" t5m="552"/>
-        <sound id="293" name="BIRD_MONSTER_BREATH" description="Bird monster hoarse breathing" t5m="553"/>
-        <sound id="294" name="BIRD_MONSTER_FEET" description="Bird monster footstep" t5m="554"/>
-        <sound id="295" name="BIRD_MONSTER_DEATH" description="Bird monster scream (dying)" t5m="555"/>
-        <sound id="296" name="BIRD_MONSTER_SCRAPE" description="Giant spider scrape" t5m="556"/>
-        <sound id="297" name="HELICOPTER_LOOP" description="Helicopter" />
-        <sound id="298" name="DRAGON_FEET" description="Dragon footstep" t5m="557"/>
-        <sound id="299" name="DRAGON_GROWL1" description="Dragon growl 1" t5m="558"/>
-        <sound id="300" name="DRAGON_GROWL2" description="Dragon growl 2" t5m="559"/>
-        <sound id="301" name="DRAGON_FALL" description="Dragon body fall" />
-        <sound id="302" name="DRAGON_BREATH" description="Dragon dying breath" t5m="561"/>
-        <sound id="303" name="DRAGON_GROWL3" description="Dragon growl 3" t5m="560"/>
-        <sound id="304" name="DRAGON_GRUNT" description="Dragon grunt" t5m="562"/>
-        <sound id="305" name="DRAGON_FIRE" description="Dragon fire-breathing" t5m="563" />
-        <sound id="306" name="DRAGON_LEG_LIFT" description="Dragon leg lift" t5m="564"/>
-        <sound id="307" name="DRAGON_LEG_HIT" description="Dragon leg hit" t5m="565"/>
-        <sound id="308" name="WARRIOR_BLADE_SWING3" description="Warrior blade swing" t5m="577"/>
-        <sound id="309" name="WARRIOR_BLADE_SWING_FAST" description="Warrior blade swing (fast)" t5m="578"/>
-        <sound id="311" name="WARRIOR_BREATH_ACTIVE" description="Warrior breath? activation?" t5m="581"/>
-        <sound id="312" name="WARRIOR_HOVER" description="Warrior hover" t5m="585"/>
-        <sound id="313" name="WARRIOR_LANDING" description="Warrior landing" t5m="586"/>
-        <sound id="314" name="WARRIOR_SWORD_CLANK" description="Warrior sword clank (sticking it downward)" />
-        <sound id="315" name="WARRIOR_SWORD_SLICE" description="Warrior? blade slice" t5m="587"/>
-        <sound id="316" name="BIRDS_CHIRP" description="Birds chirping" />
-        <sound id="317" name="CRUNCH1" description="? crunch" />
-        <sound id="318" name="CRUNCH2" description="? crunch" />
-        <sound id="319" name="DOOR_CREAK" description="Door creak and close" />
-        <sound id="320" name="BREAKING3" description="? breaking" />
-        <sound id="321" name="BIG_SPIDER_SNARL" description="Giant spider snarl" t5m="508"/>
-        <sound id="322" name="BIG_SPIDER_FEET" description="Giant spider footstep" t5m="507"/>
-        <sound id="323" name="BIG_SPIDER_DEATH" description="Giant spider snarl (dying)" t5m="509"/>
-        <sound id="324" name="T_REX_ROAR" description="Dragon/T-Rex growl 1" />
-        <sound id="325" name="T_REX_FEET" description="Dragon/T-Rex footstep (also from bird monster)" />
-        <sound id="326" name="T_REX_GROWL1" description="Dragon/T-Rex growl 2" />
-        <sound id="327" name="T_REX_DEATH" description="Dragon/T-Rex growl 3 (dying)" />
-        <sound id="329" name="DRIPS_REVERB" description="Water drip" />
-        <sound id="330" name="STAGE_BACKDROP" description="Stage-backdrop move" />
-        <sound id="331" name="STONE_DOOR_SLIDE" description="Stone door slide" />
-        <sound id="332" name="PLATFORM_ALARM" description="Platform alarm (Star-Trek-like)" />
-        <sound id="333" name="TICK_TOCK" description="Lara's grandfather clock tick" />
-        <sound id="334" name="DOORBELL" description="Lara's house front door chime" />
-        <sound id="335" name="BURGLAR_ALARM" description="Lara's house alarm" />
-        <sound id="336" name="BOAT_ENGINE" description="Boat engine?" />
-        <sound id="337" name="BOAT_INTO_WATER" description="Boat into water?" />
-        <sound id="338" name="UNKNOWN1" description="?" />
-        <sound id="339" name="UNKNOWN2" description="?" />
-        <sound id="340" name="UNKNOWN3" description="?" />
-        <sound id="341" name="UNKNOWN4" description="?" />
-        <sound id="342" name="WINSTON_SHUFFLE" description="Butler shuffle" />
-        <sound id="343" name="WINSTON_FEET" description="Butler footstep" />
-        <sound id="344" name="WINSTON_GRUNT1" description="Butler sounds 1" />
-        <sound id="345" name="WINSTON_GRUNT2" description="Butler sounds 2" />
-        <sound id="346" name="WINSTON_GRUNT3" description="Butler sounds 3" />
-        <sound id="347" name="WINSTON_CUPS" description="Butler cup clatter" />
-        <sound id="348" name="BRITTLE_GROUND_BREAK" description="Brittle ground breaking" />
-		<sound id="349" name="SPIDER_EXPLODE" description="Spider explode (dying)/Lara bullet hit?" t5m="513" />
-        <sound id="350" name="SHARK_BITE" description="Shark bite (also black moray)" />
-        <sound id="351" name="LAVA_BUBBLES" description="Lava bubbling" />
-        <sound id="352" name="EXPLOSION2" description="Explosion?" />
-        <sound id="353" name="BURGLARS" description="Unwelcome guests at Lara's home" />
-        <sound id="354" name="ZIPPER" description="Zipper?" />
+    <sound id="0" name="LARA_FEET" description="Lara footstep" />
+    <sound id="1" name="LARA_CLIMB2" description="Lara grunt" />
+    <sound id="2" name="LARA_NO" description="Lara no" />
+    <sound id="3" name="LARA_SLIPPING" description="Lara sliding" />
+    <sound id="4" name="LARA_LAND" description="Lara landing on feet" />
+    <sound id="5" name="LARA_CLIMB1" description="Lara hut (stepping up)" />
+    <sound id="6" name="LARA_DRAW" description="Lara unholstering pistols/magnums/UZIs" />
+    <sound id="7" name="LARA_HOLSTER" description="Lara holstering pistols/magnums/UZIs" />
+    <sound id="8" name="LARA_FIRE" description="Lara firing pistols" />
+    <sound id="9" name="LARA_RELOAD" description="Lara cocking shotgun/pistol" />
+    <sound id="10" name="LARA_RICOCHET" description="Bullet ricochet" />
+    <sound id="11" name="LARA_FLARE_IGNITE" description="Lara lighting flare" />
+    <sound id="12" name="LARA_FLARE_BURN" description="Flare burning" /> t5m="373"
+    <sound id="15" name="LARA_HARPOON_FIRE" description="Harpoon firing" t5m="374"/>
+    <sound id="16" name="LARA_HARPOON_LOAD" description="Harpoon reload" />
+    <sound id="17" name="LARA_WET_FEET" description="Lara footstep in shallow water" />
+    <sound id="18" name="LARA_WADE" description="Lara wading in shallow water" />
+    <sound id="20" name="LARA_TREAD" description="Lara treading water" />
+    <sound id="21" name="LARA_FIRE_MAGNUMS" description="Lara firing magnums" />
+    <sound id="22" name="LARA_HARPOON_LOAD_WATER" description="Harpoon reload (underwater)" t5m="375" />
+    <sound id="23" name="LARA_HARPOON_FIRE_WATER" description="Harpoon firing (underwater)" t5m="376"/>
+    <sound id="24" name="MASSIVE_CRASH" description="Massive crash" t5m="668"/>
+    <sound id="25" name="PUSH_SWITCH" description="Lara pressing button" />
+    <sound id="26" name="LARA_CLIMB3" description="Lara uhhh (pulling up)" />
+    <sound id="27" name="LARA_BODYSL" description="Lara oof (hitting wall)" />
+    <sound id="28" name="LARA_SHIMMY" description="Lara shimmy" />
+    <sound id="29" name="LARA_JUMP" description="Lara hut (jumping)" />
+    <sound id="30" name="LARA_FALL" description="Lara scream (falling)" />
+    <sound id="31" name="LARA_INJURY" description="Lara getting hurt" />
+    <sound id="32" name="LARA_ROLL" description="Lara roll" />
+    <sound id="33" name="LARA_SPLASH" description="Splash (Lara into water)" />
+    <sound id="34" name="LARA_GETOUT" description="Splash (Lara surfacing)" />
+    <sound id="35" name="LARA_SWIM" description="Swim (Lara underwater)" />
+    <sound id="36" name="LARA_BREATH" description="Lara catching breath" />
+    <sound id="37" name="LARA_BUBBLES" description="Underwater gurgle" />
+    <sound id="38" name="LARA_SWITCH" description="Lara pulling metal lever" />
+    <sound id="39" name="LARA_KEY" description="Lara inserting key/card" />
+    <sound id="40" name="LARA_OBJECT" description="Lara inserting chip/pryr-whl/scroll/gem/etc." />
+    <sound id="41" name="LARA_GENERAL_DEATH" description="Lara dying 1" />
+    <sound id="42" name="LARA_KNEES_DEATH" description="Lara dying 2" />
+    <sound id="43" name="LARA_UZI_FIRE" description="Lara firing Uzis" />
+    <sound id="44" name="LARA_UZI_STOP" description="Gunshot echo?" />
+    <sound id="45" name="LARA_SHOTGUN" description="Lara firing shotgun" />
+    <sound id="46" name="LARA_BLOCK_PUSH1" description="Lara grunt (starting to push block)" />
+    <sound id="47" name="LARA_BLOCK_PUSH2" description="Lara grunt (pushing block)" />
+    <sound id="48" name="CLICK" description="Click (?)" t5m="644"/>
+    <sound id="49" name="LARA_HIT" description="Something hitting Lara?" />
+    <sound id="50" name="LARA_BULLETHIT" description="Bullet hitting Lara?" />
+    <sound id="51" name="LARA_BLKPULL" description="Lara heh! (pulling up)" />
+    <sound id="52" name="LARA_FLOATING" description="Lara treading water" />
+    <sound id="53" name="LARA_FALLDETH" description="Lara's bones breaking (dying)" />
+    <sound id="54" name="LARA_GRABHAND" description="Ledge grab by Lara" />
+    <sound id="55" name="LARA_GRABBODY" description="Lara oomph! (hitting wall after grabbing ledge)" />
+    <sound id="56" name="LARA_GRABFEET" description="Footstep/ledge shimmy by Lara?" />
+    <sound id="57" name="LARA_SWITCHUP" description="Metal-lever reset" />
+    <sound id="58" name="GLASS_BREAK" description="Glass breaking" t5m="645"/>
+    <sound id="59" name="WATER_LOOP" description="Waterfall and gurgle" />
+    <sound id="60" name="UNDERWATER" description="Underwater ambience" />
+    <sound id="61" name="UNDERWATER_SWITCH" description="Underwater lever pull" />
+    <sound id="62" name="LARA_PICKUP" description="Lara aha! (picked up something)" />
+    <sound id="63" name="BLOCK_SOUND" description="Block sliding" />
+    <sound id="64" name="DOOR" description="Door opening" />
+    <sound id="65" name="SWING" description="Something swinging" t5m="679"/>
+    <sound id="66" name="ROCK_FALL_CRUMBLE" description="Brittle ground" />
+    <sound id="67" name="ROCK_FALL_LAND" description="Brittle ground breaking away/falling" />
+    <sound id="68" name="ROCK_FALL_SOLID" description="Brittle ground hitting solid ground" />
+    <sound id="69" name="ENEMY_FEET" description="Enemy footstep" t5m="485"/>
+    <sound id="70" name="ENEMY_GRUNT" description="Enemy hoo-uh" t5m="496"/>
+    <sound id="71" name="ENEMY_HIT1" description="Enemy hitting Lara 1" t5m="500"/>
+    <sound id="72" name="ENEMY_HIT2" description="Enemy hitting Lara 2" t5m="501"/>
+    <sound id="73" name="ENEMY_DEATH1" description="Enemy wuoh-uoh (dying)" t5m="482"/>
+    <sound id="74" name="ENEMY_JUMP" description="Enemy hoo-eh (jumping up)" t5m="503"/>
+    <sound id="75" name="ENEMY_CLIMBUP" description="Enemy grunt (climbing up)" t5m="480" />
+    <sound id="76" name="ENEMY_CLIMBDOWN" description="Enemy grunt (climbing down)" t5m="478"/>
+    <sound id="77" name="WEAPON_CLATTER" description="Weapon clatter?" t5m="476"/>
+    <sound id="78" name="M16_FIRE" description="Lara firing M-16" t5m="474"/>
+    <sound id="79" name="WATERFALL_LOOP" description="Waterfall" />
+    <sound id="80" name="SWORD_STATUE_DROP" description="Sword statue (drop)" t5m="646"/>
+    <sound id="81" name="SWORD_STATUE_LIFT" description="Sword statue (lift)" t5m="647"/>
+    <sound id="82" name="PORTCULLIS_UP" description="Metal gate open" />
+    <sound id="83" name="PORTCULLIS_DOWN" description="Metal gate close" />
+    <sound id="84" name="DOG_FEET1" description="Dog footstep?" t5m="525"/>
+    <sound id="85" name="BODY_SLAM" description="Enemy body hitting ground (dying)" />
+    <sound id="86" name="DOG_BARK1" description="Dog bark 1" t5m="526"/>
+    <sound id="87" name="DOG_FEET2" description="Dog footstep"  t5m="525"/>
+    <sound id="88" name="DOG_BARK2" description="Dog bark 2" t5m="527"/>
+    <sound id="89" name="DOG_DEATH" description="Dog yelp (dying)" t5m="529"/>
+    <sound id="90" name="DOG_PANT" description="Dog pant" t5m="528"/>
+    <sound id="91" name="LEOPARD_FEET" description="Leopard/Tiger footstep" t5m="514"/>
+    <sound id="92" name="LEOPARD_ROAR" description="Leopard growl 1" t5m="515"/>
+    <sound id="93" name="LEOPARD_BITE" description="Leopard snarl" t5m="516"/>
+    <sound id="94" name="LEOPARD_STRIKE" description="Leopard growl 2" t5m="517"/>
+    <sound id="95" name="LEOPARD_DEATH" description="Leopard growl-twitch (dying)" t5m="518"/>
+    <sound id="96" name="LEOPARD_GROWL" description="Leopard growl 3" t5m="519"/>
+    <sound id="97" name="RAT_ATTACK" description="Rat squeak" t5m="531"/>
+    <sound id="98" name="RAT_DEATH" description="Rat squeal (dying)" t5m="532"/>
+    <sound id="99" name="TIGER_ROAR" description="Tiger growl 1"  t5m="580"/>
+    <sound id="100" name="TIGER_BITE" description="Tiger growl 2" t5m="521"/>
+    <sound id="101" name="TIGER_STRIKE" description="Tiger growl 3" t5m="522"/>
+    <sound id="102" name="TIGER_DEATH" description="Tiger dying" t5m="523"/>
+    <sound id="103" name="TIGER_GROWL" description="Tiger growl 4" t5m="524" />
+    <sound id="104" name="M16_STOP" description="Echo?" t5m="475"/>
+    <sound id="105" name="EXPLOSION1" description="Explosion" />
+    <sound id="106" name="GROWL" description="Growl?" />
+    <sound id="107" name="SPIDER_JUMP" description="Spider jump" t5m="510"/>
+    <sound id="108" name="MENU_ROTATE" description="Menu-option movement" />
+    <sound id="109" name="MENU_LARA_HOME" description="Menu option: Lara's home" />
+    <sound id="111" name="MENU_SPININ" description="Menu/menu-option popup" />
+    <sound id="112" name="MENU_SPINOUT" description="Menu-option escape" />
+    <sound id="113" name="MENU_STOPWATCH" description="Menu-option select?" />
+    <sound id="114" name="MENU_GUNS" description="Menu-option select" />
+    <sound id="115" name="MENU_PASSPORT" description="Menu game-page turn" />
+    <sound id="116" name="MENU_MEDI" description="Lara sigh (The-e-ere!) from recharge" />
+    <sound id="117" name="ENEMY_HEELS" description="Enemy footstep (clicking)" t5m="499"/>
+    <sound id="118" name="ENEMY_FIRE_SILENCER" description="Enemy firing gun with silencer" t5m="488"/>
+    <sound id="119" name="ENEMY_AH_DYING" description="Enemy ah! (dying)" t5m="479"/>
+    <sound id="120" name="ENEMY_OOH_DYING" description="Enemy oo! (dying)" t5m="484"/>
+    <sound id="121" name="ENEMY_THUMP" description="Enemy thump" t5m="505"/>
+    <sound id="122" name="SPIDER_MOVING" description="Spider moving" t5m="511" />
+    <sound id="123" name="LARA_MINI_LOAD" description="Grenade launcher load (grenade entering)" />
+    <sound id="124" name="LARA_MINI_LOCK" description="Grenade launcher load (grenade settling)" />
+    <sound id="125" name="LARA_MINI_FIRE" description="Fire grenade launcher" />
+    <sound id="126" name="SPIDER_BITE" description="Spider biting Lara?" t5m="512"/>
+    <sound id="127" name="SLAM_DOOR_SLIDE" description="Slamming door slide" t5m="680"/>
+    <sound id="128" name="SLAM_DOOR_CLOSE" description="Slamming door close" t5m="681"/>
+    <sound id="129" name="EAGLE_SQUAWK" description="Eagle squawk" t5m="533"/>
+    <sound id="130" name="EAGLE_WING_FLAP" description="Eagle-wing flap" t5m="534"/>
+    <sound id="131" name="EAGLE_DEATH" description="Eagle dying squawk" t5m="535"/>
+    <sound id="132" name="CROW_CAW" description="Crow grok!" t5m="536"/>
+    <sound id="133" name="CROW_WING_FLAP" description="Crow-wing flap" t5m="537"/>
+    <sound id="134" name="CROW_DEATH" description="Crow grak! (dying)" t5m="538"/>
+    <sound id="135" name="CROW_ATTACK" description="Crunch?" t5m="539"/>
+    <sound id="136" name="ENEMY_GUN_COCKING" description="Enemy gun cocking" t5m="497"/>
+    <sound id="137" name="ENEMY_FIRE1" description="Enemy gunshot" t5m="490"/>
+    <sound id="138" name="ENEMY_FIRE_TWIRL" description="Enemy gun twirling" t5m="489" />
+    <sound id="139" name="ENEMY_HOLSTER" description="Enemy holstering/unholstering guns" t5m="502"/>
+    <sound id="140" name="ENEMY_BREATH1" description="Enemy heavy breathing" t5m="498"/>
+    <sound id="141" name="ENEMY_CHUCKLE" description="Enemy chuckling (after killing Lara)" t5m="477"/>
+    <sound id="142" name="MONK_POY" description="Monk poy-yaw!" t5m="571"/>
+    <sound id="143" name="MONK_DEATH" description="Monk awu! (dying?)" t5m="568"/>
+    <sound id="145" name="LARA_SPIKE_DEATH" description="Lara oi-ah! (killed by spikes)" />
+    <sound id="146" name="LARA_DEATH3" description="Lara groan (killed by flames/lava)" />
+    <sound id="147" name="ROLLING_BALL" description="Boulder(s)/oildrum(s)/snowballs/etc. rolling" />
+    <sound id="148" name="SANDBAG_SNAP" description="Sandbag snapping" t5m="648"/>
+    <sound id="149" name="SANDBAG_HIT" description="Sandbag hitting ground" t5m="649"/>
+    <sound id="150" name="LOOP_FOR_SMALL_FIRES" description="Burning" />
+    <sound id="152" name="SKIDOO_START" description="Snowmobile start" t5m="622"/>
+    <sound id="153" name="SKIDOO_IDLE" description="Snowmobile idle" t5m="620"/>
+    <sound id="154" name="SKIDOO_ACCELERATE" description="Snowmobile accelerate" t5m="619"/>
+    <sound id="155" name="SKIDOO_MOVING" description="Snowmobile (high engine RPM)" t5m="621"/>
+    <sound id="156" name="SKIDOO_STOP" description="Snowmobile shut off" t5m="623"/>
+    <sound id="157" name="ENEMY_FIRE2" description="Enemy gunshot" t5m="491"/>
+    <sound id="158" name="ENEMY_DEATH2" description="Enemy oo-ah (dying)" t5m="483"/>
+    <sound id="159" name="ENEMY_BREATH2" description="Enemy heavy breathing" t5m="498"/>
+    <sound id="160" name="STICK_TAP" description="Stick tapping" />
+    <sound id="161" name="TRAPDOOR_OPEN" description="Floor trapdoor open" />
+    <sound id="162" name="TRAPDOOR_CLOSE" description="Floor trapdoor close" />
+    <sound id="163" name="YETI_GROWL" description="Yeti growl" t5m="542"/>
+    <sound id="164" name="YETI_CHEST_BEAT" description="Yeti chest beat" t5m="540"/>
+    <sound id="165" name="YETI_THUMP" description="Yeti thump?" t5m="549"/>
+    <sound id="166" name="YETI_GRUNT1" description="Yeti grunt and chest beat" t5m="546" />
+    <sound id="167" name="YETI_SCREAM" description="Yeti scream" t5m="548"/>
+    <sound id="168" name="YETI_DEATH" description="Yeti scream (dying)" t5m="550"/>
+    <sound id="169" name="YETI_GROWL1" description="Yeti growl 1" t5m="543"/>
+    <sound id="170" name="YETI_GROWL2" description="Yeti growl 2" t5m="544"/>
+    <sound id="171" name="YETI_GRUNT2" description="Yeti grunt" t5m="547"/>
+    <sound id="172" name="YETI_GROWL3" description="Yeti growl 3 (also bird monster)" t5m="545"/>
+    <sound id="173" name="YETI_FEET" description="Yeti footstep" t5m="541"/>
+    <sound id="174" name="ENEMY_HEAVY_BREATH" description="Enemy heavy breathing" t5m="498"/>
+    <sound id="175" name="ENEMY_FLAMETHROWER_FIRE" description="Enemy flamethrower flame" t5m="494"/>
+    <sound id="176" name="ENEMY_FLAMETHROWER_SCRAPE" description="Enemy flamethrower scrape" t5m="495"/>
+    <sound id="177" name="ENEMY_FLAMETHROWER_CLICK" description="Enemy flamethrower click" t5m="492"/>
+    <sound id="178" name="ENEMY_FLAMETHROWER_DEATH" description="Enemy fshoo-ah-oo-we (dying)" t5m="493"/>
+    <sound id="179" name="ENEMY_FLAMETHROWER_FALL" description="Enemy flamethrower pack hitting ground (dying)" t5m="493"/>
+    <sound id="180" name="ENEMY_BELT_JINGLE" description="Enemy belt jingle" t5m="476"/>
+    <sound id="181" name="ENEMY_WRENCH" description="Wrench ching (enemy)" t5m="506"/>
+    <sound id="182" name="FOOTSTEP" description="Footstep?" />
+    <sound id="183" name="FOOTSTEP_HIT" description="Footstep/Lara hit?" />
+    <sound id="184" name="ENEMY_COCKING_SHOTGUN" description="Enemy cocking shotgun" t5m="481"/>
+    <sound id="186" name="SCUBA_DIVER_FLIPPER" description="Underwater bubbles" t5m="595"/>
+    <sound id="188" name="SCUBA_DIVER_BREATH" description="Scuba-diver airflow" t5m="592"/>
+    <sound id="190" name="PULLEY_CRANE" description="Pulley crane-block movement" t5m="670"/>
+    <sound id="191" name="CURTAIN" description="Curtain open/close" t5m="663"/>
+	    <sound id="192" name="SCUBA_DIVER_DEATH" description="Scuba diver dying" t5m="593"/>
+	    <sound id="193" name="SCUBA_DIVER_DIVING" description="Underwater gurgle" t5m="594"/>
+	    <sound id="194" name="BOAT_START" description="Boat start" t5m="616"/>
+	    <sound id="195" name="BOAT_IDLE" description="Boat idle" /> t5m="613"
+	    <sound id="196" name="BOAT_ACCELERATE" description="Boat accelerate" t5m="619"/>
+	    <sound id="197" name="BOAT_MOVING" description="Boat (high engine RPM)" t5m="614"/>
+	    <sound id="198" name="BOAT_STOP" description="Boat shut off" t5m="617"/>
+	    <sound id="199" name="BOAT_SLOW_DOWN" description="Boat (engine hit)" t5m="615"/>
+	    <sound id="200" name="BOAT_HIT" description="Boat (body hit)" t5m="611"/>
+	    <sound id="201" name="CLATTER_1" description="Clatter 1" t5m="639"/>
+	    <sound id="202" name="CLATTER_2" description="Clatter 2" t5m="640"/>
+	    <sound id="203" name="CLATTER_3" description="Clatter 3" t5m="641"/>
+	    <sound id="204" name="DOOR_SLIDE" description="Door slide" />
+	    <sound id="205" name="LARA_FLESH_WOUND" description="Lara flesh wound" />
+	    <sound id="206" name="SAW_REVVING" description="saw (high RPM)" t5m="678"/>
+	    <sound id="207" name="SAW_STOP" description="saw switched off" t5m="672"/>
+	    <sound id="208" name="DOOR_CHIME" description="Bell chime" />
+	    <sound id="209" name="CHAIN_CREAK_SNAP" description="? chain creaking / something snapping?" t5m="656"/>
+	    <sound id="210" name="SWINGING" description="? swinging" />
+	    <sound id="211" name="BREAKING1" description="? breaking?" />
+	    <sound id="212" name="PULLEY_MOVE" description="Pulley movement" />
+	    <sound id="213" name="AIRPLANE_IDLE" description="Airplane engine idle" t5m="650"/>
+	    <sound id="215" name="UNDERWATER_FAN_ON" description="Underwater fan" />
+	    <sound id="217" name="SMALL_FAN_ON" description="Vent fan" t5m="673"/>
+	    <sound id="218" name="SWINGING_BOX_BAG" description="Swinging box/sandbag/spiky ball" t5m="683"/>
+	    <sound id="219" name="JUMP_PAD_UP" description="Jump pad upward" t5m="627"/>
+	    <sound id="220" name="JUMP_PAD_DOWN" description="Jump pad downward" t5m="628"/>
+	    <sound id="221" name="BREAKING2" description="Something breaking?" />
+		<sound id="222" name="SNOWBALL_ROLL" description="ball/rock/snowballs/etc rolling" t5m="674" />
+	    <sound id="223" name="SNOWBALL_STOP" description="ball/rock/snowballs/etc settling" t5m="675"/>
+	    <sound id="224" name="ROLLING" description="Rolling?" />
+	    <sound id="225" name="ROLLING_STOP1" description="Crash?" />
+	    <sound id="226" name="ROLLING_STOP2" description="Crash?" />
+	    <sound id="227" name="ROLLING2" description="Something rolling" />
+	    <sound id="228" name="ROLLING2_HIT" description="Something hitting wall/settling" />
+	    <sound id="229" name="SIDE_BLADE_SWING" description="Blade slice-hit" />
+	    <sound id="230" name="SIDE_BLADE_BACK" description="Blade ching" />
+	    <sound id="231" name="ROLLING_BLADE" description="Rolling spike-wheel" t5m="671"/>
+	    <sound id="232" name="ICILE_DETACH" description="Icicle detaching" t5m="666"/>
+	    <sound id="233" name="ICICLE_HIT" description="Icicle hitting ground" t5m="667"/>
+	    <sound id="234" name="ROTATING_HANDLE_LOOSE" description="Rotating-handle loosen" t5m="635"/>
+	    <sound id="235" name="ROTATING_HANDLE_TURN" description="Rotating-handle turn" t5m="636"/>
+	    <sound id="236" name="ROTATING_HANDLE_OPEN" description="Rotating-handle door-latch open" t5m="637"/>
+	    <sound id="237" name="ROTATING_HANDLE_CREAK" description="Rotating-handle door creak and latch" t5m="6638"/>
+	    <sound id="238" name="MONK_FEET" description="Monk footstep" t5m="569"/>
+	    <sound id="239" name="MONK_SWORD_SWING1" description="Monk sword swing (single)" t5m="576"/>
+	    <sound id="240" name="MONK_SWORD_SWING2" description="Monk sword swing (multi)" t5m="577"/>
+	    <sound id="241" name="MONK_SHOUT1" description="Monk shout 1" t5m="572"/>
+	    <sound id="242" name="MONK_SHOUT2" description="Monk shout 2" t5m="573"/>
+	    <sound id="243" name="MONK_SHOUT3" description="Monk shout 3" t5m="574"/>
+	    <sound id="244" name="MONK_SHOUT4" description="Monk shout 4" t5m="575"/>
+	    <sound id="245" name="MONK_CRUNCH" description="Crunch?" t5m="642"/>
+	    <sound id="246" name="MONK_BREATH" description="Enemy/monk heavy breathing" t5m="566"/>
+	    <sound id="247" name="SPLASH_SURFACE" description="Splash (surfacing)" />
+	    <sound id="248" name="WATERFALL1" description="Waterfall" />
+	    <sound id="249" name="ENEMY_FEET_SNOW" description="Enemy footstep in snow" t5m="486"/>
+	    <sound id="250" name="ENEMY_FIRE3" description="Enemy gunshot" />
+	    <sound id="251" name="ENEMY_FIRE_SEMIAUTO" description="Enemy semiauto gunshot" t5m="487"/>
+	    <sound id="252" name="ENEMY_DEATH3" description="Enemy ahaga-hoog-uh! (dying)" />
+	    <sound id="253" name="ENEMY_DEATH4" description="Enemy euuuh! (dying)" />
+	    <sound id="254" name="CIRCLE_BLADE" description="Shooting-circle blade" t5m="657"/>
+	    <sound id="255" name="KNIFETHROWER_FEET" description="Knifethrower footstep" t5m="629"/>
+	    <sound id="256" name="MONK_OYE" description="Monk oye!" t5m="570"/>
+	    <sound id="257" name="MONK_AWEH" description="Monk aweh!" t5m="567"/>
+	    <sound id="258" name="CIRCLE_BLADE_HIT" description="Shooting circle blade hit" t5m="656"/>
+	    <sound id="259" name="KNIFETHROWER_WARRIOR_FEET" description="Knifethrower/warrior footstep" t5m="631"/>
+	    <sound id="260" name="WARRIOR_BLADE_SWING1" description="Warrior blade swing?" t5m="579"/>
+	    <sound id="261" name="WARRIOR_BLADE_SWING2" description="Warrior blade swing?" t5m="580"/>
+	    <sound id="262" name="WARRIOR_GROWL" description="Warrior growl" />
+	    <sound id="263" name="KNIFETHROWER_HICCUP" description="Knifethrower hiccup (throwing a knife)" t5m="601"/>
+	    <sound id="264" name="WARROPR_BURP" description="Warrior burp, wuuhh!" t5m="589"/>
+	    <sound id="265" name="WARRIOR_GROWL1" description="Warrior growl-burp" t5m="582"/>
+	    <sound id="267" name="WARRIOR_WAKE" description="Warrior awaken" t5m="588"/>
+	    <sound id="268" name="WARRIOR_GROWL2" description="Warrior growl-burp?" t5m="583"/>
+	    <sound id="269" name="SMALL_SWITCH" description="Lever pull" />
+	    <sound id="278" name="CHAIN_PULLEY" description="Chain pulley" />
+	    <sound id="279" name="DEATH_SLIDE_GRAB" description="Lara zipline handle grab" t5m="625"/>
+	    <sound id="280" name="DEATH_SLIDE_GO" description="Lara zipline slide" t5m="624"/>
+	    <sound id="281" name="DEATH_SLIDE_STOP" description="Lara zipline handle hit" t5m="626"/>
+	    <sound id="282" name="BODY_SLUMP" description="Body slump?" t5m="662"/>
+	    <sound id="283" name="BOWL_TIPPING" description="Big bowl tipping" t5m="653"/>
+	    <sound id="284" name="BOWL_POUR" description="Pouring from big bowl" t5m="652"/>
+	    <sound id="285" name="WATERFALL2" description="Waterfall?" />
+	    <sound id="286" name="ELEVATOR_OPEN" description="Elevator door open" t5m="660"/>
+	    <sound id="287" name="ELEVATOR_CLOSE" description="Elevator door close" t5m="661"/>
+	    <sound id="288" name="MINISUB_CLATTER1" description="Minisub clatter 1" t5m="632"/>
+	    <sound id="289" name="MINISUB_CLATTER2" description="Minisub clatter 2" t5m="633"/>
+	    <sound id="290" name="MINISUB_CLATTER3" description="Minisub clatter 3" t5m="634"/>
+	    <sound id="291" name="BIRD_MONSTER_SCREAM" description="Bird monster scream" t5m="551"/>
+	    <sound id="292" name="BIRD_MONSTER_GASP" description="Bird monster gasp, growl?" t5m="552"/>
+	    <sound id="293" name="BIRD_MONSTER_BREATH" description="Bird monster hoarse breathing" t5m="553"/>
+	    <sound id="294" name="BIRD_MONSTER_FEET" description="Bird monster footstep" t5m="554"/>
+	    <sound id="295" name="BIRD_MONSTER_DEATH" description="Bird monster scream (dying)" t5m="555"/>
+	    <sound id="296" name="BIRD_MONSTER_SCRAPE" description="Giant spider scrape" t5m="556"/>
+	    <sound id="297" name="HELICOPTER_LOOP" description="Helicopter" t5m="665"/>
+	    <sound id="298" name="DRAGON_FEET" description="Dragon footstep" t5m="557"/>
+	    <sound id="299" name="DRAGON_GROWL1" description="Dragon growl 1" t5m="558"/>
+	    <sound id="300" name="DRAGON_GROWL2" description="Dragon growl 2" t5m="559"/>
+	    <sound id="301" name="DRAGON_FALL" description="Dragon body fall" />
+	    <sound id="302" name="DRAGON_BREATH" description="Dragon dying breath" t5m="561"/>
+	    <sound id="303" name="DRAGON_GROWL3" description="Dragon growl 3" t5m="560"/>
+	    <sound id="304" name="DRAGON_GRUNT" description="Dragon grunt" t5m="562"/>
+	    <sound id="305" name="DRAGON_FIRE" description="Dragon fire-breathing" t5m="563" />
+	    <sound id="306" name="DRAGON_LEG_LIFT" description="Dragon leg lift" t5m="564"/>
+	    <sound id="307" name="DRAGON_LEG_HIT" description="Dragon leg hit" t5m="565"/>
+	    <sound id="308" name="WARRIOR_BLADE_SWING3" description="Warrior blade swing" t5m="577"/>
+	    <sound id="309" name="WARRIOR_BLADE_SWING_FAST" description="Warrior blade swing (fast)" t5m="578"/>
+	    <sound id="311" name="WARRIOR_BREATH_ACTIVE" description="Warrior breath? activation?" t5m="581"/>
+	    <sound id="312" name="WARRIOR_HOVER" description="Warrior hover" t5m="585"/>
+	    <sound id="313" name="WARRIOR_LANDING" description="Warrior landing" t5m="586"/>
+	    <sound id="314" name="WARRIOR_SWORD_CLANK" description="Warrior sword clank (sticking it downward)" />
+	    <sound id="315" name="WARRIOR_SWORD_SLICE" description="Warrior? blade slice" t5m="587"/>
+	    <sound id="316" name="BIRDS_CHIRP" description="Birds chirping" t5m="651"/>
+	    <sound id="317" name="CRUNCH1" description="? crunch" t5m="641"/>
+	    <sound id="318" name="CRUNCH2" description="? crunch" t5m="642"/>
+	    <sound id="319" name="DOOR_CREAK" description="Door creak and close" />
+	    <sound id="320" name="BREAKING3" description="? breaking" />
+	    <sound id="321" name="BIG_SPIDER_SNARL" description="Giant spider snarl" t5m="508"/>
+	    <sound id="322" name="BIG_SPIDER_FEET" description="Giant spider footstep" t5m="507"/>
+	    <sound id="323" name="BIG_SPIDER_DEATH" description="Giant spider snarl (dying)" t5m="509"/>
+	    <sound id="324" name="T_REX_ROAR" description="Dragon/T-Rex growl 1" />
+	    <sound id="325" name="T_REX_FEET" description="Dragon/T-Rex footstep (also from bird monster)" />
+	    <sound id="326" name="T_REX_GROWL1" description="Dragon/T-Rex growl 2" />
+	    <sound id="327" name="T_REX_DEATH" description="Dragon/T-Rex growl 3 (dying)" />
+	    <sound id="329" name="DRIPS_REVERB" description="Water drip" t5m="662"/>
+	    <sound id="330" name="STAGE_BACKDROP" description="Stage-backdrop move" t5m="676"/>
+	    <sound id="331" name="STONE_DOOR_SLIDE" description="Stone door slide" />
+	    <sound id="332" name="PLATFORM_ALARM" description="Platform alarm (Star-Trek-like)" t5m="669" />
+	    <sound id="333" name="TICK_TOCK" description="Lara's grandfather clock tick" />
+	    <sound id="334" name="DOORBELL" description="Lara's house front door chime" t5m="659"/>
+	    <sound id="335" name="BURGLAR_ALARM" description="Lara's house alarm" t5m="654"/>
+	    <sound id="336" name="BOAT_ENGINE" description="Boat engine?" t5m="610"/>
+	    <sound id="337" name="BOAT_INTO_WATER" description="Boat into water?" />
+	    <sound id="338" name="UNKNOWN1" description="?" />
+	    <sound id="339" name="UNKNOWN2" description="?" />
+	    <sound id="340" name="UNKNOWN3" description="?" />
+	    <sound id="341" name="UNKNOWN4" description="?" />
+	    <sound id="342" name="WINSTON_SHUFFLE" description="Butler shuffle" t5m="608"/>
+	    <sound id="343" name="WINSTON_FEET" description="Butler footstep" t5m="601"/>
+	    <sound id="344" name="WINSTON_GRUNT1" description="Butler sounds 1" t5m="605"/>
+	    <sound id="345" name="WINSTON_GRUNT2" description="Butler sounds 2" t5m="606"/>
+	    <sound id="346" name="WINSTON_GRUNT3" description="Butler sounds 3" t5m="607"/>
+	    <sound id="347" name="WINSTON_CUPS" description="Butler cup clatter" t5m="599"/>
+	    <sound id="348" name="BRITTLE_GROUND_BREAK" description="Brittle ground breaking" />
+	    <sound id="349" name="SPIDER_EXPLODE" description="Spider explode (dying)/Lara bullet hit?" t5m="513" />
+	    <sound id="350" name="SHARK_BITE" description="Shark bite (also black moray)" t5m="596"/>
+	    <sound id="351" name="LAVA_BUBBLES" description="Lava bubbling" />
+	    <sound id="352" name="EXPLOSION2" description="Explosion?" />
+	    <sound id="353" name="BURGLARS" description="Unwelcome guests at Lara's home" t5m="655"/>
+	    <sound id="354" name="ZIPPER" description="Zipper?" />
     </sounds>
     <animations>
         <anim item="0" id="160" name="STAND_TO_LADDER" />
@@ -1796,14 +1796,14 @@
         <sound id="183" name="VULTURE_ATTACK" description="Vulture cry" />
         <sound id="184" name="VULTURE_DIE" description="Vulture dying" />
         <sound id="185" name="VULTURE_GLIDE" description="Vulture biting?" />
-        <sound id="186" name="SCUBA_DIVER_FLIPPER" description="Underwater" />
-        <sound id="187" name="SCUBA_DIVER_ARM" description="Bubbles" />
-        <sound id="188" name="SCUBA_DIVER_BREATH_W" description="Scuba-diver airflow 1" />
-        <sound id="189" name="SCUBA_DIVER_BREATH_S" description="Scuba-diver airflow 2" />
+        <sound id="186" name="SCUBA_DIVER_FLIPPER" description="Underwater" t5m="595"/>
+        <sound id="187" name="SCUBA_DIVER_ARM" description="Bubbles" t5m="590"/>
+        <sound id="188" name="SCUBA_DIVER_BREATH_W" description="Scuba-diver airflow 1" t5m="592"/>
+        <sound id="189" name="SCUBA_DIVER_BREATH_S" description="Scuba-diver airflow 2" t5m="591"/>
         <sound id="190" name="LONDON_MERCENARY_DEATH" description="Goon dying" />
         <sound id="191" name="CLEANER_LOOP" description="Thames Wharf machine" />
-        <sound id="192" name="SCUBA_DIVER_DEATH" description="Scuba-diver dying?" />
-        <sound id="193" name="SCUBA_DIVER_DIVING" description="Bubbles" />
+        <sound id="192" name="SCUBA_DIVER_DEATH" description="Scuba-diver dying?" t5m="593"/>
+        <sound id="193" name="SCUBA_DIVER_DIVING" description="Bubbles" t5m="594" />
         <sound id="194" name="BOAT_START" description="Boat start" />
         <sound id="195" name="BOAT_IDLE" description="Boat idle" />
         <sound id="196" name="BOAT_ACCELERATE" description="Boat accelerate" />
@@ -1908,14 +1908,14 @@
         <sound id="305" name="SECURITY_GUARD_FIRE" description="Guard firing gun" />
         <sound id="306" name="SECURITY_GUARD_DEATH" description="Guard dying" />
         <sound id="307" name="LAZER_LOOP" description="Laser sweeper hum" />
-        <sound id="308" name="WINSTON_BRUSH_OFF" description="Butler shuffle" />
-        <sound id="309" name="WINSTON_CUPS" description="Butler tray-contents clank" />
-        <sound id="310" name="WINSTON_HU!" description="Butler eh, oo, ooehoo" />
-        <sound id="311" name="WINSTON_BULLET_TRAY" description="Butler's shield hit" />
-        <sound id="312" name="WINSTON_FOOTSTEPS" description="Butler footstep" />
-        <sound id="313" name="WINSTON_TAKE_HIT" description="Butler oo, ouh" />
-        <sound id="314" name="WINSTON_GET_UP" description="Butler oo , aooh" />
-        <sound id="315" name="WINSTON_FART!" description="Butler fart" />
+        <sound id="308" name="WINSTON_BRUSH_OFF" description="Butler shuffle" t5m="597"/>
+        <sound id="309" name="WINSTON_CUPS" description="Butler tray-contents clank" t5m="599"/>
+        <sound id="310" name="WINSTON_HU!" description="Butler eh, oo, ooehoo" t5m="603"/>
+        <sound id="311" name="WINSTON_BULLET_TRAY" description="Butler's shield hit" t5m="598"/>
+        <sound id="312" name="WINSTON_FOOTSTEPS" description="Butler footstep" t5m="601"/>
+        <sound id="313" name="WINSTON_TAKE_HIT" description="Butler oo, ouh" t5m="604"/>
+        <sound id="314" name="WINSTON_GET_UP" description="Butler oo , aooh" t5m="602"/>
+        <sound id="315" name="WINSTON_FART!" description="Butler fart" t5m="600"/>
         <sound id="316" name="WALL_BLADES" description="Slicing disk" />
         <sound id="317" name="MACAQUE_CHATTER" description="Monkey chitter" />
         <sound id="318" name="MACAQUE_ROLL" description="Monkey rolling over / Snake falling" />
