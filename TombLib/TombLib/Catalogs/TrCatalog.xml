@@ -1125,8 +1125,8 @@
 	<sound id="226" name="ROLLING_STOP2" description="Crash?" />
 	<sound id="227" name="ROLLING2" description="Something rolling" />
 	<sound id="228" name="ROLLING2_HIT" description="Something hitting wall/settling" />
-	<sound id="229" name="SIDE_BLADE_SWING" description="Blade slice-hit" />
-	<sound id="230" name="SIDE_BLADE_BACK" description="Blade ching" />
+	<sound id="229" name="SIDE_BLADE_SWING" description="Blade slice-hit" t5m="865" />
+	<sound id="230" name="SIDE_BLADE_BACK" description="Blade ching" t5m="864"/>
 	<sound id="231" name="ROLLING_BLADE" description="Rolling spike-wheel" t5m="671"/>
 	<sound id="232" name="ICILE_DETACH" description="Icicle detaching" t5m="666"/>
 	<sound id="233" name="ICICLE_HIT" description="Icicle hitting ground" t5m="667"/>
@@ -1687,22 +1687,22 @@
         <sound id="65" name="HELICOPTER_LOOP" description="Helicopter" />
         <sound id="66" name="ROCK_FALL_CRUMBLE" description="Brittle ground" />
         <sound id="67" name="ROCK_FALL_LAND" description="Brittle ground breaking away/falling" />
-        <sound id="68" name="JET_FLY_BY" description="Close-flying jet airplane" />
-        <sound id="69" name="STALEGTITE" description="Chain clank?" />
+        <sound id="68" name="JET_FLY_BY" description="Close-flying jet airplane" t5m="846" />
+        <sound id="69" name="STALEGTITE" description="Chain clank?" t5m="879"/>
         <sound id="70" name="LARA_THUD" description="Enemy hitting Lara" />
         <sound id="71" name="GENERIC_SWOOSH" description="Enemy swinging" />
-        <sound id="72" name="OIL_SMG_FIRE" description="Enemy firing gun" />
-        <sound id="73" name="CITY_PORTCULLIS" description="Something swinging" />
+        <sound id="72" name="OIL_SMG_FIRE" description="Enemy firing gun" t5m="853"/>
+        <sound id="73" name="CITY_PORTCULLIS" description="Something swinging" t5m="834"/>
         <sound id="74" name="SWINGING_FLAMES" description="Tinnos brazier swinging" />
-        <sound id="75" name="SPINING_HOOKS" description="Tinnos statue turning?" />
+        <sound id="75" name="SPINING_HOOKS" description="Tinnos statue turning?" t5m="877" />
         <sound id="76" name="BLAST_CIRCLE" description="Powered-up enemy disintegrating" t5m="714"/>
         <sound id="77" name="BAZOOKA_FIRE" description="Door slamming? (metallic)" />
         <sound id="78" name="HECKLER&amp;KOCH_FIRE" description="Lara firing MP5" />
         <sound id="79" name="WATERFALL_LOOP" description="Waterfall" />
         <sound id="80" name="CROC_ATTACK" description="Crocodile biting" />
         <sound id="81" name="CROC_DEATH" description="Crocodile dying" />
-        <sound id="82" name="PORTCULLIS_UP" description="Scraping 1?" />
-        <sound id="83" name="PORTCULLIS_DOWN" description="Scraping 2?" />
+        <sound id="82" name="PORTCULLIS_UP" description="Scraping 1?" t5m="857"/>
+        <sound id="83" name="PORTCULLIS_DOWN" description="Scraping 2?" t5m="856"/>
         <sound id="84" name="T_REX_ATTACK" description="T-rex growl (biting, spitting out)" />
         <sound id="86" name="POWER_HUM_LOOP" description="Low hum" />
         <sound id="87" name="T-REX_ROAR" description="T-rex roar" />
@@ -1733,24 +1733,24 @@
         <sound id="115" name="MENU_PASSPORT" description="Menu game-page turn" />
         <sound id="116" name="MENU_MEDI" description="Lara sigh (Ha-a-a!) from recharge" />
         <sound id="117" name="LARA_CLIMB_WALLS_NOISE" description="Enemy footstep" />
-        <sound id="119" name="TARGET_HITS" description="Hit on assault-course target" />
-        <sound id="120" name="TARGET_SMASH" description="Knock over assault-course target" />
+        <sound id="119" name="TARGET_HITS" description="Hit on assault-course target" t5m="885" />
+        <sound id="120" name="TARGET_SMASH" description="Knock over assault-course target" t5m="886"/>
         <sound id="121" name="DESSERT_EAGLE_FIRE" description="Lara firing Desert Eagle" />
         <sound id="123" name="LARA_MINI_LOAD" description="Grenade launcher load (grenade entering)" />
         <sound id="124" name="LARA_MINI_LOCK" description="Grenade launcher load (grenade settling)" />
         <sound id="125" name="LARA_MINI_FIRE" description="Fire grenade launcher" />
-        <sound id="126" name="GATE_OPENING" description="Metallic scraping (door opening/closing)" />
+        <sound id="126" name="GATE_OPENING" description="Metallic scraping (door opening/closing)" t5m="842"/>
         <sound id="127" name="LARA_ELECTRIC_LOOP" description="Buzz 1" />
         <sound id="128" name="LARA_ELECTRIC_CRACKLES" description="Buzz 2" />
         <sound id="129" name="COMMANDER" description="Man in treehouse calling" t5m="801" />
-        <sound id="130" name="SWITCH_COVER" description="Overhead hook in motion" />
-        <sound id="131" name="CLEANER_FUSEBOX" description="Thames Wharf machine electric sparking" />
+        <sound id="130" name="SWITCH_COVER" description="Overhead hook in motion" t5m="884"/>
+        <sound id="131" name="CLEANER_FUSEBOX" description="Thames Wharf machine electric sparking" t5m="835"/>
         <sound id="132" name="CROW_CAW" description="Crow grok!" t5m="536"/>
         <sound id="133" name="CROW_WING_FLAP" description="Crow-wing flap" t5m="537"/>
         <sound id="134" name="CROW_DEATH" description="Crow grak!" t5m="538"/>
         <sound id="135" name="CROW_ATTACK" description="Crow dying" t5m="538"/>
         <sound id="136" name="SOFT_WIND_LOOP" description="Tinnos light-beam wail" />
-        <sound id="137" name="SWAT_SMG_FIRE" description="Enemy gunshot" />
+        <sound id="137" name="SWAT_SMG_FIRE" description="Enemy gunshot" t5m="880" />
         <sound id="138" name="LIZARD_MAN_ATTACK_1" description="Lizard-thing growl 1 (biting)" t5m="789"/>
         <sound id="139" name="LIZARD_MAN_ATTACK_2" description="Lizard-thing growl 2 (biting)" t5m="790"/>
         <sound id="140" name="LIZARD_MAN_DEATH" description="Lizard-thing growl 3 (dying)" t5m="792"/>
@@ -1759,7 +1759,7 @@
         <sound id="143" name="GENERIC_BODY_SLAM" description="Falling" />
         <sound id="145" name="LARA_SPIKE_DEATH" description="Lara uhh! (killed by spikes)" />
         <sound id="147" name="ROLLING_BALL" description="Boulder(s)/oildrum(s)/snowballs/etc. rolling" />
-        <sound id="148" name="TUBE_LOOP" description="Subway train in motion" />
+        <sound id="148" name="TUBE_LOOP" description="Subway train in motion" t5m="890"/>
         <sound id="149" name="RUMBLE_NEXTDOOR" description="Machine growl?" />
         <sound id="150" name="LOOP_FOR_SMALL_FIRES" description="Burning" />
         <sound id="152" name="QUAD_START" description="Quadbike start" t5m="721"/>
@@ -1768,12 +1768,12 @@
         <sound id="155" name="QUAD_MOVE" description="Quadbike fast" t5m="719"/>
         <sound id="156" name="QUAD_STOP" description="Quadbike shut off 2" t5m="722"/>
         <sound id="157" name="BATS_1" description="Footstep?" />
-        <sound id="158" name="LOOP_FOR_GAS_HISS" description="Steam hiss" />
+        <sound id="158" name="LOOP_FOR_GAS_HISS" description="Steam hiss" t5m="849"/>
         <sound id="159" name="LAUNCHER_1" description="Big gun turret / big antenna turning" />
         <sound id="160" name="LAUNCHER_2" description="Big gun turret / big antenna starting/stopping" />
         <sound id="161" name="TRAPDOOR_OPEN" description="Floor trapdoor open (metallic)" />
         <sound id="162" name="TRAPDOOR_CLOSE" description="Floor trapdoor close (metallic)" />
-        <sound id="163" name="RESERVOIR_FLUSH" description="Water rushing through drain" />
+        <sound id="163" name="RESERVOIR_FLUSH" description="Water rushing through drain" t5m="862"/>
         <sound id="164" name="MACAQUE_SATND_WAIT" description="Monkey chitter 1" t5m="815"/>
         <sound id="165" name="MACAQUE_ATTACK_LOW" description="Monkey attack" t5m="810"/>
         <sound id="166" name="MACAQUE_ATTACK_JUMP" description="Monkey attack 2" t5m="809"/>
@@ -1792,16 +1792,16 @@
         <sound id="179" name="DOG_JUMP" description="Dog pant" />
         <sound id="180" name="DOG_GROWL" description="Dog snarl" t5m="530"/>
         <sound id="181" name="DOG_DEATH" description="Dog whimper (dying)" />
-        <sound id="182" name="VULTURE_WING_FLAP" description="Vulture wing flap" />
-        <sound id="183" name="VULTURE_ATTACK" description="Vulture cry" />
-        <sound id="184" name="VULTURE_DIE" description="Vulture dying" />
-        <sound id="185" name="VULTURE_GLIDE" description="Vulture biting?" />
+        <sound id="182" name="VULTURE_WING_FLAP" description="Vulture wing flap" t5m="828" />
+        <sound id="183" name="VULTURE_ATTACK" description="Vulture cry" t5m="825"/>
+        <sound id="184" name="VULTURE_DIE" description="Vulture dying" t5m="826"/>
+        <sound id="185" name="VULTURE_GLIDE" description="Vulture biting?" t5m="827"/>
         <sound id="186" name="SCUBA_DIVER_FLIPPER" description="Underwater" t5m="595"/>
         <sound id="187" name="SCUBA_DIVER_ARM" description="Bubbles" t5m="590"/>
         <sound id="188" name="SCUBA_DIVER_BREATH_W" description="Scuba-diver airflow 1" t5m="592"/>
         <sound id="189" name="SCUBA_DIVER_BREATH_S" description="Scuba-diver airflow 2" t5m="591"/>
         <sound id="190" name="LONDON_MERCENARY_DEATH" description="Goon dying" t5m="808"/>
-        <sound id="191" name="CLEANER_LOOP" description="Thames Wharf machine" />
+        <sound id="191" name="CLEANER_LOOP" description="Thames Wharf machine" t5m="836"/>
         <sound id="192" name="SCUBA_DIVER_DEATH" description="Scuba-diver dying?" t5m="593"/>
         <sound id="193" name="SCUBA_DIVER_DIVING" description="Bubbles" t5m="594" />
         <sound id="194" name="BOAT_START" description="Boat start" t5m="728"/>
@@ -1810,31 +1810,31 @@
         <sound id="197" name="BOAT_MOVING" description="Boat (high engine RPM)" t5m="725"/>
         <sound id="198" name="BOAT_STOP" description="Boat shut off" t5m="729"/>
         <sound id="199" name="BOAT_SLOW_DOWN" description="Boat hit" t5m="727"/>
-        <sound id="200" name="JET_ROOFS" description="High-pitched machine hum" />
+        <sound id="200" name="JET_ROOFS" description="High-pitched machine hum" t5m="847"/>
         <sound id="201" name="QUAD_SIDE_IMPACT" description="Clatter 1" t5m="710"/>
         <sound id="202" name="QUAD_FRONT_IMPACT" description="Clatter 2" t5m="716"/>
         <sound id="203" name="QUAD_LAND" description="Clatter 3" t5m="718"/>
         <sound id="204" name="FLAME_THROWER_LOOP" description="Engine?" />
         <sound id="205" name="RUMMBLE" description="Grinding drum" />
-        <sound id="206" name="DRILL_BIT_1" description="Drill in action" />
-        <sound id="207" name="VERY_SMALL_WINCH" description="Diving bell being lowered" />
-        <sound id="208" name="ALARM_1" description="Alarm klaxon" />
+        <sound id="206" name="DRILL_BIT_1" description="Drill in action" t5m="840" />
+        <sound id="207" name="VERY_SMALL_WINCH" description="Diving bell being lowered" t5m="895" />
+        <sound id="208" name="ALARM_1" description="Alarm klaxon" t5m="833" />
         <sound id="209" name="MINE_CART_TRACK_LOOP" description="Mine cart being pulled by cogs" t5m="735"/>
         <sound id="210" name="MINE_CART_PULLY_LOOP" description="Mine cart coasting" t5m="734"/>
         <sound id="211" name="MINE_CART_CLUNK_START" description="Mine-cart-railway switch throw" t5m="733"/>
-        <sound id="212" name="SAVE_CRYSTAL" description="Whistling?" />
+        <sound id="212" name="SAVE_CRYSTAL" description="Whistling?" t5m="836"/>
         <sound id="213" name="WOOD_GATE" description="Scraping?" />
-        <sound id="214" name="METAL_SHUTTERS_SMASH" description="Glass smashing" />
-        <sound id="215" name="UNDERWATER_FAN_ON" description="Underwater fan" />
+        <sound id="214" name="METAL_SHUTTERS_SMASH" description="Glass smashing" t5m="851" />
+        <sound id="215" name="UNDERWATER_FAN_ON" description="Underwater fan" t5m="891"/>
         <sound id="219" name="MINE_CART_SREECH_BRAKE" description="High whistle" t5m="735"/>
-        <sound id="220" name="SPANNER" description="High clank" />
-        <sound id="221" name="SMALL_METAL_SHUTTERS" description="Missile being lifted" />
+        <sound id="220" name="SPANNER" description="High clank" t5m="876"/>
+        <sound id="221" name="SMALL_METAL_SHUTTERS" description="Missile being lifted" t5m="874"/>
         <sound id="222" name="AREA51_SWINGER_START" description="Overhead pulley hook 1 (starting move)" t5m="804"/>
         <sound id="223" name="AREA51_SWINGER_STOP" description="Overhead pulley hook 2 (ending move)" t5m="805"/>
         <sound id="224" name="AREA51_SWINGER_LOOP" description="Overhead pulley hook 3 (moving)" t5m="803"/>
-        <sound id="231" name="SKEL_TRAP_PART_1" description="Door squeak" />
-        <sound id="232" name="SKEL_TRAP_PART-2" description="Stalacite detaching" />
-        <sound id="233" name="SMALL_FAN" description="Stalacite hitting ground" />
+        <sound id="231" name="SKEL_TRAP_PART_1" description="Door squeak" t5m="866"/>
+        <sound id="232" name="SKEL_TRAP_PART-2" description="Stalacite detaching" t5m="867"/>
+        <sound id="233" name="SMALL_FAN" description="Stalacite hitting ground" t5m="872"/>
         <sound id="234" name="TONY_BOSS_STONE_DEATH" description="Tony Firehands dying?" t5m="690" />
         <sound id="235" name="TONY_BOSS_NORMAL_DEATH" description="Tony Firehands dying" t5m="686"/>
         <sound id="236" name="TONY_BOSS_LAUGH" description="Tony Firehands laughing" t5m="685"/>
@@ -1851,13 +1851,13 @@
         <sound id="247" name="BLOWPIPE_NATIVE_BLOW" description="Dartgun firing" t5m="742"/>
         <sound id="248" name="BLOWPIPE_NATIVE_SWOOSH" description="Ax swish" t5m="745"/>
         <sound id="249" name="SHIVA_WALK_MURMA" description="Temple-statue growl" t5m="787" />
-        <sound id="250" name="RAPTOR_FEET" description="Raptor/Lizard-thing footstep" />
-        <sound id="251" name="RAPTOR_ATTACK_1" description="Raptor snarl 1 (biting)" />
-        <sound id="252" name="RAPTOR_ATTACK_2" description="Raptor snarl 2 (biting)" />
-        <sound id="253" name="RAPTOR_ATTACK_3" description="Raptor snarl 3 (biting)" />
-        <sound id="254" name="RAPTOR_ROAR" description="Raptor howl" />
-        <sound id="255" name="RAPTOR_DIE_1" description="T-rex/Raptor dying" />
-        <sound id="256" name="RAPTOR_DIE_2" description="Raptor dying" />
+        <sound id="250" name="RAPTOR_FEET" description="Raptor/Lizard-thing footstep" t5m="823"/>
+        <sound id="251" name="RAPTOR_ATTACK_1" description="Raptor snarl 1 (biting)" t5m="818"/>
+        <sound id="252" name="RAPTOR_ATTACK_2" description="Raptor snarl 2 (biting)" t5m="819"/>
+        <sound id="253" name="RAPTOR_ATTACK_3" description="Raptor snarl 3 (biting)" t5m="820"/>
+        <sound id="254" name="RAPTOR_ROAR" description="Raptor howl" t5m="824"/>
+        <sound id="255" name="RAPTOR_DIE_1" description="T-rex/Raptor dying" t5m="821"/>
+        <sound id="256" name="RAPTOR_DIE_2" description="Raptor dying" t5m="822"/>
         <sound id="257" name="HUGE_ROCKET_LOOP" description="Scraping (machine sound?)" />
         <sound id="258" name="SHIVA_SWORD_1" description="Temple-statue sword swipe 1" t5m="785"/>
         <sound id="259" name="SHIVA_SWORD_2" description="Temple-statue sword swipe 2" t5m="786"/>
@@ -1870,7 +1870,7 @@
         <sound id="266" name="HYBRID_ATTACK" description="Brute mutant growling" t5m="764"/>
         <sound id="267" name="HYBRID_DEATH" description="Brute mutant dying" t5m="765"/>
         <sound id="268" name="HYBRID_SWOOSH" description="Brute mutant swinging" t5m="768"/>
-        <sound id="269" name="SMALL_SWITCH" description="Lever pull" />
+        <sound id="269" name="SMALL_SWITCH" description="Lever pull" t5m="875" />
         <sound id="270" name="CLAW_MUTE_FOOTSTEPS" description="Tinnos monster footstep" t5m="755"/>
         <sound id="271" name="CLAW_MUTE_ATTACK" description="Tinnos monster growl" t5m="746"/>
         <sound id="272" name="CLAW_MUTE_DEATH" description="Tinnos monster dying" t5m="754"/>
@@ -1878,7 +1878,7 @@
         <sound id="274" name="CLAW_MUTE_LAZER" description="Tinnos monster fireball" t5m="756"/>
         <sound id="275" name="CLAW_MUTE_SWOOSH" description="Tinnos monster swing" t5m="757"/>
         <sound id="276" name="CLAW_MUTE_CLAW" description="Tinnos monster hit" t5m="753"/>
-        <sound id="278" name="SMALL_DOOR_SUBWAY" description="Squeaky door opening" />
+        <sound id="278" name="SMALL_DOOR_SUBWAY" description="Squeaky door opening" t5m="870"/>
         <sound id="279" name="DEATH_SLIDE_GRAB" description="Lara zipline handle grab" />
         <sound id="280" name="DEATH_SLIDE_GO" description="Lara zipline slide" />
         <sound id="281" name="DEATH_SLIDE_STOP" description="Lara zipline handle hit" />
@@ -1895,19 +1895,19 @@
         <sound id="292" name="FOOTSTEPS_WOOD" hardcoded="true" description="Footstep on wood" />
         <sound id="293" name="FOOTSTEPS_SNOW" hardcoded="true" description="Footstep on sand?" />
         <sound id="294" name="FOOTSTEPS_METAL" hardcoded="true" description="Footstep on metal" />
-        <sound id="295" name="LOOP_FOR_LONDON" description="Background hum" />
-        <sound id="296" name="1ST_LOOP_FOR_BIG_DRILL" description="Tunnel-borer turning" />
-        <sound id="297" name="SMALL_DOOR_SUBWAY_CLOSE" description="Door clanking into position" />
-        <sound id="298" name="2ND_LOOP_FOR_BIG_DRILL" description="Tunnel-borer advancing" />
+        <sound id="295" name="LOOP_FOR_LONDON" description="Background hum" t5m="850" />
+        <sound id="296" name="1ST_LOOP_FOR_BIG_DRILL" description="Tunnel-borer turning" t5m="831"/>
+        <sound id="297" name="SMALL_DOOR_SUBWAY_CLOSE" description="Door clanking into position" t5m="871" />
+        <sound id="298" name="2ND_LOOP_FOR_BIG_DRILL" description="Tunnel-borer advancing" t5m="832"/>
         <sound id="299" name="ENGLISH_HOY!" description="Hey! (British)" t5m="737"/>
         <sound id="300" name="AMERCAN_HOY!" description="Hey! (American)" t5m="788"/>
-        <sound id="301" name="OIL_RED_SMG_DEATH" description="Ooh-ah! (dying)" />
-        <sound id="302" name="RADIO_LOOP" description="Radio sound" />
-        <sound id="303" name="PUNK_ATTACK" description="Damned goon hitting" />
-        <sound id="304" name="PUNK_DEATH" description="Damned goon dying" />
-        <sound id="305" name="SECURITY_GUARD_FIRE" description="Guard firing gun" />
-        <sound id="306" name="SECURITY_GUARD_DEATH" description="Guard dying" />
-        <sound id="307" name="LAZER_LOOP" description="Laser sweeper hum" />
+        <sound id="301" name="OIL_RED_SMG_DEATH" description="Ooh-ah! (dying)" t5m="852"/>
+        <sound id="302" name="RADIO_LOOP" description="Radio sound" t5m="861"/>
+        <sound id="303" name="PUNK_ATTACK" description="Damned goon hitting" t5m="816"/>
+        <sound id="304" name="PUNK_DEATH" description="Damned goon dying" t5m="817" />
+        <sound id="305" name="SECURITY_GUARD_FIRE" description="Guard firing gun" t5m="830" />
+        <sound id="306" name="SECURITY_GUARD_DEATH" description="Guard dying" t5m="829"/>
+        <sound id="307" name="LAZER_LOOP" description="Laser sweeper hum" t5m="848"/>
         <sound id="308" name="WINSTON_BRUSH_OFF" description="Butler shuffle" t5m="597"/>
         <sound id="309" name="WINSTON_CUPS" description="Butler tray-contents clank" t5m="599"/>
         <sound id="310" name="WINSTON_HU!" description="Butler eh, oo, ooehoo" t5m="603"/>
@@ -1916,24 +1916,24 @@
         <sound id="313" name="WINSTON_TAKE_HIT" description="Butler oo, ouh" t5m="604"/>
         <sound id="314" name="WINSTON_GET_UP" description="Butler oo , aooh" t5m="602"/>
         <sound id="315" name="WINSTON_FART!" description="Butler fart" t5m="600"/>
-        <sound id="316" name="WALL_BLADES" description="Slicing disk" />
+        <sound id="316" name="WALL_BLADES" description="Slicing disk" t5m="896"/>
         <sound id="317" name="MACAQUE_CHATTER" description="Monkey chitter" t5m="811"/>
         <sound id="318" name="MACAQUE_ROLL" description="Monkey rolling over / Snake falling" t5m="814"/>
         <sound id="319" name="WHALE_CALL" description="Whale Wail" t5m="800" />
-        <sound id="320" name="GENERATOR_LOOP" description="Generator sound" />
-        <sound id="321" name="GENERATOR_SHITTING" description="Chain rattling and clank" />
-        <sound id="322" name="GASMETER" description="RR switch-lever click" />
+        <sound id="320" name="GENERATOR_LOOP" description="Generator sound" t5m="843"/>
+        <sound id="321" name="GENERATOR_SHITTING" description="Chain rattling and clank" t5m="844"/>
+        <sound id="322" name="GASMETER" description="RR switch-lever click" t5m="841" />
         <sound id="323" name="LARA_TURN_WHEEL" description="Squeaky door open" />
         <sound id="324" name="COBRA_HISS" description="Snake hiss" t5m="758"/>
         <sound id="325" name="DART_SPITT" description="Dartgun" t5m="807"/>
         <sound id="326" name="RATTLE_SNAKE" description="Rattlesnake hiss/rattle" t5m="794" />
-        <sound id="327" name="SWING_PUMP" description="Squeaky door" />
-        <sound id="328" name="SQEEK" description="Squeaky door" />
-        <sound id="330" name="TONK" description="Hitting a metal sheet" />
+        <sound id="327" name="SWING_PUMP" description="Squeaky door" t5m="881"/>
+        <sound id="328" name="SQEEK" description="Squeaky door" t5m="878"/>
+        <sound id="330" name="TONK" description="Hitting a metal sheet" t5m="889"/>
         <sound id="331" name="BOO_MUTE" description="Crawler dying" t5m="780"/>
-        <sound id="332" name="VENDING_MACHINE_LOOP" description="Background hum" />
-        <sound id="333" name="VENDING_SPIT" description="Coin going into ticket machine" />
-        <sound id="337" name="TICK_TOCK" description="Menu-item select?" />
+        <sound id="332" name="VENDING_MACHINE_LOOP" description="Background hum" t5m="893"/>
+        <sound id="333" name="VENDING_SPIT" description="Coin going into ticket machine" t5m="894"/>
+        <sound id="337" name="TICK_TOCK" description="Menu-item select?" t5m="887"/>
         <sound id="338" name="WILARD_FOOT_STEPS" description="Willardspider footstep" t5m="709"/>
         <sound id="339" name="WILARD_ATTACK" description="Willardspider growl 1" t5m="706"/>
         <sound id="340" name="WILARD_TAKE_HIT" description="Willardspider growl 2" t5m="713"/>
@@ -1953,9 +1953,9 @@
         <sound id="354" name="LONDON_BOSS_VAULT" description="Sophia Lee hut (climbing)" t5m="705" />
         <sound id="355" name="LONDON_BOSS_SUMMON_NOT" description="Sophia Lee's staff bolt going by" t5m="703"/>
         <sound id="356" name="LONDON_BOSS_LAUGH" description="Sophia Lee giggling" t5m="700"/>
-        <sound id="357" name="WATER_MILL" description="Water wheel turning" />
-        <sound id="358" name="PLUG_WINCH" description="Winch cable in motion" />
-        <sound id="359" name="GIANT_METAL_WHEELS" description="Puna guy Hoo-uuh" />
+        <sound id="357" name="WATER_MILL" description="Water wheel turning" t5m="897"/>
+        <sound id="358" name="PLUG_WINCH" description="Winch cable in motion" t5m="855"/>
+        <sound id="359" name="GIANT_METAL_WHEELS" description="Puna guy Hoo-uuh" t5m="845"/>
         <sound id="360" name="TRIBOSS_ATTACK" description="Puna guy Hooo" t5m="691"/>
         <sound id="361" name="TRIBOSS_TAKE_HIT" description="Puna guy Hoo-uh" t5m="695"/>
         <sound id="362" name="TRIBOSS_TURN_CHAIR" description="Stone-door sliding sound" t5m="696"/>
@@ -3447,7 +3447,7 @@
         <sound id="71" name="GENERIC_SWOOSH" description="Generic swoosh" />
         <sound id="72" name="GENERIC_HEAVY_THUD" description="Generic heavy thud" />
         <sound id="73" name="CROC_FEET" description="Croc feet" />
-        <sound id="74" name="SWINGING_FLAMES" description="Swinging flames" />
+        <sound id="74" name="SWINGING_FLAMES" description="Swinging flames" t5m="882"/>
         <sound id="75" name="STONE_SCRAPE" description="Stone scrape" />
         <sound id="76" name="BLAST_CIRCLE" description="Blast circle" />
         <sound id="77" name="BAZOOKA_FIRE" description="Bazooka fire" />
