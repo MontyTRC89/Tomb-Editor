@@ -695,11 +695,11 @@
         <moveable id="37" name="Giant spider" essential="false"/>
         <moveable id="38" name="Crow" essential="false" />
         <moveable id="39" name="Tiger / Snow leopard / White tiger" essential="false"/>
-        <moveable id="40" name="Marco Bartoli" essential="false"/>
-        <moveable id="41" name="Spear-wielding Xian Guard" essential="false"/>
-        <moveable id="42" name="Spear-wielding Xian Guard statue" essential="false"/>
-        <moveable id="43" name="Sword-wielding Xian Guard" essential="false"/>
-        <moveable id="44" name="Sword-wielding Xian Guard statue" essential="false"/>
+        <moveable id="40" name="Marco Bartoli" essential="false" t5m="MARCO_BARTOLI"/>
+        <moveable id="41" name="Spear-wielding Xian Guard" essential="false" t5m="SPEAR_GUARDIAN"/>
+        <moveable id="42" name="Spear-wielding Xian Guard statue" essential="false" t5m="SPEAR_GUARDIAN_STATUE"/>
+        <moveable id="43" name="Sword-wielding Xian Guard" essential="false" t5m="SWORD_GUARDIAN"/>/>
+        <moveable id="44" name="Sword-wielding Xian Guard statue" essential="false" t5m="SWORD_GUARDIAN_STATUE"/>/>
         <moveable id="45" name="Yeti" essential="false"/>
         <moveable id="46" name="Bird monster (guards Talion)" essential="false"/>
         <moveable id="47" name="Eagle" essential="false"/>
@@ -829,7 +829,7 @@
         <moveable id="219" name="Dragon bones (back)" show_with="218" t5m="DRAGON_BONE_BACK"/>
         <moveable id="222" name="Aquatic Mine (Venice)" essential="false"/>
         <moveable id="223" name="Menu background" hidden="true" />
-        <moveable id="225" name="Gong-hammering animation" hidden="true" t5m="LARA_EXTRA_ANIMS"/>
+        <moveable id="225" name="Gong-hammering animation"  use_body_from="0" hidden="true" t5m="LARA_EXTRA_ANIMS"/>
         <moveable id="226" name="Gong (Ice Palace)" essential="false"/>
         <moveable id="227" name="Detonator box" essential="false"/>
         <moveable id="228" name="Helicopter (Diving Area)" essential="false"/>
@@ -851,7 +851,7 @@
         <moveable id="259" name="Helicopter" essential="false"/>
         <moveable id="260" name="The butler" essential="false"/>
         <moveable id="262" name="Lara cutscene placement" />
-        <moveable id="263" name="Shotgun animation (Home Sweet Home)" hidden="true" />
+        <moveable id="263" name="Shotgun animation (Home Sweet Home)"  use_body_from="0" hidden="true" />
         <moveable id="264" name="Dragon explosion emitter" />
     </moveables>
     <sprite_sequences>
