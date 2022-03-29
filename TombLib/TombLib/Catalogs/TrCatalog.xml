@@ -7743,8 +7743,6 @@
 		<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" />
 		<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" />
 		<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" />
-<<<<<<< HEAD
-=======
 	    <sound id="1137" name="LEVELBUILDER_CUSTOM_01" />
 		<sound id="1138" name="LEVELBUILDER_CUSTOM_02" />
         <sound id="1139" name="LEVELBUILDER_CUSTOM_03" />
@@ -7795,7 +7793,6 @@
         <sound id="1183" name="LEVELBUILDER_CUSTOM_48" />
 		<sound id="1184" name="LEVELBUILDER_CUSTOM_49" />
 	    <sound id="1185" name="LEVELBUILDER_CUSTOM_50" />
->>>>>>> parent of ed43b56a (Typo foxed.)
     </sounds>
     <states>
         <!-- Lara -->
