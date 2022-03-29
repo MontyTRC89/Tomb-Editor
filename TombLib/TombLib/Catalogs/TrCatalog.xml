@@ -5319,7 +5319,7 @@
 		<sound id="213" name="SWORD_GOD_FEET_QT" description="Sword god feet qt" t5m="956"/>
 		<sound id="214" name="SWORD_GOD_FEET_VQT" description="Sword god feet vqt" t5m="957"/>
 		<sound id="215" name="SWORD_GOD_SWORD" description="Sword god sword" t5m="961"/>
-		<sound id="216" name="GEN_SWORD_SWOOSH_LOW" description="Gen sword swoosh low" />
+		<sound id="216" name="GEN_SWORD_SWOOSH_LOW" description="Gen sword swoosh low" t5m="1036" />
 		<sound id="217" name="SWORD_GOD_FALL" description="Sword god fall" t5m="954"/>
 		<sound id="218" name="SWORD_GOD_HITMET" hardcoded="true" description="Sword god hitmet" t5m="958"/>
 		<sound id="219" name="SWORD_GOD_SCREAM" description="Sword god scream" t5m="960"/>
@@ -5480,7 +5480,7 @@
 		<sound id="374" name="WEREWOLF_DROP" description="Werewolf drop" t5m="969"/>
 		<sound id="375" name="WEREWOLF_DIE" description="Werewolf die" t5m="968"/>
 		<sound id="376" name="WEREWOLF_JUMP" description="Werewolf jump" t5m="972"/>
-		<sound id="377" name="SWAT_DIE" description="Swat die" />
+		<sound id="377" name="SWAT_DIE" description="Swat die" t5m="1120" />
 		<sound id="378" name="ANDY_WHEEL" description="Andy wheel" t5m="1003" />
 		<sound id="379" name="BARN_DOOR_NORMAL" description="Barn door normal" t5m="1006"/>
 		<sound id="380" name="BARN_DOOR_SLAM" description="Barn door slam" t5m="1007"/>
@@ -7743,6 +7743,57 @@
 		<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" />
 		<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" />
 		<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" />
+		<sound id="1137" name="LEVELBUILDER_CUSTOM_01" />
+		<sound id="1138" name="LEVELBUILDER_CUSTOM_02" />
+		<sound id="1139" name="LEVELBUILDER_CUSTOM_03" />
+		<sound id="1140" name="LEVELBUILDER_CUSTOM_04" />
+		<sound id="1141" name="LEVELBUILDER_CUSTOM_05" />
+		<sound id="1142" name="LEVELBUILDER_CUSTOM_06" />
+		<sound id="1143" name="LEVELBUILDER_CUSTOM_07" />
+		<sound id="1144" name="LEVELBUILDER_CUSTOM_08" />
+		<sound id="1145" name="LEVELBUILDER_CUSTOM_09" />
+		<sound id="1146" name="LEVELBUILDER_CUSTOM_10" />
+		<sound id="1147" name="LEVELBUILDER_CUSTOM_11" />
+		<sound id="1148" name="LEVELBUILDER_CUSTOM_12" />
+		<sound id="1149" name="LEVELBUILDER_CUSTOM_13" />
+		<sound id="1150" name="LEVELBUILDER_CUSTOM_14" />
+		<sound id="1151" name="LEVELBUILDER_CUSTOM_15" />
+		<sound id="1152" name="LEVELBUILDER_CUSTOM_16" />
+		<sound id="1153" name="LEVELBUILDER_CUSTOM_17" />
+		<sound id="1154" name="LEVELBUILDER_CUSTOM_18" />
+		<sound id="1155" name="LEVELBUILDER_CUSTOM_19" />
+		<sound id="1156" name="LEVELBUILDER_CUSTOM_20" />
+		<sound id="1157" name="LEVELBUILDER_CUSTOM_21" />
+		<sound id="1158" name="LEVELBUILDER_CUSTOM_22" />
+		<sound id="1159" name="LEVELBUILDER_CUSTOM_23" />
+		<sound id="1160" name="LEVELBUILDER_CUSTOM_24" />
+		<sound id="1161" name="LEVELBUILDER_CUSTOM_25" />
+		<sound id="1162" name="LEVELBUILDER_CUSTOM_26" />
+		<sound id="1163" name="LEVELBUILDER_CUSTOM_27" />
+		<sound id="1164" name="LEVELBUILDER_CUSTOM_28" />
+		<sound id="1165" name="LEVELBUILDER_CUSTOM_29" />
+		<sound id="1166" name="LEVELBUILDER_CUSTOM_30" />
+		<sound id="1167" name="LEVELBUILDER_CUSTOM_31" />
+		<sound id="1168" name="LEVELBUILDER_CUSTOM_32" />
+		<sound id="1169" name="LEVELBUILDER_CUSTOM_33" />
+		<sound id="1170" name="LEVELBUILDER_CUSTOM_34" />
+		<sound id="1171" name="LEVELBUILDER_CUSTOM_35" />
+		<sound id="1172" name="LEVELBUILDER_CUSTOM_36" />
+		<sound id="1173" name="LEVELBUILDER_CUSTOM_37" />
+		<sound id="1174" name="LEVELBUILDER_CUSTOM_38" />
+		<sound id="1175" name="LEVELBUILDER_CUSTOM_39" />
+		<sound id="1176" name="LEVELBUILDER_CUSTOM_40" />
+		<sound id="1177" name="LEVELBUILDER_CUSTOM_41" />
+		<sound id="1178" name="LEVELBUILDER_CUSTOM_42" />
+		<sound id="1179" name="LEVELBUILDER_CUSTOM_43" />
+		<sound id="1180" name="LEVELBUILDER_CUSTOM_44" />
+		<sound id="1181" name="LEVELBUILDER_CUSTOM_45" />
+		<sound id="1182" name="LEVELBUILDER_CUSTOM_46" />
+		<sound id="1183" name="LEVELBUILDER_CUSTOM_47" />
+		<sound id="1184" name="LEVELBUILDER_CUSTOM_48" />
+		<sound id="1185" name="LEVELBUILDER_CUSTOM_49" />
+		<sound id="1186" name="LEVELBUILDER_CUSTOM_50" />
+		
     </sounds>
     <states>
         <!-- Lara -->
