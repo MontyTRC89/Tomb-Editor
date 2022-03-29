@@ -142,11 +142,11 @@
         <moveable id="146" name="Complete Scion"  />
         <moveable id="147" name="Scion Holder" essential="false"/>
         <moveable id="150" name="Scion Piece"  />
-        <moveable id="161" name="Centaur statue" essential="false"/>
-        <moveable id="162" name="Shack suspended from wire rope" essential="false"/>
-        <moveable id="163" name="Mutant egg and holder (normal size)" essential="false"/>
-        <moveable id="166" name="Gunflare" hidden="true" />
-        <moveable id="169" name="Camera target" />
+        <moveable id="161" name="Centaur statue" essential="false" t5m="ANIMATING_106"/>
+        <moveable id="162" name="Shack suspended from wire rope" essential="false" t5m="ANIMATING_104"/> 
+        <moveable id="163" name="Mutant egg and holder (normal size)" essential="false" t5m="ANIMATING_105"/>
+        <moveable id="166" name="Gunflare" hidden="true" t5m="GUN_FLASH"/>
+        <moveable id="169" name="Camera target" t5m="CAMERA_TARGET" />
         <moveable id="170" name="Waterfall mist" essential="false"/>
         <moveable id="172" name="Mutant bullet" hidden="true" />
         <moveable id="173" name="Mutant grenade" hidden="true" />
@@ -155,9 +155,9 @@
         <moveable id="180" name="Flowing Atlantean lava" essential="false"/>
         <moveable id="181" name="Mutant egg and holder (big)" essential="false"/>
         <moveable id="182" name="Motorboat" essential="false" t5m="ANIMATING102"/>
-        <moveable id="183" name="Earthquake" essential="false"/>
-        <moveable id="189" name="Lara's ponytail" hidden="true" />
-        <moveable id="207" name="Gunflare" hidden="true" />
+        <moveable id="183" name="Earthquake" essential="false" t5m="EARTHQUAKE"/>
+        <moveable id="189" name="Lara's ponytail" hidden="true" t5m="HAIR"/>
+        <moveable id="207" name="Gunflare" hidden="true" t5m="GUN_FLASH"/>
     </moveables>
     <sprite_sequences>
         <sprite_sequence id="84" name="Pistols" />
@@ -752,20 +752,20 @@
         <moveable id="103" name="Above-water switch" essential="false"/>
         <moveable id="104" name="Above-water/underwater switch" essential="false"/>
         <moveable id="105" name="Underwater switch" essential="false"/>
-        <moveable id="106" name="Door" essential="false"/>
-        <moveable id="107" name="Door" essential="false"/>
-        <moveable id="108" name="Door" essential="false"/>
-        <moveable id="109" name="Door" essential="false"/>
-        <moveable id="110" name="Door" essential="false"/>
-        <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false"/>
-        <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false"/>
-        <moveable id="113" name="Door (pulled upward)" essential="false"/>
-        <moveable id="114" name="Trapdoor (opens downward)" essential="false"/>
-        <moveable id="115" name="Trapdoor (opens downward)" essential="false"/>
-        <moveable id="116" name="Trapdoor (opens downward)" essential="false"/>
-        <moveable id="117" name="Bridge (flat)" essential="false"/>
-        <moveable id="118" name="Bridge (tilt = 1)" essential="false"/>
-        <moveable id="119" name="Bridge (tilt = 2)" essential="false"/>
+        <moveable id="106" name="Door" essential="false"    t5m="DOOR_TYPE1"/>
+        <moveable id="107" name="Door" essential="false"    t5m="DOOR_TYPE2"/>
+        <moveable id="108" name="Door" essential="false"    t5m="DOOR_TYPE3"/>
+        <moveable id="109" name="Door" essential="false"    t5m="DOOR_TYPE4"/>
+        <moveable id="110" name="Door" essential="false"    t5m="DOOR_TYPE5"/>
+        <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false" t5m="DOOR_TYPE6"/>
+        <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false" t5m="DOOR_TYPE7"/>
+        <moveable id="113" name="Door (pulled upward)" essential="false" t5m="DOOR_TYPE8"/>
+        <moveable id="114" name="Trapdoor (opens downward)" essential="false" t5m="TRAPDOOR1"/>
+        <moveable id="115" name="Trapdoor (opens downward)" essential="false" t5m="TRAPDOOR2"/>
+        <moveable id="116" name="Trapdoor (opens downward)" essential="false" t5m="TRAPDOOR3"/>
+        <moveable id="117" name="Bridge (flat)" essential="false" t5m="BRIDGE_FLAT" />
+        <moveable id="118" name="Bridge (tilt = 1)" essential="false" t5m="BRIDGE_TILT1"/>
+        <moveable id="119" name="Bridge (tilt = 2)" essential="false" t5m="BRIDGE_TILT2"/>
         <moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
         <moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
         <moveable id="122" name="Lara and butler picture" hidden="true" />
@@ -775,61 +775,61 @@
         <moveable id="153" name="Sunglasses" hidden="true" />
         <moveable id="154" name="Portable CD player" hidden="true" />
         <moveable id="155" name="Direction keys" hidden="true" />
-        <moveable id="157" name="Pistol" id2="135" />
-        <moveable id="158" name="Shotgun" id2="136" />
-        <moveable id="159" name="Auto-pistol" id2="137" />
-        <moveable id="160" name="Uzi" id2="138" />
-        <moveable id="161" name="Harpoon gun" id2="139" />
-        <moveable id="162" name="M16" id2="140" />
-        <moveable id="163" name="Grenade launcher" id2="141" />
-        <moveable id="164" name="Pistol ammo" />
-        <moveable id="165" name="Shotgun ammo" id2="143" />
-        <moveable id="166" name="Auto-pistol ammo" id2="144" />
-        <moveable id="167" name="Uzi ammo" id2="145" />
-        <moveable id="168" name="Harpoons" id2="146" />
-        <moveable id="169" name="M16 ammo" id2="147" />
-        <moveable id="170" name="Grenades" id2="148" />
-        <moveable id="171" name="Small medipack" id2="149" />
-        <moveable id="172" name="Large medipack" id2="150" />
-        <moveable id="173" name="Flares (opening box)" id2="151" />
-        <moveable id="178" name="Puzzle 1" id2="174" y_adjust="0.1" essential="false"/>
-        <moveable id="179" name="Puzzle 2" id2="175" essential="false"/>
-        <moveable id="180" name="Puzzle 3" id2="176" essential="false"/>
-        <moveable id="181" name="Puzzle 4" id2="177" essential="false"/>
-        <moveable id="182" name="Slot 1 empty" />
-        <moveable id="183" name="Slot 2 empty" />
-        <moveable id="184" name="Slot 3 empty ?" />
-        <moveable id="185" name="Slot 4 empty" />
-        <moveable id="186" name="Slot 1 full" />
-        <moveable id="187" name="Slot 2 full" />
-        <moveable id="188" name="Slot 3 full ?" />
-        <moveable id="189" name="Slot 4 full" />
-        <moveable id="197" name="Key 1" id2="193" essential="false"/>
-        <moveable id="198" name="Key 2" id2="194" essential="false"/>
-        <moveable id="199" name="Key 3" id2="195" essential="false"/>
-        <moveable id="200" name="Key 4" id2="196" essential="false"/>
-        <moveable id="201" name="Lock 1" />
-        <moveable id="202" name="Lock 2" />
-        <moveable id="203" name="Lock 3" />
-        <moveable id="204" name="Lock 4" />
-        <moveable id="205" name="Pickup 1" />
-        <moveable id="206" name="Pickup 2" />
-        <moveable id="207" name="Pickup 3" />
-        <moveable id="208" name="Pickup 4" />
-        <moveable id="209" name="Dragon explosion effect (expanding netted bubble)" hidden="true" />
-        <moveable id="210" name="Dragon explosion effect (expanding netted bubble)" hidden="true" />
-        <moveable id="211" name="Dragon explosion effect (expanding solid bubble)" hidden="true" />
+        <moveable id="157" name="Pistol"  />
+        <moveable id="158" name="Shotgun" />
+        <moveable id="159" name="Auto-pistol"  />
+        <moveable id="160" name="Uzi"/>
+        <moveable id="161" name="Harpoon gun"  />
+        <moveable id="162" name="M16"  />
+        <moveable id="163" name="Grenade launcher"/>
+        <moveable id="164" name="Pistol ammo"/>
+        <moveable id="165" name="Shotgun ammo"/>
+        <moveable id="166" name="Auto-pistol ammo"/>
+        <moveable id="167" name="Uzi ammo" />
+        <moveable id="168" name="Harpoons" />
+        <moveable id="169" name="M16 ammo" />
+        <moveable id="170" name="Grenades" />
+        <moveable id="171" name="Small medipack" />
+        <moveable id="172" name="Large medipack" />
+        <moveable id="173" name="Flares (opening box)"/>
+        <moveable id="174" name="Puzzle 1" t5m="PUZZLE_ITEM1"/>
+        <moveable id="179" name="Puzzle 2" t5m="PUZZLE_ITEM2"/>
+        <moveable id="180" name="Puzzle 3" t5m="PUZZLE_ITEM3"/>
+        <moveable id="181" name="Puzzle 4" t5m="PUZZLE_ITEM4"/>
+        <moveable id="182" name="Slot 1 empty" t5m="PUZZLE_HOLE1" />
+        <moveable id="183" name="Slot 2 empty" t5m="PUZZLE_HOLE2"/>
+        <moveable id="184" name="Slot 3 empty ?" t5m="PUZZLE_HOLE3"/>
+        <moveable id="185" name="Slot 4 empty" t5m="PUZZLE_HOLE4"/>
+        <moveable id="186" name="Slot 1 full" t5m="PUZZLE_DONE3"/>
+        <moveable id="187" name="Slot 2 full" t5m="PUZZLE_DONE3" />
+        <moveable id="188" name="Slot 3 full ?" t5m="PUZZLE_DONE3"/>
+        <moveable id="189" name="Slot 4 full" t5m="PUZZLE_DONE3"/>
+        <moveable id="197" name="Key 1" id2="193" essential="false" t5m="KEY_ITEM1"/>
+        <moveable id="198" name="Key 2" id2="194" essential="false" t5m="KEY_ITEM2"/>
+        <moveable id="199" name="Key 3" id2="195" essential="false" t5m="KEY_ITEM3"/>
+        <moveable id="200" name="Key 4" id2="196" essential="false" t5m="KEY_ITEM4"/>
+        <moveable id="201" name="Lock 1" t5m="KEY_HOLE1"/>
+        <moveable id="202" name="Lock 2" t5m="KEY_HOLE2"/>
+        <moveable id="203" name="Lock 3" t5m="KEY_HOLE3"/>
+        <moveable id="204" name="Lock 4" t5m="KEY_HOLE4"/>
+        <moveable id="205" name="Pickup 1" t5m="PICKUP_ITEM1"/>
+        <moveable id="206" name="Pickup 2" t5m="PICKUP_ITEM2"/>
+        <moveable id="207" name="Pickup 3" t5m="PICKUP_ITEM3"/>
+        <moveable id="208" name="Pickup 4" t5m="PICKUP_ITEM4"/>
+        <moveable id="209" name="Dragon explosion effect (expanding netted bubble)" hidden="true" t5m="SPHERE_OF_DOOM" />
+        <moveable id="210" name="Dragon explosion effect (expanding netted bubble)" hidden="true" t5m="SPHERE_OF_DOOM2"/>
+        <moveable id="211" name="Dragon explosion effect (expanding solid bubble)" hidden="true" t5m="SPHERE_OF_DOOM3"/>
         <moveable id="212" name="Alarm" essential="false"/>
         <moveable id="213" name="Dripping water" essential="false"/>
-        <moveable id="214" name="Tyrannosaur" essential="false"/>
-        <moveable id="215" name="Singing birds" essential="false"/>
-        <moveable id="216" name="Bartoli's Hideout clock" essential="false"/>
+        <moveable id="214" name="Tyrannosaur" essential="false" t5m="Tyrannosaur"/>
+        <moveable id="215" name="Singing birds" essential="false" t5m="ANIMATING_1"/>
+        <moveable id="216" name="Bartoli's Hideout clock" essential="false" t5m="ANIMATING2"/>
         <moveable id="217" name="Placeholder" essential="false"/>
-        <moveable id="218" name="Dragon bones (front)" show_with="219" />
-        <moveable id="219" name="Dragon bones (back)" show_with="218" />
+        <moveable id="218" name="Dragon bones (front)" show_with="219" t5m="DRAGON_BONE_FRONT" />
+        <moveable id="219" name="Dragon bones (back)" show_with="218" t5m="DRAGON_BONE_BACK"/>
         <moveable id="222" name="Aquatic Mine (Venice)" essential="false"/>
         <moveable id="223" name="Menu background" hidden="true" />
-        <moveable id="225" name="Gong-hammering animation" hidden="true" />
+        <moveable id="225" name="Gong-hammering animation" hidden="true" t5m="LARA_EXTRA_ANIMS"/>
         <moveable id="226" name="Gong (Ice Palace)" essential="false"/>
         <moveable id="227" name="Detonator box" essential="false"/>
         <moveable id="228" name="Helicopter (Diving Area)" essential="false"/>
@@ -838,10 +838,10 @@
         <moveable id="241" name="Gunflare (spiky)" hidden="true" />
         <moveable id="243" name="Camera target" essential="false"/>
         <moveable id="244" name="Waterfall mist" essential="false"/>
-        <moveable id="245" name="Harpoon (single)" hidden="true" />
+        <moveable id="245" name="Harpoon (single)" hidden="true" t5m="Harpoon" />
         <moveable id="247" name="Pointer (nullmesh)?" />
-        <moveable id="248" name="Grenade (single)" hidden="true" />
-        <moveable id="249" name="Harpoon (flying)" hidden="true" />
+        <moveable id="248" name="Grenade (single)" hidden="true" t5m="Grenade"/>
+        <moveable id="249" name="Harpoon (flying)" hidden="true" t5m="HARPOON"/>
         <moveable id="251" name="Spark emitter" essential="false"/>
         <moveable id="253" name="Flame emitter" essential="false"/>
         <moveable id="254" name="Skybox" hidden="true" />
