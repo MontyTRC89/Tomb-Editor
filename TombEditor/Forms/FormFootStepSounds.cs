@@ -15,7 +15,7 @@ namespace TombEditor.Forms
     public partial class FormFootStepSounds : DarkForm
     {
         private const byte _alpha = 212;
-        private static readonly Brush[] _textureSoundBrushes = new Brush[16]
+        private static readonly Brush[] _textureSoundBrushes = new Brush[22]
             {
                 new SolidBrush(Color.FromArgb(_alpha, 255, 188, 143)), // 0: Mud
                 new SolidBrush(Color.FromArgb(_alpha, 220, 224, 250)), // 1: Snow
@@ -29,10 +29,16 @@ namespace TombEditor.Forms
                 new SolidBrush(Color.FromArgb(_alpha, 244, 164, 96)), // 9: Marble
                 new SolidBrush(Color.FromArgb(_alpha, 34, 139, 34)), // 10: Grass
                 new SolidBrush(Color.FromArgb(_alpha, 112, 128, 144)), // 11: Concrete
-                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 222, 184, 135), Color.FromArgb(_alpha, 205, 133, 63)), // 12: OldWood
-                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 190, 180, 180), Color.FromArgb(_alpha, 205, 133, 63)), // 13: OldMetal
-                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 199, 21, 133), Color.FromArgb(_alpha, 255, 0, 255)), // 14: Unknown14
-                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 138, 43, 226), Color.FromArgb(_alpha, 255, 0, 255))  // 15: Unknown15
+                new SolidBrush(Color.FromArgb(_alpha, 111, 92, 67)), // 12: Old Wood
+                new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)), // 12: OldWood
+                new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)), // 13: OldMetal
+                new SolidBrush(Color.FromArgb(_alpha, 114, 222, 231)), // 15: Custom 1
+                new SolidBrush(Color.FromArgb(_alpha, 139, 113, 255)), // 16: Custom 2
+                new SolidBrush(Color.FromArgb(_alpha, 240, 128, 164)), // 17: Custom 3
+                new SolidBrush(Color.FromArgb(_alpha, 249, 74, 92)), // 18: Custom 4
+                new SolidBrush(Color.FromArgb(_alpha, 238, 139, 91)), // 19: Custom 5
+                new SolidBrush(Color.FromArgb(_alpha, 114, 216, 129)), // 20: Custom 6
+                new SolidBrush(Color.FromArgb(_alpha, 88, 241, 169)),     // 21: Custom 7
             };
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
         private static readonly StringFormat _textureSoundStringFormat = new StringFormat(StringFormatFlags.NoWrap) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
@@ -177,6 +183,16 @@ namespace TombEditor.Forms
                 textureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
                 textureMap.SelectedTexture = TextureArea.None;
             }
+        }
+
+        private void comboCurrentTexture_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboSounds_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
