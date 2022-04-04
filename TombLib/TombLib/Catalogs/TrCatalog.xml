@@ -30,7 +30,7 @@
 			<moveable id="3" name="Lara magnum animation" use_body_from="0" hidden="true" />
 			<moveable id="4" name="Lara Uzi animation" use_body_from="0" hidden="true" />
 			<moveable id="5" name="Lara misc animations" use_body_from="0" hidden="true" />
-			<moveable id="6" name="Lara's evil twin mutant" essential="false" t5m="DOPPELGANGER" SHOW_WITH="1085"/>
+			<moveable id="6" name="Lara's evil twin mutant" essential="false" t5m="DOPPELGANGER" SHOW_WITH="1085" USE_BODY_FROM="225"/>
 			<moveable id="7" name="Wolf" essential="false" t5m="WOLF"/>
 			<moveable id="8" name="Bear" essential="false" t5m="BEAR" />
 			<moveable id="9" name="Bat" essential="false" t5m="BAT"/>
@@ -5788,7 +5788,7 @@
 			<moveable id="197" name="CHEF" />
 			<moveable id="220" name="WINGED_MUMMY" />
 			<moveable id="221" name="CENTAUR_MUTANT" />
-			<moveable id="222" name="DOPPELGANGER" />
+			<moveable id="222" name="DOPPELGANGER" USE_BODY_FROM="225" />
 			<moveable id="223" name="NATLA" />
 			<moveable id="224" name="WINGED_NATLA" />
 			<moveable id="225" name="GIANT_MUTANT" />
