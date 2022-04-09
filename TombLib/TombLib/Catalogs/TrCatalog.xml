@@ -4671,35 +4671,35 @@
 			<moveable id="29" name="Torch animation" use_body_from="8" t5m="LARA_TORCH_ANIM" hidden="true" />
 			<moveable id="30" name="Lara's hair" t5m="HAIR" hidden="true" />
 			<moveable id="31" name="Guard 1" t5m="SAS" />
-			<moveable id="32" name="Guard 1_mip" hidden="true" />
+			<moveable id="32" name="Guard 1_mip" t5m="SAS_MIP" hidden="true"  />
 			<moveable id="33" name="Guard 2" t5m="SWAT" />
 			<moveable id="34" name="Guard 2_mip" hidden="true" />
 			<moveable id="35" name="Guard 3" t5m="SWAT_PLUS" />
-			<moveable id="36" name="Guard 3_mip" hidden="true" />
+			<moveable id="36" name="Guard 3_mip" t5m="SWAT_PLUS_MIP"	hidden="true" />
 			<moveable id="37" name="Guard 4" t5m="GUARD1" />
-			<moveable id="38" name="Guard 4_mip" hidden="true" />
+			<moveable id="38" name="Guard 4_mip" t5m="GUARD1_MIP" hidden="true" />
 			<moveable id="39" name="Guard laser" t5m="GUARD_LASER" />
-			<moveable id="40" name="Guard laser_mip" hidden="true" />
-			<moveable id="41" name="Doberman" t5m="DOG" />
-			<moveable id="42" name="Doberman_mip" hidden="true" />
+			<moveable id="40" name="Guard laser_mip" t5m="GUARD_LASER_MIP" hidden="true" />
+			<moveable id="41" name="Doberman" t5m="DOBERMAN" />
+			<moveable id="42" name="Doberman_mip" t5m="DOBERMAN_MIP" hidden="true" />
 			<moveable id="43" name="Crow" />
-			<moveable id="44" name="Crow_mip" hidden="true" />
+			<moveable id="44" name="Crow_mip" T5M="CROW_MIP" hidden="true" />
 			<moveable id="45" name="Larson" y_adjust="0.1" t5m="LARSON" />
-			<moveable id="46" name="Larson_mip" hidden="true" />
+			<moveable id="46" name="Larson_mip" T5M="LARSON_MIP" hidden="true" />
 			<moveable id="47" name="Pierre" y_adjust="0.1" t5m="PIERRE" />
-			<moveable id="48" name="Pierre_mip" x_adjust="3" hidden="true" />
+			<moveable id="48" name="Pierre_mip" T5M="PIERRE_MIP" x_adjust="3" hidden="true" />
 			<moveable id="49" name="Armed baddy 1" t5m="MAFIA" />
-			<moveable id="50" name="Armed baddy 1_mip" hidden="true" />
+			<moveable id="50" name="Armed baddy 1_mip" t5m="MAFIA_MIP" hidden="true" />
 			<moveable id="51" name="Armed baddy 2" t5m="MAFIA2" />
-			<moveable id="52" name="Armed baddy 2_mip" hidden="true" />
+			<moveable id="52" name="Armed baddy 2_mip" t5m="MAFIA2_MIP" hidden="true" />
 			<moveable id="53" name="Guard 5" t5m="GUARD3" />
-			<moveable id="54" name="Guard 5_mip" hidden="true" />
+			<moveable id="54" name="Guard 5_mip" t5m="GUARD3_MIP" hidden="true" />
 			<moveable id="55" name="Guard 6" t5m="GUARD2" />
-			<moveable id="56" name="Guard 6_mip" hidden="true" />
+			<moveable id="56" name="Guard 6_mip" t5m="GUARD2_MIP" hidden="true" />
 			<moveable id="57" name="Lion" y_adjust="0.075" t5m="LION" />
-			<moveable id="58" name="Lion_mip" hidden="true" />
+			<moveable id="58" name="Lion_mip" T5M="LION_MIP" hidden="true" />
 			<moveable id="59" name="Gladiator" y_adjust="0.1" t5m="GLADIATOR" />
-			<moveable id="60" name="Gladiator_mip" hidden="true" />
+			<moveable id="60" name="Gladiator_mip" T5M="GLADIATOR_MIP" hidden="true" />
 			<moveable id="61" name="Roman statue" t5m="ROMAN_GOD1" />
 			<moveable id="62" name="Roman statue_mip" hidden="true" />
 			<moveable id="63" name="Small dragon" y_adjust="2" t5m="HYDRA" />
@@ -4707,7 +4707,7 @@
 			<moveable id="65" name="Laser head" t5m="LASER_HEAD" />
 			<moveable id="66" name="Laser head_mip" hidden="true" />
 			<moveable id="67" name="Cyborg" y_adjust="0.030" t5m="HITMAN" />
-			<moveable id="68" name="Cyborg_mip" hidden="true" />
+			<moveable id="68" name="Cyborg_mip" t5m="HITMAN_MIP" hidden="true" />
 			<moveable id="69" name="VCI worker" t5m="SCIENTIST" />
 			<moveable id="70" name="VCI worker_mip" hidden="true" />
 			<moveable id="71" name="Lighthing Guide" />
@@ -4737,7 +4737,7 @@
 			<moveable id="95" name="Spider" t5m="SPIDER" />
 			<moveable id="96" name="Spider generator" t5m="SPIDERS_EMITTER" />
 			<moveable id="97" name="Auto guns" t5m="AUTOGUN" />
-			<moveable id="98" name="Electricity wires" t5m="ELECTRIC_WIRES" />
+			<moveable id="98" name="Electricity wires" t5m="ELECTRICAL_CABLES" />
 			<moveable id="99" name="Dart" t5m="DARTS" />
 			<moveable id="100" name="Dart emitter" t5m="DART_EMITTER" />
 			<moveable id="101" name="Fast dart emitter" t5m="HOMING_DART_EMITTER" />
@@ -4750,7 +4750,7 @@
 			<moveable id="108" name="Trapdoor 3" t5m="TRAPDOOR3" />
 			<moveable id="109" name="Floor trapdoor 1" t5m="FLOOR_TRAPDOOR1" />
 			<moveable id="110" name="Floor trapdoor 2" t5m="FLOOR_TRAPDOOR2" />
-			<moveable id="111" name="Ceiling trapdoor 1" t5m="CEILING_TRAPDOOR1" />
+			<moveable id="111" name="Ceiling trapdoor 1" />
 			<moveable id="112" name="Ceiling trapdoor 2" t5m="CEILING_TRAPDOOR2" />
 			<moveable id="113" name="Scaling trapdoor" t5m="SCALING_TRAPDOOR" />
 			<moveable id="114" name="Rolling ball" t5m="ROLLINGBALL" />
@@ -4763,7 +4763,7 @@
 			<moveable id="121" name="Big flame" t5m="FLAME_EMITTER" />
 			<moveable id="122" name="Torch flame" t5m="FLAME_EMITTER2" />
 			<moveable id="123" name="Death flame" t5m="FLAME_EMITTER3" />
-			<moveable id="124" name="Gas fire" />
+			<moveable id="124" name="Gas fire" t5m="ANIMATING120"/>
 			<moveable id="125" name="Burning roots" t5m="BURNING_ROOTS" />
 			<moveable id="126" name="Rope" t5m="ROPE" />
 			<moveable id="127" name="Fire rope" t5m="FIREROPE" />
@@ -4802,7 +4802,7 @@
 			<moveable id="160" name="Gas emitter" t5m="GEN_SLOT2" />
 			<moveable id="161" name="Generic slot 2" t5m="GEN_SLOT3" />
 			<moveable id="162" name="Moving laser" t5m="GEN_SLOT4" />
-			<moveable id="163" name="Imp rock" t5m="IMP_ROCK" hidden="true" />
+			<moveable id="163" name="Imp rock" t5m="IMP_ROCK" />
 			<moveable id="164" name="Cupboard" Ry_adjust="180" t5m="SEARCH_OBJECT1" />
 			<moveable id="165" name="Cupboard_mip" hidden="true" />
 			<moveable id="166" name="Cupboard" Ry_adjust="180" t5m="SEARCH_OBJECT2" />
@@ -4924,33 +4924,33 @@
 			<moveable id="282" name="Pulley" t5m="PULLEY" />
 			<moveable id="283" name="Crowdove switch" t5m="CROWDOVE_SWITCH" />
 			<moveable id="284" name="Door 1" t5m="DOOR_TYPE1" />
-			<moveable id="285" name="Door 1_mip" hidden="true" />
+			<moveable id="285" name="Door 1_mip" t5m="DOOR_TYPE1_MIP" hidden="true" />
 			<moveable id="286" name="Door 2" t5m="DOOR_TYPE2" />
-			<moveable id="287" name="Door 2_mip" hidden="true" />
+			<moveable id="287" name="Door 2_mip" t5m="DOOR_TYPE2_MIP"	hidden="true" />
 			<moveable id="288" name="Door 3" t5m="DOOR_TYPE3" />
-			<moveable id="289" name="Door 3_mip" hidden="true" />
+			<moveable id="289" name="Door 3_mip" t5m="DOOR_TYPE3_MIP" hidden="true" />
 			<moveable id="290" name="Door 4" t5m="DOOR_TYPE4" />
-			<moveable id="291" name="Door 4_mip" hidden="true" />
+			<moveable id="291" name="Door 4_mip" t5m="DOOR_TYPE4_MIP"	hidden="true" />
 			<moveable id="292" name="Door 5" t5m="DOOR_TYPE5" />
-			<moveable id="293" name="Door 5_mip" hidden="true" />
+			<moveable id="293" name="Door 5_mip" t5m="DOOR_TYPE5_MIP"	hidden="true" />
 			<moveable id="294" name="Door 6" t5m="DOOR_TYPE6" />
-			<moveable id="295" name="Door 6_mip" hidden="true" />
+			<moveable id="295" name="Door 6_mip" t5m="DOOR_TYPE6_MIP" hidden="true" />
 			<moveable id="296" name="Door 7" t5m="DOOR_TYPE7" />
-			<moveable id="297" name="Door 7_mip" hidden="true" />
+			<moveable id="297" name="Door 7_mip" t5m="DOOR_TYPE7_MIP" hidden="true" />
 			<moveable id="298" name="Door 8" t5m="DOOR_TYPE8" />
-			<moveable id="299" name="Door 8_mip" hidden="true" />
-			<moveable id="300" name="Door 9" t5m="CLOSED_DOOR1" />
-			<moveable id="301" name="Door 9_mip" hidden="true" />
-			<moveable id="302" name="Door 10" t5m="CLOSED_DOOR2" />
-			<moveable id="303" name="Door 10_mip" hidden="true" />
-			<moveable id="304" name="Door 11" t5m="CLOSED_DOOR3" />
-			<moveable id="305" name="Door 11_mip" hidden="true" />
-			<moveable id="306" name="Door 12" t5m="CLOSED_DOOR4" />
-			<moveable id="307" name="Door 12_mip" hidden="true" />
-			<moveable id="308" name="Door 13" t5m="CLOSED_DOOR5" />
-			<moveable id="309" name="Door 13_mip" hidden="true" />
-			<moveable id="310" name="Door 14" t5m="CLOSED_DOOR6" />
-			<moveable id="311" name="Door 14_mip" hidden="true" />
+			<moveable id="299" name="Door 8_mip" t5m="DOOR_TYPE8_MIP"	hidden="true" />
+			<moveable id="300" name="Door 9" t5m="DOOR_TYPE9" />
+			<moveable id="301" name="Door 9_mip" t5m="DOOR_TYPE10" hidden="true" />
+			<moveable id="302" name="Door 10" t5m="DOOR_TYPE10" />
+			<moveable id="303" name="Door 10_mip" t5m="DOOR_TYPE10_MIP"	hidden="true" />
+			<moveable id="304" name="Door 11" t5m="DOOR_TYPE11" />
+			<moveable id="305" name="Door 11_mip" t5m="DOOR_TYPE11_MIP" hidden="true" />
+			<moveable id="306" name="Door 12" t5m="DOOR_TYPE12" />
+			<moveable id="307" name="Door 12_mip" t5m="DOOR_TYPE12_MIP" hidden="true" />
+			<moveable id="308" name="Door 13" t5m="DOOR_TYPE13" />
+			<moveable id="309" name="Door 13_mip" t5m="DOOR_TYPE13_MIP" hidden="true" />
+			<moveable id="310" name="Door 14" t5m="DOOR_TYPE14" />
+			<moveable id="311" name="Door 14_mip" t5m="DOOR_TYPE14_MIP" hidden="true" />
 			<moveable id="312" name="Lift doors 1" t5m="LIFT_DOORS1" />
 			<moveable id="313" name="Lift doors 1 mip" hidden="true" />
 			<moveable id="314" name="Lift doors 2" t5m="LIFT_DOORS2" />
