@@ -412,7 +412,7 @@
 			<sound id= " 205 " name= " GYM_HINT_26 " t5m= " 205 "/>
 		</sounds>
 		<animations>
-			<anim item="0" id="0"  name="RUN" />
+			<anim item="0" id="0"  name="RUNNY" />
 			<anim item="0" id="1"  name="WALK_FORWARD" />
 			<anim item="0" id="2"  name="WALK_STOP_RIGHT" />
 			<anim item="0" id="3"  name="WALK_STOP_LEFT" />
@@ -4706,8 +4706,8 @@
 			<moveable id="64"  name="Small dragon_mip" y_adjust="2" hidden="true" />
 			<moveable id="65"  name="Laser head" t5m="LASER_HEAD" />
 			<moveable id="66"  name="Laser head_mip" hidden="true" />
-			<moveable id="67"  name="Cyborg" y_adjust="0.030" t5m="HITMAN" />
-			<moveable id="68"  name="Cyborg_mip" t5m="HITMAN_MIP" hidden="true" />
+			<moveable id="67"  name="Cyborg" y_adjust="0.030" t5m="CYBORG" />
+			<moveable id="68"  name="Cyborg_mip" t5m="CYBORG_MIP" hidden="true" />
 			<moveable id="69"  name="VCI worker" t5m="SCIENTIST" />
 			<moveable id="70"  name="VCI worker_mip" hidden="true" />
 			<moveable id="71"  name="Lighthing Guide" />
@@ -5575,7 +5575,83 @@
 			<anim item="130" id="22"  name="DEATH_BACK" />
 			<anim item="130" id="23"  name="CROUCH_ATTACK" />
 			<anim item="130" id="24"  name="CROUCH_TO_STOP" />
+
+			<!-- Cyborg -->
+			<anim item="67" id= " 0 " name=" WALK " />
+			<anim item="67" id= " 1" name=" RUN " />
+			<anim item="67" id= " 2" name=" " />
+			<anim item="67" id= " 3" name=" " />
+			<anim item="67" id= " 4" name=" IDLE " />
+			<anim item="67" id= " 5" name=" " />
+			<anim item="67" id= " 6" name=" " />
+			<anim item="67" id= " 7" name=" " />
+			<anim item="67" id= " 8" name=" " />
+			<anim item="67" id= " 9" name=" " />
+			<anim item="67" id= " 10" name=" " />
+			<anim item="67" id= " 11" name=" " />
+			<anim item="67" id= " 12" name=" " />
+			<anim item="67" id= " 13" name=" WALK_START " />
+			<anim item="67" id= " 14" name=" WALK_FINISH " />
+			<anim item="67" id= " 15" name=" RUN_START " />
+			<anim item="67" id= " 16" name=" RUN_FINISH " />
+			<anim item="67" id= " 17" name=" DODGE_END " />
+			<anim item="67" id= " 18" name=" STAND_IDLE " />
+			<anim item="67" id= " 19" name=" LEAP_FORWARD_START " />
+			<anim item="67" id= " 20" name=" 1SECTOR_LEAP_MIDAIR " />
+			<anim item="67" id= " 21" name=" LEAP_LAND " />
+			<anim item="67" id= " 22" name=" 2SECTOR_LEAP_MIDAIR " />
+			<anim item="67" id= " 23" name=" TURN_LEFT " />
+			<anim item="67" id= " 24" name=" CLIMBUP_6CLICK " />
+			<anim item="67" id= " 25" name=" CLIMBUP_4CLICK " />
+			<anim item="67" id= " 26" name=" CLIMBUP_3CLICK " />
+			<anim item="67" id= " 27" name=" " />
+			<anim item="67" id= " 28" name=" " />
+			<anim item="67" id= " 29" name=" " />
+			<anim item="67" id= " 30" name=" " />
+			<anim item="67" id= " 31" name=" " />
+			<anim item="67" id= " 32" name=" SUMMON " />
+			<anim item="67" id= " 33" name=" " />
+			<anim item="67" id= " 34" name=" " />
+			<anim item="67" id= " 35" name=" 6CLICK_JUMPDOWN " />
+			<anim item="67" id= " 36" name=" " />
+			<anim item="67" id= " 37" name=" " />
+			<anim item="67" id= " 38" name=" " />
+			<anim item="67" id= " 39" name=" " />
+			<anim item="67" id= " 40" name=" " />
+			<anim item="67" id= " 41" name=" 4CLICK_JUMPDOWN " />
+			<anim item="67" id= " 42" name=" 3CLICK_JUMPDOWN " />
+			<anim item="67" id= " 43" name=" " />
+			<anim item="67" id= " 44" name=" " />
+			<anim item="67" id= " 45" name=" JUMP_FORWARD_LEFT_FOOT_FIRST " />
+			<anim item="67" id= " 46" name=" JUMP_FORWARD_RIGHT_FOOT_FIRST " />
+			<anim item="67" id= " 47" name=" " />
+			<anim item="67" id= " 48" name=" " />
+			<anim item="67" id= " 49" name=" " />
+			<anim item="67" id= " 50" name=" HUGE_LEAP " />
+			<anim item="67" id= " 51" name=" " />
+			<anim item="67" id= " 52" name=" " />
+			<anim item="67" id= " 53" name=" " />
+			<anim item="67" id= " 54" name=" " />
+			<anim item="67" id= " 55" name=" " />
+			<anim item="67" id= " 56" name=" CYBORG_TURN_RIGHT " />
+			<anim item="67" id= " 57" name=" SHUFFLE_RIGHT " />
+			<anim item="67" id= " 58" name=" SHUFFLE_LEFT " />
+			<anim item="67" id= " 59" name=" JUMP_LAND " />
+			<anim item="67" id= " 60" name=" HOLSTERGUN " />
+			<anim item="67" id= " 61" name=" AIM " />
+			<anim item="67" id= " 62" name=" FIRE " />
+			<anim item="67" id= " 63" name=" LOWERGUN " />
+			<anim item="67" id= " 64" name=" " />
+			<anim item="67" id= " 65" name=" " />
+			<anim item="67" id= " 66" name=" " />
+			<anim item="67" id= " 67" name=" " />
+			<anim item="67" id= " 68" name=" CHOKE_DEATH " />
+			<anim item="67" id= " 69" name=" ELECTROCUTION_DEATH " />
+			<anim item="67" id= " 70" name=" FALLBACK_DEATH " />
+			<anim item="67" id= " 71" name=" DEATH_END " />
 		</animations>
+			
+		
 		<states>
 			<!-- LARA -->
 			<state item="0" id="119"  name="TIGHTROPE_IDLE" />
@@ -5637,6 +5713,7 @@
 			<limit  name="FloorHeight" value="127" />
 			<limit  name="WorldDimensions" value="400" />
 		</limits>
+		
 		<moveables>
 			<moveable id="0"  name="LARA" use_body_from="12" />
 			<moveable id="1"  name="LARA_EXTRA_ANIMS" use_body_from="12" />
@@ -5783,7 +5860,7 @@
 			<moveable id="192"  name="GUARD2" />
 			<moveable id="193"  name="GUARD3" />
 			<moveable id="194"  name="GLADIATOR" />
-			<moveable id="195"  name="HITMAN" />
+			<moveable id="195"  name="CYBORG" />
 			<moveable id="196"  name="SNIPER" />
 			<moveable id="197"  name="CHEF" />
 			<moveable id="220"  name="WINGED_MUMMY" />
