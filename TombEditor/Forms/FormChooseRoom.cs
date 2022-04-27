@@ -9,7 +9,7 @@ namespace TombEditor.Forms
 {
     public partial class FormChooseRoom : DarkForm
     {
-        public Room SelectedRoom => roomListBox.SelectedItem as Room;
+        public Room SelectedRoom => lstRooms.SelectedItem.Tag as Room;
 
         public FormChooseRoom(string why, IEnumerable<Room> rooms, Action<Room> roomSelectionChanged)
         {
@@ -19,15 +19,20 @@ namespace TombEditor.Forms
             // Populate lists
             titelLabel.Text = why;
             foreach (Room room in rooms)
-                roomListBox.Items.Add(room);
+                lstRooms.Items.Add(new DarkUI.Controls.DarkListItem(room.Name) { Tag = room });
 
             // View room when the selection is changed
-            roomListBox.SelectedIndexChanged += delegate
-                {
-                    butOk.Enabled = SelectedRoom != null;
-                    if (SelectedRoom != null)
-                        roomSelectionChanged(SelectedRoom);
-                };
+            lstRooms.SelectedIndicesChanged += delegate
+            {
+                butOk.Enabled = SelectedRoom != null;
+                if (SelectedRoom != null)
+                    roomSelectionChanged(SelectedRoom);
+            };
+        }
+        private void lstRooms_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void butOk_Click(object sender, EventArgs e)

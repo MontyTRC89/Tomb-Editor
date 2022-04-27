@@ -28,38 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.roomListBox = new DarkUI.Controls.DarkListBox(this.components);
             this.titelLabel = new DarkUI.Controls.DarkLabel();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.lstRooms = new DarkUI.Controls.DarkListView();
             this.SuspendLayout();
-            // 
-            // roomListBox
-            // 
-            this.roomListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.roomListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.roomListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.roomListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.roomListBox.ForeColor = System.Drawing.Color.White;
-            this.roomListBox.FormattingEnabled = true;
-            this.roomListBox.IntegralHeight = false;
-            this.roomListBox.ItemHeight = 18;
-            this.roomListBox.Location = new System.Drawing.Point(3, 40);
-            this.roomListBox.Name = "roomListBox";
-            this.roomListBox.Size = new System.Drawing.Size(392, 170);
-            this.roomListBox.TabIndex = 0;
             // 
             // titelLabel
             // 
             this.titelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.titelLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.titelLabel.Location = new System.Drawing.Point(3, 8);
+            this.titelLabel.Location = new System.Drawing.Point(4, 5);
             this.titelLabel.Name = "titelLabel";
-            this.titelLabel.Size = new System.Drawing.Size(392, 29);
+            this.titelLabel.Size = new System.Drawing.Size(391, 29);
             this.titelLabel.TabIndex = 1;
             this.titelLabel.Text = "titelLabel";
             this.titelLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -67,6 +49,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.Enabled = false;
             this.butOk.Location = new System.Drawing.Point(229, 216);
             this.butOk.Name = "butOk";
@@ -79,6 +62,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(315, 216);
             this.butCancel.Name = "butCancel";
@@ -88,6 +72,18 @@
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
+            // lstRooms
+            // 
+            this.lstRooms.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstRooms.Location = new System.Drawing.Point(4, 40);
+            this.lstRooms.Name = "lstRooms";
+            this.lstRooms.Size = new System.Drawing.Size(391, 170);
+            this.lstRooms.TabIndex = 3;
+            this.lstRooms.Text = "darkListView1";
+            this.lstRooms.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstRooms_MouseDoubleClick);
+            // 
             // FormChooseRoom
             // 
             this.AcceptButton = this.butOk;
@@ -95,10 +91,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(399, 244);
+            this.Controls.Add(this.lstRooms);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.titelLabel);
-            this.Controls.Add(this.roomListBox);
             this.MinimizeBox = false;
             this.Name = "FormChooseRoom";
             this.ShowIcon = false;
@@ -111,10 +107,9 @@
         }
 
         #endregion
-
-        private DarkUI.Controls.DarkListBox roomListBox;
         private DarkUI.Controls.DarkLabel titelLabel;
         private DarkUI.Controls.DarkButton butOk;
         private DarkUI.Controls.DarkButton butCancel;
+        private DarkUI.Controls.DarkListView lstRooms;
     }
 }
