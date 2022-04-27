@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
