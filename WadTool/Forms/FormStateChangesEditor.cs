@@ -214,12 +214,6 @@ namespace WadTool
             }
         }
 
-        private void btOk_Click(object sender, EventArgs e)
-        {
-            SaveChanges();
-            Close();
-        }
-
         private void dgvStateChanges_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) => ChangeState();
 
         private void dgvStateChanges_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -280,14 +274,25 @@ namespace WadTool
             catch (Exception) { }
         }
 
+        private void btOk_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+            Close();
+        }
+
         private void btCancel_Click(object sender, EventArgs e)
         {
             DiscardChanges();
             Close();
         }
 
-        private void butPlayStateChange_Click(object sender, EventArgs e) => ChangeState();
+        private void butApply_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+            Initialize(_animation, null);
+        }
 
+        private void butPlayStateChange_Click(object sender, EventArgs e) => ChangeState();
         private void dgvStateChanges_CellEndEdit(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) => SaveChanges();
         private void dgvStateChanges_UserDeletedRow(object sender, System.Windows.Forms.DataGridViewRowEventArgs e) => SaveChanges();
     }

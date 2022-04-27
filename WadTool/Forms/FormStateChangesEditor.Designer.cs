@@ -27,9 +27,10 @@
             this.btOk = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.butPlayStateChange = new DarkUI.Controls.DarkButton();
+            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             this.lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.dgvControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.butApply = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStateChanges)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -51,6 +52,7 @@
             this.columnHighFrame,
             this.columnNextAnimation,
             this.columnNextFrame});
+            this.dgvStateChanges.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvStateChanges.Location = new System.Drawing.Point(6, 6);
             this.dgvStateChanges.Name = "dgvStateChanges";
             this.dgvStateChanges.RowHeadersWidth = 40;
@@ -115,6 +117,7 @@
             // btCancel
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.Checked = false;
             this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btCancel.Location = new System.Drawing.Point(494, 232);
             this.btCancel.Name = "btCancel";
@@ -126,6 +129,7 @@
             // btOk
             // 
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Checked = false;
             this.btOk.Location = new System.Drawing.Point(407, 232);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(81, 23);
@@ -150,6 +154,7 @@
             // butPlayStateChange
             // 
             this.butPlayStateChange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlayStateChange.Checked = false;
             this.butPlayStateChange.Image = global::WadTool.Properties.Resources.actions_play_16;
             this.butPlayStateChange.Location = new System.Drawing.Point(537, 191);
             this.butPlayStateChange.Name = "butPlayStateChange";
@@ -157,18 +162,6 @@
             this.butPlayStateChange.TabIndex = 50;
             this.toolTip1.SetToolTip(this.butPlayStateChange, "Play state change in chain mode");
             this.butPlayStateChange.Click += new System.EventHandler(this.butPlayStateChange_Click);
-            // 
-            // lblStateChangeAnnouncement
-            // 
-            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
-            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
-            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
-            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(393, 13);
-            this.lblStateChangeAnnouncement.TabIndex = 53;
-            this.lblStateChangeAnnouncement.Text = "Pending state change...";
-            this.lblStateChangeAnnouncement.Visible = false;
             // 
             // dgvControls
             // 
@@ -182,6 +175,29 @@
             this.dgvControls.Size = new System.Drawing.Size(27, 178);
             this.dgvControls.TabIndex = 49;
             // 
+            // lblStateChangeAnnouncement
+            // 
+            this.lblStateChangeAnnouncement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
+            this.lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 237);
+            this.lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
+            this.lblStateChangeAnnouncement.Size = new System.Drawing.Size(307, 13);
+            this.lblStateChangeAnnouncement.TabIndex = 53;
+            this.lblStateChangeAnnouncement.Text = "Pending state change...";
+            this.lblStateChangeAnnouncement.Visible = false;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Checked = false;
+            this.butApply.Location = new System.Drawing.Point(321, 232);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 23);
+            this.butApply.TabIndex = 102;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
             // FormStateChangesEditor
             // 
             this.AcceptButton = this.btOk;
@@ -189,6 +205,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(580, 260);
+            this.Controls.Add(this.butApply);
             this.Controls.Add(this.lblStateChangeAnnouncement);
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.btCancel);
@@ -223,5 +240,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn columnHighFrame;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextAnimation;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNextFrame;
+        private DarkUI.Controls.DarkButton butApply;
     }
 }
