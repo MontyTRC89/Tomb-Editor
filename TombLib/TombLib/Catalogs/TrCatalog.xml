@@ -7735,21 +7735,21 @@
         <sound id="1125" name="TR5_2GUNTEX_HIT_GUNS" />
         <sound id="1126" name="TR5_2GUNTEX_LASER_FIRE" />
         <sound id="1127" name="TR5_2GUNTEX_DOUBLE_LASER_FIRE" />
-		<sound id="1129" name="CUSTOM_FOOTSTEP_SOUNDS_1" />
-		<sound id="1130" name="CUSTOM_FOOTSTEP_SOUNDS_2" />
-		<sound id="1131" name="CUSTOM_FOOTSTEP_SOUNDS_3" />
-		<sound id="1132" name="CUSTOM_FOOTSTEP_SOUNDS_4" />
-		<sound id="1133" name="CUSTOM_FOOTSTEP_SOUNDS_5" />
-		<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" />
-		<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" />
-		<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" />
-	    <sound id="1137" name="LEVELBUILDER_CUSTOM_01" />
-		<sound id="1138" name="LEVELBUILDER_CUSTOM_02" />
-        <sound id="1139" name="LEVELBUILDER_CUSTOM_03" />
-        <sound id="1140" name="LEVELBUILDER_CUSTOM_04" />
-        <sound id="1141" name="LEVELBUILDER_CUSTOM_05" />
+		<sound id="1128" name="CUSTOM_FOOTSTEP_SOUNDS_1" />
+		<sound id="1129" name="CUSTOM_FOOTSTEP_SOUNDS_2" />
+		<sound id="1130" name="CUSTOM_FOOTSTEP_SOUNDS_3" />
+		<sound id="1131" name="CUSTOM_FOOTSTEP_SOUNDS_4" />
+		<sound id="1132" name="CUSTOM_FOOTSTEP_SOUNDS_5" />
+		<sound id="1133" name="CUSTOM_FOOTSTEP_SOUNDS_6" />
+		<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_7" />
+		<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_8" />
+	    <sound id="1136" name="LEVELBUILDER_CUSTOM_01" />
+		<sound id="1137" name="LEVELBUILDER_CUSTOM_02" />
+        <sound id="1138" name="LEVELBUILDER_CUSTOM_03" />
+        <sound id="1139" name="LEVELBUILDER_CUSTOM_04" />
+        <sound id="1140" name="LEVELBUILDER_CUSTOM_05" />
+        <sound id="1141" name="LEVELBUILDER_CUSTOM_06" />
 		<sound id="1142" name="LEVELBUILDER_CUSTOM_07" />
-        <sound id="1142" name="LEVELBUILDER_CUSTOM_06" />
         <sound id="1143" name="LEVELBUILDER_CUSTOM_08" />
         <sound id="1144" name="LEVELBUILDER_CUSTOM_09" />
 		<sound id="1145" name="LEVELBUILDER_CUSTOM_10" />

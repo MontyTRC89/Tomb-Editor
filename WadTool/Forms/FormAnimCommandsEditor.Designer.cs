@@ -21,7 +21,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.butAddEffect = new DarkUI.Controls.DarkButton();
@@ -35,6 +35,7 @@
             this.butCommandUp = new DarkUI.Controls.DarkButton();
             this.animCommandEditor = new WadTool.AnimCommandEditor();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.butApply = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewCommands)).BeginInit();
             this.SuspendLayout();
@@ -133,6 +134,7 @@
             this.gridViewCommands.ColumnHeadersVisible = false;
             this.gridViewCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colCommands});
+            this.gridViewCommands.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gridViewCommands.Location = new System.Drawing.Point(6, 6);
             this.gridViewCommands.MultiSelect = false;
             this.gridViewCommands.Name = "gridViewCommands";
@@ -146,8 +148,8 @@
             // colCommands
             // 
             this.colCommands.DataPropertyName = "Description";
-            dataGridViewCellStyle1.NullValue = "//";
-            this.colCommands.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.NullValue = "//";
+            this.colCommands.DefaultCellStyle = dataGridViewCellStyle2;
             this.colCommands.HeaderText = "Commands";
             this.colCommands.MaxInputLength = 100;
             this.colCommands.Name = "colCommands";
@@ -201,6 +203,17 @@
             this.animCommandEditor.TabIndex = 100;
             this.animCommandEditor.AnimCommandChanged += new System.EventHandler<WadTool.AnimCommandEditor.AnimCommandEventArgs>(this.AnimCommandEditor_AnimCommandChanged);
             // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Checked = false;
+            this.butApply.Location = new System.Drawing.Point(124, 354);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 23);
+            this.butApply.TabIndex = 101;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
             // FormAnimCommandsEditor
             // 
             this.AcceptButton = this.btOk;
@@ -208,6 +221,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(381, 382);
+            this.Controls.Add(this.butApply);
             this.Controls.Add(this.animCommandEditor);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.btCancel);
@@ -241,5 +255,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colCommands;
         private DarkUI.Controls.DarkButton butCopyToAll;
         private System.Windows.Forms.ToolTip toolTip1;
+        private DarkUI.Controls.DarkButton butApply;
     }
 }
