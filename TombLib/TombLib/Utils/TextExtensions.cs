@@ -32,7 +32,7 @@ namespace TombLib.Utils
 
         public static string SplitCamelcase(this string source)
         {
-            return Regex.Replace(source, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
+            return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
     }
 }

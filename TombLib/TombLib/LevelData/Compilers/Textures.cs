@@ -56,7 +56,7 @@ namespace TombLib.LevelData.Compilers
             return numPages;
         }
 
-        private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
+        private TextureFootStep.Type? GetTextureSound(bool isTriangle, TextureArea area)
         {
             LevelTexture texture = area.Texture as LevelTexture;
             if (area.TextureIsInvisible || area.TextureIsUnavailable || area.TextureIsDegenerate || texture == null)
@@ -67,19 +67,19 @@ namespace TombLib.LevelData.Compilers
             return texture.GetTextureSoundFromTexCoord(topRight);
         }
 
-        private TextureFootStepSound GetTextureSound(Room room, int x, int z)
+        private TextureFootStep.Type GetTextureSound(Room room, int x, int z)
         {
             Block sector = room.Blocks[x, z];
 
-            TextureFootStepSound? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor));
+            TextureFootStep.Type? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor));
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureFootStepSound? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
+            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
             if (result1.HasValue)
                 return result1.Value;
 
-            return TextureFootStepSound.Stone;
+            return TextureFootStep.Type.Stone;
         }
 
         private Stream PrepareFontAndSkyTexture()
