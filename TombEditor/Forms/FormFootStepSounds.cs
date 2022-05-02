@@ -15,7 +15,7 @@ namespace TombEditor.Forms
     public partial class FormFootStepSounds : DarkForm
     {
         private const byte _alpha = 212;
-        private static readonly Brush[] _textureSoundBrushes = new Brush[22]
+        private static readonly Brush[] _textureSoundBrushes = new Brush[23]
             {
                 new SolidBrush(Color.FromArgb(_alpha, 255, 188, 143)), // 0: Mud
                 new SolidBrush(Color.FromArgb(_alpha, 220, 224, 250)), // 1: Snow
@@ -39,6 +39,7 @@ namespace TombEditor.Forms
                 new SolidBrush(Color.FromArgb(_alpha, 238, 139, 91)), // 19: Custom 5
                 new SolidBrush(Color.FromArgb(_alpha, 114, 216, 129)), // 20: Custom 6
                 new SolidBrush(Color.FromArgb(_alpha, 88, 241, 169)),     // 21: Custom 7
+                new SolidBrush(Color.FromArgb(_alpha, 140, 241, 169)),     // 21: Custom 8
             };
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
         private static readonly StringFormat _textureSoundStringFormat = new StringFormat(StringFormatFlags.NoWrap) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
