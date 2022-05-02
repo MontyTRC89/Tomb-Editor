@@ -245,6 +245,11 @@ namespace WadTool
         {
             Close();
         }
+        private void butApply_Click(object sender, EventArgs e)
+        {
+            ApplyChanges();
+            Initialize(_animation);
+        }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
