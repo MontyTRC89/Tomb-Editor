@@ -841,7 +841,7 @@ namespace TombEditor.Forms
         private void GameDirectoryBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.GameDirectory,
-                "Select the game folder (should contain Tomb3.exe/Tomb4.exe/Tomb5.exe/...)", VariableType.LevelDirectory);
+                "Select the game folder (should contain Tomb2.exe/Tomb3.exe/Tomb4.exe/Tomb5.exe/TombEngine.exe...)", VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.GameDirectory = result;
