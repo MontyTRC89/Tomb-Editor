@@ -806,7 +806,7 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.SelectedObject != obj)
                     {
-                        if (ModifierKeys.HasFlag(Keys.Shift)) // User is attempting to multi-select
+                        if (ModifierKeys.HasFlag(Keys.Control)) // User is attempting to multi-select
                         {
                             EditorActions.MultiSelect(obj);
                         }
