@@ -49,7 +49,6 @@ namespace TombEditor.Forms
             this.comboSounds.Location = new System.Drawing.Point(8, 533);
             this.comboSounds.Name = "comboSounds";
             this.comboSounds.Size = new System.Drawing.Size(204, 23);
-            this.comboSounds.Sorted = true;
             this.comboSounds.TabIndex = 1;
             // 
             // butOk
@@ -69,7 +68,6 @@ namespace TombEditor.Forms
             // 
             this.comboCurrentTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboCurrentTexture.FormattingEnabled = true;
             this.comboCurrentTexture.Location = new System.Drawing.Point(8, 10);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
             this.comboCurrentTexture.Size = new System.Drawing.Size(409, 23);

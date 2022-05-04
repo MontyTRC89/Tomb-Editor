@@ -74,7 +74,7 @@ namespace WadTool
         public static void LoadWadOpenFileDialog(WadToolClass tool, IWin32Window owner, bool destination)
         {
             // Open the file dialog
-            using (OpenFileDialog dialog = new OpenFileDialog())
+            using (var dialog = new OpenFileDialog())
             {
                 string previousFilePath;
                 if (destination)
@@ -136,7 +136,7 @@ namespace WadTool
             // Ask about it
             if (ask || string.IsNullOrWhiteSpace(outPath))
             {
-                using (SaveFileDialog dialog = new SaveFileDialog())
+                using (var dialog = new SaveFileDialog())
                 {
                     if (!string.IsNullOrWhiteSpace(outPath))
                     {
@@ -185,12 +185,10 @@ namespace WadTool
 
         public static void CreateNewWad(WadToolClass tool, IWin32Window owner)
         {
-            using (FormNewWad2 form = new FormNewWad2())
+            using (var form = new FormNewWad2())
             {
-                if (form.ShowDialog(owner) == DialogResult.Cancel)
-                {
+                if (form.ShowDialog(owner) == DialogResult.Cancel) 
                     return;
-                }
 
                 tool.DestinationWad = new Wad2 { GameVersion = form.Version };
                 tool.ToggleUnsavedChanges(false);
@@ -205,9 +203,7 @@ namespace WadTool
             }
 
             if (string.IsNullOrEmpty(path))
-            {
                 return false;
-            }
 
             tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(path, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
 
@@ -231,9 +227,7 @@ namespace WadTool
         public static IWadObjectId ChangeSlot(WadToolClass tool, IWin32Window owner)
         {
             if (tool.MainSelection?.WadArea == WadArea.Source)
-            {
                 return null;
-            }
 
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
@@ -244,17 +238,13 @@ namespace WadTool
             }
 
             // Ask for the new slot
-            using (FormSelectSlot form = new FormSelectSlot(tool.DestinationWad, wadObject.Id))
+            using (var form = new FormSelectSlot(tool.DestinationWad, wadObject.Id))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
-                {
                     return null;
-                }
 
                 if (form.NewId == wadObject.Id)
-                {
                     return null;
-                }
 
                 if (wad.Contains(form.NewId))
                 {
@@ -320,13 +310,11 @@ namespace WadTool
         {
             bones[0].AbsoluteTranslation = bones[0].Translation;
 
-            WadBone currentNode = bones[0];
-            Stack<WadBone> stack = new Stack<WadBone>();
+            var currentNode = bones[0];
+            var stack = new Stack<WadBone>();
 
             for (int j = 1; j < bones.Count; j++)
             {
-                WadBone boneNode = bones[j];
-
                 switch (bones[j].OpCode)
                 {
                     case WadLinkOpcode.NotUseStack:
@@ -543,7 +531,7 @@ namespace WadTool
                 return;
             }
 
-            using (FileDialog dialog = new OpenFileDialog())
+            using (var dialog = new OpenFileDialog())
             {
                 try
                 {
@@ -562,7 +550,7 @@ namespace WadTool
                     return;
                 }
 
-                using (GeometryIOSettingsDialog form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                 {
                     form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                     if (form.ShowDialog(owner) != DialogResult.OK)
@@ -570,8 +558,8 @@ namespace WadTool
                         return;
                     }
 
-                    WadStatic @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
-                    WadMesh mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
+                    var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
                     if (mesh == null)
                     {
 
@@ -590,30 +578,23 @@ namespace WadTool
 
         public static Wad2 ConvertWad2ToTombEngine(WadToolClass tool, IWin32Window owner, Wad2 src)
         {
-            Wad2 dest = new Wad2
-            {
-                GameVersion = TRVersion.Game.TombEngine
-            };
+            Wad2 dest = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
 
-            foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in src.Moveables)
+            foreach (var moveable in src.Moveables)
             {
                 string compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
                 if (compatibleSlot == "")
-                {
                     continue;
-                }
 
                 uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
                 if (!destId.HasValue)
-                {
                     continue;
-                }
 
-                WadMoveableId newId = new WadMoveableId(destId.Value);
+                var newId = new WadMoveableId(destId.Value);
 
-                foreach (WadAnimation animation in moveable.Value.Animations)
+                foreach (var animation in moveable.Value.Animations)
                 {
-                    foreach (WadAnimCommand command in animation.AnimCommands)
+                    foreach (var command in animation.AnimCommands)
                     {
                         if (command.Type == WadAnimCommandType.PlaySound)
                         {
@@ -635,29 +616,23 @@ namespace WadTool
                 dest.Add(newId, moveable.Value);
             }
 
-            foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sequence in src.SpriteSequences)
+            foreach (var sequence in src.SpriteSequences)
             {
                 string compatibleSlot = TrCatalog.GetSpriteSequenceTombEngineSlot(src.GameVersion, sequence.Key.TypeId);
                 if (compatibleSlot == "")
-                {
                     continue;
-                }
 
                 uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
                 if (!destId.HasValue)
-                {
                     continue;
-                }
 
-                WadSpriteSequenceId newId = new WadSpriteSequenceId(destId.Value);
+                var newId = new WadSpriteSequenceId(destId.Value);
 
                 dest.Add(newId, sequence.Value);
             }
 
-            foreach (KeyValuePair<WadStaticId, WadStatic> staticObject in src.Statics)
-            {
+            foreach (var staticObject in src.Statics)
                 dest.Add(staticObject.Key, staticObject.Value);
-            }
 
             return dest;
         }
@@ -673,34 +648,30 @@ namespace WadTool
                 return null;
             }
 
-            List<uint> listInProgress = new List<uint>();
+            var listInProgress = new List<uint>();
 
             // Figure out the new ids if there are any id collisions
-            IWadObjectId[] newIds = objectIdsToMove.ToArray();
+            var newIds = objectIdsToMove.ToArray();
 
             // If destination is TombEngine, try to remap object IDs
             if (destinationWad.GameVersion == TRVersion.Game.TombEngine)
             {
                 for (int i = 0; i < objectIdsToMove.Count; ++i)
                 {
-                    IWadObjectId objectId = objectIdsToMove[i];
+                    var objectId = objectIdsToMove[i];
                     if (objectId is WadMoveableId)
                     {
-                        WadMoveableId moveableId = (WadMoveableId)objectId;
+                        var moveableId = (WadMoveableId)objectId;
 
                         // Try to get a compatible slot
                         string newSlot = TrCatalog.GetMoveableTombEngineSlot(sourceWad.GameVersion, moveableId.TypeId);
                         if (newSlot == "")
-                        {
                             continue;
-                        }
 
                         // Get the new ID
                         uint? newId = TrCatalog.GetItemIndex(destinationWad.GameVersion, newSlot, out bool isMoveable);
                         if (!newId.HasValue)
-                        {
                             continue;
-                        }
 
                         // Save the new ID
                         newIds[i] = new WadMoveableId(newId.Value);
@@ -711,18 +682,14 @@ namespace WadTool
             for (int i = 0; i < objectIdsToMove.Count; ++i)
             {
                 if (!sourceWad.Contains(objectIdsToMove[i]))
-                {
                     continue;
-                }
 
                 if (!alwaysChooseId)
                 {
                     if (!destinationWad.Contains(newIds[i]))
                     {
                         if (!newIds.Take(i).Contains(newIds[i])) // There also must not be collisions with the other custom assigned ids.
-                        {
                             continue;
-                        }
                     }
                 }
 
@@ -752,12 +719,10 @@ namespace WadTool
                     }
                     else if (dialogResult == DialogResult.No)
                     {
-                        using (FormSelectSlot form = new FormSelectSlot(destinationWad, newIds[i], listInProgress))
+                        using (var form = new FormSelectSlot(destinationWad, newIds[i], listInProgress))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
-                            {
                                 return null;
-                            }
 
                             if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
                             {
@@ -767,19 +732,11 @@ namespace WadTool
                             newIds[i] = form.NewId;
 
                             if (form.NewId is WadStaticId)
-                            {
                                 listInProgress.Add(((WadStaticId)form.NewId).TypeId);
-                            }
-
-                            if (form.NewId is WadMoveableId)
-                            {
+                            else if (form.NewId is WadMoveableId)
                                 listInProgress.Add(((WadMoveableId)form.NewId).TypeId);
-                            }
-
-                            if (form.NewId is WadSpriteSequenceId)
-                            {
+                            else if (form.NewId is WadSpriteSequenceId)
                                 listInProgress.Add(((WadSpriteSequenceId)form.NewId).TypeId);
-                            }
 
                             break;
                         }
@@ -795,16 +752,14 @@ namespace WadTool
 
             // HACK: Until this is fixed... https://github.com/MontyTRC89/Tomb-Editor/issues/413
             // We just block copying of same object to another slot and warn user it's in another slot.
-            List<IWadObjectId> failedIdList = new List<IWadObjectId>();
+            var failedIdList = new List<IWadObjectId>();
 
             // Move objects
             for (int i = 0; i < objectIdsToMove.Count; ++i)
             {
-                IWadObject obj = sourceWad.TryGet(objectIdsToMove[i]);
+                var obj = sourceWad.TryGet(objectIdsToMove[i]);
                 if (obj == null)
-                {
                     continue;
-                }
 
                 if (destinationWad.Contains(obj)) // Aforementioned HACK continues here - just add object which failed to copy to failed list
                 {
@@ -816,10 +771,10 @@ namespace WadTool
 
                     if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable)
                     {
-                        WadMoveable moveable = obj as WadMoveable;
-                        foreach (WadAnimation animation in moveable.Animations)
+                        var moveable = obj as WadMoveable;
+                        foreach (var animation in moveable.Animations)
                         {
-                            foreach (WadAnimCommand command in animation.AnimCommands)
+                            foreach (var command in animation.AnimCommands)
                             {
                                 if (command.Type == WadAnimCommandType.PlaySound)
                                 {
@@ -869,12 +824,10 @@ namespace WadTool
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
         {
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
-            IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
+            var wadObject = wad?.TryGet(tool.MainSelection?.Id);
 
             if (wadObject == null || tool.MainSelection?.WadArea == WadArea.Source)
-            {
                 return;
-            }
 
             if (wad == null)
             {
@@ -885,36 +838,30 @@ namespace WadTool
             // Choose behaviour
             if (wadObject is WadStatic)
             {
-                using (FormStaticEditor form = new FormStaticEditor(tool, deviceManager, wad, (WadStatic)wadObject))
+                using (var form = new FormStaticEditor(tool, deviceManager, wad, (WadStatic)wadObject))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
-                    {
                         return;
-                    }
                 }
 
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
             else if (wadObject is WadMoveable)
             {
-                using (FormAnimationEditor form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
+                using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
-                    {
                         return;
-                    }
 
                     tool.WadChanged(tool.MainSelection.Value.WadArea);
                 }
             }
             else if (wadObject is WadSpriteSequence)
             {
-                using (FormSpriteSequenceEditor form = new FormSpriteSequenceEditor(tool, wad, (WadSpriteSequence)wadObject))
+                using (var form = new FormSpriteSequenceEditor(tool, wad, (WadSpriteSequence)wadObject))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
-                    {
                         return;
-                    }
                 }
 
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
@@ -924,9 +871,7 @@ namespace WadTool
         public static void DeleteObjects(WadToolClass tool, IWin32Window owner, WadArea wadArea, List<IWadObjectId> ObjectIdsToDelete)
         {
             if (ObjectIdsToDelete.Count == 0)
-            {
                 return;
-            }
 
             if (DarkMessageBox.Show(owner, "You are about to delete " + ObjectIdsToDelete.Count + " objects. Are you sure?",
                 "A question just in case...", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -935,7 +880,7 @@ namespace WadTool
             }
 
             Wad2 wad = tool.GetWad(wadArea);
-            foreach (IWadObjectId id in ObjectIdsToDelete)
+            foreach (var id in ObjectIdsToDelete)
             {
                 wad.Remove(id);
             }
@@ -954,12 +899,10 @@ namespace WadTool
 
             IWadObjectId result;
 
-            using (FormSelectSlot form = new FormSelectSlot(tool.DestinationWad, initialWadObject.Id))
+            using (var form = new FormSelectSlot(tool.DestinationWad, initialWadObject.Id))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
-                {
                     return null;
-                }
 
                 if (destinationWad.Contains(form.NewId))
                 {
@@ -969,7 +912,7 @@ namespace WadTool
 
                 if (initialWadObject is WadMoveable)
                 {
-                    WadMoveable moveable = initialWadObject as WadMoveable;
+                    var moveable = initialWadObject as WadMoveable;
                     WadBone bone = new WadBone
                     {
                         Name = "Root",
@@ -1005,12 +948,10 @@ namespace WadTool
             mesh.VertexPositions.Add(new Vector3(-1, -1, -1)); // 7
 
             for (int i = 0; i < 8; i++)
-            {
                 mesh.VertexNormals.Add(Vector3.Zero);
-            }
 
-            TextureArea texture = new TextureArea();
-            ImageC image = ImageC.Magenta;
+            var texture = new TextureArea();
+            var image = ImageC.Magenta;
             texture.Texture = new WadTexture(image);
             texture.TexCoord0 = new Vector2(0, 0);
             texture.TexCoord1 = new Vector2(1, 0);
@@ -1085,17 +1026,15 @@ namespace WadTool
             try
             {
                 if (File.Exists(fileName))
-                {
                     File.Delete(fileName);
-                }
 
                 // Serialize the animation to XML
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(WadAnimation));
+                var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
                 string xml = "";
 
-                using (StringWriter sww = new StringWriter())
+                using (var sww = new StringWriter())
                 {
-                    using (XmlTextWriter tw = new XmlTextWriter(sww))
+                    using (var tw = new XmlTextWriter(sww))
                     {
                         tw.Formatting = Formatting.Indented;
                         tw.Indentation = 4;
@@ -1109,7 +1048,7 @@ namespace WadTool
                 }
 
                 // Write XML to file
-                using (StreamWriter writer = new StreamWriter(File.OpenWrite(fileName)))
+                using (var writer = new StreamWriter(File.OpenWrite(fileName)))
                 {
                     writer.Write(xml);
                 }
@@ -1128,10 +1067,10 @@ namespace WadTool
             try
             {
                 // Read animation from XML
-                XmlSerializer deserializer = new XmlSerializer(typeof(WadAnimation));
+                var deserializer = new XmlSerializer(typeof(WadAnimation));
                 TextReader reader = new StreamReader(fileName);
                 object obj = deserializer.Deserialize(reader);
-                WadAnimation animation = (WadAnimation)obj;
+                var animation = (WadAnimation)obj;
                 reader.Close();
 
                 return animation;
@@ -1148,7 +1087,7 @@ namespace WadTool
         {
             WadAnimation result = new WadAnimation();
 
-            using (BinaryReaderEx reader = new BinaryReaderEx(File.OpenRead(fileName)))
+            using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
                 int wmVersion = reader.ReadInt32();
                 int fileType = reader.ReadInt32();
@@ -1196,7 +1135,7 @@ namespace WadTool
 
                 for (int i = 0; i < numCommands; i++)
                 {
-                    WadAnimCommand ac = new WadAnimCommand
+                    var ac = new WadAnimCommand
                     {
                         Type = (WadAnimCommandType)reader.ReadUInt16(),
                         Parameter1 = reader.ReadInt16(),
@@ -1219,7 +1158,7 @@ namespace WadTool
 
                 for (int i = 0; i < numKeyFrames; i++)
                 {
-                    WadKeyFrame frame = new WadKeyFrame();
+                    var frame = new WadKeyFrame();
 
                     short x1 = reader.ReadInt16();
                     short x2 = reader.ReadInt16();
@@ -1261,7 +1200,7 @@ namespace WadTool
                 {
                     for (int i = 0; i < numStateChanges; i++)
                     {
-                        WadStateChange sc = new WadStateChange
+                        var sc = new WadStateChange
                         {
                             StateId = reader.ReadUInt16()
                         };
@@ -1275,7 +1214,7 @@ namespace WadTool
 
                         for (int j = 0; j < numAnimDispatches; j++)
                         {
-                            WadAnimDispatch disp = new WadAnimDispatch
+                            var disp = new WadAnimDispatch
                             {
                                 InFrame = reader.ReadUInt16(),
                                 OutFrame = reader.ReadUInt16()
@@ -1340,8 +1279,8 @@ namespace WadTool
             // Import the model
             try
             {
-                IOGeometrySettings settings = new IOGeometrySettings() { ProcessAnimations = true, ProcessGeometry = false };
-                using (GeometryIOSettingsDialog form = new GeometryIOSettingsDialog(settings))
+                var settings = new IOGeometrySettings() { ProcessAnimations = true, ProcessGeometry = false };
+                using (var form = new GeometryIOSettingsDialog(settings))
                 {
                     form.AddPreset(IOSettingsPresets.AnimationSettingsPresets);
                     string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
@@ -1356,11 +1295,9 @@ namespace WadTool
                     }
 
                     if (form.ShowDialog(owner) != DialogResult.OK)
-                    {
                         return null;
-                    }
 
-                    BaseGeometryImporter importer = BaseGeometryImporter.CreateForFile(fileName, settings, null);
+                    var importer = BaseGeometryImporter.CreateForFile(fileName, settings, null);
                     tmpModel = importer.ImportFromFile(fileName);
 
                     // We don't support animation importing from custom-written mqo importer yet...
@@ -1389,7 +1326,7 @@ namespace WadTool
 
             if (tmpModel.Animations.Count > 1)
             {
-                using (AnimationImportDialog dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
+                using (var dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
                 {
                     dialog.ShowDialog(owner);
                     if (dialog.DialogResult == DialogResult.Cancel)
@@ -1429,14 +1366,14 @@ namespace WadTool
                 return null;
             }
 
-            WadAnimation animation = new WadAnimation
+            var animation = new WadAnimation
             {
                 Name = animToImport.Name
             };
 
-            foreach (IOFrame frame in animToImport.Frames)
+            foreach (var frame in animToImport.Frames)
             {
-                WadKeyFrame keyFrame = new WadKeyFrame
+                var keyFrame = new WadKeyFrame
                 {
                     Offset = frame.Offset
                 };
@@ -1453,18 +1390,14 @@ namespace WadTool
         public static void EditSkeleton(WadToolClass tool, IWin32Window owner)
         {
             if (tool.MainSelection?.WadArea == WadArea.Source)
-            {
                 return;
-            }
 
             Wad2 wad = tool.GetWad(tool.MainSelection.Value.WadArea);
-            WadMoveableId moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
-            using (FormSkeletonEditor form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
+            using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
-                {
                     return;
-                }
 
                 tool.WadChanged(WadArea.Destination);
             }
@@ -1490,7 +1423,7 @@ namespace WadTool
 
         public static void ExportMesh(WadMesh mesh, WadToolClass tool, IWin32Window owner)
         {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            using (var saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export mesh";
                 saveFileDialog.InitialDirectory = PathC.GetDirectoryNameTry(tool.DestinationWad.FileName);
@@ -1500,9 +1433,7 @@ namespace WadTool
                 saveFileDialog.FileName = mesh.Name;
 
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
-                {
                     return;
-                }
 
                 if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
                 {
@@ -1513,15 +1444,13 @@ namespace WadTool
                 try
                 {
 
-                    using (GeometryIOSettingsDialog settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
                         settingsDialog.SelectPreset("Normal scale");
 
                         if (settingsDialog.ShowDialog(owner) != DialogResult.OK)
-                        {
                             return;
-                        }
 
                         BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt => "";
                         BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
@@ -1531,9 +1460,7 @@ namespace WadTool
                             if (resultModel != null)
                             {
                                 if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
-                                {
                                     return;
-                                }
                             }
 
                             tool.SendMessage("Selected mesh is broken and can't be exported.\nPlease replace this mesh with another.");
@@ -1557,31 +1484,25 @@ namespace WadTool
                 return null;
             }
 
-            using (OpenFileDialog dialog = new OpenFileDialog())
+            using (var dialog = new OpenFileDialog())
             {
                 dialog.Title = "Select a 3D file that you want to see imported";
                 dialog.InitialDirectory = PathC.GetDirectoryNameTry(tool.DestinationWad.FileName);
                 dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
-                {
                     return null;
-                }
 
                 if (!dialog.FileName.CheckAndWarnIfNotANSI(owner))
-                {
                     return ImportMesh(tool, owner);
-                }
 
                 try
                 {
-                    using (GeometryIOSettingsDialog form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                    using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
                         form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                         if (form.ShowDialog(owner) != DialogResult.OK)
-                        {
                             return null;
-                        }
 
                         // A flag which allows to import untextured meshes
                         form.Settings.ProcessUntexturedGeometry = true;
