@@ -6,6 +6,7 @@ Tomb Editor:
 
 WadTool:
  * Add "Apply" button to animcommand and state change editors.
+ * Fix exception when trying to save wad2 file with very large amount of textures.
 
 Version 1.4.7
 =============
