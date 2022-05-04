@@ -9,7 +9,7 @@ namespace TombEditor.Forms
 {
     public partial class FormChooseRoom : DarkForm
     {
-        public Room SelectedRoom => lstRooms.SelectedItem.Tag as Room;
+        public Room SelectedRoom => lstRooms.SelectedItem?.Tag as Room;
 
         public FormChooseRoom(string why, IEnumerable<Room> rooms, Action<Room> roomSelectionChanged)
         {
@@ -31,6 +31,9 @@ namespace TombEditor.Forms
         }
         private void lstRooms_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (SelectedRoom == null)
+                return;
+
             DialogResult = DialogResult.OK;
             Close();
         }
