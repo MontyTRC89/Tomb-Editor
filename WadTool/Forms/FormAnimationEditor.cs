@@ -609,7 +609,7 @@ namespace WadTool
 
         private void FixEndFrame(int delta)
         {
-            var desiredEndFrame = _editor.CurrentAnim.WadAnimation.EndFrame + delta;
+            var desiredEndFrame = Math.Max(0, _editor.CurrentAnim.WadAnimation.EndFrame + delta);
             _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)desiredEndFrame;
 
             if (_editor.CurrentAnim.WadAnimation.EndFrame < 0)
