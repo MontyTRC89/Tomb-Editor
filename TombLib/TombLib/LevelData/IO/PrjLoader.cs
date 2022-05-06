@@ -1512,7 +1512,7 @@ namespace TombLib.LevelData.IO
                     int skippedBytes = 0;
                     for (int i = 0; i < 256;)
                     {
-                        TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound((i + 1) % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound(i % 4, ((i) / 4) + 1, FootStepSound);
@@ -1520,7 +1520,7 @@ namespace TombLib.LevelData.IO
                         //go to next 128x128 texture
                         skippedBytes += 1;
                         i += 2;
-                        FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound((i + 1) % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound(i % 4, ((i) / 4) + 1, FootStepSound);
@@ -1538,7 +1538,7 @@ namespace TombLib.LevelData.IO
                 {
                     for (int i = 0; i < 256; i++)
                     {
-                        TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                        var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                     }
                 }

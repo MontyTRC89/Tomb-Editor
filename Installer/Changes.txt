@@ -2,9 +2,11 @@ Version 1.4.8
 =============
 Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
+ * Fix corrupted MQO imported geometry.
 
 WadTool:
  * Add "Apply" button to animcommand and state change editors.
+ * Fix exception when trying to save wad2 file with very large amount of textures.
 
 Version 1.4.7
 =============

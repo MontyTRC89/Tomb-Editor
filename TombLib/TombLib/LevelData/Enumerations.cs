@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -68,6 +69,56 @@ namespace TombLib.LevelData
         None = 0,
         Fragment = 1,
         Explode = 2
+    }
+
+    public static class TextureFootStep
+    {
+        public enum Type : byte
+        {
+            Mud = 0,
+            Snow = 1,
+            Sand = 2,
+            Gravel = 3,
+            Ice = 4,
+            Water = 5,
+            Stone = 6,
+            Wood = 7,
+            Metal = 8,
+            Marble = 9,
+            Grass = 10,
+            Concrete = 11,
+            OldWood = 12,
+            OldMetal = 13,
+
+            Custom1 = 14, // TEN only!
+            Custom2 = 15,
+            Custom3 = 16,
+            Custom4 = 17,
+            Custom5 = 18,
+            Custom6 = 19,
+            Custom7 = 20,
+            Custom8 = 21
+        }
+
+        // Helper UI function which gets the names of all available footstep sounds
+        // according to selected game version.
+
+        public static List<string> GetNames(TRVersion.Game version) =>
+            GetNames(new LevelSettings() { GameVersion = version });
+
+        public static List<string> GetNames(LevelSettings settings)
+        {
+            var result = new List<string>();
+
+            foreach (Type sound in Enum.GetValues(typeof(Type)))
+                result.Add(sound.ToString().SplitCamelcase());
+
+            // Delete new values in case legacy engine is used
+            if (settings.GameVersion != TRVersion.Game.TombEngine)
+                result = result.Where(e => !e.Contains("Custom")).ToList();
+
+            return result;
+        }
     }
 
     public static class StringEnums
