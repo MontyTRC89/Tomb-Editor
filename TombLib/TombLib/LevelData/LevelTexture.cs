@@ -21,7 +21,7 @@ namespace TombLib.LevelData
         public bool Convert512PixelsToDoubleRows { get; private set; }
         public bool ReplaceMagentaWithTransparency { get; private set; }
 
-        private TextureFootStepSound[,] _footStepSounds = new TextureFootStepSound[0, 0];
+        private TextureFootStep.Type[,] _footStepSounds = new TextureFootStep.Type[0, 0];
 
         public string BumpPath;
         private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
@@ -184,17 +184,17 @@ namespace TombLib.LevelData
             Reload(settings);
         }
 
-        public TextureFootStepSound GetFootStepSound(int x, int y)
+        public TextureFootStep.Type GetFootStepSound(int x, int y)
         {
             return _footStepSounds[x, y];
         }
 
-        public void SetFootStepSound(int x, int y, TextureFootStepSound value)
+        public void SetFootStepSound(int x, int y, TextureFootStep.Type value)
         {
             _footStepSounds[x, y] = value;
         }
 
-        public TextureFootStepSound? GetTextureSoundFromTexCoord(Vector2 coord)
+        public TextureFootStep.Type? GetTextureSoundFromTexCoord(Vector2 coord)
         {
             coord /= FootStepSoundGranularity;
             if (!(coord.X >= 0 && coord.Y >= 0 && coord.X < FootStepSoundWidth && coord.Y < FootStepSoundHeight))
@@ -212,10 +212,10 @@ namespace TombLib.LevelData
             if (FootStepSoundWidth < requiredTextureSoundWidth ||
                 FootStepSoundHeight < requiredTextureSoundHeight)
             {
-                var newTextureSounds = new TextureFootStepSound[requiredTextureSoundWidth, requiredTextureSoundHeight];
+                var newTextureSounds = new TextureFootStep.Type[requiredTextureSoundWidth, requiredTextureSoundHeight];
                 for (int y = 0; y < requiredTextureSoundHeight; ++y)
                     for (int x = 0; x < requiredTextureSoundWidth; ++x)
-                        newTextureSounds[x, y] = TextureFootStepSound.Stone;
+                        newTextureSounds[x, y] = TextureFootStep.Type.Stone;
                 for (int y = 0; y < FootStepSoundHeight; ++y)
                     for (int x = 0; x < FootStepSoundWidth; ++x)
                         newTextureSounds[x, y] = _footStepSounds[x, y];

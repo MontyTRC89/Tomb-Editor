@@ -89,7 +89,7 @@ namespace TombLib.Wad
                         chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, texture.Image.ToByteArray());
                     });
                 }
-            });
+            }, LEB128.MaximumSize5Byte); // Texture chunk can be very large, therefore increased size.);
         }
 
         private static void WriteSprites(ChunkWriter chunkIO, List<WadSprite> spriteTable)
