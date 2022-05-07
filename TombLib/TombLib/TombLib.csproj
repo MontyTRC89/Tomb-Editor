@@ -262,7 +262,6 @@
     <Compile Include="LevelData\Instances\SinkInstance.cs" />
     <Compile Include="LevelData\Instances\SoundSourceInstance.cs" />
     <Compile Include="LevelData\Instances\StaticInstance.cs" />
-    <Compile Include="LevelData\TextureFootStepSound.cs" />
     <Compile Include="LevelData\Instances\TriggerInstance.cs" />
     <Compile Include="Script\IScriptCompiler.cs" />
     <Compile Include="Script\LanguageScript.cs" />
@@ -431,6 +430,7 @@
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR3.xml" />
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR5.xml" />
     <Content Include="Catalogs\TEN Sound Catalogs\Tr1_Override.xml" />
+    <Content Include="Catalogs\TEN Sound Catalogs\Tr2_Override.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

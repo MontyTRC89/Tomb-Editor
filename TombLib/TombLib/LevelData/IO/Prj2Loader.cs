@@ -386,7 +386,7 @@ namespace TombLib.LevelData.IO
                                         byte textureSoundByte = chunkIO.Raw.ReadByte();
                                         if (textureSoundByte > 15)
                                             textureSoundByte = 15;
-                                        levelTexture.SetFootStepSound(x, y, (TextureFootStepSound)textureSoundByte);
+                                        levelTexture.SetFootStepSound(x, y, (TextureFootStep.Type)textureSoundByte);
                                     }
                             }
                             else if (id3 == Prj2Chunks.LevelTextureBumpmaps)

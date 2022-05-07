@@ -3,7 +3,7 @@
   <SoundInfos>
     <WadSoundInfo>
       <Id>0</Id>
-      <Name>LARA_FOOTSTEPS</Name>
+      <Name>TR1_LARA_FOOTSTEPS</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14,16 +14,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_FOOTSTEPS_01.wav</FileName>
+          <FileName>TR1_LARA_FOOTSTEPS_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_FOOTSTEPS_02.wav</FileName>
+          <FileName>TR1_LARA_FOOTSTEPS_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_FOOTSTEPS_03.wav</FileName>
+          <FileName>TR1_LARA_FOOTSTEPS_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_FOOTSTEPS_04.wav</FileName>
+          <FileName>TR1_LARA_FOOTSTEPS_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -31,7 +31,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1</Id>
-      <Name>LARA_CLIMB2</Name>
+      <Name>TR1_LARA_CLIMB2</Name>
       <Volume>100</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -42,7 +42,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_CLIMB2_01.wav</FileName>
+          <FileName>TR1_LARA_CLIMB2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -50,7 +50,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>2</Id>
-      <Name>LARA_NO</Name>
+      <Name>TR1_LARA_NO</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -61,7 +61,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lara_no_01.wav</FileName>
+          <FileName>TR1_LARA_no_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -69,7 +69,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>3</Id>
-      <Name>LARA_SLIPPING</Name>
+      <Name>TR1_LARA_SLIPPING</Name>
       <Volume>10</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -80,7 +80,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SLIPPING_01.wav</FileName>
+          <FileName>TR1_LARA_SLIPPING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -88,7 +88,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>4</Id>
-      <Name>LARA_LAND</Name>
+      <Name>TR1_LARA_LAND</Name>
       <Volume>40</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -99,7 +99,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_LAND_01.wav</FileName>
+          <FileName>TR1_LARA_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -107,7 +107,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>5</Id>
-      <Name>LARA_CLIMB_1</Name>
+      <Name>TR1_LARA_CLIMB_1</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -118,7 +118,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_CLIMB1_01.wav</FileName>
+          <FileName>TR1_LARA_CLIMB1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -126,7 +126,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>6</Id>
-      <Name>LARA_DRAW</Name>
+      <Name>TR1_LARA_DRAW</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -137,7 +137,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_DRAW_01.wav</FileName>
+          <FileName>TR1_LARA_DRAW_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -145,7 +145,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>7</Id>
-      <Name>LARA_HOLSTER</Name>
+      <Name>TR1_LARA_HOLSTER</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -156,7 +156,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_HOLSTER_01.wav</FileName>
+          <FileName>TR1_LARA_HOLSTER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -164,7 +164,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>8</Id>
-      <Name>LARA_PISTOL_FIRE</Name>
+      <Name>TR1_LARA_PISTOL_FIRE</Name>
       <Volume>75</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -175,7 +175,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_PISTOL_FIRE_01.wav</FileName>
+          <FileName>TR1_LARA_PISTOL_FIRE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -183,7 +183,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>9</Id>
-      <Name>LARA_RELOAD</Name>
+      <Name>TR1_LARA_RELOAD</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>10</Chance>
@@ -194,7 +194,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_RELOAD_01.wav</FileName>
+          <FileName>TR1_LARA_RELOAD_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -202,7 +202,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>10</Id>
-      <Name>LARA_RICOCHET</Name>
+      <Name>TR1_LARA_RICOCHET</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -213,10 +213,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_RICOCHET_01.wav</FileName>
+          <FileName>TR1_LARA_RICOCHET_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_RICOCHET_02.wav</FileName>
+          <FileName>TR1_LARA_RICOCHET_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -224,7 +224,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>26</Id>
-      <Name>LARA_CLIMB3</Name>
+      <Name>TR1_LARA_CLIMB3</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -235,7 +235,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_CLIMB3_01.wav</FileName>
+          <FileName>TR1_LARA_CLIMB3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -243,9 +243,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>27</Id>
-      <Name>LARA_BODYSLAM</Name>
+      <Name>TR1_LARA_BODYSLAM</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -254,10 +254,10 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_01.wav</FileName>
+          <FileName>TR1_TR1_LARA_BODYSLAM_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_02.wav</FileName>
+          <FileName>TR1_TR1_LARA_BODYSLAM_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -265,7 +265,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>28</Id>
-      <Name>LARA_SHIMMY2</Name>
+      <Name>TR1_LARA_SHIMMY2</Name>
       <Volume>18</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -276,10 +276,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SHIMMY2_01.wav</FileName>
+          <FileName>TR1_LARA_SHIMMY2_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_SHIMMY2_02.wav</FileName>
+          <FileName>TR1_LARA_SHIMMY2_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -287,7 +287,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>29</Id>
-      <Name>LARA_JUMP</Name>
+      <Name>TR1_LARA_JUMP</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -298,7 +298,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_JUMP_01.wav</FileName>
+          <FileName>TR1_LARA_JUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -306,7 +306,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>30</Id>
-      <Name>LARA_FALL</Name>
+      <Name>TR1_LARA_FALL</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -317,7 +317,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_FALL_01.wav</FileName>
+          <FileName>TR1_LARA_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -325,7 +325,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>31</Id>
-      <Name>LARA_INJURY</Name>
+      <Name>TR1_LARA_INJURY</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>40</Chance>
@@ -336,10 +336,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_INJURY_01.wav</FileName>
+          <FileName>TR1_LARA_INJURY_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_INJURY_02.wav</FileName>
+          <FileName>TR1_LARA_INJURY_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -347,7 +347,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>32</Id>
-      <Name>LARA_ROLLING</Name>
+      <Name>TR1_LARA_ROLLING</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -358,7 +358,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_ROLLING_01.wav</FileName>
+          <FileName>TR1_LARA_ROLLING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -366,7 +366,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>33</Id>
-      <Name>LARA_SPLASH</Name>
+      <Name>TR1_LARA_SPLASH</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -377,7 +377,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SPLASH_01.wav</FileName>
+          <FileName>TR1_LARA_SPLASH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -385,7 +385,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>34</Id>
-      <Name>LARA_GETOUT</Name>
+      <Name>TR1_LARA_GETOUT</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -396,7 +396,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_GETOUT_01.wav</FileName>
+          <FileName>TR1_LARA_GETOUT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -404,7 +404,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>35</Id>
-      <Name>LARA_SWIM</Name>
+      <Name>TR1_LARA_SWIM</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -415,7 +415,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SWIM_01.wav</FileName>
+          <FileName>TR1_LARA_SWIM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -423,7 +423,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>36</Id>
-      <Name>LARA_BREATH</Name>
+      <Name>TR1_LARA_BREATH</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -434,7 +434,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_BREATH_01.wav</FileName>
+          <FileName>TR1_LARA_BREATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -442,7 +442,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>37</Id>
-      <Name>LARA_BUBBLES</Name>
+      <Name>TR1_LARA_BUBBLES</Name>
       <Volume>47</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>70</Chance>
@@ -453,7 +453,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_BUBBLES_01.wav</FileName>
+          <FileName>TR1_LARA_BUBBLES_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -461,7 +461,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>39</Id>
-      <Name>LARA_KEY</Name>
+      <Name>TR1_LARA_KEY</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -472,7 +472,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_KEY_01.wav</FileName>
+          <FileName>TR1_LARA_KEY_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -480,7 +480,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>41</Id>
-      <Name>LARA_GENERAL_DEATH</Name>
+      <Name>TR1_LARA_GENERAL_DEATH</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -491,7 +491,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_GENERAL_DEATH_01.wav</FileName>
+          <FileName>TR1_LARA_GENERAL_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -499,7 +499,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>42</Id>
-      <Name>LARA_KNEES_DEATH</Name>
+      <Name>TR1_LARA_KNEES_DEATH</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -510,7 +510,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_KNEES_DEATH_01.wav</FileName>
+          <FileName>TR1_LARA_KNEES_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -518,7 +518,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>43</Id>
-      <Name>LARA_UZI_FIRE</Name>
+      <Name>TR1_LARA_UZI_FIRE</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -529,7 +529,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_UZI_FIRE_01.wav</FileName>
+          <FileName>TR1_LARA_UZI_FIRE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -537,9 +537,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>44</Id>
-      <Name>LARA_MAGNUMS_FIRE</Name>
+      <Name>TR1_LARA_MAGNUMS_FIRE</Name>
       <Volume>84</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -548,7 +548,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_MAGNUMS_01.wav</FileName>
+          <FileName>TR1_LARA_MAGNUMS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -556,7 +556,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>45</Id>
-      <Name>LARA_SHOTGUN_FIRE</Name>
+      <Name>TR1_LARA_SHOTGUN_FIRE</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -567,7 +567,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SHOTGUN_01.wav</FileName>
+          <FileName>TR1_LARA_SHOTGUN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -575,9 +575,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>46</Id>
-      <Name>LARA_BLOCK_PUSH1</Name>
+      <Name>TR1_LARA_BLOCK_PUSH1</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -586,7 +586,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_BLOCK_PUSH1_01.wav</FileName>
+          <FileName>TR1_LARA_BLOCK_PUSH1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -594,9 +594,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>47</Id>
-      <Name>LARA_BLOCK_PUSH2</Name>
+      <Name>TR1_LARA_BLOCK_PUSH2</Name>
       <Volume>79</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -605,13 +605,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_BLOCK_PUSH2_01.wav</FileName>
+          <FileName>TR1_LARA_BLOCK_PUSH2_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_BLOCK_PUSH2_02.wav</FileName>
+          <FileName>TR1_LARA_BLOCK_PUSH2_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>LARA_BLOCK_PUSH2_03.wav</FileName>
+          <FileName>TR1_LARA_BLOCK_PUSH2_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -619,9 +619,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>48</Id>
-      <Name>LARA_EMPTY_GUN</Name>
+      <Name>TR1_LARA_EMPTY_GUN</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -630,7 +630,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_EMPTY_GUN_01.wav</FileName>
+          <FileName>TR1_LARA_EMPTY_GUN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -638,9 +638,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>50</Id>
-      <Name>LARA_BULLETHIT</Name>
+      <Name>TR1_LARA_BULLETHIT</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -649,7 +649,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_BULLETHIT_01.wav</FileName>
+          <FileName>TR1_LARA_BULLETHIT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -657,7 +657,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>51</Id>
-      <Name>LARA_PULL</Name>
+      <Name>TR1_LARA_PULL</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -668,7 +668,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_PULL_01.wav</FileName>
+          <FileName>TR1_LARA_PULL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -676,9 +676,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>52</Id>
-      <Name>LARA_FLOATING</Name>
+      <Name>TR1_LARA_FLOATING</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -687,7 +687,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_FLOATING_01.wav</FileName>
+          <FileName>TR1_LARA_FLOATING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -695,7 +695,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>53</Id>
-      <Name>LARA_HIGH_FALL_DEATH</Name>
+      <Name>TR1_LARA_HIGH_FALL_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -706,7 +706,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_HIGH_FALL_DEATH_01.wav</FileName>
+          <FileName>TR1_LARA_HIGH_FALL_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -714,9 +714,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>54</Id>
-      <Name>LARA_GRABHAND</Name>
+      <Name>TR1_LARA_GRABHAND</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -725,7 +725,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_GRABHAND_01.wav</FileName>
+          <FileName>TR1_LARA_GRABHAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -733,9 +733,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>55</Id>
-      <Name>LARA_GRABBODY</Name>
+      <Name>TR1_LARA_GRABBODY</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -744,7 +744,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_GRABBODY_01.wav</FileName>
+          <FileName>TR1_LARA_GRABBODY_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -752,9 +752,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>56</Id>
-      <Name>LARA_GRABFEET</Name>
+      <Name>TR1_LARA_GRABFEET</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -763,7 +763,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_GRABFEET_01.wav</FileName>
+          <FileName>TR1_LARA_GRABFEET_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -771,9 +771,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>57</Id>
-      <Name>LARA_SWITCHUP</Name>
+      <Name>TR1_LARA_SWITCHUP</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -782,7 +782,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SWITCHUP_01.wav</FileName>
+          <FileName>TR1_LARA_SWITCHUP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -790,7 +790,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>60</Id>
-      <Name>UNDERWATER</Name>
+      <Name>TR1_UNDERWATER_LOOP</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -801,7 +801,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UNDERWATER_01.wav</FileName>
+          <FileName>TR1_UNDERWATER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -809,7 +809,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>61</Id>
-      <Name>UNDERWATER_SWITCH</Name>
+      <Name>TR1_UNDERWATER_SWITCH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -820,7 +820,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UNDERWATER_SWITCH_01.wav</FileName>
+          <FileName>TR1_UNDERWATER_SWITCH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -828,7 +828,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>63</Id>
-      <Name>PUSHABLE_SOUND</Name>
+      <Name>TR1_PUSHABLE_SOUND</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -839,7 +839,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>PUSHABLE_SOUND_01.wav</FileName>
+          <FileName>TR1_PUSHABLE_SOUND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -847,7 +847,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>66</Id>
-      <Name>ROCK_FALL_CRUMBLE</Name>
+      <Name>TR1_ROCK_FALL_CRUMBLE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -858,7 +858,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>ROCK_FALL_CRUMBLE_01.wav</FileName>
+          <FileName>TR1_ROCK_FALL_CRUMBLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -866,9 +866,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>67</Id>
-      <Name>ROCK_FALL_FALL</Name>
+      <Name>TR1_ROCK_FALL_FALL</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -877,7 +877,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>ROCK_FALL_FALL_01.wav</FileName>
+          <FileName>TR1_ROCK_FALL_FALL_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -885,9 +885,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>68</Id>
-      <Name>ROCK_FALL_LAND</Name>
+      <Name>TR1_ROCK_FALL_LAND</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -896,7 +896,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>ROCK_FALL_LAND_01.wav</FileName>
+          <FileName>TR1_ROCK_FALL_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -904,7 +904,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
-      <Name>UI_ROTATE</Name>
+      <Name>TR1_UI_ROTATE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -915,7 +915,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_ROTATE_01.wav</FileName>
+          <FileName>TR1_UI_ROTATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -923,7 +923,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>109</Id>
-      <Name>UI_SELECT</Name>
+      <Name>TR1_UI_SELECT</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -934,7 +934,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_CHOOSE_01.wav</FileName>
+          <FileName>TR1_UI_CHOOSE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -942,9 +942,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>110</Id>
-      <Name>UI_CONTROLS</Name>
+      <Name>TR1_UI_CONTROLS</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -953,7 +953,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_CONTROLS_01.wav</FileName>
+          <FileName>TR1_UI_CONTROLS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -961,7 +961,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>111</Id>
-      <Name>UI_CHOOSE</Name>
+      <Name>TR1_UI_CHOOSE</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -972,7 +972,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_CHOOSE_01.wav</FileName>
+          <FileName>TR1_UI_CHOOSE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -980,9 +980,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>112</Id>
-      <Name>UI_SPINOUT</Name>
+      <Name>TR1_UI_SPINOUT</Name>
       <Volume>35</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -991,7 +991,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_SPINOUT_01.wav</FileName>
+          <FileName>TR1_UI_SPINOUT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -999,9 +999,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>113</Id>
-      <Name>UI_COMPASS</Name>
+      <Name>TR1_UI_COMPASS</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -1010,7 +1010,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_COMPASS_01.wav</FileName>
+          <FileName>TR1_UI_COMPASS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1018,9 +1018,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>115</Id>
-      <Name>UI_PASSPORT</Name>
+      <Name>TR1_UI_PASSPORT</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -1029,7 +1029,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_PASSPORT_01.wav</FileName>
+          <FileName>TR1_UI_PASSPORT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1037,7 +1037,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>116</Id>
-      <Name>UI_MEDI</Name>
+      <Name>TR1_UI_MEDI</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1048,7 +1048,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Medi_01.wav</FileName>
+          <FileName>TR1_UI_Medi_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1056,7 +1056,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>145</Id>
-      <Name>LARA_SPIKE_DEATH</Name>
+      <Name>TR1_LARA_SPIKE_DEATH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1067,7 +1067,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_SPIKE_DEATH_01.wav</FileName>
+          <FileName>TR1_LARA_SPIKE_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1075,7 +1075,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>146</Id>
-      <Name>LARA_DEATH3</Name>
+      <Name>TR1_LARA_DEATH3</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1086,7 +1086,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_DEATH3_01.wav</FileName>
+          <FileName>TR1_LARA_DEATH3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1094,9 +1094,9 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>150</Id>
-      <Name>LOOP_FOR_SMALL_FIRES</Name>
+      <Name>TR1_LOOP_FOR_SMALL_FIRES</Name>
       <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
+      <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
@@ -1105,7 +1105,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LOOP_FOR_SMALL_FIRES_01.wav</FileName>
+          <FileName>TR1_LOOP_FOR_SMALL_FIRES_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1113,7 +1113,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>345</Id>
-      <Name>LARA_USE_OBJECT</Name>
+      <Name>TR1_LARA_USE_OBJECT</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -1124,7 +1124,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>amusnd.wav</FileName>
+          <FileName>TR1_LARA_USE_OBJECT.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>

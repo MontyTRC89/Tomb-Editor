@@ -702,13 +702,15 @@ namespace TombLib.LevelData.Compilers
                             currentMeshIndexCount++;
                         }
 
+                        int currentVertexIndex = 0;
+
                         foreach (var submesh in mesh.Submeshes)
                         {
-                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3, currentVertexIndex += 3)
                             {
-                                ushort index0 = (ushort)(indexList[j + baseIndex + 0]);
-                                ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
-                                ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
+                                ushort index0 = (ushort)(indexList[baseIndex + currentVertexIndex + 0]);
+                                ushort index1 = (ushort)(indexList[baseIndex + currentVertexIndex + 1]);
+                                ushort index2 = (ushort)(indexList[baseIndex + currentVertexIndex + 2]);
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();

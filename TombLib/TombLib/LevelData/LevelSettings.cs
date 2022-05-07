@@ -247,12 +247,10 @@ namespace TombLib.LevelData
                     result = ".tr4";
                     break;
                 case TRVersion.Game.TR5:
+                case TRVersion.Game.TombEngine:
                     result = ".trc";
                     break;
-                case TRVersion.Game.TombEngine:
-                    result = ".t5m";
-                    break;
-            }
+                          }
             GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
         }
 

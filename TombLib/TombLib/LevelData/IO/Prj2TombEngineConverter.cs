@@ -38,10 +38,11 @@ namespace TombLib.LevelData.IO
             progressReporter.ReportInfo("   - Enemies now have MESHSWAP slots (e.g., BADDY2 -> MESHSWAP_BADDY2), use WadTool for remapping these slots.");
             progressReporter.ReportInfo("   - Some slots are not supported and were added as ANIMATING above 16.");
             progressReporter.ReportInfo("   - TEN uses different slots for every sprite (fire, smoke). They were added from a reference Wad2.");
-            progressReporter.ReportInfo("   - Soundmap is similar to WAD130 and should work by default.");
+            progressReporter.ReportInfo("   - Soundmap has been updated to the TombEngine map. Sounds are converted from their legacy counterparts automatically");
             progressReporter.ReportInfo("   - TRNG triggers are not supported and won't be compiled.");
             progressReporter.ReportInfo("   - TEN requires new LARA object which was copied from reference Wad2.");
             progressReporter.ReportInfo("   - Weapon anims and holsters objects have changed and were also converted.");
+
 
             return newProject;
         }

@@ -15,31 +15,33 @@ namespace TombEditor.Forms
     public partial class FormFootStepSounds : DarkForm
     {
         private const byte _alpha = 212;
-        private static readonly Brush[] _textureSoundBrushes = new Brush[22]
-            {
-                new SolidBrush(Color.FromArgb(_alpha, 255, 188, 143)), // 0: Mud
-                new SolidBrush(Color.FromArgb(_alpha, 220, 224, 250)), // 1: Snow
-                new SolidBrush(Color.FromArgb(_alpha, 190, 190, 10)), // 2: Sand
-                new SolidBrush(Color.FromArgb(_alpha, 128, 128, 128)), // 3: Gravel
-                new SolidBrush(Color.FromArgb(_alpha, 140, 170, 250)), // 4: Ice
-                new SolidBrush(Color.FromArgb(_alpha, 40, 80, 230)), // 5: Water
-                new SolidBrush(Color.FromArgb(_alpha, 160, 160, 170)), // 6: Stone
-                new SolidBrush(Color.FromArgb(_alpha, 222, 184, 135)), // 7: Wood
-                new SolidBrush(Color.FromArgb(_alpha, 190, 180, 180)), // 8: Metal
-                new SolidBrush(Color.FromArgb(_alpha, 244, 164, 96)), // 9: Marble
-                new SolidBrush(Color.FromArgb(_alpha, 34, 139, 34)), // 10: Grass
-                new SolidBrush(Color.FromArgb(_alpha, 112, 128, 144)), // 11: Concrete
-                new SolidBrush(Color.FromArgb(_alpha, 111, 92, 67)), // 12: Old Wood
-                new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)), // 12: OldWood
-                new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)), // 13: OldMetal
-                new SolidBrush(Color.FromArgb(_alpha, 114, 222, 231)), // 15: Custom 1
-                new SolidBrush(Color.FromArgb(_alpha, 139, 113, 255)), // 16: Custom 2
-                new SolidBrush(Color.FromArgb(_alpha, 240, 128, 164)), // 17: Custom 3
-                new SolidBrush(Color.FromArgb(_alpha, 249, 74, 92)), // 18: Custom 4
-                new SolidBrush(Color.FromArgb(_alpha, 238, 139, 91)), // 19: Custom 5
-                new SolidBrush(Color.FromArgb(_alpha, 114, 216, 129)), // 20: Custom 6
-                new SolidBrush(Color.FromArgb(_alpha, 88, 241, 169)),     // 21: Custom 7
-            };
+        private static readonly Brush[] _textureSoundBrushes = new Brush[23]
+        {
+            new SolidBrush(Color.FromArgb(_alpha, 255, 188, 143)), // 0: Mud
+            new SolidBrush(Color.FromArgb(_alpha, 220, 224, 250)), // 1: Snow
+            new SolidBrush(Color.FromArgb(_alpha, 190, 190, 10)),  // 2: Sand
+            new SolidBrush(Color.FromArgb(_alpha, 128, 128, 128)), // 3: Gravel
+            new SolidBrush(Color.FromArgb(_alpha, 140, 170, 250)), // 4: Ice
+            new SolidBrush(Color.FromArgb(_alpha, 40, 80, 230)),   // 5: Water
+            new SolidBrush(Color.FromArgb(_alpha, 160, 160, 170)), // 6: Stone
+            new SolidBrush(Color.FromArgb(_alpha, 222, 184, 135)), // 7: Wood
+            new SolidBrush(Color.FromArgb(_alpha, 190, 180, 180)), // 8: Metal
+            new SolidBrush(Color.FromArgb(_alpha, 244, 164, 96)),  // 9: Marble
+            new SolidBrush(Color.FromArgb(_alpha, 34, 139, 34)),   // 10: Grass
+            new SolidBrush(Color.FromArgb(_alpha, 112, 128, 144)), // 11: Concrete
+            new SolidBrush(Color.FromArgb(_alpha, 111, 92, 67)),   // 12: Old Wood
+            new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)),  // 12: OldWood
+            new SolidBrush(Color.FromArgb(_alpha, 205, 133, 63)),  // 13: OldMetal
+            new SolidBrush(Color.FromArgb(_alpha, 114, 222, 231)), // 14: Custom 1
+            new SolidBrush(Color.FromArgb(_alpha, 139, 113, 255)), // 15: Custom 2
+            new SolidBrush(Color.FromArgb(_alpha, 240, 128, 164)), // 16: Custom 3
+            new SolidBrush(Color.FromArgb(_alpha, 249, 74, 92)),   // 17: Custom 4
+            new SolidBrush(Color.FromArgb(_alpha, 238, 139, 91)),  // 18: Custom 5
+            new SolidBrush(Color.FromArgb(_alpha, 114, 216, 129)), // 19: Custom 6
+            new SolidBrush(Color.FromArgb(_alpha, 88, 241, 169)),  // 20: Custom 7
+            new SolidBrush(Color.FromArgb(_alpha, 170, 80, 169))   // 21: Custom 8
+        };
+
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
         private static readonly StringFormat _textureSoundStringFormat = new StringFormat(StringFormatFlags.NoWrap) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
         private const float _textureSoundStringSize = 0.4f;
@@ -64,8 +66,8 @@ namespace TombEditor.Forms
                 comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
 
             // Add texture sounds to combo box
-            foreach (TextureFootStepSound sound in Enum.GetValues(typeof(TextureFootStepSound)))
-                comboSounds.Items.Add(sound);
+            foreach (var type in TextureFootStep.GetNames(editor.Level.Settings))
+                comboSounds.Items.Add(type);
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -76,10 +78,7 @@ namespace TombEditor.Forms
 
         private void butAssignSound_Click(object sender, EventArgs e)
         {
-            if (!(comboSounds.SelectedItem is TextureFootStepSound))
-                return;
-
-            var sound = (TextureFootStepSound)comboSounds.SelectedItem;
+            var sound = (TextureFootStep.Type)comboSounds.SelectedIndex;
 
             Vector2 p0 = textureMap.SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity;
             Vector2 p1 = textureMap.SelectedTexture.TexCoord1 / LevelTexture.FootStepSoundGranularity;
@@ -137,7 +136,7 @@ namespace TombEditor.Forms
                             if (x < 0 || x >= texture.FootStepSoundWidth || y < 0 || y >= texture.FootStepSoundHeight)
                                 continue;
 
-                            TextureFootStepSound sound = texture.GetFootStepSound(x, y);
+                            var sound = texture.GetFootStepSound(x, y);
                             Brush soundBrush = _textureSoundBrushes[(int)sound];
 
                             Vector2 tileStartTexCoord = new Vector2(x, y) * LevelTexture.FootStepSoundGranularity;
@@ -149,7 +148,7 @@ namespace TombEditor.Forms
                             e.Graphics.FillRectangle(soundBrush, descArea);
                             if(ViewScale > 6)
                                 e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                            e.Graphics.DrawString(sound.ToString(), textureSoundFont, Brushes.Black, descArea, _textureSoundStringFormat);
+                            e.Graphics.DrawString(sound.ToString().SplitCamelcase(), textureSoundFont, Brushes.Black, descArea, _textureSoundStringFormat);
 
                             RectangleF tileArea = RectangleF.FromLTRB(tileStart.X, tileStart.Y, tileEnd.X, tileEnd.Y);
                             e.Graphics.DrawRectangle(Pens.White, tileArea);
