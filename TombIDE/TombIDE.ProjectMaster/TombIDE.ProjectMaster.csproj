@@ -60,6 +60,18 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Forms\FormGameArchive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormGameArchive.Designer.cs">
+      <DependentUpon>FormGameArchive.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormPleaseWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormPleaseWait.Designer.cs">
+      <DependentUpon>FormPleaseWait.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormPluginManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,11 +189,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FormGameArchive.resx">
+      <DependentUpon>FormGameArchive.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportLevel.resx">
       <DependentUpon>FormImportLevel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormLevelSetup.resx">
       <DependentUpon>FormLevelSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormPleaseWait.resx">
+      <DependentUpon>FormPleaseWait.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPluginManager.resx">
       <DependentUpon>FormPluginManager.cs</DependentUpon>

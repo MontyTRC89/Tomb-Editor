@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombLib.LevelData;
 
@@ -120,6 +121,12 @@ namespace TombIDE.ProjectMaster
 			};
 
 			Process.Start(startInfo);
+		}
+
+		private void button_BuildArchive_Click(object sender, EventArgs e)
+		{
+			using (var form = new FormGameArchive(_ide))
+				form.ShowDialog();
 		}
 	}
 }
