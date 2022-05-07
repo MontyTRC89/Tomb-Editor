@@ -211,13 +211,14 @@
             this.contextMenuItem_Rename,
             this.contextMenuItem_Delete});
 			this.contextMenu_ProjectList.Name = "darkContextMenu1";
-			this.contextMenu_ProjectList.Size = new System.Drawing.Size(213, 157);
+			this.contextMenu_ProjectList.Size = new System.Drawing.Size(213, 179);
 			// 
 			// contextMenuItem_OpenProject
 			// 
 			this.contextMenuItem_OpenProject.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.contextMenuItem_OpenProject.Enabled = false;
 			this.contextMenuItem_OpenProject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.contextMenuItem_OpenProject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_OpenProject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_OpenProject.Name = "contextMenuItem_OpenProject";
 			this.contextMenuItem_OpenProject.Size = new System.Drawing.Size(212, 22);
 			this.contextMenuItem_OpenProject.Text = "Open selected project...";
@@ -234,7 +235,8 @@
 			// contextMenuItem_OpenDirectory
 			// 
 			this.contextMenuItem_OpenDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenuItem_OpenDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_OpenDirectory.Enabled = false;
+			this.contextMenuItem_OpenDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_OpenDirectory.Image = global::TombIDE.Properties.Resources.forward_arrow_16;
 			this.contextMenuItem_OpenDirectory.Name = "contextMenuItem_OpenDirectory";
 			this.contextMenuItem_OpenDirectory.Size = new System.Drawing.Size(212, 22);
@@ -252,7 +254,8 @@
 			// contextMenuItem_MoveUp
 			// 
 			this.contextMenuItem_MoveUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenuItem_MoveUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_MoveUp.Enabled = false;
+			this.contextMenuItem_MoveUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_MoveUp.Image = global::TombIDE.Properties.Resources.general_ArrowUp_16;
 			this.contextMenuItem_MoveUp.Name = "contextMenuItem_MoveUp";
 			this.contextMenuItem_MoveUp.Size = new System.Drawing.Size(212, 22);
@@ -262,7 +265,8 @@
 			// contextMenuItem_MoveDown
 			// 
 			this.contextMenuItem_MoveDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenuItem_MoveDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_MoveDown.Enabled = false;
+			this.contextMenuItem_MoveDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_MoveDown.Image = global::TombIDE.Properties.Resources.general_ArrowDown_16;
 			this.contextMenuItem_MoveDown.Name = "contextMenuItem_MoveDown";
 			this.contextMenuItem_MoveDown.Size = new System.Drawing.Size(212, 22);
@@ -280,7 +284,8 @@
 			// contextMenuItem_Rename
 			// 
 			this.contextMenuItem_Rename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_Rename.Enabled = false;
+			this.contextMenuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_Rename.Image = global::TombIDE.Properties.Resources.general_edit_16;
 			this.contextMenuItem_Rename.Name = "contextMenuItem_Rename";
 			this.contextMenuItem_Rename.Size = new System.Drawing.Size(212, 22);
@@ -290,7 +295,8 @@
 			// contextMenuItem_Delete
 			// 
 			this.contextMenuItem_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenuItem_Delete.Enabled = false;
+			this.contextMenuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.contextMenuItem_Delete.Image = global::TombIDE.Properties.Resources.general_trash_16;
 			this.contextMenuItem_Delete.Name = "contextMenuItem_Delete";
 			this.contextMenuItem_Delete.Size = new System.Drawing.Size(212, 22);
