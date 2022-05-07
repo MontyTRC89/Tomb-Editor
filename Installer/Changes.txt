@@ -11,6 +11,7 @@ WadTool:
 TombIDE:
  * Completely redesigned the Start Page.
  * Completely redesigned the Project Master, now it's 2 separate tabs.
+ * Add "Create a 'Ready To Play' game archive", which allows the user to create a game archive with no dev files.
  * Fixed an issue where Strings Editor would paste text twice.
  * Fixed an issue where PARC files would overwrite newer versions of plugins.
 
