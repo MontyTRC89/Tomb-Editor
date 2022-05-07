@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using TombLib.NG;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -173,6 +174,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Collect all valid triggers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
 
+            string path = _level.Settings.MakeAbsolute(_level.Settings.TenLuaScriptFile);
+            var validFunctionNames = ScriptingUtils.GetAllFunctionsNames(path);
+           
             // Filter out singular key/switch triggers, as they are technically invalid in engine
             if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key ||
                                         triggers[0].TriggerType == TriggerType.Switch))
@@ -345,18 +349,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         case TriggerTargetType.LuaScript:
                             // Trigger for LUA script
                             if (!(trigger.Target is TriggerParameterString))
-                                throw new Exception("A LUA Script trigger must reference a LUA function! ('" + trigger + "')");
-                           
-                            var luaFunctionPointer = (TriggerParameterString)trigger.Target;
-                            string luaFunctionName = luaFunctionPointer.Value;
-                            if (!_luaFunctions.Contains(luaFunctionName))
                             {
-                                _luaFunctions.Add(luaFunctionName);
+                                throw new Exception("A LUA Script trigger must reference a LUA function! ('" + trigger + "')");
                             }
 
-                            trigger2 = (ushort)((_luaFunctions.IndexOf(luaFunctionName)) & 0x3ff | (16 << 10));
-                            result.Add(trigger2);
+                            string functionName = (trigger.Target as TriggerParameterString).Value;
+                            if (!validFunctionNames.Contains(functionName))
+                            {
+                                _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing Lua function " + functionName + "().");
+                                continue;
+                            }
 
+                            if (!_luaFunctions.Contains(functionName))
+                            {
+                                _luaFunctions.Add(functionName);
+                            }
+
+                            trigger2 = (ushort)((_luaFunctions.IndexOf(functionName)) & 0x3ff | (16 << 10));
+                            result.Add(trigger2);
+                            
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                             result.Add(trigger2);
 

@@ -1400,6 +1400,10 @@ namespace TombLib.LevelData.IO
                                 long roomId = LEB128.ReadLong(chunkIO.Raw);
                                 roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(roomId, targetRoom => setTriggerParameter(targetRoom)));
                                 return;
+                            case 3:
+                                string luaFunctionName = chunkIO.Raw.ReadStringUTF8();
+                                setTriggerParameter(new TriggerParameterString(luaFunctionName));
+                                return;
                             case -1:
                                 setTriggerParameter(null);
                                 return;

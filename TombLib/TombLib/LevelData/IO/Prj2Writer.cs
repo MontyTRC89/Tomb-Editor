@@ -748,6 +748,11 @@ namespace TombLib.LevelData.IO
                                     LEB128.Write(chunkIO.Raw, 2);
                                     LEB128.Write(chunkIO.Raw, rooms.TryGetOrDefault((Room)parameter));
                                 }
+                                else if (parameter is TriggerParameterString)
+                                {
+                                    LEB128.Write(chunkIO.Raw, 3);
+                                    chunkIO.Raw.WriteStringUTF8(((TriggerParameterString)parameter).Value);
+                                }
                                 else
                                 {
                                     LEB128.Write(chunkIO.Raw, -1);
