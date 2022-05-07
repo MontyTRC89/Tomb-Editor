@@ -251,7 +251,17 @@ namespace TombIDE.ProjectMaster
 			bool found = false;
 
 			using (ZipArchive parc = ZipFile.OpenRead(parcPath))
+			{
+				ZipArchiveEntry targetDllEntry = parc.Entries.FirstOrDefault(x => x.FullName.EndsWith('\\' + Path.GetFileName(pluginFile)));
+
+				if (targetDllEntry == null)
+					return false;
+
+				if (targetDllEntry.Length != new FileInfo(pluginFile).Length)
+					return false;
+
 				foreach (ZipArchiveEntry entry in parc.Entries)
+				{
 					if (entry.FullName.Split('\\')[0].Equals(Path.GetFileNameWithoutExtension(pluginFile), StringComparison.OrdinalIgnoreCase))
 					{
 						string destPath = Path.Combine(DefaultPaths.TRNGPluginsDirectory, entry.FullName);
@@ -263,6 +273,8 @@ namespace TombIDE.ProjectMaster
 						entry.ExtractToFile(destPath, true);
 						found = true;
 					}
+				}
+			}
 
 			return found;
 		}
