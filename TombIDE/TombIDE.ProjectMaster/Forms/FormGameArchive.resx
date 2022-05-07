@@ -120,6 +120,8 @@
   <data name="label_Info.Text" xml:space="preserve">
     <value>This is a very bare-bones implementation of a feature, which will be fully customizable in a future version of TombIDE.
 
+The goal of it is to create a game archive, which doesn't have any development files in it (a.k.a. files which the player doesn't need).
+
 Since this feature may not be 100% accurate, please make sure to playtest the packed game archive,
 because there might be a chance that TombIDE will not include something in the archive, which was important for the game to run correctly.</value>
   </data>
