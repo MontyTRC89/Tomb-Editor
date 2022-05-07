@@ -32,12 +32,9 @@ namespace TombLib.LevelData
 
     public class AutoStaticMeshMergeEntry : ICloneable, IEquatable<AutoStaticMeshMergeEntry>
     {
-        public string StaticMesh
-        {
-            get { return parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.GameVersion); }
-        }
+        public string StaticMesh => parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.GameVersion);
 
-        private LevelSettings parent;
+        private readonly LevelSettings parent;
         public uint meshId;
         public bool Merge { get; set; }
         public bool InterpretShadesAsEffect { get; set; }
@@ -45,12 +42,12 @@ namespace TombLib.LevelData
         public bool ClearShades { get; set; }
         public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect, bool tintAsAmbient, bool clearShades, LevelSettings parent)
         {
-            this.meshId = staticMesh;
+            meshId = staticMesh;
             this.parent = parent;
-            this.Merge = merge;
-            this.TintAsAmbient = tintAsAmbient;
-            this.InterpretShadesAsEffect = interpretShadesAsEffect;
-            this.ClearShades = clearShades;
+            Merge = merge;
+            TintAsAmbient = tintAsAmbient;
+            InterpretShadesAsEffect = interpretShadesAsEffect;
+            ClearShades = clearShades;
         }
 
         public AutoStaticMeshMergeEntry Clone()
@@ -68,12 +65,17 @@ namespace TombLib.LevelData
             return ("merged" + meshId + ClearShades + InterpretShadesAsEffect + Merge + TintAsAmbient).GetHashCode();
         }
 
-        public override bool Equals(Object other) => Equals(other as AutoStaticMeshMergeEntry);
+        public override bool Equals(object other)
+        {
+            return Equals(other as AutoStaticMeshMergeEntry);
+        }
 
         public bool Equals(AutoStaticMeshMergeEntry other)
         {
             if (other == null)
+            {
                 return false;
+            }
 
             return (other.meshId == meshId &&
                     other.ClearShades == ClearShades &&
@@ -125,14 +127,22 @@ namespace TombLib.LevelData
         {
             get
             {
-                var soundmap = new SortedDictionary<int, WadSoundInfo>();
+                SortedDictionary<int, WadSoundInfo> soundmap = new SortedDictionary<int, WadSoundInfo>();
 
                 // Loop through all reference classes, collecting sounds
-                foreach (var soundsRef in SoundCatalogs)
+                foreach (ReferencedSoundCatalog soundsRef in SoundCatalogs)
+                {
                     if (soundsRef.LoadException == null)
-                        foreach (var sound in soundsRef.Sounds.SoundInfos)
+                    {
+                        foreach (WadSoundInfo sound in soundsRef.Sounds.SoundInfos)
+                        {
                             if (!soundmap.ContainsKey(sound.Id))
+                            {
                                 soundmap.Add(sound.Id, sound);
+                            }
+                        }
+                    }
+                }
 
                 return soundmap.Values.ToList();
             }
@@ -201,7 +211,7 @@ namespace TombLib.LevelData
         public bool RemapAnimatedTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
         public bool FastMode { get; set; } = false;
-		public bool RemoveUnusedObjects { get; set; } = false;
+        public bool RemoveUnusedObjects { get; set; } = false;
         public bool EnableCustomSampleRate { get; set; } = false;
         public int CustomSampleRate { get; set; } = 44100;
 
@@ -222,7 +232,10 @@ namespace TombLib.LevelData
             return result;
         }
 
-        object ICloneable.Clone() => Clone();
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
 
         public static string VariableCreate(VariableType type)
         {
@@ -231,7 +244,7 @@ namespace TombLib.LevelData
 
         public void ConvertLevelExtension()
         {
-            var result = string.Empty;
+            string result = string.Empty;
             switch (GameVersion)
             {
                 case TRVersion.Game.TR1:
@@ -247,10 +260,12 @@ namespace TombLib.LevelData
                     result = ".tr4";
                     break;
                 case TRVersion.Game.TR5:
-                case TRVersion.Game.TombEngine:
                     result = ".trc";
                     break;
-                          }
+                case TRVersion.Game.TombEngine:
+                    result = ".ten";
+                    break;
+            }
             GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
         }
 
@@ -268,20 +283,32 @@ namespace TombLib.LevelData
                     break;
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
+                    {
                         result = Path.GetDirectoryName(LevelFilePath);
+                    }
                     else
+                    {
                         result = GetVariable(VariableType.EditorDirectory);
+                    }
+
                     break;
                 case VariableType.GameDirectory:
                     result = MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
                     break;
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
+                    {
                         result = PathC.GetFileNameWithoutExtensionTry(LevelFilePath);
+                    }
                     else if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
+                    {
                         result = PathC.GetFileNameWithoutExtensionTry(Wads[0].Path);
+                    }
                     else
+                    {
                         result = "Default";
+                    }
+
                     break;
                 case VariableType.EngineVersion:
                     result = GameVersion.ToString();
@@ -292,7 +319,11 @@ namespace TombLib.LevelData
                 default:
                     throw new ArgumentException();
             }
-            if (result == null) result = "";
+            if (result == null)
+            {
+                result = "";
+            }
+
             return result;
         }
 
@@ -304,11 +335,17 @@ namespace TombLib.LevelData
                 // Find variable
                 startIndex = path.IndexOf(VariableBegin, startIndex);
                 if (startIndex == -1)
+                {
                     break;
+                }
+
                 int afterStartIndex = startIndex + VariableBegin.Length;
                 int endIndex = path.IndexOf(VariableEnd, afterStartIndex);
                 if (endIndex == -1)
+                {
                     break;
+                }
+
                 string variableName = path.Substring(afterStartIndex, endIndex - afterStartIndex);
 
                 // Parse variable
@@ -331,7 +368,9 @@ namespace TombLib.LevelData
         public string MakeAbsolute(string path, params VariableType[] excluded)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return null;
+            }
 
             path = ParseVariables(path, excluded);
 
@@ -348,12 +387,16 @@ namespace TombLib.LevelData
         public string MakeRelative(string path, VariableType baseDirType)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return null;
+            }
 
             try
             {
                 if (string.IsNullOrEmpty(LevelFilePath))
+                {
                     return Path.GetFullPath(path);
+                }
 
                 switch (baseDirType)
                 {
@@ -363,7 +406,10 @@ namespace TombLib.LevelData
                     case VariableType.ScriptDirectory:
                         string relativePath = PathC.GetRelativePath(GetVariable(baseDirType), path);
                         if (relativePath == null)
+                        {
                             return Path.GetFullPath(path);
+                        }
+
                         return VariableCreate(baseDirType) + Path.DirectorySeparatorChar + relativePath;
                     default:
                         return path;
@@ -378,37 +424,56 @@ namespace TombLib.LevelData
         public ImageC LoadFontTexture(string path = null)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Font_pc);
+            }
+
             return LoadRawExtraTexture(path);
         }
 
         public ImageC LoadSkyTexture(string path = null)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.pcsky_raw);
+            }
+
             return LoadRawExtraTexture(path);
         }
 
         public ImageC LoadTr5ExtraSprites(string path = null)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
+            }
+
             return LoadRawExtraTexture(path);
         }
 
         public static List<ColorC> LoadPalette(byte[] buffer)
         {
-            var result = new List<ColorC>();
-            if (buffer.Length < 3) return result; // No suitable color data found
+            List<ColorC> result = new List<ColorC>();
+            if (buffer.Length < 3)
+            {
+                return result; // No suitable color data found
+            }
 
-            using (var stream = new MemoryStream(buffer, false))
-            using (var readerPalette = new BinaryReader(stream))
+            using (MemoryStream stream = new MemoryStream(buffer, false))
+            using (BinaryReader readerPalette = new BinaryReader(stream))
+            {
                 while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
+                {
                     result.Add(new ColorC(readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
+                }
+            }
 
             return result;
         }
-        public static List<ColorC> LoadPalette() => LoadPalette(ResourcesC.ResourcesC.palette);
+        public static List<ColorC> LoadPalette()
+        {
+            return LoadPalette(ResourcesC.ResourcesC.palette);
+        }
 
         public static ImageC LoadRawExtraTexture(string path)
         {
@@ -424,7 +489,9 @@ namespace TombLib.LevelData
 
                     image = ImageC.CreateNew(256, 256);
                     for (int i = 0; i < 256 * 256; ++i)
+                    {
                         image.Set(i, data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+                    }
                 }
                 else if (path.EndsWith(".pc"))
                 {
@@ -434,21 +501,28 @@ namespace TombLib.LevelData
 
                     image = ImageC.CreateNew(256, 256);
                     for (int i = 0; i < 256 * 256; ++i)
+                    {
                         image.Set(i, data[i * 4 + 2], data[i * 4 + 1], data[i * 4], data[i * 4 + 3]);
+                    }
                 }
                 else
+                {
                     image = ImageC.FromStream(reader);
+                }
 
                 if (image.Width != 256 || image.Height != 256)
+                {
                     throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
                         "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
+                }
+
                 return image;
             }
         }
 
         public bool LoadDefaultSoundCatalog()
         {
-            var catalogName = string.Empty;
+            string catalogName = string.Empty;
 
             switch (GameVersion.Native())
             {
@@ -491,18 +565,26 @@ namespace TombLib.LevelData
 
         public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
         {
-            var absolutePathTextureLookup = new Dictionary<string, Texture>();
+            Dictionary<string, Texture> absolutePathTextureLookup = new Dictionary<string, Texture>();
 
             // Add other imported geometry textures to lookup
             foreach (ImportedGeometry importedGeometry in ImportedGeometries)
+            {
                 foreach (ImportedGeometryTexture importedGeometryTexture in importedGeometry.Textures)
+                {
                     if (!absolutePathTextureLookup.ContainsKey(importedGeometryTexture.AbsolutePath))
+                    {
                         absolutePathTextureLookup.Add(importedGeometryTexture.AbsolutePath, importedGeometryTexture);
+                    }
+                }
+            }
 
             // TODO Ideally we could load these concurrently
             // Load geometries
             foreach (ImportedGeometryUpdateInfo geometryToUpdate in geometriesToUpdate)
+            {
                 geometryToUpdate.Key.Update(this, absolutePathTextureLookup, geometryToUpdate.Value);
+            }
         }
 
         public void ImportedGeometryUpdate(ImportedGeometry geometry, ImportedGeometryInfo info)
@@ -513,8 +595,13 @@ namespace TombLib.LevelData
         public ImportedGeometry ImportedGeometryFromID(ImportedGeometry.UniqueIDType uniqueID)
         {
             foreach (ImportedGeometry importedGeometry in ImportedGeometries)
+            {
                 if (importedGeometry.UniqueID == uniqueID)
+                {
                     return importedGeometry;
+                }
+            }
+
             return null;
         }
 
@@ -522,8 +609,13 @@ namespace TombLib.LevelData
         {
             WadMoveable result;
             foreach (ReferencedWad wad in Wads)
+            {
                 if (wad.Wad != null && wad.Wad.Moveables.TryGetValue(id, out result))
+                {
                     return result;
+                }
+            }
+
             return null;
         }
 
@@ -531,8 +623,13 @@ namespace TombLib.LevelData
         {
             WadStatic result;
             foreach (ReferencedWad wad in Wads)
+            {
                 if (wad.Wad != null && wad.Wad.Statics.TryGetValue(id, out result))
+                {
                     return result;
+                }
+            }
+
             return null;
         }
 
@@ -544,15 +641,21 @@ namespace TombLib.LevelData
             foreach (ReferencedWad wad in Wads)
             {
                 if (wad.Wad == null)
+                {
                     continue;
+                }
 
-                if (( item.IsStatic && wad.Wad.Statics.ContainsKey(item.StaticId)) ||
+                if ((item.IsStatic && wad.Wad.Statics.ContainsKey(item.StaticId)) ||
                     (!item.IsStatic && wad.Wad.Moveables.ContainsKey(item.MoveableId)))
                 {
                     if (result == null)
+                    {
                         result = wad;
+                    }
                     else
+                    {
                         multiple = true;
+                    }
                 }
             }
 
@@ -563,10 +666,19 @@ namespace TombLib.LevelData
         {
             SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
             foreach (ReferencedWad wad in Wads)
+            {
                 if (wad.Wad != null)
+                {
                     foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in wad.Wad.Moveables)
+                    {
                         if (!result.ContainsKey(moveable.Key))
+                        {
                             result.Add(moveable.Key, moveable.Value);
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 
@@ -574,10 +686,19 @@ namespace TombLib.LevelData
         {
             SortedList<WadStaticId, WadStatic> result = new SortedList<WadStaticId, WadStatic>();
             foreach (ReferencedWad wad in Wads)
+            {
                 if (wad.Wad != null)
+                {
                     foreach (KeyValuePair<WadStaticId, WadStatic> @static in wad.Wad.Statics)
+                    {
                         if (!result.ContainsKey(@static.Key))
+                        {
                             result.Add(@static.Key, @static.Value);
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 
@@ -585,14 +706,26 @@ namespace TombLib.LevelData
         {
             SortedList<WadSpriteSequenceId, WadSpriteSequence> result = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
             foreach (ReferencedWad wad in Wads)
+            {
                 if (wad.Wad != null)
+                {
                     foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sprite in wad.Wad.SpriteSequences)
+                    {
                         if (!result.ContainsKey(sprite.Key))
+                        {
                             result.Add(sprite.Key, sprite.Value);
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 
-        public List<WadSprite> WadGetAllSprites() => WadGetAllSpriteSequences().Values.SelectMany(s => s.Sprites).ToList();
+        public List<WadSprite> WadGetAllSprites()
+        {
+            return WadGetAllSpriteSequences().Values.SelectMany(s => s.Sprites).ToList();
+        }
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
             new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FileExtensions);
@@ -604,7 +737,7 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc"),
-            new FileFormat("TombEngine level", "t5m")
+            new FileFormat("TombEngine level", "ten")
         };
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
@@ -616,21 +749,31 @@ namespace TombLib.LevelData
 
         public WadSoundInfo WadTryGetSoundInfo(int id)
         {
-            foreach (var soundInfo in GlobalSoundMap)
+            foreach (WadSoundInfo soundInfo in GlobalSoundMap)
+            {
                 if (soundInfo.Id == id)
+                {
                     return soundInfo;
+                }
+            }
+
             return null;
         }
 
-        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => staticMesh != null && e.meshId == staticMesh.Id.TypeId).Any();
-        public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId) => AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh)
+        {
+            return AutoStaticMeshMerges.Where(e => staticMesh != null && e.meshId == staticMesh.Id.TypeId).Any();
+        }
 
-        public List<int> SelectedAndAvailableSounds
-        { get { return SelectedSounds.Where(item => GlobalSoundMap
-                .Any(entry => entry.Id == item && entry.Samples.Count > 0 && entry.SampleCount(this) > 0)).ToList(); } }
+        public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId)
+        {
+            return AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
+        }
 
-        public List<int> SelectedAndMissingSounds
-        { get { return SelectedSounds.Where(item => !GlobalSoundMap.Any(entry => entry.Id == item)).ToList(); } }
+        public List<int> SelectedAndAvailableSounds => SelectedSounds.Where(item => GlobalSoundMap
+                                                                     .Any(entry => entry.Id == item && entry.Samples.Count > 0 && entry.SampleCount(this) > 0)).ToList();
+
+        public List<int> SelectedAndMissingSounds => SelectedSounds.Where(item => !GlobalSoundMap.Any(entry => entry.Id == item)).ToList();
 
         public bool AllSoundSamplesAvailable => GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this));
     }
