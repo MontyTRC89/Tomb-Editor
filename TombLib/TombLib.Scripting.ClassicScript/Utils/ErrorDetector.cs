@@ -212,6 +212,9 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			if (string.IsNullOrEmpty(command))
 				return false;
 
+			if (command.Equals("Legend", StringComparison.OrdinalIgnoreCase)) // "Legend=" ignores commas
+				return true;
+
 			int argumentCount = LineParser.EscapeComments(lineText).Split('=')[1].Split(',').Length;
 
 			if (argumentCount == 1 && string.IsNullOrWhiteSpace(lineText.Split('=')[1]))
