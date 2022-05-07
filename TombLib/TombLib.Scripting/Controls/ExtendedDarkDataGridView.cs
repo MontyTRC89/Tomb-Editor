@@ -37,8 +37,6 @@ namespace TombLib.Scripting.Controls
 					_editingControl.Copy();
 					keyData = Keys.None;
 				}
-				else if (keyData == (Keys.Control | Keys.V))
-					_editingControl.Paste();
 			}
 			else
 			{

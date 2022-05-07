@@ -137,25 +137,22 @@ namespace TombIDE
 		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTrproj();
 		private void button_Main_Import_Click(object sender, EventArgs e) => ImportExe();
 
-		private void button_New_Click(object sender, EventArgs e) => CreateNewProject();
-		private void button_Open_Click(object sender, EventArgs e) => OpenTrproj();
-		private void button_Import_Click(object sender, EventArgs e) => ImportExe();
-		private void button_Rename_Click(object sender, EventArgs e) => RenameProject();
-		private void button_Delete_Click(object sender, EventArgs e) => DeleteProject();
+		private void contextMenuItem_Rename_Click(object sender, EventArgs e) => RenameProject();
+		private void contextMenuItem_Delete_Click(object sender, EventArgs e) => DeleteProject();
 
-		private void button_MoveUp_Click(object sender, EventArgs e)
+		private void contextMenuItem_MoveUp_Click(object sender, EventArgs e)
 		{
 			treeView.MoveSelectedNodeUp();
 			RefreshAndReserializeProjects();
 		}
 
-		private void button_MoveDown_Click(object sender, EventArgs e)
+		private void contextMenuItem_MoveDown_Click(object sender, EventArgs e)
 		{
 			treeView.MoveSelectedNodeDown();
 			RefreshAndReserializeProjects();
 		}
 
-		private void button_OpenFolder_Click(object sender, EventArgs e) =>
+		private void contextMenuItem_OpenDirectory_Click(object sender, EventArgs e) =>
 			SharedMethods.OpenInExplorer(((Project)treeView.SelectedNodes[0].Tag).ProjectPath);
 
 		private void button_OpenProject_Click(object sender, EventArgs e) => OpenSelectedProject();
@@ -325,12 +322,12 @@ namespace TombIDE
 		private void CheckItemSelection()
 		{
 			// Enable / Disable node specific buttons
-			button_Rename.Enabled = treeView.SelectedNodes.Count > 0;
-			button_Delete.Enabled = treeView.SelectedNodes.Count > 0;
-			button_MoveUp.Enabled = treeView.SelectedNodes.Count > 0;
-			button_MoveDown.Enabled = treeView.SelectedNodes.Count > 0;
-			button_OpenFolder.Enabled = treeView.SelectedNodes.Count > 0;
-			button_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_Rename.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_Delete.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_MoveUp.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_MoveDown.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_OpenDirectory.Enabled = treeView.SelectedNodes.Count > 0;
+			contextMenuItem_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
 
 			// // // // // // // //
 			_selectedProject = treeView.SelectedNodes.Count > 0 ? (Project)treeView.SelectedNodes[0].Tag : null;
@@ -420,8 +417,6 @@ namespace TombIDE
 				_ide.AvailableProjects.Add((Project)node.Tag);
 
 			XmlHandling.UpdateProjectsXml(_ide.AvailableProjects);
-
-			panel_Main_Buttons.Visible = treeView.Nodes.Count == 0;
 		}
 
 		private void RepositionProjectNodeIcons() // DarkUI sucks
