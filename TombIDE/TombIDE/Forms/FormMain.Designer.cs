@@ -18,11 +18,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.button_AddProgram = new System.Windows.Forms.Button();
-			this.button_LaunchGame = new System.Windows.Forms.Button();
-			this.button_Leave = new System.Windows.Forms.Button();
-			this.button_OpenFolder = new System.Windows.Forms.Button();
-			this.button_Special = new System.Windows.Forms.Button();
 			this.contextMenu_ProgramButton = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_DeleteButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.label_Separator_01 = new DarkUI.Controls.DarkLabel();
@@ -31,11 +26,18 @@
 			this.panel_CoverLoading = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
 			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
+			this.tabPage_LevelManager = new System.Windows.Forms.TabPage();
 			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
 			this.tabPage_ScriptingStudio = new System.Windows.Forms.TabPage();
 			this.panel_Programs = new System.Windows.Forms.Panel();
 			this.panelButton_ScriptingStudio = new System.Windows.Forms.Panel();
-			this.panelButton_ProjectMaster = new System.Windows.Forms.Panel();
+			this.button_OpenFolder = new System.Windows.Forms.Button();
+			this.button_Special = new System.Windows.Forms.Button();
+			this.button_LaunchGame = new System.Windows.Forms.Button();
+			this.panelButton_ProjectManager = new System.Windows.Forms.Panel();
+			this.panelButton_LevelManager = new System.Windows.Forms.Panel();
+			this.button_Leave = new System.Windows.Forms.Button();
+			this.button_AddProgram = new System.Windows.Forms.Button();
 			this.timer_ScriptButtonBlinking = new System.Windows.Forms.Timer(this.components);
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenu_ProgramButton.SuspendLayout();
@@ -43,68 +45,6 @@
 			this.tablessTabControl.SuspendLayout();
 			this.panel_Programs.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// button_AddProgram
-			// 
-			this.button_AddProgram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_AddProgram.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.button_AddProgram.Image = global::TombIDE.Properties.Resources.general_plus_math_16;
-			this.button_AddProgram.Location = new System.Drawing.Point(3, 330);
-			this.button_AddProgram.Name = "button_AddProgram";
-			this.button_AddProgram.Size = new System.Drawing.Size(40, 40);
-			this.button_AddProgram.TabIndex = 10;
-			this.toolTip.SetToolTip(this.button_AddProgram, "Add Program Shortcut");
-			this.button_AddProgram.Click += new System.EventHandler(this.button_AddProgram_Click);
-			// 
-			// button_LaunchGame
-			// 
-			this.button_LaunchGame.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_LaunchGame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.button_LaunchGame.Image = global::TombIDE.Properties.Resources.general_edit_16;
-			this.button_LaunchGame.Location = new System.Drawing.Point(2, 174);
-			this.button_LaunchGame.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.button_LaunchGame.Name = "button_LaunchGame";
-			this.button_LaunchGame.Size = new System.Drawing.Size(42, 42);
-			this.button_LaunchGame.TabIndex = 6;
-			this.toolTip.SetToolTip(this.button_LaunchGame, "Launch Game (F4)");
-			this.button_LaunchGame.Click += new System.EventHandler(this.button_LaunchGame_Click);
-			// 
-			// button_Leave
-			// 
-			this.button_Leave.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Leave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_Leave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.button_Leave.Image = global::TombIDE.Properties.Resources.ide_back_30;
-			this.button_Leave.Location = new System.Drawing.Point(2, 6);
-			this.button_Leave.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.button_Leave.Name = "button_Leave";
-			this.button_Leave.Size = new System.Drawing.Size(42, 42);
-			this.button_Leave.TabIndex = 1;
-			this.toolTip.SetToolTip(this.button_Leave, "Exit Project");
-			// 
-			// button_OpenFolder
-			// 
-			this.button_OpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_OpenFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.button_OpenFolder.Image = global::TombIDE.Properties.Resources.ide_folder_30;
-			this.button_OpenFolder.Location = new System.Drawing.Point(2, 222);
-			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.button_OpenFolder.Name = "button_OpenFolder";
-			this.button_OpenFolder.Size = new System.Drawing.Size(42, 42);
-			this.button_OpenFolder.TabIndex = 7;
-			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Project Folder (F3)");
-			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
-			// 
-			// button_Special
-			// 
-			this.button_Special.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_Special.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.button_Special.Image = global::TombIDE.Properties.Resources.general_edit_16;
-			this.button_Special.Location = new System.Drawing.Point(2, 282);
-			this.button_Special.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.button_Special.Name = "button_Special";
-			this.button_Special.Size = new System.Drawing.Size(42, 42);
-			this.button_Special.TabIndex = 9;
 			// 
 			// contextMenu_ProgramButton
 			// 
@@ -139,7 +79,7 @@
 			// 
 			this.label_Separator_02.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label_Separator_02.ForeColor = System.Drawing.Color.Gray;
-			this.label_Separator_02.Location = new System.Drawing.Point(3, 164);
+			this.label_Separator_02.Location = new System.Drawing.Point(3, 212);
 			this.label_Separator_02.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.label_Separator_02.Name = "label_Separator_02";
 			this.label_Separator_02.Size = new System.Drawing.Size(40, 2);
@@ -149,7 +89,7 @@
 			// 
 			this.label_Separator_03.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label_Separator_03.ForeColor = System.Drawing.Color.Gray;
-			this.label_Separator_03.Location = new System.Drawing.Point(3, 272);
+			this.label_Separator_03.Location = new System.Drawing.Point(3, 320);
 			this.label_Separator_03.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.label_Separator_03.Name = "label_Separator_03";
 			this.label_Separator_03.Size = new System.Drawing.Size(40, 2);
@@ -179,6 +119,7 @@
 			// 
 			// tablessTabControl
 			// 
+			this.tablessTabControl.Controls.Add(this.tabPage_LevelManager);
 			this.tablessTabControl.Controls.Add(this.tabPage_ProjectMaster);
 			this.tablessTabControl.Controls.Add(this.tabPage_ScriptingStudio);
 			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -187,6 +128,15 @@
 			this.tablessTabControl.SelectedIndex = 0;
 			this.tablessTabControl.Size = new System.Drawing.Size(1005, 599);
 			this.tablessTabControl.TabIndex = 0;
+			// 
+			// tabPage_LevelManager
+			// 
+			this.tabPage_LevelManager.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_LevelManager.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_LevelManager.Name = "tabPage_LevelManager";
+			this.tabPage_LevelManager.Size = new System.Drawing.Size(997, 573);
+			this.tabPage_LevelManager.TabIndex = 3;
+			this.tabPage_LevelManager.Text = "Level Manager";
 			// 
 			// tabPage_ProjectMaster
 			// 
@@ -211,13 +161,14 @@
 			this.panel_Programs.AutoScroll = true;
 			this.panel_Programs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.panel_Programs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_Programs.Controls.Add(this.panelButton_ScriptingStudio);
 			this.panel_Programs.Controls.Add(this.button_OpenFolder);
 			this.panel_Programs.Controls.Add(this.button_Special);
 			this.panel_Programs.Controls.Add(this.label_Separator_03);
 			this.panel_Programs.Controls.Add(this.button_LaunchGame);
 			this.panel_Programs.Controls.Add(this.label_Separator_02);
-			this.panel_Programs.Controls.Add(this.panelButton_ScriptingStudio);
-			this.panel_Programs.Controls.Add(this.panelButton_ProjectMaster);
+			this.panel_Programs.Controls.Add(this.panelButton_ProjectManager);
+			this.panel_Programs.Controls.Add(this.panelButton_LevelManager);
 			this.panel_Programs.Controls.Add(this.label_Separator_01);
 			this.panel_Programs.Controls.Add(this.button_Leave);
 			this.panel_Programs.Controls.Add(this.button_AddProgram);
@@ -235,25 +186,99 @@
 			// 
 			this.panelButton_ScriptingStudio.BackgroundImage = global::TombIDE.Properties.Resources.ide_script_30;
 			this.panelButton_ScriptingStudio.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.panelButton_ScriptingStudio.Location = new System.Drawing.Point(2, 114);
+			this.panelButton_ScriptingStudio.Location = new System.Drawing.Point(2, 162);
 			this.panelButton_ScriptingStudio.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.panelButton_ScriptingStudio.Name = "panelButton_ScriptingStudio";
 			this.panelButton_ScriptingStudio.Size = new System.Drawing.Size(42, 42);
-			this.panelButton_ScriptingStudio.TabIndex = 4;
+			this.panelButton_ScriptingStudio.TabIndex = 5;
 			this.toolTip.SetToolTip(this.panelButton_ScriptingStudio, "Scripting Studio");
-			this.panelButton_ScriptingStudio.Click += new System.EventHandler(this.panelButton_ScriptEditor_Click);
+			this.panelButton_ScriptingStudio.Click += new System.EventHandler(this.panelButton_ScriptingStudio_Click);
 			// 
-			// panelButton_ProjectMaster
+			// button_OpenFolder
 			// 
-			this.panelButton_ProjectMaster.BackgroundImage = global::TombIDE.Properties.Resources.ide_master_30;
-			this.panelButton_ProjectMaster.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.panelButton_ProjectMaster.Location = new System.Drawing.Point(2, 66);
-			this.panelButton_ProjectMaster.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.panelButton_ProjectMaster.Name = "panelButton_ProjectMaster";
-			this.panelButton_ProjectMaster.Size = new System.Drawing.Size(42, 42);
-			this.panelButton_ProjectMaster.TabIndex = 3;
-			this.toolTip.SetToolTip(this.panelButton_ProjectMaster, "Project Master");
-			this.panelButton_ProjectMaster.Click += new System.EventHandler(this.panelButton_ProjectMaster_Click);
+			this.button_OpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_OpenFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_OpenFolder.Image = global::TombIDE.Properties.Resources.ide_folder_30;
+			this.button_OpenFolder.Location = new System.Drawing.Point(2, 270);
+			this.button_OpenFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_OpenFolder.Name = "button_OpenFolder";
+			this.button_OpenFolder.Size = new System.Drawing.Size(42, 42);
+			this.button_OpenFolder.TabIndex = 7;
+			this.toolTip.SetToolTip(this.button_OpenFolder, "Open Project Folder (F3)");
+			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
+			// 
+			// button_Special
+			// 
+			this.button_Special.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_Special.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Special.Image = global::TombIDE.Properties.Resources.general_edit_16;
+			this.button_Special.Location = new System.Drawing.Point(2, 330);
+			this.button_Special.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_Special.Name = "button_Special";
+			this.button_Special.Size = new System.Drawing.Size(42, 42);
+			this.button_Special.TabIndex = 9;
+			// 
+			// button_LaunchGame
+			// 
+			this.button_LaunchGame.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_LaunchGame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_LaunchGame.Image = global::TombIDE.Properties.Resources.general_edit_16;
+			this.button_LaunchGame.Location = new System.Drawing.Point(2, 222);
+			this.button_LaunchGame.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_LaunchGame.Name = "button_LaunchGame";
+			this.button_LaunchGame.Size = new System.Drawing.Size(42, 42);
+			this.button_LaunchGame.TabIndex = 6;
+			this.toolTip.SetToolTip(this.button_LaunchGame, "Launch Game (F4)");
+			this.button_LaunchGame.Click += new System.EventHandler(this.button_LaunchGame_Click);
+			// 
+			// panelButton_ProjectManager
+			// 
+			this.panelButton_ProjectManager.BackgroundImage = global::TombIDE.Properties.Resources.ide_projectmanager;
+			this.panelButton_ProjectManager.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panelButton_ProjectManager.Location = new System.Drawing.Point(2, 114);
+			this.panelButton_ProjectManager.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panelButton_ProjectManager.Name = "panelButton_ProjectManager";
+			this.panelButton_ProjectManager.Size = new System.Drawing.Size(42, 42);
+			this.panelButton_ProjectManager.TabIndex = 4;
+			this.toolTip.SetToolTip(this.panelButton_ProjectManager, "Project Manager");
+			this.panelButton_ProjectManager.Click += new System.EventHandler(this.panelButton_ProjectManager_Click);
+			// 
+			// panelButton_LevelManager
+			// 
+			this.panelButton_LevelManager.BackgroundImage = global::TombIDE.Properties.Resources.ide_master_30;
+			this.panelButton_LevelManager.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panelButton_LevelManager.Location = new System.Drawing.Point(2, 66);
+			this.panelButton_LevelManager.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panelButton_LevelManager.Name = "panelButton_LevelManager";
+			this.panelButton_LevelManager.Size = new System.Drawing.Size(42, 42);
+			this.panelButton_LevelManager.TabIndex = 3;
+			this.toolTip.SetToolTip(this.panelButton_LevelManager, "Level Manager");
+			this.panelButton_LevelManager.Click += new System.EventHandler(this.panelButton_LevelManager_Click);
+			// 
+			// button_Leave
+			// 
+			this.button_Leave.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button_Leave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_Leave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Leave.Image = global::TombIDE.Properties.Resources.ide_back_30;
+			this.button_Leave.Location = new System.Drawing.Point(2, 6);
+			this.button_Leave.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.button_Leave.Name = "button_Leave";
+			this.button_Leave.Size = new System.Drawing.Size(42, 42);
+			this.button_Leave.TabIndex = 1;
+			this.toolTip.SetToolTip(this.button_Leave, "Exit Project");
+			// 
+			// button_AddProgram
+			// 
+			this.button_AddProgram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button_AddProgram.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_AddProgram.Image = global::TombIDE.Properties.Resources.general_plus_math_16;
+			this.button_AddProgram.Location = new System.Drawing.Point(3, 378);
+			this.button_AddProgram.Name = "button_AddProgram";
+			this.button_AddProgram.Size = new System.Drawing.Size(40, 40);
+			this.button_AddProgram.TabIndex = 10;
+			this.toolTip.SetToolTip(this.button_AddProgram, "Add Program Shortcut");
+			this.button_AddProgram.Click += new System.EventHandler(this.button_AddProgram_Click);
 			// 
 			// timer_ScriptButtonBlinking
 			// 
@@ -295,13 +320,15 @@
 		private System.Windows.Forms.Panel panel_CoverLoading;
 		private System.Windows.Forms.Panel panel_Main;
 		private System.Windows.Forms.Panel panel_Programs;
-		private System.Windows.Forms.Panel panelButton_ProjectMaster;
-		private System.Windows.Forms.Panel panelButton_ScriptingStudio;
+		private System.Windows.Forms.Panel panelButton_LevelManager;
+		private System.Windows.Forms.Panel panelButton_ProjectManager;
 		private System.Windows.Forms.Timer timer_ScriptButtonBlinking;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
 		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 		private System.Windows.Forms.TabPage tabPage_ProjectMaster;
 		private System.Windows.Forms.TabPage tabPage_ScriptingStudio;
+		private System.Windows.Forms.TabPage tabPage_LevelManager;
+		private System.Windows.Forms.Panel panelButton_ScriptingStudio;
 	}
 }

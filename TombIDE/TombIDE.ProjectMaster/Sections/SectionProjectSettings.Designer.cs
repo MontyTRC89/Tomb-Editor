@@ -48,6 +48,7 @@
 			// 
 			// settings_SplashScreen
 			// 
+			this.settings_SplashScreen.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_SplashScreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_SplashScreen.Location = new System.Drawing.Point(9, 808);
 			this.settings_SplashScreen.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
@@ -59,6 +60,7 @@
 			// 
 			// settings_SpecialFunctions
 			// 
+			this.settings_SpecialFunctions.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_SpecialFunctions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_SpecialFunctions.Location = new System.Drawing.Point(9, 12);
 			this.settings_SpecialFunctions.Margin = new System.Windows.Forms.Padding(9, 12, 9, 9);
@@ -70,6 +72,7 @@
 			// 
 			// settings_Logo
 			// 
+			this.settings_Logo.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_Logo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_Logo.Location = new System.Drawing.Point(9, 1382);
 			this.settings_Logo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
@@ -81,6 +84,7 @@
 			// 
 			// settings_StartupImage
 			// 
+			this.settings_StartupImage.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_StartupImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_StartupImage.Location = new System.Drawing.Point(9, 1090);
 			this.settings_StartupImage.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
@@ -92,6 +96,7 @@
 			// 
 			// settings_Icon
 			// 
+			this.settings_Icon.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_Icon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_Icon.Location = new System.Drawing.Point(9, 486);
 			this.settings_Icon.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
@@ -103,6 +108,7 @@
 			// 
 			// settings_ProjectInfo
 			// 
+			this.settings_ProjectInfo.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_ProjectInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.settings_ProjectInfo.Location = new System.Drawing.Point(9, 154);
 			this.settings_ProjectInfo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);

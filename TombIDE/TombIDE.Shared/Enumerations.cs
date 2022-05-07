@@ -2,7 +2,8 @@
 {
 	public enum IDETab
 	{
-		ProjectMaster,
+		LevelManager,
+		ProjectManager,
 		ScriptingStudio
 	}
 

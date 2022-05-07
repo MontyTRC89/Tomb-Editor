@@ -15,24 +15,6 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
-		private bool _isPendingLevelListReload = false;
-
-		private bool _isMainWindowFocused;
-		public bool IsMainWindowFocued
-		{
-			get => _isMainWindowFocused;
-			set
-			{
-				_isMainWindowFocused = value;
-
-				if (_isMainWindowFocused && _isPendingLevelListReload)
-				{
-					_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-					_isPendingLevelListReload = false;
-				}
-			}
-		}
-
 		#region Initialization
 
 		public ProjectMaster()
@@ -45,10 +27,6 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			// Initialize the watchers
-			prj2FileWatcher.Path = _ide.Project.LevelsPath;
-			levelFolderWatcher.Path = _ide.Project.LevelsPath;
-
 			string pluginsFolderPath = DefaultPaths.TRNGPluginsDirectory;
 
 			if (!Directory.Exists(pluginsFolderPath))
@@ -59,8 +37,6 @@ namespace TombIDE.ProjectMaster
 			internalPluginFolderWatcher.Path = pluginsFolderPath;
 
 			// Initialize the sections
-			section_LevelList.Initialize(_ide);
-			section_LevelProperties.Initialize(_ide);
 			section_ProjectInfo.Initialize(_ide);
 			section_PluginList.Initialize(_ide);
 
@@ -77,12 +53,14 @@ namespace TombIDE.ProjectMaster
 				button_ShowPlugins.Visible = true;
 
 				splitContainer_Info.Panel2Collapsed = true;
+				splitContainer_Info.Panel1.Padding = new Padding(30, 30, 30, 30);
 			}
 			else if (!_ide.IDEConfiguration.PluginsPanelHidden)
 			{
 				button_ShowPlugins.Enabled = false;
 				button_ShowPlugins.Visible = false;
 
+				splitContainer_Info.Panel1.Padding = new Padding(30, 30, 30, 10);
 				splitContainer_Info.Panel2Collapsed = false;
 			}
 
@@ -99,8 +77,9 @@ namespace TombIDE.ProjectMaster
 				CheckPlugins();
 		}
 
-		private void button_ShowPlugins_Click(object sender, System.EventArgs e)
+		private void button_ShowPlugins_Click(object sender, EventArgs e)
 		{
+			splitContainer_Info.Panel1.Padding = new Padding(30, 30, 30, 10);
 			splitContainer_Info.Panel2Collapsed = false;
 
 			button_ShowPlugins.Enabled = false;
@@ -110,13 +89,14 @@ namespace TombIDE.ProjectMaster
 			_ide.IDEConfiguration.Save();
 		}
 
-		private void button_HidePlugins_Click(object sender, System.EventArgs e)
+		private void button_HidePlugins_Click(object sender, EventArgs e)
 		{
 			int prevPanelHeight = splitContainer_Info.Panel1.Height;
 
 			splitContainer_Info.Panel2Collapsed = true;
+			splitContainer_Info.Panel1.Padding = new Padding(30, 30, 30, 30);
 
-			button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, prevPanelHeight - 32 - 12);
+			button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, prevPanelHeight - 32 - 45);
 
 			button_ShowPlugins.Enabled = true;
 			button_ShowPlugins.Visible = true;
@@ -127,13 +107,13 @@ namespace TombIDE.ProjectMaster
 			animationTimer.Start();
 		}
 
-		private void animationTimer_Tick(object sender, System.EventArgs e)
+		private void animationTimer_Tick(object sender, EventArgs e)
 		{
 			button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, button_ShowPlugins.Location.Y + 16);
 
-			if (button_ShowPlugins.Location.Y >= splitContainer_Info.Panel1.Height - (32 + 12))
+			if (button_ShowPlugins.Location.Y >= splitContainer_Info.Panel1.Height - (32 + 45))
 			{
-				button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, splitContainer_Info.Panel1.Height - (32 + 12));
+				button_ShowPlugins.Location = new Point(button_ShowPlugins.Location.X, splitContainer_Info.Panel1.Height - (32 + 45));
 				animationTimer.Stop();
 			}
 		}
@@ -141,23 +121,6 @@ namespace TombIDE.ProjectMaster
 		#endregion Events
 
 		#region Watchers
-
-		// Deleting .prj2 files is critical, so watch out
-		private void prj2FileWatcher_Deleted(object sender, FileSystemEventArgs e)
-		{
-			if (IsMainWindowFocued)
-				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-			else
-				_isPendingLevelListReload = true;
-		}
-
-		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e)
-		{
-			if (IsMainWindowFocued)
-				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-			else
-				_isPendingLevelListReload = true;
-		}
 
 		// Plugin watchers
 		private void projectDLLFileWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();

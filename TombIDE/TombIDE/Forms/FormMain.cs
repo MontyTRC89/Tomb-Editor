@@ -30,6 +30,7 @@ namespace TombIDE
 
 		private ScriptingStudio.ClassicScriptStudio classicScriptStudio;
 		private ProjectMaster.ProjectMaster projectMaster;
+		private ProjectMaster.LevelManager levelManager;
 
 		private WinEventDelegate eventDelegate = null;
 		private IntPtr eventHook = IntPtr.Zero;
@@ -45,6 +46,10 @@ namespace TombIDE
 			_ide.Project = project;
 
 			_ide.IDEEventRaised += OnIDEEventRaised;
+
+			levelManager = new ProjectMaster.LevelManager();
+			levelManager.Dock = DockStyle.Fill;
+			tabPage_LevelManager.Controls.Add(levelManager);
 
 			projectMaster = new ProjectMaster.ProjectMaster();
 			projectMaster.Dock = DockStyle.Fill;
@@ -70,7 +75,7 @@ namespace TombIDE
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
 			{
 				classicScriptStudio.IsMainWindowFocued = true;
-				projectMaster.IsMainWindowFocued = true;
+				levelManager.IsMainWindowFocued = true;
 
 				classicScriptStudio.EditorTabControl.TryRunFileReloadQueue();
 			}
@@ -78,7 +83,7 @@ namespace TombIDE
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
 			{
 				classicScriptStudio.IsMainWindowFocued = false;
-				projectMaster.IsMainWindowFocued = false;
+				levelManager.IsMainWindowFocued = false;
 			}
 
 			if (IsDisposed)
@@ -107,10 +112,10 @@ namespace TombIDE
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					// Initialize the IDE interfaces
+					levelManager.Initialize(_ide);
 					projectMaster.Initialize(_ide);
-					//scriptEditor.Initialize(_ide);
 
-					SelectIDETab(IDETab.ProjectMaster);
+					SelectIDETab(IDETab.LevelManager);
 
 					// Drop the panel
 					panel_CoverLoading.Dispose();
@@ -504,8 +509,9 @@ namespace TombIDE
 			}
 		}
 
-		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ProjectMaster);
-		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
+		private void panelButton_LevelManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.LevelManager);
+		private void panelButton_ProjectManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ProjectManager);
+		private void panelButton_ScriptingStudio_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
 		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
@@ -595,12 +601,22 @@ namespace TombIDE
 
 			switch (tab)
 			{
-				case IDETab.ProjectMaster:
+				case IDETab.LevelManager:
 				{
-					panelButton_ProjectMaster.BackColor = Color.FromArgb(135, 135, 135);
+					panelButton_LevelManager.BackColor = Color.FromArgb(135, 135, 135);
+					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(0);
+					break;
+				}
+				case IDETab.ProjectManager:
+				{
+					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_ProjectManager.BackColor = Color.FromArgb(135, 135, 135);
+					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
+
+					tablessTabControl.SelectTab(1);
 					break;
 				}
 				case IDETab.ScriptingStudio:
@@ -608,10 +624,11 @@ namespace TombIDE
 					if (timer_ScriptButtonBlinking.Enabled)
 						timer_ScriptButtonBlinking.Stop();
 
-					panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(135, 135, 135);
 
-					tablessTabControl.SelectTab(1);
+					tablessTabControl.SelectTab(2);
 					break;
 				}
 			}

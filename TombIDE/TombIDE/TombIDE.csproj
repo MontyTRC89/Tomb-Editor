@@ -148,6 +148,7 @@
     <Content Include="Resources\ide-play-30.png" />
     <Content Include="Resources\ide-script-30.png" />
     <Content Include="Resources\ide-tools-30.png" />
+    <Content Include="Resources\ide_projectmanager.png" />
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\open-48.png" />
     <Content Include="Resources\TIDE_Logo.png" />
