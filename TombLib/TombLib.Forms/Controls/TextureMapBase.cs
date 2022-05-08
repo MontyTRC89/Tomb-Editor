@@ -523,7 +523,7 @@ namespace TombLib.Controls
 
             // Draw selection
             var selectedTexture = SelectedTexture;
-            if (selectedTexture.Texture == VisibleTexture)
+            if (selectedTexture.Texture.Equals(VisibleTexture))
             {
                 // This texture is currently selected
                 PointF[] points = new[]
