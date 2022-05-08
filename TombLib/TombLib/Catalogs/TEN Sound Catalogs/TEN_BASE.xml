@@ -3,7 +3,7 @@
   <SoundInfos>
     <WadSoundInfo>
       <Id>0</Id>
-      <Name>LARA_FOOTSTEPS</Name>
+      <Name>TEN_LARA_FOOTSTEPS</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14,16 +14,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_larafoot_01.wav</FileName>
+          <FileName>ten_lara_footsteps_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_larafoot_02.wav</FileName>
+          <FileName>ten_lara_footsteps_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_larafoot_03.wav</FileName>
+          <FileName>ten_lara_footsteps_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_larafoot_04.wav</FileName>
+          <FileName>ten_lara_footsteps_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -31,7 +31,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1</Id>
-      <Name>LARA_CLIMB2</Name>
+      <Name>TEN_LARA_CLIMB2</Name>
       <Volume>100</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -42,7 +42,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_climb_02.wav</FileName>
+          <FileName>ten_lara_climb_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -50,7 +50,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>2</Id>
-      <Name>LARA_NO</Name>
+      <Name>TEN_LARA_NO_ENGLISH</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -61,7 +61,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_no_english.wav</FileName>
+          <FileName>ten_lara_no_english_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -69,7 +69,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>3</Id>
-      <Name>LARA_SLIPPING</Name>
+      <Name>TEN_LARA_SLIPPING</Name>
       <Volume>10</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -80,7 +80,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_slipping.wav</FileName>
+          <FileName>ten_lara_slipping_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -88,7 +88,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>4</Id>
-      <Name>LARA_LAND</Name>
+      <Name>TEN_LARA_LAND</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -99,7 +99,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_land.wav</FileName>
+          <FileName>TEN_LARA_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -107,7 +107,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>5</Id>
-      <Name>LARA_CLIMB_1</Name>
+      <Name>TEN_LARA_CLIMB_1</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -118,7 +118,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_climb_01.wav</FileName>
+          <FileName>TEN_LARA_climb_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -126,7 +126,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>6</Id>
-      <Name>LARA_DRAW</Name>
+      <Name>TEN_LARA_DRAW</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -137,7 +137,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lara_draw_01.wav</FileName>
+          <FileName>TEN_LARA_draw_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -145,7 +145,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>7</Id>
-      <Name>LARA_HOLSTER</Name>
+      <Name>TEN_LARA_HOLSTER</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -156,7 +156,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lara_holster_01.wav</FileName>
+          <FileName>TEN_LARA_holster_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -164,7 +164,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>8</Id>
-      <Name>LARA_PISTOL_FIRE</Name>
+      <Name>TEN_WEAPON_PISTOL_FIRE</Name>
       <Volume>75</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -175,7 +175,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>pistol_fire_01.wav</FileName>
+          <FileName>ten_weapon_pistol_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -183,7 +183,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>9</Id>
-      <Name>LARA_RELOAD</Name>
+      <Name>TEN_LARA_RELOAD</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>10</Chance>
@@ -194,7 +194,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>weapon_reload_01.wav</FileName>
+          <FileName>ten_weapon_reload_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -202,7 +202,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>10</Id>
-      <Name>LARA_RICOCHET</Name>
+      <Name>TEN_WEAPON_RICOCHET</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -213,10 +213,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>weapon_ricochet_01.wav</FileName>
+          <FileName>ten_weapon_ricochet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>weapon_ricochet_02.wav</FileName>
+          <FileName>ten_weapon_ricochet_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -224,7 +224,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>11</Id>
-      <Name>PUSH_BLOCK_END</Name>
+      <Name>TEN_PUSH_BLOCK_END</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -243,7 +243,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>12</Id>
-      <Name>METAL_SCRAPE_LOOP</Name>
+      <Name>TR4_METAL_SCRAPE_LOOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -262,7 +262,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>13</Id>
-      <Name>SMALL_SCARAB_FEET</Name>
+      <Name>TR4_SMALL_SCARAB_FEET</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>5</Chance>
@@ -284,7 +284,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>14</Id>
-      <Name>BIG_SCARAB_ATTACK</Name>
+      <Name>TR4_BIG_SCARAB_ATTACK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -303,7 +303,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>15</Id>
-      <Name>BIG_SCARAB_DEATH</Name>
+      <Name>TR4_BIG_SCARAB_DEATH</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -322,7 +322,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>16</Id>
-      <Name>BIG_SCARAB_FLYING</Name>
+      <Name>TR4_BIG_SCARAB_FLYING</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -341,7 +341,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>17</Id>
-      <Name>LARA_WET_FEET</Name>
+      <Name>TEN_LARA_WET_FEET</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -352,16 +352,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wet_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wet_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wet_03.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wet_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wet_04.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wet_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -369,7 +369,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>18</Id>
-      <Name>LARA_WADE</Name>
+      <Name>TEN_LARA_WADE</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -380,7 +380,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_wade_01.wav</FileName>
+          <FileName>TEN_LARA_wade_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -388,7 +388,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>19</Id>
-      <Name>RUMBLE_LOOP</Name>
+      <Name>TEN_RUMBLE_LOOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -407,7 +407,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>20</Id>
-      <Name>METAL_SCRAPE_LOOP</Name>
+      <Name>TR4_METAL_SCRAPE_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -426,7 +426,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>21</Id>
-      <Name>CRICKET_LOOP</Name>
+      <Name>TR4_CRICKET_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -445,7 +445,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>22</Id>
-      <Name>WOOD_BRIDGE_FALL</Name>
+      <Name>TR4_WOOD_BRIDGE_FALL</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -464,7 +464,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>23</Id>
-      <Name>STARGATE_SWIRL</Name>
+      <Name>TR4_STARGATE_SWIRL</Name>
       <Volume>50</Volume>
       <RangeInSectors>3</RangeInSectors>
       <Chance>100</Chance>
@@ -483,7 +483,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>24</Id>
-      <Name>LARA_KNEES_SHUFFLE</Name>
+      <Name>TEN_LARA_KNEES_SHUFFLE</Name>
       <Volume>18</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -494,10 +494,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_kneeshuffle_01.wav</FileName>
+          <FileName>TEN_LARA_kneeshuffle_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_kneeshuffle_02.wav</FileName>
+          <FileName>TEN_LARA_kneeshuffle_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -505,7 +505,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>25</Id>
-      <Name>PUSH_SPX_SWITCH</Name>
+      <Name>TEN_PUSH_BIG_SWITCH</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -524,7 +524,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>26</Id>
-      <Name>LARA_CLIMB3</Name>
+      <Name>TEN_LARA_CLIMB3</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -535,7 +535,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_climb_03.wav</FileName>
+          <FileName>TEN_LARA_climb_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -543,7 +543,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>27</Id>
-      <Name>LARA_BODYSLAM</Name>
+      <Name>TEN_LARA_BODYSLAM</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -565,7 +565,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>28</Id>
-      <Name>LARA_SHIMMY2</Name>
+      <Name>TEN_LARA_SHIMMY2</Name>
       <Volume>18</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -576,7 +576,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_shimmy_hand_01.wav</FileName>
+          <FileName>TEN_LARA_shimmy_hand_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -584,7 +584,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>29</Id>
-      <Name>LARA_JUMP</Name>
+      <Name>TEN_LARA_JUMP</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -595,7 +595,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_jump_01.wav</FileName>
+          <FileName>TEN_LARA_jump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -603,7 +603,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>30</Id>
-      <Name>LARA_FALL</Name>
+      <Name>TEN_LARA_FALL</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -614,7 +614,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_scream_01.wav</FileName>
+          <FileName>TEN_LARA_scream_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -622,7 +622,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>31</Id>
-      <Name>LARA_INJURY</Name>
+      <Name>TEN_LARA_INJURY</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>40</Chance>
@@ -633,10 +633,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_injury_01.wav</FileName>
+          <FileName>TEN_LARA_injury_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_injury_02.wav</FileName>
+          <FileName>TEN_LARA_injury_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -644,7 +644,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>32</Id>
-      <Name>LARA_ROLLING</Name>
+      <Name>TEN_LARA_ROLLING</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -655,7 +655,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_rolling_01.wav</FileName>
+          <FileName>TEN_LARA_rolling_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -663,7 +663,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>33</Id>
-      <Name>LARA_SPLASH</Name>
+      <Name>TEN_LARA_SPLASH</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -674,7 +674,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_splash_01.wav</FileName>
+          <FileName>TEN_LARA_splash_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -682,7 +682,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>34</Id>
-      <Name>LARA_GETOUT</Name>
+      <Name>TEN_LARA_GETOUT</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -693,7 +693,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_getoutwater_01.wav</FileName>
+          <FileName>TEN_LARA_getoutwater_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -701,7 +701,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>35</Id>
-      <Name>LARA_SWIM</Name>
+      <Name>TEN_LARA_SWIM</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -712,7 +712,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_swim_01.wav</FileName>
+          <FileName>TEN_LARA_swim_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -720,7 +720,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>36</Id>
-      <Name>LARA_BREATH</Name>
+      <Name>TEN_LARA_BREATH</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -731,7 +731,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_takebreath_01.wav</FileName>
+          <FileName>TEN_LARA_takebreath_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -739,7 +739,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>37</Id>
-      <Name>LARA_BUBBLES</Name>
+      <Name>TEN_LARA_BUBBLES</Name>
       <Volume>47</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>70</Chance>
@@ -758,7 +758,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>38</Id>
-      <Name>SPINNING_PUZZLE</Name>
+      <Name>TR4_SENET_PUZZLE_SPIN</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -777,7 +777,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>39</Id>
-      <Name>LARA_KEY</Name>
+      <Name>TEN_LARA_KEY</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -788,7 +788,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Use_Key_01.wav</FileName>
+          <FileName>TEN_LARA_Use_Key_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -796,7 +796,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>40</Id>
-      <Name>COG_RESAW_LIBRARY</Name>
+      <Name>TR4_COG_RESAW_LIBRARY</Name>
       <Volume>55</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -815,7 +815,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>41</Id>
-      <Name>LARA_GENERAL_DEATH</Name>
+      <Name>TEN_LARA_GENERAL_DEATH</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -826,7 +826,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_death_general_01.wav</FileName>
+          <FileName>TEN_LARA_death_general_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -834,7 +834,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>42</Id>
-      <Name>LARA_KNEES_DEATH</Name>
+      <Name>TEN_LARA_KNEES_DEATH</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -845,7 +845,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_death_knees_01.wav</FileName>
+          <FileName>TEN_LARA_death_knees_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -853,7 +853,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>43</Id>
-      <Name>LARA_UZI_FIRE</Name>
+      <Name>TEN_LARA_UZI_FIRE</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -864,7 +864,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uzi_fire_01.wav</FileName>
+          <FileName>ten_weapon_uzi_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -872,7 +872,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>44</Id>
-      <Name>LARA_UZI_STOP</Name>
+      <Name>TEN_LARA_UZI_STOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -883,7 +883,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>uzi_stop_01.wav</FileName>
+          <FileName>ten_weapon_uzi_stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -891,7 +891,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>45</Id>
-      <Name>LARA_SHOTGUN_FIRE</Name>
+      <Name>TEN_LARA_SHOTGUN_FIRE</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -902,7 +902,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>shotgun_fire_01.wav</FileName>
+          <FileName>ten_weapon_shotgun_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -910,7 +910,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>46</Id>
-      <Name>LARA_BLOCK_PUSH1</Name>
+      <Name>TEN_LARA_BLOCK_PUSH1</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -921,7 +921,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_push_01.wav</FileName>
+          <FileName>TEN_LARA_push_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -929,7 +929,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>47</Id>
-      <Name>LARA_BLOCK_PUSH2</Name>
+      <Name>TEN_LARA_BLOCK_PUSH2</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -940,7 +940,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_push_02.wav</FileName>
+          <FileName>TEN_LARA_push_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -948,7 +948,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>48</Id>
-      <Name>SARLID_PALACES</Name>
+      <Name>TR4_SARLID_PALACES</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -967,7 +967,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>49</Id>
-      <Name>LARA_SHOTGUN_SHELL</Name>
+      <Name>TEN_LARA_SHOTGUN_SHELL</Name>
       <Volume>12</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>60</Chance>
@@ -978,7 +978,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>shotgun_shell_01.wav</FileName>
+          <FileName>ten_weapon_shotgun_shell_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -986,7 +986,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>50</Id>
-      <Name>UNDERWATER_DOOR</Name>
+      <Name>TEN_LARA_UNDERWATER_DOOR</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1005,7 +1005,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>51</Id>
-      <Name>LARA_PULL</Name>
+      <Name>TEN_LARA_PULL</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1016,7 +1016,7 @@
       <LoopBehaviour>OneShotRewound</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_pull_01.wav</FileName>
+          <FileName>TEN_LARA_pull_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1024,7 +1024,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>52</Id>
-      <Name>LARA_FLOATING</Name>
+      <Name>TEN_LARA_FLOATING</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1035,7 +1035,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_floatswim_01.wav</FileName>
+          <FileName>TEN_LARA_floatswim_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1043,7 +1043,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>53</Id>
-      <Name>LARA_HIGH_FALL_DEATH</Name>
+      <Name>TEN_LARA_HIGH_FALL_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1054,7 +1054,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_death_highfall_01.wav</FileName>
+          <FileName>TEN_LARA_death_highfall_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1062,7 +1062,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>54</Id>
-      <Name>LARA_GRABHAND</Name>
+      <Name>TEN_LARA_GRABHAND</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1073,7 +1073,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_shimmy_hand_01.wav</FileName>
+          <FileName>TEN_LARA_shimmy_hand_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1081,7 +1081,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>55</Id>
-      <Name>LARA_GRABBODY</Name>
+      <Name>TEN_LARA_GRABBODY</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1092,7 +1092,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_grab_body_01.wav</FileName>
+          <FileName>TEN_LARA_grab_body_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1100,7 +1100,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>56</Id>
-      <Name>LARA_GRABFEET</Name>
+      <Name>TEN_LARA_GRABFEET</Name>
       <Volume>75</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -1111,7 +1111,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_grab_feet_01.wav</FileName>
+          <FileName>TEN_LARA_grab_feet_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1119,7 +1119,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>57</Id>
-      <Name>RATCHET_3SHOT</Name>
+      <Name>TR4_RATCHET_3SHOT</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>90</Chance>
@@ -1138,7 +1138,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>58</Id>
-      <Name>RATCHET_1SHOT</Name>
+      <Name>TR4_RATCHET_1SHOT</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1157,7 +1157,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>59</Id>
-      <Name>WATER_LOOP_NOTINUSE</Name>
+      <Name>TEN_WATER_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>9</RangeInSectors>
       <Chance>100</Chance>
@@ -1176,7 +1176,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>60</Id>
-      <Name>UNDERWATER</Name>
+      <Name>TEN_UNDERWATER</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1195,7 +1195,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>61</Id>
-      <Name>UNDERWATER_SWITCH</Name>
+      <Name>TEN_LARA_UNDERWATER_SWITCH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1214,7 +1214,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>62</Id>
-      <Name>LARA_PICKUP</Name>
+      <Name>TEN_LARA_PICKUP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1229,7 +1229,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>63</Id>
-      <Name>PUSHABLE_SOUND</Name>
+      <Name>TEN_PUSHABLE_SOUND</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1248,7 +1248,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>64</Id>
-      <Name>DOOR_GENERAL</Name>
+      <Name>TR4_DOOR_GENERAL</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1267,7 +1267,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>65</Id>
-      <Name>HELICOPTER_LOOP</Name>
+      <Name>TR4_HELICOPTER_LOOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -1286,7 +1286,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>66</Id>
-      <Name>ROCK_FALL_CRUMBLE</Name>
+      <Name>TR4_ROCK_FALL_CRUMBLE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1305,7 +1305,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>67</Id>
-      <Name>ROCK_FALL_LAND</Name>
+      <Name>TR4_ROCK_FALL_LAND</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1324,7 +1324,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>68</Id>
-      <Name>PENDULUM_BLADES</Name>
+      <Name>TR4_PENDULUM_BLADES</Name>
       <Volume>60</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -1343,7 +1343,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>69</Id>
-      <Name>STALEGTITE</Name>
+      <Name>TR4_STALEGTITE</Name>
       <Volume>90</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -1362,7 +1362,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>70</Id>
-      <Name>LARA_THUD</Name>
+      <Name>TEN_LARA_THUD</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1373,10 +1373,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_thud_01.wav</FileName>
+          <FileName>TEN_LARA_thud_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_thud_02.wav</FileName>
+          <FileName>TEN_LARA_thud_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1384,7 +1384,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>71</Id>
-      <Name>GENERIC_SWOOSH</Name>
+      <Name>TEN_GENERIC_SWOOSH</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1403,7 +1403,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>72</Id>
-      <Name>GENERIC_HEAVY_THUD</Name>
+      <Name>TEN_GENERIC_HEAVY_THUD</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1422,7 +1422,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>73</Id>
-      <Name>CROC_FEET</Name>
+      <Name>TR4_CROC_FEET</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1444,7 +1444,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>74</Id>
-      <Name>SWINGING_FLAMES</Name>
+      <Name>TR4_SWINGING_FLAMES</Name>
       <Volume>50</Volume>
       <RangeInSectors>4</RangeInSectors>
       <Chance>100</Chance>
@@ -1463,7 +1463,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>75</Id>
-      <Name>STONE_SCRAPE</Name>
+      <Name>TR4_STONE_SCRAPE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1482,7 +1482,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>76</Id>
-      <Name>BLAST_CIRCLE</Name>
+      <Name>TR4_BLAST_CIRCLE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1501,7 +1501,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>77</Id>
-      <Name>LARA_BAZOOKA_FIRE</Name>
+      <Name>TEN_LARA_BAZOOKA_FIRE</Name>
       <Volume>99</Volume>
       <RangeInSectors>9</RangeInSectors>
       <Chance>100</Chance>
@@ -1512,7 +1512,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>rocket_launcher_fire_01.wav</FileName>
+          <FileName>ten_weapon_rocket_launcher_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1520,7 +1520,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>78</Id>
-      <Name>LARA_HK_FIRE</Name>
+      <Name>TEN_LARA_HK_FIRE</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1531,7 +1531,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>hk_fire_01.wav</FileName>
+          <FileName>ten_weapon_hk_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1539,7 +1539,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>79</Id>
-      <Name>WATERFALL_LOOP</Name>
+      <Name>TR4_WATERFALL_LOOP</Name>
       <Volume>22</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -1558,7 +1558,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>80</Id>
-      <Name>CROC_ATTACK</Name>
+      <Name>TR4_CROC_ATTACK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1577,7 +1577,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>81</Id>
-      <Name>CROC_DEATH</Name>
+      <Name>TR4_CROC_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1596,7 +1596,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>82</Id>
-      <Name>PORTCULLIS_UP</Name>
+      <Name>TR4_PORTCULLIS_UP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1615,7 +1615,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>83</Id>
-      <Name>PORTCULLIS_DOWN</Name>
+      <Name>TR4_PORTCULLIS_DOWN</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1634,7 +1634,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>84</Id>
-      <Name>DOUBLE_DOORS_BANG</Name>
+      <Name>TR4_DOUBLE_DOORS_BANG</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1653,7 +1653,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>85</Id>
-      <Name>DOUBLE_DOORS_CREAK</Name>
+      <Name>TR4_DOUBLE_DOORS_CREAK</Name>
       <Volume>35</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1672,7 +1672,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>86</Id>
-      <Name>PETES_PYRA_STONE</Name>
+      <Name>TR4_PYRA_STONE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1691,7 +1691,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>87</Id>
-      <Name>PETES_PYRA_PNEU</Name>
+      <Name>TR4_PYRA_PNEU</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1710,7 +1710,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>88</Id>
-      <Name>AHMET_DIE</Name>
+      <Name>TR4_AHMET_DIE</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1729,7 +1729,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>89</Id>
-      <Name>AHMET_ATTACK</Name>
+      <Name>TR4_AHMET_ATTACK</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1754,7 +1754,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>90</Id>
-      <Name>AHMET_HANDS</Name>
+      <Name>TR4_AHMET_HANDS</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1773,7 +1773,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>91</Id>
-      <Name>AHMET_FEET</Name>
+      <Name>TR4_AHMET_FEET</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1795,7 +1795,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>92</Id>
-      <Name>AHMET_SWIPE</Name>
+      <Name>TR4_AHMET_SWIPE</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -1817,7 +1817,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>93</Id>
-      <Name>AHMET_WAIT</Name>
+      <Name>TR4_AHMET_WAIT</Name>
       <Volume>85</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -1836,7 +1836,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>94</Id>
-      <Name>GUIDE_JUMP</Name>
+      <Name>TR4_GUIDE_JUMP</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>75</Chance>
@@ -1855,7 +1855,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>95</Id>
-      <Name>GENERAL_FOOTSTEPS1</Name>
+      <Name>TR4_GENERAL_FOOTSTEPS1</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1877,7 +1877,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>96</Id>
-      <Name>GUIDE_LAND_USENOT</Name>
+      <Name>TR4_GUIDE_LAND_USENOT</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>75</Chance>
@@ -1896,7 +1896,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>97</Id>
-      <Name>POUR</Name>
+      <Name>TR4_POUR</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1915,7 +1915,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>98</Id>
-      <Name>SCALE1</Name>
+      <Name>TR4_SCALE1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1934,7 +1934,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>99</Id>
-      <Name>SCALE2</Name>
+      <Name>TR4_SCALE2</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1953,7 +1953,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>100</Id>
-      <Name>BEETLARA_WINDUP</Name>
+      <Name>TR4_CLOCKWORK_BEETLE_WINDUP</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1972,7 +1972,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>101</Id>
-      <Name>BEETLE_CLK_WHIRR</Name>
+      <Name>TR4_CLOCKWORK_BEETLE_CLK_WHIRR</Name>
       <Volume>35</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -1991,7 +1991,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>102</Id>
-      <Name>BEETLE_CLK_EXP</Name>
+      <Name>TR4_CLOCKWORK_BEETLE_CLK_EXP</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2010,7 +2010,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>103</Id>
-      <Name>MINE_EXP_OVERLAY</Name>
+      <Name>TR4_MINE_EXP_OVERLAY</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2029,7 +2029,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>104</Id>
-      <Name>LARA_HK_STOP</Name>
+      <Name>TEN_LARA_HK_STOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2040,7 +2040,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>hk_stop_01.wav</FileName>
+          <FileName>ten_weapon_hk_stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2048,7 +2048,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>105</Id>
-      <Name>EXPLOSION1</Name>
+      <Name>TEN_EXPLOSION1</Name>
       <Volume>40</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2067,8 +2067,8 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>106</Id>
-      <Name>EXPLOSION2_VOLWAS80</Name>
-      <Volume>58</Volume>
+      <Name>TEN_EXPLOSION2</Name>
+      <Volume>51</Volume>
       <RangeInSectors>24</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2086,7 +2086,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>107</Id>
-      <Name>EARTHQUAKE_LOOP</Name>
+      <Name>TEN_EARTHQUAKE_LOOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2105,7 +2105,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
-      <Name>UI_ROTATE</Name>
+      <Name>TEN_MENU_ROTATE</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2116,7 +2116,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Menu_Rotate_01.wav</FileName>
+          <FileName>ten_menu_rotate_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2124,7 +2124,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>109</Id>
-      <Name>UI_SELECT</Name>
+      <Name>TEN_MENU_SELECT</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2135,7 +2135,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Menu_Select_01.wav</FileName>
+          <FileName>ten_menu_select_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2143,7 +2143,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>110</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2158,7 +2158,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>111</Id>
-      <Name>UI_CHOOSE</Name>
+      <Name>TEN_MENU_CHOOSE</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2169,7 +2169,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Menu_Choose_01.wav</FileName>
+          <FileName>ten_menu_choose_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2177,7 +2177,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>112</Id>
-      <Name>TICK_TOCK</Name>
+      <Name>TEN_TICK_TOCK</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -2196,7 +2196,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>113</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2211,7 +2211,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>114</Id>
-      <Name>UI_COMBINE</Name>
+      <Name>TEN_MENU_COMBINE</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2222,7 +2222,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Menu_Combine_01.wav</FileName>
+          <FileName>ten_menu_combine_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2230,7 +2230,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>115</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2245,7 +2245,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>116</Id>
-      <Name>UI_MEDI</Name>
+      <Name>TEN_MENU_MEDI</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2256,7 +2256,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>UI_Medi_01.wav</FileName>
+          <FileName>ten_menu_medi_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2264,7 +2264,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>117</Id>
-      <Name>LARA_CLIMB_WALLS_NOISE</Name>
+      <Name>TEN_LARA_CLIMB_WALLS_NOISE</Name>
       <Volume>18</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2275,7 +2275,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_grab_feet_01.wav</FileName>
+          <FileName>TEN_LARA_grab_feet_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2283,7 +2283,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>118</Id>
-      <Name>WATER_LOOP</Name>
+      <Name>TR4_WATER_LOOP</Name>
       <Volume>20</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2302,7 +2302,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>119</Id>
-      <Name>VONCROY_JUMP</Name>
+      <Name>TR4_VONCROY_JUMP</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>60</Chance>
@@ -2321,7 +2321,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>120</Id>
-      <Name>LOCUSTS_LOOP</Name>
+      <Name>TR4_LOCUSTS_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -2340,7 +2340,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>121</Id>
-      <Name>LARA_REVOLVER_FIRE</Name>
+      <Name>TEN_LARA_REVOLVER_FIRE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2351,7 +2351,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>revolver_fire_01.wav</FileName>
+          <FileName>ten_weapon_revolver_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2359,7 +2359,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>122</Id>
-      <Name>BOULDER_FALL</Name>
+      <Name>TEN_BOULDER_FALL</Name>
       <Volume>99</Volume>
       <RangeInSectors>22</RangeInSectors>
       <Chance>100</Chance>
@@ -2378,7 +2378,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>123</Id>
-      <Name>LARA_GRENADEGUN_LOAD</Name>
+      <Name>TEN_LARA_GRENADEGUN_LOAD</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2389,7 +2389,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grenade_gun_load_01.wav</FileName>
+          <FileName>ten_weapon_grenade_gun_load_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2397,7 +2397,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>124</Id>
-      <Name>LARA_GRENADEGUN_LOCK</Name>
+      <Name>TEN_LARA_GRENADEGUN_LOCK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2408,7 +2408,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grenadegun_lock_01.wav</FileName>
+          <FileName>ten_weapon_grenadegun_lock_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2416,7 +2416,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>125</Id>
-      <Name>LARA_GRENADEGUN_FIRE</Name>
+      <Name>TEN_LARA_GRENADEGUN_FIRE</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2427,7 +2427,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>grenadegun_fire_01.wav</FileName>
+          <FileName>ten_weapon_grenadegun_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2435,7 +2435,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>126</Id>
-      <Name>GATE_OPENING</Name>
+      <Name>TR4_GATE_OPENING</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2454,7 +2454,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>127</Id>
-      <Name>LARA_ELECTRIC_LOOP</Name>
+      <Name>TEN_LARA_ELECTRIC_LOOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2465,7 +2465,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Tr4_Lara_Electric_Loop_01.wav</FileName>
+          <FileName>TEN_LARA_Electric_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2473,7 +2473,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>128</Id>
-      <Name>LARA_ELECTRIC_CRACKLES</Name>
+      <Name>TEN_LARA_ELECTRIC_CRACKLES</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -2484,13 +2484,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Electric_Crackles_01.wav</FileName>
+          <FileName>TEN_LARA_Electric_Crackles_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>Tr4_Lara_Electric_Crackles_02.wav</FileName>
+          <FileName>TEN_LARA_Electric_Crackles_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>Tr4_Lara_Electric_Crackles_03.wav</FileName>
+          <FileName>TEN_LARA_Electric_Crackles_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2498,7 +2498,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>129</Id>
-      <Name>BLOOD_LOOP</Name>
+      <Name>TR4_BLOOD_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -2517,7 +2517,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>130</Id>
-      <Name>BIKE_START</Name>
+      <Name>TEN_MOTORBIKE_START</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2536,7 +2536,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>131</Id>
-      <Name>BIKE_IDLE</Name>
+      <Name>TEN_MOTORBIKE_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2555,7 +2555,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>132</Id>
-      <Name>BIKE_ACCELERATE</Name>
+      <Name>TEN_MOTORBIKE_ACCELERATE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2574,7 +2574,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>133</Id>
-      <Name>BIKE_MOVING</Name>
+      <Name>TEN_MOTORBIKE_MOVING</Name>
       <Volume>32</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2593,7 +2593,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>134</Id>
-      <Name>BIKE_SIDE_IMPACT</Name>
+      <Name>TEN_MOTORBIKE_SIDE_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2612,7 +2612,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>135</Id>
-      <Name>BIKE_FRONT_IMPACT</Name>
+      <Name>TEN_MOTORBIKE_FRONT_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2631,7 +2631,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>136</Id>
-      <Name>SOFT_WIND_LOOP</Name>
+      <Name>TR4_SOFT_WIND_LOOP</Name>
       <Volume>5</Volume>
       <RangeInSectors>3</RangeInSectors>
       <Chance>100</Chance>
@@ -2650,7 +2650,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>137</Id>
-      <Name>BIKE_LAND</Name>
+      <Name>TEN_MOTORBIKE_LAND</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2669,7 +2669,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>138</Id>
-      <Name>CROCGOD_ROAR</Name>
+      <Name>TR4_CROCGOD_ROAR</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2688,7 +2688,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>139</Id>
-      <Name>CROCGOD_WINGS</Name>
+      <Name>TR4_CROCGOD_WINGS</Name>
       <Volume>99</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -2707,7 +2707,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>140</Id>
-      <Name>CROCGOD_LAND</Name>
+      <Name>TR4_CROCGOD_LAND</Name>
       <Volume>99</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -2726,7 +2726,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>141</Id>
-      <Name>CROCGOD_FIRE_ROAR</Name>
+      <Name>TR4_CROCGOD_FIRE_ROAR</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2745,7 +2745,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>142</Id>
-      <Name>BIKE_STOP</Name>
+      <Name>TEN_MOTORBIKE_STOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2764,7 +2764,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>143</Id>
-      <Name>GENERIC_BODY_SLAM</Name>
+      <Name>TEN_GENERIC_BODY_SLAM</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2783,7 +2783,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>144</Id>
-      <Name>WEAPON_ADD_ON_SFX</Name>
+      <Name>TEN_WEAPON_ADD_ON_SFX</Name>
       <Volume>40</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2794,7 +2794,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>weapon_addonsfx_01.wav</FileName>
+          <FileName>ten_weapon_addonsfx_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2802,7 +2802,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>145</Id>
-      <Name>LARA_SPIKE_DEATH</Name>
+      <Name>TEN_LARA_SPIKE_DEATH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2813,7 +2813,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_death_spikes_01.wav</FileName>
+          <FileName>TEN_LARA_death_spikes_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2821,7 +2821,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>146</Id>
-      <Name>LARA_DEATH3</Name>
+      <Name>TEN_LARA_DEATH3</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2832,7 +2832,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_death_general_01.wav</FileName>
+          <FileName>TEN_LARA_death_general_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2840,7 +2840,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>147</Id>
-      <Name>ROLLING_BALL</Name>
+      <Name>TEN_ROLLING_BALL</Name>
       <Volume>90</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -2859,7 +2859,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>148</Id>
-      <Name>BLK_PLAT_RAISE&amp;LOW</Name>
+      <Name>TEN_RAISING_BLOCK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2878,7 +2878,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>149</Id>
-      <Name>RUMBLE_NEXTDOOR</Name>
+      <Name>TEN_RUMBLE_NEXTDOOR</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2897,7 +2897,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>150</Id>
-      <Name>LOOP_FOR_SMALL_FIRES</Name>
+      <Name>TEN_LOOP_FOR_SMALL_FIRES</Name>
       <Volume>25</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -2916,7 +2916,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>151</Id>
-      <Name>CHAINS_LIBRARY</Name>
+      <Name>TR4_CHAINS_LIBRARY</Name>
       <Volume>40</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2935,7 +2935,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>152</Id>
-      <Name>JEEP_START</Name>
+      <Name>TEN_JEEP_START</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2954,7 +2954,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>153</Id>
-      <Name>JEEP_IDLE</Name>
+      <Name>TEN_JEEP_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2973,7 +2973,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>154</Id>
-      <Name>JEEP_ACCELERATE</Name>
+      <Name>TEN_JEEP_ACCELERATE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2992,7 +2992,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>155</Id>
-      <Name>JEEP_MOVE</Name>
+      <Name>TEN_JEEP_MOVE</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3011,7 +3011,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>156</Id>
-      <Name>JEEP_STOP</Name>
+      <Name>TEN_JEEP_STOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3030,7 +3030,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>157</Id>
-      <Name>BATS_1</Name>
+      <Name>TR4_BATS_1</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3070,7 +3070,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>158</Id>
-      <Name>ROLLING_DOOR</Name>
+      <Name>TR4_ROLLING_DOOR</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -3089,7 +3089,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>159</Id>
-      <Name>LAUNCHER_1</Name>
+      <Name>TR4_LAUNCHER_1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3108,7 +3108,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>160</Id>
-      <Name>LAUNCHER_2</Name>
+      <Name>TR4_LAUNCHER_2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3127,7 +3127,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>161</Id>
-      <Name>TRAPDOOR_OPEN</Name>
+      <Name>TR4_TRAPDOOR_OPEN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3146,7 +3146,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>162</Id>
-      <Name>TRAPDOOR_CLOSE</Name>
+      <Name>TR4_TRAPDOOR_CLOSE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3165,7 +3165,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>163</Id>
-      <Name>LARA_HK_STOP</Name>
+      <Name>TEN_LARA_HK_STOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3176,7 +3176,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>HK_Stop_01.wav</FileName>
+          <FileName>ten_weapon_hk_stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3184,7 +3184,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>164</Id>
-      <Name>BABOON_STAND_WAIT</Name>
+      <Name>TR4_BABOON_STAND_WAIT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3203,7 +3203,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>165</Id>
-      <Name>BABOON_ATTACK_LOW</Name>
+      <Name>TR4_BABOON_ATTACK_LOW</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3222,7 +3222,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>166</Id>
-      <Name>BABOON_ATTACK_JUMP</Name>
+      <Name>TR4_BABOON_ATTACK_JUMP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3241,7 +3241,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>167</Id>
-      <Name>BABOON_JUMP</Name>
+      <Name>TR4_BABOON_JUMP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3260,7 +3260,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>168</Id>
-      <Name>BABOON_DEATH</Name>
+      <Name>TR4_BABOON_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3279,7 +3279,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>169</Id>
-      <Name>BAT_SQUEAL_FULL</Name>
+      <Name>TR4_BAT_SQUEAL</Name>
       <Volume>25</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>95</Chance>
@@ -3298,7 +3298,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>170</Id>
-      <Name>BAT_SQK</Name>
+      <Name>TR4_BAT_SQK</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>98</Chance>
@@ -3320,7 +3320,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>171</Id>
-      <Name>BAT_FLAP</Name>
+      <Name>TR4_BAT_FLAP</Name>
       <Volume>48</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>87</Chance>
@@ -3345,7 +3345,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>172</Id>
-      <Name>SPHINX_NOSE_RASP</Name>
+      <Name>TR4_SPHINX_NOSE_RASP</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3364,7 +3364,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>173</Id>
-      <Name>SPHINX_WALK</Name>
+      <Name>TR4_SPHINX_WALK</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -3389,7 +3389,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>174</Id>
-      <Name>SPHINX_NOISE</Name>
+      <Name>TR4_SPHINX_NOISE</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -3408,7 +3408,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>175</Id>
-      <Name>DOG_HOWL</Name>
+      <Name>TR4_DOG_HOWL</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3427,7 +3427,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>176</Id>
-      <Name>DOG_HIT_GROUND</Name>
+      <Name>TR4_DOG_HIT_GROUND</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3446,7 +3446,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>177</Id>
-      <Name>FOUNTAIN_LOOP</Name>
+      <Name>TR4_FOUNTAIN_LOOP</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3465,7 +3465,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>178</Id>
-      <Name>DOG_FOOT_1</Name>
+      <Name>TR4_DOG_FOOT_1</Name>
       <Volume>44</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>80</Chance>
@@ -3484,7 +3484,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>179</Id>
-      <Name>DOG_JUMP</Name>
+      <Name>TR4_DOG_JUMP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3503,7 +3503,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>180</Id>
-      <Name>DOG_BITE</Name>
+      <Name>TR4_DOG_BITE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3525,7 +3525,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>181</Id>
-      <Name>DOG_DEATH</Name>
+      <Name>TR4_DOG_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3547,7 +3547,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>182</Id>
-      <Name>THUNDER_RUMBLE</Name>
+      <Name>TEN_THUNDER_RUMBLE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3566,7 +3566,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>183</Id>
-      <Name>THUNDER_CRACK</Name>
+      <Name>TR4_THUNDER_CRACK</Name>
       <Volume>70</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -3585,7 +3585,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>184</Id>
-      <Name>WRAITH_WHISPERS</Name>
+      <Name>TR4_WRAITH_WHISPERS</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>2</Chance>
@@ -3610,7 +3610,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>185</Id>
-      <Name>LARA_FOOSTEPS_SAND</Name>
+      <Name>TEN_LARA_FOOSTEPS_SAND</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3621,10 +3621,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_sandgrass_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_sandgrass_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_sandgrass_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_sandgrass_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3632,7 +3632,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>186</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3647,7 +3647,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>187</Id>
-      <Name>SKEL_FOOTSTEPS</Name>
+      <Name>TR4_SKELETON_FOOTSTEPS</Name>
       <Volume>95</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -3672,7 +3672,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>188</Id>
-      <Name>SKEL_ATTACK</Name>
+      <Name>TR4_SKELETON_ATTACK</Name>
       <Volume>99</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>80</Chance>
@@ -3694,7 +3694,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>189</Id>
-      <Name>GENERIC_SWORD_SWOOSH</Name>
+      <Name>TEN_GENERIC_SWORD_SWOOSH</Name>
       <Volume>80</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>95</Chance>
@@ -3713,7 +3713,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>190</Id>
-      <Name>SKEL_SWORD_CLANG</Name>
+      <Name>TR4_SKELETON_SWORD_CLANG</Name>
       <Volume>70</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -3732,7 +3732,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>191</Id>
-      <Name>SKEL_STICK_GROUND</Name>
+      <Name>TR4_SKELETON_STICK_GROUND</Name>
       <Volume>70</Volume>
       <RangeInSectors>3</RangeInSectors>
       <Chance>100</Chance>
@@ -3751,7 +3751,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>192</Id>
-      <Name>GEN_PULL_SWORD</Name>
+      <Name>TR4_GEN_PULL_SWORD</Name>
       <Volume>90</Volume>
       <RangeInSectors>3</RangeInSectors>
       <Chance>100</Chance>
@@ -3770,7 +3770,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>193</Id>
-      <Name>SKEL_LAND_HEAVY</Name>
+      <Name>TR4_SKELETON_LAND_HEAVY</Name>
       <Volume>95</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -3789,7 +3789,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>194</Id>
-      <Name>GUIDE_SCARE</Name>
+      <Name>TR4_GUIDE_SCARE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3808,7 +3808,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>195</Id>
-      <Name>JEEP_DOOR_OPEN</Name>
+      <Name>TEN_JEEP_DOOR_OPEN</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3827,7 +3827,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>196</Id>
-      <Name>JEEP_DOOR_CLOSE</Name>
+      <Name>TEN_JEEP_DOOR_CLOSE</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3846,7 +3846,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>197</Id>
-      <Name>ELEC_ARCING_LOOP</Name>
+      <Name>TEN_ELECTRIC_ARCING_LOOP</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3865,7 +3865,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>198</Id>
-      <Name>ELEC_ONE_SHOT</Name>
+      <Name>TEN_ELECTRIC_ONE_SHOT</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3884,7 +3884,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>199</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3899,7 +3899,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>200</Id>
-      <Name>LIBRARY_COG_LOOP</Name>
+      <Name>TR4_LIBRARY_COG_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -3918,7 +3918,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>201</Id>
-      <Name>JEEP_SIDE_IMPACT</Name>
+      <Name>TEN_JEEP_SIDE_IMPACT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3937,7 +3937,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>202</Id>
-      <Name>JEEP_FRONT_IMPACT</Name>
+      <Name>TEN_JEEP_FRONT_IMPACT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3956,7 +3956,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>203</Id>
-      <Name>JEEP_LAND</Name>
+      <Name>TEN_JEEP_LAND</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3975,7 +3975,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>204</Id>
-      <Name>SPINNING_GEM_SLOTS</Name>
+      <Name>TR4_SPINNING_GEM_SLOTS</Name>
       <Volume>45</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -3994,7 +3994,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>205</Id>
-      <Name>RUMMBLE</Name>
+      <Name>TR4_RUMBLE</Name>
       <Volume>60</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -4013,7 +4013,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>206</Id>
-      <Name>WARTHOG_HEADBUTT</Name>
+      <Name>TR4_WARTHOG_HEADBUTT</Name>
       <Volume>75</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -4032,7 +4032,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>207</Id>
-      <Name>WARTHOG_DEATH</Name>
+      <Name>TR4_WARTHOG_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -4051,7 +4051,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>208</Id>
-      <Name>SET_SPIKE_TIMER</Name>
+      <Name>TR4_SPIKE_TIMER</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4070,7 +4070,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>209</Id>
-      <Name>WARTHOG_SQUEAL</Name>
+      <Name>TR4_WARTHOG_SQUEAL</Name>
       <Volume>90</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>13</Chance>
@@ -4089,7 +4089,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>210</Id>
-      <Name>WARTHOG_FEET</Name>
+      <Name>TR4_WARTHOG_FEET</Name>
       <Volume>60</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>85</Chance>
@@ -4117,7 +4117,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>211</Id>
-      <Name>WARTHOG_GRUNT</Name>
+      <Name>TR4_WARTHOG_GRUNT</Name>
       <Volume>90</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>50</Chance>
@@ -4136,7 +4136,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>212</Id>
-      <Name>SAVE_CRYSTAL</Name>
+      <Name>TEN_SAVE_CRYSTAL</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4155,7 +4155,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>213</Id>
-      <Name>HORSE_RICOCHETS</Name>
+      <Name>TR4_HORSE_RICOCHETS</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -4174,7 +4174,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>214</Id>
-      <Name>METAL_SHUTTERS_SMASH</Name>
+      <Name>TR4_METAL_SHUTTERS_SMASH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4193,7 +4193,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>215</Id>
-      <Name>GEM_DROP_ON_FLOOR</Name>
+      <Name>TR4_GEM_DROP_ON_FLOOR</Name>
       <Volume>80</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -4212,7 +4212,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>216</Id>
-      <Name>SCORPION_SCREAM</Name>
+      <Name>TR4_SCORPION_SCREAM</Name>
       <Volume>90</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>85</Chance>
@@ -4231,7 +4231,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>217</Id>
-      <Name>SCORPION_FEET</Name>
+      <Name>TR4_SCORPION_FEET</Name>
       <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>90</Chance>
@@ -4259,7 +4259,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>218</Id>
-      <Name>SCORPION_CLAWS</Name>
+      <Name>TR4_SCORPION_CLAWS</Name>
       <Volume>70</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -4281,7 +4281,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>219</Id>
-      <Name>SCORPION_TAIL_WHIP</Name>
+      <Name>TR4_SCORPION_TAIL_WHIP</Name>
       <Volume>90</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -4300,7 +4300,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>220</Id>
-      <Name>SCORPION_SMALL_FEET</Name>
+      <Name>TR4_SCORPION_SMALL_FEET</Name>
       <Volume>45</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>80</Chance>
@@ -4322,7 +4322,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>221</Id>
-      <Name>METAL GATE OPEN</Name>
+      <Name>TR4_METAL_GATE_OPEN</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4341,7 +4341,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>222</Id>
-      <Name>HORSE_TROTTING</Name>
+      <Name>TR4_HORSE_TROTTING</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4369,7 +4369,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>223</Id>
-      <Name>KN_TEMPLAR_WALK</Name>
+      <Name>TR4_KNIGHTS_TEMPLAR_WALK</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -4397,7 +4397,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>224</Id>
-      <Name>KN_TEMPLAR_GURGLES</Name>
+      <Name>TR4_KNIGHTS_TEMPLAR_GURGLES</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>30</Chance>
@@ -4419,7 +4419,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>225</Id>
-      <Name>KN_SWORD_SCRAPE</Name>
+      <Name>TR4_KNIGHTS_SWORD_SCRAPE</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>80</Chance>
@@ -4438,7 +4438,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>226</Id>
-      <Name>KN_TEMPLAR_ATTACK</Name>
+      <Name>TR4_KNIGHTS_TEMPLAR_ATTACK</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>85</Chance>
@@ -4460,7 +4460,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>227</Id>
-      <Name>KN_SWORD_CLANG</Name>
+      <Name>TR4_KNIGHTS_SWORD_CLANG</Name>
       <Volume>75</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -4479,7 +4479,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>228</Id>
-      <Name>KN_SWORD_SWOOSH</Name>
+      <Name>TR4_KNIGHTS_SWORD_SWOOSH</Name>
       <Volume>99</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -4498,7 +4498,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>229</Id>
-      <Name>MUMMY_ATTACK</Name>
+      <Name>TR4_MUMMY_ATTACK</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -4517,7 +4517,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>230</Id>
-      <Name>MUMMY_WALK</Name>
+      <Name>TR4_MUMMY_WALK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4539,7 +4539,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>231</Id>
-      <Name>MUMMY_GURGLES</Name>
+      <Name>TR4_MUMMY_GURGLES</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>40</Chance>
@@ -4558,7 +4558,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>232</Id>
-      <Name>MUMMY_TAKE_HIT</Name>
+      <Name>TR4_MUMMY_TAKE_HIT</Name>
       <Volume>63</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4577,7 +4577,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>233</Id>
-      <Name>SMALL_FAN</Name>
+      <Name>TR4_SMALL_FAN</Name>
       <Volume>70</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -4596,7 +4596,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>234</Id>
-      <Name>LARGE_FAN</Name>
+      <Name>TR4_LARGE_FAN</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4615,7 +4615,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>235</Id>
-      <Name>LARA_CROSSBOW_FIRE</Name>
+      <Name>TEN_LARA_CROSSBOW_FIRE</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4634,7 +4634,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>236</Id>
-      <Name>SMALL_CREATURE_FEET</Name>
+      <Name>TR4_SMALL_CREATURE_FEET</Name>
       <Volume>99</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -4656,7 +4656,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>237</Id>
-      <Name>SAS_GADGIE_DIE</Name>
+      <Name>TR4_SAS_GADGIE_DIE</Name>
       <Volume>85</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -4675,7 +4675,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>238</Id>
-      <Name>WATER_FLUSHES</Name>
+      <Name>TR4_WATER_FLUSHES</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4694,7 +4694,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>239</Id>
-      <Name>GUID_ZIPPO</Name>
+      <Name>TR4_GUIDE_ZIPPO</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4713,7 +4713,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>240</Id>
-      <Name>LEAP_SWITCH</Name>
+      <Name>TEN_LEAP_SWITCH</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -4732,7 +4732,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>241</Id>
-      <Name>OLD_SWITCH</Name>
+      <Name>TR4_OLD_SWITCH</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -4751,7 +4751,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>242</Id>
-      <Name>DEMIGODS_FEET</Name>
+      <Name>TR4_DEMIGODS_FEET</Name>
       <Volume>80</Volume>
       <RangeInSectors>14</RangeInSectors>
       <Chance>100</Chance>
@@ -4773,7 +4773,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>243</Id>
-      <Name>DEMIGODS_BULL_SNORT</Name>
+      <Name>TR4_DEMIGODS_BULL_SNORT</Name>
       <Volume>97</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>50</Chance>
@@ -4792,7 +4792,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>244</Id>
-      <Name>DEMIGODS_BULL_HAMMER</Name>
+      <Name>TR4_DEMIGODS_BULL_HAMMER</Name>
       <Volume>85</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -4811,7 +4811,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>245</Id>
-      <Name>DEMIGODS_S_WAVE_RUMB</Name>
+      <Name>TR4_DEMIGODS_WAVE_RUMB</Name>
       <Volume>95</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -4830,7 +4830,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>246</Id>
-      <Name>DEMIGOD_WEAP_SWOOSH</Name>
+      <Name>TR4_DEMIGOD_WEAP_SWOOSH</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>95</Chance>
@@ -4849,7 +4849,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>247</Id>
-      <Name>DEMIGOD_FALCON_SQUEAL</Name>
+      <Name>TR4_DEMIGOD_FALCON_SQUEAL</Name>
       <Volume>85</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>60</Chance>
@@ -4868,7 +4868,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>248</Id>
-      <Name>DEMIGOD_FALCON_PLAS</Name>
+      <Name>TR4_DEMIGOD_FALCON_PLAS</Name>
       <Volume>85</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -4887,7 +4887,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>249</Id>
-      <Name>DEMIGOD_RISE</Name>
+      <Name>TR4_DEMIGOD_RISE</Name>
       <Volume>95</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -4906,7 +4906,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>250</Id>
-      <Name>DEMI_TUT_PLASMA_SPRAY</Name>
+      <Name>TR4_DEMIGOD_PLASMA_SPRAY</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4925,7 +4925,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>251</Id>
-      <Name>DEMI_SIREN_SWAVE</Name>
+      <Name>TR4_DEMIGOD_SIREN_SWAVE</Name>
       <Volume>57</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>95</Chance>
@@ -4944,7 +4944,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>252</Id>
-      <Name>DEMIGODS_TUT_GROWL</Name>
+      <Name>TR4_DEMIGODS_TUT_GROWL</Name>
       <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>60</Chance>
@@ -4963,7 +4963,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>253</Id>
-      <Name>JOBY_ELECTRIC_INSERT</Name>
+      <Name>TR4_ELECTRIC_INSERT</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -4982,7 +4982,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>254</Id>
-      <Name>BAD_LAND</Name>
+      <Name>TR4_BADDY_LAND</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5001,7 +5001,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>255</Id>
-      <Name>DOOR_GEN_THUD</Name>
+      <Name>TEN_DOOR_GEN_THUD</Name>
       <Volume>80</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -5020,7 +5020,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>256</Id>
-      <Name>BAD_GRUNTS</Name>
+      <Name>TR4_BADDY_GRUNTS</Name>
       <Volume>87</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -5039,7 +5039,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>257</Id>
-      <Name>BAD_DIE</Name>
+      <Name>TR4_BADDY_DIE</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5061,7 +5061,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>258</Id>
-      <Name>BAD_JUMP</Name>
+      <Name>TR4_BADDY_JUMP</Name>
       <Volume>73</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -5080,7 +5080,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>259</Id>
-      <Name>BAD_TROOP_STUN</Name>
+      <Name>TR4_BADDY_TROOP_STUN</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -5099,7 +5099,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>260</Id>
-      <Name>BAD_SWORDAWAY</Name>
+      <Name>TR4_BADDY_SWORDAWAY</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5118,7 +5118,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>261</Id>
-      <Name>BAD_TROOP_UZI</Name>
+      <Name>TR4_BADDY_TROOP_UZI</Name>
       <Volume>42</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5137,7 +5137,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>262</Id>
-      <Name>BAD_SWORD_RICO</Name>
+      <Name>TR4_BADDY_SWORD_RICO</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>90</Chance>
@@ -5156,7 +5156,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>263</Id>
-      <Name>BAD_TROOP_UZI_END</Name>
+      <Name>TR4_BADDY_TROOP_UZI_END</Name>
       <Volume>42</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5175,7 +5175,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>264</Id>
-      <Name>TROOP_SCORP_CRIES</Name>
+      <Name>TR4_TROOP_SCORP_CRIES</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -5197,7 +5197,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>265</Id>
-      <Name>SAS_TROOP_FEET</Name>
+      <Name>TR4_SAS_TROOP_FEET</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5222,7 +5222,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>266</Id>
-      <Name>GENERIC_NRG_CHARGE</Name>
+      <Name>TR4_GENERIC_ENERGY_CHARGE</Name>
       <Volume>70</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -5241,7 +5241,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>267</Id>
-      <Name>SAS_MG_FIRE</Name>
+      <Name>TR4_SAS_MG_FIRE</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5260,7 +5260,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>268</Id>
-      <Name>HAMMER_HEAD_WADE</Name>
+      <Name>TR4_HAMMER_HEAD_WADE</Name>
       <Volume>87</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -5279,7 +5279,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>269</Id>
-      <Name>SMALL_SWITCH</Name>
+      <Name>TEN_SMALL_SWITCH</Name>
       <Volume>55</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5298,7 +5298,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>270</Id>
-      <Name>EMPTY</Name>
+      <Name>TEN_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5313,7 +5313,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>271</Id>
-      <Name>SIREN_WING_FLAP</Name>
+      <Name>TR4_SIREN_WING_FLAP</Name>
       <Volume>75</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -5332,7 +5332,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>272</Id>
-      <Name>SIREN_NOIZES</Name>
+      <Name>TR4_SIREN_NOISES</Name>
       <Volume>99</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>25</Chance>
@@ -5351,7 +5351,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>273</Id>
-      <Name>SIREN_ATTACK</Name>
+      <Name>TR4_SIREN_ATTACK</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5370,7 +5370,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>274</Id>
-      <Name>SIREN_DEATH</Name>
+      <Name>TR4_SIREN_DEATH</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5389,7 +5389,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>275</Id>
-      <Name>SIREN_GEN_NOISES</Name>
+      <Name>TR4_SIREN_GEN_NOISES</Name>
       <Volume>99</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>90</Chance>
@@ -5408,7 +5408,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>276</Id>
-      <Name>SETT_SIREN_PLASMA</Name>
+      <Name>TR4_SETT_SIREN_PLASMA</Name>
       <Volume>99</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5427,7 +5427,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>277</Id>
-      <Name>HAMMER_HEAD_ATK</Name>
+      <Name>TR4_HAMMER_HEAD_ATK</Name>
       <Volume>88</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -5446,7 +5446,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>278</Id>
-      <Name>SMALL_DOOR_SUBWAY</Name>
+      <Name>TR4_SMALL_DOOR</Name>
       <Volume>50</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5465,7 +5465,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>279</Id>
-      <Name>TRAIN_DOOR_OPEN</Name>
+      <Name>TR4_TRAIN_DOOR_OPEN</Name>
       <Volume>85</Volume>
       <RangeInSectors>12</RangeInSectors>
       <Chance>100</Chance>
@@ -5484,7 +5484,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>280</Id>
-      <Name>TRAIN_DOOR_CLOSE</Name>
+      <Name>TR4_TRAIN_DOOR_CLOSE</Name>
       <Volume>85</Volume>
       <RangeInSectors>12</RangeInSectors>
       <Chance>100</Chance>
@@ -5503,7 +5503,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>281</Id>
-      <Name>VONCROY_KNIFE_SWISH</Name>
+      <Name>TR4_VONCROY_KNIFE_SWISH</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5522,7 +5522,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>282</Id>
-      <Name>TRAIN_UNLINK_BREAK</Name>
+      <Name>TR4_TRAIN_UNLINK_BREAK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5541,7 +5541,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>283</Id>
-      <Name>OBJ_BOX_HIT</Name>
+      <Name>TR4_OBJ_BOX_HIT</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5560,7 +5560,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>284</Id>
-      <Name>OBJ_BOX_HIT_CHANCE</Name>
+      <Name>TR4_OBJ_BOX_HIT_CHANCE</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>80</Chance>
@@ -5582,7 +5582,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>285</Id>
-      <Name>FLARE_IGNITE_LAND</Name>
+      <Name>TEN_FLARE_IGNITE_DRY</Name>
       <Volume>66</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5593,7 +5593,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>flare_ignite_land_01.wav</FileName>
+          <FileName>ten_weapon_flare_ignite_dry_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5601,7 +5601,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>286</Id>
-      <Name>CATBLADES_DRAW</Name>
+      <Name>TR4_CATBLADES_DRAW</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5620,7 +5620,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>287</Id>
-      <Name>SWIRLY_LONG_MOVE_SFX</Name>
+      <Name>TR4_SWIRLY_LONG_MOVE_SFX</Name>
       <Volume>40</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -5639,21 +5639,21 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>288</Id>
-      <Name>LARA_FOOTSTEPS_MUD</Name>
+      <Name>TEN_LARA_FOOTSTEPS_MUD</Name>
       <Volume>12</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
+      <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_mud_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_mud_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_mud_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_mud_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5661,7 +5661,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>289</Id>
-      <Name>HORSEMAN_HORSE_NEIGH</Name>
+      <Name>TR4_HORSEMAN_HORSE_NEIGH</Name>
       <Volume>74</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5680,7 +5680,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>290</Id>
-      <Name>LARA_FOOTSTEPS_GRAVEL</Name>
+      <Name>TEN_LARA_FOOTSTEPS_GRAVEL</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5691,10 +5691,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_gravel_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_gravel_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_gravel_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_gravel_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5702,7 +5702,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>291</Id>
-      <Name>LARA_FOOTSTEPS_GRASS</Name>
+      <Name>TEN_LARA_FOOTSTEPS_GRASS</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5713,10 +5713,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_sandgrass_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_sandgrass_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_sandgrass_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_sandgrass_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5724,7 +5724,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>292</Id>
-      <Name>LARA_FOOTSTEPS_WOOD</Name>
+      <Name>TEN_LARA_FOOTSTEPS_WOOD</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5735,10 +5735,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wood_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wood_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_wood_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_wood_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5746,7 +5746,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>293</Id>
-      <Name>LARA_FOOTSTEPS_MARBLE</Name>
+      <Name>TEN_LARA_FOOTSTEPS_MARBLE</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5757,16 +5757,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_marble_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_marble_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_marble_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_marble_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_marble_03.wav</FileName>
+          <FileName>TEN_LARA_footsteps_marble_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_marble_04.wav</FileName>
+          <FileName>TEN_LARA_footsteps_marble_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5774,7 +5774,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>294</Id>
-      <Name>LARA_FOOTSTEPS_METAL</Name>
+      <Name>TEN_LARA_FOOTSTEPS_METAL</Name>
       <Volume>25</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -5785,10 +5785,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_metal_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_metal_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_metal_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_metal_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -5796,7 +5796,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>295</Id>
-      <Name>GEN_SPHINX_DOORTHD</Name>
+      <Name>TR4_SPHINX_DOOR_THUD</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5815,7 +5815,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>296</Id>
-      <Name>SETT_PLASMA_1</Name>
+      <Name>TR4_SETT_PLASMA_1</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5834,7 +5834,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>297</Id>
-      <Name>SETT_BOLT_1</Name>
+      <Name>TR4_SETT_BOLT_1</Name>
       <Volume>99</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5853,7 +5853,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>298</Id>
-      <Name>SETT_FEET</Name>
+      <Name>TR4_SETT_FEET</Name>
       <Volume>55</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5872,7 +5872,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>299</Id>
-      <Name>SETT_NRG_CHARGE</Name>
+      <Name>TR4_SETT_NRG_CHARGE</Name>
       <Volume>99</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5891,7 +5891,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>300</Id>
-      <Name>SETT_NRG_CHARGE2</Name>
+      <Name>TR4_SETT_NRG_CHARGE2</Name>
       <Volume>99</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -5910,7 +5910,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>301</Id>
-      <Name>HORSEMAN_TAKEHIT</Name>
+      <Name>TR4_HORSEMAN_TAKEHIT</Name>
       <Volume>88</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5929,7 +5929,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>302</Id>
-      <Name>HORSEMAN_WALK</Name>
+      <Name>TR4_HORSEMAN_WALK</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5951,7 +5951,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>303</Id>
-      <Name>HORSEMAN_GRUNT</Name>
+      <Name>TR4_HORSEMAN_GRUNT</Name>
       <Volume>97</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>50</Chance>
@@ -5970,7 +5970,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>304</Id>
-      <Name>HORSEMAN_FALL</Name>
+      <Name>TR4_HORSEMAN_FALL</Name>
       <Volume>90</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -5989,7 +5989,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>305</Id>
-      <Name>HORSEMAN_DIE</Name>
+      <Name>TR4_HORSEMAN_DIE</Name>
       <Volume>87</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -6008,7 +6008,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>306</Id>
-      <Name>MAPPER_SWITCH_ON</Name>
+      <Name>TR4_MAPPER_SWITCH_ON</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6027,7 +6027,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>307</Id>
-      <Name>MAPPER_OPEN</Name>
+      <Name>TR4_MAPPER_OPEN</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6046,7 +6046,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>308</Id>
-      <Name>MAPPER_LAZER</Name>
+      <Name>TR4_MAPPER_LAZER</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6065,7 +6065,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>309</Id>
-      <Name>MAPPER_MOVE</Name>
+      <Name>TR4_MAPPER_MOVE</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6084,7 +6084,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>310</Id>
-      <Name>MAPPER_CLUNK</Name>
+      <Name>TR4_MAPPER_CLUNK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6103,7 +6103,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>311</Id>
-      <Name>BLADES_DRAW</Name>
+      <Name>TR4_BLADES_DRAW</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6122,7 +6122,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>312</Id>
-      <Name>BLADES_CLASH_LOUD</Name>
+      <Name>TR4_BLADES_CLASH_LOUD</Name>
       <Volume>95</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6141,7 +6141,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>313</Id>
-      <Name>BLADES_CLASH_QUIET</Name>
+      <Name>TR4_BLADES_CLASH_QUIET</Name>
       <Volume>25</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6160,7 +6160,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>314</Id>
-      <Name>HAMMER_TRAP_BANG</Name>
+      <Name>TR4_HAMMER_TRAP_BANG</Name>
       <Volume>99</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -6179,7 +6179,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>315</Id>
-      <Name>DOOR_BIG_STONE</Name>
+      <Name>TR4_DOOR_BIG_STONE</Name>
       <Volume>60</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -6198,7 +6198,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>316</Id>
-      <Name>SETT_BIG_ROAR</Name>
+      <Name>TR4_SETT_BIG_ROAR</Name>
       <Volume>98</Volume>
       <RangeInSectors>25</RangeInSectors>
       <Chance>70</Chance>
@@ -6217,7 +6217,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>317</Id>
-      <Name>BABOON_CHATTER</Name>
+      <Name>TR4_BABOON_CHATTER</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>30</Chance>
@@ -6236,7 +6236,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>318</Id>
-      <Name>BABOON_ROLL</Name>
+      <Name>TR4_BABOON_ROLL</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6255,7 +6255,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>319</Id>
-      <Name>SWOOSH_SWIRLY_DOUBLE</Name>
+      <Name>TR4_SWOOSH_SWIRLY_DOUBLE</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6274,7 +6274,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>320</Id>
-      <Name>DOOR_SETTDOOR_SQK</Name>
+      <Name>TR4_DOOR_SETTDOOR_SQK</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6293,7 +6293,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>321</Id>
-      <Name>DOOR_SETTDOOR_CLANK</Name>
+      <Name>TR4_DOOR_SETTDOOR_CLANK</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6312,7 +6312,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>322</Id>
-      <Name>SETT_JUMP_ATTACK</Name>
+      <Name>TR4_SETT_JUMP_ATTACK</Name>
       <Volume>99</Volume>
       <RangeInSectors>25</RangeInSectors>
       <Chance>70</Chance>
@@ -6331,7 +6331,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>323</Id>
-      <Name>JOBY_BLOCK</Name>
+      <Name>TR4_BLOCK</Name>
       <Volume>60</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -6350,7 +6350,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>324</Id>
-      <Name>SETT_TAKE_HIT</Name>
+      <Name>TR4_SETT_TAKE_HIT</Name>
       <Volume>99</Volume>
       <RangeInSectors>25</RangeInSectors>
       <Chance>100</Chance>
@@ -6369,7 +6369,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>325</Id>
-      <Name>DART_SPITT</Name>
+      <Name>TR4_DART_SPIT</Name>
       <Volume>50</Volume>
       <RangeInSectors>3</RangeInSectors>
       <Chance>100</Chance>
@@ -6388,7 +6388,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>326</Id>
-      <Name>LARA_CROWBAR_GEM</Name>
+      <Name>TEN_LARA_CROWBAR_GEM</Name>
       <Volume>35</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6399,7 +6399,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Crowbar_Gem_01.wav</FileName>
+          <FileName>TEN_LARA_Crowbar_Gem_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6407,7 +6407,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>327</Id>
-      <Name>CROWBAR_DOOR_OPEN</Name>
+      <Name>TEN_CROWBAR_DOOR_OPEN</Name>
       <Volume>80</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6418,7 +6418,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Crowbar_Door_Open_01.wav</FileName>
+          <FileName>TEN_LARA_Crowbar_Door_Open_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6426,7 +6426,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>328</Id>
-      <Name>LARA_LEVER_GEN_SQKS</Name>
+      <Name>TEN_LARA_LEVER_GEN_SQKS</Name>
       <Volume>30</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>80</Chance>
@@ -6437,10 +6437,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Lever_Squeak_01.wav</FileName>
+          <FileName>TEN_LARA_Lever_Squeak_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR4_Lara_Lever_Squeak_02.wav</FileName>
+          <FileName>TEN_LARA_Lever_Squeak_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6448,7 +6448,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>329</Id>
-      <Name>HORSEMAN_GETUP</Name>
+      <Name>TR4_HORSEMAN_GETUP</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6467,7 +6467,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>330</Id>
-      <Name>EXH_BASKET_OPEN</Name>
+      <Name>TR4_EXH_BASKET_OPEN</Name>
       <Volume>77</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6486,7 +6486,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>331</Id>
-      <Name>EXH_MUMCOFF_OPE1</Name>
+      <Name>TR4_EXH_MUMCOFF_OPE1</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6505,7 +6505,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>332</Id>
-      <Name>EXH_MUMCOFF_OPE2</Name>
+      <Name>TR4_EXH_MUMCOFF_OPE2</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6524,7 +6524,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>333</Id>
-      <Name>EXH_MUM_JOLT</Name>
+      <Name>TR4_EXH_MUM_JOLT</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6543,7 +6543,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>334</Id>
-      <Name>EXH_MUMHEAD_SPIN</Name>
+      <Name>TR4_EXH_MUMHEAD_SPIN</Name>
       <Volume>80</Volume>
       <RangeInSectors>4</RangeInSectors>
       <Chance>100</Chance>
@@ -6562,7 +6562,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>335</Id>
-      <Name>EXH_MUMMY_RAHHH</Name>
+      <Name>TR4_EXH_MUMMY_RAHHH</Name>
       <Volume>99</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -6581,7 +6581,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>336</Id>
-      <Name>EXH_ROLLER_BLINDS</Name>
+      <Name>TR4_EXH_ROLLER_BLINDS</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6600,7 +6600,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>337</Id>
-      <Name>LARA_LEVER_PART1</Name>
+      <Name>TEN_LARA_LEVER_PART1</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6611,7 +6611,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Lever_Pull_1_01.wav</FileName>
+          <FileName>TEN_LARA_Lever_Pull_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6619,7 +6619,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>338</Id>
-      <Name>LARA_LEVER_PART2</Name>
+      <Name>TEN_LARA_LEVER_PART2</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6630,7 +6630,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Lever_Pull_2_01.wav</FileName>
+          <FileName>TEN_LARA_Lever_Pull_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6638,7 +6638,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>339</Id>
-      <Name>LARA_POLE_CLIMB</Name>
+      <Name>TEN_LARA_POLE_CLIMB</Name>
       <Volume>70</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>90</Chance>
@@ -6649,7 +6649,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_pole_climb_01.wav</FileName>
+          <FileName>TEN_LARA_pole_climb_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6657,7 +6657,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>340</Id>
-      <Name>LARA_POLE_LOOP</Name>
+      <Name>TEN_LARA_POLE_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6668,7 +6668,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_poleslide_01.wav</FileName>
+          <FileName>TEN_LARA_poleslide_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6676,7 +6676,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>341</Id>
-      <Name>TRAP_SPIKEBALL_SPK</Name>
+      <Name>TR4_TRAP_SPIKEBALL_SPK</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6695,7 +6695,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>342</Id>
-      <Name>LARA_PULLEY</Name>
+      <Name>TEN_LARA_PULLEY</Name>
       <Volume>70</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6706,7 +6706,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Pulley_01.wav</FileName>
+          <FileName>TEN_LARA_Pulley_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -6714,7 +6714,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>343</Id>
-      <Name>TEETH_SPIKES</Name>
+      <Name>TEN_TEETH_SPIKES</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -6728,12 +6728,12 @@
           <FileName>teethspk.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>344</Id>
-      <Name>SAND_LOOP</Name>
+      <Name>TR4_SAND_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6752,7 +6752,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>345</Id>
-      <Name>LARA_USE_OBJECT</Name>
+      <Name>TEN_LARA_USE_OBJECT</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6771,7 +6771,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>346</Id>
-      <Name>LIBRARY_COG_SQKS</Name>
+      <Name>TR4_LIBRARY_COG_SQKS</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>80</Chance>
@@ -6793,7 +6793,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>347</Id>
-      <Name>HIT_ROCK</Name>
+      <Name>TEN_HIT_ROCK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6812,7 +6812,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>348</Id>
-      <Name>LARA_NO_FRENCH</Name>
+      <Name>TEN_LARA_NO_FRENCH</Name>
       <Volume>46</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6823,7 +6823,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_no_french.wav</FileName>
+          <FileName>ten_lara_no_french_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6831,7 +6831,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>349</Id>
-      <Name>LARA_NO_JAPAN</Name>
+      <Name>TEN_LARA_NO_JAPAN</Name>
       <Volume>46</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -6842,7 +6842,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_no_japanese.wav</FileName>
+          <FileName>ten_lara_no_japanese_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6850,7 +6850,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>350</Id>
-      <Name>LARA_CROW_WRENCH</Name>
+      <Name>TEN_LARA_CROW_WRENCH</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>90</Chance>
@@ -6861,7 +6861,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_Lara_Crowbar_Wrench_01.wav</FileName>
+          <FileName>TEN_LARA_Crowbar_Wrench_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6869,7 +6869,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>351</Id>
-      <Name>LARA_ROPE_CREAK</Name>
+      <Name>TEN_LARA_ROPE_CREAK</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6880,10 +6880,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_rope_crreak_01.wav</FileName>
+          <FileName>TEN_LARA_rope_creak_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_rope_crreak_02.wav</FileName>
+          <FileName>TEN_LARA_rope_creak_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -6891,7 +6891,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>352</Id>
-      <Name>BOWLANIM</Name>
+      <Name>TR4_BOWLANIM</Name>
       <Volume>70</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -6910,7 +6910,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>353</Id>
-      <Name>SPHINX_DOOR_WOODCRACK</Name>
+      <Name>TR4_SPHINX_DOOR_WOODCRACK</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6929,7 +6929,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>354</Id>
-      <Name>BEETLE_CLK_WHIRR</Name>
+      <Name>TR4_CLOCKWORK_BEETLE_CLK_WHIRR</Name>
       <Volume>40</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -6948,7 +6948,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>355</Id>
-      <Name>MAPPER_PYRAMID_OPEN</Name>
+      <Name>TR4_MAPPER_PYRAMID_OPEN</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6967,7 +6967,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>356</Id>
-      <Name>LIGHT_BEAM_JOBY</Name>
+      <Name>TR4_LIGHT_BEAM_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>16</RangeInSectors>
       <Chance>100</Chance>
@@ -6986,7 +6986,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>357</Id>
-      <Name>GUIDE_FIRE_LIGHT</Name>
+      <Name>TR4_GUIDE_FIRE_LIGHT</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7005,7 +7005,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>358</Id>
-      <Name>AUTOGUNS</Name>
+      <Name>TR4_AUTOGUNS</Name>
       <Volume>75</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -7024,7 +7024,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>359</Id>
-      <Name>PULLEY_ANDY</Name>
+      <Name>TR4_PULLEY</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7043,7 +7043,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>360</Id>
-      <Name>STEAM</Name>
+      <Name>TR4_STEAM</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7062,7 +7062,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>361</Id>
-      <Name>JOBY_GARAGE_DOOR</Name>
+      <Name>TR4_GARAGE_DOOR</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7081,7 +7081,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>362</Id>
-      <Name>JOBY_WIND</Name>
+      <Name>TR4_WIND</Name>
       <Volume>90</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -7100,7 +7100,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>363</Id>
-      <Name>SANDHAM_IN_THE_HOUSE</Name>
+      <Name>TR4_SPRING</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7119,7 +7119,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>364</Id>
-      <Name>SANDHAM_CONVEYS</Name>
+      <Name>TR4_CONVEYOR_BELT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7138,7 +7138,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>365</Id>
-      <Name>CRANKY_GRAPE_CRUSH</Name>
+      <Name>TR4_CRANKY_GRAPE_CRUSH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7157,7 +7157,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>366</Id>
-      <Name>BIKE_HIT_OBJECTS</Name>
+      <Name>TEN_MOTORBIKE_HIT_OBJECTS</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7176,7 +7176,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>367</Id>
-      <Name>BIKE_HIT_ENEMIES</Name>
+      <Name>TEN_MOTORBIKE_HIT_ENEMIES</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7195,7 +7195,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>368</Id>
-      <Name>FLAME_EMITTER</Name>
+      <Name>TEN_FLAME_EMITTER</Name>
       <Volume>50</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -7214,7 +7214,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>369</Id>
-      <Name>LARA_CLICK_SWITCH</Name>
+      <Name>TEN_LARA_CLICK_SWITCH</Name>
       <Volume>60</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -7233,7 +7233,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>370</Id>
-      <Name>LARA_FOOTSTEPS_ICE</Name>
+      <Name>TEN_LARA_FOOTSTEPS_ICE</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7244,10 +7244,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_ice_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_ice_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_ice_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_ice_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7255,7 +7255,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>371</Id>
-      <Name>LARA_FOOTSTEPS_SNOW</Name>
+      <Name>TEN_LARA_FOOTSTEPS_SNOW</Name>
       <Volume>35</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7266,13 +7266,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tr4_lara_footsteps_snow_01.wav</FileName>
+          <FileName>TEN_LARA_footsteps_snow_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_snow_02.wav</FileName>
+          <FileName>TEN_LARA_footsteps_snow_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>tr4_lara_footsteps_snow_03.wav</FileName>
+          <FileName>TEN_LARA_footsteps_snow_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7280,7 +7280,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>372</Id>
-      <Name>LARA_HK_SILENCED</Name>
+      <Name>TEN_LARA_HK_SILENCED</Name>
       <Volume>50</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -7291,7 +7291,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>hk_silenced_01.wav</FileName>
+          <FileName>ten_weapon_hk_silenced_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7299,7 +7299,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>373</Id>
-      <Name>LARA_HARPOON_LOAD_LAND</Name>
+      <Name>TEN_LARA_HARPOON_LOAD_DRY</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7310,7 +7310,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>harpoon_load_dry_01.wav</FileName>
+          <FileName>ten_weapon_harpoon_load_dry_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7318,7 +7318,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>374</Id>
-      <Name>LARA_HARPOON_FIRE_LAND</Name>
+      <Name>TEN_LARA_HARPOON_FIRE_DRY</Name>
       <Volume>85</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7331,13 +7331,16 @@
         <WadSample>
           <FileName>harpoon_fire_dry_01.wav</FileName>
         </WadSample>
+        <WadSample>
+          <FileName>ten_weapon_harpoon_fire_dry_01.wav</FileName>
+        </WadSample>
       </Samples>
       <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>375</Id>
-      <Name>LARA_HARPOON_LOAD_WATER</Name>
+      <Name>TEN_LARA_HARPOON_LOAD_UNDERWATER</Name>
       <Volume>30</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7348,7 +7351,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>harpoon_load_underwater_01.wav</FileName>
+          <FileName>ten_weapon_harpoon_load_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7356,7 +7359,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>376</Id>
-      <Name>LARA_HARPOON_FIRE_WATER</Name>
+      <Name>TEN_LARA_HARPOON_FIRE_UNDERWATER</Name>
       <Volume>50</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7367,7 +7370,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>harpoon_fire_underwater_01.wav</FileName>
+          <FileName>ten_weapon_harpoon_fire_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7375,7 +7378,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>377</Id>
-      <Name>BINOCULARS_ZOOM</Name>
+      <Name>TEN_WEAPON_BINOCULARS_ZOOM</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7386,7 +7389,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>binoculars_zoom_01.wav</FileName>
+          <FileName>ten_weapon_binoculars_zoom_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7394,7 +7397,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>378</Id>
-      <Name>FLARE_BURN_LAND</Name>
+      <Name>TEN_FLARE_BURN_DRY</Name>
       <Volume>20</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7405,7 +7408,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>flare_burn_land_01.wav</FileName>
+          <FileName>ten_weapon_flare_burn_dry_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7413,7 +7416,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>379</Id>
-      <Name>FLARE_IGNITE_LAND</Name>
+      <Name>TEN_FLARE_IGNITE_DRY</Name>
       <Volume>66</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7424,7 +7427,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>flare_ignite_land_01.wav</FileName>
+          <FileName>ten_weapon_flare_ignite_dry_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7432,18 +7435,18 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>380</Id>
-      <Name>FLARE_IGNITE_WATER</Name>
+      <Name>TEN_FLARE_IGNITE_UNDERWATER</Name>
       <Volume>60</Volume>
-      <RangeInSectors>13</RangeInSectors>
+      <RangeInSectors>14</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>flare_ignite_underwater.wav</FileName>
+          <FileName>ten_weapon_flare_ignite_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -7451,7 +7454,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>381</Id>
-      <Name>FLARE_BURN_WATER</Name>
+      <Name>TEN_FLARE_BURN_UNDERWATER</Name>
       <Volume>20</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -7462,7 +7465,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>flare_burn_underwater_01.wav</FileName>
+          <FileName>ten_weapon_flare_burn_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9161,7 +9164,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>468</Id>
-      <Name>NEW_SOUND</Name>
+      <Name>TR1_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -9263,7 +9266,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_MAGNUMS_01.wav</FileName>
+          <FileName>TEN_LARA_MAGNUMS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -22456,7 +22459,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1129</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_1</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22471,7 +22474,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1130</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_2</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22486,7 +22489,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1131</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_3</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22501,7 +22504,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1132</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_4</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_4</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22516,7 +22519,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1133</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_5</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_5</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22531,7 +22534,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1134</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_6</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_6</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22546,7 +22549,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1135</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_7</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_7</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -22561,7 +22564,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1136</Id>
-      <Name>CUSTOM_FOOTSTEP_SOUNDS_8</Name>
+      <Name>TEN_CUSTOM_FOOTSTEP_SOUNDS_8</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
