@@ -2517,7 +2517,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>130</Id>
-      <Name>TEN_MOTORBIKE_START</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_START</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2528,7 +2528,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_stt.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_stt.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2536,7 +2536,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>131</Id>
-      <Name>TEN_MOTORBIKE_IDLE</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2547,7 +2547,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_idl.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_IDLE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2555,7 +2555,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>132</Id>
-      <Name>TEN_MOTORBIKE_ACCELERATE</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_ACCELERATE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2566,7 +2566,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_rev.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_rev.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2574,7 +2574,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>133</Id>
-      <Name>TEN_MOTORBIKE_MOVING</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_MOVING</Name>
       <Volume>32</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2585,7 +2585,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_mve.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_mve.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2593,7 +2593,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>134</Id>
-      <Name>TEN_MOTORBIKE_SIDE_IMPACT</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_SIDE_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2604,7 +2604,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_si.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_si.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2612,7 +2612,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>135</Id>
-      <Name>TEN_MOTORBIKE_FRONT_IMPACT</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_FRONT_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2623,7 +2623,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_fi.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_fi.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2650,7 +2650,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>137</Id>
-      <Name>TEN_MOTORBIKE_LAND</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_LAND</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2661,7 +2661,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_lnd.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_lnd.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2745,7 +2745,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>142</Id>
-      <Name>TEN_MOTORBIKE_STOP</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_STOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2756,7 +2756,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_stp.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_stp.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2935,7 +2935,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>152</Id>
-      <Name>TEN_JEEP_START</Name>
+      <Name>TEN_VEHICLE_JEEP_START</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2946,7 +2946,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_stt.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_stt.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2954,7 +2954,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>153</Id>
-      <Name>TEN_JEEP_IDLE</Name>
+      <Name>TEN_VEHICLE_JEEP_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2965,7 +2965,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_idl.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_idle.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2973,7 +2973,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>154</Id>
-      <Name>TEN_JEEP_ACCELERATE</Name>
+      <Name>TEN_VEHICLE_JEEP_ACCELERATE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2984,7 +2984,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_rev.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_ACCELERATE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2992,7 +2992,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>155</Id>
-      <Name>TEN_JEEP_MOVE</Name>
+      <Name>TEN_VEHICLE_JEEP_MOVE</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3003,7 +3003,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_mve.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_mve.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3011,7 +3011,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>156</Id>
-      <Name>TEN_JEEP_STOP</Name>
+      <Name>TEN_VEHICLE_JEEP_STOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3022,7 +3022,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_stp.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_stp.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3808,7 +3808,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>195</Id>
-      <Name>TEN_JEEP_DOOR_OPEN</Name>
+      <Name>TEN_VEHICLE_JEEP_DOOR_OPEN</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3827,7 +3827,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>196</Id>
-      <Name>TEN_JEEP_DOOR_CLOSE</Name>
+      <Name>TEN_VEHICLE_JEEP_DOOR_CLOSE</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3918,7 +3918,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>201</Id>
-      <Name>TEN_JEEP_SIDE_IMPACT</Name>
+      <Name>TEN_VEHICLE_JEEP_SIDE_IMPACT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3929,7 +3929,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_si.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_SIDE_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3937,7 +3937,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>202</Id>
-      <Name>TEN_JEEP_FRONT_IMPACT</Name>
+      <Name>TEN_VEHICLE_JEEP_FRONT_IMPACT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3948,7 +3948,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_fi.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_fi.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3956,7 +3956,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>203</Id>
-      <Name>TEN_JEEP_LAND</Name>
+      <Name>TEN_VEHICLE_JEEP_LAND</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3967,7 +3967,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>jeep_lnd.wav</FileName>
+          <FileName>TEN_VEHICLE_JEEP_lnd.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -7157,7 +7157,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>366</Id>
-      <Name>TEN_MOTORBIKE_HIT_OBJECTS</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_HIT_OBJECTS</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7176,7 +7176,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>367</Id>
-      <Name>TEN_MOTORBIKE_HIT_ENEMIES</Name>
+      <Name>TEN_VEHICLE_MOTORBIKE_HIT_ENEMIES</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7187,7 +7187,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bike_hit.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_hit.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -12472,7 +12472,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>609</Id>
-      <Name>TR2_SPEEDBOAT_ACCELERATE</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_ACCELERATE</Name>
       <Volume>93</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12483,7 +12483,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_ACCELERATE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12491,7 +12491,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>610</Id>
-      <Name>TR2_SPEEDBOAT_ENGINE</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_ENGINE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12502,7 +12502,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_ENGINE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_ENGINE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12510,7 +12510,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>611</Id>
-      <Name>TR2_SPEEDBOAT_HIT</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_HIT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12521,7 +12521,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_HIT_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12529,7 +12529,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>612</Id>
-      <Name>TR2_SPEEDBOAT_INTO_WATER</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_INTO_WATER</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12540,7 +12540,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_INTO_WATER_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_INTO_WATER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12548,7 +12548,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>613</Id>
-      <Name>TR2_SPEEDBOAT_IDLE</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_IDLE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12559,7 +12559,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_IDLE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12567,7 +12567,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>614</Id>
-      <Name>TR2_SPEEDBOAT_MOVING</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_MOVING</Name>
       <Volume>83</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12578,7 +12578,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_MOVING_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12586,7 +12586,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>615</Id>
-      <Name>TR2_SPEEDBOAT_SLOWDOWN</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_SLOWDOWN</Name>
       <Volume>83</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12597,7 +12597,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_MOVING_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12605,7 +12605,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>616</Id>
-      <Name>TR2_SPEEDBOAT_START</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_START</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12616,7 +12616,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -12624,7 +12624,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>617</Id>
-      <Name>TR2_SPEEDBOAT_STOP</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12635,7 +12635,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_STOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12643,7 +12643,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>618</Id>
-      <Name>TR2_SPEEDBOAT_ENGINE_HIT</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_ENGINE_HIT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12654,7 +12654,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_ENGINE_HIT_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_ENGINE_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12662,7 +12662,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>619</Id>
-      <Name>TR2_SNOWMOBILE_ACCELERATE</Name>
+      <Name>TEN_SNOWMOBILE_ACCELERATE</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12673,7 +12673,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWMOBILE_ACCELERATE_01.wav</FileName>
+          <FileName>TEN_SNOWMOBILE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -12681,7 +12681,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>620</Id>
-      <Name>TR2_SNOWMOBILE_IDLE</Name>
+      <Name>TEN_SNOWMOBILE_IDLE</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12692,7 +12692,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWMOBILE_IDLE_01.wav</FileName>
+          <FileName>TEN_SNOWMOBILE_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12700,7 +12700,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>621</Id>
-      <Name>TR2_SNOWMOBILE_MOVING</Name>
+      <Name>TEN_SNOWMOBILE_MOVING</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12711,7 +12711,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWMOBILE_MOVING_01.wav</FileName>
+          <FileName>TEN_SNOWMOBILE_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12719,7 +12719,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>622</Id>
-      <Name>TR2_SNOWMOBILE_START</Name>
+      <Name>TEN_SNOWMOBILE_START</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12730,7 +12730,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWMOBILE_START_01.wav</FileName>
+          <FileName>TEN_SNOWMOBILE_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12738,7 +12738,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>623</Id>
-      <Name>TR2_SNOWMOBILE_STOP</Name>
+      <Name>TEN_SNOWMOBILE_STOP</Name>
       <Volume>88</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -12749,7 +12749,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWMOBILE_STOP_01.wav</FileName>
+          <FileName>TEN_SNOWMOBILE_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -13051,7 +13051,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>639</Id>
-      <Name>TR2_VEHICLE_IMPACT_1</Name>
+      <Name>TEN_VEHICLE_IMPACT_1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -13062,7 +13062,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_VEHICLE_IMPACT_1_01.wav</FileName>
+          <FileName>TEN_VEHICLE_IMPACT_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -13070,7 +13070,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>640</Id>
-      <Name>TR2_VEHICLE_IMPACT_2</Name>
+      <Name>TEN_VEHICLE_IMPACT_2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -13081,7 +13081,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_VEHICLE_IMPACT_2_01.wav</FileName>
+          <FileName>TEN_VEHICLE_IMPACT_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -13089,7 +13089,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>641</Id>
-      <Name>TR2_VEHICLE_IMPACT_3</Name>
+      <Name>TEN_VEHICLE_IMPACT_3</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -13100,7 +13100,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_VEHICLE_IMPACT_3_01.wav</FileName>
+          <FileName>TEN_VEHICLE_IMPACT_3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -13494,7 +13494,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>662</Id>
-      <Name>TR2_SPEEDBOAT_BODY_SLUMP</Name>
+      <Name>TEN_VEHICLE_SPEEDBOAT_BODY_SLUMP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -13505,7 +13505,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPEEDBOAT_BODY_SLUMP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SPEEDBOAT_BODY_SLUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14537,7 +14537,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>715</Id>
-      <Name>TR3_QUADBIKE_ACCELERATE</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_ACCELERATE</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14548,7 +14548,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_ACCELERATE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14556,7 +14556,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>716</Id>
-      <Name>TR3_QUADBIKE_FRONT_IMPACT</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_FRONT_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14567,7 +14567,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_FRONT_IMPACT_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_FRONT_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14575,7 +14575,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>717</Id>
-      <Name>TR3_QUADBIKE_IDLE</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14586,7 +14586,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_IDLE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14594,7 +14594,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>718</Id>
-      <Name>TR3_QUADBIKE_LAND</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_LAND</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14605,7 +14605,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_LAND_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14613,7 +14613,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>719</Id>
-      <Name>TR3_QUADBIKE_MOVE</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_MOVE</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14624,7 +14624,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_MOVE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_MOVE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14632,7 +14632,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>720</Id>
-      <Name>TR3_QUADBIKE_SIDE_IMPACT</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_SIDE_IMPACT</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14643,7 +14643,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_SIDE_IMPACT_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_SIDE_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14651,7 +14651,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>721</Id>
-      <Name>TR3_QUADBIKE_START</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_START</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14662,7 +14662,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14670,7 +14670,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>722</Id>
-      <Name>TR3_QUADBIKE_STOP</Name>
+      <Name>TEN_VEHICLE_QUADBIKE_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14681,7 +14681,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_STOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_QUADBIKE_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14689,7 +14689,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>723</Id>
-      <Name>TR3_RUBBERBOAT_ACCELERATE</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_ACCELERATE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14700,7 +14700,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_ACCELERATE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14708,7 +14708,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>724</Id>
-      <Name>TR3_RUBBERBOAT_IDLE</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_IDLE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14719,7 +14719,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_IDLE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14727,7 +14727,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>725</Id>
-      <Name>TR3_RUBBERBOAT_MOVING</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_MOVING</Name>
       <Volume>68</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14738,7 +14738,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_MOVING_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14746,7 +14746,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>726</Id>
-      <Name>TR3_RUBBERBOAT_SCRAPE</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_SCRAPE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14757,7 +14757,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_scr.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_scr.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14765,7 +14765,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>727</Id>
-      <Name>TR3_RUBBERBOAT_SLOW_DOWN</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_SLOW_DOWN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14776,7 +14776,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_SLOW_DOWN_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_SLOW_DOWN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14784,7 +14784,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>728</Id>
-      <Name>TR3_RUBBERBOAT_START</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_START</Name>
       <Volume>76</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14795,7 +14795,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14803,7 +14803,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>729</Id>
-      <Name>TR3_RUBBERBOAT_STOP</Name>
+      <Name>TEN_VEHICLE_RUBBERBOAT_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14814,7 +14814,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_STOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14822,7 +14822,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>730</Id>
-      <Name>TR3_UPV_LOOP</Name>
+      <Name>TEN_VEHICLE_UPV_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14833,7 +14833,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_LOOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_UPV_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14841,7 +14841,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>731</Id>
-      <Name>TR3_UPV_START</Name>
+      <Name>TEN_VEHICLE_UPV_START</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14852,7 +14852,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_UPV_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14860,7 +14860,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>732</Id>
-      <Name>TR3_UPV_STOP</Name>
+      <Name>TEN_VEHICLE_UPV_STOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14871,7 +14871,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_STOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_UPV_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14879,7 +14879,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>733</Id>
-      <Name>TR3_MINE_CART_START</Name>
+      <Name>TEN_VEHICLE_MINECART_START</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14890,7 +14890,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_MINECART_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14898,7 +14898,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>734</Id>
-      <Name>TR3_MINE_CART_PULLY_LOOP</Name>
+      <Name>TEN_VEHICLE_MINECART_PULLY_LOOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14909,7 +14909,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_PULLY_LOOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_MINECART_PULLY_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14917,7 +14917,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>735</Id>
-      <Name>TR3_MINE_CART_BRAKE</Name>
+      <Name>TEN_VEHICLE_MINECART_BRAKE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14928,7 +14928,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_BRAKE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_MINECART_BRAKE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -14936,7 +14936,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>736</Id>
-      <Name>TR3_MINE_CART_TRACK_LOOP</Name>
+      <Name>TEN_VEHICLE_MINECART_TRACK_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14947,7 +14947,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_TRACK_LOOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_MINECART_TRACK_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -18879,7 +18879,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>945</Id>
-      <Name>TR5_DIVESUIT_ENGINE</Name>
+      <Name>TEN_VEHICLE_DIVESUIT_ENGINE</Name>
       <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -18890,7 +18890,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_ENGINE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_DIVESUIT_ENGINE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -18898,7 +18898,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>946</Id>
-      <Name>TR5_DIVESUIT_HIT</Name>
+      <Name>TEN_VEHICLE_DIVESUIT_HIT</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -18909,7 +18909,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_HIT_01.wav</FileName>
+          <FileName>TEN_VEHICLE_DIVESUIT_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -18917,7 +18917,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>947</Id>
-      <Name>TR5_DIVESUIT_BREATHE</Name>
+      <Name>TEN_VEHICLE_DIVESUIT_BREATHE</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -18928,7 +18928,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_BREATHE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_DIVESUIT_BREATHE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -18936,7 +18936,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>948</Id>
-      <Name>TR5_DIVESUIT_LOOP</Name>
+      <Name>TEN_VEHICLE_DIVESUIT_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -18947,7 +18947,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_LOOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_DIVESUIT_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
