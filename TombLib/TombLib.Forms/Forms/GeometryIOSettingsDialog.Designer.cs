@@ -39,6 +39,7 @@
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
+            this.cbPadPackedTextures = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
             this.groupMisc.SuspendLayout();
@@ -151,7 +152,7 @@
             0,
             262144});
             this.nmScale.Name = "nmScale";
-            this.nmScale.Size = new System.Drawing.Size(101, 22);
+            this.nmScale.Size = new System.Drawing.Size(75, 22);
             this.nmScale.TabIndex = 8;
             this.nmScale.Value = new decimal(new int[] {
             1,
@@ -234,12 +235,13 @@
             // 
             // groupMisc
             // 
+            this.groupMisc.Controls.Add(this.cbPadPackedTextures);
             this.groupMisc.Controls.Add(this.cbPackTextures);
             this.groupMisc.Controls.Add(this.cbSortByName);
             this.groupMisc.Controls.Add(this.cbImportBakedLight);
-            this.groupMisc.Location = new System.Drawing.Point(140, 157);
+            this.groupMisc.Location = new System.Drawing.Point(140, 101);
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size(155, 88);
+            this.groupMisc.Size = new System.Drawing.Size(155, 141);
             this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
@@ -256,7 +258,7 @@
             // cbSortByName
             // 
             this.cbSortByName.AutoSize = true;
-            this.cbSortByName.Location = new System.Drawing.Point(6, 67);
+            this.cbSortByName.Location = new System.Drawing.Point(6, 91);
             this.cbSortByName.Name = "cbSortByName";
             this.cbSortByName.Size = new System.Drawing.Size(93, 17);
             this.cbSortByName.TabIndex = 8;
@@ -267,7 +269,7 @@
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
+            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
             this.cbImportBakedLight.TabIndex = 7;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
@@ -276,7 +278,7 @@
             this.groupTextures.Controls.Add(this.cbPremultiplyUV);
             this.groupTextures.Controls.Add(this.cbFlipUV_V);
             this.groupTextures.Controls.Add(this.cbWrapUV);
-            this.groupTextures.Location = new System.Drawing.Point(140, 62);
+            this.groupTextures.Location = new System.Drawing.Point(140, 6);
             this.groupTextures.Name = "groupTextures";
             this.groupTextures.Size = new System.Drawing.Size(155, 89);
             this.groupTextures.TabIndex = 8;
@@ -287,9 +289,9 @@
             // 
             this.groupSize.Controls.Add(this.nmScale);
             this.groupSize.Controls.Add(this.lblScale);
-            this.groupSize.Location = new System.Drawing.Point(140, 6);
+            this.groupSize.Location = new System.Drawing.Point(6, 192);
             this.groupSize.Name = "groupSize";
-            this.groupSize.Size = new System.Drawing.Size(155, 50);
+            this.groupSize.Size = new System.Drawing.Size(128, 50);
             this.groupSize.TabIndex = 8;
             this.groupSize.TabStop = false;
             this.groupSize.Text = "Size";
@@ -305,7 +307,7 @@
             this.groupAxis.Controls.Add(this.cbFlipX);
             this.groupAxis.Location = new System.Drawing.Point(6, 6);
             this.groupAxis.Name = "groupAxis";
-            this.groupAxis.Size = new System.Drawing.Size(128, 239);
+            this.groupAxis.Size = new System.Drawing.Size(128, 180);
             this.groupAxis.TabIndex = 8;
             this.groupAxis.TabStop = false;
             this.groupAxis.Text = "Axis";
@@ -318,6 +320,15 @@
             this.cbInvertFaces.Size = new System.Drawing.Size(84, 17);
             this.cbInvertFaces.TabIndex = 6;
             this.cbInvertFaces.Text = "Invert faces";
+            // 
+            // cbPadPackedTextures
+            // 
+            this.cbPadPackedTextures.AutoSize = true;
+            this.cbPadPackedTextures.Location = new System.Drawing.Point(6, 67);
+            this.cbPadPackedTextures.Name = "cbPadPackedTextures";
+            this.cbPadPackedTextures.Size = new System.Drawing.Size(129, 17);
+            this.cbPadPackedTextures.TabIndex = 10;
+            this.cbPadPackedTextures.Text = "Pad packed textures";
             // 
             // GeometryIOSettingsDialog
             // 
@@ -377,5 +388,6 @@
         private DarkUI.Controls.DarkCheckBox cbImportBakedLight;
         private DarkUI.Controls.DarkCheckBox cbSortByName;
         private DarkUI.Controls.DarkCheckBox cbPackTextures;
+        private DarkUI.Controls.DarkCheckBox cbPadPackedTextures;
     }
 }

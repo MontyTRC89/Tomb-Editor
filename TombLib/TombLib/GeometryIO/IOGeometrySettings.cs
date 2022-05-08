@@ -8,9 +8,9 @@
 
     public class IOGeometrySettings
     {
-        public bool Export { get; set; } = false;
-
         // Internal settings
+        public bool Export { get; set; } = false;
+        public bool ExportRoom { get; set; } = false;
         public bool ProcessGeometry { get; set; } = true;
         public bool ProcessUntexturedGeometry { get; set; } = false;
         public bool ProcessAnimations { get; set; } = false;
@@ -29,5 +29,6 @@
         public bool UseVertexColor { get; set; } = true;
         public bool SortByName { get; set; } = true;
         public bool PackTextures { get; set; } = true;
+        public bool PadPackedTextures { get; set; } = true;
     }
 }

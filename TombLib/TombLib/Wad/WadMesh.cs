@@ -242,7 +242,7 @@ namespace TombLib.Wad
             {
                 var poly = m.Polys[i];
 
-                //Add uniquely the texture to the dictionary
+                // Add uniquely the texture to the dictionary
                 if (!tempTextures.ContainsKey(((WadTexture)poly.Texture.Texture).Hash))
                     tempTextures.Add(((WadTexture)poly.Texture.Texture).Hash, ((WadTexture)poly.Texture.Texture));
             }
@@ -279,7 +279,7 @@ namespace TombLib.Wad
             List<WadTexture> pages;
 
             if (mergeIntoPages)
-                pages = Wad2.PackTexturesForExport(texturePieces);
+                pages = Wad2.PackTexturesForExport(texturePieces, settings.PadPackedTextures ? 4 : 0);
             else
                 pages = tempTextures.Values.ToList();
 

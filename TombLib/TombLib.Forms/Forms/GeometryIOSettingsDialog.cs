@@ -115,7 +115,7 @@ namespace TombLib.Forms
             nmScale.Enabled = settings.ProcessGeometry;
             cbImportBakedLight.Enabled = settings.ProcessGeometry;
             cbSortByName.Enabled = !settings.Export;
-            cbPackTextures.Enabled = settings.Export;
+            cbPackTextures.Enabled = cbPadPackedTextures.Enabled = settings.Export && !Settings.ExportRoom;
 
             cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
@@ -131,6 +131,7 @@ namespace TombLib.Forms
             cbImportBakedLight.Checked = settings.UseVertexColor;
             cbSortByName.Checked = settings.SortByName;
             cbPackTextures.Checked = settings.PackTextures;
+            cbPadPackedTextures.Checked = settings.PadPackedTextures;
         }
 
         private void UpdateSettings()
@@ -149,6 +150,7 @@ namespace TombLib.Forms
             Settings.UseVertexColor = cbImportBakedLight.Checked;
             Settings.SortByName = cbSortByName.Checked;
             Settings.PackTextures = cbPackTextures.Checked;
+            Settings.PadPackedTextures = cbPadPackedTextures.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -187,6 +189,7 @@ namespace TombLib.Forms
             cbImportBakedLight.CheckedChanged += ModifiedPresetEvent;
             cbSortByName.CheckedChanged += ModifiedPresetEvent;
             cbPackTextures.CheckedChanged += ModifiedPresetEvent;
+            cbPadPackedTextures.CheckedChanged += ModifiedPresetEvent;
         }
 
         private void SuspendControlListening()
@@ -205,11 +208,13 @@ namespace TombLib.Forms
             cbImportBakedLight.CheckedChanged -= ModifiedPresetEvent;
             cbSortByName.CheckedChanged -= ModifiedPresetEvent;
             cbPackTextures.CheckedChanged -= ModifiedPresetEvent;
+            cbPadPackedTextures.CheckedChanged -= ModifiedPresetEvent;
         }
 
         private void ModifiedPresetEvent(object sender, EventArgs e)
         {
             SelectNullPreset();
+            cbPadPackedTextures.Enabled = cbPackTextures.Enabled && cbPackTextures.Checked;
         }
     }
 }

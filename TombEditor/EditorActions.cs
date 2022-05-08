@@ -4760,7 +4760,7 @@ namespace TombEditor
                     return;
                 }
 
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true, ExportRoom = true }))
                 {
                     settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
                     settingsDialog.SelectPreset("Normal scale");

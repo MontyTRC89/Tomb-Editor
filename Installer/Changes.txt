@@ -6,6 +6,7 @@ Tomb Editor:
 
 WadTool:
  * Add "Apply" button to animcommand and state change editors.
+ * An option to disable packed texture padding when exporting mesh.
  * Fix occasional misfires when picking textures in mesh editor.
  * Fix exception when trying to save wad2 file with very large amount of textures.
  * Fix exception when deleting last frame of an animation.

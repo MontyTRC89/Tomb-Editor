@@ -237,7 +237,7 @@ namespace TombLib.Wad
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
 
-        public static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture.AtlasReference> texturesToPack)
+        public static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture.AtlasReference> texturesToPack, int padding)
         {
             var textures = new List<WadTexture>();
             var scale = 256;
@@ -251,10 +251,10 @@ namespace TombLib.Wad
             {
                 var textureRef = texturesToPack.ElementAt(i).Value;
 
-                int paddingX = 4;
+                int paddingX = padding;
                 if (textureRef.Texture.Image.Width + 2 * paddingX >= scale)
                     paddingX = (int)Math.Floor((float)(scale - textureRef.Texture.Image.Width) / 2);
-                int paddingY = 4;
+                int paddingY = padding;
                 if (textureRef.Texture.Image.Height + 2 * paddingY >= scale)
                     paddingY = (int)Math.Floor((float)(scale - textureRef.Texture.Image.Height) / 2);
 
