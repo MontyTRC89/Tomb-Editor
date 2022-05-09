@@ -72,12 +72,6 @@
     <Compile Include="Forms\FormPleaseWait.Designer.cs">
       <DependentUpon>FormPleaseWait.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormPluginManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormPluginManager.Designer.cs">
-      <DependentUpon>FormPluginManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormImportLevel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,9 +194,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPleaseWait.resx">
       <DependentUpon>FormPleaseWait.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPluginManager.resx">
-      <DependentUpon>FormPluginManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLauncher.resx">
       <DependentUpon>FormRenameLauncher.cs</DependentUpon>

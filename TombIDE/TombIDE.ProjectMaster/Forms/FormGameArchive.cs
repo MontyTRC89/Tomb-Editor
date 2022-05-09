@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster.Forms
 {
@@ -77,7 +78,7 @@ namespace TombIDE.ProjectMaster.Forms
 				string pathPart = folder.Remove(0, _ide.Project.EnginePath.Length);
 				string targetPath = Path.Combine(targetTempEngineDirectory, pathPart.Trim('\\'));
 
-				CopyFilesRecursively(folder, targetPath);
+				SharedMethods.CopyFilesRecursively(folder, targetPath);
 			}
 
 			foreach (string file in allImportantFiles)
@@ -105,20 +106,6 @@ namespace TombIDE.ProjectMaster.Forms
 
 			if (Directory.Exists(tempDirectory))
 				Directory.Delete(tempDirectory, true);
-		}
-
-		private static void CopyFilesRecursively(string sourcePath, string targetPath)
-		{
-			if (!Directory.Exists(targetPath))
-				Directory.CreateDirectory(targetPath);
-
-			// Create directories
-			foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-				Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
-
-			// Copy files
-			foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-				File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
 		}
 
 		private void timer_Tick(object sender, EventArgs e)

@@ -163,24 +163,6 @@ namespace TombIDE.Shared
 
 		#endregion ProjectLevelsPathChanged
 
-		#region RequestedPluginListRefresh
-
-		public class RequestedPluginListRefreshEvent : IIDEEvent { }
-
-		public void RefreshPluginLists() =>
-			RaiseEvent(new RequestedPluginListRefreshEvent());
-
-		#endregion RequestedPluginListRefresh
-
-		#region PluginListsUpdated
-
-		public class PluginListsUpdatedEvent : IIDEEvent { }
-
-		public void FinishPluginListUpdate() =>
-			RaiseEvent(new PluginListsUpdatedEvent());
-
-		#endregion PluginListsUpdated
-
 		#region PRJ2FileDeleted
 
 		public class PRJ2FileDeletedEvent : IIDEEvent

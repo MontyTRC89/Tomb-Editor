@@ -19,18 +19,12 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.animationTimer = new System.Windows.Forms.Timer(this.components);
-			this.internalDLLFileWatcher = new System.IO.FileSystemWatcher();
-			this.internalPluginFolderWatcher = new System.IO.FileSystemWatcher();
-			this.projectDLLFileWatcher = new System.IO.FileSystemWatcher();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.button_ShowPlugins = new DarkUI.Controls.DarkButton();
 			this.button_HidePlugins = new DarkUI.Controls.DarkButton();
 			this.splitContainer_Info = new System.Windows.Forms.SplitContainer();
 			this.section_ProjectInfo = new TombIDE.ProjectMaster.SectionProjectSettings();
 			this.section_PluginList = new TombIDE.ProjectMaster.SectionPluginList();
-			((System.ComponentModel.ISupportInitialize)(this.internalDLLFileWatcher)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.internalPluginFolderWatcher)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.projectDLLFileWatcher)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).BeginInit();
 			this.splitContainer_Info.Panel1.SuspendLayout();
 			this.splitContainer_Info.Panel2.SuspendLayout();
@@ -41,34 +35,6 @@
 			// 
 			this.animationTimer.Interval = 1;
 			this.animationTimer.Tick += new System.EventHandler(this.animationTimer_Tick);
-			// 
-			// internalDLLFileWatcher
-			// 
-			this.internalDLLFileWatcher.EnableRaisingEvents = true;
-			this.internalDLLFileWatcher.Filter = "*.dll";
-			this.internalDLLFileWatcher.IncludeSubdirectories = true;
-			this.internalDLLFileWatcher.SynchronizingObject = this;
-			this.internalDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalDLLFileWatcher_Deleted);
-			this.internalDLLFileWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalDLLFileWatcher_Renamed);
-			// 
-			// internalPluginFolderWatcher
-			// 
-			this.internalPluginFolderWatcher.EnableRaisingEvents = true;
-			this.internalPluginFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
-			this.internalPluginFolderWatcher.SynchronizingObject = this;
-			this.internalPluginFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.internalPluginFolderWatcher_Deleted);
-			this.internalPluginFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.internalPluginFolderWatcher_Renamed);
-			// 
-			// projectDLLFileWatcher
-			// 
-			this.projectDLLFileWatcher.EnableRaisingEvents = true;
-			this.projectDLLFileWatcher.Filter = "*.dll";
-			this.projectDLLFileWatcher.IncludeSubdirectories = true;
-			this.projectDLLFileWatcher.SynchronizingObject = this;
-			this.projectDLLFileWatcher.Changed += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
-			this.projectDLLFileWatcher.Created += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
-			this.projectDLLFileWatcher.Deleted += new System.IO.FileSystemEventHandler(this.projectDLLFileWatcher_Changed);
-			this.projectDLLFileWatcher.Renamed += new System.IO.RenamedEventHandler(this.projectDLLFileWatcher_Renamed);
 			// 
 			// button_ShowPlugins
 			// 
@@ -151,9 +117,6 @@
 			this.Controls.Add(this.splitContainer_Info);
 			this.Name = "ProjectMaster";
 			this.Size = new System.Drawing.Size(1005, 600);
-			((System.ComponentModel.ISupportInitialize)(this.internalDLLFileWatcher)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.internalPluginFolderWatcher)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.projectDLLFileWatcher)).EndInit();
 			this.splitContainer_Info.Panel1.ResumeLayout(false);
 			this.splitContainer_Info.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).EndInit();
@@ -168,9 +131,6 @@
 		private DarkUI.Controls.DarkButton button_ShowPlugins;
 		private SectionPluginList section_PluginList;
 		private SectionProjectSettings section_ProjectInfo;
-		private System.IO.FileSystemWatcher internalDLLFileWatcher;
-		private System.IO.FileSystemWatcher internalPluginFolderWatcher;
-		private System.IO.FileSystemWatcher projectDLLFileWatcher;
 		private System.Windows.Forms.SplitContainer splitContainer_Info;
 		private System.Windows.Forms.Timer animationTimer;
 		private System.Windows.Forms.ToolTip toolTip;
