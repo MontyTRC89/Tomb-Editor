@@ -51,7 +51,9 @@
 			this.tableLayoutPanel_Title = new System.Windows.Forms.TableLayoutPanel();
 			this.label_SubTitle01 = new DarkUI.Controls.DarkLabel();
 			this.label_Title01 = new DarkUI.Controls.DarkLabel();
+			this.tableLayoutPanel_Buttons01 = new System.Windows.Forms.TableLayoutPanel();
 			this.button_Next = new DarkUI.Controls.DarkButton();
+			this.button_Cancel = new DarkUI.Controls.DarkButton();
 			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.panel_LevelsRadioChoice.SuspendLayout();
 			this.panel_ScriptRadioChoice.SuspendLayout();
@@ -64,6 +66,7 @@
 			this.tableLayoutPanel_Main01.SuspendLayout();
 			this.tableLayoutPanel_Content01.SuspendLayout();
 			this.tableLayoutPanel_Title.SuspendLayout();
+			this.tableLayoutPanel_Buttons01.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -343,7 +346,7 @@
 			this.tableLayoutPanel_Main01.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel_Main01.Controls.Add(this.tableLayoutPanel_Content01, 0, 1);
 			this.tableLayoutPanel_Main01.Controls.Add(this.tableLayoutPanel_Title, 0, 0);
-			this.tableLayoutPanel_Main01.Controls.Add(this.button_Next, 1, 1);
+			this.tableLayoutPanel_Main01.Controls.Add(this.tableLayoutPanel_Buttons01, 1, 1);
 			this.tableLayoutPanel_Main01.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel_Main01.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel_Main01.Margin = new System.Windows.Forms.Padding(0);
@@ -520,17 +523,45 @@
 			this.label_Title01.TabIndex = 1;
 			this.label_Title01.Text = "Create a new project";
 			// 
+			// tableLayoutPanel_Buttons01
+			// 
+			this.tableLayoutPanel_Buttons01.ColumnCount = 2;
+			this.tableLayoutPanel_Buttons01.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel_Buttons01.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+			this.tableLayoutPanel_Buttons01.Controls.Add(this.button_Next, 0, 0);
+			this.tableLayoutPanel_Buttons01.Controls.Add(this.button_Cancel, 0, 0);
+			this.tableLayoutPanel_Buttons01.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel_Buttons01.Location = new System.Drawing.Point(550, 80);
+			this.tableLayoutPanel_Buttons01.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanel_Buttons01.Name = "tableLayoutPanel_Buttons01";
+			this.tableLayoutPanel_Buttons01.RowCount = 1;
+			this.tableLayoutPanel_Buttons01.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel_Buttons01.Size = new System.Drawing.Size(196, 375);
+			this.tableLayoutPanel_Buttons01.TabIndex = 3;
+			// 
 			// button_Next
 			// 
 			this.button_Next.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Next.Checked = false;
-			this.button_Next.Location = new System.Drawing.Point(671, 430);
+			this.button_Next.Location = new System.Drawing.Point(121, 350);
 			this.button_Next.Margin = new System.Windows.Forms.Padding(0);
 			this.button_Next.Name = "button_Next";
 			this.button_Next.Size = new System.Drawing.Size(75, 25);
-			this.button_Next.TabIndex = 3;
+			this.button_Next.TabIndex = 13;
 			this.button_Next.Text = "Next";
 			this.button_Next.Click += new System.EventHandler(this.button_Next_Click);
+			// 
+			// button_Cancel
+			// 
+			this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Cancel.Checked = false;
+			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button_Cancel.Location = new System.Drawing.Point(41, 350);
+			this.button_Cancel.Margin = new System.Windows.Forms.Padding(0);
+			this.button_Cancel.Name = "button_Cancel";
+			this.button_Cancel.Size = new System.Drawing.Size(75, 25);
+			this.button_Cancel.TabIndex = 12;
+			this.button_Cancel.Text = "Cancel";
 			// 
 			// tablessTabControl
 			// 
@@ -571,6 +602,7 @@
 			this.tableLayoutPanel_Content01.ResumeLayout(false);
 			this.tableLayoutPanel_Content01.PerformLayout();
 			this.tableLayoutPanel_Title.ResumeLayout(false);
+			this.tableLayoutPanel_Buttons01.ResumeLayout(false);
 			this.tablessTabControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -612,7 +644,9 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Title;
 		private DarkUI.Controls.DarkLabel label_SubTitle01;
 		private DarkUI.Controls.DarkLabel label_Title01;
-		private DarkUI.Controls.DarkButton button_Next;
 		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Buttons01;
+		private DarkUI.Controls.DarkButton button_Next;
+		private DarkUI.Controls.DarkButton button_Cancel;
 	}
 }
