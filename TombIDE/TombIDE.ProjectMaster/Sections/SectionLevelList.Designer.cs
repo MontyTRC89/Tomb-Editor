@@ -71,7 +71,7 @@
 			this.menuItem_OpenLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_OpenLevel.Enabled = false;
 			this.menuItem_OpenLevel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.menuItem_OpenLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_OpenLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_OpenLevel.Image = global::TombIDE.ProjectMaster.Properties.Resources.TE_icon;
 			this.menuItem_OpenLevel.Name = "menuItem_OpenLevel";
 			this.menuItem_OpenLevel.Size = new System.Drawing.Size(217, 22);
@@ -82,7 +82,7 @@
 			// 
 			this.menuItem_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Build.Enabled = false;
-			this.menuItem_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Build.Name = "menuItem_Build";
 			this.menuItem_Build.Size = new System.Drawing.Size(217, 22);
 			this.menuItem_Build.Text = "Build level";
@@ -100,7 +100,7 @@
 			// 
 			this.menuItem_OpenDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_OpenDirectory.Enabled = false;
-			this.menuItem_OpenDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_OpenDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_OpenDirectory.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.menuItem_OpenDirectory.Name = "menuItem_OpenDirectory";
 			this.menuItem_OpenDirectory.Size = new System.Drawing.Size(217, 22);
@@ -119,7 +119,7 @@
 			// 
 			this.menuItem_MoveUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_MoveUp.Enabled = false;
-			this.menuItem_MoveUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_MoveUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_MoveUp.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_ArrowUp_16;
 			this.menuItem_MoveUp.Name = "menuItem_MoveUp";
 			this.menuItem_MoveUp.Size = new System.Drawing.Size(217, 22);
@@ -130,7 +130,7 @@
 			// 
 			this.menuItem_MoveDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_MoveDown.Enabled = false;
-			this.menuItem_MoveDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_MoveDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_MoveDown.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_ArrowDown_16;
 			this.menuItem_MoveDown.Name = "menuItem_MoveDown";
 			this.menuItem_MoveDown.Size = new System.Drawing.Size(217, 22);
@@ -149,7 +149,7 @@
 			// 
 			this.menuItem_Rename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Rename.Enabled = false;
-			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Rename.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.menuItem_Rename.Name = "menuItem_Rename";
 			this.menuItem_Rename.Size = new System.Drawing.Size(217, 22);
@@ -160,7 +160,7 @@
 			// 
 			this.menuItem_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Delete.Enabled = false;
-			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Delete.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.menuItem_Delete.Name = "menuItem_Delete";
 			this.menuItem_Delete.Size = new System.Drawing.Size(217, 22);
@@ -218,6 +218,7 @@
 			this.toolStrip.AutoSize = false;
 			this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.button_OpenInTE,
             this.separator_01,

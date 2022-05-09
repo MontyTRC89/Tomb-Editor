@@ -96,7 +96,7 @@ namespace TombIDE.ProjectMaster
 		{
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
-			if (!selectedPluginFile.Exists)
+			if (!File.Exists(selectedPluginFile.FullName))
 				return;
 
 			string pluginName = treeView.SelectedNodes[0].Text;
@@ -109,12 +109,15 @@ namespace TombIDE.ProjectMaster
 
 			if (result == DialogResult.Yes)
 			{
-				FileSystem.DeleteFile(
-					Path.Combine(_ide.Project.EnginePath, ((FileInfo)treeView.SelectedNodes[0].Tag).Name),
-					UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+				string engineDllFilePath = Path.Combine(_ide.Project.EnginePath, ((FileInfo)treeView.SelectedNodes[0].Tag).Name);
 
-				FileSystem.DeleteDirectory(((FileInfo)treeView.SelectedNodes[0].Tag).DirectoryName,
-					UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+				if (File.Exists(engineDllFilePath))
+					FileSystem.DeleteFile(engineDllFilePath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+
+				string pluginDirectoryPath = ((FileInfo)treeView.SelectedNodes[0].Tag).DirectoryName;
+
+				if (Directory.Exists(pluginDirectoryPath))
+					FileSystem.DeleteDirectory(pluginDirectoryPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 
 				UpdatePlugins();
 			}
@@ -124,7 +127,7 @@ namespace TombIDE.ProjectMaster
 		{
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
-			if (!selectedPluginFile.Exists)
+			if (!File.Exists(selectedPluginFile.FullName))
 				return;
 
 			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPluginFile.FullName));
@@ -188,8 +191,11 @@ namespace TombIDE.ProjectMaster
 				}
 			}
 
+			CopyDLLFilesToEngineDirectory();
 			HandleScriptReferenceFiles();
+
 			MnemonicData.SetupConstants(DefaultPaths.InternalNGCDirectory);
+
 			treeView.Invalidate();
 		}
 
@@ -313,7 +319,7 @@ namespace TombIDE.ProjectMaster
 
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
-			if (!selectedPluginFile.Exists)
+			if (!File.Exists(selectedPluginFile.FullName))
 				return;
 
 			textBox_Title.Text = treeView.SelectedNodes[0].Text;
@@ -377,6 +383,15 @@ namespace TombIDE.ProjectMaster
 			{
 				string destPath = Path.Combine(DefaultPaths.InternalNGCDirectory, scriptFile.Name);
 				scriptFile.CopyTo(destPath, true);
+			}
+		}
+
+		private void CopyDLLFilesToEngineDirectory()
+		{
+			foreach (FileInfo dllFile in _pluginsDirectory.GetFiles("plugin_*.dll", System.IO.SearchOption.AllDirectories))
+			{
+				string destPath = Path.Combine(_ide.Project.EnginePath, dllFile.Name);
+				dllFile.CopyTo(destPath, true);
 			}
 		}
 
