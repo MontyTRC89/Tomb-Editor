@@ -94,7 +94,9 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Remove_Click(object sender, EventArgs e)
 		{
-			if (treeView.SelectedNodes.Count == 0)
+			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
+
+			if (!selectedPluginFile.Exists)
 				return;
 
 			string pluginName = treeView.SelectedNodes[0].Text;
@@ -120,10 +122,11 @@ namespace TombIDE.ProjectMaster
 
 		private void button_OpenDirectory_Click(object sender, EventArgs e)
 		{
-			if (treeView.SelectedNodes.Count == 0)
+			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
+
+			if (!selectedPluginFile.Exists)
 				return;
 
-			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPluginFile.FullName));
 		}
 
@@ -309,6 +312,9 @@ namespace TombIDE.ProjectMaster
 			label_NoInfo.Visible = false;
 
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
+
+			if (!selectedPluginFile.Exists)
+				return;
 
 			textBox_Title.Text = treeView.SelectedNodes[0].Text;
 			textBox_DLLName.Text = Path.GetFileName(selectedPluginFile.Name);
