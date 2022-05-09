@@ -33,12 +33,13 @@ namespace TombIDE
 			base.OnShown(e);
 
 			textBox_ProjectName.Text = "New Project";
+			textBox_ProjectName.Focus();
 			textBox_ProjectName.SelectAll();
 		}
 
 		private void button_Help_Click(object sender, EventArgs e)
 		{
-            var form = new FormEngineHelp(Cursor.Position);
+			var form = new FormEngineHelp(Cursor.Position);
 			form.Show(this);
 		}
 
@@ -111,7 +112,7 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for your project.");
 
-				if (projectName.ToLower() == "engine") // Safety
+				if (projectName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // Safety
 					throw new ArgumentException("Illegal project name.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
@@ -263,5 +264,42 @@ namespace TombIDE
 		}
 
 		#endregion Methods
+
+		private void button_Next_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				string projectName = PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(projectName))
+					throw new ArgumentException("You must enter a valid name for your project.");
+
+				if (projectName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // Safety
+					throw new ArgumentException("Illegal project name.");
+
+				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
+					throw new ArgumentException("You must select a folder where you want to install your project.");
+
+				if (ProjectChecker.IsProjectNameDuplicate(projectName))
+					throw new ArgumentException("A project with the same name already exists on the list.");
+
+				if (comboBox_EngineType.SelectedIndex == 0)
+					throw new ArgumentException("You must specify the engine type of the project.");
+
+				string projectPath = textBox_ProjectPath.Text.Trim();
+
+				if (Directory.Exists(projectPath) && Directory.EnumerateFileSystemEntries(projectPath).ToArray().Length > 0)
+					throw new ArgumentException("Selected project folder is not empty.");
+
+				tablessTabControl.SelectTab(1);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void button_Back_Click(object sender, EventArgs e)
+			=> tablessTabControl.SelectTab(0);
 	}
 }
