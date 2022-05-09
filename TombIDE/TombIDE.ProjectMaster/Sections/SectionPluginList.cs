@@ -37,7 +37,8 @@ namespace TombIDE.ProjectMaster
 			string pluginsPath = Path.Combine(_ide.Project.ProjectPath, "Plugins");
 			_pluginsDirectory = new DirectoryInfo(pluginsPath);
 
-			if (!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFileSystemInfos().Any())
+			if (Directory.Exists(DefaultPaths.TRNGPluginsDirectory) &&
+				(!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFileSystemInfos().Any()))
 				CopyPluginsFromTIDEToProject();
 
 			UpdatePlugins();
