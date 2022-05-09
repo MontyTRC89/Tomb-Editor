@@ -1373,6 +1373,8 @@ namespace TombEditor.Forms
             var filter = tbFilterSounds.Text;
             selectedSoundsDataGridView.Rows.Clear();
 
+            var paths = _levelSettings.GetRecursiveListOfSoundPaths();
+
             foreach (var soundInfo in _levelSettings.GlobalSoundMap)
             {
                 if (!string.IsNullOrEmpty(filter) && soundInfo.Name.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) < 0)
@@ -1380,7 +1382,7 @@ namespace TombEditor.Forms
 
                 int originalId;
                 string areaDesc = GetNGDescriptionAndOriginalID(soundInfo.Id, out originalId);
-                var sampleCount = soundInfo.SampleCount(_levelSettings);
+                var sampleCount = soundInfo.SampleCount(_levelSettings, paths);
                 string samplePrompt = sampleCount == 0 ? "[ missing ]" : (sampleCount == -1 ? "[ none ]" : sampleCount.ToString());
 
                 selectedSoundsDataGridView.Rows.Add(_levelSettings.SelectedSounds.Contains(soundInfo.Id), soundInfo.Id,

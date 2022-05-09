@@ -401,13 +401,16 @@ namespace TombLib.Wad
             int supportedSampleRate = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundSampleRate);
             int supportedBitness    = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundBitsPerSample);
 
+            // Pre-generate recursive list of all subdirectories to search to speed-up process
+            var pathList = settings.GetRecursiveListOfSoundPaths();
+
             var missing = false;
             for (int i = 0; i < samples.Count; i++)
             {
                 WadSample currentSample = NullSample;
                 try
                 {
-                    string samplePath = WadSounds.TryGetSamplePath(settings, samples[i].FileName);
+                    string samplePath = WadSounds.TryGetSamplePath(pathList, samples[i].FileName);
 
                     // If sample was found, then load it...
                     if (!string.IsNullOrEmpty(samplePath))

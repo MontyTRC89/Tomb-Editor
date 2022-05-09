@@ -2,6 +2,7 @@ Version 1.4.8
 =============
 Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
+ * Automatically search subfolders in sample paths to find sound samples.
  * Fix corrupted MQO imported geometry.
 
 WadTool:

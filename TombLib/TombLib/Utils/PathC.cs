@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -120,6 +121,32 @@ namespace TombLib.Utils
             catch
             {
                 return path;
+            }
+        }
+
+        public static List<string> GetDirectories(string path, string searchPattern = "*", SearchOption searchOption = SearchOption.AllDirectories)
+        {
+            var result = new List<string>(GetDirectories(path, searchPattern));
+
+            if (searchOption == SearchOption.AllDirectories)
+            {
+                for (int i = 0; i < result.Count; i++)
+                    result.AddRange(GetDirectories(result[i], searchPattern));
+            }
+
+            result.Add(path);
+            return result;
+        }
+
+        private static List<string> GetDirectories(string path, string searchPattern)
+        {
+            try
+            {
+                return Directory.GetDirectories(path, searchPattern).ToList();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return new List<string>();
             }
         }
     }

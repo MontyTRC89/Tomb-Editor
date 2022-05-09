@@ -519,6 +519,9 @@ namespace TombLib.Controls
 
         protected virtual void OnPaintSelection(PaintEventArgs e)
         {
+            if (SelectedTexture.Texture == null || VisibleTexture == null)
+                return;
+
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             // Draw selection

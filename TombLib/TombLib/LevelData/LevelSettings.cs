@@ -269,6 +269,26 @@ namespace TombLib.LevelData
             GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
         }
 
+        public List<string> GetRecursiveListOfSoundPaths()
+        {
+            var result = new List<string>();
+
+            foreach (var path in WadSoundPaths)
+            {
+                string newPath = MakeAbsolute(path.Path);
+
+                if ((newPath == null) || !Directory.Exists(newPath))
+                    continue; // Avoid non-existing
+
+                if (result.Any(s => s.Equals(newPath)))
+                    continue; // Avoid duplicates
+
+                result.AddRange(PathC.GetDirectories(newPath));
+            }
+
+            return result;
+        }
+
         public string GetVariable(VariableType type)
         {
             string result;
@@ -770,11 +790,25 @@ namespace TombLib.LevelData
             return AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
         }
 
-        public List<int> SelectedAndAvailableSounds => SelectedSounds.Where(item => GlobalSoundMap
-                                                                     .Any(entry => entry.Id == item && entry.Samples.Count > 0 && entry.SampleCount(this) > 0)).ToList();
-
         public List<int> SelectedAndMissingSounds => SelectedSounds.Where(item => !GlobalSoundMap.Any(entry => entry.Id == item)).ToList();
 
-        public bool AllSoundSamplesAvailable => GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this));
+        public List<int> SelectedAndAvailableSounds
+        {
+            get
+            {
+                var paths = GetRecursiveListOfSoundPaths();
+                return SelectedSounds.Where(item => GlobalSoundMap
+                                     .Any(entry => entry.Id == item && entry.Samples.Count > 0 && entry.SampleCount(this, paths) > 0)).ToList();
+            }
+        }
+
+        public bool AllSoundSamplesAvailable
+        {
+            get
+            {
+                var paths = GetRecursiveListOfSoundPaths();
+                return GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this, paths));
+            }
+        }
     }
 }

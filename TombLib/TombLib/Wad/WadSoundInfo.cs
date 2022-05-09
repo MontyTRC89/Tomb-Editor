@@ -73,15 +73,19 @@ namespace TombLib.Wad
                 Samples.Add(new WadSample(sample.FileName));
         }
 
-        public int SampleCount(LevelSettings settings)
+        public int SampleCount(LevelSettings settings, List<string> paths = null)
         {
             if (settings.GameVersion.UsesMainSfx() || Samples == null || Samples.Count <= 0)
                 return -1;
 
             int result = 0;
+
+            if (paths == null)
+                paths = settings.GetRecursiveListOfSoundPaths();
+
             foreach (var sample in Samples)
             {
-                var path = WadSounds.TryGetSamplePath(settings, sample.FileName);
+                var path = WadSounds.TryGetSamplePath(paths, sample.FileName);
                 if (path != null) result++;
             }
             return result;

@@ -197,7 +197,7 @@ namespace TombLib.Controls
 
             if (_referenceLevel != null)
             {
-                var foundPath = WadSounds.TryGetSamplePath(_referenceLevel.Settings, name);
+                var foundPath = WadSounds.TryGetSamplePath(_referenceLevel.Settings.GetRecursiveListOfSoundPaths(), name);
                 notFound = string.IsNullOrEmpty(foundPath);
                 path = notFound ? "[ not found in any reference project sample paths ]" : foundPath;
             }

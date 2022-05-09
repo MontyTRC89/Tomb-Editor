@@ -134,7 +134,7 @@ namespace TombLib.Wad
                 }
                 else
                 {
-                    var path = WadSounds.TryGetSamplePath(level.Settings, sample.FileName);
+                    var path = WadSounds.TryGetSamplePath(level.Settings.GetRecursiveListOfSoundPaths(), sample.FileName);
                     if (path == null)
                         return;
                     else
