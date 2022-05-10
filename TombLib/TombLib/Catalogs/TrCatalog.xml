@@ -782,7 +782,7 @@
 			<moveable id="159"  name="Auto-pistol"  />
 			<moveable id="160"  name="Uzi"/>
 			<moveable id="161"  name="Harpoon gun"  />
-			<moveable id="162"  name="M16"  />
+			<moveable id="162"  name="M16" />
 			<moveable id="163"  name="Grenade launcher"/>
 			<moveable id="164"  name="Pistol ammo"/>
 			<moveable id="165"  name="Shotgun ammo"/>
@@ -5105,417 +5105,417 @@
 			<sprite_sequence id="459"  name="Misc sprites" t5m="MISC_SPRITES" />
 		</sprite_sequences>
 		<sounds max="450">
-			<sound id="0"  name="LARA_FEET" description="Lara feet" />
-<sound id="1"  name="LARA_CLIMB2" description="Lara climb2" />
-<sound id="2"  name="LARA_NO" hardcoded="true" description="Lara no" />
-<sound id="3"  name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" />
-<sound id="4"  name="LARA_LAND" hardcoded="true" description="Lara land" />
-<sound id="5"  name="LARA_CLIMB1" description="Lara climb1" />
-<sound id="6"  name="LARA_HOLSTER_DRAW" hardcoded="true" description="Lara holster draw" />
-<sound id="7"  name="LARA_HOLSTER_AWAY" hardcoded="true" description="Lara holster away" />
-<sound id="8"  name="LARA_FIRE" hardcoded="true" description="Lara fire" />
-<sound id="9"  name="LARA_RELOAD" hardcoded="true" description="Lara reload" />
-<sound id="10"  name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" />
-<sound id="11"  name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" />
-<sound id="12"  name="SMASH_GLASS" hardcoded="true" description="Smash glass" t5m="1092"/>
-<sound id="13"  name="LARA_CLIMB_WALL_GRUNT" description="Lara climb wall grunt" />
-<sound id="14"  name="HK_SILENCED" hardcoded="true" description="Hk silenced" t5m="372" />
-<sound id="15"  name="OFFICE_DOOR_OPEN" description="Office door open" t5m="1073" />
-<sound id="16"  name="OFFICE_DOOR_CLSE" description="Office door clse" t5m="1072"/>
-<sound id="17"  name="LARA_WET_FEET" hardcoded="true" description="Lara wet feet" />
-<sound id="18"  name="LARA_WADE" hardcoded="true" description="Lara wade" />
-<sound id="19"  name="SMASH_WOOD" description="Smash wood" t5m="1095"/>
-<sound id="20"  name="LARA_INJURY_NONRND" hardcoded="true" description="Lara injury nonrnd" />
-<sound id="21"  name="CRICKET_LOOP" description="Cricket loop" />
-<sound id="22"  name="PHILOSPHER_STONE" description="Philospher stone" t5m="1096" />
-<sound id="23"  name="LARA_JUMP_NONRND" description="Lara jump nonrnd" />
-<sound id="24"  name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" />
-<sound id="25"  name="LARA_HIDDEN_SWITCH" description="Lara hidden switch" />
-<sound id="26"  name="LARA_CLIMB3" description="Lara climb3" />
-<sound id="27"  name="LARA_BODYSL" description="Lara bodysl" />
-<sound id="28"  name="LARA_SHIMMY2" description="Lara shimmy2" />
-<sound id="29"  name="LARA_JUMP_RND" description="Lara jump rnd" />
-<sound id="30"  name="LARA_FALL" hardcoded="true" description="Lara fall" />
-<sound id="31"  name="LARA_INJURY_RND" hardcoded="true" description="Lara injury rnd" />
-<sound id="32"  name="LARA_ROLL" description="Lara roll" />
-<sound id="33"  name="LARA_SPLASH" hardcoded="true" description="Lara splash" />
-<sound id="34"  name="LARA_GETOUT" description="Lara getout" />
-<sound id="35"  name="LARA_SWIM" description="Lara swim" />
-<sound id="36"  name="LARA_BREATH" hardcoded="true" description="Lara breath" />
-<sound id="37"  name="LARA_BUBBLES" hardcoded="true" description="Lara bubbles" />
-<sound id="38"  name="CREATURE_SWIM" description="Creature swim" />
-<sound id="39"  name="LARA_USE_KEY" description="Lara use key" />
-<sound id="40"  name="LARA_PUSH2_NONRND" description="Lara push2 nonrnd" />
-<sound id="41"  name="LARA_GENERAL_DEATH" description="Lara general death" />
-<sound id="42"  name="LARA_KNEES_DEATH" description="Lara knees death" />
-<sound id="43"  name="LARA_UZI_FIRE" hardcoded="true" description="Lara uzi fire" />
-<sound id="44"  name="LARA_UZI_STOP" hardcoded="true" description="Lara uzi stop" />
-<sound id="45"  name="LARA_SHOTGUN" hardcoded="true" description="Lara shotgun" />
-<sound id="46"  name="LARA_PUSH1" description="Lara push1" />
-<sound id="47"  name="LARA_PUSH2_RND" description="Lara push2 rnd" />
-<sound id="48"  name="LARA_RANDOM_PUSHFX" description="Lara random pushfx" />
-<sound id="49"  name="LARA_SHOTGUN_SHELL" hardcoded="true" description="Lara shotgun shell" />
-<sound id="50"  name="UNDERWATER_DOOR" description="Underwater door" />
-<sound id="51"  name="LARA_PULL" description="Lara pull" />
-<sound id="52"  name="LARA_FLOATING" description="Lara floating" />
-<sound id="53"  name="LARA_FALLDETH" description="Lara falldeth" />
-<sound id="54"  name="LARA_GRABHAND" description="Lara grabhand" />
-<sound id="55"  name="LARA_GRABBODY" description="Lara grabbody" />
-<sound id="56"  name="LARA_GRABFEET" description="Lara grabfeet" />
-<sound id="57"  name="OFFICE_DOOR_SQUEAK" description="Office door squeak" t5m="1074" />
-<sound id="58"  name="WATER_LAPS_LOOP" description="Water laps loop" t5m="1116"/>
-<sound id="59"  name="WATER_SPOUT_LOOP" description="Water spout loop" />
-<sound id="60"  name="UNDERWATER" hardcoded="true" description="Underwater" />
-<sound id="61"  name="UNDERWATER_SWITCH" description="Underwater switch" />
-<sound id="62"  name="LARA_PICKUP" description="Lara pickup" />
-<sound id="63"  name="PUSHABLE_SOUND" hardcoded="true" description="Pushable sound" />
-<sound id="64"  name="SNIPER_RIFLE" description="Sniper rifle" t5m="965" />
-<sound id="65"  name="HELICOPTER_LOOP" hardcoded="true" description="Helicopter loop" t5m="65"/>
-<sound id="66"  name="ROCK_FALL_CRUMBLE" hardcoded="true" description="Rock fall crumble" />
-<sound id="67"  name="ROCK_FALL_LAND" hardcoded="true" description="Rock fall land" />
-<sound id="68"  name="HK_FIRE" hardcoded="true" description="Hk fire" t5m="78" />
-<sound id="69"  name="HK_STOP" hardcoded="true" description="Hk stop" t5m="163" />
-<sound id="70"  name="LARA_THUD" hardcoded="true" description="Lara thud" />
-<sound id="71"  name="GENERIC_SWOOSH" description="Generic swoosh" />
-<sound id="72"  name="BLUEGUARD_CHAIR" description="Blueguard chair" t5m="910"/>
-<sound id="73"  name="NEWBOX_SHUT" description="Newbox shut" />
-<sound id="74"  name="BLUE/SCIEN_DONT_SHOOT" description="Blue/scien dont shoot" t5m="904" />
-<sound id="75"  name="BLUEGUARD_CONSOLE" description="Blueguard console" t5m="911"/>
-<sound id="76"  name="SHOWER_LOOP" description="Shower loop" t5m="1089" />
-<sound id="77"  name="WATER_LOOP" description="Water loop" t5m="118" />
-<sound id="78"  name="FOUNTAIN_LOOP" description="Fountain loop" />
-<sound id="79"  name="WATERFALL_LOOP" hardcoded="true" description="Waterfall loop" />
-<sound id="80"  name="SERVO_02" description="Servo 02" t5m="1088"/>
-<sound id="81"  name="SERVO_01" description="Servo 01" t5m="1087"/>
-<sound id="82"  name="BLUEG_GETUP_HOY" description="Blueg getup hoy" t5m="907" />
-<sound id="83"  name="BLUEG/MAFIA_GUNS" description="Blueg/mafia guns" t5m="905"/>
-<sound id="84"  name="BLUEG_HIT/DIE" description="Blueg hit/die" t5m="908"/>
-<sound id="85"  name="BLUEG_JUMP" description="Blueg jump" t5m="909"/>
-<sound id="86"  name="BLUEG_CHAIR_HIT" description="Blueg chair hit" t5m="906"/>
-<sound id="87"  name="RICH_IRIS_ELEC" hardcoded="true" description="Rich iris elec" t5m="1053"/>
-<sound id="88"  name="BIO_BREATHE_OUT" hardcoded="true" description="Bio breathe out" t5m="1010" />
-<sound id="89"  name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="1038"/>
-<sound id="90"  name="PIERRE_GUNS" description="Pierre guns" t5m="473"/>
-<sound id="91"  name="PIERRE_FINAL_BREATH" description="Pierre final breath" />
-<sound id="92"  name="PIERRE_HIT" description="Pierre hit" />
-<sound id="93"  name="GENERIC_KNEES_FALL" description="Generic knees fall" />
-<sound id="94"  name="LION_HIT_FLOOR" description="Lion hit floor" t5m="979" />
-<sound id="95"  name="AGENT/HITMAN_FEET" description="Agent/hitman feet" />
-<sound id="96"  name="*LARSON_ARGGHH*" description="*larson argghh*" />
-<sound id="97"  name="LARSON_GUNS" description="Larson guns" />
-<sound id="98"  name="*LARSON_GROAN*" description="*larson groan*" />
-<sound id="99"  name="AGENT/HITMAN_LAND" description="Agent/hitman land" />
-<sound id="100"  name="LION_FEET" description="Lion feet" t5m="977"/>
-<sound id="101"  name="LION_GROWL" description="Lion growl" t5m="978" />
-<sound id="102"  name="LION_ATTACK" description="Lion attack" t5m="975"/>
-<sound id="103"  name="LION_DIE" description="Lion die" t5m="976"/>
-<sound id="104"  name="RAVENSWITCH_EXP" hardcoded="true" description="Ravenswitch exp" t5m="1081"/>
-<sound id="105"  name="EXPLOSION1" hardcoded="true" description="Explosion1" />
-<sound id="106"  name="EXPLOSION2" hardcoded="true" description="Explosion2" />
-<sound id="107"  name="EARTHQUAKE_LOOP" hardcoded="true" description="Earthquake loop" />
-<sound id="108"  name="MENU_ROTATE" hardcoded="true" description="Menu rotate" />
-<sound id="109"  name="MENU_SELECT" hardcoded="true" description="Menu select" />
-<sound id="110"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
-<sound id="111"  name="MENU_CHOOSE" hardcoded="true" description="Menu choose" />
-<sound id="112"  name="TICK_TOCK" hardcoded="true" description="Tick tock" />
-<sound id="113"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
-<sound id="114"  name="MENU_COMBINE" hardcoded="true" description="Menu combine" />
-<sound id="115"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
-<sound id="116"  name="MENU_MEDI" hardcoded="true" description="Menu medi" />
-<sound id="117"  name="LARA_CLIMB_WALLS_NOISE" description="Lara climb walls noise" />
-<sound id="118"  name="2GUNTEX_FALL_END" description="2guntex fall end" t5m="1122" />
-<sound id="119"  name="AGENT/HITMAN_JUMP" description="Agent/hitman jump" t5m="902"/>
-<sound id="120"  name="MAFIA_HOLSTER_DRAW" description="Mafia holster draw" />
-<sound id="121"  name="REVOLVER" hardcoded="true" description="Revolver" />
-<sound id="122"  name="HITMAN_CHOKE" description="Hitman choke" t5m="932" />
-<sound id="123"  name="MAFIA2_DIE" description="Mafia2 die" t5m="949" />
-<sound id="124"  name="MAFIA2_JUMP_UP" description="Mafia2 jump up" t5m="952" />
-<sound id="125"  name="MAFIA2_GETDOWN" description="Mafia2 getdown" t5m="950"/>
-<sound id="126"  name="MAFIA2_HIT" description="Mafia2 hit" t5m="951"/>
-<sound id="127"  name="LARA_ELECTRIC_LOOP" description="Lara electric loop" />
-<sound id="128"  name="LARA_ELECTRIC_CRACKLES" hardcoded="true" description="Lara electric crackles" />
-<sound id="129"  name="HANGMAN_LAUGH_OFFCAM" hardcoded="true" description="Hangman laugh offcam" t5m="931"/>
-<sound id="130"  name="ELEC_LIGHT_CRACKLES" description="Elec light crackles" />
-<sound id="131"  name="LOUD_WIND_LOOP" description="Loud wind loop" />
-<sound id="132"  name="KEYPAD_ENTRY_NO" description="Keypad entry no" t5m="995"/>
-<sound id="133"  name="KEYPAD_ENTRY_YES" description="Keypad entry yes" t5m="996"/>
-<sound id="134"  name="RICH_TELEPORT" hardcoded="true" description="Rich teleport" t5m="1101" />
-<sound id="135"  name="JOBY_PUZZLE_HATCH" description="Joby puzzle hatch" />
-<sound id="136"  name="SOFT_WIND_LOOP" description="Soft wind loop" />
-<sound id="137"  name="GLADIATOR_FEET" description="Gladiator feet" />
-<sound id="138"  name="GLADIATOR_ATTACK" description="Gladiator attack" t5m="917"/>
-<sound id="139"  name="GLADIATOR_DIE" description="Gladiator die" t5m="918"/>
-<sound id="140"  name="GLADIATOR_SWORD" description="Gladiator sword" t5m="922"/>
-<sound id="141"  name="GLADIATOR_SHIELD1" description="Gladiator shield1" t5m="920"/>
-<sound id="142"  name="GLADIATOR_SHIELD2" description="Gladiator shield2" t5m="921"/>
-<sound id="143"  name="GENERIC_BODY_FALL" description="Generic body fall" />
-<sound id="144"  name="2GUNTEX_DIE" description="2guntex die" t5m="1120"/>
-<sound id="145"  name="LARA_SPIKE_DEATH" description="Lara spike death" />
-<sound id="146"  name="LARA_DEATH3" description="Lara death3" />
-<sound id="147"  name="ROLLING_BALL" description="Rolling ball" />
-<sound id="148"  name="BLK_PLAT_RAISE&amp;LOW" hardcoded="true" description="Blk plat raiseandlow" />
-<sound id="149"  name="2GUNTEX_FALL_BIG" hardcoded="true" description="2guntex fall big" t5m="1121"/>
-<sound id="150"  name="LOOP_FOR_SMALL_FIRES" hardcoded="true" description="Loop for small fires" />
-<sound id="151"  name="XRAY_SCAN" description="Xray scan" t5m="1118" />
-<sound id="152"  name="R_XRAY_ROOM_LP" description="R xray room lp" t5m="1078"/>
-<sound id="153"  name="R_HITECH_ROOM_LP" description="R hitech room lp" t5m="1077" />
-<sound id="154"  name="JOBY_WATERFALL_SMALL" description="Joby waterfall small" />
-<sound id="155"  name="JOBY_WATERFALL_BIG" description="Joby waterfall big" />
-<sound id="156"  name="RATS_1" hardcoded="true" description="Rats 1" t5m="1079" />
-<sound id="157"  name="BATS_1" hardcoded="true" description="Bats 1" />
-<sound id="158"  name="H_GOD_HAMMER_QT" description="H god hammer qt" t5m="927"/>
-<sound id="159"  name="H_GOD_HAMMER_MED" description="H god hammer med" t5m="928"/>
-<sound id="160"  name="H_GOD_HAMMER_LD" description="H god hammer ld" t5m="927"/>
-<sound id="161"  name="TRAPDOOR_OPEN" description="Trapdoor open" />
-<sound id="162"  name="TRAPDOOR_CLOSE" description="Trapdoor close" />
-<sound id="163"  name="RICH_DOOR_BEAM" hardcoded="true" description="Rich door beam" t5m="1082"/>
-<sound id="164"  name="WALLSUIT_OUT" description="Wallsuit out" t5m="1115"/>
-<sound id="165"  name="AUTOGUN_UNFOLD" description="Autogun unfold" t5m="1005"/>
-<sound id="166"  name="AUTOGUN_DOOR" description="Autogun door" t5m="1004"/>
-<sound id="167"  name="SMASH_ROCK" hardcoded="true" description="Smash rock" t5m="1094" />
-<sound id="168"  name="SMASH_METAL" hardcoded="true" description="Smash metal" t5m="1093"/>
-<sound id="169"  name="D_ALIEN" description="D alien" />
-<sound id="170"  name="RICH_VENT_IMPACT" hardcoded="true" description="Rich vent impact" t5m="1113"/>
-<sound id="171"  name="SWITCH_ELEC_SWAP" description="Switch elec swap" />
-<sound id="172"  name="ELECTRIC_WIRES" hardcoded="true" description="Electric wires" t5m="1002"/>
-<sound id="173"  name="LAVA_LOOP" description="Lava loop" />
-<sound id="174"  name="DOG_DOBER_GROWL" description="Dog dober growl" t5m="530" />
-<sound id="175"  name="DOG_HOWL" description="Dog howl" />
-<sound id="176"  name="DOG_ATTACK_1" description="Dog attack 1" />
-<sound id="177"  name="DOG_AWARE" description="Dog aware" />
-<sound id="178"  name="DOG_FOOT_1" description="Dog foot 1" />
-<sound id="179"  name="*DOG_JUMP*" description="*dog jump*" />
-<sound id="180"  name="*DOG_LONG_GROWL*" description="*dog long growl*" />
-<sound id="181"  name="DOG_DEATH" description="Dog death" />
-<sound id="182"  name="THUNDER_RUMBLE" hardcoded="true" description="Thunder rumble" />
-<sound id="183"  name="HAMMER_GOD_PULSE" description="Hammer god pulse" t5m="930"/>
-<sound id="184"  name="SWORD_GOD_CHARGE" description="Sword god charge" t5m="924"/>
-<sound id="185"  name="SWORD_GOD_LASER" description="Sword god laser" t5m="959" />
-<sound id="186"  name="SKELETON_APPEAR" hardcoded="true" description="Skeleton appear" t5m="963"/>
-<sound id="187"  name="CHEF_KNIFE_SWOOSH" description="Chef knife swoosh" t5m="912"/>
-<sound id="188"  name="SKELETON_ATTACK" description="Skeleton attack" t5m="964"/>
-<sound id="189"  name="GEN_SWORD_SWOOSH_NORM" description="Gen sword swoosh norm" />
-<sound id="190"  name="CHEF_ATTACK_ARGHH" description="Chef attack arghh" />
-<sound id="191"  name="2GUNTEX_FEET_LD" description="2guntex feet ld" t5m="1123"/>
-<sound id="192"  name="2GUNTEX_FEET_QT" description="2guntex feet qt" t5m="1124"/>
-<sound id="193"  name="2GUNTEX_LASER_FIRE" hardcoded="true" description="2guntex laser fire" t5m="1126"/>
-<sound id="194"  name="2GUNTEX_LASER_FIREx2" description="2guntex laser firex2" t5m="1127"/>
-<sound id="195"  name="2GUNTEX_LASER_START" description="2guntex laser start" t5m="899"/>
-<sound id="196"  name="2GUNTEX_LASER_MISFIRE" description="2guntex laser misfire" t5m="1128"/>
-<sound id="197"  name="2GUNTEX_HIT_GUNS" hardcoded="true" description="2guntex hit guns" t5m="1125" />
-<sound id="198"  name="IMP_DIE" description="Imp die" t5m="939" />
-<sound id="199"  name="IMP_FALL" description="Imp fall" t5m="940"/>
-<sound id="200"  name="IMP_FEET" description="Imp feet" t5m="941"/>
-<sound id="201"  name="IMP_ATTACK" description="Imp attack" t5m="936"/>
-<sound id="202"  name="IMP_LAUGH" description="Imp laugh" t5m="942"/>
-<sound id="203"  name="IMP_RUNAWAY" description="Imp runaway" t5m="943"/>
-<sound id="204"  name="SGOD_SWD_DIE1_Q" description="Sgod swd die1 q" />
-<sound id="205"  name="SGOD_SWD_DIE2_VQ" description="Sgod swd die2 vq" />
-<sound id="206"  name="HITMAN_GUNS_FIRE" description="Hitman guns fire" />
-<sound id="207"  name="HITMAN_GUNS_END" description="Hitman guns end" />
-<sound id="208"  name="FIRE_EXTING_RICO" description="Fire exting rico" />
-<sound id="209"  name="LARA_UNDERWATER_ENGINE" hardcoded="true" description="Lara underwater engine" />
-<sound id="210"  name="CABINET_CLOSE_WOOD" description="Cabinet close wood" />
-<sound id="211"  name="CABINET_OPEN_WOOD" description="Cabinet open wood" />
-<sound id="212"  name="SWORD_GOD_FEET_LD" description="Sword god feet ld" t5m="955"/>
-<sound id="213"  name="SWORD_GOD_FEET_QT" description="Sword god feet qt" t5m="956"/>
-<sound id="214"  name="SWORD_GOD_FEET_VQT" description="Sword god feet vqt" t5m="957"/>
-<sound id="215"  name="SWORD_GOD_SWORD" description="Sword god sword" t5m="961"/>
-<sound id="216"  name="GEN_SWORD_SWOOSH_LOW" description="Gen sword swoosh low" t5m="1036" />
-<sound id="217"  name="SWORD_GOD_FALL" description="Sword god fall" t5m="954"/>
-<sound id="218"  name="SWORD_GOD_HITMET" hardcoded="true" description="Sword god hitmet" t5m="958"/>
-<sound id="219"  name="SWORD_GOD_SCREAM" description="Sword god scream" t5m="960"/>
-<sound id="220"  name="KITCHEN_HOB_LOOP" description="Kitchen hob loop" t5m="1055"/>
-<sound id="221"  name="KEYPAD_*" hardcoded="true" description="Keypad *" t5m="984"/>
-<sound id="222"  name="KEYPAD_#" hardcoded="true" description="Keypad #" t5m="983"/>
-<sound id="223"  name="KEYPAD_0" hardcoded="true" description="Keypad 0" t5m="985"/>
-<sound id="224"  name="KEYPAD_1" hardcoded="true" description="Keypad 1" t5m="986"/>
-<sound id="225"  name="KEYPAD_2" hardcoded="true" description="Keypad 2" t5m="987"/>
-<sound id="226"  name="KEYPAD_3" hardcoded="true" description="Keypad 3" t5m="988"/>
-<sound id="227"  name="KEYPAD_4" hardcoded="true" description="Keypad 4" t5m="989"/>
-<sound id="228"  name="KEYPAD_5" hardcoded="true" description="Keypad 5" t5m="990"/>
-<sound id="229"  name="KEYPAD_6" hardcoded="true" description="Keypad 6" t5m="991"/>
-<sound id="230"  name="KEYPAD_7" hardcoded="true" description="Keypad 7" t5m="992"/>
-<sound id="231"  name="KEYPAD_8" hardcoded="true" description="Keypad 8" t5m="993"/>
-<sound id="232"  name="KEYPAD_9" hardcoded="true" description="Keypad 9" t5m="994"/>
-<sound id="233"  name="SMALL_FAN" description="Small fan" />
-<sound id="234"  name="KLAXON" hardcoded="true" description="Klaxon" t5m="1056" />
-<sound id="235"  name="LARA_CROSSBOW" hardcoded="true" description="Lara crossbow" />
-<sound id="236"  name="ANDY_FLOOR_DOOR_B" description="Andy floor door b" t5m="1034" />
-<sound id="237"  name="ANDY_FLOOR_DOOR_A" description="Andy floor door a" t5m="1033"/>
-<sound id="238"  name="J_GRAB_OPEN" hardcoded="true" description="J grab open" t5m="1049" />
-<sound id="239"  name="WILLOWISP_LOOP" hardcoded="true" description="Willowisp loop" />
-<sound id="240"  name="LEAP_SWITCH" description="Leap switch" />
-<sound id="241"  name="LARGE_SWITCH" description="Large switch" />
-<sound id="242"  name="GENERIC_HEAVY_THUD" description="Generic heavy thud" />
-<sound id="243"  name="GENERIC_HEAVY_FEET" description="Generic heavy feet" />
-<sound id="244"  name="SWIMSUIT_METAL_CLASH" hardcoded="true" description="Swimsuit metal clash" />
-<sound id="245"  name="CROW_WALL_ITEM_DROP" description="Crow wall item drop" />
-<sound id="246"  name="LARA_SUB_BREATHE" hardcoded="true" description="Lara sub breathe" />
-<sound id="247"  name="HITMAN_ELEC_SHORT" hardcoded="true" description="Hitman elec short" />
-<sound id="248"  name="WELD_THRU_DOOR_LOOP" hardcoded="true" description="Weld thru door loop" />
-<sound id="249"  name="IMP_BARREL_DROP" description="Imp barrel drop" />
-<sound id="250"  name="IMP_BARREL_ROLL" hardcoded="true" description="Imp barrel roll" />
-<sound id="251"  name="IMP_STONE_HIT" hardcoded="true" description="Imp stone hit" />
-<sound id="252"  name="POUR_DUST_INSERTANIM" description="Pour dust insertanim" />
-<sound id="253"  name="J_GRAB_TOP_IMPACT" description="J grab top impact" />
-<sound id="254"  name="COG_ANDY2" description="Cog andy2" />
-<sound id="255"  name="J_GRAB_IMPACT" hardcoded="true" description="J grab impact" t5m="1047"/>
-<sound id="256"  name="J_GRAB_MOTOR_C" hardcoded="true" description="J grab motor c" t5m="1046"/>
-<sound id="257"  name="J_GRAB_MOTOR_B_LP" hardcoded="true" description="J grab motor b lp" t5m="1045"/>
-<sound id="258"  name="J_GRAB_MOTOR_A" hardcoded="true" description="J grab motor a" t5m="1044"/>
-<sound id="259"  name="J_GRAB_DROP" hardcoded="true" description="J grab drop" t5m="1042"/>
-<sound id="260"  name="J_GRAB_WINCH_UP_LP" hardcoded="true" description="J grab winch up lp" t5m="1048" />
-<sound id="261"  name="FOOTSTEPS_WOOD_CAB" description="Footsteps wood cab" t5m="292" />
-<sound id="262"  name="FOOTSTEPS_METAL_CAB" description="Footsteps metal cab" t5m="294"/>
-<sound id="263"  name="D_FLOOR_METAL" description="D floor metal" />
-<sound id="264"  name="DRAWERS_METAL_OPEN" description="Drawers metal open" t5m="1027"/>
-<sound id="265"  name="DRAWERS_METAL_CLOSE" description="Drawers metal close" t5m="1026"/>
-<sound id="266"  name="SHOCKWAVE_RUMB" description="Shockwave rumb" t5m="962" />
-<sound id="267"  name="ANDY_BOAT/MILL_2" description="Andy boat/mill 2" t5m="1012"/>
-<sound id="268"  name="ANDY_BOAT/MILL_1" description="Andy boat/mill 1" t5m="1011"/>
-<sound id="269"  name="SMALL_STONE_SWITCH" description="Small stone switch" />
-<sound id="270"  name="TV_WHITENOISE_LOOP" description="Tv whitenoise loop" t5m="1105" />
-<sound id="271"  name="LIFT_MOVE" hardcoded="true" description="Lift move" t5m="1062"/>
-<sound id="272"  name="ALARM" hardcoded="true" description="Alarm" />
-<sound id="273"  name="GENERIC_SQKS_LOW" description="Generic sqks low" />
-<sound id="274"  name="RICH_LOWER_BEAMX" description="Rich lower beamx" t5m="1083" />
-<sound id="275"  name="RICH_NRG_BEAM" description="Rich nrg beam" t5m="1084"/>
-<sound id="276"  name="BEETLES" hardcoded="true" description="Beetles" t5m="982"/>
-<sound id="277"  name="GOD_HEAD_TESTICLES" hardcoded="true" description="God head testicles" t5m="926"/>
-<sound id="278"  name="GOD_HEAD_CHARGE" hardcoded="true" description="God head charge" t5m="924"/>
-<sound id="279"  name="GOD_HEAD_BLAST" hardcoded="true" description="God head blast" t5m="923"/>
-<sound id="280"  name="GOD_HEAD_LASER_LOOPS" hardcoded="true" description="God head laser loops" t5m="925"/>
-<sound id="281"  name="COGS_ROME" hardcoded="true" description="Cogs rome" t5m="1017"/>
-<sound id="282"  name="LOW_RUMBLE_LOWER" description="Low rumble lower" t5m="1066"/>
-<sound id="283"  name="GEN_STONE_DOOR_LOW" description="Gen stone door low" t5m="1035"/>
-<sound id="284"  name="GENERIC_SQKS_NONRND" description="Generic sqks nonrnd" t5m="1040"/>
-<sound id="285"  name="UNDERWATER_FAN_ON" description="Underwater fan on" t5m="1109" />
-<sound id="286"  name="SUB_CONTROLROOM_LOOP" description="Sub controlroom loop" t5m="1099"/>
-<sound id="287"  name="D_MANHOLE_METAL" description="D manhole metal" t5m="1119"/>
-<sound id="288"  name="FOOTSTEPS_MUD" hardcoded="true" description="Footsteps mud" />
-<sound id="289"  name="FOOTSTEPS_ICE" hardcoded="true" description="Footsteps ice" />
-<sound id="290"  name="FOOTSTEPS_GRAVEL" hardcoded="true" description="Footsteps gravel" />
-<sound id="291"  name="FOOTSTEPS_SAND_&amp;_GRASS" hardcoded="true" description="Footsteps sand and grass" />
-<sound id="292"  name="FOOTSTEPS_WOOD" hardcoded="true" description="Footsteps wood" />
-<sound id="293"  name="FOOTSTEPS_SNOW" hardcoded="true" description="Footsteps snow" />
-<sound id="294"  name="FOOTSTEPS_METAL" hardcoded="true" description="Footsteps metal" />
-<sound id="295"  name="TIGHTROPE_CREAK" description="Tightrope creak" t5m="351" />
-<sound id="296"  name="TIGHTROPE_WALK" description="Tightrope walk" t5m="351"/>
-<sound id="297"  name="DRAWERS_WOOD_CLSE" description="Drawers wood clse" t5m="1028" />
-<sound id="298"  name="DRAWERS_WOOD_OPEN" description="Drawers wood open" t5m="1029"/>
-<sound id="299"  name="SWAMPY_ATTACK" description="Swampy attack" t5m="974"/>
-<sound id="300"  name="BELL" description="Bell" t5m="1009"/>
-<sound id="301"  name="JOBY2_GRILL_2a" description="Joby2 grill 2a" t5m="998"/>
-<sound id="302"  name="HISS_LOOP_SMALL" description="Hiss loop small" />
-<sound id="303"  name="JOBY2_CRANE_END" description="Joby2 crane end" t5m="1018"/>
-<sound id="304"  name="GENERATOR_HUM_LOOP" description="Generator hum loop" t5m="1037"/>
-<sound id="305"  name="COMPUTER_BEEPIES" description="Computer beepies" t5m="1000"/>
-<sound id="306"  name="MODEM_LOOP" description="Modem loop" t5m="1071"/>
-<sound id="307"  name="AIRCON_LOOP" description="Aircon loop" />
-<sound id="308"  name="GEN_STONE_DOOR" description="Gen stone door" />
-<sound id="309"  name="LOW_RUMBLE" description="Low rumble" />
-<sound id="310"  name="SEARCHER" description="Searcher" t5m="1086"/>
-<sound id="311"  name="STAIR_SNAP_01" description="Stair snap 01" t5m="1098" />
-<sound id="312"  name="RICH_GEN_LOOP" description="Rich gen loop" />
-<sound id="313"  name="ZOOM_VIEW_WHIRR" hardcoded="true" description="Zoom view whirr" t5m="377" />
-<sound id="314"  name="RICH_VENT_STRESS" description="Rich vent stress" t5m="1114"/>
-<sound id="315"  name="INDUSTRY_AMBIENCE_LOOP" description="Industry ambience loop" t5m="1052" />
-<sound id="316"  name="D_SWIPECARD_SFX" description="D swipecard sfx" t5m="1025"/>
-<sound id="317"  name="RICH_TARGET_RISE" description="Rich target rise" t5m="1085"/>
-<sound id="318"  name="STAIR_BANISTER_BEND" description="Stair banister bend" t5m="1097"/>
-<sound id="319"  name="JOBY2_GRILL_1" description="Joby2 grill 1" t5m="997"/>
-<sound id="320"  name="JOBY2_GRILL_3" description="Joby2 grill 3" t5m="999"/>
-<sound id="321"  name="D_LARA_LOCKER_C" description="D lara locker c" t5m="1064" />
-<sound id="322"  name="D_LARA_LOCKER_O" description="D lara locker o" t5m="1065"/>
-<sound id="323"  name="STONE_SCRAPE_FAST" hardcoded="true" description="Stone scrape fast" />
-<sound id="324"  name="JOBY2_GRILL_2" description="Joby2 grill 2" t5m="1063"/>
-<sound id="325"  name="LIFT_DOORS" hardcoded="true" description="Lift doors" t5m="1059"/>
-<sound id="326"  name="LARA_CROWBAR_ITEM" description="Lara crowbar item" />
-<sound id="327"  name="JOBY2_CRANE" description="Joby2 crane" t5m="1018"/>
-<sound id="328"  name="GENERIC_SQKS_RND" description="Generic sqks rnd" />
-<sound id="329"  name="D_SLIDEDOOR_JOBY" description="D slidedoor joby" t5m="1090" />
-<sound id="330"  name="D_FIREDOOR_JOBY" description="D firedoor joby" t5m="1031"/>
-<sound id="331"  name="D_METAL_CLS_P1" description="D metal cls p1" />
-<sound id="332"  name="D_METAL_CLS_P2" description="D metal cls p2" />
-<sound id="333"  name="D_SCIFI_CLOSE" description="D scifi close" t5m="1111" />
-<sound id="334"  name="D_SCIFI_OPEN" description="D scifi open" t5m="1112"/>
-<sound id="335"  name="TEETH_SPIKES" hardcoded="true" description="Teeth spikes" />
-<sound id="336"  name="BAT_RAM_CREAK1" description="Bat ram creak1" t5m="1008" />
-<sound id="337"  name="LARA_LEVER_PART1" description="Lara lever part1" />
-<sound id="338"  name="LARA_LEVER_PART2" description="Lara lever part2" />
-<sound id="339"  name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" />
-<sound id="340"  name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" />
-<sound id="341"  name="D_METAL_OPEN" description="D metal open" t5m="1069" />
-<sound id="342"  name="LARA_PULLEY" description="Lara pulley" />
-<sound id="343"  name="D_METAL_OPEN_PUSH" description="D metal open push" />
-<sound id="344"  name="D_METAL_KICKOPEN" hardcoded="true" description="D metal kickopen" />
-<sound id="345"  name="LARA_USE_OBJECT" description="Lara use object" />
-<sound id="346"  name="D_GATE_BIG_METAL" description="D gate big metal" />
-<sound id="347"  name="D_MOTOR_WHIRR" description="D motor whirr" />
-<sound id="348"  name="LARA_NO_FRENCH" hardcoded="true" description="Lara no french" />
-<sound id="349"  name="LARA_NO_JAPANESE" hardcoded="true" description="Lara no japanese" />
-<sound id="350"  name="LARA_CROW_WRENCH" description="Lara crow wrench" />
-<sound id="351"  name="LARA_ROPE_CREAK" hardcoded="true" description="Lara rope creak" />
-<sound id="352"  name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" />
-<sound id="353"  name="D_METAL_CAGE_CLS2" description="D metal cage cls2" />
-<sound id="354"  name="D_METAL_CAGE_CLS1" description="D metal cage cls1" />
-<sound id="355"  name="GENERIC_STONE_GRIND" description="Generic stone grind" />
-<sound id="356"  name="D_STONEMETAL_MAIN" description="D stonemetal main" />
-<sound id="357"  name="D_PORTCULLIS_UP" description="D portcullis up" />
-<sound id="358"  name="D_PORTCULLIS_DOWN" description="D portcullis down" />
-<sound id="359"  name="D_WOODEN_GATE_CREAK" description="D wooden gate creak" />
-<sound id="360"  name="D_PADLOCK_BREAK" description="D padlock break" />
-<sound id="361"  name="D_BIG_THUD_GEN_2" hardcoded="true" description="D big thud gen 2" />
-<sound id="362"  name="D_BIG_THUD_GEN_1" description="D big thud gen 1" />
-<sound id="363"  name="D_DOUBLE_BANG" description="D double bang" />
-<sound id="364"  name="D_DOUBLE_CREAK" description="D double creak" />
-<sound id="365"  name="D_CROWBAR_WOOD" description="D crowbar wood" />
-<sound id="366"  name="D_METAL_LOCKUP_CROW" description="D metal lockup crow" />
-<sound id="367"  name="D_METAL_LOCKUP_OPEN" description="D metal lockup open" />
-<sound id="368"  name="D_METAL_CAGE_OPEN" hardcoded="true" description="D metal cage open" />
-<sound id="369"  name="SMALL_CLICK_SWITCH" description="Small click switch" />
-<sound id="370"  name="WEREWOLF_FEET_F" description="Werewolf feet f" t5m="971"/>
-<sound id="371"  name="WEREWOLF_FEET_B" description="Werewolf feet b" t5m="970"/>
-<sound id="372"  name="WEREWOLF_ATTACK1" description="Werewolf attack1" t5m="966"/>
-<sound id="373"  name="WEREWOLF_ATTACK2" description="Werewolf attack2" t5m="967"/>
-<sound id="374"  name="WEREWOLF_DROP" description="Werewolf drop" t5m="969"/>
-<sound id="375"  name="WEREWOLF_DIE" description="Werewolf die" t5m="968"/>
-<sound id="376"  name="WEREWOLF_JUMP" description="Werewolf jump" t5m="972"/>
-<sound id="377"  name="SWAT_DIE" description="Swat die" t5m="1120" />
-<sound id="378"  name="ANDY_WHEEL" description="Andy wheel" t5m="1003" />
-<sound id="379"  name="BARN_DOOR_NORMAL" description="Barn door normal" t5m="1006"/>
-<sound id="380"  name="BARN_DOOR_SLAM" description="Barn door slam" t5m="1007"/>
-<sound id="381"  name="RATCHET_3SHOT" description="Ratchet 3shot" />
-<sound id="382"  name="ANDY_WATERWHEEL" description="Andy waterwheel" t5m="1003"/>
-<sound id="383"  name="ANDY_INSIDEMILL" description="Andy insidemill" t5m="898" />
-<sound id="384"  name="ANDREA_COIN_PUZZ" description="Andrea coin puzz" />
-<sound id="385"  name="MINI-SUB_LOOP" hardcoded="true" description="Mini-sub loop" t5m="948"/>
-<sound id="386"  name="LIFT_BRAKE_SQUEAL" description="Lift brake squeal" t5m="1058"/>
-<sound id="387"  name="RATSPLASH" hardcoded="true" description="Ratsplash" t5m="1080"/>
-<sound id="388"  name="SNORE_IN" description="Snore in" t5m="980" />
-<sound id="389"  name="SNORE_OUT" description="Snore out" t5m="981"/>
-<sound id="390"  name="D_SMALL_VENT_O/C" description="D small vent o/c" t5m="1091"/>
-<sound id="391"  name="RICH_HOLOGRAM" description="Rich hologram" t5m="1051" />
-<sound id="392"  name="HISS_LOOP_BIG" hardcoded="true" description="Hiss loop big" />
-<sound id="393"  name="LIFT_MOVE_KNACKED" hardcoded="true" description="Lift move knacked" t5m="1063"/>
-<sound id="394"  name="LIFT_HIT_FLOOR1" hardcoded="true" description="Lift hit floor1" t5m="1060"/>
-<sound id="395"  name="LIFT_HIT_FLOOR2" hardcoded="true" description="Lift hit floor2" t5m="1061"/>
-<sound id="396"  name="LAZER_LOOP" description="Lazer loop" t5m="1057"/>
-<sound id="397"  name="UNDERWATER_EXPLOSION" hardcoded="true" description="Underwater explosion" t5m="1108"/>
-<sound id="398"  name="UNDERWATER_TORPEDO" hardcoded="true" description="Underwater torpedo" t5m="1110"/>
-<sound id="399"  name="TELEPORT_CRACKLES" hardcoded="true" description="Teleport crackles" t5m="1102" />
-<sound id="400"  name="TELEPORT_FLASH" hardcoded="true" description="Teleport flash" t5m="1103"/>
-<sound id="401"  name="LARA_UNDERWATER_HIT" hardcoded="true" description="Lara underwater hit" t5m="946" />
-<sound id="402"  name="RAVESTICK" hardcoded="true" description="Ravestick" />
-<sound id="403"  name="UNDERWATER_CHAFF" hardcoded="true" description="Underwater chaff" t5m="1106"/>
-<sound id="404"  name="FISHTANK_WATER" description="Fishtank water" t5m="1032"/>
-<sound id="405"  name="2GUNTEX_STAIR_FALL" description="2guntex stair fall" t5m="900"/>
-<sound id="406"  name="GGOD_BREATHE_IN" description="Ggod breathe in" t5m="914" />
-<sound id="407"  name="GGOD_BREATHE_OUT" description="Ggod breathe out" t5m="915"/>
-<sound id="408"  name="GGOD_FIRE" description="Ggod fire" t5m="916"/>
-<sound id="409"  name="GGOD_ATTACK" description="Ggod attack" t5m="913"/>
-<sound id="410"  name="PORTAL_LOOP" hardcoded="true" description="Portal loop" t5m="1075"/>
+			<sound id="0"  name="LARA_FEET" description="Lara feet" t5m="0"/>
+			<sound id="1"  name="LARA_CLIMB2" description="Lara climb2" t5m="1"/>
+			<sound id="2"  name="LARA_NO" hardcoded="true" description="Lara no" t5m="2"/>
+			<sound id="3"  name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" />
+			<sound id="4"  name="LARA_LAND" hardcoded="true" description="Lara land" />
+			<sound id="5"  name="LARA_CLIMB1" description="Lara climb1" />
+			<sound id="6"  name="LARA_HOLSTER_DRAW" hardcoded="true" description="Lara holster draw" t5m="6"/>
+			<sound id="7"  name="LARA_HOLSTER_AWAY" hardcoded="true" description="Lara holster away" t5m="7"/>
+			<sound id="8"  name="LARA_FIRE" hardcoded="true" description="Lara fire" />
+			<sound id="9"  name="LARA_RELOAD" hardcoded="true" description="Lara reload" />
+			<sound id="10"  name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" />
+			<sound id="11"  name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" />
+			<sound id="12"  name="SMASH_GLASS" hardcoded="true" description="Smash glass" t5m="1092"/>
+			<sound id="13"  name="LARA_CLIMB_WALL_GRUNT" description="Lara climb wall grunt" />
+			<sound id="14"  name="HK_SILENCED" hardcoded="true" description="Hk silenced" t5m="372" />
+			<sound id="15"  name="OFFICE_DOOR_OPEN" description="Office door open" t5m="1073" />
+			<sound id="16"  name="OFFICE_DOOR_CLSE" description="Office door clse" t5m="1072"/>
+			<sound id="17"  name="LARA_WET_FEET" hardcoded="true" description="Lara wet feet" t5m="17"/>
+			<sound id="18"  name="LARA_WADE" hardcoded="true" description="Lara wade" />
+			<sound id="19"  name="SMASH_WOOD" description="Smash wood" t5m="1095"/>
+			<sound id="20"  name="LARA_INJURY_NONRND" hardcoded="true" description="Lara injury nonrnd" />
+			<sound id="21"  name="CRICKET_LOOP" description="Cricket loop" />
+			<sound id="22"  name="PHILOSPHER_STONE" description="Philospher stone" t5m="1096" />
+			<sound id="23"  name="LARA_JUMP_NONRND" description="Lara jump nonrnd" />
+			<sound id="24"  name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" />
+			<sound id="25"  name="LARA_HIDDEN_SWITCH" description="Lara hidden switch" />
+			<sound id="26"  name="LARA_CLIMB3" description="Lara climb3" />
+			<sound id="27"  name="LARA_BODYSL" description="Lara bodysl" />
+			<sound id="28"  name="LARA_SHIMMY2" description="Lara shimmy2" />
+			<sound id="29"  name="LARA_JUMP_RND" description="Lara jump rnd" />
+			<sound id="30"  name="LARA_FALL" hardcoded="true" description="Lara fall" />
+			<sound id="31"  name="LARA_INJURY_RND" hardcoded="true" description="Lara injury rnd" />
+			<sound id="32"  name="LARA_ROLL" description="Lara roll" />
+			<sound id="33"  name="LARA_SPLASH" hardcoded="true" description="Lara splash" />
+			<sound id="34"  name="LARA_GETOUT" description="Lara getout" />
+			<sound id="35"  name="LARA_SWIM" description="Lara swim" />
+			<sound id="36"  name="LARA_BREATH" hardcoded="true" description="Lara breath" />
+			<sound id="37"  name="LARA_BUBBLES" hardcoded="true" description="Lara bubbles" />
+			<sound id="38"  name="CREATURE_SWIM" description="Creature swim" />
+			<sound id="39"  name="LARA_USE_KEY" description="Lara use key" />
+			<sound id="40"  name="LARA_PUSH2_NONRND" description="Lara push2 nonrnd" />
+			<sound id="41"  name="LARA_GENERAL_DEATH" description="Lara general death" />
+			<sound id="42"  name="LARA_KNEES_DEATH" description="Lara knees death" />
+			<sound id="43"  name="LARA_UZI_FIRE" hardcoded="true" description="Lara uzi fire" />
+			<sound id="44"  name="LARA_UZI_STOP" hardcoded="true" description="Lara uzi stop" />
+			<sound id="45"  name="LARA_SHOTGUN" hardcoded="true" description="Lara shotgun" />
+			<sound id="46"  name="LARA_PUSH1" description="Lara push1" />
+			<sound id="47"  name="LARA_PUSH2_RND" description="Lara push2 rnd" />
+			<sound id="48"  name="LARA_RANDOM_PUSHFX" description="Lara random pushfx" />
+			<sound id="49"  name="LARA_SHOTGUN_SHELL" hardcoded="true" description="Lara shotgun shell" />
+			<sound id="50"  name="UNDERWATER_DOOR" description="Underwater door" />
+			<sound id="51"  name="LARA_PULL" description="Lara pull" />
+			<sound id="52"  name="LARA_FLOATING" description="Lara floating" />
+			<sound id="53"  name="LARA_FALLDETH" description="Lara falldeth" />
+			<sound id="54"  name="LARA_GRABHAND" description="Lara grabhand" />
+			<sound id="55"  name="LARA_GRABBODY" description="Lara grabbody" />
+			<sound id="56"  name="LARA_GRABFEET" description="Lara grabfeet" />
+			<sound id="57"  name="OFFICE_DOOR_SQUEAK" description="Office door squeak" t5m="1074" />
+			<sound id="58"  name="WATER_LAPS_LOOP" description="Water laps loop" t5m="1116"/>
+			<sound id="59"  name="WATER_SPOUT_LOOP" description="Water spout loop" />
+			<sound id="60"  name="UNDERWATER" hardcoded="true" description="Underwater" />
+			<sound id="61"  name="UNDERWATER_SWITCH" description="Underwater switch" />
+			<sound id="62"  name="LARA_PICKUP" description="Lara pickup" />
+			<sound id="63"  name="PUSHABLE_SOUND" hardcoded="true" description="Pushable sound" />
+			<sound id="64"  name="SNIPER_RIFLE" description="Sniper rifle" t5m="965" />
+			<sound id="65"  name="HELICOPTER_LOOP" hardcoded="true" description="Helicopter loop" t5m="65"/>
+			<sound id="66"  name="ROCK_FALL_CRUMBLE" hardcoded="true" description="Rock fall crumble" />
+			<sound id="67"  name="ROCK_FALL_LAND" hardcoded="true" description="Rock fall land" />
+			<sound id="68"  name="HK_FIRE" hardcoded="true" description="Hk fire" t5m="78" />
+			<sound id="69"  name="HK_STOP" hardcoded="true" description="Hk stop" t5m="163" />
+			<sound id="70"  name="LARA_THUD" hardcoded="true" description="Lara thud" />
+			<sound id="71"  name="GENERIC_SWOOSH" description="Generic swoosh" />
+			<sound id="72"  name="BLUEGUARD_CHAIR" description="Blueguard chair" t5m="910"/>
+			<sound id="73"  name="NEWBOX_SHUT" description="Newbox shut" />
+			<sound id="74"  name="BLUE/SCIEN_DONT_SHOOT" description="Blue/scien dont shoot" t5m="904" />
+			<sound id="75"  name="BLUEGUARD_CONSOLE" description="Blueguard console" t5m="911"/>
+			<sound id="76"  name="SHOWER_LOOP" description="Shower loop" t5m="1089" />
+			<sound id="77"  name="WATER_LOOP" description="Water loop" t5m="118" />
+			<sound id="78"  name="FOUNTAIN_LOOP" description="Fountain loop" />
+			<sound id="79"  name="WATERFALL_LOOP" hardcoded="true" description="Waterfall loop" />
+			<sound id="80"  name="SERVO_02" description="Servo 02" t5m="1088"/>
+			<sound id="81"  name="SERVO_01" description="Servo 01" t5m="1087"/>
+			<sound id="82"  name="BLUEG_GETUP_HOY" description="Blueg getup hoy" t5m="907" />
+			<sound id="83"  name="BLUEG/MAFIA_GUNS" description="Blueg/mafia guns" t5m="905"/>
+			<sound id="84"  name="BLUEG_HIT/DIE" description="Blueg hit/die" t5m="908"/>
+			<sound id="85"  name="BLUEG_JUMP" description="Blueg jump" t5m="909"/>
+			<sound id="86"  name="BLUEG_CHAIR_HIT" description="Blueg chair hit" t5m="906"/>
+			<sound id="87"  name="RICH_IRIS_ELEC" hardcoded="true" description="Rich iris elec" t5m="1053"/>
+			<sound id="88"  name="BIO_BREATHE_OUT" hardcoded="true" description="Bio breathe out" t5m="1010" />
+			<sound id="89"  name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="1038"/>
+			<sound id="90"  name="PIERRE_GUNS" description="Pierre guns" t5m="473"/>
+			<sound id="91"  name="PIERRE_FINAL_BREATH" description="Pierre final breath" />
+			<sound id="92"  name="PIERRE_HIT" description="Pierre hit" />
+			<sound id="93"  name="GENERIC_KNEES_FALL" description="Generic knees fall" />
+			<sound id="94"  name="LION_HIT_FLOOR" description="Lion hit floor" t5m="979" />
+			<sound id="95"  name="AGENT/HITMAN_FEET" description="Agent/hitman feet" t5m="901"/>
+			<sound id="96"  name="*LARSON_ARGGHH*" description="*larson argghh*" />
+			<sound id="97"  name="LARSON_GUNS" description="Larson guns" />
+			<sound id="98"  name="*LARSON_GROAN*" description="*larson groan*" />
+			<sound id="99"  name="AGENT/HITMAN_LAND" description="Agent/hitman land" t5m="903" />
+			<sound id="100"  name="LION_FEET" description="Lion feet" t5m="977"/>
+			<sound id="101"  name="LION_GROWL" description="Lion growl" t5m="978" />
+			<sound id="102"  name="LION_ATTACK" description="Lion attack" t5m="975"/>
+			<sound id="103"  name="LION_DIE" description="Lion die" t5m="976"/>
+			<sound id="104"  name="RAVENSWITCH_EXP" hardcoded="true" description="Ravenswitch exp" t5m="1081"/>
+			<sound id="105"  name="EXPLOSION1" hardcoded="true" description="Explosion1" />
+			<sound id="106"  name="EXPLOSION2" hardcoded="true" description="Explosion2" />
+			<sound id="107"  name="EARTHQUAKE_LOOP" hardcoded="true" description="Earthquake loop" />
+			<sound id="108"  name="MENU_ROTATE" hardcoded="true" description="Menu rotate" />
+			<sound id="109"  name="MENU_SELECT" hardcoded="true" description="Menu select" />
+			<sound id="110"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
+			<sound id="111"  name="MENU_CHOOSE" hardcoded="true" description="Menu choose" />
+			<sound id="112"  name="TICK_TOCK" hardcoded="true" description="Tick tock" />
+			<sound id="113"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
+			<sound id="114"  name="MENU_COMBINE" hardcoded="true" description="Menu combine" />
+			<sound id="115"  name="Menu_Empty" hardcoded="true" description="Menu empty" />
+			<sound id="116"  name="MENU_MEDI" hardcoded="true" description="Menu medi" />
+			<sound id="117"  name="LARA_CLIMB_WALLS_NOISE" description="Lara climb walls noise" />
+			<sound id="118"  name="2GUNTEX_FALL_END" description="2guntex fall end" t5m="1122" />
+			<sound id="119"  name="AGENT/HITMAN_JUMP" description="Agent/hitman jump" t5m="902"/>
+			<sound id="120"  name="MAFIA_HOLSTER_DRAW" description="Mafia holster draw" />
+			<sound id="121"  name="REVOLVER" hardcoded="true" description="Revolver" />
+			<sound id="122"  name="HITMAN_CHOKE" description="Hitman choke" t5m="932" />
+			<sound id="123"  name="MAFIA2_DIE" description="Mafia2 die" t5m="949" />
+			<sound id="124"  name="MAFIA2_JUMP_UP" description="Mafia2 jump up" t5m="952" />
+			<sound id="125"  name="MAFIA2_GETDOWN" description="Mafia2 getdown" t5m="950"/>
+			<sound id="126"  name="MAFIA2_HIT" description="Mafia2 hit" t5m="951"/>
+			<sound id="127"  name="LARA_ELECTRIC_LOOP" description="Lara electric loop" />
+			<sound id="128"  name="LARA_ELECTRIC_CRACKLES" hardcoded="true" description="Lara electric crackles" />
+			<sound id="129"  name="HANGMAN_LAUGH_OFFCAM" hardcoded="true" description="Hangman laugh offcam" t5m="931"/>
+			<sound id="130"  name="ELEC_LIGHT_CRACKLES" description="Elec light crackles" />
+			<sound id="131"  name="LOUD_WIND_LOOP" description="Loud wind loop" />
+			<sound id="132"  name="KEYPAD_ENTRY_NO" description="Keypad entry no" t5m="995"/>
+			<sound id="133"  name="KEYPAD_ENTRY_YES" description="Keypad entry yes" t5m="996"/>
+			<sound id="134"  name="RICH_TELEPORT" hardcoded="true" description="Rich teleport" t5m="1101" />
+			<sound id="135"  name="JOBY_PUZZLE_HATCH" description="Joby puzzle hatch" />
+			<sound id="136"  name="SOFT_WIND_LOOP" description="Soft wind loop" />
+			<sound id="137"  name="GLADIATOR_FEET" description="Gladiator feet" />
+			<sound id="138"  name="GLADIATOR_ATTACK" description="Gladiator attack" t5m="917"/>
+			<sound id="139"  name="GLADIATOR_DIE" description="Gladiator die" t5m="918"/>
+			<sound id="140"  name="GLADIATOR_SWORD" description="Gladiator sword" t5m="922"/>
+			<sound id="141"  name="GLADIATOR_SHIELD1" description="Gladiator shield1" t5m="920"/>
+			<sound id="142"  name="GLADIATOR_SHIELD2" description="Gladiator shield2" t5m="921"/>
+			<sound id="143"  name="GENERIC_BODY_FALL" description="Generic body fall" />
+			<sound id="144"  name="2GUNTEX_DIE" description="2guntex die" t5m="1120"/>
+			<sound id="145"  name="LARA_SPIKE_DEATH" description="Lara spike death" />
+			<sound id="146"  name="LARA_DEATH3" description="Lara death3" />
+			<sound id="147"  name="ROLLING_BALL" description="Rolling ball" />
+			<sound id="148"  name="BLK_PLAT_RAISE&amp;LOW" hardcoded="true" description="Blk plat raiseandlow" />
+			<sound id="149"  name="2GUNTEX_FALL_BIG" hardcoded="true" description="2guntex fall big" t5m="1121"/>
+			<sound id="150"  name="LOOP_FOR_SMALL_FIRES" hardcoded="true" description="Loop for small fires" />
+			<sound id="151"  name="XRAY_SCAN" description="Xray scan" t5m="1118" />
+			<sound id="152"  name="R_XRAY_ROOM_LP" description="R xray room lp" t5m="1078"/>
+			<sound id="153"  name="R_HITECH_ROOM_LP" description="R hitech room lp" t5m="1077" />
+			<sound id="154"  name="JOBY_WATERFALL_SMALL" description="Joby waterfall small" />
+			<sound id="155"  name="JOBY_WATERFALL_BIG" description="Joby waterfall big" />
+			<sound id="156"  name="RATS_1" hardcoded="true" description="Rats 1" t5m="1079" />
+			<sound id="157"  name="BATS_1" hardcoded="true" description="Bats 1" />
+			<sound id="158"  name="H_GOD_HAMMER_QT" description="H god hammer qt" t5m="927"/>
+			<sound id="159"  name="H_GOD_HAMMER_MED" description="H god hammer med" t5m="928"/>
+			<sound id="160"  name="H_GOD_HAMMER_LD" description="H god hammer ld" t5m="927"/>
+			<sound id="161"  name="TRAPDOOR_OPEN" description="Trapdoor open" />
+			<sound id="162"  name="TRAPDOOR_CLOSE" description="Trapdoor close" />
+			<sound id="163"  name="RICH_DOOR_BEAM" hardcoded="true" description="Rich door beam" t5m="1082"/>
+			<sound id="164"  name="WALLSUIT_OUT" description="Wallsuit out" t5m="1115"/>
+			<sound id="165"  name="AUTOGUN_UNFOLD" description="Autogun unfold" t5m="1005"/>
+			<sound id="166"  name="AUTOGUN_DOOR" description="Autogun door" t5m="1004"/>
+			<sound id="167"  name="SMASH_ROCK" hardcoded="true" description="Smash rock" t5m="1094" />
+			<sound id="168"  name="SMASH_METAL" hardcoded="true" description="Smash metal" t5m="1093"/>
+			<sound id="169"  name="D_ALIEN" description="D alien" />
+			<sound id="170"  name="RICH_VENT_IMPACT" hardcoded="true" description="Rich vent impact" t5m="1113"/>
+			<sound id="171"  name="SWITCH_ELEC_SWAP" description="Switch elec swap" />
+			<sound id="172"  name="ELECTRIC_WIRES" hardcoded="true" description="Electric wires" t5m="1002"/>
+			<sound id="173"  name="LAVA_LOOP" description="Lava loop" />
+			<sound id="174"  name="DOG_DOBER_GROWL" description="Dog dober growl" t5m="530" />
+			<sound id="175"  name="DOG_HOWL" description="Dog howl" />
+			<sound id="176"  name="DOG_ATTACK_1" description="Dog attack 1" />
+			<sound id="177"  name="DOG_AWARE" description="Dog aware" />
+			<sound id="178"  name="DOG_FOOT_1" description="Dog foot 1" />
+			<sound id="179"  name="*DOG_JUMP*" description="*dog jump*" />
+			<sound id="180"  name="*DOG_LONG_GROWL*" description="*dog long growl*" />
+			<sound id="181"  name="DOG_DEATH" description="Dog death" />
+			<sound id="182"  name="THUNDER_RUMBLE" hardcoded="true" description="Thunder rumble" />
+			<sound id="183"  name="HAMMER_GOD_PULSE" description="Hammer god pulse" t5m="930"/>
+			<sound id="184"  name="SWORD_GOD_CHARGE" description="Sword god charge" t5m="924"/>
+			<sound id="185"  name="SWORD_GOD_LASER" description="Sword god laser" t5m="959" />
+			<sound id="186"  name="SKELETON_APPEAR" hardcoded="true" description="Skeleton appear" t5m="963"/>
+			<sound id="187"  name="CHEF_KNIFE_SWOOSH" description="Chef knife swoosh" t5m="912"/>
+			<sound id="188"  name="SKELETON_ATTACK" description="Skeleton attack" t5m="964"/>
+			<sound id="189"  name="GEN_SWORD_SWOOSH_NORM" description="Gen sword swoosh norm" />
+			<sound id="190"  name="CHEF_ATTACK_ARGHH" description="Chef attack arghh" />
+			<sound id="191"  name="2GUNTEX_FEET_LD" description="2guntex feet ld" t5m="1123"/>
+			<sound id="192"  name="2GUNTEX_FEET_QT" description="2guntex feet qt" t5m="1124"/>
+			<sound id="193"  name="2GUNTEX_LASER_FIRE" hardcoded="true" description="2guntex laser fire" t5m="1126"/>
+			<sound id="194"  name="2GUNTEX_LASER_FIREx2" description="2guntex laser firex2" t5m="1127"/>
+			<sound id="195"  name="2GUNTEX_LASER_START" description="2guntex laser start" t5m="899"/>
+			<sound id="196"  name="2GUNTEX_LASER_MISFIRE" description="2guntex laser misfire" t5m="1128"/>
+			<sound id="197"  name="2GUNTEX_HIT_GUNS" hardcoded="true" description="2guntex hit guns" t5m="1125" />
+			<sound id="198"  name="IMP_DIE" description="Imp die" t5m="939" />
+			<sound id="199"  name="IMP_FALL" description="Imp fall" t5m="940"/>
+			<sound id="200"  name="IMP_FEET" description="Imp feet" t5m="941"/>
+			<sound id="201"  name="IMP_ATTACK" description="Imp attack" t5m="936"/>
+			<sound id="202"  name="IMP_LAUGH" description="Imp laugh" t5m="942"/>
+			<sound id="203"  name="IMP_RUNAWAY" description="Imp runaway" t5m="943"/>
+			<sound id="204"  name="SGOD_SWD_DIE1_Q" description="Sgod swd die1 q" />
+			<sound id="205"  name="SGOD_SWD_DIE2_VQ" description="Sgod swd die2 vq" />
+			<sound id="206"  name="HITMAN_GUNS_FIRE" description="Hitman guns fire" t5m="935"/>
+			<sound id="207"  name="HITMAN_GUNS_END" description="Hitman guns end" t5m="934"/>
+			<sound id="208"  name="FIRE_EXTING_RICO" description="Fire exting rico" />
+			<sound id="209"  name="LARA_UNDERWATER_ENGINE" hardcoded="true" description="Lara underwater engine" />
+			<sound id="210"  name="CABINET_CLOSE_WOOD" description="Cabinet close wood" />
+			<sound id="211"  name="CABINET_OPEN_WOOD" description="Cabinet open wood" />
+			<sound id="212"  name="SWORD_GOD_FEET_LD" description="Sword god feet ld" t5m="955"/>
+			<sound id="213"  name="SWORD_GOD_FEET_QT" description="Sword god feet qt" t5m="956"/>
+			<sound id="214"  name="SWORD_GOD_FEET_VQT" description="Sword god feet vqt" t5m="957"/>
+			<sound id="215"  name="SWORD_GOD_SWORD" description="Sword god sword" t5m="961"/>
+			<sound id="216"  name="GEN_SWORD_SWOOSH_LOW" description="Gen sword swoosh low" t5m="1036" />
+			<sound id="217"  name="SWORD_GOD_FALL" description="Sword god fall" t5m="954"/>
+			<sound id="218"  name="SWORD_GOD_HITMET" hardcoded="true" description="Sword god hitmet" t5m="958"/>
+			<sound id="219"  name="SWORD_GOD_SCREAM" description="Sword god scream" t5m="960"/>
+			<sound id="220"  name="KITCHEN_HOB_LOOP" description="Kitchen hob loop" t5m="1055"/>
+			<sound id="221"  name="KEYPAD_*" hardcoded="true" description="Keypad *" t5m="984"/>
+			<sound id="222"  name="KEYPAD_#" hardcoded="true" description="Keypad #" t5m="983"/>
+			<sound id="223"  name="KEYPAD_0" hardcoded="true" description="Keypad 0" t5m="985"/>
+			<sound id="224"  name="KEYPAD_1" hardcoded="true" description="Keypad 1" t5m="986"/>
+			<sound id="225"  name="KEYPAD_2" hardcoded="true" description="Keypad 2" t5m="987"/>
+			<sound id="226"  name="KEYPAD_3" hardcoded="true" description="Keypad 3" t5m="988"/>
+			<sound id="227"  name="KEYPAD_4" hardcoded="true" description="Keypad 4" t5m="989"/>
+			<sound id="228"  name="KEYPAD_5" hardcoded="true" description="Keypad 5" t5m="990"/>
+			<sound id="229"  name="KEYPAD_6" hardcoded="true" description="Keypad 6" t5m="991"/>
+			<sound id="230"  name="KEYPAD_7" hardcoded="true" description="Keypad 7" t5m="992"/>
+			<sound id="231"  name="KEYPAD_8" hardcoded="true" description="Keypad 8" t5m="993"/>
+			<sound id="232"  name="KEYPAD_9" hardcoded="true" description="Keypad 9" t5m="994"/>
+			<sound id="233"  name="SMALL_FAN" description="Small fan" />
+			<sound id="234"  name="KLAXON" hardcoded="true" description="Klaxon" t5m="1056" />
+			<sound id="235"  name="LARA_CROSSBOW" hardcoded="true" description="Lara crossbow" />
+			<sound id="236"  name="ANDY_FLOOR_DOOR_B" description="Andy floor door b" t5m="1034" />
+			<sound id="237"  name="ANDY_FLOOR_DOOR_A" description="Andy floor door a" t5m="1033"/>
+			<sound id="238"  name="J_GRAB_OPEN" hardcoded="true" description="J grab open" t5m="1049" />
+			<sound id="239"  name="WILLOWISP_LOOP" hardcoded="true" description="Willowisp loop" />
+			<sound id="240"  name="LEAP_SWITCH" description="Leap switch" />
+			<sound id="241"  name="LARGE_SWITCH" description="Large switch" />
+			<sound id="242"  name="GENERIC_HEAVY_THUD" description="Generic heavy thud" />
+			<sound id="243"  name="GENERIC_HEAVY_FEET" description="Generic heavy feet" />
+			<sound id="244"  name="SWIMSUIT_METAL_CLASH" hardcoded="true" description="Swimsuit metal clash" />
+			<sound id="245"  name="CROW_WALL_ITEM_DROP" description="Crow wall item drop" />
+			<sound id="246"  name="LARA_SUB_BREATHE" hardcoded="true" description="Lara sub breathe" />
+			<sound id="247"  name="HITMAN_ELEC_SHORT" hardcoded="true" description="Hitman elec short" t5m="933"/>
+			<sound id="248"  name="WELD_THRU_DOOR_LOOP" hardcoded="true" description="Weld thru door loop" />
+			<sound id="249"  name="IMP_BARREL_DROP" description="Imp barrel drop" />
+			<sound id="250"  name="IMP_BARREL_ROLL" hardcoded="true" description="Imp barrel roll" />
+			<sound id="251"  name="IMP_STONE_HIT" hardcoded="true" description="Imp stone hit" />
+			<sound id="252"  name="POUR_DUST_INSERTANIM" description="Pour dust insertanim" />
+			<sound id="253"  name="J_GRAB_TOP_IMPACT" description="J grab top impact" />
+			<sound id="254"  name="COG_ANDY2" description="Cog andy2" />
+			<sound id="255"  name="J_GRAB_IMPACT" hardcoded="true" description="J grab impact" t5m="1047"/>
+			<sound id="256"  name="J_GRAB_MOTOR_C" hardcoded="true" description="J grab motor c" t5m="1046"/>
+			<sound id="257"  name="J_GRAB_MOTOR_B_LP" hardcoded="true" description="J grab motor b lp" t5m="1045"/>
+			<sound id="258"  name="J_GRAB_MOTOR_A" hardcoded="true" description="J grab motor a" t5m="1044"/>
+			<sound id="259"  name="J_GRAB_DROP" hardcoded="true" description="J grab drop" t5m="1042"/>
+			<sound id="260"  name="J_GRAB_WINCH_UP_LP" hardcoded="true" description="J grab winch up lp" t5m="1048" />
+			<sound id="261"  name="FOOTSTEPS_WOOD_CAB" description="Footsteps wood cab" t5m="292" />
+			<sound id="262"  name="FOOTSTEPS_METAL_CAB" description="Footsteps metal cab" t5m="294"/>
+			<sound id="263"  name="D_FLOOR_METAL" description="D floor metal" />
+			<sound id="264"  name="DRAWERS_METAL_OPEN" description="Drawers metal open" t5m="1027"/>
+			<sound id="265"  name="DRAWERS_METAL_CLOSE" description="Drawers metal close" t5m="1026"/>
+			<sound id="266"  name="SHOCKWAVE_RUMB" description="Shockwave rumb" t5m="962" />
+			<sound id="267"  name="ANDY_BOAT/MILL_2" description="Andy boat/mill 2" t5m="1012"/>
+			<sound id="268"  name="ANDY_BOAT/MILL_1" description="Andy boat/mill 1" t5m="1011"/>
+			<sound id="269"  name="SMALL_STONE_SWITCH" description="Small stone switch" />
+			<sound id="270"  name="TV_WHITENOISE_LOOP" description="Tv whitenoise loop" t5m="1105" />
+			<sound id="271"  name="LIFT_MOVE" hardcoded="true" description="Lift move" t5m="1062"/>
+			<sound id="272"  name="ALARM" hardcoded="true" description="Alarm" />
+			<sound id="273"  name="GENERIC_SQKS_LOW" description="Generic sqks low" />
+			<sound id="274"  name="RICH_LOWER_BEAMX" description="Rich lower beamx" t5m="1083" />
+			<sound id="275"  name="RICH_NRG_BEAM" description="Rich nrg beam" t5m="1084"/>
+			<sound id="276"  name="BEETLES" hardcoded="true" description="Beetles" t5m="982"/>
+			<sound id="277"  name="GOD_HEAD_TESTICLES" hardcoded="true" description="God head testicles" t5m="926"/>
+			<sound id="278"  name="GOD_HEAD_CHARGE" hardcoded="true" description="God head charge" t5m="924"/>
+			<sound id="279"  name="GOD_HEAD_BLAST" hardcoded="true" description="God head blast" t5m="923"/>
+			<sound id="280"  name="GOD_HEAD_LASER_LOOPS" hardcoded="true" description="God head laser loops" t5m="925"/>
+			<sound id="281"  name="COGS_ROME" hardcoded="true" description="Cogs rome" t5m="1017"/>
+			<sound id="282"  name="LOW_RUMBLE_LOWER" description="Low rumble lower" t5m="1066"/>
+			<sound id="283"  name="GEN_STONE_DOOR_LOW" description="Gen stone door low" t5m="1035"/>
+			<sound id="284"  name="GENERIC_SQKS_NONRND" description="Generic sqks nonrnd" t5m="1040"/>
+			<sound id="285"  name="UNDERWATER_FAN_ON" description="Underwater fan on" t5m="1109" />
+			<sound id="286"  name="SUB_CONTROLROOM_LOOP" description="Sub controlroom loop" t5m="1099"/>
+			<sound id="287"  name="D_MANHOLE_METAL" description="D manhole metal" t5m="1119"/>
+			<sound id="288"  name="FOOTSTEPS_MUD" hardcoded="true" description="Footsteps mud" />
+			<sound id="289"  name="FOOTSTEPS_ICE" hardcoded="true" description="Footsteps ice" />
+			<sound id="290"  name="FOOTSTEPS_GRAVEL" hardcoded="true" description="Footsteps gravel" />
+			<sound id="291"  name="FOOTSTEPS_SAND_&amp;_GRASS" hardcoded="true" description="Footsteps sand and grass" />
+			<sound id="292"  name="FOOTSTEPS_WOOD" hardcoded="true" description="Footsteps wood" />
+			<sound id="293"  name="FOOTSTEPS_SNOW" hardcoded="true" description="Footsteps snow" />
+			<sound id="294"  name="FOOTSTEPS_METAL" hardcoded="true" description="Footsteps metal" />
+			<sound id="295"  name="TIGHTROPE_CREAK" description="Tightrope creak" t5m="351" />
+			<sound id="296"  name="TIGHTROPE_WALK" description="Tightrope walk" t5m="351"/>
+			<sound id="297"  name="DRAWERS_WOOD_CLSE" description="Drawers wood clse" t5m="1028" />
+			<sound id="298"  name="DRAWERS_WOOD_OPEN" description="Drawers wood open" t5m="1029"/>
+			<sound id="299"  name="SWAMPY_ATTACK" description="Swampy attack" t5m="974"/>
+			<sound id="300"  name="BELL" description="Bell" t5m="1009"/>
+			<sound id="301"  name="JOBY2_GRILL_2a" description="Joby2 grill 2a" t5m="998"/>
+			<sound id="302"  name="HISS_LOOP_SMALL" description="Hiss loop small" />
+			<sound id="303"  name="JOBY2_CRANE_END" description="Joby2 crane end" t5m="1018"/>
+			<sound id="304"  name="GENERATOR_HUM_LOOP" description="Generator hum loop" t5m="1037"/>
+			<sound id="305"  name="COMPUTER_BEEPIES" description="Computer beepies" t5m="1000"/>
+			<sound id="306"  name="MODEM_LOOP" description="Modem loop" t5m="1071"/>
+			<sound id="307"  name="AIRCON_LOOP" description="Aircon loop" />
+			<sound id="308"  name="GEN_STONE_DOOR" description="Gen stone door" />
+			<sound id="309"  name="LOW_RUMBLE" description="Low rumble" />
+			<sound id="310"  name="SEARCHER" description="Searcher" t5m="1086"/>
+			<sound id="311"  name="STAIR_SNAP_01" description="Stair snap 01" t5m="1098" />
+			<sound id="312"  name="RICH_GEN_LOOP" description="Rich gen loop" />
+			<sound id="313"  name="ZOOM_VIEW_WHIRR" hardcoded="true" description="Zoom view whirr" t5m="377" />
+			<sound id="314"  name="RICH_VENT_STRESS" description="Rich vent stress" t5m="1114"/>
+			<sound id="315"  name="INDUSTRY_AMBIENCE_LOOP" description="Industry ambience loop" t5m="1052" />
+			<sound id="316"  name="D_SWIPECARD_SFX" description="D swipecard sfx" t5m="1025"/>
+			<sound id="317"  name="RICH_TARGET_RISE" description="Rich target rise" t5m="1085"/>
+			<sound id="318"  name="STAIR_BANISTER_BEND" description="Stair banister bend" t5m="1097"/>
+			<sound id="319"  name="JOBY2_GRILL_1" description="Joby2 grill 1" t5m="997"/>
+			<sound id="320"  name="JOBY2_GRILL_3" description="Joby2 grill 3" t5m="999"/>
+			<sound id="321"  name="D_LARA_LOCKER_C" description="D lara locker c" t5m="1064" />
+			<sound id="322"  name="D_LARA_LOCKER_O" description="D lara locker o" t5m="1065"/>
+			<sound id="323"  name="STONE_SCRAPE_FAST" hardcoded="true" description="Stone scrape fast" />
+			<sound id="324"  name="JOBY2_GRILL_2" description="Joby2 grill 2" t5m="1063"/>
+			<sound id="325"  name="LIFT_DOORS" hardcoded="true" description="Lift doors" t5m="1059"/>
+			<sound id="326"  name="LARA_CROWBAR_ITEM" description="Lara crowbar item" />
+			<sound id="327"  name="JOBY2_CRANE" description="Joby2 crane" t5m="1018"/>
+			<sound id="328"  name="GENERIC_SQKS_RND" description="Generic sqks rnd" />
+			<sound id="329"  name="D_SLIDEDOOR_JOBY" description="D slidedoor joby" t5m="1090" />
+			<sound id="330"  name="D_FIREDOOR_JOBY" description="D firedoor joby" t5m="1031"/>
+			<sound id="331"  name="D_METAL_CLS_P1" description="D metal cls p1" />
+			<sound id="332"  name="D_METAL_CLS_P2" description="D metal cls p2" />
+			<sound id="333"  name="D_SCIFI_CLOSE" description="D scifi close" t5m="1111" />
+			<sound id="334"  name="D_SCIFI_OPEN" description="D scifi open" t5m="1112"/>
+			<sound id="335"  name="TEETH_SPIKES" hardcoded="true" description="Teeth spikes" />
+			<sound id="336"  name="BAT_RAM_CREAK1" description="Bat ram creak1" t5m="1008" />
+			<sound id="337"  name="LARA_LEVER_PART1" description="Lara lever part1" />
+			<sound id="338"  name="LARA_LEVER_PART2" description="Lara lever part2" />
+			<sound id="339"  name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" />
+			<sound id="340"  name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" />
+			<sound id="341"  name="D_METAL_OPEN" description="D metal open" t5m="1069" />
+			<sound id="342"  name="LARA_PULLEY" description="Lara pulley" />
+			<sound id="343"  name="D_METAL_OPEN_PUSH" description="D metal open push" />
+			<sound id="344"  name="D_METAL_KICKOPEN" hardcoded="true" description="D metal kickopen" />
+			<sound id="345"  name="LARA_USE_OBJECT" description="Lara use object" />
+			<sound id="346"  name="D_GATE_BIG_METAL" description="D gate big metal" />
+			<sound id="347"  name="D_MOTOR_WHIRR" description="D motor whirr" />
+			<sound id="348"  name="LARA_NO_FRENCH" hardcoded="true" description="Lara no french" />
+			<sound id="349"  name="LARA_NO_JAPANESE" hardcoded="true" description="Lara no japanese" />
+			<sound id="350"  name="LARA_CROW_WRENCH" description="Lara crow wrench" />
+			<sound id="351"  name="LARA_ROPE_CREAK" hardcoded="true" description="Lara rope creak" />
+			<sound id="352"  name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" />
+			<sound id="353"  name="D_METAL_CAGE_CLS2" description="D metal cage cls2" />
+			<sound id="354"  name="D_METAL_CAGE_CLS1" description="D metal cage cls1" />
+			<sound id="355"  name="GENERIC_STONE_GRIND" description="Generic stone grind" />
+			<sound id="356"  name="D_STONEMETAL_MAIN" description="D stonemetal main" />
+			<sound id="357"  name="D_PORTCULLIS_UP" description="D portcullis up" />
+			<sound id="358"  name="D_PORTCULLIS_DOWN" description="D portcullis down" />
+			<sound id="359"  name="D_WOODEN_GATE_CREAK" description="D wooden gate creak" />
+			<sound id="360"  name="D_PADLOCK_BREAK" description="D padlock break" />
+			<sound id="361"  name="D_BIG_THUD_GEN_2" hardcoded="true" description="D big thud gen 2" />
+			<sound id="362"  name="D_BIG_THUD_GEN_1" description="D big thud gen 1" />
+			<sound id="363"  name="D_DOUBLE_BANG" description="D double bang" />
+			<sound id="364"  name="D_DOUBLE_CREAK" description="D double creak" />
+			<sound id="365"  name="D_CROWBAR_WOOD" description="D crowbar wood" />
+			<sound id="366"  name="D_METAL_LOCKUP_CROW" description="D metal lockup crow" />
+			<sound id="367"  name="D_METAL_LOCKUP_OPEN" description="D metal lockup open" />
+			<sound id="368"  name="D_METAL_CAGE_OPEN" hardcoded="true" description="D metal cage open" />
+			<sound id="369"  name="SMALL_CLICK_SWITCH" description="Small click switch" />
+			<sound id="370"  name="WEREWOLF_FEET_F" description="Werewolf feet f" t5m="971"/>
+			<sound id="371"  name="WEREWOLF_FEET_B" description="Werewolf feet b" t5m="970"/>
+			<sound id="372"  name="WEREWOLF_ATTACK1" description="Werewolf attack1" t5m="966"/>
+			<sound id="373"  name="WEREWOLF_ATTACK2" description="Werewolf attack2" t5m="967"/>
+			<sound id="374"  name="WEREWOLF_DROP" description="Werewolf drop" t5m="969"/>
+			<sound id="375"  name="WEREWOLF_DIE" description="Werewolf die" t5m="968"/>
+			<sound id="376"  name="WEREWOLF_JUMP" description="Werewolf jump" t5m="972"/>
+			<sound id="377"  name="SWAT_DIE" description="Swat die" t5m="1120" />
+			<sound id="378"  name="ANDY_WHEEL" description="Andy wheel" t5m="1003" />
+			<sound id="379"  name="BARN_DOOR_NORMAL" description="Barn door normal" t5m="1006"/>
+			<sound id="380"  name="BARN_DOOR_SLAM" description="Barn door slam" t5m="1007"/>
+			<sound id="381"  name="RATCHET_3SHOT" description="Ratchet 3shot" />
+			<sound id="382"  name="ANDY_WATERWHEEL" description="Andy waterwheel" t5m="1003"/>
+			<sound id="383"  name="ANDY_INSIDEMILL" description="Andy insidemill" t5m="898" />
+			<sound id="384"  name="ANDREA_COIN_PUZZ" description="Andrea coin puzz" />
+			<sound id="385"  name="MINI-SUB_LOOP" hardcoded="true" description="Mini-sub loop" t5m="948"/>
+			<sound id="386"  name="LIFT_BRAKE_SQUEAL" description="Lift brake squeal" t5m="1058"/>
+			<sound id="387"  name="RATSPLASH" hardcoded="true" description="Ratsplash" t5m="1080"/>
+			<sound id="388"  name="SNORE_IN" description="Snore in" t5m="980" />
+			<sound id="389"  name="SNORE_OUT" description="Snore out" t5m="981"/>
+			<sound id="390"  name="D_SMALL_VENT_O/C" description="D small vent o/c" t5m="1091"/>
+			<sound id="391"  name="RICH_HOLOGRAM" description="Rich hologram" t5m="1051" />
+			<sound id="392"  name="HISS_LOOP_BIG" hardcoded="true" description="Hiss loop big" />
+			<sound id="393"  name="LIFT_MOVE_KNACKED" hardcoded="true" description="Lift move knacked" t5m="1063"/>
+			<sound id="394"  name="LIFT_HIT_FLOOR1" hardcoded="true" description="Lift hit floor1" t5m="1060"/>
+			<sound id="395"  name="LIFT_HIT_FLOOR2" hardcoded="true" description="Lift hit floor2" t5m="1061"/>
+			<sound id="396"  name="LAZER_LOOP" description="Lazer loop" t5m="1057"/>
+			<sound id="397"  name="UNDERWATER_EXPLOSION" hardcoded="true" description="Underwater explosion" t5m="1108"/>
+			<sound id="398"  name="UNDERWATER_TORPEDO" hardcoded="true" description="Underwater torpedo" t5m="1110"/>
+			<sound id="399"  name="TELEPORT_CRACKLES" hardcoded="true" description="Teleport crackles" t5m="1102" />
+			<sound id="400"  name="TELEPORT_FLASH" hardcoded="true" description="Teleport flash" t5m="1103"/>
+			<sound id="401"  name="LARA_UNDERWATER_HIT" hardcoded="true" description="Lara underwater hit" t5m="946" />
+			<sound id="402"  name="RAVESTICK" hardcoded="true" description="Ravestick" />
+			<sound id="403"  name="UNDERWATER_CHAFF" hardcoded="true" description="Underwater chaff" t5m="1106"/>
+			<sound id="404"  name="FISHTANK_WATER" description="Fishtank water" t5m="1032"/>
+			<sound id="405"  name="2GUNTEX_STAIR_FALL" description="2guntex stair fall" t5m="900"/>
+			<sound id="406"  name="GGOD_BREATHE_IN" description="Ggod breathe in" t5m="914" />
+			<sound id="407"  name="GGOD_BREATHE_OUT" description="Ggod breathe out" t5m="915"/>
+			<sound id="408"  name="GGOD_FIRE" description="Ggod fire" t5m="916"/>
+			<sound id="409"  name="GGOD_ATTACK" description="Ggod attack" t5m="913"/>
+			<sound id="410"  name="PORTAL_LOOP" hardcoded="true" description="Portal loop" t5m="1075"/>
 		</sounds>
 		<animations>
 			<!-- LARA -->
@@ -6425,6 +6425,7 @@
 			<moveable id="990"  name="PC_LOAD_INV_ITEM" />
 			<moveable id="991"  name="PC_SAVE_INV_ITEM" />
 			<moveable id="992"  name="DIARY_OPEN" />
+				
 			<moveable id="1000"  name="INVENTORY_PASSPORT" />
 			<moveable id="1001"  name="INVENTORY_SUNGLASSES" />
 			<moveable id="1002"  name="INVENTORY_KEYS" />
