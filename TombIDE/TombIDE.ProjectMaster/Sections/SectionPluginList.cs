@@ -37,9 +37,22 @@ namespace TombIDE.ProjectMaster
 			string pluginsPath = Path.Combine(_ide.Project.ProjectPath, "Plugins");
 			_pluginsDirectory = new DirectoryInfo(pluginsPath);
 
-			if (Directory.Exists(DefaultPaths.TRNGPluginsDirectory) &&
-				(!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFileSystemInfos().Any()))
-				CopyPluginsFromTIDEToProject();
+			if (!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFileSystemInfos().Any())
+			{
+				if (!_pluginsDirectory.Exists)
+				{
+					_pluginsDirectory.Create();
+					_pluginsDirectory = new DirectoryInfo(_pluginsDirectory.FullName);
+				}
+
+				string parcPath = Path.Combine(_ide.Project.EnginePath, "plugins.parc");
+
+				if (File.Exists(parcPath))
+					CopyPluginsFromPARCToProject(parcPath);
+
+				if (Directory.Exists(DefaultPaths.TRNGPluginsDirectory)) // Priority
+					CopyPluginsFromTIDEToProject();
+			}
 
 			UpdatePlugins();
 
@@ -48,12 +61,6 @@ namespace TombIDE.ProjectMaster
 
 		private void CopyPluginsFromTIDEToProject()
 		{
-			if (!_pluginsDirectory.Exists)
-			{
-				_pluginsDirectory.Create();
-				_pluginsDirectory = new DirectoryInfo(_pluginsDirectory.FullName);
-			}
-
 			string[] internalPluginDirs = Directory.GetDirectories(DefaultPaths.TRNGPluginsDirectory, "*", System.IO.SearchOption.TopDirectoryOnly);
 
 			foreach (string pluginFile in Directory.GetFiles(_ide.Project.EnginePath, "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
@@ -63,6 +70,29 @@ namespace TombIDE.ProjectMaster
 
 				if (tidePluginDir != null)
 					SharedMethods.CopyFilesRecursively(tidePluginDir, Path.Combine(_pluginsDirectory.FullName, Path.GetFileName(tidePluginDir)));
+			}
+		}
+
+		private void CopyPluginsFromPARCToProject(string parcPath)
+		{
+			using (ZipArchive parc = ZipFile.OpenRead(parcPath))
+			{
+				foreach (string pluginFile in Directory.GetFiles(_ide.Project.EnginePath, "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
+				{
+					foreach (ZipArchiveEntry entry in parc.Entries)
+					{
+						if (entry.FullName.Split('\\')[0].Equals(Path.GetFileNameWithoutExtension(pluginFile), StringComparison.OrdinalIgnoreCase))
+						{
+							string destPath = Path.Combine(_pluginsDirectory.FullName, entry.FullName);
+							string dirName = Path.GetDirectoryName(destPath);
+
+							if (!Directory.Exists(dirName))
+								Directory.CreateDirectory(dirName);
+
+							entry.ExtractToFile(destPath, true);
+						}
+					}
+				}
 			}
 		}
 
@@ -98,7 +128,10 @@ namespace TombIDE.ProjectMaster
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
 			if (!File.Exists(selectedPluginFile.FullName))
+			{
+				UpdatePlugins();
 				return;
+			}
 
 			string pluginName = treeView.SelectedNodes[0].Text;
 
@@ -129,7 +162,10 @@ namespace TombIDE.ProjectMaster
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
 			if (!File.Exists(selectedPluginFile.FullName))
+			{
+				UpdatePlugins();
 				return;
+			}
 
 			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPluginFile.FullName));
 		}
@@ -321,7 +357,10 @@ namespace TombIDE.ProjectMaster
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
 
 			if (!File.Exists(selectedPluginFile.FullName))
+			{
+				UpdatePlugins();
 				return;
+			}
 
 			textBox_Title.Text = treeView.SelectedNodes[0].Text;
 			textBox_DLLName.Text = Path.GetFileName(selectedPluginFile.Name);
