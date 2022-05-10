@@ -1829,7 +1829,7 @@
 			<sound id= " 214 " name= " METAL_SHUTTERS_SMASH " t5m= " 851 "/>
 			<sound id= " 215 " name= " UNDERWATER_FAN_ON " t5m= " 891 "/>
 			<sound id= " 219 " name= " MINE_CART_SREECH_BRAKE " t5m= " 735 "/>
-			<sound id= " 220 " name= " SPANNER " t5m= " 876 "/>
+			<sound id= " 220 " name= " SPANNER " t5m= " 860 "/>
 			<sound id= " 221 " name= " SMALL_METAL_SHUTTERS " t5m= " 874 "/>
 			<sound id= " 222 " name= " AREA51_SWINGER_START " t5m= " 804 "/>
 			<sound id= " 223 " name= " AREA51_SWINGER_STOP " t5m= " 805 "/>
@@ -7452,6 +7452,16 @@
 			<sound id= "763"  name= "TR3_COMPY_WAIT" t5m=" 763 " />
 			<sound id= "764"  name= "TR3_HYBRID_ATTACK" t5m=" 764 " />
 			<sound id= "765"  name= "TR3_HYBRID_DEATH" t5m=" 765 " />
+			<sound id= "766"  name= "TR3_HYBRID_FOOT" t5m="766" />
+			<sound id= "767"  name= "TR3_HYBRID_HOOF"  t5m="767"	/>
+			<sound id= "768"  name=	"TR3_HYBRID_SWOOSH" t5m="768" />
+			<sound id= "769"  name=	"TR3_METEOR" t5m="769" />
+			<sound id= "770"  name=	"TR3_SEAL_MUTANT_BREATH_IN" t5m="770"/>
+			<sound id= "771"  name=	"TR3_SEAL_MUTANT_BRUSH_TAIL" t5m="771"/>
+			<sound id= "772"  name=	"TR3_SEAL_MUTANT_DEATH" t5m="772"/>
+			<sound id= "773"  name=	"TR3_SEAL_MUTANT_FIRE" t5m="773"/>
+			<sound id= "774"  name=	"TR3_SEAL_MUTANT_FIRE_2" t5m="774"/>
+			<sound id= "775"  name=	"TR3_SEAL_MUTANT_FOOT" t5m="775"/>
 			<sound id= "776"  name= "TR3_SEAL_MUTANT_HIT_FLOOR" t5m=" 776 " />
 			<sound id= "777"  name= "TR3_WING_MUTANT_ATTACK" t5m=" 777 " />
 			<sound id= "778"  name= "TR3_WING_MUTANT_DEATH" t5m=" 778 " />
@@ -7535,7 +7545,7 @@
 			<sound id= "856"  name= "TR3_PORTCULLIS_DOWN" t5m=" 856 " />
 			<sound id= "857"  name= "TR3_PORTCULLIS_UP" t5m=" 857 " />
 			<sound id= "858"  name= "TR3_POWER_HUM_LOOP" t5m=" 858 " />
-			<sound id= "859"  name= "TR3_USER_859" t5m=" 859 " />
+			<sound id= "859"  name= "TEN_VEHICLE_MINECART_WRENCH" t5m=" 859 " />
 			<sound id= "860"  name= "TR3_RADAR_BLIP" t5m=" 860 " />
 			<sound id= "861"  name= "TR3_RADIO_LOOP" t5m=" 861 " />
 			<sound id= "862"  name= "TR3_RESERVOIR_FLUSH" t5m=" 862 " />

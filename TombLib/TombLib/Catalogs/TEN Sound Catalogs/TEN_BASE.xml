@@ -748,11 +748,7 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>bubbles.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -2566,7 +2562,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_MOTORBIKE_rev.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_ACCELERATE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2585,7 +2581,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_MOTORBIKE_mve.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_MOVE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2604,7 +2600,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_MOTORBIKE_si.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_SIDE_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2623,7 +2619,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_MOTORBIKE_fi.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_FRONT_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3003,7 +2999,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_JEEP_mve.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_MOVE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -7024,7 +7020,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>359</Id>
-      <Name>TR4_PULLEY</Name>
+      <Name>TEN_LARA_PULLEY</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -7035,7 +7031,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>lar_plly.wav</FileName>
+          <FileName>TEN_LARA_PULLEY.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -7187,7 +7183,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_MOTORBIKE_hit.wav</FileName>
+          <FileName>TEN_VEHICLE_MOTORBIKE_HIT_ENEMIES.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -7876,10 +7872,13 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>rapt_atk.wav</FileName>
+          <FileName>TR1_RAPTOR_ATTACK_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR1_RAPTOR_ATTACK_01.wav</FileName>
+          <FileName>TR1_RAPTOR_ATTACK_02.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>TR1_RAPTOR_ATTACK_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -10697,10 +10696,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GROWL_01.wav</FileName>
+          <FileName>TR2_YETI_GROWL1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_YETI_GROWL_02.wav</FileName>
+          <FileName>TR2_YETI_GROWL1_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -12673,7 +12672,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_SNOWMOBILE_ACCELERATE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SNOWMOBILE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -12692,7 +12691,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_SNOWMOBILE_IDLE_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SNOWMOBILE_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12711,7 +12710,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_SNOWMOBILE_MOVING_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SNOWMOBILE_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12730,7 +12729,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_SNOWMOBILE_START_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SNOWMOBILE_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -12749,7 +12748,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_SNOWMOBILE_STOP_01.wav</FileName>
+          <FileName>TEN_VEHICLE_SNOWMOBILE_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -13557,7 +13556,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>665</Id>
-      <Name>TR2_HELICOPTER_LOOP</Name>
+      <Name>TR2+3_HELICOPTER_LOOP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -13568,7 +13567,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_HELICOPTER_LOOP_01.wav</FileName>
+          <FileName>TR2+3_HELICOPTER_LOOP.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -14757,7 +14756,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TEN_VEHICLE_RUBBERBOAT_scr.wav</FileName>
+          <FileName>TEN_VEHICLE_RUBBERBOAT_SCRAPE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -15627,7 +15626,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>770</Id>
-      <Name>TR3_SEAL_MUTE_BREATH_IN</Name>
+      <Name>TR3_SEAL_MUTANT_BREATH_IN</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -17242,7 +17241,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>oild_rol.wav</FileName>
+          <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -17323,6 +17322,25 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>859</Id>
+      <Name>TEN_VEHICLE_MINECART_WRENCH</Name>
+      <Volume>70</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TEN_VEHICLE_MINECART_WRENCH.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>860</Id>
@@ -18182,7 +18200,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>blu_jmp.wav</FileName>
+          <FileName>TR5_VCI_BLUEMAN_JUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -18762,7 +18780,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>939</Id>
-      <Name>TR5_IMP_DEATH</Name>
+      <Name>TR5_EMPTY</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -18771,11 +18789,7 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>imp_die.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22588,11 +22602,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>CUSTOMPLACEHOLDER_1.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22607,11 +22617,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_2.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22626,11 +22632,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_3.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22645,11 +22647,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_4.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22664,11 +22662,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_5.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22683,11 +22677,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_6.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22702,11 +22692,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_7.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22721,11 +22707,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_8.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22740,11 +22722,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_9.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22759,11 +22737,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-		<Samples>
-			<WadSample>
-				<FileName>CUSTOMPLACEHOLDER_10.wav</FileName>
-			</WadSample>
-		</Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
