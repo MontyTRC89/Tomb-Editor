@@ -33,6 +33,7 @@
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
 			this.button_OpenInTE = new System.Windows.Forms.ToolStripButton();
+			this.button_Build = new System.Windows.Forms.ToolStripButton();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.button_Rename = new System.Windows.Forms.ToolStripButton();
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
@@ -43,7 +44,6 @@
 			this.button_OpenInExplorer = new System.Windows.Forms.ToolStripButton();
 			this.button_ViewFileNames = new System.Windows.Forms.ToolStripButton();
 			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
-			this.button_Build = new System.Windows.Forms.ToolStripButton();
 			this.contextMenu.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -65,7 +65,7 @@
             this.menuItem_Rename,
             this.menuItem_Delete});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(218, 179);
+			this.contextMenu.Size = new System.Drawing.Size(218, 201);
 			// 
 			// menuItem_OpenLevel
 			// 
@@ -84,6 +84,7 @@
 			this.menuItem_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Build.Enabled = false;
 			this.menuItem_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Build.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
 			this.menuItem_Build.Name = "menuItem_Build";
 			this.menuItem_Build.Size = new System.Drawing.Size(217, 22);
 			this.menuItem_Build.Text = "Build level";
@@ -252,6 +253,19 @@
 			this.button_OpenInTE.Text = "Open in Tomb Editor...";
 			this.button_OpenInTE.Click += new System.EventHandler(this.menuItem_OpenLevel_Click);
 			// 
+			// button_Build
+			// 
+			this.button_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.button_Build.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.button_Build.Enabled = false;
+			this.button_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.button_Build.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
+			this.button_Build.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.button_Build.Name = "button_Build";
+			this.button_Build.Size = new System.Drawing.Size(23, 27);
+			this.button_Build.Text = "Build...";
+			this.button_Build.Click += new System.EventHandler(this.menuItem_Build_Click);
+			// 
 			// separator_01
 			// 
 			this.separator_01.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -369,19 +383,6 @@
 			this.button_Refresh.Size = new System.Drawing.Size(23, 27);
 			this.button_Refresh.Text = "Refresh List";
 			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
-			// 
-			// button_Build
-			// 
-			this.button_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_Build.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_Build.Enabled = false;
-			this.button_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.button_Build.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
-			this.button_Build.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.button_Build.Name = "button_Build";
-			this.button_Build.Size = new System.Drawing.Size(24, 24);
-			this.button_Build.Text = "Build...";
-			this.button_Build.Click += new System.EventHandler(this.menuItem_Build_Click);
 			// 
 			// SectionLevelList
 			// 
