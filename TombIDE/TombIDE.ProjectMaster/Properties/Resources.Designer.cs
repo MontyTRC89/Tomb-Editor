@@ -63,6 +63,16 @@ namespace TombIDE.ProjectMaster.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_compile_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_compile_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_refresh_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
@@ -166,6 +176,36 @@ namespace TombIDE.ProjectMaster.Properties {
         internal static System.Drawing.Bitmap general_trash_16 {
             get {
                 object obj = ResourceManager.GetObject("general_trash_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ide_master_30 {
+            get {
+                object obj = ResourceManager.GetObject("ide_master_30", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ide_plugin_30 {
+            get {
+                object obj = ResourceManager.GetObject("ide_plugin_30", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ide_projectmanager {
+            get {
+                object obj = ResourceManager.GetObject("ide_projectmanager", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

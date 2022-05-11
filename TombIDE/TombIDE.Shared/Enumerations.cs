@@ -4,7 +4,8 @@
 	{
 		LevelManager,
 		ProjectManager,
-		ScriptingStudio
+		ScriptingStudio,
+		PluginManager
 	}
 
 	public enum GameLanguage

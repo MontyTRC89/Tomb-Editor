@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using DarkUI.Forms;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -68,6 +71,43 @@ namespace TombIDE.ProjectMaster
 		private void button_Main_Import_Click(object sender, System.EventArgs e)
 		{
 			_ide.RaiseEvent(new IDE.RequestImportLevelEvent());
+		}
+
+		private void button_RebuildAll_Click(object sender, System.EventArgs e)
+		{
+			if (_ide.Project.Levels.Count == 0)
+			{
+				DarkMessageBox.Show(this,
+					"There are no levels in the current project.",
+					"Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+				return;
+			}
+
+			BatchCompileList batchList = new BatchCompileList();
+
+			foreach (ProjectLevel level in _ide.Project.Levels)
+			{
+				string prj2Path;
+
+				if (level.SpecificFile == "$(LatestFile)")
+					prj2Path = Path.Combine(level.FolderPath, level.GetLatestPrj2File());
+				else
+					prj2Path = Path.Combine(level.FolderPath, level.SpecificFile);
+
+				batchList.Files.Add(prj2Path);
+			}
+
+			string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
+			BatchCompileList.SaveToXml(batchListFilePath, batchList);
+
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
+				Arguments = "\"" + batchListFilePath + "\""
+			};
+
+			Process.Start(startInfo);
 		}
 	}
 }

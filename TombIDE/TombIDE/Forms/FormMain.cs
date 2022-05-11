@@ -31,6 +31,7 @@ namespace TombIDE
 		private ScriptingStudio.ClassicScriptStudio classicScriptStudio;
 		private ProjectMaster.ProjectMaster projectMaster;
 		private ProjectMaster.LevelManager levelManager;
+		private ProjectMaster.PluginManager pluginManager;
 
 		private WinEventDelegate eventDelegate = null;
 		private IntPtr eventHook = IntPtr.Zero;
@@ -54,6 +55,10 @@ namespace TombIDE
 			projectMaster = new ProjectMaster.ProjectMaster();
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
+
+			pluginManager = new ProjectMaster.PluginManager();
+			pluginManager.Dock = DockStyle.Fill;
+			tabPage_Plugins.Controls.Add(pluginManager);
 
 			classicScriptStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
 			classicScriptStudio.Dock = DockStyle.Fill;
@@ -114,6 +119,7 @@ namespace TombIDE
 					// Initialize the IDE interfaces
 					levelManager.Initialize(_ide);
 					projectMaster.Initialize(_ide);
+					pluginManager.Initialize(_ide);
 
 					SelectIDETab(IDETab.LevelManager);
 
@@ -512,6 +518,7 @@ namespace TombIDE
 		private void panelButton_LevelManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.LevelManager);
 		private void panelButton_ProjectManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ProjectManager);
 		private void panelButton_ScriptingStudio_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
+		private void panelButton_Plugins_Click(object sender, EventArgs e) => SelectIDETab(IDETab.PluginManager);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
 		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
@@ -606,6 +613,7 @@ namespace TombIDE
 					panelButton_LevelManager.BackColor = Color.FromArgb(135, 135, 135);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_Plugins.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(0);
 					break;
@@ -615,6 +623,7 @@ namespace TombIDE
 					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(135, 135, 135);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_Plugins.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(1);
 					break;
@@ -627,8 +636,19 @@ namespace TombIDE
 					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(135, 135, 135);
+					panelButton_Plugins.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(2);
+					break;
+				}
+				case IDETab.PluginManager:
+				{
+					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_Plugins.BackColor = Color.FromArgb(135, 135, 135);
+
+					tablessTabControl.SelectTab(3);
 					break;
 				}
 			}

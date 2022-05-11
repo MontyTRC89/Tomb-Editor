@@ -144,9 +144,6 @@
 			this.tabControl.Controls.Add(this.tabPage_LevelSettings);
 			this.tabControl.Controls.Add(this.tabPage_Resources);
 			this.tabControl.DisplayStyle = System.Windows.Forms.TabStyle.Dark;
-			// 
-			// 
-			// 
 			this.tabControl.DisplayStyleProvider.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
 			this.tabControl.DisplayStyleProvider.BorderColorHot = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
 			this.tabControl.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
@@ -192,6 +189,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView_AllPrjFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView_AllPrjFiles.ExpandOnDoubleClick = false;
 			this.treeView_AllPrjFiles.Location = new System.Drawing.Point(9, 57);
 			this.treeView_AllPrjFiles.MaxDragChange = 20;
 			this.treeView_AllPrjFiles.Name = "treeView_AllPrjFiles";
@@ -214,6 +212,7 @@
 			// 
 			this.treeView_Resources.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Resources.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView_Resources.ExpandOnDoubleClick = false;
 			this.treeView_Resources.ItemHeight = 30;
 			this.treeView_Resources.Location = new System.Drawing.Point(0, 0);
 			this.treeView_Resources.MaxDragChange = 30;
@@ -235,6 +234,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "SectionLevelProperties";
 			this.Size = new System.Drawing.Size(320, 320);
 			this.contextMenu.ResumeLayout(false);

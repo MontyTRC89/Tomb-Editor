@@ -18,14 +18,14 @@ using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
-	public partial class SectionPluginList : UserControl
+	public partial class PluginManager : UserControl
 	{
 		private IDE _ide;
 		private DirectoryInfo _pluginsDirectory;
 
 		#region Initialization
 
-		public SectionPluginList()
+		public PluginManager()
 		{
 			InitializeComponent();
 		}
@@ -55,8 +55,6 @@ namespace TombIDE.ProjectMaster
 			}
 
 			UpdatePlugins();
-
-			tabControl.HideTab(1); // The "Description" tab
 		}
 
 		private void CopyPluginsFromTIDEToProject()
@@ -395,17 +393,7 @@ namespace TombIDE.ProjectMaster
 					Path.GetFileNameWithoutExtension(selectedPluginFile.FullName) + ".txt");
 
 				if (File.Exists(descriptionFilePath))
-				{
 					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
-					tabControl.ShowTab(1); // The "Description" tab
-				}
-				else
-				{
-					if (tabControl.SelectedTab.Text == "Description")
-						tabControl.SelectedIndex = 0;
-
-					tabControl.HideTab(1); // The "Description" tab
-				}
 			}
 			catch (Exception ex)
 			{

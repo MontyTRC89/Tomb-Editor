@@ -63,19 +63,19 @@ namespace TombIDE.ProjectMaster
 			this.label_01.Location = new System.Drawing.Point(423, 37);
 			this.label_01.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(134, 13);
+			this.label_01.Size = new System.Drawing.Size(144, 13);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Preview background color:";
 			// 
 			// label_02
 			// 
 			this.label_02.AutoSize = true;
-			this.label_02.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_02.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_02.Location = new System.Drawing.Point(423, 115);
 			this.label_02.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
 			this.label_02.Name = "label_02";
-			this.label_02.Size = new System.Drawing.Size(169, 112);
+			this.label_02.Size = new System.Drawing.Size(150, 91);
 			this.label_02.TabIndex = 6;
 			this.label_02.Text = "Your .ico file should contain\r\nthese sizes:\r\n\r\n- 256x256 px\r\n- 48x48 px\r\n- 32x32 " +
     "px\r\n- 16x16 px";
@@ -186,6 +186,7 @@ namespace TombIDE.ProjectMaster
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(640, 310);
 			this.MinimumSize = new System.Drawing.Size(640, 310);
 			this.Name = "SettingsIcon";

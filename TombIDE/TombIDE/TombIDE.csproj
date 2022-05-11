@@ -146,6 +146,7 @@
     <Content Include="Resources\ide-folder-30.png" />
     <Content Include="Resources\ide-master-30.png" />
     <Content Include="Resources\ide-play-30.png" />
+    <Content Include="Resources\ide-plugin-30.png" />
     <Content Include="Resources\ide-script-30.png" />
     <Content Include="Resources\ide-tools-30.png" />
     <Content Include="Resources\ide_projectmanager.png" />

@@ -76,7 +76,7 @@
 			this.label_01.Location = new System.Drawing.Point(442, 37);
 			this.label_01.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(106, 13);
+			this.label_01.Size = new System.Drawing.Size(112, 13);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Preview aspect ratio:";
 			// 
@@ -150,6 +150,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(640, 280);
 			this.MinimumSize = new System.Drawing.Size(640, 280);
 			this.Name = "SettingsStartupImage";

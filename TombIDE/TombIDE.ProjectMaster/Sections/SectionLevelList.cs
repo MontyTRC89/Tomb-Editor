@@ -357,6 +357,7 @@ namespace TombIDE.ProjectMaster
 		{
 			// Enable / Disable node specific buttons
 			button_OpenInTE.Enabled = treeView.SelectedNodes.Count > 0;
+			button_Build.Enabled = treeView.SelectedNodes.Count > 0;
 			button_Rename.Enabled = treeView.SelectedNodes.Count > 0;
 			button_Delete.Enabled = treeView.SelectedNodes.Count > 0;
 			button_MoveUp.Enabled = treeView.SelectedNodes.Count > 0;

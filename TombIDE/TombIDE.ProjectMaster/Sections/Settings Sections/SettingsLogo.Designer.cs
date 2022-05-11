@@ -110,7 +110,7 @@
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
 			this.sectionPanel.SectionHeader = "In-Game Logo";
-			this.sectionPanel.Size = new System.Drawing.Size(640, 280);
+			this.sectionPanel.Size = new System.Drawing.Size(720, 280);
 			this.sectionPanel.TabIndex = 0;
 			// 
 			// SettingsLogo
@@ -119,10 +119,11 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(640, 280);
 			this.MinimumSize = new System.Drawing.Size(640, 280);
 			this.Name = "SettingsLogo";
-			this.Size = new System.Drawing.Size(640, 280);
+			this.Size = new System.Drawing.Size(720, 280);
 			this.panel_Preview.ResumeLayout(false);
 			this.sectionPanel.ResumeLayout(false);
 			this.ResumeLayout(false);

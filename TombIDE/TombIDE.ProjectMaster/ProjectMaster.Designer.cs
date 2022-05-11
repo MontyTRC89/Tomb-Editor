@@ -17,122 +17,88 @@
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.animationTimer = new System.Windows.Forms.Timer(this.components);
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.button_ShowPlugins = new DarkUI.Controls.DarkButton();
-			this.button_HidePlugins = new DarkUI.Controls.DarkButton();
-			this.splitContainer_Info = new System.Windows.Forms.SplitContainer();
+			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.panel_Icon = new System.Windows.Forms.Panel();
+			this.label_Title = new DarkUI.Controls.DarkLabel();
 			this.section_ProjectInfo = new TombIDE.ProjectMaster.SectionProjectSettings();
-			this.section_PluginList = new TombIDE.ProjectMaster.SectionPluginList();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).BeginInit();
-			this.splitContainer_Info.Panel1.SuspendLayout();
-			this.splitContainer_Info.Panel2.SuspendLayout();
-			this.splitContainer_Info.SuspendLayout();
+			this.tableLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// animationTimer
+			// tableLayoutPanel
 			// 
-			this.animationTimer.Interval = 1;
-			this.animationTimer.Tick += new System.EventHandler(this.animationTimer_Tick);
+			this.tableLayoutPanel.ColumnCount = 2;
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel.Controls.Add(this.panel_Icon, 0, 0);
+			this.tableLayoutPanel.Controls.Add(this.label_Title, 1, 0);
+			this.tableLayoutPanel.Controls.Add(this.section_ProjectInfo, 0, 1);
+			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanel.Name = "tableLayoutPanel";
+			this.tableLayoutPanel.RowCount = 2;
+			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel.Size = new System.Drawing.Size(1005, 600);
+			this.tableLayoutPanel.TabIndex = 0;
 			// 
-			// button_ShowPlugins
+			// panel_Icon
 			// 
-			this.button_ShowPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button_ShowPlugins.Checked = false;
-			this.button_ShowPlugins.ForeColor = System.Drawing.Color.Gainsboro;
-			this.button_ShowPlugins.Location = new System.Drawing.Point(911, 246);
-			this.button_ShowPlugins.Margin = new System.Windows.Forms.Padding(3, 3, 32, 12);
-			this.button_ShowPlugins.Name = "button_ShowPlugins";
-			this.button_ShowPlugins.Size = new System.Drawing.Size(32, 32);
-			this.button_ShowPlugins.TabIndex = 1;
-			this.button_ShowPlugins.Text = "▲";
-			this.toolTip.SetToolTip(this.button_ShowPlugins, "Show Project Plugins");
-			this.button_ShowPlugins.Click += new System.EventHandler(this.button_ShowPlugins_Click);
+			this.panel_Icon.BackgroundImage = global::TombIDE.ProjectMaster.Properties.Resources.ide_projectmanager;
+			this.panel_Icon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panel_Icon.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel_Icon.Location = new System.Drawing.Point(30, 20);
+			this.panel_Icon.Margin = new System.Windows.Forms.Padding(30, 20, 0, 15);
+			this.panel_Icon.Name = "panel_Icon";
+			this.panel_Icon.Size = new System.Drawing.Size(40, 45);
+			this.panel_Icon.TabIndex = 6;
 			// 
-			// button_HidePlugins
+			// label_Title
 			// 
-			this.button_HidePlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button_HidePlugins.Checked = false;
-			this.button_HidePlugins.ForeColor = System.Drawing.Color.Gainsboro;
-			this.button_HidePlugins.Location = new System.Drawing.Point(948, 13);
-			this.button_HidePlugins.Name = "button_HidePlugins";
-			this.button_HidePlugins.Size = new System.Drawing.Size(24, 24);
-			this.button_HidePlugins.TabIndex = 1;
-			this.button_HidePlugins.Text = "▼";
-			this.toolTip.SetToolTip(this.button_HidePlugins, "Hide Project Plugins");
-			this.button_HidePlugins.Click += new System.EventHandler(this.button_HidePlugins_Click);
-			// 
-			// splitContainer_Info
-			// 
-			this.splitContainer_Info.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer_Info.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer_Info.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer_Info.Name = "splitContainer_Info";
-			this.splitContainer_Info.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitContainer_Info.Panel1
-			// 
-			this.splitContainer_Info.Panel1.Controls.Add(this.button_ShowPlugins);
-			this.splitContainer_Info.Panel1.Controls.Add(this.section_ProjectInfo);
-			this.splitContainer_Info.Panel1.Padding = new System.Windows.Forms.Padding(30, 30, 30, 10);
-			this.splitContainer_Info.Panel1MinSize = 300;
-			// 
-			// splitContainer_Info.Panel2
-			// 
-			this.splitContainer_Info.Panel2.Controls.Add(this.button_HidePlugins);
-			this.splitContainer_Info.Panel2.Controls.Add(this.section_PluginList);
-			this.splitContainer_Info.Panel2.Padding = new System.Windows.Forms.Padding(30, 10, 30, 30);
-			this.splitContainer_Info.Panel2MinSize = 294;
-			this.splitContainer_Info.Size = new System.Drawing.Size(1005, 600);
-			this.splitContainer_Info.SplitterDistance = 300;
-			this.splitContainer_Info.SplitterWidth = 5;
-			this.splitContainer_Info.TabIndex = 1;
+			this.label_Title.AutoSize = true;
+			this.label_Title.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label_Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_Title.Location = new System.Drawing.Point(71, 1);
+			this.label_Title.Margin = new System.Windows.Forms.Padding(1);
+			this.label_Title.Name = "label_Title";
+			this.label_Title.Size = new System.Drawing.Size(933, 78);
+			this.label_Title.TabIndex = 3;
+			this.label_Title.Text = "Project Manager";
+			this.label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// section_ProjectInfo
 			// 
 			this.section_ProjectInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tableLayoutPanel.SetColumnSpan(this.section_ProjectInfo, 2);
 			this.section_ProjectInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.section_ProjectInfo.Location = new System.Drawing.Point(30, 30);
-			this.section_ProjectInfo.Margin = new System.Windows.Forms.Padding(0);
+			this.section_ProjectInfo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.section_ProjectInfo.Location = new System.Drawing.Point(30, 80);
+			this.section_ProjectInfo.Margin = new System.Windows.Forms.Padding(30, 0, 30, 30);
 			this.section_ProjectInfo.Name = "section_ProjectInfo";
-			this.section_ProjectInfo.Size = new System.Drawing.Size(945, 260);
-			this.section_ProjectInfo.TabIndex = 0;
-			// 
-			// section_PluginList
-			// 
-			this.section_PluginList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.section_PluginList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.section_PluginList.Location = new System.Drawing.Point(30, 10);
-			this.section_PluginList.Margin = new System.Windows.Forms.Padding(0);
-			this.section_PluginList.Name = "section_PluginList";
-			this.section_PluginList.Size = new System.Drawing.Size(945, 256);
-			this.section_PluginList.TabIndex = 0;
+			this.section_ProjectInfo.Size = new System.Drawing.Size(945, 490);
+			this.section_ProjectInfo.TabIndex = 1;
 			// 
 			// ProjectMaster
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.Controls.Add(this.splitContainer_Info);
+			this.Controls.Add(this.tableLayoutPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "ProjectMaster";
 			this.Size = new System.Drawing.Size(1005, 600);
-			this.splitContainer_Info.Panel1.ResumeLayout(false);
-			this.splitContainer_Info.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Info)).EndInit();
-			this.splitContainer_Info.ResumeLayout(false);
+			this.tableLayoutPanel.ResumeLayout(false);
+			this.tableLayoutPanel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
-
-		private DarkUI.Controls.DarkButton button_HidePlugins;
-		private DarkUI.Controls.DarkButton button_ShowPlugins;
-		private SectionPluginList section_PluginList;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
 		private SectionProjectSettings section_ProjectInfo;
-		private System.Windows.Forms.SplitContainer splitContainer_Info;
-		private System.Windows.Forms.Timer animationTimer;
-		private System.Windows.Forms.ToolTip toolTip;
+		private DarkUI.Controls.DarkLabel label_Title;
+		private System.Windows.Forms.Panel panel_Icon;
 	}
 }

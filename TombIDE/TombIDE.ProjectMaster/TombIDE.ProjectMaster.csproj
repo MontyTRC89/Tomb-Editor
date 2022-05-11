@@ -109,6 +109,12 @@
       <DependentUpon>LevelManager.cs</DependentUpon>
     </Compile>
     <Compile Include="PakFile.cs" />
+    <Compile Include="PluginManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginManager.Designer.cs">
+      <DependentUpon>PluginManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -119,12 +125,6 @@
     </Compile>
     <Compile Include="Sections\SectionLevelList.Designer.cs">
       <DependentUpon>SectionLevelList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\SectionPluginList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Sections\SectionPluginList.Designer.cs">
-      <DependentUpon>SectionPluginList.cs</DependentUpon>
     </Compile>
     <Compile Include="Sections\SectionProjectSettings.cs">
       <SubType>UserControl</SubType>
@@ -207,6 +207,9 @@
     <EmbeddedResource Include="LevelManager.resx">
       <DependentUpon>LevelManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PluginManager.resx">
+      <DependentUpon>PluginManager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -216,9 +219,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\SectionLevelProperties.resx">
       <DependentUpon>SectionLevelProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\SectionPluginList.resx">
-      <DependentUpon>SectionPluginList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\SectionProjectSettings.resx">
       <DependentUpon>SectionProjectSettings.cs</DependentUpon>
@@ -268,6 +268,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\actions_compile-16.png" />
     <Content Include="Resources\actions_refresh-16.png" />
     <Content Include="Resources\add-48.png" />
     <Content Include="Resources\asterisk-filled-16.png" />
@@ -279,6 +280,9 @@
     <Content Include="Resources\general_Open-16.png" />
     <Content Include="Resources\general_plus_math-16.png" />
     <Content Include="Resources\general_trash-16.png" />
+    <Content Include="Resources\ide-master-30.png" />
+    <Content Include="Resources\ide-plugin-30.png" />
+    <Content Include="Resources\ide_projectmanager.png" />
     <Content Include="Resources\image_file.ico" />
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\obj_file.ico" />
