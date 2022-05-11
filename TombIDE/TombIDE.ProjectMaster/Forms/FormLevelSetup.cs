@@ -36,6 +36,7 @@ namespace TombIDE.ProjectMaster
 			base.OnShown(e);
 
 			textBox_LevelName.Text = "New Level";
+			textBox_LevelName.Focus();
 			textBox_LevelName.SelectAll();
 		}
 
@@ -123,7 +124,7 @@ namespace TombIDE.ProjectMaster
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
 
-                level.Settings.LoadDefaultSoundCatalog();
+				level.Settings.LoadDefaultSoundCatalog();
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
@@ -153,18 +154,7 @@ namespace TombIDE.ProjectMaster
 
 		private void checkBox_GenerateSection_CheckedChanged(object sender, EventArgs e)
 		{
-			if (checkBox_GenerateSection.Checked)
-			{
-				panel_ScriptSettings.Visible = true;
-				panel_01.Height = 108;
-				Height = 277;
-			}
-			else
-			{
-				panel_ScriptSettings.Visible = false;
-				panel_01.Height = 35;
-				Height = 204;
-			}
+			panel_ScriptSettings.Enabled = checkBox_GenerateSection.Checked;
 		}
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
