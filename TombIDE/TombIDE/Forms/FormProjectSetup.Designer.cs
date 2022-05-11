@@ -309,6 +309,7 @@
 			// label_SubTitle02
 			// 
 			this.label_SubTitle02.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_SubTitle02.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_SubTitle02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_SubTitle02.Location = new System.Drawing.Point(0, 30);
 			this.label_SubTitle02.Margin = new System.Windows.Forms.Padding(0);
@@ -320,12 +321,13 @@
 			// 
 			// label_Title02
 			// 
-			this.label_Title02.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Title02.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Title02.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Title02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title02.Location = new System.Drawing.Point(0, 0);
 			this.label_Title02.Margin = new System.Windows.Forms.Padding(0);
 			this.label_Title02.Name = "label_Title02";
-			this.label_Title02.Size = new System.Drawing.Size(392, 30);
+			this.label_Title02.Size = new System.Drawing.Size(520, 30);
 			this.label_Title02.TabIndex = 1;
 			this.label_Title02.Text = "Create a new project";
 			// 
@@ -503,6 +505,7 @@
 			// label_SubTitle01
 			// 
 			this.label_SubTitle01.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_SubTitle01.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_SubTitle01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_SubTitle01.Location = new System.Drawing.Point(0, 30);
 			this.label_SubTitle01.Margin = new System.Windows.Forms.Padding(0);
@@ -514,12 +517,13 @@
 			// 
 			// label_Title01
 			// 
-			this.label_Title01.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Title01.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label_Title01.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Title01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title01.Location = new System.Drawing.Point(0, 0);
 			this.label_Title01.Margin = new System.Windows.Forms.Padding(0);
 			this.label_Title01.Name = "label_Title01";
-			this.label_Title01.Size = new System.Drawing.Size(392, 30);
+			this.label_Title01.Size = new System.Drawing.Size(520, 30);
 			this.label_Title01.TabIndex = 1;
 			this.label_Title01.Text = "Create a new project";
 			// 

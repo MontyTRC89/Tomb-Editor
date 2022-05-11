@@ -31,8 +31,8 @@
 			this.tabPage_ScriptingStudio = new System.Windows.Forms.TabPage();
 			this.tabPage_Plugins = new System.Windows.Forms.TabPage();
 			this.panel_Programs = new System.Windows.Forms.Panel();
-			this.panelButton_Plugins = new System.Windows.Forms.Panel();
 			this.panelButton_ScriptingStudio = new System.Windows.Forms.Panel();
+			this.panelButton_Plugins = new System.Windows.Forms.Panel();
 			this.button_OpenFolder = new System.Windows.Forms.Button();
 			this.button_Special = new System.Windows.Forms.Button();
 			this.button_LaunchGame = new System.Windows.Forms.Button();
@@ -195,18 +195,6 @@
 			this.panel_Programs.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseMove);
 			this.panel_Programs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseUp);
 			// 
-			// panelButton_Plugins
-			// 
-			this.panelButton_Plugins.BackgroundImage = global::TombIDE.Properties.Resources.ide_plugin_30;
-			this.panelButton_Plugins.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.panelButton_Plugins.Location = new System.Drawing.Point(2, 162);
-			this.panelButton_Plugins.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.panelButton_Plugins.Name = "panelButton_Plugins";
-			this.panelButton_Plugins.Size = new System.Drawing.Size(42, 42);
-			this.panelButton_Plugins.TabIndex = 6;
-			this.toolTip.SetToolTip(this.panelButton_Plugins, "Plugin Manager");
-			this.panelButton_Plugins.Click += new System.EventHandler(this.panelButton_Plugins_Click);
-			// 
 			// panelButton_ScriptingStudio
 			// 
 			this.panelButton_ScriptingStudio.BackgroundImage = global::TombIDE.Properties.Resources.ide_script_30;
@@ -218,6 +206,18 @@
 			this.panelButton_ScriptingStudio.TabIndex = 5;
 			this.toolTip.SetToolTip(this.panelButton_ScriptingStudio, "Scripting Studio");
 			this.panelButton_ScriptingStudio.Click += new System.EventHandler(this.panelButton_ScriptingStudio_Click);
+			// 
+			// panelButton_Plugins
+			// 
+			this.panelButton_Plugins.BackgroundImage = global::TombIDE.Properties.Resources.ide_plugin_30;
+			this.panelButton_Plugins.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panelButton_Plugins.Location = new System.Drawing.Point(2, 162);
+			this.panelButton_Plugins.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panelButton_Plugins.Name = "panelButton_Plugins";
+			this.panelButton_Plugins.Size = new System.Drawing.Size(42, 42);
+			this.panelButton_Plugins.TabIndex = 6;
+			this.toolTip.SetToolTip(this.panelButton_Plugins, "Plugin Manager");
+			this.panelButton_Plugins.Click += new System.EventHandler(this.panelButton_Plugins_Click);
 			// 
 			// button_OpenFolder
 			// 
@@ -265,7 +265,7 @@
 			this.panelButton_ProjectManager.Name = "panelButton_ProjectManager";
 			this.panelButton_ProjectManager.Size = new System.Drawing.Size(42, 42);
 			this.panelButton_ProjectManager.TabIndex = 4;
-			this.toolTip.SetToolTip(this.panelButton_ProjectManager, "Project Manager");
+			this.toolTip.SetToolTip(this.panelButton_ProjectManager, "Miscellaneous");
 			this.panelButton_ProjectManager.Click += new System.EventHandler(this.panelButton_ProjectManager_Click);
 			// 
 			// panelButton_LevelManager

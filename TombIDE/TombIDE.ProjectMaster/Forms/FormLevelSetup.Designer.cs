@@ -173,7 +173,7 @@
 			// label_Title
 			// 
 			this.label_Title.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title.Location = new System.Drawing.Point(30, 30);
 			this.label_Title.Margin = new System.Windows.Forms.Padding(0);

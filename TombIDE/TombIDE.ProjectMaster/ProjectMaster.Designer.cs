@@ -58,14 +58,14 @@
 			// 
 			this.label_Title.AutoSize = true;
 			this.label_Title.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label_Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title.Location = new System.Drawing.Point(71, 1);
 			this.label_Title.Margin = new System.Windows.Forms.Padding(1);
 			this.label_Title.Name = "label_Title";
 			this.label_Title.Size = new System.Drawing.Size(933, 78);
 			this.label_Title.TabIndex = 3;
-			this.label_Title.Text = "Project Manager";
+			this.label_Title.Text = "Miscellaneous";
 			this.label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// section_ProjectInfo
