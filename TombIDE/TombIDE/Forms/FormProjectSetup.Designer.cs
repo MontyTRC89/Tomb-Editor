@@ -512,7 +512,7 @@
 			this.label_SubTitle01.Name = "label_SubTitle01";
 			this.label_SubTitle01.Size = new System.Drawing.Size(520, 20);
 			this.label_SubTitle01.TabIndex = 2;
-			this.label_SubTitle01.Text = "Basic Information";
+			this.label_SubTitle01.Text = "General Information";
 			this.label_SubTitle01.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label_Title01
