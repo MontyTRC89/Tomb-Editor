@@ -170,12 +170,6 @@ namespace TombIDE.Shared
 
 		#endregion PRJ2FileDeleted
 
-		public class RequestCreateNewLevelEvent : IIDEEvent
-		{ }
-
-		public class RequestImportLevelEvent : IIDEEvent
-		{ }
-
 		/* Script Editor Events */
 
 		#region ScriptEditor_AppendScriptLines

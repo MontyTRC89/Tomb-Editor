@@ -63,16 +63,6 @@ namespace TombIDE.ProjectMaster
 				_isPendingLevelListReload = true;
 		}
 
-		private void button_Main_New_Click(object sender, System.EventArgs e)
-		{
-			_ide.RaiseEvent(new IDE.RequestCreateNewLevelEvent());
-		}
-
-		private void button_Main_Import_Click(object sender, System.EventArgs e)
-		{
-			_ide.RaiseEvent(new IDE.RequestImportLevelEvent());
-		}
-
 		private void button_RebuildAll_Click(object sender, System.EventArgs e)
 		{
 			if (_ide.Project.Levels.Count == 0)

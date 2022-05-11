@@ -115,14 +115,6 @@ namespace TombIDE.ProjectMaster
 
 				RefreshLevelList();
 			}
-			else if (obj is IDE.RequestCreateNewLevelEvent)
-			{
-				ShowLevelSetupForm();
-			}
-			else if (obj is IDE.RequestImportLevelEvent)
-			{
-				ImportLevel();
-			}
 		}
 
 		private void label_Hint_Click(object sender, EventArgs e) => ShowLevelSetupForm();
@@ -357,7 +349,7 @@ namespace TombIDE.ProjectMaster
 		{
 			// Enable / Disable node specific buttons
 			button_OpenInTE.Enabled = treeView.SelectedNodes.Count > 0;
-			button_Build.Enabled = treeView.SelectedNodes.Count > 0;
+			button_Rebuild.Enabled = treeView.SelectedNodes.Count > 0;
 			button_Rename.Enabled = treeView.SelectedNodes.Count > 0;
 			button_Delete.Enabled = treeView.SelectedNodes.Count > 0;
 			button_MoveUp.Enabled = treeView.SelectedNodes.Count > 0;
@@ -365,7 +357,7 @@ namespace TombIDE.ProjectMaster
 			button_OpenInExplorer.Enabled = treeView.SelectedNodes.Count > 0;
 
 			menuItem_OpenLevel.Enabled = treeView.SelectedNodes.Count > 0;
-			menuItem_Build.Enabled = treeView.SelectedNodes.Count > 0;
+			menuItem_Rebuild.Enabled = treeView.SelectedNodes.Count > 0;
 			menuItem_OpenDirectory.Enabled = treeView.SelectedNodes.Count > 0;
 			menuItem_MoveUp.Enabled = treeView.SelectedNodes.Count > 0;
 			menuItem_MoveDown.Enabled = treeView.SelectedNodes.Count > 0;
@@ -468,7 +460,7 @@ namespace TombIDE.ProjectMaster
 
 		#endregion Methods
 
-		private void menuItem_Build_Click(object sender, EventArgs e)
+		private void button_Rebuild_Click(object sender, EventArgs e)
 		{
 			BatchCompileList batchList = new BatchCompileList();
 

@@ -19,7 +19,7 @@
 		{
 			this.contextMenu = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_OpenLevel = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem_Build = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_Rebuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_OpenDirectory = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -32,8 +32,9 @@
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+			this.separator_04 = new System.Windows.Forms.ToolStripSeparator();
 			this.button_OpenInTE = new System.Windows.Forms.ToolStripButton();
-			this.button_Build = new System.Windows.Forms.ToolStripButton();
+			this.button_Rebuild = new System.Windows.Forms.ToolStripButton();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.button_Rename = new System.Windows.Forms.ToolStripButton();
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
@@ -44,6 +45,8 @@
 			this.button_OpenInExplorer = new System.Windows.Forms.ToolStripButton();
 			this.button_ViewFileNames = new System.Windows.Forms.ToolStripButton();
 			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.contextMenu.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -55,7 +58,7 @@
 			this.contextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_OpenLevel,
-            this.menuItem_Build,
+            this.menuItem_Rebuild,
             this.toolStripSeparator3,
             this.menuItem_OpenDirectory,
             this.toolStripSeparator1,
@@ -65,7 +68,7 @@
             this.menuItem_Rename,
             this.menuItem_Delete});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(218, 201);
+			this.contextMenu.Size = new System.Drawing.Size(218, 179);
 			// 
 			// menuItem_OpenLevel
 			// 
@@ -79,16 +82,16 @@
 			this.menuItem_OpenLevel.Text = "Open level in Tomb Editor";
 			this.menuItem_OpenLevel.Click += new System.EventHandler(this.menuItem_OpenLevel_Click);
 			// 
-			// menuItem_Build
+			// menuItem_Rebuild
 			// 
-			this.menuItem_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Build.Enabled = false;
-			this.menuItem_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-			this.menuItem_Build.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
-			this.menuItem_Build.Name = "menuItem_Build";
-			this.menuItem_Build.Size = new System.Drawing.Size(217, 22);
-			this.menuItem_Build.Text = "Build level...";
-			this.menuItem_Build.Click += new System.EventHandler(this.menuItem_Build_Click);
+			this.menuItem_Rebuild.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_Rebuild.Enabled = false;
+			this.menuItem_Rebuild.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Rebuild.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
+			this.menuItem_Rebuild.Name = "menuItem_Rebuild";
+			this.menuItem_Rebuild.Size = new System.Drawing.Size(217, 22);
+			this.menuItem_Rebuild.Text = "Re-build level...";
+			this.menuItem_Rebuild.Click += new System.EventHandler(this.button_Rebuild_Click);
 			// 
 			// toolStripSeparator3
 			// 
@@ -222,8 +225,11 @@
 			this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton2,
+            this.toolStripButton1,
+            this.separator_04,
             this.button_OpenInTE,
-            this.button_Build,
+            this.button_Rebuild,
             this.separator_01,
             this.button_Rename,
             this.button_Delete,
@@ -240,6 +246,14 @@
 			this.toolStrip.Size = new System.Drawing.Size(316, 30);
 			this.toolStrip.TabIndex = 1;
 			// 
+			// separator_04
+			// 
+			this.separator_04.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_04.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_04.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.separator_04.Name = "separator_04";
+			this.separator_04.Size = new System.Drawing.Size(6, 30);
+			// 
 			// button_OpenInTE
 			// 
 			this.button_OpenInTE.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -253,18 +267,18 @@
 			this.button_OpenInTE.Text = "Open in Tomb Editor...";
 			this.button_OpenInTE.Click += new System.EventHandler(this.menuItem_OpenLevel_Click);
 			// 
-			// button_Build
+			// button_Rebuild
 			// 
-			this.button_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.button_Build.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.button_Build.Enabled = false;
-			this.button_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.button_Build.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
-			this.button_Build.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.button_Build.Name = "button_Build";
-			this.button_Build.Size = new System.Drawing.Size(23, 27);
-			this.button_Build.Text = "Build Level...";
-			this.button_Build.Click += new System.EventHandler(this.menuItem_Build_Click);
+			this.button_Rebuild.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.button_Rebuild.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.button_Rebuild.Enabled = false;
+			this.button_Rebuild.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.button_Rebuild.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_compile_16;
+			this.button_Rebuild.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.button_Rebuild.Name = "button_Rebuild";
+			this.button_Rebuild.Size = new System.Drawing.Size(23, 27);
+			this.button_Rebuild.Text = "Re-build Level...";
+			this.button_Rebuild.Click += new System.EventHandler(this.button_Rebuild_Click);
 			// 
 			// separator_01
 			// 
@@ -384,6 +398,30 @@
 			this.button_Refresh.Text = "Refresh List";
 			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
 			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripButton1.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Import_16;
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton1.Text = "Import an existing level...";
+			this.toolStripButton1.Click += new System.EventHandler(this.button_Import_Click);
+			// 
+			// toolStripButton2
+			// 
+			this.toolStripButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripButton2.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_plus_math_16;
+			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton2.Name = "toolStripButton2";
+			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton2.Text = "Create a new level...";
+			this.toolStripButton2.Click += new System.EventHandler(this.button_New_Click);
+			// 
 			// SectionLevelList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -416,7 +454,7 @@
 		private System.Windows.Forms.ToolStripButton button_Refresh;
 		private System.Windows.Forms.ToolStripButton button_Rename;
 		private System.Windows.Forms.ToolStripButton button_ViewFileNames;
-		private System.Windows.Forms.ToolStripMenuItem menuItem_Build;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_Rebuild;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Delete;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_MoveDown;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_MoveUp;
@@ -429,6 +467,9 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.ToolStripButton button_Build;
+		private System.Windows.Forms.ToolStripButton button_Rebuild;
+		private System.Windows.Forms.ToolStripSeparator separator_04;
+		private System.Windows.Forms.ToolStripButton toolStripButton2;
+		private System.Windows.Forms.ToolStripButton toolStripButton1;
 	}
 }

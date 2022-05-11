@@ -100,7 +100,7 @@
 			this.label_NoInfo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoInfo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoInfo.Name = "label_NoInfo";
-			this.label_NoInfo.Size = new System.Drawing.Size(450, 126);
+			this.label_NoInfo.Size = new System.Drawing.Size(454, 126);
 			this.label_NoInfo.TabIndex = 1;
 			this.label_NoInfo.Text = "Please select a plugin from the list to view its info.";
 			this.label_NoInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -112,7 +112,7 @@
 			this.label_NoLogo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoLogo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoLogo.Name = "label_NoLogo";
-			this.label_NoLogo.Size = new System.Drawing.Size(450, 126);
+			this.label_NoLogo.Size = new System.Drawing.Size(454, 126);
 			this.label_NoLogo.TabIndex = 0;
 			this.label_NoLogo.Text = "No logo image found.";
 			this.label_NoLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -131,7 +131,7 @@
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.treeView.MaxDragChange = 40;
 			this.treeView.Name = "treeView";
-			this.treeView.Size = new System.Drawing.Size(468, 434);
+			this.treeView.Size = new System.Drawing.Size(472, 434);
 			this.treeView.TabIndex = 0;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
 			// 
@@ -191,7 +191,7 @@
 			this.toolStrip.Location = new System.Drawing.Point(1, 25);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			this.toolStrip.Size = new System.Drawing.Size(468, 28);
+			this.toolStrip.Size = new System.Drawing.Size(472, 28);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "darkToolStrip1";
 			// 
@@ -286,13 +286,13 @@
 			// splitContainer.Panel1
 			// 
 			this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanel_List);
-			this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(30, 0, 10, 30);
+			this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(30, 0, 6, 30);
 			this.splitContainer.Panel1MinSize = 360;
 			// 
 			// splitContainer.Panel2
 			// 
 			this.splitContainer.Panel2.Controls.Add(this.tableLayoutPanel_Details);
-			this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(10, 0, 30, 30);
+			this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(6, 0, 30, 30);
 			this.splitContainer.Panel2MinSize = 360;
 			this.splitContainer.Size = new System.Drawing.Size(1024, 560);
 			this.splitContainer.SplitterDistance = 512;
@@ -310,7 +310,7 @@
 			this.tableLayoutPanel_List.RowCount = 2;
 			this.tableLayoutPanel_List.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel_List.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanel_List.Size = new System.Drawing.Size(472, 530);
+			this.tableLayoutPanel_List.Size = new System.Drawing.Size(476, 530);
 			this.tableLayoutPanel_List.TabIndex = 1;
 			// 
 			// button_Download
@@ -321,7 +321,7 @@
 			this.button_Download.Location = new System.Drawing.Point(0, 500);
 			this.button_Download.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
 			this.button_Download.Name = "button_Download";
-			this.button_Download.Size = new System.Drawing.Size(472, 30);
+			this.button_Download.Size = new System.Drawing.Size(476, 30);
 			this.button_Download.TabIndex = 2;
 			this.button_Download.Text = "Download more plugins...";
 			this.button_Download.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -338,7 +338,7 @@
 			this.section_PluginList.Margin = new System.Windows.Forms.Padding(0);
 			this.section_PluginList.Name = "section_PluginList";
 			this.section_PluginList.SectionHeader = "Installed Plugins List";
-			this.section_PluginList.Size = new System.Drawing.Size(472, 490);
+			this.section_PluginList.Size = new System.Drawing.Size(476, 490);
 			this.section_PluginList.TabIndex = 0;
 			// 
 			// tableLayoutPanel_Details
@@ -348,13 +348,13 @@
 			this.tableLayoutPanel_Details.Controls.Add(this.section_PluginDetails, 0, 0);
 			this.tableLayoutPanel_Details.Controls.Add(this.section_Description, 0, 1);
 			this.tableLayoutPanel_Details.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel_Details.Location = new System.Drawing.Point(10, 0);
+			this.tableLayoutPanel_Details.Location = new System.Drawing.Point(6, 0);
 			this.tableLayoutPanel_Details.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel_Details.Name = "tableLayoutPanel_Details";
 			this.tableLayoutPanel_Details.RowCount = 2;
 			this.tableLayoutPanel_Details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
 			this.tableLayoutPanel_Details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel_Details.Size = new System.Drawing.Size(468, 530);
+			this.tableLayoutPanel_Details.Size = new System.Drawing.Size(472, 530);
 			this.tableLayoutPanel_Details.TabIndex = 3;
 			// 
 			// section_PluginDetails
@@ -367,7 +367,7 @@
 			this.section_PluginDetails.Margin = new System.Windows.Forms.Padding(0);
 			this.section_PluginDetails.Name = "section_PluginDetails";
 			this.section_PluginDetails.SectionHeader = "Selected Plugin Details";
-			this.section_PluginDetails.Size = new System.Drawing.Size(468, 220);
+			this.section_PluginDetails.Size = new System.Drawing.Size(472, 220);
 			this.section_PluginDetails.TabIndex = 2;
 			// 
 			// tableLayoutPanel3
@@ -387,7 +387,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(464, 192);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(468, 192);
 			this.tableLayoutPanel3.TabIndex = 5;
 			// 
 			// panel_Logo
@@ -404,7 +404,7 @@
 			this.panel_Logo.Location = new System.Drawing.Point(6, 6);
 			this.panel_Logo.Margin = new System.Windows.Forms.Padding(6, 6, 6, 3);
 			this.panel_Logo.Name = "panel_Logo";
-			this.panel_Logo.Size = new System.Drawing.Size(452, 128);
+			this.panel_Logo.Size = new System.Drawing.Size(456, 128);
 			this.panel_Logo.TabIndex = 0;
 			// 
 			// textBox_DLLName
@@ -418,7 +418,7 @@
 			this.textBox_DLLName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_DLLName.Name = "textBox_DLLName";
 			this.textBox_DLLName.ReadOnly = true;
-			this.textBox_DLLName.Size = new System.Drawing.Size(377, 22);
+			this.textBox_DLLName.Size = new System.Drawing.Size(381, 22);
 			this.textBox_DLLName.TabIndex = 4;
 			// 
 			// textBox_Title
@@ -432,7 +432,7 @@
 			this.textBox_Title.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_Title.Name = "textBox_Title";
 			this.textBox_Title.ReadOnly = true;
-			this.textBox_Title.Size = new System.Drawing.Size(377, 22);
+			this.textBox_Title.Size = new System.Drawing.Size(381, 22);
 			this.textBox_Title.TabIndex = 2;
 			// 
 			// section_Description
@@ -445,7 +445,7 @@
 			this.section_Description.Margin = new System.Windows.Forms.Padding(0, 15, 0, 0);
 			this.section_Description.Name = "section_Description";
 			this.section_Description.SectionHeader = "Plugin Description";
-			this.section_Description.Size = new System.Drawing.Size(468, 295);
+			this.section_Description.Size = new System.Drawing.Size(472, 295);
 			this.section_Description.TabIndex = 3;
 			// 
 			// richTextBox_Description
@@ -458,7 +458,7 @@
 			this.richTextBox_Description.Location = new System.Drawing.Point(1, 25);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(464, 267);
+			this.richTextBox_Description.Size = new System.Drawing.Size(468, 267);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
 			// 
