@@ -662,7 +662,7 @@
 			<moveable id="3"  name="Lara shotgun animation" use_body_from="0" hidden="true" />
 			<moveable id="4"  name="Lara auto-pistol animation" use_body_from="0" hidden="true" />
 			<moveable id="5"  name="Lara Uzi animation" use_body_from="0" hidden="true" />
-			<moveable id="6"  name="Lara M16 animation" use_body_from="0" hidden="true" />
+			<moveable id="6"  name="Lara M16 animation" use_body_from="0" hidden="true" t5m="M16_ANIM"/>
 			<moveable id="7"  name="Lara grenade-launcher animation" use_body_from="0" hidden="true" />
 			<moveable id="8"  name="Lara harpoon-gun animation" use_body_from="0" hidden="true" />
 			<moveable id="9"  name="Lara flare animation" use_body_from="0" hidden="true" />
@@ -787,7 +787,7 @@
 			<moveable id="166"  name="Auto-pistol ammo" />
 			<moveable id="167"  name="Uzi ammo" />
 			<moveable id="168"  name="Harpoons" />
-			<moveable id="169"  name="M16 ammo" />
+			<moveable id="169"  name="M16 ammo" t5m="M16_AMMO_ITEM" />
 			<moveable id="170"  name="Grenades" />
 			<moveable id="171"  name="Small medipack" />
 			<moveable id="172"  name="Large medipack" />
