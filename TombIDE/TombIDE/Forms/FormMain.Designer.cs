@@ -265,7 +265,7 @@
 			this.panelButton_ProjectManager.Name = "panelButton_ProjectManager";
 			this.panelButton_ProjectManager.Size = new System.Drawing.Size(42, 42);
 			this.panelButton_ProjectManager.TabIndex = 4;
-			this.toolTip.SetToolTip(this.panelButton_ProjectManager, "Miscellaneous");
+			this.toolTip.SetToolTip(this.panelButton_ProjectManager, "Miscellaneous Functions & Properties");
 			this.panelButton_ProjectManager.Click += new System.EventHandler(this.panelButton_ProjectManager_Click);
 			// 
 			// panelButton_LevelManager

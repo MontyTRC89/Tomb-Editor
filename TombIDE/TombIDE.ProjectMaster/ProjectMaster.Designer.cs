@@ -65,7 +65,7 @@
 			this.label_Title.Name = "label_Title";
 			this.label_Title.Size = new System.Drawing.Size(933, 78);
 			this.label_Title.TabIndex = 3;
-			this.label_Title.Text = "Miscellaneous";
+			this.label_Title.Text = "Miscellaneous Functions && Properties";
 			this.label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// section_ProjectInfo
