@@ -138,7 +138,7 @@ namespace TombIDE
 			=> tablessTabControl.SelectTab(0);
 
 		private void comboBox_EngineType_SelectedIndexChanged(object sender, EventArgs e)
-			=> checkBox_IncludeFLEP.Visible = checkBox_IncludeFLEP.Enabled = comboBox_EngineType.SelectedIndex == 1 || comboBox_EngineType.SelectedIndex == 2;
+			=> checkBox_IncludeFLEP.Visible = checkBox_IncludeFLEP.Enabled = comboBox_EngineType.SelectedIndex == 2;
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{

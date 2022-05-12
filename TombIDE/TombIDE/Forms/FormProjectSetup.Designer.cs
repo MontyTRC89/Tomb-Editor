@@ -433,7 +433,7 @@
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
             "- Select -",
-            "Tomb Raider 4",
+            "Tomb Raider 4 (TRLE)",
             "Tomb Raider Next-Generation"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
