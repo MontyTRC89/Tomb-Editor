@@ -1631,343 +1631,343 @@
 			<sprite_sequence id="362" name=" Assault-course numerals and punctuation" zoom="1.3712" />
 		</sprite_sequences>
 		<sounds max="370">
-			<sound id= " 0 " name= " LARA_FEET " t5m= " 0 "/>
-			<sound id= " 1 " name= " LARA_CLIMB2 " t5m= " 1 "/>
-			<sound id= " 2 " name= " LARA_NO " t5m= " 2 "/>
-			<sound id= " 3 " name= " LARA_SLIPPING " t5m= " 3 "/>
-			<sound id= " 4 " name= " LARA_LAND " t5m= " 4 "/>
-			<sound id= " 5 " name= " LARA_CLIMB1 " t5m= " 5 "/>
-			<sound id= " 6 " name= " LARA_DRAW " t5m= " 6 "/>
-			<sound id= " 7 " name= " LARA_HOLSTER " t5m= " 7 "/>
-			<sound id= " 8 " name= " LARA_FIRE " t5m= " 8 "/>
-			<sound id= " 9 " name= " LARA_RELOAD " t5m= " 9 "/>
-			<sound id= " 10 " name= " LARA_RICOCHET " t5m= " 10 "/>
-			<sound id= " 11 " name= " LARA_FLARE_IGNITE " t5m= " 379 "/>
-			<sound id= " 12 " name= " LARA_FLARE_BURN " t5m= " 380 "/>
-			<sound id= " 13 " name= " LARA_FLARE_IGNITE_W " t5m= " 381 "/>
-			<sound id= " 14 " name= " LARA_FLARE_BURN_W " t5m= " 382 "/>
-			<sound id= " 15 " name= " LARA_HARPOON_FIRE " t5m= " 373 "/>
-			<sound id= " 16 " name= " LARA_HARPOON_LOAD " t5m= " 374 "/>
-			<sound id= " 17 " name= " LARA_WET_FEET " t5m= " 17 "/>
-			<sound id= " 18 " name= " LARA_WADE " t5m= " 18 "/>
-			<sound id= " 20 " name= " ICKET_BARRIER " t5m= " 888 "/>
-			<sound id= " 21 " name= " CRICKET_LOOP " t5m= " 21 "/>
-			<sound id= " 22 " name= " LARA_HARPOON_LOAD_WATER " t5m= " 379 "/>
-			<sound id= " 23 " name= " LARA_HARPOON_FIRE_WATER " t5m= " 380 "/>
-			<sound id= " 24 " name= " LARA_KNEES_SHUFFLE " t5m= " 24 "/>
-			<sound id= " 25 " name= " PUSH_SWITCH " t5m= " 25 "/>
-			<sound id= " 26 " name= " LARA_CLIMB3 " t5m= " 26 "/>
-			<sound id= " 29 " name= " LARA_JUMP " t5m= " 29 "/>
-			<sound id= " 30 " name= " LARA_FALL " t5m= " 30 "/>
-			<sound id= " 31 " name= " LARA_INJURY " t5m= " 31 "/>
-			<sound id= " 32 " name= " LARA_ROLL " t5m= " 32 "/>
-			<sound id= " 33 " name= " LARA_SPLASH " t5m= " 33 "/>
-			<sound id= " 34 " name= " LARA_GETOUT " t5m= " 34 "/>
-			<sound id= " 35 " name= " LARA_SWIM " t5m= " 35 "/>
-			<sound id= " 36 " name= " LARA_BREATH " t5m= " 36 "/>
-			<sound id= " 38 " name= " LARA_SWITCH " t5m= " 38 "/>
-			<sound id= " 39 " name= " LARA_KEY " t5m= " 39 "/>
-			<sound id= " 41 " name= " LARA_GENERAL_DEATH " t5m= " 41 "/>
-			<sound id= " 42 " name= " LARA_KNEES_DEATH " t5m= " 42 "/>
-			<sound id= " 43 " name= " LARA_UZI_FIRE " t5m= " 43 "/>
-			<sound id= " 44 " name= " LARA_UZI_STOP " t5m= " 44 "/>
-			<sound id= " 45 " name= " LARA_SHOTGUN " t5m= " 45 "/>
-			<sound id= " 46 " name= " LARA_BLOCK_PUSH1 " t5m= " 46 "/>
-			<sound id= " 47 " name= " LARA_BLOCK_PUSH2 " t5m= " 47 "/>
-			<sound id= " 49 " name= " LARA_SHOTGUN_SHELL " t5m= " 49 "/>
-			<sound id= " 51 " name= " LARA_BLKPULL " t5m= " 51 "/>
-			<sound id= " 52 " name= " LARA_FLOATING " t5m= " 52 "/>
-			<sound id= " 53 " name= " LARA_FALLDETH " t5m= " 53 "/>
-			<sound id= " 54 " name= " LARA_GRABHAND " t5m= " 54 "/>
-			<sound id= " 55 " name= " LARA_GRABBODY " t5m= " 55 "/>
-			<sound id= " 56 " name= " LARA_GRABFEET " t5m= " 56 "/>
-			<sound id= " 58 " name= " METEOR " t5m= " 769 "/>
-			<sound id= " 59 " name= " WATER_LOOP " t5m= " 59 "/>
-			<sound id= " 60 " name= " UNDERWATER " t5m= " 60 "/>
-			<sound id= " 61 " name= " UNDERWATER_SWITCH " t5m= " 61 "/>
-			<sound id= " 63 " name= " BLOCK_SOUND " t5m= " 63 "/>
-			<sound id= " 65 " name= " HELICOPTER_LOOP " t5m= " 65 "/>
-			<sound id= " 66 " name= " ROCK_FALL_CRUMBLE " t5m= " 66 "/>
-			<sound id= " 67 " name= " ROCK_FALL_LAND " t5m= " 67 "/>
-			<sound id= " 68 " name= " JET_FLY_BY " t5m= " 846 "/>
-			<sound id= " 69 " name= " STALEGTITE " t5m= " 879 "/>
-			<sound id= " 70 " name= " LARA_THUD " t5m= " 70 "/>
-			<sound id= " 71 " name= " GENERIC_SWOOSH " t5m= " 71 "/>
-			<sound id= " 72 " name= " OIL_SMG_FIRE " t5m= " 853 "/>
-			<sound id= " 73 " name= " CITY_PORTCULLIS " t5m= " 834 "/>
-			<sound id= " 74 " name= " SWINGING_FLAMES " t5m= " 74 "/>
-			<sound id= " 75 " name= " SPINING_HOOKS " t5m= " 877 "/>
-			<sound id= " 76 " name= " BLAST_CIRCLE " t5m= " 714 "/>
-			<sound id= " 77 " name= " BAZOOKA_FIRE " t5m= " 77 "/>
-			<sound id= " 78 " name= " HECKLER&amp;KOCH_FIRE " t5m= " 78 "/>
-			<sound id= " 79 " name= " WATERFALL_LOOP " t5m= " 79 "/>
-			<sound id= " 80 " name= " CROC_ATTACK " t5m= " 80 "/>
-			<sound id= " 81 " name= " CROC_DEATH " t5m= " 81 "/>
-			<sound id= " 82 " name= " PORTCULLIS_UP " t5m= " 857 "/>
-			<sound id= " 83 " name= " PORTCULLIS_DOWN " t5m= " 856 "/>
-			<sound id= " 84 " name= " T_REX_ATTACK " t5m= " 392 "/>
-			<sound id= " 86 " name= " POWER_HUM_LOOP " t5m= " 858 "/>
-			<sound id= " 87 " name= " T-REX_ROAR " t5m= " 394 "/>
-			<sound id= " 88 " name= " T-REX_FOOTSTOMP " t5m= " 393 "/>
-			<sound id= " 89 " name= " T-REX_SNIFF " t5m= " 395 "/>
-			<sound id= " 91 " name= " ARMY_SMG_FIRE " t5m= " 739 "/>
-			<sound id= " 92 " name= " ARMY_SMG_DEATH " t5m= " 740 "/>
-			<sound id= " 93 " name= " ARMY_SMG_FOOTSTEPS " t5m= " 738 "/>
-			<sound id= " 94 " name= " WING_MUTE_ATTACK " t5m= " 777 "/>
-			<sound id= " 95 " name= " WING_MUTE_DEATH " t5m= " 778 "/>
-			<sound id= " 96 " name= " WING_MUTE_FLYING " t5m= " 779 "/>
-			<sound id= " 97 " name= " RAT_ATTACK " t5m= " 531 "/>
-			<sound id= " 98 " name= " RAT_DEATH " t5m= " 532 "/>
-			<sound id= " 99 " name= " TIGER_ROAR " t5m= " 798 "/>
-			<sound id= " 100 " name= " TIGER_BITE " t5m= " 795 "/>
-			<sound id= " 101 " name= " TIGER_STRIKE " t5m= " 799 "/>
-			<sound id= " 102 " name= " TIGER_DEATH " t5m= " 796 "/>
-			<sound id= " 103 " name= " TIGER_GROWL " t5m= " 797 "/>
-			<sound id= " 104 " name= " HECKLER&amp;KOCH_STOP " t5m= " 104 "/>
-			<sound id= " 105 " name= " EXPLOSION1 " t5m= " 105 "/>
-			<sound id= " 106 " name= " EXPLOSION2 " t5m= " 106 "/>
-			<sound id= " 107 " name= " EARTHQUAKE_LOOP " t5m= " 107 "/>
-			<sound id= " 108 " name= " MENU_ROTATE " t5m= " 108 "/>
-			<sound id= " 109 " name= " MENU_CHOOSE " t5m= " 109 "/>
-			<sound id= " 111 " name= " MENU_SPININ " t5m= " 111 "/>
-			<sound id= " 112 " name= " MENU_SPINOUT " t5m= " 112 "/>
-			<sound id= " 114 " name= " MENU_GUNS " t5m= " 114 "/>
-			<sound id= " 115 " name= " MENU_PASSPORT " t5m= " 115 "/>
-			<sound id= " 116 " name= " MENU_MEDI " t5m= " 116 "/>
-			<sound id= " 117 " name= " LARA_CLIMB_WALLS_NOISE " t5m= " 117 "/>
-			<sound id= " 119 " name= " TARGET_HITS " t5m= " 885 "/>
-			<sound id= " 120 " name= " TARGET_SMASH " t5m= " 886 "/>
-			<sound id= " 121 " name= " DESSERT_EAGLE_FIRE " t5m= " 121 "/>
-			<sound id= " 123 " name= " LARA_MINI_LOAD " t5m= " 123 "/>
-			<sound id= " 124 " name= " LARA_MINI_LOCK " t5m= " 124 "/>
-			<sound id= " 125 " name= " LARA_MINI_FIRE " t5m= " 125 "/>
-			<sound id= " 126 " name= " GATE_OPENING " t5m= " 842 "/>
-			<sound id= " 127 " name= " LARA_ELECTRIC_LOOP " t5m= " 127 "/>
-			<sound id= " 128 " name= " LARA_ELECTRIC_CRACKLES " t5m= " 128 "/>
-			<sound id= " 129 " name= " COMMANDER " t5m= " 801 "/>
-			<sound id= " 130 " name= " SWITCH_COVER " t5m= " 884 "/>
-			<sound id= " 131 " name= " CLEANER_FUSEBOX " t5m= " 835 "/>
-			<sound id= " 132 " name= " CROW_CAW " t5m= " 536 "/>
-			<sound id= " 133 " name= " CROW_WING_FLAP " t5m= " 537 "/>
-			<sound id= " 134 " name= " CROW_DEATH " t5m= " 538 "/>
-			<sound id= " 135 " name= " CROW_ATTACK " t5m= " 538 "/>
-			<sound id= " 136 " name= " SOFT_WIND_LOOP " t5m= " 136 "/>
-			<sound id= " 137 " name= " SWAT_SMG_FIRE " t5m= " 880 "/>
-			<sound id= " 138 " name= " LIZARD_MAN_ATTACK_1 " t5m= " 789 "/>
-			<sound id= " 139 " name= " LIZARD_MAN_ATTACK_2 " t5m= " 790 "/>
-			<sound id= " 140 " name= " LIZARD_MAN_DEATH " t5m= " 792 "/>
-			<sound id= " 141 " name= " LIZARD_MAN_CLIMB " t5m= " 791 "/>
-			<sound id= " 142 " name= " LIZARD_MAN_FIRE " t5m= " 793 "/>
-			<sound id= " 143 " name= " GENERIC_BODY_SLAM " t5m= " 143 "/>
-			<sound id= " 145 " name= " LARA_SPIKE_DEATH " t5m= " 145 "/>
-			<sound id= " 147 " name= " ROLLING_BALL " t5m= " 147 "/>
-			<sound id= " 148 " name= " TUBE_LOOP " t5m= " 890 "/>
-			<sound id= " 149 " name= " RUMBLE_NEXTDOOR " t5m= " 149 "/>
-			<sound id= " 150 " name= " LOOP_FOR_SMALL_FIRES " t5m= " 150 "/>
-			<sound id= " 152 " name= " QUAD_START " t5m= " 721 "/>
-			<sound id= " 153 " name= " QUAD_IDLE " t5m= " 717 "/>
-			<sound id= " 154 " name= " QUAD_ACCELERATE " t5m= " 715 "/>
-			<sound id= " 155 " name= " QUAD_MOVE " t5m= " 719 "/>
-			<sound id= " 156 " name= " QUAD_STOP " t5m= " 722 "/>
-			<sound id= " 157 " name= " BATS_1 " t5m= " 157 "/>
-			<sound id= " 158 " name= " LOOP_FOR_GAS_HISS " t5m= " 849 "/>
-			<sound id= " 159 " name= " LAUNCHER_1 " t5m= " 159 "/>
-			<sound id= " 160 " name= " LAUNCHER_2 " t5m= " 160 "/>
-			<sound id= " 161 " name= " TRAPDOOR_OPEN " t5m= " 161 "/>
-			<sound id= " 162 " name= " TRAPDOOR_CLOSE " t5m= " 162 "/>
-			<sound id= " 163 " name= " RESERVOIR_FLUSH " t5m= " 862 "/>
-			<sound id= " 164 " name= " MACAQUE_SATND_WAIT " t5m= " 815 "/>
-			<sound id= " 165 " name= " MACAQUE_ATTACK_LOW " t5m= " 810 "/>
-			<sound id= " 166 " name= " MACAQUE_ATTACK_JUMP " t5m= " 809 "/>
-			<sound id= " 167 " name= " MACAQUE_JUMP " t5m= " 813 "/>
-			<sound id= " 168 " name= " MACAQUE_DEATH " t5m= " 812 "/>
-			<sound id= " 169 " name= " SEAL_MUTE_FIRE " t5m= " 773 "/>
-			<sound id= " 170 " name= " SEAL_MUTE_BREATH_IN " t5m= " 770 "/>
-			<sound id= " 171 " name= " SEAL_MUTE_FIRE_2 " t5m= " 774 "/>
-			<sound id= " 172 " name= " SEAL_MUTE_FOOT " t5m= " 775 "/>
-			<sound id= " 173 " name= " SEAL_MUTE_DEATH " t5m= " 772 "/>
-			<sound id= " 174 " name= " SEAL_MUTE_BRUSH_TAIL " t5m= " 771 "/>
-			<sound id= " 175 " name= " SEAL_MUTE_HIT_FLR " t5m= " 776 "/>
-			<sound id= " 176 " name= " DOG_ATTACK_1 " t5m= " 176 "/>
-			<sound id= " 177 " name= " DOG_AWARE " t5m= " 175 "/>
-			<sound id= " 178 " name= " DOG_FOOT_1 " t5m= " 178 "/>
-			<sound id= " 179 " name= " DOG_JUMP " t5m= " 179 "/>
-			<sound id= " 180 " name= " DOG_GROWL " t5m= " 530 "/>
-			<sound id= " 181 " name= " DOG_DEATH " t5m= " 181 "/>
-			<sound id= " 182 " name= " VULTURE_WING_FLAP " t5m= " 828 "/>
-			<sound id= " 183 " name= " VULTURE_ATTACK " t5m= " 825 "/>
-			<sound id= " 184 " name= " VULTURE_DIE " t5m= " 826 "/>
-			<sound id= " 185 " name= " VULTURE_GLIDE " t5m= " 827 "/>
-			<sound id= " 186 " name= " SCUBA_DIVER_FLIPPER " t5m= " 595 "/>
-			<sound id= " 187 " name= " SCUBA_DIVER_ARM " t5m= " 590 "/>
-			<sound id= " 188 " name= " SCUBA_DIVER_BREATH_W " t5m= " 592 "/>
-			<sound id= " 189 " name= " SCUBA_DIVER_BREATH_S " t5m= " 591 "/>
-			<sound id= " 190 " name= " LONDON_MERCENARY_DEATH " t5m= " 808 "/>
-			<sound id= " 191 " name= " CLEANER_LOOP " t5m= " 836 "/>
-			<sound id= " 192 " name= " SCUBA_DIVER_DEATH " t5m= " 593 "/>
-			<sound id= " 193 " name= " SCUBA_DIVER_DIVING " t5m= " 594 "/>
-			<sound id= " 194 " name= " BOAT_START " t5m= " 728 "/>
-			<sound id= " 195 " name= " BOAT_IDLE " t5m= " 724 "/>
-			<sound id= " 196 " name= " BOAT_ACCELERATE " t5m= " 723 "/>
-			<sound id= " 197 " name= " BOAT_MOVING " t5m= " 725 "/>
-			<sound id= " 198 " name= " BOAT_STOP " t5m= " 729 "/>
-			<sound id= " 199 " name= " BOAT_SLOW_DOWN " t5m= " 727 "/>
-			<sound id= " 200 " name= " JET_ROOFS " t5m= " 847 "/>
-			<sound id= " 201 " name= " QUAD_SIDE_IMPACT " t5m= " 710 "/>
-			<sound id= " 202 " name= " QUAD_FRONT_IMPACT " t5m= " 716 "/>
-			<sound id= " 203 " name= " QUAD_LAND " t5m= " 718 "/>
-			<sound id= " 204 " name= " FLAME_THROWER_LOOP " t5m= " 204 "/>
-			<sound id= " 205 " name= " RUMMBLE " t5m= " 205 "/>
-			<sound id= " 206 " name= " DRILL_BIT_1 " t5m= " 840 "/>
-			<sound id= " 207 " name= " VERY_SMALL_WINCH " t5m= " 895 "/>
-			<sound id= " 208 " name= " ALARM_1 " t5m= " 833 "/>
-			<sound id= " 209 " name= " MINE_CART_TRACK_LOOP " t5m= " 735 "/>
-			<sound id= " 210 " name= " MINE_CART_PULLY_LOOP " t5m= " 734 "/>
-			<sound id= " 211 " name= " MINE_CART_CLUNK_START " t5m= " 733 "/>
-			<sound id= " 212 " name= " SAVE_CRYSTAL " t5m= " 836 "/>
-			<sound id= " 213 " name= " WOOD_GATE " t5m= " 0 "/>
-			<sound id= " 214 " name= " METAL_SHUTTERS_SMASH " t5m= " 851 "/>
-			<sound id= " 215 " name= " UNDERWATER_FAN_ON " t5m= " 891 "/>
-			<sound id= " 219 " name= " MINE_CART_SREECH_BRAKE " t5m= " 735 "/>
-			<sound id= " 220 " name= " SPANNER " t5m= " 860 "/>
-			<sound id= " 221 " name= " SMALL_METAL_SHUTTERS " t5m= " 874 "/>
-			<sound id= " 222 " name= " AREA51_SWINGER_START " t5m= " 804 "/>
-			<sound id= " 223 " name= " AREA51_SWINGER_STOP " t5m= " 805 "/>
-			<sound id= " 224 " name= " AREA51_SWINGER_LOOP " t5m= " 803 "/>
-			<sound id= " 231 " name= " SKEL_TRAP_PART_1 " t5m= " 866 "/>
-			<sound id= " 232 " name= " SKEL_TRAP_PART-2 " t5m= " 867 "/>
-			<sound id= " 233 " name= " SMALL_FAN " t5m= " 872 "/>
-			<sound id= " 234 " name= " TONY_BOSS_STONE_DEATH " t5m= " 690 "/>
-			<sound id= " 235 " name= " TONY_BOSS_NORMAL_DEATH " t5m= " 686 "/>
-			<sound id= " 236 " name= " TONY_BOSS_LAUGH " t5m= " 685 "/>
-			<sound id= " 237 " name= " LONDON_BOSS_SHOOTER " t5m= " 701 "/>
-			<sound id= " 238 " name= " HARD_WIND_LOOP " t5m= " 0 "/>
-			<sound id= " 239 " name= " COMPY_ATTACK " t5m= " 759 "/>
-			<sound id= " 240 " name= " COMPY_JUMP " t5m= " 761 "/>
-			<sound id= " 241 " name= " COMPY_WAIT " t5m= " 763 "/>
-			<sound id= " 242 " name= " COMPY_DIE " t5m= " 760 "/>
-			<sound id= " 243 " name= " COMPY_RUN_WALK " t5m= " 762 "/>
-			<sound id= " 244 " name= " BLOWPIPE_NATIVE_FEET " t5m= " 744 "/>
-			<sound id= " 245 " name= " BLOWPIPE_NATIVE_ATTACK " t5m= " 741 "/>
-			<sound id= " 246 " name= " BLOWPIPE_NATIVE_DEATH " t5m= " 743 "/>
-			<sound id= " 247 " name= " BLOWPIPE_NATIVE_BLOW " t5m= " 742 "/>
-			<sound id= " 248 " name= " BLOWPIPE_NATIVE_SWOOSH " t5m= " 745 "/>
-			<sound id= " 249 " name= " SHIVA_WALK_MURMA " t5m= " 787 "/>
-			<sound id= " 250 " name= " RAPTOR_FEET " t5m= " 823 "/>
-			<sound id= " 251 " name= " RAPTOR_ATTACK_1 " t5m= " 818 "/>
-			<sound id= " 252 " name= " RAPTOR_ATTACK_2 " t5m= " 819 "/>
-			<sound id= " 253 " name= " RAPTOR_ATTACK_3 " t5m= " 820 "/>
-			<sound id= " 254 " name= " RAPTOR_ROAR " t5m= " 824 "/>
-			<sound id= " 255 " name= " RAPTOR_DIE_1 " t5m= " 821 "/>
-			<sound id= " 256 " name= " RAPTOR_DIE_2 " t5m= " 822 "/>
-			<sound id= " 257 " name= " HUGE_ROCKET_LOOP " t5m= " 0 "/>
-			<sound id= " 258 " name= " SHIVA_SWORD_1 " t5m= " 785 "/>
-			<sound id= " 259 " name= " SHIVA_SWORD_2 " t5m= " 786 "/>
-			<sound id= " 260 " name= " SHIVA_DEATH " t5m= " 781 "/>
-			<sound id= " 261 " name= " SHIVA_FOOTSTEP " t5m= " 782 "/>
-			<sound id= " 262 " name= " SHIVA_LAUGH " t5m= " 784 "/>
-			<sound id= " 263 " name= " SHIVA_HIT_GROUND " t5m= " 783 "/>
-			<sound id= " 264 " name= " HYBRID_FOOT " t5m= " 766 "/>
-			<sound id= " 265 " name= " HYBRID_HOOF " t5m= " 767 "/>
-			<sound id= " 266 " name= " HYBRID_ATTACK " t5m= " 764 "/>
-			<sound id= " 267 " name= " HYBRID_DEATH " t5m= " 765 "/>
-			<sound id= " 268 " name= " HYBRID_SWOOSH " t5m= " 768 "/>
-			<sound id= " 269 " name= " SMALL_SWITCH " t5m= " 875 "/>
-			<sound id= " 270 " name= " CLAW_MUTE_FOOTSTEPS " t5m= " 755 "/>
-			<sound id= " 271 " name= " CLAW_MUTE_ATTACK " t5m= " 746 "/>
-			<sound id= " 272 " name= " CLAW_MUTE_DEATH " t5m= " 754 "/>
-			<sound id= " 273 " name= " CLAW_MUTE_BODY_THUD " t5m= " 752 "/>
-			<sound id= " 274 " name= " CLAW_MUTE_LAZER " t5m= " 756 "/>
-			<sound id= " 275 " name= " CLAW_MUTE_SWOOSH " t5m= " 757 "/>
-			<sound id= " 276 " name= " CLAW_MUTE_CLAW " t5m= " 753 "/>
-			<sound id= " 278 " name= " SMALL_DOOR_SUBWAY " t5m= " 870 "/>
-			<sound id= " 279 " name= " DEATH_SLIDE_GRAB " t5m= " 624 "/>
-			<sound id= " 280 " name= " DEATH_SLIDE_GO " t5m= " 625 "/>
-			<sound id= " 281 " name= " DEATH_SLIDE_STOP " t5m= " 626 "/>
-			<sound id= " 282 " name= " RADAR_BLIP " t5m= " 860 "/>
-			<sound id= " 283 " name= " BOB_FEET " t5m= " 749 "/>
-			<sound id= " 284 " name= " BOB_ATTACK " t5m= " 746 "/>
-			<sound id= " 285 " name= " BOB_DEATH " t5m= " 748 "/>
-			<sound id= " 286 " name= " BOB_CLIMB " t5m= " 747 "/>
-			<sound id= " 287 " name= " BOB_GET_DOWN " t5m= " 750 "/>
-			<sound id= " 288 " name= " FOOTSTEPS_MUD " t5m= " 288 "/>
-			<sound id= " 289 " name= " FOOTSTEPS_ICE " t5m= " 370 "/>
-			<sound id= " 290 " name= " FOOTSTEPS_GRAVEL " t5m= " 290 "/>
-			<sound id= " 291 " name= " FOOTSTEPS_SAND_&amp;_GRASS " t5m= " 291 "/>
-			<sound id= " 292 " name= " FOOTSTEPS_WOOD " t5m= " 292 "/>
-			<sound id= " 293 " name= " FOOTSTEPS_SNOW " t5m= " 371 "/>
-			<sound id= " 294 " name= " FOOTSTEPS_METAL " t5m= " 294 "/>
-			<sound id= " 295 " name= " LOOP_FOR_LONDON " t5m= " 850 "/>
-			<sound id= " 296 " name= " 1ST_LOOP_FOR_BIG_DRILL " t5m= " 831 "/>
-			<sound id= " 297 " name= " SMALL_DOOR_SUBWAY_CLOSE " t5m= " 871 "/>
-			<sound id= " 298 " name= " 2ND_LOOP_FOR_BIG_DRILL " t5m= " 832 "/>
-			<sound id= " 299 " name= " ENGLISH_HOY! " t5m= " 737 "/>
-			<sound id= " 300 " name= " AMERCAN_HOY! " t5m= " 788 "/>
-			<sound id= " 301 " name= " OIL_RED_SMG_DEATH " t5m= " 852 "/>
-			<sound id= " 302 " name= " RADIO_LOOP " t5m= " 861 "/>
-			<sound id= " 303 " name= " PUNK_ATTACK " t5m= " 816 "/>
-			<sound id= " 304 " name= " PUNK_DEATH " t5m= " 817 "/>
-			<sound id= " 305 " name= " SECURITY_GUARD_FIRE " t5m= " 830 "/>
-			<sound id= " 306 " name= " SECURITY_GUARD_DEATH " t5m= " 829 "/>
-			<sound id= " 307 " name= " LAZER_LOOP " t5m= " 848 "/>
-			<sound id= " 308 " name= " WINSTON_BRUSH_OFF " t5m= " 597 "/>
-			<sound id= " 309 " name= " WINSTON_CUPS " t5m= " 599 "/>
-			<sound id= " 310 " name= " WINSTON_HU! " t5m= " 603 "/>
-			<sound id= " 311 " name= " WINSTON_BULLET_TRAY " t5m= " 598 "/>
-			<sound id= " 312 " name= " WINSTON_FOOTSTEPS " t5m= " 601 "/>
-			<sound id= " 313 " name= " WINSTON_TAKE_HIT " t5m= " 604 "/>
-			<sound id= " 314 " name= " WINSTON_GET_UP " t5m= " 602 "/>
-			<sound id= " 315 " name= " WINSTON_FART! " t5m= " 600 "/>
-			<sound id= " 316 " name= " WALL_BLADES " t5m= " 896 "/>
-			<sound id= " 317 " name= " MACAQUE_CHATTER " t5m= " 811 "/>
-			<sound id= " 318 " name= " MACAQUE_ROLL " t5m= " 814 "/>
-			<sound id= " 319 " name= " WHALE_CALL " t5m= " 800 "/>
-			<sound id= " 320 " name= " GENERATOR_LOOP " t5m= " 843 "/>
-			<sound id= " 321 " name= " GENERATOR_SHITTING " t5m= " 844 "/>
-			<sound id= " 322 " name= " GASMETER " t5m= " 841 "/>
-			<sound id= " 323 " name= " LARA_TURN_WHEEL " t5m= " 636 "/>
-			<sound id= " 324 " name= " COBRA_HISS " t5m= " 758 "/>
-			<sound id= " 325 " name= " DART_SPITT " t5m= " 807 "/>
-			<sound id= " 326 " name= " RATTLE_SNAKE " t5m= " 794 "/>
-			<sound id= " 327 " name= " SWING_PUMP " t5m= " 881 "/>
-			<sound id= " 328 " name= " SQEEK " t5m= " 878 "/>
-			<sound id= " 330 " name= " TONK " t5m= " 889 "/>
-			<sound id= " 331 " name= " BOO_MUTE " t5m= " 780 "/>
-			<sound id= " 332 " name= " VENDING_MACHINE_LOOP " t5m= " 893 "/>
-			<sound id= " 333 " name= " VENDING_SPIT " t5m= " 894 "/>
-			<sound id= " 337 " name= " TICK_TOCK " t5m= " 887 "/>
-			<sound id= " 338 " name= " WILARD_FOOT_STEPS " t5m= " 709 "/>
-			<sound id= " 339 " name= " WILARD_ATTACK " t5m= " 706 "/>
-			<sound id= " 340 " name= " WILARD_TAKE_HIT " t5m= " 713 "/>
-			<sound id= " 341 " name= " WILARD_LEGS_SHUFFLE " t5m= " 710 "/>
-			<sound id= " 342 " name= " WILARD_FIRE_CHARGE " t5m= " 707 "/>
-			<sound id= " 343 " name= " WILARD_FIRE_SHOOT " t5m= " 708 "/>
-			<sound id= " 344 " name= " WILARD_ODD_NOISE " t5m= " 711 "/>
-			<sound id= " 345 " name= " WILARD_STAB " t5m= " 712 "/>
-			<sound id= " 346 " name= " LITTLE_SUB_LOOP " t5m= " 730 "/>
-			<sound id= " 347 " name= " LITTLE_SUB_START " t5m= " 731 "/>
-			<sound id= " 348 " name= " LITTLE_SUB_STOP " t5m= " 732 "/>
-			<sound id= " 349 " name= " LONDON_BOSS_DIE_PART_1 " t5m= " 697 "/>
-			<sound id= " 350 " name= " LONDON_BOSS_DIE_PART_2 " t5m= " 698 "/>
-			<sound id= " 351 " name= " LONDON_BOSS_FIRE " t5m= " 699 "/>
-			<sound id= " 352 " name= " LONDON_BOSS_SUMMON " t5m= " 702 "/>
-			<sound id= " 353 " name= " LONDON_BOSS_TAKE_HIT " t5m= " 704 "/>
-			<sound id= " 354 " name= " LONDON_BOSS_VAULT " t5m= " 705 "/>
-			<sound id= " 355 " name= " LONDON_BOSS_SUMMON_NOT " t5m= " 703 "/>
-			<sound id= " 356 " name= " LONDON_BOSS_LAUGH " t5m= " 700 "/>
-			<sound id= " 357 " name= " WATER_MILL " t5m= " 897 "/>
-			<sound id= " 358 " name= " PLUG_WINCH " t5m= " 855 "/>
-			<sound id= " 359 " name= " GIANT_METAL_WHEELS " t5m= " 845 "/>
-			<sound id= " 360 " name= " TRIBOSS_ATTACK " t5m= " 691 "/>
-			<sound id= " 361 " name= " TRIBOSS_TAKE_HIT " t5m= " 695 "/>
-			<sound id= " 362 " name= " TRIBOSS_TURN_CHAIR " t5m= " 696 "/>
-			<sound id= " 363 " name= " TRIBOSS_SHOOT " t5m= " 694 "/>
-			<sound id= " 364 " name= " TRIBOSS_DEATH_VOCAL " t5m= " 693 "/>
-			<sound id= " 365 " name= " TRIBOSS_CHAIR_2 " t5m= " 692 "/>
-			<sound id= " 366 " name= " TONY_BOSS_SHOOT_1 " t5m= " 687 "/>
-			<sound id= " 367 " name= " TONY_BOSS_SHOOT_2 " t5m= " 688 "/>
-			<sound id= " 368 " name= " TONY_BOSS_SHOOT_3 " t5m= " 689 "/>
-			<sound id= " 369 " name= " TONY_BOSS_ATTACK " t5m= " 684 "/>
+			<sound id="0" name="LARA_FEET" t5m="0"/>
+			<sound id="1" name="LARA_CLIMB2" t5m="1"/>
+			<sound id="2" name="LARA_NO" t5m="2"/>
+			<sound id="3" name="LARA_SLIPPING" t5m="3"/>
+			<sound id="4" name="LARA_LAND" t5m="4"/>
+			<sound id="5" name="LARA_CLIMB1" t5m="5"/>
+			<sound id="6" name="LARA_DRAW" t5m="6"/>
+			<sound id="7" name="LARA_HOLSTER" t5m="7"/>
+			<sound id="8" name="LARA_FIRE" t5m="8"/>
+			<sound id="9" name="LARA_RELOAD" t5m="9"/>
+			<sound id="10" name="LARA_RICOCHET" t5m="10"/>
+			<sound id="11" name="LARA_FLARE_IGNITE" t5m="379"/>
+			<sound id="12" name="LARA_FLARE_BURN" t5m="380"/>
+			<sound id="13" name="LARA_FLARE_IGNITE_W" t5m="381"/>
+			<sound id="14" name="LARA_FLARE_BURN_W" t5m="382"/>
+			<sound id="15" name="LARA_HARPOON_FIRE" t5m="373"/>
+			<sound id="16" name="LARA_HARPOON_LOAD" t5m="374"/>
+			<sound id="17" name="LARA_WET_FEET" t5m="17"/>
+			<sound id="18" name="LARA_WADE" t5m="18"/>
+			<sound id="20" name="ICKET_BARRIER" t5m="888"/>
+			<sound id="21" name="CRICKET_LOOP" t5m="21"/>
+			<sound id="22" name="LARA_HARPOON_LOAD_WATER" t5m="379"/>
+			<sound id="23" name="LARA_HARPOON_FIRE_WATER" t5m="380"/>
+			<sound id="24" name="LARA_KNEES_SHUFFLE" t5m="24"/>
+			<sound id="25" name="PUSH_SWITCH" t5m="25"/>
+			<sound id="26" name="LARA_CLIMB3" t5m="26"/>
+			<sound id="29" name="LARA_JUMP" t5m="29"/>
+			<sound id="30" name="LARA_FALL" t5m="30"/>
+			<sound id="31" name="LARA_INJURY" t5m="31"/>
+			<sound id="32" name="LARA_ROLL" t5m="32"/>
+			<sound id="33" name="LARA_SPLASH" t5m="33"/>
+			<sound id="34" name="LARA_GETOUT" t5m="34"/>
+			<sound id="35" name="LARA_SWIM" t5m="35"/>
+			<sound id="36" name="LARA_BREATH" t5m="36"/>
+			<sound id="38" name="LARA_SWITCH" t5m="38"/>
+			<sound id="39" name="LARA_KEY" t5m="39"/>
+			<sound id="41" name="LARA_GENERAL_DEATH" t5m="41"/>
+			<sound id="42" name="LARA_KNEES_DEATH" t5m="42"/>
+			<sound id="43" name="LARA_UZI_FIRE" t5m="43"/>
+			<sound id="44" name="LARA_UZI_STOP" t5m="44"/>
+			<sound id="45" name="LARA_SHOTGUN" t5m="45"/>
+			<sound id="46" name="LARA_BLOCK_PUSH1" t5m="46"/>
+			<sound id="47" name="LARA_BLOCK_PUSH2" t5m="47"/>
+			<sound id="49" name="LARA_SHOTGUN_SHELL" t5m="49"/>
+			<sound id="51" name="LARA_BLKPULL" t5m="51"/>
+			<sound id="52" name="LARA_FLOATING" t5m="52"/>
+			<sound id="53" name="LARA_FALLDETH" t5m="53"/>
+			<sound id="54" name="LARA_GRABHAND" t5m="54"/>
+			<sound id="55" name="LARA_GRABBODY" t5m="55"/>
+			<sound id="56" name="LARA_GRABFEET" t5m="56"/>
+			<sound id="58" name="METEOR" t5m="769"/>
+			<sound id="59" name="WATER_LOOP" t5m="59"/>
+			<sound id="60" name="UNDERWATER" t5m="60"/>
+			<sound id="61" name="UNDERWATER_SWITCH" t5m="61"/>
+			<sound id="63" name="BLOCK_SOUND" t5m="63"/>
+			<sound id="65" name="HELICOPTER_LOOP" t5m="65"/>
+			<sound id="66" name="ROCK_FALL_CRUMBLE" t5m="66"/>
+			<sound id="67" name="ROCK_FALL_LAND" t5m="67"/>
+			<sound id="68" name="JET_FLY_BY" t5m="846"/>
+			<sound id="69" name="STALEGTITE" t5m="879"/>
+			<sound id="70" name="LARA_THUD" t5m="70"/>
+			<sound id="71" name="GENERIC_SWOOSH" t5m="71"/>
+			<sound id="72" name="OIL_SMG_FIRE" t5m="853"/>
+			<sound id="73" name="CITY_PORTCULLIS" t5m="834"/>
+			<sound id="74" name="SWINGING_FLAMES" t5m="74"/>
+			<sound id="75" name="SPINING_HOOKS" t5m="877"/>
+			<sound id="76" name="BLAST_CIRCLE" t5m="714"/>
+			<sound id="77" name="BAZOOKA_FIRE" t5m="77"/>
+			<sound id="78" name="HECKLER&amp;KOCH_FIRE" t5m="78"/>
+			<sound id="79" name="WATERFALL_LOOP" t5m="79"/>
+			<sound id="80" name="CROC_ATTACK" t5m="80"/>
+			<sound id="81" name="CROC_DEATH" t5m="81"/>
+			<sound id="82" name="PORTCULLIS_UP" t5m="857"/>
+			<sound id="83" name="PORTCULLIS_DOWN" t5m="856"/>
+			<sound id="84" name="T_REX_ATTACK" t5m="392"/>
+			<sound id="86" name="POWER_HUM_LOOP" t5m="858"/>
+			<sound id="87" name="T-REX_ROAR" t5m="394"/>
+			<sound id="88" name="T-REX_FOOTSTOMP" t5m="393"/>
+			<sound id="89" name="T-REX_SNIFF" t5m="395"/>
+			<sound id="91" name="ARMY_SMG_FIRE" t5m="739"/>
+			<sound id="92" name="ARMY_SMG_DEATH" t5m="740"/>
+			<sound id="93" name="ARMY_SMG_FOOTSTEPS" t5m="738"/>
+			<sound id="94" name="WING_MUTE_ATTACK" t5m="777"/>
+			<sound id="95" name="WING_MUTE_DEATH" t5m="778"/>
+			<sound id="96" name="WING_MUTE_FLYING" t5m="779"/>
+			<sound id="97" name="RAT_ATTACK" t5m="531"/>
+			<sound id="98" name="RAT_DEATH" t5m="532"/>
+			<sound id="99" name="TIGER_ROAR" t5m="798"/>
+			<sound id="100" name="TIGER_BITE" t5m="795"/>
+			<sound id="101" name="TIGER_STRIKE" t5m="799"/>
+			<sound id="102" name="TIGER_DEATH" t5m="796"/>
+			<sound id="103" name="TIGER_GROWL" t5m="797"/>
+			<sound id="104" name="HECKLER&amp;KOCH_STOP" t5m="104"/>
+			<sound id="105" name="EXPLOSION1" t5m="105"/>
+			<sound id="106" name="EXPLOSION2" t5m="106"/>
+			<sound id="107" name="EARTHQUAKE_LOOP" t5m="107"/>
+			<sound id="108" name="MENU_ROTATE" t5m="108"/>
+			<sound id="109" name="MENU_CHOOSE" t5m="109"/>
+			<sound id="111" name="MENU_SPININ" t5m="111"/>
+			<sound id="112" name="MENU_SPINOUT" t5m="112"/>
+			<sound id="114" name="MENU_GUNS" t5m="114"/>
+			<sound id="115" name="MENU_PASSPORT" t5m="115"/>
+			<sound id="116" name="MENU_MEDI" t5m="116"/>
+			<sound id="117" name="LARA_CLIMB_WALLS_NOISE" t5m="117"/>
+			<sound id="119" name="TARGET_HITS" t5m="885"/>
+			<sound id="120" name="TARGET_SMASH" t5m="886"/>
+			<sound id="121" name="DESSERT_EAGLE_FIRE" t5m="121"/>
+			<sound id="123" name="LARA_MINI_LOAD" t5m="123"/>
+			<sound id="124" name="LARA_MINI_LOCK" t5m="124"/>
+			<sound id="125" name="LARA_MINI_FIRE" t5m="125"/>
+			<sound id="126" name="GATE_OPENING" t5m="842"/>
+			<sound id="127" name="LARA_ELECTRIC_LOOP" t5m="127"/>
+			<sound id="128" name="LARA_ELECTRIC_CRACKLES" t5m="128"/>
+			<sound id="129" name="COMMANDER" t5m="801"/>
+			<sound id="130" name="SWITCH_COVER" t5m="884"/>
+			<sound id="131" name="CLEANER_FUSEBOX" t5m="835"/>
+			<sound id="132" name="CROW_CAW" t5m="536"/>
+			<sound id="133" name="CROW_WING_FLAP" t5m="537"/>
+			<sound id="134" name="CROW_DEATH" t5m="538"/>
+			<sound id="135" name="CROW_ATTACK" t5m="538"/>
+			<sound id="136" name="SOFT_WIND_LOOP" t5m="136"/>
+			<sound id="137" name="SWAT_SMG_FIRE" t5m="880"/>
+			<sound id="138" name="LIZARD_MAN_ATTACK_1" t5m="789"/>
+			<sound id="139" name="LIZARD_MAN_ATTACK_2" t5m="790"/>
+			<sound id="140" name="LIZARD_MAN_DEATH" t5m="792"/>
+			<sound id="141" name="LIZARD_MAN_CLIMB" t5m="791"/>
+			<sound id="142" name="LIZARD_MAN_FIRE" t5m="793"/>
+			<sound id="143" name="GENERIC_BODY_SLAM" t5m="143"/>
+			<sound id="145" name="LARA_SPIKE_DEATH" t5m="145"/>
+			<sound id="147" name="ROLLING_BALL" t5m="147"/>
+			<sound id="148" name="TUBE_LOOP" t5m="890"/>
+			<sound id="149" name="RUMBLE_NEXTDOOR" t5m="149"/>
+			<sound id="150" name="LOOP_FOR_SMALL_FIRES" t5m="150"/>
+			<sound id="152" name="QUAD_START" t5m="721"/>
+			<sound id="153" name="QUAD_IDLE" t5m="717"/>
+			<sound id="154" name="QUAD_ACCELERATE" t5m="715"/>
+			<sound id="155" name="QUAD_MOVE" t5m="719"/>
+			<sound id="156" name="QUAD_STOP" t5m="722"/>
+			<sound id="157" name="BATS_1" t5m="157"/>
+			<sound id="158" name="LOOP_FOR_GAS_HISS" t5m="849"/>
+			<sound id="159" name="LAUNCHER_1" t5m="159"/>
+			<sound id="160" name="LAUNCHER_2" t5m="160"/>
+			<sound id="161" name="TRAPDOOR_OPEN" t5m="161"/>
+			<sound id="162" name="TRAPDOOR_CLOSE" t5m="162"/>
+			<sound id="163" name="RESERVOIR_FLUSH" t5m="862"/>
+			<sound id="164" name="MACAQUE_SATND_WAIT" t5m="815"/>
+			<sound id="165" name="MACAQUE_ATTACK_LOW" t5m="810"/>
+			<sound id="166" name="MACAQUE_ATTACK_JUMP" t5m="809"/>
+			<sound id="167" name="MACAQUE_JUMP" t5m="813"/>
+			<sound id="168" name="MACAQUE_DEATH" t5m="812"/>
+			<sound id="169" name="SEAL_MUTE_FIRE" t5m="773"/>
+			<sound id="170" name="SEAL_MUTE_BREATH_IN" t5m="770"/>
+			<sound id="171" name="SEAL_MUTE_FIRE_2" t5m="774"/>
+			<sound id="172" name="SEAL_MUTE_FOOT" t5m="775"/>
+			<sound id="173" name="SEAL_MUTE_DEATH" t5m="772"/>
+			<sound id="174" name="SEAL_MUTE_BRUSH_TAIL" t5m="771"/>
+			<sound id="175" name="SEAL_MUTE_HIT_FLR" t5m="776"/>
+			<sound id="176" name="DOG_ATTACK_1" t5m="176"/>
+			<sound id="177" name="DOG_AWARE" t5m="175"/>
+			<sound id="178" name="DOG_FOOT_1" t5m="178"/>
+			<sound id="179" name="DOG_JUMP" t5m="179"/>
+			<sound id="180" name="DOG_GROWL" t5m="530"/>
+			<sound id="181" name="DOG_DEATH" t5m="181"/>
+			<sound id="182" name="VULTURE_WING_FLAP" t5m="828"/>
+			<sound id="183" name="VULTURE_ATTACK" t5m="825"/>
+			<sound id="184" name="VULTURE_DIE" t5m="826"/>
+			<sound id="185" name="VULTURE_GLIDE" t5m="827"/>
+			<sound id="186" name="SCUBA_DIVER_FLIPPER" t5m="595"/>
+			<sound id="187" name="SCUBA_DIVER_ARM" t5m="590"/>
+			<sound id="188" name="SCUBA_DIVER_BREATH_W" t5m="592"/>
+			<sound id="189" name="SCUBA_DIVER_BREATH_S" t5m="591"/>
+			<sound id="190" name="LONDON_MERCENARY_DEATH" t5m="808"/>
+			<sound id="191" name="CLEANER_LOOP" t5m="836"/>
+			<sound id="192" name="SCUBA_DIVER_DEATH" t5m="593"/>
+			<sound id="193" name="SCUBA_DIVER_DIVING" t5m="594"/>
+			<sound id="194" name="BOAT_START" t5m="728"/>
+			<sound id="195" name="BOAT_IDLE" t5m="724"/>
+			<sound id="196" name="BOAT_ACCELERATE" t5m="723"/>
+			<sound id="197" name="BOAT_MOVING" t5m="725"/>
+			<sound id="198" name="BOAT_STOP" t5m="729"/>
+			<sound id="199" name="BOAT_SLOW_DOWN" t5m="727"/>
+			<sound id="200" name="JET_ROOFS" t5m="847"/>
+			<sound id="201" name="QUAD_SIDE_IMPACT" t5m="710"/>
+			<sound id="202" name="QUAD_FRONT_IMPACT" t5m="716"/>
+			<sound id="203" name="QUAD_LAND" t5m="718"/>
+			<sound id="204" name="FLAME_THROWER_LOOP" t5m="204"/>
+			<sound id="205" name="RUMMBLE" t5m="205"/>
+			<sound id="206" name="DRILL_BIT_1" t5m="840"/>
+			<sound id="207" name="VERY_SMALL_WINCH" t5m="895"/>
+			<sound id="208" name="ALARM_1" t5m="833"/>
+			<sound id="209" name="MINE_CART_TRACK_LOOP" t5m="735"/>
+			<sound id="210" name="MINE_CART_PULLY_LOOP" t5m="734"/>
+			<sound id="211" name="MINE_CART_CLUNK_START" t5m="733"/>
+			<sound id="212" name="SAVE_CRYSTAL" t5m="836"/>
+			<sound id="213" name="WOOD_GATE" t5m="0"/>
+			<sound id="214" name="METAL_SHUTTERS_SMASH" t5m="851"/>
+			<sound id="215" name="UNDERWATER_FAN_ON" t5m="891"/>
+			<sound id="219" name="MINE_CART_SREECH_BRAKE" t5m="735"/>
+			<sound id="220" name="SPANNER" t5m="860"/>
+			<sound id="221" name="SMALL_METAL_SHUTTERS" t5m="874"/>
+			<sound id="222" name="AREA51_SWINGER_START" t5m="804"/>
+			<sound id="223" name="AREA51_SWINGER_STOP" t5m="805"/>
+			<sound id="224" name="AREA51_SWINGER_LOOP" t5m="803"/>
+			<sound id="231" name="SKEL_TRAP_PART_1" t5m="866"/>
+			<sound id="232" name="SKEL_TRAP_PART-2" t5m="867"/>
+			<sound id="233" name="SMALL_FAN" t5m="872"/>
+			<sound id="234" name="TONY_BOSS_STONE_DEATH" t5m="690"/>
+			<sound id="235" name="TONY_BOSS_NORMAL_DEATH" t5m="686"/>
+			<sound id="236" name="TONY_BOSS_LAUGH" t5m="685"/>
+			<sound id="237" name="LONDON_BOSS_SHOOTER" t5m="701"/>
+			<sound id="238" name="HARD_WIND_LOOP" t5m="0"/>
+			<sound id="239" name="COMPY_ATTACK" t5m="759"/>
+			<sound id="240" name="COMPY_JUMP" t5m="761"/>
+			<sound id="241" name="COMPY_WAIT" t5m="763"/>
+			<sound id="242" name="COMPY_DIE" t5m="760"/>
+			<sound id="243" name="COMPY_RUN_WALK" t5m="762"/>
+			<sound id="244" name="BLOWPIPE_NATIVE_FEET" t5m="744"/>
+			<sound id="245" name="BLOWPIPE_NATIVE_ATTACK" t5m="741"/>
+			<sound id="246" name="BLOWPIPE_NATIVE_DEATH" t5m="743"/>
+			<sound id="247" name="BLOWPIPE_NATIVE_BLOW" t5m="742"/>
+			<sound id="248" name="BLOWPIPE_NATIVE_SWOOSH" t5m="745"/>
+			<sound id="249" name="SHIVA_WALK_MURMA" t5m="787"/>
+			<sound id="250" name="RAPTOR_FEET" t5m="823"/>
+			<sound id="251" name="RAPTOR_ATTACK_1" t5m="818"/>
+			<sound id="252" name="RAPTOR_ATTACK_2" t5m="819"/>
+			<sound id="253" name="RAPTOR_ATTACK_3" t5m="820"/>
+			<sound id="254" name="RAPTOR_ROAR" t5m="824"/>
+			<sound id="255" name="RAPTOR_DIE_1" t5m="821"/>
+			<sound id="256" name="RAPTOR_DIE_2" t5m="822"/>
+			<sound id="257" name="HUGE_ROCKET_LOOP" t5m="0"/>
+			<sound id="258" name="SHIVA_SWORD_1" t5m="785"/>
+			<sound id="259" name="SHIVA_SWORD_2" t5m="786"/>
+			<sound id="260" name="SHIVA_DEATH" t5m="781"/>
+			<sound id="261" name="SHIVA_FOOTSTEP" t5m="782"/>
+			<sound id="262" name="SHIVA_LAUGH" t5m="784"/>
+			<sound id="263" name="SHIVA_HIT_GROUND" t5m="783"/>
+			<sound id="264" name="HYBRID_FOOT" t5m="766"/>
+			<sound id="265" name="HYBRID_HOOF" t5m="767"/>
+			<sound id="266" name="HYBRID_ATTACK" t5m="764"/>
+			<sound id="267" name="HYBRID_DEATH" t5m="765"/>
+			<sound id="268" name="HYBRID_SWOOSH" t5m="768"/>
+			<sound id="269" name="SMALL_SWITCH" t5m="875"/>
+			<sound id="270" name="CLAW_MUTE_FOOTSTEPS" t5m="755"/>
+			<sound id="271" name="CLAW_MUTE_ATTACK" t5m="746"/>
+			<sound id="272" name="CLAW_MUTE_DEATH" t5m="754"/>
+			<sound id="273" name="CLAW_MUTE_BODY_THUD" t5m="752"/>
+			<sound id="274" name="CLAW_MUTE_LAZER" t5m="756"/>
+			<sound id="275" name="CLAW_MUTE_SWOOSH" t5m="757"/>
+			<sound id="276" name="CLAW_MUTE_CLAW" t5m="753"/>
+			<sound id="278" name="SMALL_DOOR_SUBWAY" t5m="870"/>
+			<sound id="279" name="DEATH_SLIDE_GRAB" t5m="624"/>
+			<sound id="280" name="DEATH_SLIDE_GO" t5m="625"/>
+			<sound id="281" name="DEATH_SLIDE_STOP" t5m="626"/>
+			<sound id="282" name="RADAR_BLIP" t5m="860"/>
+			<sound id="283" name="BOB_FEET" t5m="749"/>
+			<sound id="284" name="BOB_ATTACK" t5m="746"/>
+			<sound id="285" name="BOB_DEATH" t5m="748"/>
+			<sound id="286" name="BOB_CLIMB" t5m="747"/>
+			<sound id="287" name="BOB_GET_DOWN" t5m="750"/>
+			<sound id="288" name="FOOTSTEPS_MUD" t5m="288"/>
+			<sound id="289" name="FOOTSTEPS_ICE" t5m="370"/>
+			<sound id="290" name="FOOTSTEPS_GRAVEL" t5m="290"/>
+			<sound id="291" name="FOOTSTEPS_SAND_&amp;_GRASS" t5m="291"/>
+			<sound id="292" name="FOOTSTEPS_WOOD" t5m="292"/>
+			<sound id="293" name="FOOTSTEPS_SNOW" t5m="371"/>
+			<sound id="294" name="FOOTSTEPS_METAL" t5m="294"/>
+			<sound id="295" name="LOOP_FOR_LONDON" t5m="850"/>
+			<sound id="296" name="1ST_LOOP_FOR_BIG_DRILL" t5m="831"/>
+			<sound id="297" name="SMALL_DOOR_SUBWAY_CLOSE" t5m="871"/>
+			<sound id="298" name="2ND_LOOP_FOR_BIG_DRILL" t5m="832"/>
+			<sound id="299" name="ENGLISH_HOY!" t5m="737"/>
+			<sound id="300" name="AMERCAN_HOY!" t5m="788"/>
+			<sound id="301" name="OIL_RED_SMG_DEATH" t5m="852"/>
+			<sound id="302" name="RADIO_LOOP" t5m="861"/>
+			<sound id="303" name="PUNK_ATTACK" t5m="816"/>
+			<sound id="304" name="PUNK_DEATH" t5m="817"/>
+			<sound id="305" name="SECURITY_GUARD_FIRE" t5m="830"/>
+			<sound id="306" name="SECURITY_GUARD_DEATH" t5m="829"/>
+			<sound id="307" name="LAZER_LOOP" t5m="848"/>
+			<sound id="308" name="WINSTON_BRUSH_OFF" t5m="597"/>
+			<sound id="309" name="WINSTON_CUPS" t5m="599"/>
+			<sound id="310" name="WINSTON_HU!" t5m="603"/>
+			<sound id="311" name="WINSTON_BULLET_TRAY" t5m="598"/>
+			<sound id="312" name="WINSTON_FOOTSTEPS" t5m="601"/>
+			<sound id="313" name="WINSTON_TAKE_HIT" t5m="604"/>
+			<sound id="314" name="WINSTON_GET_UP" t5m="602"/>
+			<sound id="315" name="WINSTON_FART!" t5m="600"/>
+			<sound id="316" name="WALL_BLADES" t5m="896"/>
+			<sound id="317" name="MACAQUE_CHATTER" t5m="811"/>
+			<sound id="318" name="MACAQUE_ROLL" t5m="814"/>
+			<sound id="319" name="WHALE_CALL" t5m="800"/>
+			<sound id="320" name="GENERATOR_LOOP" t5m="843"/>
+			<sound id="321" name="GENERATOR_SHITTING" t5m="844"/>
+			<sound id="322" name="GASMETER" t5m="841"/>
+			<sound id="323" name="LARA_TURN_WHEEL" t5m="636"/>
+			<sound id="324" name="COBRA_HISS" t5m="758"/>
+			<sound id="325" name="DART_SPITT" t5m="807"/>
+			<sound id="326" name="RATTLE_SNAKE" t5m="794"/>
+			<sound id="327" name="SWING_PUMP" t5m="881"/>
+			<sound id="328" name="SQEEK" t5m="878"/>
+			<sound id="330" name="TONK" t5m="889"/>
+			<sound id="331" name="BOO_MUTE" t5m="780"/>
+			<sound id="332" name="VENDING_MACHINE_LOOP" t5m="893"/>
+			<sound id="333" name="VENDING_SPIT" t5m="894"/>
+			<sound id="337" name="TICK_TOCK" t5m="887"/>
+			<sound id="338" name="WILARD_FOOT_STEPS" t5m="709"/>
+			<sound id="339" name="WILARD_ATTACK" t5m="706"/>
+			<sound id="340" name="WILARD_TAKE_HIT" t5m="713"/>
+			<sound id="341" name="WILARD_LEGS_SHUFFLE" t5m="710"/>
+			<sound id="342" name="WILARD_FIRE_CHARGE" t5m="707"/>
+			<sound id="343" name="WILARD_FIRE_SHOOT" t5m="708"/>
+			<sound id="344" name="WILARD_ODD_NOISE" t5m="711"/>
+			<sound id="345" name="WILARD_STAB" t5m="712"/>
+			<sound id="346" name="LITTLE_SUB_LOOP" t5m="730"/>
+			<sound id="347" name="LITTLE_SUB_START" t5m="731"/>
+			<sound id="348" name="LITTLE_SUB_STOP" t5m="732"/>
+			<sound id="349" name="LONDON_BOSS_DIE_PART_1" t5m="697"/>
+			<sound id="350" name="LONDON_BOSS_DIE_PART_2" t5m="698"/>
+			<sound id="351" name="LONDON_BOSS_FIRE" t5m="699"/>
+			<sound id="352" name="LONDON_BOSS_SUMMON" t5m="702"/>
+			<sound id="353" name="LONDON_BOSS_TAKE_HIT" t5m="704"/>
+			<sound id="354" name="LONDON_BOSS_VAULT" t5m="705"/>
+			<sound id="355" name="LONDON_BOSS_SUMMON_NOT" t5m="703"/>
+			<sound id="356" name="LONDON_BOSS_LAUGH" t5m="700"/>
+			<sound id="357" name="WATER_MILL" t5m="897"/>
+			<sound id="358" name="PLUG_WINCH" t5m="855"/>
+			<sound id="359" name="GIANT_METAL_WHEELS" t5m="845"/>
+			<sound id="360" name="TRIBOSS_ATTACK" t5m="691"/>
+			<sound id="361" name="TRIBOSS_TAKE_HIT" t5m="695"/>
+			<sound id="362" name="TRIBOSS_TURN_CHAIR" t5m="696"/>
+			<sound id="363" name="TRIBOSS_SHOOT" t5m="694"/>
+			<sound id="364" name="TRIBOSS_DEATH_VOCAL" t5m="693"/>
+			<sound id="365" name="TRIBOSS_CHAIR_2" t5m="692"/>
+			<sound id="366" name="TONY_BOSS_SHOOT_1" t5m="687"/>
+			<sound id="367" name="TONY_BOSS_SHOOT_2" t5m="688"/>
+			<sound id="368" name="TONY_BOSS_SHOOT_3" t5m="689"/>
+			<sound id="369" name="TONY_BOSS_ATTACK" t5m="684"/>
 	</sounds>
 		<animations>
 			<!-- Lara -->
