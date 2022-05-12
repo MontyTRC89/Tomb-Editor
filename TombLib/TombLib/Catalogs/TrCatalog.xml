@@ -26,7 +26,7 @@
 		<moveables>
 			<moveable id=" 0 " name= " Lara " t5m= " LARA " />
 			<moveable id=" 1 " name= " Lara pistol animation " use_body_from=" 0" t5m= " PISTOLS_ANIM " />
-			<moveable id=" 2 " name= " Lara shotgun animation " use_body_from=" 0" hidden= "TRUE" /> SHOTGUN_ANIM " />
+			<moveable id=" 2 " name= " Lara shotgun animation " use_body_from=" 0" hidden= "TRUE" t5m= " SHOTGUN_ANIM "/>
 			<moveable id=" 3 " name= " Lara magnum animation " use_body_from=" 0" hidden= "TRUE" />
 			<moveable id=" 4 " name= " Lara Uzi animation " use_body_from=" 0" hidden= "TRUE" t5m= " UZI_ANIM " />
 			<moveable id=" 5 " name= " Lara misc animations " use_body_from=" 0" hidden= "TRUE" t5m= " ANIMATING33 " />
