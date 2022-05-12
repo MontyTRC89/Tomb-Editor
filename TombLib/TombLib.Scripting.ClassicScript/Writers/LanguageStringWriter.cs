@@ -53,6 +53,9 @@ namespace TombLib.Scripting.ClassicScript.Writers
 		{
 			DocumentLine extrangSectionStartLine = DocumentParser.FindDocumentLineOfSection(document, "ExtraNG");
 
+			if (extrangSectionStartLine == null)
+				return true;
+
 			for (int i = extrangSectionStartLine.LineNumber + 1; i < document.LineCount; i++)
 			{
 				DocumentLine line = document.GetLineByNumber(i);
@@ -71,7 +74,7 @@ namespace TombLib.Scripting.ClassicScript.Writers
 			{
 				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
 
-				if (Regex.IsMatch(lineText, @"Level\sName\s\d+"))
+				if (Regex.IsMatch(lineText, @"EMPTY\sSTRING\sSLOT\s\d+"))
 				{
 					textEditor.Select(line.Offset, line.Length);
 					textEditor.SelectedText = levelName;

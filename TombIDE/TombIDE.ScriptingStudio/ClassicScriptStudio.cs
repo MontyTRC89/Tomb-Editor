@@ -314,6 +314,25 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
+		private void CompileTR4Script()
+		{
+			EditorTabControl.SaveAll();
+
+			try
+			{
+				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
+
+				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+
+				CompilerLogs.UpdateLogs(logs);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 		private async void CompileTRNGScript()
 		{
 			EditorTabControl.SaveAll();
@@ -369,7 +388,12 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		protected override void Build()
-			=> CompileTRNGScript();
+		{
+			if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
+				CompileTR4Script();
+			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+				CompileTRNGScript();
+		}
 
 		#endregion Other methods
 	}

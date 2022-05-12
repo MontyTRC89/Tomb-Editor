@@ -48,6 +48,7 @@
 			this.label_02 = new DarkUI.Controls.DarkLabel();
 			this.textBox_ProjectName = new DarkUI.Controls.DarkTextBox();
 			this.label_03 = new DarkUI.Controls.DarkLabel();
+			this.checkBox_IncludeFLEP = new DarkUI.Controls.DarkCheckBox();
 			this.tableLayoutPanel_Title = new System.Windows.Forms.TableLayoutPanel();
 			this.label_SubTitle01 = new DarkUI.Controls.DarkLabel();
 			this.label_Title01 = new DarkUI.Controls.DarkLabel();
@@ -373,6 +374,7 @@
 			this.tableLayoutPanel_Content01.Controls.Add(this.label_02, 0, 4);
 			this.tableLayoutPanel_Content01.Controls.Add(this.textBox_ProjectName, 0, 1);
 			this.tableLayoutPanel_Content01.Controls.Add(this.label_03, 0, 2);
+			this.tableLayoutPanel_Content01.Controls.Add(this.checkBox_IncludeFLEP, 0, 6);
 			this.tableLayoutPanel_Content01.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel_Content01.Location = new System.Drawing.Point(30, 80);
 			this.tableLayoutPanel_Content01.Margin = new System.Windows.Forms.Padding(0);
@@ -431,13 +433,14 @@
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
             "- Select -",
-            "TRNG",
-            "TRNG + FLEP"});
+            "Tomb Raider 4",
+            "Tomb Raider Next-Generation"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";
 			this.comboBox_EngineType.Size = new System.Drawing.Size(420, 26);
 			this.comboBox_EngineType.TabIndex = 3;
+			this.comboBox_EngineType.SelectedIndexChanged += new System.EventHandler(this.comboBox_EngineType_SelectedIndexChanged);
 			// 
 			// label_01
 			// 
@@ -485,6 +488,19 @@
 			this.label_03.TabIndex = 4;
 			this.label_03.Text = "Project location: (Where should the project be installed?)";
 			this.label_03.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// checkBox_IncludeFLEP
+			// 
+			this.checkBox_IncludeFLEP.AutoSize = true;
+			this.checkBox_IncludeFLEP.Checked = true;
+			this.checkBox_IncludeFLEP.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox_IncludeFLEP.Location = new System.Drawing.Point(0, 250);
+			this.checkBox_IncludeFLEP.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+			this.checkBox_IncludeFLEP.Name = "checkBox_IncludeFLEP";
+			this.checkBox_IncludeFLEP.Size = new System.Drawing.Size(165, 17);
+			this.checkBox_IncludeFLEP.TabIndex = 18;
+			this.checkBox_IncludeFLEP.Text = "Include FLEP tools & patches";
+			this.checkBox_IncludeFLEP.Visible = false;
 			// 
 			// tableLayoutPanel_Title
 			// 
@@ -652,5 +668,6 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Buttons01;
 		private DarkUI.Controls.DarkButton button_Next;
 		private DarkUI.Controls.DarkButton button_Cancel;
+		private DarkUI.Controls.DarkCheckBox checkBox_IncludeFLEP;
 	}
 }

@@ -120,18 +120,13 @@
   <data name="label.Text" xml:space="preserve">
     <value>To keep it simple:
 
-"TR4" - Vanilla Tomb Raider 4 engine without any additions.
+- "Tomb Raider 4"
+Vanilla (unmodified) Tomb Raider 4 engine, which shipped with the original TRLE editor.
 
-"TRNG" - Tomb Raider 4 with the Next-Gen addon which
-         has tons of new features for builders.
+- "Tomb Raider Next-Generation"
+Tomb Raider 4 with the Next-Generation addon which adds tonnes of new features for builders.
 
-"TRNG + FLEP" - Same as above, but with FLEP* already
-                included in the package.
-
-"TombEngine" - A powerful new Tomb Raider 5 engine
-            with the highest amount of features for builders.
-
-*FLEP is a tool which helps modifying some hardcoded
-values in the tomb4.exe file.</value>
+- "FLEP"
+A tool which helps modifying some hardcoded values in Tomb Raider 4-based engines.</value>
   </data>
 </root>

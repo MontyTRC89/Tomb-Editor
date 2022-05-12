@@ -9,8 +9,8 @@ namespace TombIDE.Shared.SharedClasses
 		{
 			switch (gameVersion)
 			{
+				case TRVersion.Game.TR4:
 				case TRVersion.Game.TRNG: return Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "TOMB4");
-				case TRVersion.Game.TombEngine: return Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "TOMB5");
 				default: return null;
 			}
 		}
@@ -19,8 +19,8 @@ namespace TombIDE.Shared.SharedClasses
 		{
 			switch (gameVersion)
 			{
+				case TRVersion.Game.TR4:
 				case TRVersion.Game.TRNG: return Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "TOMB4", "Defaults");
-				case TRVersion.Game.TombEngine: return Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "TombEngine", "Defaults");
 				default: return null;
 			}
 		}

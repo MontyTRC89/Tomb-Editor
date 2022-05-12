@@ -203,6 +203,16 @@ namespace TombIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ide_plugin_30_disabled {
+            get {
+                object obj = ResourceManager.GetObject("ide_plugin_30_disabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ide_projectmanager {
             get {
                 object obj = ResourceManager.GetObject("ide_projectmanager", resourceCulture);

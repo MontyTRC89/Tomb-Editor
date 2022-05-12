@@ -100,9 +100,48 @@ namespace TombIDE
 			}
 		}
 
+		private void button_Next_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				string projectName = PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(projectName))
+					throw new ArgumentException("You must enter a valid name for your project.");
+
+				if (projectName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // Safety
+					throw new ArgumentException("Illegal project name.");
+
+				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
+					throw new ArgumentException("You must select a folder where you want to install your project.");
+
+				if (ProjectChecker.IsProjectNameDuplicate(projectName))
+					throw new ArgumentException("A project with the same name already exists on the list.");
+
+				if (comboBox_EngineType.SelectedIndex == 0)
+					throw new ArgumentException("You must specify the engine type of the project.");
+
+				string projectPath = textBox_ProjectPath.Text.Trim();
+
+				if (Directory.Exists(projectPath) && Directory.EnumerateFileSystemEntries(projectPath).ToArray().Length > 0)
+					throw new ArgumentException("Selected project folder is not empty.");
+
+				tablessTabControl.SelectTab(1);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void button_Back_Click(object sender, EventArgs e)
+			=> tablessTabControl.SelectTab(0);
+
+		private void comboBox_EngineType_SelectedIndexChanged(object sender, EventArgs e)
+			=> checkBox_IncludeFLEP.Visible = checkBox_IncludeFLEP.Enabled = comboBox_EngineType.SelectedIndex == 1 || comboBox_EngineType.SelectedIndex == 2;
+
 		private void button_Create_Click(object sender, EventArgs e)
 		{
-			button_Create.Text = "Installing...";
 			button_Create.Enabled = false;
 
 			try
@@ -170,7 +209,6 @@ namespace TombIDE
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-				button_Create.Text = "Create Project";
 				button_Create.Enabled = true;
 
 				DialogResult = DialogResult.None;
@@ -188,7 +226,7 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					gameVersion = TRVersion.Game.TRNG;
+					gameVersion = TRVersion.Game.TR4;
 					break;
 
 				case 2:
@@ -196,7 +234,7 @@ namespace TombIDE
 					break;
 			}
 
-			string launchFilePath = Path.Combine(projectPath, "launch.exe");
+			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
 
 			return new Project
 			{
@@ -218,39 +256,62 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
 					break;
 
 				case 2:
-					engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
 					break;
 			}
 
 			string sharedArchivePath = Path.Combine(TemplatePaths.GetSharedTemplatesPath(project.GameVersion), "Shared.zip");
+			string flepArchivePath = Path.Combine(TemplatePaths.GetSharedTemplatesPath(project.GameVersion), "FLEP.zip");
+
+			bool includeFLEP = checkBox_IncludeFLEP.Enabled && checkBox_IncludeFLEP.Checked;
 
 			// Extract the engine base into the ProjectPath folder
-			using (ZipArchive engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
+			using (var engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
+			using (var sharedArchive = new ZipArchive(File.OpenRead(sharedArchivePath)))
+			using (var flepArchive = new ZipArchive(File.OpenRead(flepArchivePath)))
 			{
-				using (ZipArchive sharedArchive = new ZipArchive(File.OpenRead(sharedArchivePath)))
+				progressBar.Maximum = engineArchive.Entries.Count + sharedArchive.Entries.Count + 1;
+
+				if (includeFLEP)
+					progressBar.Maximum += flepArchive.Entries.Count;
+
+				foreach (ZipArchiveEntry entry in engineArchive.Entries)
 				{
-					progressBar.Maximum = engineArchive.Entries.Count + sharedArchive.Entries.Count + 1;
+					if (entry.FullName.EndsWith("/"))
+						Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
+					else
+						entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
 
-					foreach (ZipArchiveEntry entry in engineArchive.Entries)
+					progressBar.Increment(1);
+				}
+
+				foreach (ZipArchiveEntry entry in sharedArchive.Entries)
+				{
+					if (entry.FullName.EndsWith("/"))
+						Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
+					else
+						entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+
+					progressBar.Increment(1);
+				}
+
+				if (includeFLEP)
+				{
+					foreach (ZipArchiveEntry entry in flepArchive.Entries)
 					{
 						if (entry.FullName.EndsWith("/"))
-							Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
-						else
-							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+						{
+							string dirPath = Path.Combine(project.EnginePath, entry.FullName);
 
-						progressBar.Increment(1);
-					}
-
-					foreach (ZipArchiveEntry entry in sharedArchive.Entries)
-					{
-						if (entry.FullName.EndsWith("/"))
-							Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
+							if (!Directory.Exists(dirPath))
+								Directory.CreateDirectory(dirPath);
+						}
 						else
-							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
+							entry.ExtractToFile(Path.Combine(project.EnginePath, entry.FullName), true);
 
 						progressBar.Increment(1);
 					}
@@ -264,42 +325,5 @@ namespace TombIDE
 		}
 
 		#endregion Methods
-
-		private void button_Next_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				string projectName = PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
-
-				if (string.IsNullOrWhiteSpace(projectName))
-					throw new ArgumentException("You must enter a valid name for your project.");
-
-				if (projectName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // Safety
-					throw new ArgumentException("Illegal project name.");
-
-				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
-					throw new ArgumentException("You must select a folder where you want to install your project.");
-
-				if (ProjectChecker.IsProjectNameDuplicate(projectName))
-					throw new ArgumentException("A project with the same name already exists on the list.");
-
-				if (comboBox_EngineType.SelectedIndex == 0)
-					throw new ArgumentException("You must specify the engine type of the project.");
-
-				string projectPath = textBox_ProjectPath.Text.Trim();
-
-				if (Directory.Exists(projectPath) && Directory.EnumerateFileSystemEntries(projectPath).ToArray().Length > 0)
-					throw new ArgumentException("Selected project folder is not empty.");
-
-				tablessTabControl.SelectTab(1);
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
-		private void button_Back_Click(object sender, EventArgs e)
-			=> tablessTabControl.SelectTab(0);
 	}
 }

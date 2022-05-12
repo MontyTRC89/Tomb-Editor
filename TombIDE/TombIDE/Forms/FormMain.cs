@@ -56,9 +56,17 @@ namespace TombIDE
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
 
-			pluginManager = new ProjectMaster.PluginManager();
-			pluginManager.Dock = DockStyle.Fill;
-			tabPage_Plugins.Controls.Add(pluginManager);
+			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+			{
+				pluginManager = new ProjectMaster.PluginManager();
+				pluginManager.Dock = DockStyle.Fill;
+				tabPage_Plugins.Controls.Add(pluginManager);
+			}
+			else
+			{
+				panelButton_Plugins.Enabled = false;
+				panelButton_Plugins.BackgroundImage = Properties.Resources.ide_plugin_30_disabled;
+			}
 
 			classicScriptStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
 			classicScriptStudio.Dock = DockStyle.Fill;
@@ -112,14 +120,16 @@ namespace TombIDE
 		{
 			base.OnShown(e);
 
-			using (FormLoading form = new FormLoading(_ide))
+			using (var form = new FormLoading(_ide))
 			{
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					// Initialize the IDE interfaces
 					levelManager.Initialize(_ide);
 					projectMaster.Initialize(_ide);
-					pluginManager.Initialize(_ide);
+
+					if(_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+						pluginManager.Initialize(_ide);
 
 					SelectIDETab(IDETab.LevelManager);
 

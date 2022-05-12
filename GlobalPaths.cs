@@ -37,6 +37,9 @@ internal static class DefaultPaths
 
 	public static string TIDEDirectory => Path.Combine(ProgramDirectory, "TIDE");
 
+	public static string DOSDirectory => Path.Combine(TIDEDirectory, "DOS");
+	public static string TR4ScriptCompilerDirectory => Path.Combine(DOSDirectory, "TR4");
+
 	public static string InternalNGCDirectory => Path.Combine(TIDEDirectory, "NGC");
 	public static string VGEDirectory => Path.Combine(InternalNGCDirectory, "VGE");
 	public static string VGEScriptDirectory => Path.Combine(VGEDirectory, "Script");
@@ -59,6 +62,7 @@ internal static class DefaultPaths
 	public static string FileAssociationExecutable => Path.Combine(ProgramDirectory, "File Association.exe");
 
 	public static string NGCExecutable => Path.Combine(InternalNGCDirectory, "NG_Center.exe");
+	public static string DOSBoxExecutable => Path.Combine(DOSDirectory, "DOSBox.exe");
 
 	#endregion .EXEs
 

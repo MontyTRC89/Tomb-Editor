@@ -113,6 +113,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Utils\TR4Compiler.cs" />
     <Compile Include="Workers\ClassicScriptNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>

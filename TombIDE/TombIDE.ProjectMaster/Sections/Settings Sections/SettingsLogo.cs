@@ -105,13 +105,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string sourcePakPath = string.Empty;
-
-					if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
-						sourcePakPath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
-					else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
-						sourcePakPath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
-
+					string sourcePakPath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
 					string destPakPath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 
 					File.Copy(sourcePakPath, destPakPath, true);
