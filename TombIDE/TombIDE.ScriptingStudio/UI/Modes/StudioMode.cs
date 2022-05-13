@@ -10,6 +10,7 @@
 	{
 		None,
 		ClassicScript,
-		Lua
+		Lua,
+		GameFlowScript
 	}
 }

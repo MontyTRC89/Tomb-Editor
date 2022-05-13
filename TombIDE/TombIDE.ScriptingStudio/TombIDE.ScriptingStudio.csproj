@@ -56,11 +56,20 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="GameFlowScriptStudio.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ConfigurationCollection.cs" />
     <Compile Include="Helpers\EditorTypeHelper.cs" />
     <Compile Include="Helpers\FileTreeViewHelper.cs" />
     <Compile Include="Objects\ReferenceComboItem.cs" />
     <Compile Include="Objects\ReferenceComboType.cs" />
+    <Compile Include="Settings\GameFlowSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\GameFlowSettingsControl.Designer.cs">
+      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings\ClassicScriptSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -193,6 +202,9 @@
     <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Settings\GameFlowSettingsControl.resx">
+      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\ClassicScriptSettingsControl.resx">
       <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -244,6 +256,10 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj">
+      <Project>{98e13bc4-6196-4346-ab4f-92de33d84589}</Project>
+      <Name>TombLib.Scripting.GameFlowScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
       <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
@@ -298,6 +314,21 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -25,6 +25,14 @@ namespace TombIDE.ProjectMaster
 			_targetProject = targetProject;
 
 			InitializeComponent();
+
+			if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			{
+				checkBox_EnableHorizon.Visible = false;
+				panel_ScriptSettings.Height -= 35;
+
+				numeric_SoundID.Value = 0;
+			}
 		}
 
 		#endregion Initialization
@@ -124,6 +132,12 @@ namespace TombIDE.ProjectMaster
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
 
+				if (_targetProject.GameVersion == TRVersion.Game.TR3)
+				{
+					level.Settings.AgressiveTexturePacking = true;
+					level.Settings.TexturePadding = 1;
+				}
+
 				level.Settings.LoadDefaultSoundCatalog();
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
@@ -134,7 +148,7 @@ namespace TombIDE.ProjectMaster
 					bool horizon = checkBox_EnableHorizon.Checked;
 
 					// // // //
-					GeneratedScriptLines = LevelHandling.GenerateScriptLines(createdLevel, ambientSoundID, horizon);
+					GeneratedScriptLines = LevelHandling.GenerateScriptLines(createdLevel, _targetProject.GameVersion, ambientSoundID, horizon);
 					// // // //
 				}
 

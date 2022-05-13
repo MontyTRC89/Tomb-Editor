@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using TombIDE.Shared;
@@ -91,7 +92,9 @@ namespace TombIDE
 				else
 					throw new FileNotFoundException("Invalid game .exe file.");
 			}
-			else if (Path.GetFileName(selectedFilePath).ToLower() == "tomb4.exe" || Path.GetFileName(selectedFilePath).ToLower() == "pctomb5.exe")
+			else if (Path.GetFileName(selectedFilePath).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 				return selectedFilePath;
 			else
 				throw new FileNotFoundException("Invalid game .exe file.");
@@ -117,8 +120,9 @@ namespace TombIDE
 
 			foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).ToLower() == "tomb4.exe"
-				|| Path.GetFileName(file).ToLower() == "pctomb5.exe")
+				if (Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 					validGameExeFiles.Add(file);
 			}
 

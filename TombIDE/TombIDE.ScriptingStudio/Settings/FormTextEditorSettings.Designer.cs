@@ -26,12 +26,14 @@
 			this.tabPage_Global = new System.Windows.Forms.TabPage();
 			this.tabPage_ClassicScript = new System.Windows.Forms.TabPage();
 			this.settingsClassicScript = new TombIDE.ScriptingStudio.Settings.ClassicScriptSettingsControl();
-			this.tabPage_Lua = new System.Windows.Forms.TabPage();
+			this.tabPage_GameFlow = new System.Windows.Forms.TabPage();
+			this.settingsGameFlow = new TombIDE.ScriptingStudio.Settings.GameFlowSettingsControl();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.panel_Buttons.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
 			this.tabPage_ClassicScript.SuspendLayout();
+			this.tabPage_GameFlow.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_Apply
@@ -98,7 +100,7 @@
 			// 
 			this.tablessTabControl.Controls.Add(this.tabPage_Global);
 			this.tablessTabControl.Controls.Add(this.tabPage_ClassicScript);
-			this.tablessTabControl.Controls.Add(this.tabPage_Lua);
+			this.tablessTabControl.Controls.Add(this.tabPage_GameFlow);
 			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tablessTabControl.Location = new System.Drawing.Point(168, 0);
 			this.tablessTabControl.Name = "tablessTabControl";
@@ -136,20 +138,33 @@
 			this.settingsClassicScript.Size = new System.Drawing.Size(720, 412);
 			this.settingsClassicScript.TabIndex = 0;
 			// 
-			// tabPage_Lua
+			// tabPage_GameFlow
 			// 
-			this.tabPage_Lua.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_Lua.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_Lua.Name = "tabPage_Lua";
-			this.tabPage_Lua.Size = new System.Drawing.Size(712, 386);
-			this.tabPage_Lua.TabIndex = 2;
-			this.tabPage_Lua.Text = "Lua";
+			this.tabPage_GameFlow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_GameFlow.Controls.Add(this.settingsGameFlow);
+			this.tabPage_GameFlow.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_GameFlow.Name = "tabPage_GameFlow";
+			this.tabPage_GameFlow.Size = new System.Drawing.Size(712, 386);
+			this.tabPage_GameFlow.TabIndex = 2;
+			this.tabPage_GameFlow.Text = "Game Flow";
+			// 
+			// gameFlowSettings
+			// 
+			this.settingsGameFlow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
+			this.settingsGameFlow.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsGameFlow.Location = new System.Drawing.Point(0, 0);
+			this.settingsGameFlow.MaximumSize = new System.Drawing.Size(720, 412);
+			this.settingsGameFlow.MinimumSize = new System.Drawing.Size(720, 412);
+			this.settingsGameFlow.Name = "gameFlowSettings";
+			this.settingsGameFlow.Size = new System.Drawing.Size(720, 412);
+			this.settingsGameFlow.TabIndex = 0;
 			// 
 			// treeView
 			// 
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
-			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView.ExpandOnDoubleClick = false;
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView.ItemHeight = 40;
 			this.treeView.Location = new System.Drawing.Point(0, 0);
 			this.treeView.MaxDragChange = 40;
@@ -180,6 +195,7 @@
 			this.panel_Main.ResumeLayout(false);
 			this.tablessTabControl.ResumeLayout(false);
 			this.tabPage_ClassicScript.ResumeLayout(false);
+			this.tabPage_GameFlow.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -195,7 +211,8 @@
 		private System.Windows.Forms.Panel panel_Main;
 		private System.Windows.Forms.TabPage tabPage_ClassicScript;
 		private System.Windows.Forms.TabPage tabPage_Global;
-		private System.Windows.Forms.TabPage tabPage_Lua;
+		private System.Windows.Forms.TabPage tabPage_GameFlow;
 		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
+		private GameFlowSettingsControl settingsGameFlow;
 	}
 }

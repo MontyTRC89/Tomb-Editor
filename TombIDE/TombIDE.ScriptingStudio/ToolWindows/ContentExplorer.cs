@@ -9,6 +9,7 @@ using TombIDE.Shared;
 using TombLib.Scripting;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript.Workers;
+using TombLib.Scripting.GameFlowScript.Workers;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
 
@@ -139,6 +140,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			{
 				case DocumentMode.ClassicScript: NodesProvider = new ClassicScriptNodesProvider(); break;
 				case DocumentMode.Lua: NodesProvider = null; break; // TODO
+				case DocumentMode.GameFlowScript: NodesProvider = new GameFlowNodesProvider(); break;
 				case DocumentMode.Strings: NodesProvider = new StringFileNodesProvider(); break;
 				default: NodesProvider = null; break;
 			}

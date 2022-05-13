@@ -63,17 +63,17 @@
 			this.label_Comma = new DarkUI.Controls.DarkLabel();
 			this.label_Equal = new DarkUI.Controls.DarkLabel();
 			this.groupBox_Colors = new DarkUI.Controls.DarkGroupBox();
+			this.button_SaveScheme = new DarkUI.Controls.DarkButton();
+			this.button_DeleteScheme = new DarkUI.Controls.DarkButton();
+			this.button_OpenSchemesFolder = new DarkUI.Controls.DarkButton();
+			this.comboBox_ColorSchemes = new DarkUI.Controls.DarkComboBox();
 			this.groupBox_Identation = new DarkUI.Controls.DarkGroupBox();
 			this.groupBox_Preview = new DarkUI.Controls.DarkGroupBox();
 			this.numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.button_SaveScheme = new DarkUI.Controls.DarkButton();
-			this.button_DeleteScheme = new DarkUI.Controls.DarkButton();
-			this.button_OpenSchemesFolder = new DarkUI.Controls.DarkButton();
-			this.comboBox_ColorSchemes = new DarkUI.Controls.DarkComboBox();
 			this.comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonContextMenu.SuspendLayout();
 			this.groupBox_AddSpaces.SuspendLayout();
 			this.groupBox_Colors.SuspendLayout();
@@ -608,6 +608,50 @@
 			this.groupBox_Colors.TabStop = false;
 			this.groupBox_Colors.Text = "Color schemes";
 			// 
+			// button_SaveScheme
+			// 
+			this.button_SaveScheme.Checked = false;
+			this.button_SaveScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Save_16;
+			this.button_SaveScheme.Location = new System.Drawing.Point(413, 16);
+			this.button_SaveScheme.Name = "button_SaveScheme";
+			this.button_SaveScheme.Size = new System.Drawing.Size(25, 25);
+			this.button_SaveScheme.TabIndex = 19;
+			this.toolTip.SetToolTip(this.button_SaveScheme, "Save Scheme As...");
+			this.button_SaveScheme.Click += new System.EventHandler(this.button_SaveScheme_Click);
+			// 
+			// button_DeleteScheme
+			// 
+			this.button_DeleteScheme.Checked = false;
+			this.button_DeleteScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
+			this.button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
+			this.button_DeleteScheme.Name = "button_DeleteScheme";
+			this.button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
+			this.button_DeleteScheme.TabIndex = 18;
+			this.toolTip.SetToolTip(this.button_DeleteScheme, "Delete Scheme");
+			this.button_DeleteScheme.Click += new System.EventHandler(this.button_DeleteScheme_Click);
+			// 
+			// button_OpenSchemesFolder
+			// 
+			this.button_OpenSchemesFolder.Checked = false;
+			this.button_OpenSchemesFolder.Image = global::TombIDE.ScriptingStudio.Properties.Resources.ForwardArrow_16;
+			this.button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
+			this.button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";
+			this.button_OpenSchemesFolder.Size = new System.Drawing.Size(25, 25);
+			this.button_OpenSchemesFolder.TabIndex = 17;
+			this.toolTip.SetToolTip(this.button_OpenSchemesFolder, "Open Schemes Folder");
+			this.button_OpenSchemesFolder.Click += new System.EventHandler(this.button_OpenSchemesFolder_Click);
+			// 
+			// comboBox_ColorSchemes
+			// 
+			this.comboBox_ColorSchemes.FormattingEnabled = true;
+			this.comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
+			this.comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+			this.comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
+			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 21);
+			this.comboBox_ColorSchemes.TabIndex = 12;
+			this.comboBox_ColorSchemes.SelectedIndexChanged += new System.EventHandler(this.comboBox_ColorSchemes_SelectedIndexChanged);
+			// 
 			// groupBox_Identation
 			// 
 			this.groupBox_Identation.Controls.Add(this.groupBox_Preview);
@@ -714,53 +758,9 @@
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Classic Script";
+			this.sectionPanel.SectionHeader = "TR4 Script";
 			this.sectionPanel.Size = new System.Drawing.Size(720, 412);
 			this.sectionPanel.TabIndex = 0;
-			// 
-			// button_SaveScheme
-			// 
-			this.button_SaveScheme.Checked = false;
-			this.button_SaveScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Save_16;
-			this.button_SaveScheme.Location = new System.Drawing.Point(413, 16);
-			this.button_SaveScheme.Name = "button_SaveScheme";
-			this.button_SaveScheme.Size = new System.Drawing.Size(25, 25);
-			this.button_SaveScheme.TabIndex = 19;
-			this.toolTip.SetToolTip(this.button_SaveScheme, "Save Scheme As...");
-			this.button_SaveScheme.Click += new System.EventHandler(this.button_SaveScheme_Click);
-			// 
-			// button_DeleteScheme
-			// 
-			this.button_DeleteScheme.Checked = false;
-			this.button_DeleteScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
-			this.button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
-			this.button_DeleteScheme.Name = "button_DeleteScheme";
-			this.button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
-			this.button_DeleteScheme.TabIndex = 18;
-			this.toolTip.SetToolTip(this.button_DeleteScheme, "Delete Scheme");
-			this.button_DeleteScheme.Click += new System.EventHandler(this.button_DeleteScheme_Click);
-			// 
-			// button_OpenSchemesFolder
-			// 
-			this.button_OpenSchemesFolder.Checked = false;
-			this.button_OpenSchemesFolder.Image = global::TombIDE.ScriptingStudio.Properties.Resources.ForwardArrow_16;
-			this.button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
-			this.button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";
-			this.button_OpenSchemesFolder.Size = new System.Drawing.Size(25, 25);
-			this.button_OpenSchemesFolder.TabIndex = 17;
-			this.toolTip.SetToolTip(this.button_OpenSchemesFolder, "Open Schemes Folder");
-			this.button_OpenSchemesFolder.Click += new System.EventHandler(this.button_OpenSchemesFolder_Click);
-			// 
-			// comboBox_ColorSchemes
-			// 
-			this.comboBox_ColorSchemes.FormattingEnabled = true;
-			this.comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
-			this.comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
-			this.comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
-			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 21);
-			this.comboBox_ColorSchemes.TabIndex = 12;
-			this.comboBox_ColorSchemes.SelectedIndexChanged += new System.EventHandler(this.comboBox_ColorSchemes_SelectedIndexChanged);
 			// 
 			// comboBox_FontFamily
 			// 

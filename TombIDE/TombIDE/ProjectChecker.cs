@@ -34,6 +34,12 @@ namespace TombIDE
 		{
 			errorMessage = string.Empty;
 
+			if (!Directory.Exists(project.ProjectPath))
+			{
+				errorMessage = "Project directory doesn't exist.";
+				return false;
+			}
+
 			if (Path.GetFileName(project.ProjectPath).Equals("engine", StringComparison.OrdinalIgnoreCase))
 			{
 				errorMessage = "Directory name cannot be \"Engine\"."; // LOL you ain't trickin' me
@@ -59,7 +65,9 @@ namespace TombIDE
 		{
 			foreach (string file in Directory.GetFiles(project.EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).ToLower() == "tomb4.exe" || Path.GetFileName(file).ToLower() == "pctomb5.exe")
+				if (Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 

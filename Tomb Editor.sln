@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
@@ -53,6 +53,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj", "{87D4149C-E716-49F6-848F-ACA345D11B30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAssociation", "FileAssociation\FileAssociation.csproj", "{934E79A8-2B20-4E0E-A145-08404493A7F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.GameFlowScript", "TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj", "{98E13BC4-6196-4346-AB4F-92DE33D84589}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -280,6 +282,18 @@ Global
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x64.Build.0 = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.Build.0 = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|x64.Build.0 = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Debug|x86.Build.0 = Debug|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x64.ActiveCfg = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x64.Build.0 = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x86.ActiveCfg = Release|Any CPU
+		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -298,6 +312,7 @@ Global
 		{3EAAFD71-DD96-427D-8793-643DADD2F3A3} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{5D9A72E7-4B33-4177-AD7C-1B46591005FD} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{87D4149C-E716-49F6-848F-ACA345D11B30} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
+		{98E13BC4-6196-4346-AB4F-92DE33D84589} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1C98156-D4B8-411B-8A31-0EFC1D63BFBE}

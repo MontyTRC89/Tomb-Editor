@@ -1,4 +1,5 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Docking;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -323,7 +324,15 @@ namespace TombIDE.ScriptingStudio
 				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
 
 				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+				{
+					if (!DockPanel.ContainsContent(CompilerLogs))
+					{
+						CompilerLogs.DockArea = DarkDockArea.Bottom;
+						DockPanel.AddContent(CompilerLogs);
+					}
+
 					CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+				}
 
 				CompilerLogs.UpdateLogs(logs);
 			}
@@ -352,7 +361,15 @@ namespace TombIDE.ScriptingStudio
 					CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
 
 					if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					{
+						if (!DockPanel.ContainsContent(CompilerLogs))
+						{
+							CompilerLogs.DockArea = DarkDockArea.Bottom;
+							DockPanel.AddContent(CompilerLogs);
+						}
+
 						CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+					}
 
 					if (FormCompiling.Visible)
 						FormCompiling.Close();

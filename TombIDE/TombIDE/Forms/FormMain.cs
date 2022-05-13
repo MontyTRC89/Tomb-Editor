@@ -9,9 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Bases;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
+using TombLib.LevelData;
 
 namespace TombIDE
 {
@@ -28,7 +30,7 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
-		private ScriptingStudio.ClassicScriptStudio classicScriptStudio;
+		private StudioBase scriptingStudio;
 		private ProjectMaster.ProjectMaster projectMaster;
 		private ProjectMaster.LevelManager levelManager;
 		private ProjectMaster.PluginManager pluginManager;
@@ -68,9 +70,14 @@ namespace TombIDE
 				panelButton_Plugins.BackgroundImage = Properties.Resources.ide_plugin_30_disabled;
 			}
 
-			classicScriptStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
-			classicScriptStudio.Dock = DockStyle.Fill;
-			tabPage_ScriptingStudio.Controls.Add(classicScriptStudio);
+			if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
+				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
+			else if (_ide.Project.GameVersion == TRVersion.Game.TR2 || _ide.Project.GameVersion == TRVersion.Game.TR3)
+				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
+
+			scriptingStudio.Dock = DockStyle.Fill;
+			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);
+
 
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
@@ -87,15 +94,15 @@ namespace TombIDE
 		{
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
 			{
-				classicScriptStudio.IsMainWindowFocued = true;
+				scriptingStudio.IsMainWindowFocued = true;
 				levelManager.IsMainWindowFocued = true;
 
-				classicScriptStudio.EditorTabControl.TryRunFileReloadQueue();
+				scriptingStudio.EditorTabControl.TryRunFileReloadQueue();
 			}
 
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
 			{
-				classicScriptStudio.IsMainWindowFocued = false;
+				scriptingStudio.IsMainWindowFocued = false;
 				levelManager.IsMainWindowFocued = false;
 			}
 
@@ -128,7 +135,7 @@ namespace TombIDE
 					levelManager.Initialize(_ide);
 					projectMaster.Initialize(_ide);
 
-					if(_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+					if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
 						pluginManager.Initialize(_ide);
 
 					SelectIDETab(IDETab.LevelManager);
@@ -586,7 +593,12 @@ namespace TombIDE
 				return;
 			}
 
-			string scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
+			string scriptDatFilePath = string.Empty;
+
+			if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
+				scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
+			else if (_ide.Project.GameVersion == TRVersion.Game.TR2 || _ide.Project.GameVersion == TRVersion.Game.TR3)
+				scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "data", "tombpc.dat");
 
 			if (File.Exists(scriptDatFilePath))
 			{
@@ -614,7 +626,7 @@ namespace TombIDE
 
 		private void SelectIDETab(IDETab tab)
 		{
-			classicScriptStudio.EditorTabControl.EnsureTabFileSynchronization();
+			scriptingStudio.EditorTabControl.EnsureTabFileSynchronization();
 
 			switch (tab)
 			{

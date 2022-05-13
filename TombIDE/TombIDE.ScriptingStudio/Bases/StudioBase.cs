@@ -595,7 +595,7 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		protected void ShowSettingsForm()
 		{
-			using (var form = new FormTextEditorSettings())
+			using (var form = new FormTextEditorSettings(StudioMode))
 				if (form.ShowDialog() == DialogResult.OK)
 				{
 					Configs = new ConfigurationCollection();

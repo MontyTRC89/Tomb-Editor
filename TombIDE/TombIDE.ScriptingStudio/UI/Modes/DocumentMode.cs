@@ -13,6 +13,7 @@
 		PlainText,
 		ClassicScript,
 		Lua,
+		GameFlowScript,
 		Strings
 	}
 }

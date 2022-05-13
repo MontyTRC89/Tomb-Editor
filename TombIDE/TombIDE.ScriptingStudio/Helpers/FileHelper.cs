@@ -4,6 +4,7 @@ using System.Text;
 using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Helpers;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Lua;
@@ -24,6 +25,8 @@ namespace TombIDE.ScriptingStudio.Helpers
 					return DocumentMode.Strings;
 				else if (editorClassType == typeof(LuaEditor))
 					return DocumentMode.Lua;
+				else if (editorClassType == typeof(GameFlowEditor))
+					return DocumentMode.GameFlowScript;
 			}
 
 			return DocumentMode.PlainText;

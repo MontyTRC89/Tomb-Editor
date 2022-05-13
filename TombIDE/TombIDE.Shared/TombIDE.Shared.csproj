@@ -100,6 +100,9 @@
     <Content Include="TIDE\DOS\TR4\SCRIPT.EXE">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TIDE\GFL\gameflow.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TIDE\NGC\!~~DO_NOT_USE_THIS_NG_CENTER.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -157,6 +160,12 @@
     <Content Include="TIDE\NGC\VGE\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TIDE\Templates\TOMB2\Defaults\TR2.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\Templates\TOMB3\Defaults\TR3.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TIDE\Templates\TOMB4\Defaults\FLEP.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -198,10 +207,22 @@
     <None Include="TIDE\NGC\VGE\tools\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TIDE\Templates\Engines\TR2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TIDE\Templates\Engines\TR3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TIDE\Templates\Engines\TR4.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\Templates\Engines\TRNG.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TIDE\Templates\TOMB2\Shared.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TIDE\Templates\TOMB3\Shared.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\Templates\TOMB4\Defaults\uklogo.pak">

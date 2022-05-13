@@ -6,7 +6,7 @@ using TombLib.LevelData.IO;
 
 namespace TombIDE.Shared.SharedClasses
 {
-	public class LevelHandling
+	public static class LevelHandling
 	{
 		public static void UpdatePrj2GameSettings(string prj2FilePath, ProjectLevel destLevel, Project destProject)
 		{
@@ -40,16 +40,34 @@ namespace TombIDE.Shared.SharedClasses
 			return validPrj2Files;
 		}
 
-		public static List<string> GenerateScriptLines(ProjectLevel level, int ambientSoundID, bool horizon)
+		public static List<string> GenerateScriptLines(ProjectLevel level, TRVersion.Game gameVersion, int ambientSoundID, bool horizon = false)
 		{
-			return new List<string>
+			if (gameVersion == TRVersion.Game.TR2 || gameVersion == TRVersion.Game.TR3)
 			{
-				"\n[Level]",
-				"Name= " + level.Name,
-				"Level= DATA\\" + level.DataFileName.ToUpper() + ", " + ambientSoundID,
-				"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
-				"Horizon= " + (horizon? "ENABLED" : "DISABLED")
-			};
+				return new List<string>
+				{
+					"\nLEVEL: " + level.Name,
+					"",
+					"	GAME: data\\" + level.DataFileName.ToLower() + ".tr2",
+					"	TRACK: " + ambientSoundID,
+					"	LOAD_PIC: " + "pix\\" + (gameVersion == TRVersion.Game.TR2 ? "mansion.pcx" : "house.bmp"),
+					"",
+					"END:"
+				};
+			}
+			else if (gameVersion == TRVersion.Game.TR4 || gameVersion == TRVersion.Game.TRNG)
+			{
+				return new List<string>
+				{
+					"\n[Level]",
+					"Name= " + level.Name,
+					"Level= DATA\\" + level.DataFileName.ToUpper() + ", " + ambientSoundID,
+					"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
+					"Horizon= " + (horizon? "ENABLED" : "DISABLED")
+				};
+			}
+
+			return new List<string>();
 		}
 
 		public static string RemoveIllegalNameSymbols(string levelName)

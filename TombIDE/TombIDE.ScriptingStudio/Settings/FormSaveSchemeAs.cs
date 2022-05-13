@@ -9,6 +9,7 @@ namespace TombIDE.ScriptingStudio.Settings
 	internal enum ColorSchemeType
 	{
 		ClassicScript,
+		GameFlowScript,
 		Lua
 	}
 
@@ -63,6 +64,17 @@ namespace TombIDE.ScriptingStudio.Settings
 								throw new ArgumentException("A scheme with the same name already exists.");
 
 						schemeFilePath = Path.Combine(schemeFolderPath, newName + ".cssch");
+						break;
+					}
+					case ColorSchemeType.GameFlowScript:
+					{
+						string schemeFolderPath = DefaultPaths.GameFlowColorConfigsDirectory;
+
+						foreach (string file in Directory.GetFiles(schemeFolderPath, "*.gflsch", SearchOption.TopDirectoryOnly))
+							if (Path.GetFileNameWithoutExtension(file).Equals(newName, StringComparison.OrdinalIgnoreCase))
+								throw new ArgumentException("A scheme with the same name already exists.");
+
+						schemeFilePath = Path.Combine(schemeFolderPath, newName + ".gflsch");
 						break;
 					}
 					case ColorSchemeType.Lua:
