@@ -448,7 +448,7 @@ namespace TombLib.Scripting.Bases
 				}
 
 				if (currentLineText.TrimStart().StartsWith(CommentPrefix))
-					builder.AppendLine(whitespaceBuilder.ToString() + currentLineText.TrimStart().Remove(0, 1));
+					builder.AppendLine(whitespaceBuilder.ToString() + currentLineText.TrimStart().Remove(0, CommentPrefix.Length));
 				else
 					builder.AppendLine(currentLineText);
 

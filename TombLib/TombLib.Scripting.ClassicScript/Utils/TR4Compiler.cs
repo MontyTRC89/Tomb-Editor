@@ -45,7 +45,10 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				=> !x.Name.Equals("SCRIPT.EXE", StringComparison.OrdinalIgnoreCase)
 				&& !x.Name.Equals("DOS4GW.EXE", StringComparison.OrdinalIgnoreCase)))
 			{
-				fileSystemInfo.Delete();
+				if (fileSystemInfo is DirectoryInfo dir)
+					dir.Delete(true);
+				else
+					fileSystemInfo.Delete();
 			}
 
 			return logFileContent;
