@@ -172,16 +172,30 @@ namespace TombLib.Wad
             {
                 var mov = (WadMoveable)wadObject;
                 mov.Meshes.ForEach(m => MergeSimilarTextures(m)); // Find texture duplicates
-                Moveables.Add((WadMoveableId)newId, mov);
+
+                var id = (WadMoveableId)newId;
+                if (Moveables.ContainsKey(id))
+                    Moveables.Remove(id);
+                Moveables.Add(id, mov);
             }
             else if (newId is WadStaticId)
             {
                 var st = (WadStatic)wadObject;
                 MergeSimilarTextures(st.Mesh); // Find texture duplicates
-                Statics.Add((WadStaticId)newId, st);
+
+                var id = (WadStaticId)newId;
+                if (Statics.ContainsKey(id))
+                    Statics.Remove(id);
+                Statics.Add(id, st);
             }
             else if (newId is WadSpriteSequenceId)
-                SpriteSequences.Add((WadSpriteSequenceId)newId, (WadSpriteSequence)wadObject);
+            {
+                var id = (WadSpriteSequenceId)newId;
+                if (SpriteSequences.ContainsKey(id))
+                    SpriteSequences.Remove(id);
+
+                SpriteSequences.Add(id, (WadSpriteSequence)wadObject);
+            }
             else
                 throw new ArgumentException("Argument not of a valid type.");
         }
