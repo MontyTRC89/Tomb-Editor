@@ -6504,7 +6504,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>359</Id>
-      <Name>PULLEY_ANDY</Name>
+      <Name>TEN_EMPTY8</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6513,10 +6513,7 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>lar_plly.wav</FileName>
-        </WadSample>
+
       </Samples>
       <Global>false</Global>
     </WadSoundInfo>
