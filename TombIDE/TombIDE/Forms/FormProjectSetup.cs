@@ -235,7 +235,9 @@ namespace TombIDE
 						{
 							using (var dialog = new BrowseFolderDialog())
 							{
-								dialog.Title = "Select an original /audio/ folder.";
+								string gameName = comboBox_EngineType.SelectedIndex == 2 ? "Tomb Raider 2" : "Tomb Raider 3";
+
+								dialog.Title = $"Select an original {gameName} /audio/ folder.";
 
 								if (dialog.ShowDialog(this) == DialogResult.OK)
 								{
