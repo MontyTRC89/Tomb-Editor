@@ -14,7 +14,7 @@ TombIDE:
  * Completely redesigned the Project Master, now it's 3 separate tabs. (Level Manager, Plugins Manager and Miscellaneous)
  * Completely redesigned the "Create a new level" window.
  * Completely redesigned the implementation and handling of TRNG Plugins. Now they are per-project rather than global.
- * Added vanilla TR4 (TRLE), TR3 and TR2 support with presets.
+ * Added vanilla TR4 (TRLE), TR3, TR2 and TR1 support with presets.
  * Added "Create a 'Ready To Play' game archive", which allows the user to create a game archive with no dev files.
  * Fixed an issue where Strings Editor would paste text twice.
  * Fixed an issue where the Syntax Hint in Scripting Studio would extend out of bounds.
