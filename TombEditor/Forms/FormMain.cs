@@ -77,6 +77,9 @@ namespace TombEditor.Forms
             // Add recently opened projects
             RefreshRecentProjectsList();
 
+            // HACK: Select all text in search textbox when user clicks on it
+            tbSearchMenu.Click += delegate (object sender, EventArgs e) { if (tbSearchMenu.SelectionLength == 0) tbSearchMenu.SelectAll(); };
+
             // Done
             logger.Info("Tomb Editor is ready :)");
         }
