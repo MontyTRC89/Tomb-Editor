@@ -59,11 +59,11 @@
 			this.numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-			this.comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.checkBox_CloseBraces = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_CloseQuotes = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_CloseBrackets = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_CloseBraces = new DarkUI.Controls.DarkCheckBox();
+			this.comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonContextMenu.SuspendLayout();
 			this.groupBox_Colors.SuspendLayout();
 			this.groupBox_Preview.SuspendLayout();
@@ -599,19 +599,19 @@
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "TR2 / TR3 Script";
+			this.sectionPanel.SectionHeader = "Tomb1Main Script";
 			this.sectionPanel.Size = new System.Drawing.Size(720, 412);
 			this.sectionPanel.TabIndex = 0;
 			// 
-			// comboBox_FontFamily
+			// checkBox_CloseBraces
 			// 
-			this.comboBox_FontFamily.FormattingEnabled = true;
-			this.comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
-			this.comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.comboBox_FontFamily.Name = "comboBox_FontFamily";
-			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 23);
-			this.comboBox_FontFamily.TabIndex = 3;
-			this.comboBox_FontFamily.SelectedIndexChanged += new System.EventHandler(this.comboBox_FontFamily_SelectedIndexChanged);
+			this.checkBox_CloseBraces.AutoSize = true;
+			this.checkBox_CloseBraces.Location = new System.Drawing.Point(6, 264);
+			this.checkBox_CloseBraces.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.checkBox_CloseBraces.Name = "checkBox_CloseBraces";
+			this.checkBox_CloseBraces.Size = new System.Drawing.Size(128, 17);
+			this.checkBox_CloseBraces.TabIndex = 20;
+			this.checkBox_CloseBraces.Text = "Auto close braces { }";
 			// 
 			// checkBox_CloseQuotes
 			// 
@@ -633,15 +633,15 @@
 			this.checkBox_CloseBrackets.TabIndex = 18;
 			this.checkBox_CloseBrackets.Text = "Auto close brackets [ ]";
 			// 
-			// checkBox_CloseBraces
+			// comboBox_FontFamily
 			// 
-			this.checkBox_CloseBraces.AutoSize = true;
-			this.checkBox_CloseBraces.Location = new System.Drawing.Point(6, 264);
-			this.checkBox_CloseBraces.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.checkBox_CloseBraces.Name = "checkBox_CloseBraces";
-			this.checkBox_CloseBraces.Size = new System.Drawing.Size(128, 17);
-			this.checkBox_CloseBraces.TabIndex = 20;
-			this.checkBox_CloseBraces.Text = "Auto close braces { }";
+			this.comboBox_FontFamily.FormattingEnabled = true;
+			this.comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
+			this.comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+			this.comboBox_FontFamily.Name = "comboBox_FontFamily";
+			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 23);
+			this.comboBox_FontFamily.TabIndex = 3;
+			this.comboBox_FontFamily.SelectedIndexChanged += new System.EventHandler(this.comboBox_FontFamily_SelectedIndexChanged);
 			// 
 			// Tomb1MainSettingsControl
 			// 
