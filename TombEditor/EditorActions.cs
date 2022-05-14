@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -75,9 +74,9 @@ namespace TombEditor
 
         public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
-            if(!disableUndo)
+            if (!disableUndo)
             {
-                if(smooth)
+                if (smooth)
                     _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom.AndAdjoiningRooms);
                 else
                     _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
@@ -146,8 +145,8 @@ namespace TombEditor
                 {
                     if (block == null) return;
 
-                    if (vertical.IsOnFloor()   && block.Floor.DiagonalSplit   == DiagonalSplit.None ||
-                        vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
+                    if (vertical.IsOnFloor()   && (block.Floor.DiagonalSplit   == DiagonalSplit.None || vertical == BlockVertical.Ed) ||
+                        vertical.IsOnCeiling() && (block.Ceiling.DiagonalSplit == DiagonalSplit.None || vertical == BlockVertical.Rf))
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
@@ -265,15 +264,16 @@ namespace TombEditor
 
                             if (arrow <= ArrowType.EdgeW)
                             {
-                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None && vertical <= BlockVertical.Ceiling)
                                     continue;
+
                                 for (int i = 0; i < 2; i++)
                                     if (currentSplit != splits[i])
                                         block.ChangeHeight(vertical, corners[i], increment);
                             }
                             else
                             {
-                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None && vertical <= BlockVertical.Ceiling)
                                 {
                                     if (currentSplit == splits[1])
                                     {
