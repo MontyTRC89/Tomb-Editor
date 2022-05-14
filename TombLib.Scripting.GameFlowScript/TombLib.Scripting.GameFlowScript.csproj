@@ -53,7 +53,6 @@
     <Compile Include="Enums\ObjectType.cs" />
     <Compile Include="GameFlowEditor.cs" />
     <Compile Include="GameFlowEditorConfiguration.cs" />
-    <Compile Include="Objects\CodeCleaner.cs" />
     <Compile Include="Objects\ColorScheme.cs" />
     <Compile Include="Objects\SyntaxHighlighting.cs" />
     <Compile Include="Parsers\DocumentParser.cs" />
@@ -63,7 +62,6 @@
     <Compile Include="Resources\Keywords.cs" />
     <Compile Include="Resources\Patterns.cs" />
     <Compile Include="Utils\Autocomplete.cs" />
-    <Compile Include="Utils\ErrorDetector.cs" />
     <Compile Include="Utils\ScriptCompiler.cs" />
     <Compile Include="Workers\GameFlowNodesProvider.cs">
       <SubType>Component</SubType>

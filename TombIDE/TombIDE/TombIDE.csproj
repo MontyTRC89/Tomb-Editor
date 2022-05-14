@@ -67,6 +67,12 @@
     <Compile Include="Forms\FormEngineHelp.Designer.cs">
       <DependentUpon>FormEngineHelp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormFindMusic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFindMusic.Designer.cs">
+      <DependentUpon>FormFindMusic.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormImportProject.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,6 +114,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\FormEngineHelp.resx">
       <DependentUpon>FormEngineHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFindMusic.resx">
+      <DependentUpon>FormFindMusic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportProject.resx">
       <DependentUpon>FormImportProject.cs</DependentUpon>

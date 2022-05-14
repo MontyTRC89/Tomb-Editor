@@ -49,11 +49,9 @@
       <Link>GlobalPaths.cs</Link>
     </Compile>
     <Compile Include="Utils\Autocomplete.cs" />
-    <Compile Include="Objects\CodeCleaner.cs" />
     <Compile Include="Objects\ColorScheme.cs" />
     <Compile Include="LuaEditorConfiguration.cs" />
     <Compile Include="Resources\ConfigurationDefaults.cs" />
-    <Compile Include="Utils\ErrorDetector.cs" />
     <Compile Include="Resources\Keywords.cs" />
     <Compile Include="Resources\Patterns.cs" />
     <Compile Include="Objects\SyntaxHighlighting.cs" />

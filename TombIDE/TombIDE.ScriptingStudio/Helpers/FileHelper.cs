@@ -8,6 +8,7 @@ using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Helpers;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Lua;
+using TombLib.Scripting.Tomb1Main;
 
 namespace TombIDE.ScriptingStudio.Helpers
 {
@@ -27,6 +28,8 @@ namespace TombIDE.ScriptingStudio.Helpers
 					return DocumentMode.Lua;
 				else if (editorClassType == typeof(GameFlowEditor))
 					return DocumentMode.GameFlowScript;
+				else if (editorClassType == typeof(Tomb1MainEditor))
+					return DocumentMode.Tomb1Main;
 			}
 
 			return DocumentMode.PlainText;
@@ -71,6 +74,9 @@ namespace TombIDE.ScriptingStudio.Helpers
 
 		public static bool IsTextFile(string filePath)
 			=> Path.GetExtension(filePath).Equals(SupportedFormats.Text, StringComparison.OrdinalIgnoreCase);
+
+		public static bool IsJson5File(string filePath)
+			=> Path.GetExtension(filePath).Equals(SupportedFormats.Json5, StringComparison.OrdinalIgnoreCase);
 
 		public static string GetOriginalFilePathFromBackupFile(string backupFilePath)
 			=> Path.Combine(Path.GetDirectoryName(backupFilePath), Path.GetFileNameWithoutExtension(backupFilePath));

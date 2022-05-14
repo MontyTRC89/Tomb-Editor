@@ -17,6 +17,7 @@ internal static class DefaultPaths
 	public static string ClassicScriptColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "ClassicScript");
 	public static string LuaColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Lua");
 	public static string GameFlowColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "GameFlowScript");
+	public static string T1MColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Tomb1Main");
 
 	#endregion Configs
 

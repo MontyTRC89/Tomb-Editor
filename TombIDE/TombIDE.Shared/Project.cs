@@ -165,6 +165,9 @@ namespace TombIDE.Shared
 			{
 				foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 				{
+					bool isValidTR1 = GameVersion == TRVersion.Game.TR1
+						&& Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase);
+
 					bool isValidTR2 = GameVersion == TRVersion.Game.TR2
 						&& Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase);
 
@@ -174,7 +177,7 @@ namespace TombIDE.Shared
 					bool isValidTR4 = (GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG)
 						&& Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase);
 
-					if (isValidTR2 || isValidTR3 || isValidTR4)
+					if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4)
 					{
 						EnginePath = engineDirectory;
 						break;
@@ -229,8 +232,11 @@ namespace TombIDE.Shared
 		{
 			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
+				bool isValidTR1 = GameVersion == TRVersion.Game.TR1
+					&& Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase);
+
 				bool isValidTR2 = GameVersion == TRVersion.Game.TR2
-						&& Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase);
+					&& Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase);
 
 				bool isValidTR3 = GameVersion == TRVersion.Game.TR3
 					&& Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase);
@@ -238,7 +244,7 @@ namespace TombIDE.Shared
 				bool isValidTR4 = (GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG)
 					&& Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase);
 
-				if (isValidTR2 || isValidTR3 || isValidTR4)
+				if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4)
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
@@ -252,6 +258,9 @@ namespace TombIDE.Shared
 		{
 			switch (GameVersion)
 			{
+				case TRVersion.Game.TR1:
+					return "Tomb1Main.exe";
+
 				case TRVersion.Game.TR2:
 					return "Tomb2.exe";
 
@@ -274,6 +283,9 @@ namespace TombIDE.Shared
 		{
 			switch (GameVersion)
 			{
+				case TRVersion.Game.TR1:
+					return ".phd";
+
 				case TRVersion.Game.TR2:
 				case TRVersion.Game.TR3:
 					return ".tr2";

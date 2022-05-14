@@ -58,6 +58,12 @@ namespace TombIDE
 
 			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
 
+			if (Path.GetFileName(exeFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase))
+			{
+				textBox_ScriptPath.Text = Path.Combine(gameExeDirectory, "cfg");
+				return;
+			}
+
 			// Check if the project is using the new format
 			if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
 			{
@@ -224,7 +230,7 @@ namespace TombIDE
 				string levelsPath = textBox_LevelsPath.Text.Trim();
 
 				// Check if a script.txt file exists in the specified /Script/ folder
-				if (!File.Exists(Path.Combine(scriptPath, "script.txt")))
+				if (gameVersion != TRVersion.Game.TR1 && !File.Exists(Path.Combine(scriptPath, "script.txt")))
 					throw new FileNotFoundException("Selected /Script/ folder does not contain a Script.txt file.");
 
 				// Check if the levelsPath directory exists, if so, check if it contains any valid .prj2 files

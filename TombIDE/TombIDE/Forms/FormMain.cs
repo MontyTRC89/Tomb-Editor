@@ -74,10 +74,11 @@ namespace TombIDE
 				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
 			else if (_ide.Project.GameVersion == TRVersion.Game.TR2 || _ide.Project.GameVersion == TRVersion.Game.TR3)
 				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
+			else if (_ide.Project.GameVersion == TRVersion.Game.TR1)
+				scriptingStudio = new ScriptingStudio.Tomb1MainStudio { Parent = this };
 
 			scriptingStudio.Dock = DockStyle.Fill;
 			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);
-
 
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
@@ -538,6 +539,7 @@ namespace TombIDE
 		private void panelButton_Plugins_Click(object sender, EventArgs e) => SelectIDETab(IDETab.PluginManager);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
+
 		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
 		private void button_LaunchGame_Click(object sender, EventArgs e) => LaunchGame();
 
@@ -571,7 +573,7 @@ namespace TombIDE
 
 			try
 			{
-				ProcessStartInfo startInfo = new ProcessStartInfo
+				var startInfo = new ProcessStartInfo
 				{
 					FileName = flepExePath,
 					WorkingDirectory = _ide.Project.EnginePath
@@ -593,6 +595,23 @@ namespace TombIDE
 				return;
 			}
 
+			if (_ide.Project.GameVersion == TRVersion.Game.TR1)
+			{
+				try
+				{
+					var startInfo = new ProcessStartInfo
+					{
+						FileName = _ide.Project.LaunchFilePath,
+						WorkingDirectory = _ide.Project.EnginePath
+					};
+
+					Process.Start(startInfo);
+				}
+				catch { }
+
+				return;
+			}
+
 			string scriptDatFilePath = string.Empty;
 
 			if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
@@ -604,7 +623,7 @@ namespace TombIDE
 			{
 				try
 				{
-					ProcessStartInfo startInfo = new ProcessStartInfo
+					var startInfo = new ProcessStartInfo
 					{
 						FileName = _ide.Project.LaunchFilePath,
 						WorkingDirectory = _ide.Project.EnginePath
@@ -687,7 +706,7 @@ namespace TombIDE
 			Application.Exit();
 
 			// Restart with the current project selected
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = Assembly.GetExecutingAssembly().Location,
 				Arguments = "\"" + _ide.Project.GetTrprojFilePath() + "\""

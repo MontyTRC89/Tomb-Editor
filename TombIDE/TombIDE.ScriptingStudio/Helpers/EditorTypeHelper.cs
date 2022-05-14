@@ -6,6 +6,7 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Lua;
+using TombLib.Scripting.Tomb1Main;
 
 namespace TombIDE.ScriptingStudio.Helpers
 {
@@ -16,7 +17,14 @@ namespace TombIDE.ScriptingStudio.Helpers
 			if (editorType == EditorType.Default)
 				editorType = GetDefaultEditorType(filePath);
 
-			if (FileHelper.IsTextFile(filePath))
+			if (IDE.Global.Project.GameVersion == TRVersion.Game.TR1)
+			{
+				if (FileHelper.IsJson5File(filePath))
+					return typeof(Tomb1MainEditor);
+				else
+					return typeof(TextEditorBase);
+			}
+			else if (FileHelper.IsTextFile(filePath))
 			{
 				if (IDE.Global.Project.GameVersion == TRVersion.Game.TR2 || IDE.Global.Project.GameVersion == TRVersion.Game.TR3)
 				{

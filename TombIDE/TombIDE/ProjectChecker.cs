@@ -52,7 +52,7 @@ namespace TombIDE
 				return false;
 			}
 
-			if (!IsScriptFileValid(project))
+			if (project.GameVersion != TombLib.LevelData.TRVersion.Game.TR1 && !IsScriptFileValid(project))
 			{
 				errorMessage = "The project does not have a valid SCRIPT.TXT file.";
 				return false;
@@ -65,7 +65,8 @@ namespace TombIDE
 		{
 			foreach (string file in Directory.GetFiles(project.EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				if (Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 					return true;

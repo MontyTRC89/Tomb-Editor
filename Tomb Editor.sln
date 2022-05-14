@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAssociation", "FileAsso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.GameFlowScript", "TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj", "{98E13BC4-6196-4346-AB4F-92DE33D84589}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Tomb1Main", "TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj", "{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -294,6 +296,18 @@ Global
 		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x64.Build.0 = Release|Any CPU
 		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x86.ActiveCfg = Release|Any CPU
 		{98E13BC4-6196-4346-AB4F-92DE33D84589}.Release|x86.Build.0 = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|x64.Build.0 = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x64.ActiveCfg = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x64.Build.0 = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,6 +327,7 @@ Global
 		{5D9A72E7-4B33-4177-AD7C-1B46591005FD} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{87D4149C-E716-49F6-848F-ACA345D11B30} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{98E13BC4-6196-4346-AB4F-92DE33D84589} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
+		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1C98156-D4B8-411B-8A31-0EFC1D63BFBE}

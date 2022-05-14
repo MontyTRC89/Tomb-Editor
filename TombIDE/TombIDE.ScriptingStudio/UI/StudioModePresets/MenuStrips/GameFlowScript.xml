@@ -25,7 +25,6 @@
 	</Item>
 
 	<Item LangKey="Options" Position="3">
-		<Item LangKey="UseNewInclude" Command="UseNewInclude" CheckOnClick="True" />
 		<Item LangKey="ShowLogsAfterBuild" Command="ShowLogsAfterBuild" CheckOnClick="True" />
 		<Separator />
 		<Item LangKey="Settings" Command="Settings" Icon="Settings_16" />

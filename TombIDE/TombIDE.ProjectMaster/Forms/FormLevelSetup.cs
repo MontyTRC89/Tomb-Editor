@@ -171,8 +171,13 @@ namespace TombIDE.ProjectMaster
 			panel_ScriptSettings.Enabled = checkBox_GenerateSection.Checked;
 		}
 
-		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+		private void button_OpenAudioFolder_Click(object sender, EventArgs e)
+		{
+			if (_targetProject.GameVersion == TRVersion.Game.TR1)
+				SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "music"));
+			else
+				SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+		}
 
 		#endregion Events
 	}

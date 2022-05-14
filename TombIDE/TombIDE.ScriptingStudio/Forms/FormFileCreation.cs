@@ -121,7 +121,7 @@ namespace TombIDE.ScriptingStudio.Forms
 			switch (comboBox_FileFormat.SelectedIndex)
 			{
 				case 0: return ".txt";
-				case 1: return ".lua";
+				case 1: return ".json5";
 			}
 
 			return null;

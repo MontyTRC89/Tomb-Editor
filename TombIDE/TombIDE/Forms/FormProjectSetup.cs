@@ -15,6 +15,8 @@ namespace TombIDE
 	{
 		public Project CreatedProject { get; private set; }
 
+		public string _musicZipFilePath;
+
 		public FileInfo _cdaudioDatFile;
 		public FileInfo _cdaudioMp3File;
 		public FileInfo _cdaudioWadFile;
@@ -130,6 +132,26 @@ namespace TombIDE
 				if (Directory.Exists(projectPath) && Directory.EnumerateFileSystemEntries(projectPath).ToArray().Length > 0)
 					throw new ArgumentException("Selected project folder is not empty.");
 
+				tableLayoutPanel_Content02.Controls.Clear();
+
+				if (comboBox_EngineType.SelectedIndex == 1)
+				{
+					tableLayoutPanel_Content02.Controls.Add(panel_LevelsRadioChoice, 0, 0);
+					tableLayoutPanel_Content02.Controls.Add(progressBar, 0, 4);
+					tableLayoutPanel_Content02.Controls.Add(button_BrowseLevels, 1, 1);
+					tableLayoutPanel_Content02.Controls.Add(textBox_LevelsPath, 0, 1);
+				}
+				else
+				{
+					tableLayoutPanel_Content02.Controls.Add(panel_LevelsRadioChoice, 0, 2);
+					tableLayoutPanel_Content02.Controls.Add(progressBar, 0, 4);
+					tableLayoutPanel_Content02.Controls.Add(panel_ScriptRadioChoice, 0, 0);
+					tableLayoutPanel_Content02.Controls.Add(button_BrowseLevels, 1, 3);
+					tableLayoutPanel_Content02.Controls.Add(textBox_LevelsPath, 0, 3);
+					tableLayoutPanel_Content02.Controls.Add(textBox_ScriptPath, 0, 1);
+					tableLayoutPanel_Content02.Controls.Add(button_BrowseScript, 1, 1);
+				}
+
 				tablessTabControl.SelectTab(1);
 			}
 			catch (Exception ex)
@@ -142,7 +164,7 @@ namespace TombIDE
 			=> tablessTabControl.SelectTab(0);
 
 		private void comboBox_EngineType_SelectedIndexChanged(object sender, EventArgs e)
-			=> checkBox_IncludeFLEP.Visible = checkBox_IncludeFLEP.Enabled = comboBox_EngineType.SelectedIndex == 4;
+			=> checkBox_IncludeFLEP.Visible = checkBox_IncludeFLEP.Enabled = comboBox_EngineType.SelectedIndex == 5;
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{
@@ -176,12 +198,33 @@ namespace TombIDE
 				string projectPath = textBox_ProjectPath.Text.Trim();
 				string enginePath = Path.Combine(projectPath, "Engine");
 				string scriptPath = radio_Script_01.Checked ? Path.Combine(projectPath, "Script") : textBox_ScriptPath.Text.Trim();
+
+				if (comboBox_EngineType.SelectedIndex == 1)
+					scriptPath = Path.Combine(enginePath, "cfg");
+
 				string levelsPath = radio_Levels_01.Checked ? Path.Combine(projectPath, "Levels") : textBox_LevelsPath.Text.Trim();
 
 				switch (comboBox_EngineType.SelectedIndex)
 				{
 					case 1:
+						using (var form = new FormFindMusic())
+						{
+							if (form.ShowDialog(this) == DialogResult.OK)
+							{
+								_musicZipFilePath = form.MusicArchiveFilePath;
+							}
+							else
+							{
+								button_Create.Enabled = true;
+								DialogResult = DialogResult.None;
+								return;
+							}
+						}
+
+						break;
+
 					case 2:
+					case 3:
 						DialogResult result = DarkMessageBox.Show(this,
 							"In order to install the game, you will have to select an /audio/ folder from an original\n" +
 							"copy of the game (Steam and GOG versions are also valid).\n" +
@@ -203,7 +246,7 @@ namespace TombIDE
 
 									switch (comboBox_EngineType.SelectedIndex)
 									{
-										case 1:
+										case 2:
 											_cdaudioDatFile = Array.Find(files, x => x.Name.Equals("cdaudio.dat", StringComparison.OrdinalIgnoreCase));
 
 											if (_cdaudioDatFile == null)
@@ -216,7 +259,7 @@ namespace TombIDE
 
 											break;
 
-										case 2:
+										case 3:
 											_cdaudioWadFile = Array.Find(files, x => x.Name.Equals("cdaudio.wad", StringComparison.OrdinalIgnoreCase));
 
 											if (_cdaudioWadFile == null)
@@ -278,6 +321,7 @@ namespace TombIDE
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+				_musicZipFilePath = null;
 				_cdaudioDatFile = _cdaudioMp3File = _cdaudioWadFile = null;
 
 				button_Create.Enabled = true;
@@ -297,18 +341,22 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					gameVersion = TRVersion.Game.TR2;
+					gameVersion = TRVersion.Game.TR1;
 					break;
 
 				case 2:
-					gameVersion = TRVersion.Game.TR3;
+					gameVersion = TRVersion.Game.TR2;
 					break;
 
 				case 3:
-					gameVersion = TRVersion.Game.TR4;
+					gameVersion = TRVersion.Game.TR3;
 					break;
 
 				case 4:
+					gameVersion = TRVersion.Game.TR4;
+					break;
+
+				case 5:
 					gameVersion = TRVersion.Game.TRNG;
 					break;
 			}
@@ -335,18 +383,22 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					engineBasePath = Path.Combine(engineBasePath, "TR2.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TR1.zip");
 					break;
 
 				case 2:
-					engineBasePath = Path.Combine(engineBasePath, "TR3.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TR2.zip");
 					break;
 
 				case 3:
-					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TR3.zip");
 					break;
 
 				case 4:
+					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
+					break;
+
+				case 5:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
 					break;
 			}
@@ -405,15 +457,39 @@ namespace TombIDE
 				}
 			}
 
-			string audioDir = Path.Combine(project.EnginePath, "audio");
-
-			if (project.GameVersion == TRVersion.Game.TR2)
+			if (project.GameVersion == TRVersion.Game.TR1)
 			{
-				_cdaudioDatFile.CopyTo(Path.Combine(audioDir, _cdaudioDatFile.Name));
-				_cdaudioMp3File.CopyTo(Path.Combine(audioDir, _cdaudioMp3File.Name));
+				string musicDir = Path.Combine(project.EnginePath, "music");
+
+				if (!Directory.Exists(musicDir))
+					Directory.CreateDirectory(musicDir);
+
+				if (_musicZipFilePath != null)
+				{
+					using (var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath)))
+					{
+						foreach (ZipArchiveEntry entry in musicArchive.Entries)
+						{
+							if (entry.FullName.EndsWith("/"))
+								Directory.CreateDirectory(Path.Combine(project.EnginePath, entry.FullName));
+							else
+								entry.ExtractToFile(Path.Combine(project.EnginePath, entry.FullName));
+						}
+					}
+				}
 			}
-			else if (project.GameVersion == TRVersion.Game.TR3)
-				_cdaudioWadFile.CopyTo(Path.Combine(audioDir, _cdaudioWadFile.Name));
+			else if (project.GameVersion == TRVersion.Game.TR2 || project.GameVersion == TRVersion.Game.TR3)
+			{
+				string audioDir = Path.Combine(project.EnginePath, "audio");
+
+				if (project.GameVersion == TRVersion.Game.TR2)
+				{
+					_cdaudioDatFile.CopyTo(Path.Combine(audioDir, _cdaudioDatFile.Name));
+					_cdaudioMp3File.CopyTo(Path.Combine(audioDir, _cdaudioMp3File.Name));
+				}
+				else if (project.GameVersion == TRVersion.Game.TR3)
+					_cdaudioWadFile.CopyTo(Path.Combine(audioDir, _cdaudioWadFile.Name));
+			}
 
 			// Save the .trproj file
 			project.Save(); // .trproj = .xml but .trproj can be opened with TombIDE

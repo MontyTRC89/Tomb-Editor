@@ -56,6 +56,9 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Tomb1MainStudio.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GameFlowScriptStudio.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -261,6 +264,10 @@
       <Project>{98e13bc4-6196-4346-ab4f-92de33d84589}</Project>
       <Name>TombLib.Scripting.GameFlowScript</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj">
+      <Project>{7987fd7b-aac9-4c7f-8188-c54fde35c3d6}</Project>
+      <Name>TombLib.Scripting.Tomb1Main</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
       <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
       <Name>TombLib.Scripting.ClassicScript</Name>
@@ -329,6 +336,21 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

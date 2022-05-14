@@ -24,6 +24,7 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 
 			checkBox_FullPaths.Checked = _ide.IDEConfiguration.ViewFullFolderPaths;
+			button_ChangeScriptPath.Enabled = _ide.Project.GameVersion != TombLib.LevelData.TRVersion.Game.TR1;
 
 			UpdateProjectInfo();
 		}

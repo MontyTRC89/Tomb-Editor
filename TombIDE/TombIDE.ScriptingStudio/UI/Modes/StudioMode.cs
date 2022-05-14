@@ -11,6 +11,7 @@
 		None,
 		ClassicScript,
 		Lua,
-		GameFlowScript
+		GameFlowScript,
+		Tomb1Main
 	}
 }
