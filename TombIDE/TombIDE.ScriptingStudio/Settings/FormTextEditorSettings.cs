@@ -18,17 +18,22 @@ namespace TombIDE.ScriptingStudio.Settings
 
 			settingsClassicScript.Initialize(configs.ClassicScript);
 			settingsGameFlow.Initialize(configs.GameFlowScript);
+			settingsTomb1Main.Initialize(configs.Tomb1Main);
 
 			var classicScriptNode = new DarkTreeNode("TR4 / TRNG Script");
 			var gameFlowNode = new DarkTreeNode("TR2 / TR3 Script");
+			var tomb1MainNode = new DarkTreeNode("Tomb1Main Script");
 
 			treeView.Nodes.Add(classicScriptNode);
 			treeView.Nodes.Add(gameFlowNode);
+			treeView.Nodes.Add(tomb1MainNode);
 
 			if (studioMode == StudioMode.ClassicScript)
 				treeView.SelectNode(classicScriptNode);
 			else if (studioMode == StudioMode.GameFlowScript)
 				treeView.SelectNode(gameFlowNode);
+			else if (studioMode == StudioMode.Tomb1Main)
+				treeView.SelectNode(tomb1MainNode);
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -39,6 +44,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			{
 				settingsClassicScript.ApplySettings(configs.ClassicScript);
 				settingsGameFlow.ApplySettings(configs.GameFlowScript);
+				settingsTomb1Main.ApplySettings(configs.Tomb1Main);
 			}
 			else
 			{
@@ -66,6 +72,8 @@ namespace TombIDE.ScriptingStudio.Settings
 					settingsClassicScript.ResetToDefault();
 				else if (treeView.SelectedNodes[0] == treeView.Nodes[1])
 					settingsGameFlow.ResetToDefault();
+				else if (treeView.SelectedNodes[0] == treeView.Nodes[2])
+					settingsTomb1Main.ResetToDefault();
 			}
 		}
 
@@ -83,6 +91,11 @@ namespace TombIDE.ScriptingStudio.Settings
 			{
 				tablessTabControl.SelectTab(2);
 				settingsGameFlow.ForcePreviewUpdate();
+			}
+			else if (treeView.SelectedNodes[0] == treeView.Nodes[2])
+			{
+				tablessTabControl.SelectTab(3);
+				settingsTomb1Main.ForcePreviewUpdate();
 			}
 		}
 	}

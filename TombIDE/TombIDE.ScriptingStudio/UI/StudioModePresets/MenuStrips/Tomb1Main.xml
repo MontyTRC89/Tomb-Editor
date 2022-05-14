@@ -23,8 +23,6 @@
 	</Item>
 
 	<Item LangKey="Options" Position="3">
-		<Item LangKey="ShowLogsAfterBuild" Command="ShowLogsAfterBuild" CheckOnClick="True" />
-		<Separator />
 		<Item LangKey="Settings" Command="Settings" Icon="Settings_16" />
 	</Item>
 

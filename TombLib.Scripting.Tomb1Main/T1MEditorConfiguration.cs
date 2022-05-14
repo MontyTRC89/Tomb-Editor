@@ -36,7 +36,11 @@ namespace TombLib.Scripting.Tomb1Main
 		#region Construction
 
 		public T1MEditorConfiguration()
-			=> DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+		{
+			DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+
+			AutoCloseParentheses = false;
+		}
 
 		#endregion Construction
 	}

@@ -28,12 +28,15 @@
 			this.settingsClassicScript = new TombIDE.ScriptingStudio.Settings.ClassicScriptSettingsControl();
 			this.tabPage_GameFlow = new System.Windows.Forms.TabPage();
 			this.settingsGameFlow = new TombIDE.ScriptingStudio.Settings.GameFlowSettingsControl();
+			this.tabPage_Tomb1Main = new System.Windows.Forms.TabPage();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
+			this.settingsTomb1Main = new TombIDE.ScriptingStudio.Settings.Tomb1MainSettingsControl();
 			this.panel_Buttons.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
 			this.tabPage_ClassicScript.SuspendLayout();
 			this.tabPage_GameFlow.SuspendLayout();
+			this.tabPage_Tomb1Main.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_Apply
@@ -101,6 +104,7 @@
 			this.tablessTabControl.Controls.Add(this.tabPage_Global);
 			this.tablessTabControl.Controls.Add(this.tabPage_ClassicScript);
 			this.tablessTabControl.Controls.Add(this.tabPage_GameFlow);
+			this.tablessTabControl.Controls.Add(this.tabPage_Tomb1Main);
 			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tablessTabControl.Location = new System.Drawing.Point(168, 0);
 			this.tablessTabControl.Name = "tablessTabControl";
@@ -131,6 +135,7 @@
 			// 
 			this.settingsClassicScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
 			this.settingsClassicScript.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsClassicScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settingsClassicScript.Location = new System.Drawing.Point(0, 0);
 			this.settingsClassicScript.MaximumSize = new System.Drawing.Size(720, 412);
 			this.settingsClassicScript.MinimumSize = new System.Drawing.Size(720, 412);
@@ -148,16 +153,28 @@
 			this.tabPage_GameFlow.TabIndex = 2;
 			this.tabPage_GameFlow.Text = "Game Flow";
 			// 
-			// gameFlowSettings
+			// settingsGameFlow
 			// 
 			this.settingsGameFlow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
 			this.settingsGameFlow.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsGameFlow.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settingsGameFlow.Location = new System.Drawing.Point(0, 0);
 			this.settingsGameFlow.MaximumSize = new System.Drawing.Size(720, 412);
 			this.settingsGameFlow.MinimumSize = new System.Drawing.Size(720, 412);
-			this.settingsGameFlow.Name = "gameFlowSettings";
+			this.settingsGameFlow.Name = "settingsGameFlow";
 			this.settingsGameFlow.Size = new System.Drawing.Size(720, 412);
 			this.settingsGameFlow.TabIndex = 0;
+			// 
+			// tabPage_Tomb1Main
+			// 
+			this.tabPage_Tomb1Main.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_Tomb1Main.Controls.Add(this.settingsTomb1Main);
+			this.tabPage_Tomb1Main.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_Tomb1Main.Margin = new System.Windows.Forms.Padding(0);
+			this.tabPage_Tomb1Main.Name = "tabPage_Tomb1Main";
+			this.tabPage_Tomb1Main.Size = new System.Drawing.Size(712, 386);
+			this.tabPage_Tomb1Main.TabIndex = 3;
+			this.tabPage_Tomb1Main.Text = "Tomb1Main";
 			// 
 			// treeView
 			// 
@@ -172,6 +189,19 @@
 			this.treeView.Size = new System.Drawing.Size(168, 412);
 			this.treeView.TabIndex = 3;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
+			// 
+			// settingsTomb1Main
+			// 
+			this.settingsTomb1Main.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
+			this.settingsTomb1Main.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsTomb1Main.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.settingsTomb1Main.Location = new System.Drawing.Point(0, 0);
+			this.settingsTomb1Main.Margin = new System.Windows.Forms.Padding(0);
+			this.settingsTomb1Main.MaximumSize = new System.Drawing.Size(720, 412);
+			this.settingsTomb1Main.MinimumSize = new System.Drawing.Size(720, 412);
+			this.settingsTomb1Main.Name = "settingsTomb1Main";
+			this.settingsTomb1Main.Size = new System.Drawing.Size(720, 412);
+			this.settingsTomb1Main.TabIndex = 0;
 			// 
 			// FormTextEditorSettings
 			// 
@@ -196,6 +226,7 @@
 			this.tablessTabControl.ResumeLayout(false);
 			this.tabPage_ClassicScript.ResumeLayout(false);
 			this.tabPage_GameFlow.ResumeLayout(false);
+			this.tabPage_Tomb1Main.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -214,5 +245,7 @@
 		private System.Windows.Forms.TabPage tabPage_GameFlow;
 		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 		private GameFlowSettingsControl settingsGameFlow;
+		private System.Windows.Forms.TabPage tabPage_Tomb1Main;
+		private Tomb1MainSettingsControl settingsTomb1Main;
 	}
 }

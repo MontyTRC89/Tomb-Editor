@@ -76,6 +76,18 @@ namespace TombLib.Scripting.Tomb1Main.Resources
 		public static readonly string[] Properties = new string[]
 		{
 			// Tomb1Main.json5
+			"start_lara_hitpoints",
+			"disable_healing_between_levels",
+			"disable_medpacks",
+			"disable_magnums",
+			"disable_uzis",
+			"disable_shotgun",
+			"enable_deaths_counter",
+			"enable_enemy_healthbar",
+			"enable_enhanced_look",
+			"enable_shotgun_flash",
+			"fix_shotgun_targeting",
+			"enable_numeric_keys",
 			"enable_tr3_sidesteps",
 			"enable_cheats",
 			"enable_braid",

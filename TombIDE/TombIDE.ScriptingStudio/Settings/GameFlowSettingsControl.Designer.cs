@@ -116,7 +116,7 @@
 			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 164);
 			this.checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			this.checkBox_Autocomplete.Name = "checkBox_Autocomplete";
-			this.checkBox_Autocomplete.Size = new System.Drawing.Size(126, 17);
+			this.checkBox_Autocomplete.Size = new System.Drawing.Size(135, 17);
 			this.checkBox_Autocomplete.TabIndex = 6;
 			this.checkBox_Autocomplete.Text = "Enable autocomplete";
 			// 
@@ -126,7 +126,7 @@
 			this.checkBox_HighlightCurrentLine.Location = new System.Drawing.Point(6, 242);
 			this.checkBox_HighlightCurrentLine.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_HighlightCurrentLine.Name = "checkBox_HighlightCurrentLine";
-			this.checkBox_HighlightCurrentLine.Size = new System.Drawing.Size(122, 17);
+			this.checkBox_HighlightCurrentLine.Size = new System.Drawing.Size(137, 17);
 			this.checkBox_HighlightCurrentLine.TabIndex = 11;
 			this.checkBox_HighlightCurrentLine.Text = "Highlight current line";
 			this.checkBox_HighlightCurrentLine.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
@@ -137,7 +137,7 @@
 			this.checkBox_LineNumbers.Location = new System.Drawing.Point(6, 281);
 			this.checkBox_LineNumbers.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_LineNumbers.Name = "checkBox_LineNumbers";
-			this.checkBox_LineNumbers.Size = new System.Drawing.Size(115, 17);
+			this.checkBox_LineNumbers.Size = new System.Drawing.Size(125, 17);
 			this.checkBox_LineNumbers.TabIndex = 12;
 			this.checkBox_LineNumbers.Text = "Show line numbers";
 			this.checkBox_LineNumbers.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
@@ -148,7 +148,7 @@
 			this.checkBox_VisibleSpaces.Location = new System.Drawing.Point(6, 320);
 			this.checkBox_VisibleSpaces.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_VisibleSpaces.Name = "checkBox_VisibleSpaces";
-			this.checkBox_VisibleSpaces.Size = new System.Drawing.Size(122, 17);
+			this.checkBox_VisibleSpaces.Size = new System.Drawing.Size(127, 17);
 			this.checkBox_VisibleSpaces.TabIndex = 14;
 			this.checkBox_VisibleSpaces.Text = "Show visible spaces";
 			this.checkBox_VisibleSpaces.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
@@ -159,7 +159,7 @@
 			this.checkBox_VisibleTabs.Location = new System.Drawing.Point(6, 359);
 			this.checkBox_VisibleTabs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.checkBox_VisibleTabs.Name = "checkBox_VisibleTabs";
-			this.checkBox_VisibleTabs.Size = new System.Drawing.Size(108, 17);
+			this.checkBox_VisibleTabs.Size = new System.Drawing.Size(115, 17);
 			this.checkBox_VisibleTabs.TabIndex = 15;
 			this.checkBox_VisibleTabs.Text = "Show visible tabs";
 			this.checkBox_VisibleTabs.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
@@ -170,7 +170,7 @@
 			this.checkBox_WordWrapping.Location = new System.Drawing.Point(6, 203);
 			this.checkBox_WordWrapping.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_WordWrapping.Name = "checkBox_WordWrapping";
-			this.checkBox_WordWrapping.Size = new System.Drawing.Size(98, 17);
+			this.checkBox_WordWrapping.Size = new System.Drawing.Size(108, 17);
 			this.checkBox_WordWrapping.TabIndex = 10;
 			this.checkBox_WordWrapping.Text = "Word wrapping";
 			this.checkBox_WordWrapping.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
@@ -214,7 +214,7 @@
 			this.colorButton_Foreground.TabIndex = 16;
 			this.colorButton_Foreground.Click += new System.EventHandler(this.button_Color_Click);
 			// 
-			// colorButton_NewCommands
+			// colorButton_SpecialProperties
 			// 
 			this.colorButton_SpecialProperties.BackColor = System.Drawing.Color.SpringGreen;
 			this.colorButton_SpecialProperties.BackColorUseGeneric = false;
@@ -223,13 +223,13 @@
 			this.colorButton_SpecialProperties.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_SpecialProperties.Location = new System.Drawing.Point(191, 100);
 			this.colorButton_SpecialProperties.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.colorButton_SpecialProperties.Name = "colorButton_NewCommands";
+			this.colorButton_SpecialProperties.Name = "colorButton_SpecialProperties";
 			this.colorButton_SpecialProperties.Size = new System.Drawing.Size(170, 25);
 			this.colorButton_SpecialProperties.TabIndex = 9;
 			this.colorButton_SpecialProperties.UseForeColor = true;
 			this.colorButton_SpecialProperties.Click += new System.EventHandler(this.button_Color_Click);
 			// 
-			// colorButton_References
+			// colorButton_Constants
 			// 
 			this.colorButton_Constants.BackColor = System.Drawing.Color.Orchid;
 			this.colorButton_Constants.BackColorUseGeneric = false;
@@ -238,7 +238,7 @@
 			this.colorButton_Constants.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_Constants.Location = new System.Drawing.Point(12, 141);
 			this.colorButton_Constants.Margin = new System.Windows.Forms.Padding(9, 0, 3, 8);
-			this.colorButton_Constants.Name = "colorButton_References";
+			this.colorButton_Constants.Name = "colorButton_Constants";
 			this.colorButton_Constants.Size = new System.Drawing.Size(170, 25);
 			this.colorButton_Constants.TabIndex = 5;
 			this.colorButton_Constants.UseForeColor = true;
@@ -259,7 +259,7 @@
 			this.colorButton_Sections.UseForeColor = true;
 			this.colorButton_Sections.Click += new System.EventHandler(this.button_Color_Click);
 			// 
-			// colorButton_StandardCommands
+			// colorButton_Properties
 			// 
 			this.colorButton_Properties.BackColor = System.Drawing.Color.MediumAquamarine;
 			this.colorButton_Properties.BackColorUseGeneric = false;
@@ -268,7 +268,7 @@
 			this.colorButton_Properties.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_Properties.Location = new System.Drawing.Point(191, 59);
 			this.colorButton_Properties.Margin = new System.Windows.Forms.Padding(6, 0, 3, 3);
-			this.colorButton_Properties.Name = "colorButton_StandardCommands";
+			this.colorButton_Properties.Name = "colorButton_Properties";
 			this.colorButton_Properties.Size = new System.Drawing.Size(170, 25);
 			this.colorButton_Properties.TabIndex = 7;
 			this.colorButton_Properties.UseForeColor = true;
@@ -301,7 +301,7 @@
 			this.darkLabel1.Location = new System.Drawing.Point(7, 34);
 			this.darkLabel1.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
 			this.darkLabel1.Name = "darkLabel1";
-			this.darkLabel1.Size = new System.Drawing.Size(52, 13);
+			this.darkLabel1.Size = new System.Drawing.Size(56, 13);
 			this.darkLabel1.TabIndex = 0;
 			this.darkLabel1.Text = "Font size:";
 			// 
@@ -312,7 +312,7 @@
 			this.darkLabel10.Location = new System.Drawing.Point(370, 46);
 			this.darkLabel10.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.darkLabel10.Name = "darkLabel10";
-			this.darkLabel10.Size = new System.Drawing.Size(68, 13);
+			this.darkLabel10.Size = new System.Drawing.Size(72, 13);
 			this.darkLabel10.TabIndex = 13;
 			this.darkLabel10.Text = "Background:";
 			// 
@@ -322,7 +322,7 @@
 			this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.darkLabel11.Location = new System.Drawing.Point(370, 87);
 			this.darkLabel11.Name = "darkLabel11";
-			this.darkLabel11.Size = new System.Drawing.Size(89, 13);
+			this.darkLabel11.Size = new System.Drawing.Size(98, 13);
 			this.darkLabel11.TabIndex = 15;
 			this.darkLabel11.Text = "Normal text color:";
 			// 
@@ -342,7 +342,7 @@
 			this.darkLabel2.Location = new System.Drawing.Point(7, 76);
 			this.darkLabel2.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
 			this.darkLabel2.Name = "darkLabel2";
-			this.darkLabel2.Size = new System.Drawing.Size(60, 13);
+			this.darkLabel2.Size = new System.Drawing.Size(67, 13);
 			this.darkLabel2.TabIndex = 2;
 			this.darkLabel2.Text = "Font family:";
 			// 
@@ -353,7 +353,7 @@
 			this.darkLabel3.Location = new System.Drawing.Point(7, 119);
 			this.darkLabel3.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
 			this.darkLabel3.Name = "darkLabel3";
-			this.darkLabel3.Size = new System.Drawing.Size(86, 13);
+			this.darkLabel3.Size = new System.Drawing.Size(90, 13);
 			this.darkLabel3.TabIndex = 4;
 			this.darkLabel3.Text = "Undo stack size:";
 			// 
@@ -364,7 +364,7 @@
 			this.darkLabel4.Location = new System.Drawing.Point(12, 46);
 			this.darkLabel4.Margin = new System.Windows.Forms.Padding(9, 3, 3, 0);
 			this.darkLabel4.Name = "darkLabel4";
-			this.darkLabel4.Size = new System.Drawing.Size(51, 13);
+			this.darkLabel4.Size = new System.Drawing.Size(53, 13);
 			this.darkLabel4.TabIndex = 0;
 			this.darkLabel4.Text = "Sections:";
 			// 
@@ -374,7 +374,7 @@
 			this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.darkLabel5.Location = new System.Drawing.Point(12, 87);
 			this.darkLabel5.Name = "darkLabel5";
-			this.darkLabel5.Size = new System.Drawing.Size(42, 13);
+			this.darkLabel5.Size = new System.Drawing.Size(43, 13);
 			this.darkLabel5.TabIndex = 2;
 			this.darkLabel5.Text = "Values:";
 			// 
@@ -384,7 +384,7 @@
 			this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.darkLabel6.Location = new System.Drawing.Point(12, 128);
 			this.darkLabel6.Name = "darkLabel6";
-			this.darkLabel6.Size = new System.Drawing.Size(57, 13);
+			this.darkLabel6.Size = new System.Drawing.Size(62, 13);
 			this.darkLabel6.TabIndex = 4;
 			this.darkLabel6.Text = "Constants:";
 			// 
@@ -395,7 +395,7 @@
 			this.darkLabel7.Location = new System.Drawing.Point(190, 46);
 			this.darkLabel7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.darkLabel7.Name = "darkLabel7";
-			this.darkLabel7.Size = new System.Drawing.Size(57, 13);
+			this.darkLabel7.Size = new System.Drawing.Size(62, 13);
 			this.darkLabel7.TabIndex = 6;
 			this.darkLabel7.Text = "Properties:";
 			// 
@@ -405,7 +405,7 @@
 			this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.darkLabel8.Location = new System.Drawing.Point(190, 87);
 			this.darkLabel8.Name = "darkLabel8";
-			this.darkLabel8.Size = new System.Drawing.Size(95, 13);
+			this.darkLabel8.Size = new System.Drawing.Size(101, 13);
 			this.darkLabel8.TabIndex = 8;
 			this.darkLabel8.Text = "Special Properties:";
 			// 
@@ -415,16 +415,16 @@
 			this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.darkLabel9.Location = new System.Drawing.Point(190, 128);
 			this.darkLabel9.Name = "darkLabel9";
-			this.darkLabel9.Size = new System.Drawing.Size(59, 13);
+			this.darkLabel9.Size = new System.Drawing.Size(64, 13);
 			this.darkLabel9.TabIndex = 10;
 			this.darkLabel9.Text = "Comments:";
 			// 
 			// elementHost
 			// 
 			this.elementHost.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.elementHost.Location = new System.Drawing.Point(3, 16);
+			this.elementHost.Location = new System.Drawing.Point(3, 18);
 			this.elementHost.Name = "elementHost";
-			this.elementHost.Size = new System.Drawing.Size(545, 172);
+			this.elementHost.Size = new System.Drawing.Size(545, 170);
 			this.elementHost.TabIndex = 0;
 			this.elementHost.Child = null;
 			// 
@@ -500,7 +500,7 @@
 			this.comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
 			this.comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
 			this.comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
-			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 21);
+			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 23);
 			this.comboBox_ColorSchemes.TabIndex = 12;
 			this.comboBox_ColorSchemes.SelectedIndexChanged += new System.EventHandler(this.comboBox_ColorSchemes_SelectedIndexChanged);
 			// 
@@ -536,7 +536,7 @@
             0,
             0});
 			this.numeric_FontSize.Name = "numeric_FontSize";
-			this.numeric_FontSize.Size = new System.Drawing.Size(150, 20);
+			this.numeric_FontSize.Size = new System.Drawing.Size(150, 22);
 			this.numeric_FontSize.TabIndex = 1;
 			this.numeric_FontSize.Value = new decimal(new int[] {
             12,
@@ -566,7 +566,7 @@
             0,
             0});
 			this.numeric_UndoStackSize.Name = "numeric_UndoStackSize";
-			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 20);
+			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 22);
 			this.numeric_UndoStackSize.TabIndex = 5;
 			this.numeric_UndoStackSize.Value = new decimal(new int[] {
             256,
@@ -603,7 +603,7 @@
 			this.comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
 			this.comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.comboBox_FontFamily.Name = "comboBox_FontFamily";
-			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 21);
+			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 23);
 			this.comboBox_FontFamily.TabIndex = 3;
 			this.comboBox_FontFamily.SelectedIndexChanged += new System.EventHandler(this.comboBox_FontFamily_SelectedIndexChanged);
 			// 
@@ -613,6 +613,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(720, 412);
 			this.MinimumSize = new System.Drawing.Size(720, 412);
 			this.Name = "GameFlowSettingsControl";

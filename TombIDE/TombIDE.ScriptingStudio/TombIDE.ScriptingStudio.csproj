@@ -56,6 +56,12 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Settings\Tomb1MainSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\Tomb1MainSettingsControl.Designer.cs">
+      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tomb1MainStudio.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -205,6 +211,9 @@
     <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Settings\Tomb1MainSettingsControl.resx">
+      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\GameFlowSettingsControl.resx">
       <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
     </EmbeddedResource>

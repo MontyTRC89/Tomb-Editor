@@ -36,7 +36,14 @@ namespace TombLib.Scripting.GameFlowScript
 		#region Construction
 
 		public GameFlowEditorConfiguration()
-			=> DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+		{
+			DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+
+			AutoCloseParentheses = false;
+			AutoCloseBraces = false;
+			AutoCloseBrackets = false;
+			AutoCloseQuotes = false;
+		}
 
 		#endregion Construction
 	}
