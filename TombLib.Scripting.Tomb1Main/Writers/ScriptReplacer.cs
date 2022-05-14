@@ -17,7 +17,7 @@ namespace TombLib.Scripting.Tomb1Main.Writers
 
 				if (regex.IsMatch(lineText))
 				{
-					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim().Trim('"');
+					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim().Trim(',').Trim('"');
 
 					if (scriptLevelName == oldName)
 					{

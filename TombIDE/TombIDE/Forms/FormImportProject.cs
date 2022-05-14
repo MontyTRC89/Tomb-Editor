@@ -362,12 +362,20 @@ namespace TombIDE
 
 			switch (Path.GetFileName(exeFilePath).ToLower())
 			{
-				case "tomb4.exe":
-					gameVersion = TRVersion.Game.TR4;
+				case "tomb1main.exe":
+					gameVersion = TRVersion.Game.TR1;
 					break;
 
-				case "pctomb5.exe":
-					gameVersion = TRVersion.Game.TombEngine;
+				case "tomb2.exe":
+					gameVersion = TRVersion.Game.TR2;
+					break;
+
+				case "tomb3.exe":
+					gameVersion = TRVersion.Game.TR3;
+					break;
+
+				case "tomb4.exe":
+					gameVersion = TRVersion.Game.TR4;
 					break;
 			}
 

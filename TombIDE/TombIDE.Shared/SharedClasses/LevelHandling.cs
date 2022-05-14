@@ -42,27 +42,15 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static List<string> GenerateScriptLines(ProjectLevel level, TRVersion.Game gameVersion, int ambientSoundID, bool horizon = false)
 		{
-			if (gameVersion == TRVersion.Game.TR1)
-			{
-				return new List<string>
-				{
-					"\n		{",
-					$"			\"title\": \"{level.Name}\"",
-					$"			\"file\": \"data\\\\{level.DataFileName}.phd\"",
-					$"			\"type\": \"normal\"",
-					$"			\"music\": {ambientSoundID}",
-					"		},"
-				};
-			}
-			else if (gameVersion == TRVersion.Game.TR2 || gameVersion == TRVersion.Game.TR3)
+			if (gameVersion == TRVersion.Game.TR2 || gameVersion == TRVersion.Game.TR3)
 			{
 				return new List<string>
 				{
 					"\nLEVEL: " + level.Name,
 					"",
-					"	GAME: data\\" + level.DataFileName.ToLower() + ".tr2",
-					"	TRACK: " + ambientSoundID,
 					"	LOAD_PIC: " + "pix\\" + (gameVersion == TRVersion.Game.TR2 ? "mansion.pcx" : "house.bmp"),
+					"	TRACK: " + ambientSoundID,
+					"	GAME: data\\" + level.DataFileName.ToLower() + ".tr2",
 					"",
 					"END:"
 				};

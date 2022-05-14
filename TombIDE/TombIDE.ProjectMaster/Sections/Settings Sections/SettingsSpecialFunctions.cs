@@ -48,7 +48,8 @@ namespace TombIDE.ProjectMaster
 						|| fileName == "DETECTED CRASH.txt"
 						|| fileName == "LastExtraction.lst"
 						|| (fileName.StartsWith("Last_Crash_") && (fileName.EndsWith(".txt") || fileName.EndsWith(".mem")))
-						|| fileName.EndsWith("_warm_up_log.txt"))
+						|| fileName.EndsWith("_warm_up_log.txt")
+						|| Path.GetExtension(fileName).Equals(".log", StringComparison.OrdinalIgnoreCase))
 					{
 						File.Delete(file);
 						wereFilesDeleted = true;

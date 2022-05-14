@@ -27,34 +27,48 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameDirectory.Enabled = false;
 			}
 
-			// Check if there are errors in the script
-			if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) || !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1)
 			{
-				// Disable the checkBox if so
-				checkBox_RenameScriptEntry.Checked = false;
-				checkBox_RenameScriptEntry.Enabled = false;
+				checkBox_RenameScriptEntry.Text = "Rename script entry as well (Recommended)";
 
-				// Display ScriptError + LanguageError
-				if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+				if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name))
 				{
+					checkBox_RenameScriptEntry.Checked = false;
+					checkBox_RenameScriptEntry.Enabled = false;
 					label_ScriptError.Visible = true;
-					label_LanguageError.Visible = true;
-				}
-				// Display ScriptError only
-				else if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && _ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
-				{
-					Height = 212;
-					label_ScriptError.Visible = true;
-				}
-				// Display LanguageError only
-				else if (_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
-				{
-					Height = 212;
-					label_LanguageError.Visible = true;
 				}
 			}
-			else // No errors
-				Height = 193;
+			else
+			{
+				// Check if there are errors in the script
+				if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) || !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+				{
+					// Disable the checkBox if so
+					checkBox_RenameScriptEntry.Checked = false;
+					checkBox_RenameScriptEntry.Enabled = false;
+
+					// Display ScriptError + LanguageError
+					if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+					{
+						label_ScriptError.Visible = true;
+						label_LanguageError.Visible = true;
+					}
+					// Display ScriptError only
+					else if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && _ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+					{
+						Height = 212;
+						label_ScriptError.Visible = true;
+					}
+					// Display LanguageError only
+					else if (_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+					{
+						Height = 212;
+						label_LanguageError.Visible = true;
+					}
+				}
+				else // No errors
+					Height = 193;
+			}
 		}
 
 		protected override void OnShown(EventArgs e)

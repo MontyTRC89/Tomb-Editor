@@ -34,14 +34,23 @@ namespace TombIDE.ProjectMaster
 
 			textBox_LevelName.Text = Path.GetFileNameWithoutExtension(prj2FilePath);
 
-			if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			{
+				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
+				panel_ScriptSettings.Visible = false;
+				panel_04.Visible = false;
+			}
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 30;
 				Height -= 30;
-
-				numeric_SoundID.Value = 0;
 			}
+
+			if (_targetProject.GameVersion == TRVersion.Game.TR2)
+				numeric_SoundID.Value = 33;
+			else if (_targetProject.GameVersion == TRVersion.Game.TR3)
+				numeric_SoundID.Value = 2;
 		}
 
 		#endregion Initialization

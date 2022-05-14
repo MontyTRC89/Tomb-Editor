@@ -13,7 +13,7 @@
 		public const bool AutoCloseParentheses = true;
 		public const bool AutoCloseBraces = true;
 		public const bool AutoCloseBrackets = true;
-		public const bool AutoCloseQuotes = false;
+		public const bool AutoCloseQuotes = true;
 
 		public const bool WordWrapping = false;
 

@@ -15,7 +15,7 @@ namespace TombLib.Scripting.Tomb1Main.Parsers
 
 				if (regex.IsMatch(lineText))
 				{
-					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim().Trim('"');
+					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim().TrimEnd(',').Trim('"');
 
 					if (scriptLevelName == levelName)
 						return true;

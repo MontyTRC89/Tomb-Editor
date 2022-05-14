@@ -52,10 +52,13 @@ namespace TombLib.Scripting.Tomb1Main
 				{
 					string currentLineText = LineParser.EscapeComments(Document.GetText(Document.GetLineByOffset(CaretOffset))).Trim();
 
-					if (currentLineText.Length == 1)
+					if (currentLineText.Length == 1 || currentLineText.Equals("\"\""))
 					{
 						InitializeCompletionWindow();
 						_completionWindow.StartOffset = CaretOffset - 1;
+
+						if (currentLineText.Equals("\"\""))
+							_completionWindow.EndOffset = CaretOffset + 1;
 
 						foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
 							_completionWindow.CompletionList.CompletionData.Add(item);

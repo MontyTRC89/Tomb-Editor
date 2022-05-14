@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
@@ -44,8 +43,7 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		private bool IsSilentAction(IIDEEvent obj)
-			=> obj is IDE.ScriptEditor_AppendScriptLinesEvent
-			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
+			=> obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
 			|| obj is IDE.ScriptEditor_RenameLevelEvent;
 
 		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
@@ -58,12 +56,7 @@ namespace TombIDE.ScriptingStudio
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
-				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
-				{
-					AppendScriptLines(asle.Lines);
-					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
-				}
-				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
+				if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
 					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
@@ -76,17 +69,6 @@ namespace TombIDE.ScriptingStudio
 					RenameRequestedLevelScript(oldName, newName);
 					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
-			}
-		}
-
-		private void AppendScriptLines(List<string> inputLines)
-		{
-			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, true));
-
-			if (CurrentEditor is TextEditorBase editor)
-			{
-				editor.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
-				editor.ScrollToLine(editor.LineCount);
 			}
 		}
 
