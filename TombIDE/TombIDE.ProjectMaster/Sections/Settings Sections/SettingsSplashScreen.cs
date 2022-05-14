@@ -1,5 +1,6 @@
 using DarkUI.Forms;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -41,13 +42,26 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Preview_Click(object sender, EventArgs e)
 		{
-			using (FormSplashPreview form = new FormSplashPreview(_ide.Project.EnginePath))
-				form.ShowDialog(this);
+			string originalFileName = FileVersionInfo.GetVersionInfo(_ide.Project.LaunchFilePath).OriginalFilename;
+
+			if (!originalFileName.Equals("launch.exe", StringComparison.OrdinalIgnoreCase))
+			{
+				DarkMessageBox.Show(this, "Project not supported.", string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			var startInfo = new ProcessStartInfo
+			{
+				FileName = _ide.Project.LaunchFilePath,
+				Arguments = "-p"
+			};
+
+			Process.Start(startInfo);
 		}
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			using (OpenFileDialog dialog = new OpenFileDialog())
+			using (var dialog = new OpenFileDialog())
 			{
 				dialog.Filter = "Bitmap Files|*.bmp";
 

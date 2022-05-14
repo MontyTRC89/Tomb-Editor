@@ -96,12 +96,6 @@
     <Compile Include="Forms\FormRenameLevel.Designer.cs">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSplashPreview.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSplashPreview.Designer.cs">
-      <DependentUpon>FormSplashPreview.cs</DependentUpon>
-    </Compile>
     <Compile Include="LevelManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -200,9 +194,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLevel.resx">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSplashPreview.resx">
-      <DependentUpon>FormSplashPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelManager.resx">
       <DependentUpon>LevelManager.cs</DependentUpon>
