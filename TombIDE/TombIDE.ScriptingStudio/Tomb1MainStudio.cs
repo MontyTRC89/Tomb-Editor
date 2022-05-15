@@ -21,7 +21,7 @@ namespace TombIDE.ScriptingStudio
 
 		public Tomb1MainStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
-			DockPanelState = DefaultLayouts.Tomb1MainLayout;
+			DockPanelState = IDE.Global.IDEConfiguration.T1M_DockPanelState;
 
 			FileExplorer.Filter = "*.json5";
 
@@ -70,6 +70,11 @@ namespace TombIDE.ScriptingStudio
 					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
 			}
+			else if (obj is IDE.ProgramClosingEvent)
+			{
+				IDE.Global.IDEConfiguration.T1M_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Global.IDEConfiguration.Save();
+			}
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
@@ -108,6 +113,14 @@ namespace TombIDE.ScriptingStudio
 
 			if (previousTab != null)
 				EditorTabControl.SelectTab(previousTab);
+		}
+
+		protected override void RestoreDefaultLayout()
+		{
+			DockPanelState = DefaultLayouts.Tomb1MainLayout;
+
+			DockPanel.RemoveContent();
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 		}
 
 		#endregion IDE Events

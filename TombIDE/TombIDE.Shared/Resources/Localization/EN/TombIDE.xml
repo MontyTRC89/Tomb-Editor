@@ -77,6 +77,8 @@
 	<ReindentOnSave>Reindent on Save</ReindentOnSave>
 	<Settings>Text Editor Settings...</Settings>
 
+	<RestoreDefaultLayout>Restore Default Layout</RestoreDefaultLayout>
+
 	<ContentExplorer>Content Explorer</ContentExplorer>
 	<FileExplorer>File Explorer</FileExplorer>
 	<ReferenceBrowser>Reference Browser</ReferenceBrowser>

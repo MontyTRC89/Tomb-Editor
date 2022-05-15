@@ -32,7 +32,7 @@
 			this.comboBox_References.Location = new System.Drawing.Point(3, 28);
 			this.comboBox_References.Margin = new System.Windows.Forms.Padding(3, 3, 0, 4);
 			this.comboBox_References.Name = "comboBox_References";
-			this.comboBox_References.Size = new System.Drawing.Size(195, 21);
+			this.comboBox_References.Size = new System.Drawing.Size(195, 23);
 			this.comboBox_References.TabIndex = 0;
 			this.comboBox_References.SelectedIndexChanged += new System.EventHandler(this.comboBox_References_SelectedIndexChanged);
 			// 
@@ -48,7 +48,7 @@
 			// menuItem_Copy
 			// 
 			this.menuItem_Copy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Copy.ForeColor = System.Drawing.Color.Gainsboro;
+			this.menuItem_Copy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Copy.Name = "menuItem_Copy";
 			this.menuItem_Copy.Size = new System.Drawing.Size(102, 22);
 			this.menuItem_Copy.Text = "Copy";
@@ -67,6 +67,7 @@
 			this.dataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 			this.dataGrid.ColumnHeadersHeight = 4;
+			this.dataGrid.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.dataGrid.Location = new System.Drawing.Point(0, 55);
 			this.dataGrid.Margin = new System.Windows.Forms.Padding(2);
 			this.dataGrid.MultiSelect = false;
@@ -89,7 +90,7 @@
 			this.searchTextBox.Name = "searchTextBox";
 			this.searchTextBox.SearchText = "Search References...";
 			this.searchTextBox.SearchTextColor = System.Drawing.Color.DarkGray;
-			this.searchTextBox.Size = new System.Drawing.Size(195, 20);
+			this.searchTextBox.Size = new System.Drawing.Size(195, 22);
 			this.searchTextBox.TabIndex = 1;
 			this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
 			// 
@@ -101,9 +102,10 @@
 			this.Controls.Add(this.searchTextBox);
 			this.Controls.Add(this.dataGrid);
 			this.Controls.Add(this.comboBox_References);
+			this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
 			this.DockText = "Reference Browser";
-			this.MinimumSize = new System.Drawing.Size(400, 200);
 			this.Name = "ReferenceBrowser";
+			this.SerializationKey = "ReferenceBrowser";
 			this.Size = new System.Drawing.Size(400, 200);
 			this.contextMenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();

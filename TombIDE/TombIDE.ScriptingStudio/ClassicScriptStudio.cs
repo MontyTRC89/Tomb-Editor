@@ -45,7 +45,7 @@ namespace TombIDE.ScriptingStudio
 
 		public ClassicScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
-			DockPanelState = DefaultLayouts.ClassicScriptLayout;
+			DockPanelState = IDE.Global.IDEConfiguration.CS_DockPanelState;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 
@@ -138,6 +138,11 @@ namespace TombIDE.ScriptingStudio
 
 					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
+			}
+			else if (obj is IDE.ProgramClosingEvent)
+			{
+				IDE.Global.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Global.IDEConfiguration.Save();
 			}
 		}
 
@@ -408,6 +413,14 @@ namespace TombIDE.ScriptingStudio
 				CompileTR4Script();
 			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
 				CompileTRNGScript();
+		}
+
+		protected override void RestoreDefaultLayout()
+		{
+			DockPanelState = DefaultLayouts.ClassicScriptLayout;
+
+			DockPanel.RemoveContent();
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 		}
 
 		#endregion Other methods

@@ -24,6 +24,7 @@
 			// 
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Location = new System.Drawing.Point(0, 25);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.Name = "treeView";
@@ -36,9 +37,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.treeView);
+			this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
 			this.DockText = "Search Results";
-			this.MinimumSize = new System.Drawing.Size(400, 200);
 			this.Name = "SearchResults";
+			this.SerializationKey = "SearchResults";
 			this.Size = new System.Drawing.Size(400, 200);
 			this.ResumeLayout(false);
 

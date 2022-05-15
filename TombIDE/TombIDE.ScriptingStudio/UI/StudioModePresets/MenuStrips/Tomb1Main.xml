@@ -27,6 +27,8 @@
 	</Item>
 
 	<Item LangKey="View" Position="4">
+		<Item LangKey="RestoreDefaultLayout" Command="RestoreDefaultLayout" />
+		<Separator />
 		<Item LangKey="ContentExplorer" Command="ContentExplorer" CheckOnClick="True" />
 		<Item LangKey="FileExplorer" Command="FileExplorer" CheckOnClick="True" />
 		<Item LangKey="SearchResults" Command="SearchResults" CheckOnClick="True" />

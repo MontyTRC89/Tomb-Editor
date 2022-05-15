@@ -77,6 +77,8 @@
 	<ReindentOnSave>Uporządkuj białe znaki przy zapisie pliku</ReindentOnSave>
 	<Settings>Ustawienia edytora tekstu...</Settings>
 
+	<RestoreDefaultLayout>Przywróć startowy układ</RestoreDefaultLayout>
+
 	<ContentExplorer>Eksplorator zawartości</ContentExplorer>
 	<FileExplorer>Eksplorator plików</FileExplorer>
 	<ReferenceBrowser>Wyszukiwarka referencji</ReferenceBrowser>

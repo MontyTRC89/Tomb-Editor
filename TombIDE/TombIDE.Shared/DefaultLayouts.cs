@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace TombIDE.ScriptingStudio.UI
+namespace TombIDE.Shared
 {
-	internal class DefaultLayouts
+	public static class DefaultLayouts
 	{
 		public static readonly DockPanelState DummyLayout = new DockPanelState
 		{

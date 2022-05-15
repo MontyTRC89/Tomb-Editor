@@ -21,8 +21,8 @@
 			this.menuItem_NewFile = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_NewFolder = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
-			this.menuItem_ViewCode = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ViewInEditor = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_ViewCode = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_02 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_Rename = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_Delete = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,12 +52,12 @@
             this.separator_03,
             this.menuItem_OpenInExplorer});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(190, 201);
+			this.contextMenu.Size = new System.Drawing.Size(190, 179);
 			// 
 			// menuItem_NewFile
 			// 
 			this.menuItem_NewFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_NewFile.ForeColor = System.Drawing.Color.Gainsboro;
+			this.menuItem_NewFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_NewFile.Image = global::TombIDE.ScriptingStudio.Properties.Resources.New_16;
 			this.menuItem_NewFile.Name = "menuItem_NewFile";
 			this.menuItem_NewFile.Size = new System.Drawing.Size(189, 22);
@@ -67,7 +67,7 @@
 			// menuItem_NewFolder
 			// 
 			this.menuItem_NewFolder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_NewFolder.ForeColor = System.Drawing.Color.Gainsboro;
+			this.menuItem_NewFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_NewFolder.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Folder_16;
 			this.menuItem_NewFolder.Name = "menuItem_NewFolder";
 			this.menuItem_NewFolder.Size = new System.Drawing.Size(189, 22);
@@ -77,35 +77,35 @@
 			// separator_01
 			// 
 			this.separator_01.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_01.ForeColor = System.Drawing.Color.Gainsboro;
+			this.separator_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.separator_01.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.separator_01.Name = "separator_01";
 			this.separator_01.Size = new System.Drawing.Size(186, 6);
-			// 
-			// menuItem_ViewCode
-			// 
-			this.menuItem_ViewCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_ViewCode.Enabled = false;
-			this.menuItem_ViewCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-			this.menuItem_ViewCode.Name = "menuItem_ViewCode";
-			this.menuItem_ViewCode.Size = new System.Drawing.Size(189, 22);
-			this.menuItem_ViewCode.Text = "View Code";
-			this.menuItem_ViewCode.Click += new System.EventHandler(this.menuItem_ViewCode_Click);
 			// 
 			// menuItem_ViewInEditor
 			// 
 			this.menuItem_ViewInEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_ViewInEditor.Enabled = false;
-			this.menuItem_ViewInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_ViewInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_ViewInEditor.Name = "menuItem_ViewInEditor";
 			this.menuItem_ViewInEditor.Size = new System.Drawing.Size(189, 22);
 			this.menuItem_ViewInEditor.Text = "View in Default Editor";
 			this.menuItem_ViewInEditor.Click += new System.EventHandler(this.menuItem_ViewInEditor_Click);
 			// 
+			// menuItem_ViewCode
+			// 
+			this.menuItem_ViewCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_ViewCode.Enabled = false;
+			this.menuItem_ViewCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_ViewCode.Name = "menuItem_ViewCode";
+			this.menuItem_ViewCode.Size = new System.Drawing.Size(189, 22);
+			this.menuItem_ViewCode.Text = "View Code";
+			this.menuItem_ViewCode.Click += new System.EventHandler(this.menuItem_ViewCode_Click);
+			// 
 			// separator_02
 			// 
 			this.separator_02.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_02.ForeColor = System.Drawing.Color.Gainsboro;
+			this.separator_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.separator_02.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.separator_02.Name = "separator_02";
 			this.separator_02.Size = new System.Drawing.Size(186, 6);
@@ -114,7 +114,7 @@
 			// 
 			this.menuItem_Rename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Rename.Enabled = false;
-			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Rename.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Edit_16;
 			this.menuItem_Rename.Name = "menuItem_Rename";
 			this.menuItem_Rename.Size = new System.Drawing.Size(189, 22);
@@ -125,7 +125,7 @@
 			// 
 			this.menuItem_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Delete.Enabled = false;
-			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Delete.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
 			this.menuItem_Delete.Name = "menuItem_Delete";
 			this.menuItem_Delete.Size = new System.Drawing.Size(189, 22);
@@ -135,7 +135,7 @@
 			// separator_03
 			// 
 			this.separator_03.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_03.ForeColor = System.Drawing.Color.Gainsboro;
+			this.separator_03.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.separator_03.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.separator_03.Name = "separator_03";
 			this.separator_03.Size = new System.Drawing.Size(186, 6);
@@ -144,7 +144,7 @@
 			// 
 			this.menuItem_OpenInExplorer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_OpenInExplorer.Enabled = false;
-			this.menuItem_OpenInExplorer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_OpenInExplorer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_OpenInExplorer.Image = global::TombIDE.ScriptingStudio.Properties.Resources.ForwardArrow_16;
 			this.menuItem_OpenInExplorer.Name = "menuItem_OpenInExplorer";
 			this.menuItem_OpenInExplorer.Size = new System.Drawing.Size(189, 22);
@@ -179,6 +179,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.ContextMenuStrip = this.contextMenu;
+			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Location = new System.Drawing.Point(3, 28);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.Name = "treeView";
@@ -194,9 +195,10 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.treeView);
+			this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
 			this.DockText = "File Explorer";
-			this.MinimumSize = new System.Drawing.Size(225, 225);
 			this.Name = "FileExplorer";
+			this.SerializationKey = "FileExplorer";
 			this.Size = new System.Drawing.Size(225, 225);
 			this.contextMenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).EndInit();

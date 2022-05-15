@@ -50,6 +50,8 @@
 
 		// View:
 
+		RestoreDefaultLayout,
+
 		ToolStrip, // View start
 
 		ContentExplorer,

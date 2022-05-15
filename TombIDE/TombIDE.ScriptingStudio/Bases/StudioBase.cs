@@ -156,6 +156,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
 
 			EditorTabControlDocument = new DarkDocument();
+			EditorTabControlDocument.SerializationKey = "EditorTabControlDocument";
 			EditorTabControlDocument.Controls.Add(EditorTabControl);
 		}
 
@@ -295,6 +296,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected abstract void ApplyUserSettings(IEditorControl editor);
 		protected abstract void ApplyUserSettings();
 		protected abstract void Build();
+		protected abstract void RestoreDefaultLayout();
 
 		#endregion Abstract region
 
@@ -452,6 +454,9 @@ namespace TombIDE.ScriptingStudio.Bases
 
 				case UICommand.Settings: ShowSettingsForm(); break;
 
+				// View
+				case UICommand.RestoreDefaultLayout: RestoreDefaultLayout(); break;
+
 				// Help
 				case UICommand.About: ShowAboutForm(); break;
 			}
@@ -486,10 +491,12 @@ namespace TombIDE.ScriptingStudio.Bases
 						stringEditor.GoToPreviousSection();
 						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
 						break;
+
 					case UICommand.NextSection:
 						stringEditor.GoToNextSection();
 						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
 						break;
+
 					case UICommand.ClearString: stringEditor.CurrentDataGrid?.ClearSelectedString(); break;
 					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}

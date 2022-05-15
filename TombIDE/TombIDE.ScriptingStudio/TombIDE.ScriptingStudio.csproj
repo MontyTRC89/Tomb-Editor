@@ -208,7 +208,6 @@
     <Compile Include="UI\UICommand.cs" />
     <Compile Include="UI\Objects\UIElementArgs.cs" />
     <Compile Include="UI\UIKeys.cs" />
-    <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Settings\Tomb1MainSettingsControl.resx">

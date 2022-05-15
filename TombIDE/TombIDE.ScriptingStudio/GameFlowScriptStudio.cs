@@ -24,7 +24,7 @@ namespace TombIDE.ScriptingStudio
 
 		public GameFlowScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
-			DockPanelState = DefaultLayouts.GameFlowScriptLayout;
+			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
 
 			FileExplorer.Filter = "*.txt";
 
@@ -80,6 +80,11 @@ namespace TombIDE.ScriptingStudio
 					RenameRequestedLevelScript(oldName, newName);
 					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
+			}
+			else if (obj is IDE.ProgramClosingEvent)
+			{
+				IDE.Global.IDEConfiguration.GFL_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Global.IDEConfiguration.Save();
 			}
 		}
 
@@ -167,6 +172,14 @@ namespace TombIDE.ScriptingStudio
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		protected override void RestoreDefaultLayout()
+		{
+			DockPanelState = DefaultLayouts.GameFlowScriptLayout;
+
+			DockPanel.RemoveContent();
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 		}
 
 		#endregion Other methods

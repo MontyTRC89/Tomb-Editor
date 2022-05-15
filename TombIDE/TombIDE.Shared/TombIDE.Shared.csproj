@@ -41,6 +41,7 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="DefaultLayouts.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Resources\Localization\Localization.cs" />
     <Compile Include="SharedClasses\TemplatePaths.cs" />
