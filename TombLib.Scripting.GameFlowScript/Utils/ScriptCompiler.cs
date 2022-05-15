@@ -7,7 +7,7 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 {
 	public static class ScriptCompiler
 	{
-		public static bool Compile(string projectScriptPath, string projectEnginePath, bool isTR3)
+		public static bool Compile(string projectScriptPath, string projectEnginePath, bool isTR3, bool showLogs)
 		{
 			CopyFilesToGFScriptDirectory(projectScriptPath, DefaultPaths.GameFlowDirectory);
 
@@ -15,7 +15,7 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 
 			string batchFileContent =
 				"gameflow -Game " + (isTR3 ? "3" : "2") + "\n" +
-				"@pause";
+				(showLogs ? "@pause" : string.Empty);
 
 			File.WriteAllText(batchFilePath, batchFileContent);
 
