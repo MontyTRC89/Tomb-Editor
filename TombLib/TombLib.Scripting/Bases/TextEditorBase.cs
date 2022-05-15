@@ -6,6 +6,8 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -269,6 +271,8 @@ namespace TombLib.Scripting.Bases
 
 			IsContentChanged = false;
 			IsSilentSession = silentSession;
+
+			RestoreBookmarks();
 		}
 
 		public void Save()
@@ -279,6 +283,52 @@ namespace TombLib.Scripting.Bases
 			base.Save(filePath);
 
 			TryRunContentChangedWorker();
+		}
+
+		private void SaveBookmarks()
+		{
+			IEnumerable<DocumentLine> bookmarkedLines = Document.Lines.Where(line => line.IsBookmarked);
+
+			var builder = new StringBuilder();
+
+			foreach (DocumentLine line in bookmarkedLines)
+				builder.AppendLine(line.LineNumber.ToString());
+
+			try
+			{
+				string bookmarkFileName = FilePath + ".bkmrk";
+				File.WriteAllText(bookmarkFileName, builder.ToString());
+			}
+			catch
+			{
+				// Too bad.
+			}
+		}
+
+		private void RestoreBookmarks()
+		{
+			string bookmarkFileName = FilePath + ".bkmrk";
+
+			if (!File.Exists(bookmarkFileName))
+				return;
+
+			try
+			{
+				foreach (string line in File.ReadAllLines(bookmarkFileName))
+				{
+					if (int.TryParse(line, out int lineNumber))
+					{
+						DocumentLine documentLine = Document.GetLineByNumber(lineNumber);
+
+						if (documentLine != null)
+							documentLine.IsBookmarked = true;
+					}
+				}
+			}
+			catch
+			{
+				// Too bad.
+			}
 		}
 
 		#endregion File I/O
@@ -473,6 +523,8 @@ namespace TombLib.Scripting.Bases
 			currentLine.IsBookmarked = !currentLine.IsBookmarked;
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+
+			SaveBookmarks();
 		}
 
 		public void GoToNextBookmark()
@@ -614,6 +666,8 @@ namespace TombLib.Scripting.Bases
 						line.IsBookmarked = false;
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+
+			SaveBookmarks();
 		}
 
 		public void ConvertSpacesToTabs()
