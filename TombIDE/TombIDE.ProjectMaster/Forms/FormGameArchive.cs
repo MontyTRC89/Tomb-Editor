@@ -68,6 +68,7 @@ namespace TombIDE.ProjectMaster.Forms
 		{
 			string[] importantFolders = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "music"),
 				Path.Combine(_ide.Project.EnginePath, "cfg"),
 				Path.Combine(_ide.Project.EnginePath, "data"),
 				Path.Combine(_ide.Project.EnginePath, "shaders")
@@ -88,6 +89,7 @@ namespace TombIDE.ProjectMaster.Forms
 				Path.Combine(_ide.Project.EnginePath, "audio"),
 				Path.Combine(_ide.Project.EnginePath, "data"),
 				Path.Combine(_ide.Project.EnginePath, "ExtraOptions"),
+				Path.Combine(_ide.Project.EnginePath, "music"),
 				Path.Combine(_ide.Project.EnginePath, "pix")
 			};
 
