@@ -25,11 +25,6 @@
 			this.label_Separator_03 = new DarkUI.Controls.DarkLabel();
 			this.panel_CoverLoading = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
-			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
-			this.tabPage_LevelManager = new System.Windows.Forms.TabPage();
-			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
-			this.tabPage_ScriptingStudio = new System.Windows.Forms.TabPage();
-			this.tabPage_Plugins = new System.Windows.Forms.TabPage();
 			this.panel_Programs = new System.Windows.Forms.Panel();
 			this.panelButton_ScriptingStudio = new System.Windows.Forms.Panel();
 			this.panelButton_Plugins = new System.Windows.Forms.Panel();
@@ -42,10 +37,15 @@
 			this.button_AddProgram = new System.Windows.Forms.Button();
 			this.timer_ScriptButtonBlinking = new System.Windows.Forms.Timer(this.components);
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
+			this.tabPage_LevelManager = new System.Windows.Forms.TabPage();
+			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
+			this.tabPage_ScriptingStudio = new System.Windows.Forms.TabPage();
+			this.tabPage_Plugins = new System.Windows.Forms.TabPage();
 			this.contextMenu_ProgramButton.SuspendLayout();
 			this.panel_Main.SuspendLayout();
-			this.tablessTabControl.SuspendLayout();
 			this.panel_Programs.SuspendLayout();
+			this.tablessTabControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenu_ProgramButton
@@ -102,7 +102,7 @@
 			this.panel_CoverLoading.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_CoverLoading.Location = new System.Drawing.Point(0, 0);
 			this.panel_CoverLoading.Name = "panel_CoverLoading";
-			this.panel_CoverLoading.Size = new System.Drawing.Size(1054, 601);
+			this.panel_CoverLoading.Size = new System.Drawing.Size(984, 601);
 			this.panel_CoverLoading.TabIndex = 1;
 			// 
 			// panel_Main
@@ -116,57 +116,8 @@
 			this.panel_Main.Location = new System.Drawing.Point(47, 0);
 			this.panel_Main.Margin = new System.Windows.Forms.Padding(0);
 			this.panel_Main.Name = "panel_Main";
-			this.panel_Main.Size = new System.Drawing.Size(1007, 601);
+			this.panel_Main.Size = new System.Drawing.Size(937, 601);
 			this.panel_Main.TabIndex = 0;
-			// 
-			// tablessTabControl
-			// 
-			this.tablessTabControl.Controls.Add(this.tabPage_LevelManager);
-			this.tablessTabControl.Controls.Add(this.tabPage_ProjectMaster);
-			this.tablessTabControl.Controls.Add(this.tabPage_ScriptingStudio);
-			this.tablessTabControl.Controls.Add(this.tabPage_Plugins);
-			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tablessTabControl.Location = new System.Drawing.Point(0, 0);
-			this.tablessTabControl.Name = "tablessTabControl";
-			this.tablessTabControl.SelectedIndex = 0;
-			this.tablessTabControl.Size = new System.Drawing.Size(1005, 599);
-			this.tablessTabControl.TabIndex = 0;
-			// 
-			// tabPage_LevelManager
-			// 
-			this.tabPage_LevelManager.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_LevelManager.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_LevelManager.Name = "tabPage_LevelManager";
-			this.tabPage_LevelManager.Size = new System.Drawing.Size(997, 573);
-			this.tabPage_LevelManager.TabIndex = 3;
-			this.tabPage_LevelManager.Text = "Level Manager";
-			// 
-			// tabPage_ProjectMaster
-			// 
-			this.tabPage_ProjectMaster.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_ProjectMaster.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_ProjectMaster.Name = "tabPage_ProjectMaster";
-			this.tabPage_ProjectMaster.Size = new System.Drawing.Size(997, 573);
-			this.tabPage_ProjectMaster.TabIndex = 0;
-			this.tabPage_ProjectMaster.Text = "Project Master";
-			// 
-			// tabPage_ScriptingStudio
-			// 
-			this.tabPage_ScriptingStudio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_ScriptingStudio.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_ScriptingStudio.Name = "tabPage_ScriptingStudio";
-			this.tabPage_ScriptingStudio.Size = new System.Drawing.Size(997, 573);
-			this.tabPage_ScriptingStudio.TabIndex = 2;
-			this.tabPage_ScriptingStudio.Text = "Scripting Studio";
-			// 
-			// tabPage_Plugins
-			// 
-			this.tabPage_Plugins.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_Plugins.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_Plugins.Name = "tabPage_Plugins";
-			this.tabPage_Plugins.Size = new System.Drawing.Size(997, 573);
-			this.tabPage_Plugins.TabIndex = 4;
-			this.tabPage_Plugins.Text = "Plugin Manager";
 			// 
 			// panel_Programs
 			// 
@@ -190,7 +141,7 @@
 			this.panel_Programs.Margin = new System.Windows.Forms.Padding(0);
 			this.panel_Programs.Name = "panel_Programs";
 			this.panel_Programs.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-			this.panel_Programs.Size = new System.Drawing.Size(1054, 601);
+			this.panel_Programs.Size = new System.Drawing.Size(984, 601);
 			this.panel_Programs.TabIndex = 0;
 			this.panel_Programs.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseMove);
 			this.panel_Programs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseUp);
@@ -309,24 +260,73 @@
 			// 
 			this.timer_ScriptButtonBlinking.Tick += new System.EventHandler(this.timer_ScriptButtonBlinking_Tick);
 			// 
+			// tablessTabControl
+			// 
+			this.tablessTabControl.Controls.Add(this.tabPage_LevelManager);
+			this.tablessTabControl.Controls.Add(this.tabPage_ProjectMaster);
+			this.tablessTabControl.Controls.Add(this.tabPage_ScriptingStudio);
+			this.tablessTabControl.Controls.Add(this.tabPage_Plugins);
+			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tablessTabControl.Location = new System.Drawing.Point(0, 0);
+			this.tablessTabControl.Name = "tablessTabControl";
+			this.tablessTabControl.SelectedIndex = 0;
+			this.tablessTabControl.Size = new System.Drawing.Size(935, 599);
+			this.tablessTabControl.TabIndex = 0;
+			// 
+			// tabPage_LevelManager
+			// 
+			this.tabPage_LevelManager.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_LevelManager.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_LevelManager.Name = "tabPage_LevelManager";
+			this.tabPage_LevelManager.Size = new System.Drawing.Size(927, 573);
+			this.tabPage_LevelManager.TabIndex = 3;
+			this.tabPage_LevelManager.Text = "Level Manager";
+			// 
+			// tabPage_ProjectMaster
+			// 
+			this.tabPage_ProjectMaster.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_ProjectMaster.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_ProjectMaster.Name = "tabPage_ProjectMaster";
+			this.tabPage_ProjectMaster.Size = new System.Drawing.Size(951, 573);
+			this.tabPage_ProjectMaster.TabIndex = 0;
+			this.tabPage_ProjectMaster.Text = "Project Master";
+			// 
+			// tabPage_ScriptingStudio
+			// 
+			this.tabPage_ScriptingStudio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_ScriptingStudio.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_ScriptingStudio.Name = "tabPage_ScriptingStudio";
+			this.tabPage_ScriptingStudio.Size = new System.Drawing.Size(951, 573);
+			this.tabPage_ScriptingStudio.TabIndex = 2;
+			this.tabPage_ScriptingStudio.Text = "Scripting Studio";
+			// 
+			// tabPage_Plugins
+			// 
+			this.tabPage_Plugins.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_Plugins.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_Plugins.Name = "tabPage_Plugins";
+			this.tabPage_Plugins.Size = new System.Drawing.Size(951, 573);
+			this.tabPage_Plugins.TabIndex = 4;
+			this.tabPage_Plugins.Text = "Plugin Manager";
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1054, 601);
+			this.ClientSize = new System.Drawing.Size(984, 601);
 			this.Controls.Add(this.panel_Main);
 			this.Controls.Add(this.panel_Programs);
 			this.Controls.Add(this.panel_CoverLoading);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(1070, 640);
+			this.MinimumSize = new System.Drawing.Size(800, 480);
 			this.Name = "FormMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "TombIDE";
 			this.contextMenu_ProgramButton.ResumeLayout(false);
 			this.panel_Main.ResumeLayout(false);
-			this.tablessTabControl.ResumeLayout(false);
 			this.panel_Programs.ResumeLayout(false);
+			this.tablessTabControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

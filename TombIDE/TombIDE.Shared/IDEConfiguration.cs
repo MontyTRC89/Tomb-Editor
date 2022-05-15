@@ -39,12 +39,6 @@ namespace TombIDE.Shared
 		public bool ShowCompilerLogsAfterBuild { get; set; } = true;
 		public bool ReindentOnSave { get; set; } = false;
 
-		public bool View_ShowObjBrowser { get; set; } = true;
-		public bool View_ShowFileList { get; set; } = true;
-		public bool View_ShowInfoBox { get; set; } = true;
-		public bool View_ShowToolStrip { get; set; } = true;
-		public bool View_ShowStatusStrip { get; set; } = true;
-
 		public bool InfoBox_AlwaysOnTop { get; set; } = true;
 		public bool InfoBox_CloseTabsOnClose { get; set; } = false;
 

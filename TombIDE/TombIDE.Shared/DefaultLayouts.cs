@@ -81,7 +81,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Left,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -94,7 +94,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Right,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -146,7 +146,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Right,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -184,7 +184,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Left,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -197,7 +197,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Right,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -230,7 +230,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Left,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
@@ -243,7 +243,7 @@ namespace TombIDE.Shared
 				new DockRegionState
 				{
 					Area = DarkDockArea.Right,
-					Size = new Size(200, 300),
+					Size = new Size(250, 300),
 					Groups = new List<DockGroupState>
 					{
 						new DockGroupState
