@@ -317,8 +317,6 @@ namespace TombIDE.ScriptingStudio
 
 		private void CompileTR4Script()
 		{
-			EditorTabControl.SaveAll();
-
 			try
 			{
 				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
@@ -344,8 +342,6 @@ namespace TombIDE.ScriptingStudio
 
 		private async void CompileTRNGScript()
 		{
-			EditorTabControl.SaveAll();
-
 			try
 			{
 				FormCompiling.ShowCompilingMode();
@@ -406,6 +402,8 @@ namespace TombIDE.ScriptingStudio
 
 		protected override void Build()
 		{
+			EditorTabControl.SaveAll();
+
 			if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
 				CompileTR4Script();
 			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)

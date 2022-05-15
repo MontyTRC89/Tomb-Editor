@@ -59,7 +59,8 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 			foreach (string dirPath in Directory.GetDirectories(projectScriptPath, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, gfScriptPath));
 
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories))
+			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
 				File.Copy(newPath, newPath.Replace(projectScriptPath, gfScriptPath), true);
 		}
 	}

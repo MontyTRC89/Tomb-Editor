@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -134,7 +135,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, vgeScriptPath));
 
 			// Copy all the files into the VGE /Script/ directory
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories))
+			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
 				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
 		}
 

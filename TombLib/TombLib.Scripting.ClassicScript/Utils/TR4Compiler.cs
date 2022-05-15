@@ -71,7 +71,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			foreach (string dirPath in Directory.GetDirectories(projectScriptPath, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, dosScriptPath));
 
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories))
+			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
 				File.Copy(newPath, newPath.Replace(projectScriptPath, dosScriptPath), true);
 		}
 	}
