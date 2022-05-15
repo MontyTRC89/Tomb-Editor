@@ -3375,376 +3375,376 @@
 			<sprite_sequence id="494" name=" NG custom sprites" />
 		</sprite_sequences>
 		<sounds max="370">
-			<sound id= " 0 " name= " LARA_FEET " hardcoded= " true" t5m= " 0 " />
-			<sound id= " 1 " name= " LARA_CLIMB2 " hardcoded= " true" t5m= " 1 " />
-			<sound id= " 2 " name= " LARA_NO " hardcoded= " true" t5m= " 2 " />
-			<sound id= " 3 " name= " LARA_SLIPPING " hardcoded= " true" t5m= " 3 " />
-			<sound id= " 4 " name= " LARA_LAND " hardcoded= " true" t5m= " 4 " />
-			<sound id= " 5 " name= " LARA_CLIMB1 " hardcoded= " true" t5m= " 5 " />
-			<sound id= " 6 " name= " LARA_DRAW " hardcoded= " true" t5m= " 6 " />
-			<sound id= " 7 " name= " LARA_HOLSTER " hardcoded= " true" t5m= " 7 " />
-			<sound id= " 8 " name= " LARA_FIRE " hardcoded= " true" t5m= " 8 " />
-			<sound id= " 9 " name= " LARA_RELOAD " hardcoded= " true" t5m= " 9 " />
-			<sound id= " 10 " name= " LARA_RICOCHET " hardcoded= " true" t5m= " 10 " />
-			<sound id= " 11 " name= " PUSH_BLOCK_END " hardcoded= " true" t5m= " 11 " />
-			<sound id= " 12 " name= " METAL_SCRAPE_LOOP " hardcoded= " true" t5m= " 12 " />
-			<sound id= " 13 " name= " SMALL_SCARAB_FEET " hardcoded= " true" t5m= " 13 " />
-			<sound id= " 14 " name= " BIG_SCARAB_ATTACK " hardcoded= " true" t5m= " 14 " />
-			<sound id= " 15 " name= " BIG_SCARAB_DEATH " hardcoded= " true" t5m= " 15 " />
-			<sound id= " 16 " name= " BIG_SCARAB_FLYING " hardcoded= " true" t5m= " 16 " />
-			<sound id= " 17 " name= " LARA_WET_FEET " hardcoded= " true" t5m= " 17 " />
-			<sound id= " 18 " name= " LARA_WADE " hardcoded= " true" t5m= " 18 " />
-			<sound id= " 19 " name= " RUMBLE_LOOP " hardcoded= " true" t5m= " 19 " />
-			<sound id= " 20 " name= " METAL_SCRAPE_LOOP " hardcoded= " true" t5m= " 20 " />
-			<sound id= " 21 " name= " CRICKET_LOOP " hardcoded= " true" t5m= " 21 " />
-			<sound id= " 22 " name= " WOOD_BRIDGE_FALL " hardcoded= " true" t5m= " 22 " />
-			<sound id= " 23 " name= " STARGATE_SWIRL " hardcoded= " true" t5m= " 23 " />
-			<sound id= " 24 " name= " LARA_KNEES_SHUFFLE " hardcoded= " true" t5m= " 24 " />
-			<sound id= " 25 " name= " PUSH_SPX_SWITCH " hardcoded= " true" t5m= " 25 " />
-			<sound id= " 26 " name= " LARA_CLIMB3 " hardcoded= " true" t5m= " 26 " />
-			<sound id= " 27 " name= " LARA_BODYSLAM " hardcoded= " true" t5m= " 27 " />
-			<sound id= " 28 " name= " LARA_SHIMMY2 " hardcoded= " true" t5m= " 28 " />
-			<sound id= " 29 " name= " LARA_JUMP " hardcoded= " true" t5m= " 29 " />
-			<sound id= " 30 " name= " LARA_FALL " hardcoded= " true" t5m= " 30 " />
-			<sound id= " 31 " name= " LARA_INJURY " hardcoded= " true" t5m= " 31 " />
-			<sound id= " 32 " name= " LARA_ROLL " hardcoded= " true" t5m= " 32 " />
-			<sound id= " 33 " name= " LARA_SPLASH " hardcoded= " true" t5m= " 33 " />
-			<sound id= " 34 " name= " LARA_GETOUT " hardcoded= " true" t5m= " 34 " />
-			<sound id= " 35 " name= " LARA_SWIM " hardcoded= " true" t5m= " 35 " />
-			<sound id= " 36 " name= " LARA_BREATH " hardcoded= " true" t5m= " 36 " />
-			<sound id= " 37 " name= " LARA_BUBBLES " hardcoded= " true" t5m= " 37 " />
-			<sound id= " 38 " name= " SPINNING_PUZZLE " hardcoded= " true" t5m= " 38 " />
-			<sound id= " 39 " name= " LARA_KEY " hardcoded= " true" t5m= " 39 " />
-			<sound id= " 40 " name= " COG_RESAW_LIBRARY " hardcoded= " true" t5m= " 40 " />
-			<sound id= " 41 " name= " LARA_GENERAL_DEATH " hardcoded= " true" t5m= " 41 " />
-			<sound id= " 42 " name= " LARA_KNEES_DEATH " hardcoded= " true" t5m= " 42 " />
-			<sound id= " 43 " name= " LARA_UZI_FIRE " hardcoded= " true" t5m= " 43 " />
-			<sound id= " 44 " name= " LARA_UZI_STOP " hardcoded= " true" t5m= " 44 " />
-			<sound id= " 45 " name= " LARA_SHOTGUN " hardcoded= " true" t5m= " 45 " />
-			<sound id= " 46 " name= " LARA_BLOCK_PUSH1 " hardcoded= " true" t5m= " 46 " />
-			<sound id= " 47 " name= " LARA_BLOCK_PUSH2 " hardcoded= " true" t5m= " 47 " />
-			<sound id= " 48 " name= " SARLID_PALACES " hardcoded= " true" t5m= " 48 " />
-			<sound id= " 49 " name= " LARA_SHOTGUN_SHELL " hardcoded= " true" t5m= " 49 " />
-			<sound id= " 50 " name= " UNDERWATER_DOOR " hardcoded= " true" t5m= " 50 " />
-			<sound id= " 51 " name= " LARA_BLKPULL " hardcoded= " true" t5m= " 51 " />
-			<sound id= " 52 " name= " LARA_FLOATING " hardcoded= " true" t5m= " 52 " />
-			<sound id= " 53 " name= " LARA_FALLDETH " hardcoded= " true" t5m= " 53 " />
-			<sound id= " 54 " name= " LARA_GRABHAND " hardcoded= " true" t5m= " 54 " />
-			<sound id= " 55 " name= " LARA_GRABBODY " hardcoded= " true" t5m= " 55 " />
-			<sound id= " 56 " name= " LARA_GRABFEET " hardcoded= " true" t5m= " 56 " />
-			<sound id= " 57 " name= " RATCHET_3SHOT " hardcoded= " true" t5m= " 57 " />
-			<sound id= " 58 " name= " RATCHET_1SHOT " hardcoded= " true" t5m= " 58 " />
-			<sound id= " 59 " name= " WATER_LOOP_NOTINUSE " hardcoded= " true" t5m= " 59 " />
-			<sound id= " 60 " name= " UNDERWATER " hardcoded= " true" t5m= " 60 " />
-			<sound id= " 61 " name= " UNDERWATER_SWITCH " hardcoded= " true" t5m= " 61 " />
-			<sound id= " 62 " name= " LARA_PICKUP " hardcoded= " true" t5m= " 62 " />
-			<sound id= " 63 " name= " PUSHABLE_SOUND " hardcoded= " true" t5m= " 63 " />
-			<sound id= " 64 " name= " DOOR_GENERAL " hardcoded= " true" t5m= " 64 " />
-			<sound id= " 65 " name= " HELICOPTER_LOOP " hardcoded= " true" t5m= " 65 " />
-			<sound id= " 66 " name= " ROCK_FALL_CRUMBLE " hardcoded= " true" t5m= " 66 " />
-			<sound id= " 67 " name= " ROCK_FALL_LAND " hardcoded= " true" t5m= " 67 " />
-			<sound id= " 68 " name= " PENDULUM_BLADES " hardcoded= " true" t5m= " 68 " />
-			<sound id= " 69 " name= " STALEGTITE " hardcoded= " true" t5m= " 69 " />
-			<sound id= " 70 " name= " LARA_THUD " hardcoded= " true" t5m= " 70 " />
-			<sound id= " 71 " name= " GENERIC_SWOOSH " hardcoded= " true" t5m= " 71 " />
-			<sound id= " 72 " name= " GENERIC_HEAVY_THUD " hardcoded= " true" t5m= " 72 " />
-			<sound id= " 73 " name= " CROC_FEET " hardcoded= " true" t5m= " 73 " />
-			<sound id= " 74 " name= " SWINGING_FLAMES " hardcoded= " true" t5m= " 74 " />
-			<sound id= " 75 " name= " STONE_SCRAPE " hardcoded= " true" t5m= " 75 " />
-			<sound id= " 76 " name= " BLAST_CIRCLE " hardcoded= " true" t5m= " 76 " />
-			<sound id= " 77 " name= " BAZOOKA_FIRE " hardcoded= " true" t5m= " 77 " />
-			<sound id= " 78 " name= " HECKLER&amp;KOCH_FIRE " hardcoded= " true" t5m= " 78 " />
-			<sound id= " 79 " name= " WATERFALL_LOOP " hardcoded= " true" t5m= " 79 " />
-			<sound id= " 80 " name= " CROC_ATTACK " hardcoded= " true" t5m= " 80 " />
-			<sound id= " 81 " name= " CROC_DEATH " hardcoded= " true" t5m= " 81 " />
-			<sound id= " 82 " name= " PORTCULLIS_UP " hardcoded= " true" t5m= " 82 " />
-			<sound id= " 83 " name= " PORTCULLIS_DOWN " hardcoded= " true" t5m= " 83 " />
-			<sound id= " 84 " name= " DOUBLE_DOORS_BANG " hardcoded= " true" t5m= " 84 " />
-			<sound id= " 85 " name= " DOUBLE_DOORS_CREAK " hardcoded= " true" t5m= " 85 " />
-			<sound id= " 86 " name= " PETES_PYRA_STONE " hardcoded= " true" t5m= " 86 " />
-			<sound id= " 87 " name= " PETES_PYRA_PNEU " hardcoded= " true" t5m= " 87 " />
-			<sound id= " 88 " name= " AHMET_DIE " hardcoded= " true" t5m= " 88 " />
-			<sound id= " 89 " name= " AHMET_ATTACK " hardcoded= " true" t5m= " 89 " />
-			<sound id= " 90 " name= " AHMET_HANDS " hardcoded= " true" t5m= " 90 " />
-			<sound id= " 91 " name= " AHMET_FEET " hardcoded= " true" t5m= " 91 " />
-			<sound id= " 92 " name= " AHMET_SWIPE " hardcoded= " true" t5m= " 92 " />
-			<sound id= " 93 " name= " AHMET_WAIT " hardcoded= " true" t5m= " 93 " />
-			<sound id= " 94 " name= " GUIDE_JUMP " hardcoded= " true" t5m= " 94 " />
-			<sound id= " 95 " name= " GENERAL_FOOTSTEPS1 " hardcoded= " true" t5m= " 95 " />
-			<sound id= " 96 " name= " GUIDE_LAND_USENOT " hardcoded= " true" t5m= " 96 " />
-			<sound id= " 97 " name= " POUR " hardcoded= " true" t5m= " 97 " />
-			<sound id= " 98 " name= " SCALE1 " hardcoded= " true" t5m= " 98 " />
-			<sound id= " 99 " name= " SCALE2 " hardcoded= " true" t5m= " 99 " />
-			<sound id= " 100 " name= " BEETLARA_WINDUP " hardcoded= " true" t5m= " 100 " />
-			<sound id= " 101 " name= " BEETLE_CLK_WHIRR " hardcoded= " true" t5m= " 101 " />
-			<sound id= " 102 " name= " BEETLE_CLK_EXP " hardcoded= " true" t5m= " 102 " />
-			<sound id= " 103 " name= " MINE_EXP_OVERLAY " hardcoded= " true" t5m= " 103 " />
-			<sound id= " 104 " name= " HECKLER&amp;KOCH_STOP " hardcoded= " true" t5m= " 104 " />
-			<sound id= " 105 " name= " EXPLOSION1 " hardcoded= " true" t5m= " 105 " />
-			<sound id= " 106 " name= " EXPLOSION2_VOLWAS80 " hardcoded= " true" t5m= " 106 " />
-			<sound id= " 107 " name= " EARTHQUAKE_LOOP " hardcoded= " true" t5m= " 107 " />
-			<sound id= " 108 " name= " MENU_ROTATE " hardcoded= " true" t5m= " 108 " />
-			<sound id= " 109 " name= " MENU_SELECT " hardcoded= " true" t5m= " 109 " />
-			<sound id= " 110 " name= " UNUSED_MENU_GAMEBOY " hardcoded= " true" t5m= " 110 " />
-			<sound id= " 111 " name= " MENU_CHOOSE " hardcoded= " true" t5m= " 111 " />
-			<sound id= " 112 " name= " TICK_TOCK " hardcoded= " true" t5m= " 112 " />
-			<sound id= " 113 " name= " UNUSED_MENU_STOPWATCH " hardcoded= " true" t5m= " 113 " />
-			<sound id= " 114 " name= " MENU_COMBINE " hardcoded= " true" t5m= " 114 " />
-			<sound id= " 115 " name= " UNUSED_MENU_PASSPORT " hardcoded= " true" t5m= " 115 " />
-			<sound id= " 116 " name= " MENU_MEDI " hardcoded= " true" t5m= " 116 " />
-			<sound id= " 117 " name= " LARA_CLIMB_WALLS_NOISE " hardcoded= " true" t5m= " 117 " />
-			<sound id= " 118 " name= " WATER_LOOP " hardcoded= " true" t5m= " 118 " />
-			<sound id= " 119 " name= " VONCROY_JUMP " hardcoded= " true" t5m= " 119 " />
-			<sound id= " 120 " name= " LOCUSTS_LOOP " hardcoded= " true" t5m= " 120 " />
-			<sound id= " 121 " name= " DESSERT_EAGLE_FIRE " hardcoded= " true" t5m= " 121 " />
-			<sound id= " 122 " name= " BOULDER_FALL " hardcoded= " true" t5m= " 122 " />
-			<sound id= " 123 " name= " LARA_MINI_LOAD " hardcoded= " true" t5m= " 123 " />
-			<sound id= " 124 " name= " LARA_MINI_LOCK " hardcoded= " true" t5m= " 124 " />
-			<sound id= " 125 " name= " LARA_MINI_FIRE " hardcoded= " true" t5m= " 125 " />
-			<sound id= " 126 " name= " GATE_OPENING " hardcoded= " true" t5m= " 126 " />
-			<sound id= " 127 " name= " LARA_ELECTRIC_LOOP " hardcoded= " true" t5m= " 127 " />
-			<sound id= " 128 " name= " LARA_ELECTRIC_CRACKLES " hardcoded= " true" t5m= " 128 " />
-			<sound id= " 129 " name= " BLOOD_LOOP " hardcoded= " true" t5m= " 129 " />
-			<sound id= " 130 " name= " BIKE_START " hardcoded= " true" t5m= " 130 " />
-			<sound id= " 131 " name= " BIKE_IDLE " hardcoded= " true" t5m= " 131 " />
-			<sound id= " 132 " name= " BIKE_ACCELERATE " hardcoded= " true" t5m= " 132 " />
-			<sound id= " 133 " name= " BIKE_MOVING " hardcoded= " true" t5m= " 133 " />
-			<sound id= " 134 " name= " BIKE_SIDE_IMPACT " hardcoded= " true" t5m= " 134 " />
-			<sound id= " 135 " name= " BIKE_FRONT_IMPACT " hardcoded= " true" t5m= " 135 " />
-			<sound id= " 136 " name= " SOFT_WIND_LOOP " hardcoded= " true" t5m= " 136 " />
-			<sound id= " 137 " name= " BIKE_LAND " hardcoded= " true" t5m= " 137 " />
-			<sound id= " 138 " name= " CROCGOD_ROAR " hardcoded= " true" t5m= " 138 " />
-			<sound id= " 139 " name= " CROCGOD_WINGS " hardcoded= " true" t5m= " 139 " />
-			<sound id= " 140 " name= " CROCGOD_LAND " hardcoded= " true" t5m= " 140 " />
-			<sound id= " 141 " name= " CROCGOD_FIRE_ROAR " hardcoded= " true" t5m= " 141 " />
-			<sound id= " 142 " name= " BIKE_STOP " hardcoded= " true" t5m= " 142 " />
-			<sound id= " 143 " name= " GENERIC_BODY_SLAM " hardcoded= " true" t5m= " 143 " />
-			<sound id= " 144 " name= " HECKER&amp;KOCH_OVERLAY " hardcoded= " true" t5m= " 144 " />
-			<sound id= " 145 " name= " LARA_SPIKE_DEATH " hardcoded= " true" t5m= " 145 " />
-			<sound id= " 146 " name= " LARA_DEATH3 " hardcoded= " true" t5m= " 146 " />
-			<sound id= " 147 " name= " ROLLING_BALL " hardcoded= " true" t5m= " 147 " />
-			<sound id= " 148 " name= " BLK_PLAT_RAISE&amp;LOW " hardcoded= " true" t5m= " 148 " />
-			<sound id= " 149 " name= " RUMBLE_NEXTDOOR " hardcoded= " true" t5m= " 149 " />
-			<sound id= " 150 " name= " LOOP_FOR_SMALL_FIRES " hardcoded= " true" t5m= " 150 " />
-			<sound id= " 151 " name= " CHAINS_LIBRARY " hardcoded= " true" t5m= " 151 " />
-			<sound id= " 152 " name= " JEEP_START " hardcoded= " true" t5m= " 152 " />
-			<sound id= " 153 " name= " JEEP_IDLE " hardcoded= " true" t5m= " 153 " />
-			<sound id= " 154 " name= " JEEP_ACCELERATE " hardcoded= " true" t5m= " 154 " />
-			<sound id= " 155 " name= " JEEP_MOVE " hardcoded= " true" t5m= " 155 " />
-			<sound id= " 156 " name= " JEEP_STOP " hardcoded= " true" t5m= " 156 " />
-			<sound id= " 157 " name= " BATS_1 " hardcoded= " true" t5m= " 157 " />
-			<sound id= " 158 " name= " ROLLING_DOOR " hardcoded= " true" t5m= " 158 " />
-			<sound id= " 159 " name= " LAUNCHER_1 " hardcoded= " true" t5m= " 159 " />
-			<sound id= " 160 " name= " LAUNCHER_2 " hardcoded= " true" t5m= " 160 " />
-			<sound id= " 161 " name= " TRAPDOOR_OPEN " hardcoded= " true" t5m= " 161 " />
-			<sound id= " 162 " name= " TRAPDOOR_CLOSE " hardcoded= " true" t5m= " 162 " />
-			<sound id= " 163 " name= " UNUSED_RESERVOIR_FLUSH " hardcoded= " true" t5m= " 163 " />
-			<sound id= " 164 " name= " BABOON_STAND_WAIT " hardcoded= " true" t5m= " 164 " />
-			<sound id= " 165 " name= " BABOON_ATTACK_LOW " hardcoded= " true" t5m= " 165 " />
-			<sound id= " 166 " name= " BABOON_ATTACK_JUMP " hardcoded= " true" t5m= " 166 " />
-			<sound id= " 167 " name= " BABOON_JUMP " hardcoded= " true" t5m= " 167 " />
-			<sound id= " 168 " name= " BABOON_DEATH " hardcoded= " true" t5m= " 168 " />
-			<sound id= " 169 " name= " BAT_SQUEAL_FULL " hardcoded= " true" t5m= " 169 " />
-			<sound id= " 170 " name= " BAT_SQK " hardcoded= " true" t5m= " 170 " />
-			<sound id= " 171 " name= " BAT_FLAP " hardcoded= " true" t5m= " 171 " />
-			<sound id= " 172 " name= " SPHINX_NOSE_RASP " hardcoded= " true" t5m= " 172 " />
-			<sound id= " 173 " name= " SPHINX_WALK " hardcoded= " true" t5m= " 173 " />
-			<sound id= " 174 " name= " SPHINX_NOISE " hardcoded= " true" t5m= " 174 " />
-			<sound id= " 175 " name= " DOG_HOWL " hardcoded= " true" t5m= " 175 " />
-			<sound id= " 176 " name= " DOG_HIT_GROUND " hardcoded= " true" t5m= " 176 " />
-			<sound id= " 177 " name= " FOUNTAIN_LOOP " hardcoded= " true" t5m= " 177 " />
-			<sound id= " 178 " name= " DOG_FOOT_1 " hardcoded= " true" t5m= " 178 " />
-			<sound id= " 179 " name= " DOG_JUMP " hardcoded= " true" t5m= " 179 " />
-			<sound id= " 180 " name= " DOG_BITE " hardcoded= " true" t5m= " 180 " />
-			<sound id= " 181 " name= " DOG_DEATH " hardcoded= " true" t5m= " 181 " />
-			<sound id= " 182 " name= " THUNDER_RUMBLE " hardcoded= " true" t5m= " 182 " />
-			<sound id= " 183 " name= " THUNDER_CRACK " hardcoded= " true" t5m= " 183 " />
-			<sound id= " 184 " name= " WRAITH_WHISPERS " hardcoded= " true" t5m= " 184 " />
-			<sound id= " 185 " name= " UNUSED_VULTURE_GLIDE " hardcoded= " true" t5m= " 185 " />
-			<sound id= " 186 " name= " UNUSED_SCUBA_DIVER_FLIPPER " hardcoded= " true" t5m= " 186 " />
-			<sound id= " 187 " name= " SKEL_FOOTSTEPS " hardcoded= " true" t5m= " 187 " />
-			<sound id= " 188 " name= " SKEL_ATTACK " hardcoded= " true" t5m= " 188 " />
-			<sound id= " 189 " name= " GENERIC_SWORD_SWOOSH " hardcoded= " true" t5m= " 189 " />
-			<sound id= " 190 " name= " SKEL_SWORD_CLANG " hardcoded= " true" t5m= " 190 " />
-			<sound id= " 191 " name= " SKEL_STICK_GROUND " hardcoded= " true" t5m= " 191 " />
-			<sound id= " 192 " name= " GEN_PULL_SWORD " hardcoded= " true" t5m= " 192 " />
-			<sound id= " 193 " name= " SKEL_LAND_HEAVY " hardcoded= " true" t5m= " 193 " />
-			<sound id= " 194 " name= " GUIDE_SCARE " hardcoded= " true" t5m= " 194 " />
-			<sound id= " 195 " name= " JEEP_DOOR_OPEN " hardcoded= " true" t5m= " 195 " />
-			<sound id= " 196 " name= " JEEP_DOOR_CLOSE " hardcoded= " true" t5m= " 196 " />
-			<sound id= " 197 " name= " ELEC_ARCING_LOOP " hardcoded= " true" t5m= " 197 " />
-			<sound id= " 198 " name= " ELEC_ONE_SHOT " hardcoded= " true" t5m= " 198 " />
-			<sound id= " 199 " name= " UNUSED_BOAT_SLOW_DOWN " hardcoded= " true" t5m= " 199 " />
-			<sound id= " 200 " name= " LIBRARY_COG_LOOP " hardcoded= " true" t5m= " 200 " />
-			<sound id= " 201 " name= " JEEP_SIDE_IMPACT " hardcoded= " true" t5m= " 201 " />
-			<sound id= " 202 " name= " JEEP_FRONT_IMPACT " hardcoded= " true" t5m= " 202 " />
-			<sound id= " 203 " name= " JEEP_LAND " hardcoded= " true" t5m= " 203 " />
-			<sound id= " 204 " name= " SPINNING_GEM_SLOTS " hardcoded= " true" t5m= " 204 " />
-			<sound id= " 205 " name= " RUMMBLE " hardcoded= " true" t5m= " 205 " />
-			<sound id= " 206 " name= " WARTHOG_HEADBUTT " hardcoded= " true" t5m= " 206 " />
-			<sound id= " 207 " name= " WARTHOG_DEATH " hardcoded= " true" t5m= " 207 " />
-			<sound id= " 208 " name= " SET_SPIKE_TIMER " hardcoded= " true" t5m= " 208 " />
-			<sound id= " 209 " name= " WARTHOG_SQUEAL " hardcoded= " true" t5m= " 209 " />
-			<sound id= " 210 " name= " WARTHOG_FEET " hardcoded= " true" t5m= " 210 " />
-			<sound id= " 211 " name= " WARTHOG_GRUNT " hardcoded= " true" t5m= " 211 " />
-			<sound id= " 212 " name= " SAVE_CRYSTAL " hardcoded= " true" t5m= " 212 " />
-			<sound id= " 213 " name= " HORSE_RICOCHETS " hardcoded= " true" t5m= " 213 " />
-			<sound id= " 214 " name= " METAL_SHUTTERS_SMASH " hardcoded= " true" t5m= " 214 " />
-			<sound id= " 215 " name= " GEM_DROP_ON_FLOOR " hardcoded= " true" t5m= " 215 " />
-			<sound id= " 216 " name= " SCORPION_SCREAM " hardcoded= " true" t5m= " 216 " />
-			<sound id= " 217 " name= " SCORPION_FEET " hardcoded= " true" t5m= " 217 " />
-			<sound id= " 218 " name= " SCORPION_CLAWS " hardcoded= " true" t5m= " 218 " />
-			<sound id= " 219 " name= " SCORPION_TAIL_WHIP " hardcoded= " true" t5m= " 219 " />
-			<sound id= " 220 " name= " SCORPION_SMALL_FEET " hardcoded= " true" t5m= " 220 " />
-			<sound id= " 221 " name= " METAL GATE OPEN " hardcoded= " true" t5m= " 221 " />
-			<sound id= " 222 " name= " HORSE_TROTTING " hardcoded= " true" t5m= " 222 " />
-			<sound id= " 223 " name= " KN_TEMPLAR_WALK " hardcoded= " true" t5m= " 223 " />
-			<sound id= " 224 " name= " KN_TEMPLAR_GURGLES " hardcoded= " true" t5m= " 224 " />
-			<sound id= " 225 " name= " KN_SWORD_SCRAPE " hardcoded= " true" t5m= " 225 " />
-			<sound id= " 226 " name= " KN_TEMPLAR_ATTACK " hardcoded= " true" t5m= " 226 " />
-			<sound id= " 227 " name= " KN_SWORD_CLANG " hardcoded= " true" t5m= " 227 " />
-			<sound id= " 228 " name= " KN_SWORD_SWOOSH " hardcoded= " true" t5m= " 228 " />
-			<sound id= " 229 " name= " MUMMY_ATTACK " hardcoded= " true" t5m= " 229 " />
-			<sound id= " 230 " name= " MUMMY_WALK " hardcoded= " true" t5m= " 230 " />
-			<sound id= " 231 " name= " MUMMY_GURGLES " hardcoded= " true" t5m= " 231 " />
-			<sound id= " 232 " name= " MUMMY_TAKE_HIT " hardcoded= " true" t5m= " 232 " />
-			<sound id= " 233 " name= " SMALL_FAN " hardcoded= " true" t5m= " 233 " />
-			<sound id= " 234 " name= " LARGE_FAN " hardcoded= " true" t5m= " 234 " />
-			<sound id= " 235 " name= " LARA_CROSSBOW " hardcoded= " true" t5m= " 235 " />
-			<sound id= " 236 " name= " SMALL_CREATURE_FEET " hardcoded= " true" t5m= " 236 " />
-			<sound id= " 237 " name= " SAS_GADGIE_DIE " hardcoded= " true" t5m= " 237 " />
-			<sound id= " 238 " name= " WATER_FLUSHES " hardcoded= " true" t5m= " 238 " />
-			<sound id= " 239 " name= " GUID_ZIPPO " hardcoded= " true" t5m= " 239 " />
-			<sound id= " 240 " name= " LEAP_SWITCH " hardcoded= " true" t5m= " 240 " />
-			<sound id= " 241 " name= " OLD_SWITCH " hardcoded= " true" t5m= " 241 " />
-			<sound id= " 242 " name= " DEMIGODS_FEET " hardcoded= " true" t5m= " 242 " />
-			<sound id= " 243 " name= " DEMIGODS_BULL_SNORT " hardcoded= " true" t5m= " 243 " />
-			<sound id= " 244 " name= " DEMIGODS_BULL_HAMMER " hardcoded= " true" t5m= " 244 " />
-			<sound id= " 245 " name= " DEMIGODS_S_WAVE_RUMB " hardcoded= " true" t5m= " 245 " />
-			<sound id= " 246 " name= " DEMIGOD_WEAP_SWOOSH " hardcoded= " true" t5m= " 246 " />
-			<sound id= " 247 " name= " DEMIGOD_FALCON_SQUEAL " hardcoded= " true" t5m= " 247 " />
-			<sound id= " 248 " name= " DEMIGOD_FALCON_PLAS " hardcoded= " true" t5m= " 248 " />
-			<sound id= " 249 " name= " DEMIGOD_RISE " hardcoded= " true" t5m= " 249 " />
-			<sound id= " 250 " name= " DEMI_TUT_PLASMA_SPRAY " hardcoded= " true" t5m= " 250 " />
-			<sound id= " 251 " name= " DEMI_SIREN_SWAVE " hardcoded= " true" t5m= " 251 " />
-			<sound id= " 252 " name= " DEMIGODS_TUT_GROWL " hardcoded= " true" t5m= " 252 " />
-			<sound id= " 253 " name= " JOBY_ELECTRIC_INSERT " hardcoded= " true" t5m= " 253 " />
-			<sound id= " 254 " name= " RAGHEAD_LAND " hardcoded= " true" t5m= " 254 " />
-			<sound id= " 255 " name= " DOOR_GEN_THUD " hardcoded= " true" t5m= " 255 " />
-			<sound id= " 256 " name= " RAGHEAD_GRUNTS " hardcoded= " true" t5m= " 256 " />
-			<sound id= " 257 " name= " RAGHEAD_DIE " hardcoded= " true" t5m= " 257 " />
-			<sound id= " 258 " name= " RAGHEAD_JUMP " hardcoded= " true" t5m= " 258 " />
-			<sound id= " 259 " name= " RAG_TROOP_STUN " hardcoded= " true" t5m= " 259 " />
-			<sound id= " 260 " name= " RAGHEAD_SWORDAWAY " hardcoded= " true" t5m= " 260 " />
-			<sound id= " 261 " name= " RAG_TROOP_UZI " hardcoded= " true" t5m= " 261 " />
-			<sound id= " 262 " name= " RAGHEAD_SWORD_RICO " hardcoded= " true" t5m= " 262 " />
-			<sound id= " 263 " name= " RAG_TROOP_UZI_END " hardcoded= " true" t5m= " 263 " />
-			<sound id= " 264 " name= " TROOP_SCORP_CRIES " hardcoded= " true" t5m= " 264 " />
-			<sound id= " 265 " name= " SAS_TROOP_FEET " hardcoded= " true" t5m= " 265 " />
-			<sound id= " 266 " name= " GENERIC_NRG_CHARGE " hardcoded= " true" t5m= " 266 " />
-			<sound id= " 267 " name= " SAS_MG_FIRE " hardcoded= " true" t5m= " 267 " />
-			<sound id= " 268 " name= " HAMMER_HEAD_WADE " hardcoded= " true" t5m= " 268 " />
-			<sound id= " 269 " name= " SMALL_SWITCH " hardcoded= " true" t5m= " 269 " />
-			<sound id= " 270 " name= " UNUSED_CLAW_MUTE_FOOTSTEPS " hardcoded= " true" t5m= " 270 " />
-			<sound id= " 271 " name= " SIREN_WING_FLAP " hardcoded= " true" t5m= " 271 " />
-			<sound id= " 272 " name= " SIREN_NOIZES " hardcoded= " true" t5m= " 272 " />
-			<sound id= " 273 " name= " SIREN_ATTACK " hardcoded= " true" t5m= " 273 " />
-			<sound id= " 274 " name= " SIREN_DEATH " hardcoded= " true" t5m= " 274 " />
-			<sound id= " 275 " name= " SIREN_GEN_NOISES " hardcoded= " true" t5m= " 275 " />
-			<sound id= " 276 " name= " SETT_SIREN_PLASMA " hardcoded= " true" t5m= " 276 " />
-			<sound id= " 277 " name= " HAMMER_HEAD_ATK " hardcoded= " true" t5m= " 277 " />
-			<sound id= " 278 " name= " SMALL_DOOR_SUBWAY " hardcoded= " true" t5m= " 278 " />
-			<sound id= " 279 " name= " TRAIN_DOOR_OPEN " hardcoded= " true" t5m= " 279 " />
-			<sound id= " 280 " name= " TRAIN_DOOR_CLOSE " hardcoded= " true" t5m= " 280 " />
-			<sound id= " 281 " name= " VONCROY_KNIFE_SWISH " hardcoded= " true" t5m= " 281 " />
-			<sound id= " 282 " name= " TRAIN_UNLINK_BREAK " hardcoded= " true" t5m= " 282 " />
-			<sound id= " 283 " name= " OBJ_BOX_HIT " hardcoded= " true" t5m= " 283 " />
-			<sound id= " 284 " name= " OBJ_BOX_HIT_CHANCE " hardcoded= " true" t5m= " 284 " />
-			<sound id= " 285 " name= " OBJ_GEM_SMASH " hardcoded= " true" t5m= " 285 " />
-			<sound id= " 286 " name= " CATBLADES_DRAW " hardcoded= " true" t5m= " 286 " />
-			<sound id= " 287 " name= " SWIRLY_LONG_MOVE_SFX " hardcoded= " true" t5m= " 287 " />
-			<sound id= " 288 " name= " FOOTSTEPS_MUD " hardcoded= " true" t5m= " 288 " />
-			<sound id= " 289 " name= " HORSEMAN_HORSE_NEIGH " hardcoded= " true" t5m= " 289 " />
-			<sound id= " 290 " name= " FOOTSTEPS_GRAVEL " hardcoded= " true" t5m= " 290 " />
-			<sound id= " 291 " name= " FOOTSTEPS_SAND_&amp;_GRASS " hardcoded= " true" t5m= " 291 " />
-			<sound id= " 292 " name= " FOOTSTEPS_WOOD " hardcoded= " true" t5m= " 292 " />
-			<sound id= " 293 " name= " FOOTSTEPS_MARBLE " hardcoded= " true" t5m= " 293 " />
-			<sound id= " 294 " name= " FOOTSTEPS_METAL " hardcoded= " true" t5m= " 294 " />
-			<sound id= " 295 " name= " GEN_SPHINX_DOORTHD " hardcoded= " true" t5m= " 295 " />
-			<sound id= " 296 " name= " SETT_PLASMA_1 " hardcoded= " true" t5m= " 296 " />
-			<sound id= " 297 " name= " SETT_BOLT_1 " hardcoded= " true" t5m= " 297 " />
-			<sound id= " 298 " name= " SETT_FEET " hardcoded= " true" t5m= " 298 " />
-			<sound id= " 299 " name= " SETT_NRG_CHARGE " hardcoded= " true" t5m= " 299 " />
-			<sound id= " 300 " name= " SETT_NRG_CHARGE2 " hardcoded= " true" t5m= " 300 " />
-			<sound id= " 301 " name= " HORSEMAN_TAKEHIT " hardcoded= " true" t5m= " 301 " />
-			<sound id= " 302 " name= " HORSEMAN_WALK " hardcoded= " true" t5m= " 302 " />
-			<sound id= " 303 " name= " HORSEMAN_GRUNT " hardcoded= " true" t5m= " 303 " />
-			<sound id= " 304 " name= " HORSEMAN_FALL " hardcoded= " true" t5m= " 304 " />
-			<sound id= " 305 " name= " HORSEMAN_DIE " hardcoded= " true" t5m= " 305 " />
-			<sound id= " 306 " name= " MAPPER_SWITCH_ON " hardcoded= " true" t5m= " 306 " />
-			<sound id= " 307 " name= " MAPPER_OPEN " hardcoded= " true" t5m= " 307 " />
-			<sound id= " 308 " name= " MAPPER_LAZER " hardcoded= " true" t5m= " 308 " />
-			<sound id= " 309 " name= " MAPPER_MOVE " hardcoded= " true" t5m= " 309 " />
-			<sound id= " 310 " name= " MAPPER_CLUNK " hardcoded= " true" t5m= " 310 " />
-			<sound id= " 311 " name= " BLADES_DRAW " hardcoded= " true" t5m= " 311 " />
-			<sound id= " 312 " name= " BLADES_CLASH_LOUD " hardcoded= " true" t5m= " 312 " />
-			<sound id= " 313 " name= " BLADES_CLASH_QUIET " hardcoded= " true" t5m= " 313 " />
-			<sound id= " 314 " name= " HAMMER_TRAP_BANG " hardcoded= " true" t5m= " 314 " />
-			<sound id= " 315 " name= " DOOR_BIG_STONE " hardcoded= " true" t5m= " 315 " />
-			<sound id= " 316 " name= " SETT_BIG_ROAR " hardcoded= " true" t5m= " 316 " />
-			<sound id= " 317 " name= " BABOON_CHATTER " hardcoded= " true" t5m= " 317 " />
-			<sound id= " 318 " name= " BABOON_ROLL " hardcoded= " true" t5m= " 318 " />
-			<sound id= " 319 " name= " SWOOSH_SWIRLY_DOUBLE " hardcoded= " true" t5m= " 319 " />
-			<sound id= " 320 " name= " DOOR_SETTDOOR_SQK " hardcoded= " true" t5m= " 320 " />
-			<sound id= " 321 " name= " DOOR_SETTDOOR_CLANK " hardcoded= " true" t5m= " 321 " />
-			<sound id= " 322 " name= " SETT_JUMP_ATTACK " hardcoded= " true" t5m= " 322 " />
-			<sound id= " 323 " name= " JOBY_BLOCK " hardcoded= " true" t5m= " 323 " />
-			<sound id= " 324 " name= " SETT_TAKE_HIT " hardcoded= " true" t5m= " 324 " />
-			<sound id= " 325 " name= " DART_SPITT " hardcoded= " true" t5m= " 325 " />
-			<sound id= " 326 " name= " LARA_CROWBAR_GEM " hardcoded= " true" t5m= " 326 " />
-			<sound id= " 327 " name= " CROWBAR_DOOR_OPEN " hardcoded= " true" t5m= " 327 " />
-			<sound id= " 328 " name= " LARA_LEVER_GEN_SQKS " hardcoded= " true" t5m= " 328 " />
-			<sound id= " 329 " name= " HORSEMAN_GETUP " hardcoded= " true" t5m= " 329 " />
-			<sound id= " 330 " name= " EXH_BASKET_OPEN " hardcoded= " true" t5m= " 330 " />
-			<sound id= " 331 " name= " EXH_MUMCOFF_OPE1 " hardcoded= " true" t5m= " 331 " />
-			<sound id= " 332 " name= " EXH_MUMCOFF_OPE2 " hardcoded= " true" t5m= " 332 " />
-			<sound id= " 333 " name= " EXH_MUM_JOLT " hardcoded= " true" t5m= " 333 " />
-			<sound id= " 334 " name= " EXH_MUMHEAD_SPIN " hardcoded= " true" t5m= " 334 " />
-			<sound id= " 335 " name= " EXH_MUMMY_RAHHH " hardcoded= " true" t5m= " 335 " />
-			<sound id= " 336 " name= " EXH_ROLLER_BLINDS " hardcoded= " true" t5m= " 336 " />
-			<sound id= " 337 " name= " LARA_LEVER_PART1 " hardcoded= " true" t5m= " 337 " />
-			<sound id= " 338 " name= " LARA_LEVER_PART2 " hardcoded= " true" t5m= " 338 " />
-			<sound id= " 339 " name= " LARA_POLE_CLIMB " hardcoded= " true" t5m= " 339 " />
-			<sound id= " 340 " name= " LARA_POLE_LOOP " hardcoded= " true" t5m= " 340 " />
-			<sound id= " 341 " name= " TRAP_SPIKEBALL_SPK " hardcoded= " true" t5m= " 341 " />
-			<sound id= " 342 " name= " LARA_PULLEY " hardcoded= " true" t5m= " 342 " />
-			<sound id= " 343 " name= " TEETH_SPIKES " hardcoded= " true" t5m= " 343 " />
-			<sound id= " 344 " name= " SAND_LOOP " hardcoded= " true" t5m= " 344 " />
-			<sound id= " 345 " name= " LARA_USE_OBJECT " hardcoded= " true" t5m= " 345 " />
-			<sound id= " 346 " name= " LIBRARY_COG_SQKS " hardcoded= " true" t5m= " 346 " />
-			<sound id= " 347 " name= " HIT_ROCK " hardcoded= " true" t5m= " 347 " />
-			<sound id= " 348 " name= " LARA_NO_FRENCH " hardcoded= " true" t5m= " 348 " />
-			<sound id= " 349 " name= " LARA_NO_JAPAN " hardcoded= " true" t5m= " 349 " />
-			<sound id= " 350 " name= " LARA_CROW_WRENCH " hardcoded= " true" t5m= " 350 " />
-			<sound id= " 351 " name= " LARA_ROPE_CREAK " hardcoded= " true" t5m= " 351 " />
-			<sound id= " 352 " name= " BOWLANIM " hardcoded= " true" t5m= " 352 " />
-			<sound id= " 353 " name= " SPHINX_DOOR_WOODCRACK " hardcoded= " true" t5m= " 353 " />
-			<sound id= " 354 " name= " BEETLE_CLK_WHIRR " hardcoded= " true" t5m= " 354 " />
-			<sound id= " 355 " name= " MAPPER_PYRAMID_OPEN " hardcoded= " true" t5m= " 355 " />
-			<sound id= " 356 " name= " LIGHT_BEAM_JOBY " hardcoded= " true" t5m= " 356 " />
-			<sound id= " 357 " name= " GUIDE_FIRE_LIGHT " hardcoded= " true" t5m= " 357 " />
-			<sound id= " 358 " name= " AUTOGUNS " hardcoded= " true" t5m= " 358 " />
-			<sound id= " 359 " name= " PULLEY_ANDY " hardcoded= " true" t5m= " 359 " />
-			<sound id= " 360 " name= " STEAM " hardcoded= " true" t5m= " 360 " />
-			<sound id= " 361 " name= " JOBY_GARAGE_DOOR " hardcoded= " true" t5m= " 361 " />
-			<sound id= " 362 " name= " JOBY_WIND " hardcoded= " true" t5m= " 362 " />
-			<sound id= " 363 " name= " SANDHAM_IN_THE_HOUSE " hardcoded= " true" t5m= " 363 " />
-			<sound id= " 364 " name= " SANDHAM_CONVEYS " hardcoded= " true" t5m= " 364 " />
-			<sound id= " 365 " name= " CRANKY_GRAPE_CRUSH " hardcoded= " true" t5m= " 365 " />
-			<sound id= " 366 " name= " BIKE_HIT_OBJECTS " hardcoded= " true" t5m= " 366 " />
-			<sound id= " 367 " name= " BIKE_HIT_ENEMIES " hardcoded= " true" t5m= " 367 " />
-			<sound id= " 368 " name= " FLAME_EMITTER " hardcoded= " true" t5m= " 368 " />
-			<sound id= " 369 " name= " LARA_CLICK_SWITCH " hardcoded= " true" t5m= " 369 " />
+			<sound id="0" name="LARA_FEET" hardcoded="true" t5m="0"/>
+			<sound id="1" name="LARA_CLIMB2" hardcoded="true" t5m="1"/>
+			<sound id="2" name="LARA_NO" hardcoded="true" t5m="2"/>
+			<sound id="3" name="LARA_SLIPPING" hardcoded="true" t5m="3"/>
+			<sound id="4" name="LARA_LAND" hardcoded="true" t5m="4"/>
+			<sound id="5" name="LARA_CLIMB1" hardcoded="true" t5m="5"/>
+			<sound id="6" name="LARA_DRAW" hardcoded="true" t5m="6"/>
+			<sound id="7" name="LARA_HOLSTER" hardcoded="true" t5m="7"/>
+			<sound id="8" name="LARA_FIRE" hardcoded="true" t5m="8"/>
+			<sound id="9" name="LARA_RELOAD" hardcoded="true" t5m="9"/>
+			<sound id="10" name="LARA_RICOCHET" hardcoded="true" t5m="10"/>
+			<sound id="11" name="PUSH_BLOCK_END" hardcoded="true" t5m="11"/>
+			<sound id="12" name="METAL_SCRAPE_LOOP" hardcoded="true" t5m="12"/>
+			<sound id="13" name="SMALL_SCARAB_FEET" hardcoded="true" t5m="13"/>
+			<sound id="14" name="BIG_SCARAB_ATTACK" hardcoded="true" t5m="14"/>
+			<sound id="15" name="BIG_SCARAB_DEATH" hardcoded="true" t5m="15"/>
+			<sound id="16" name="BIG_SCARAB_FLYING" hardcoded="true" t5m="16"/>
+			<sound id="17" name="LARA_WET_FEET" hardcoded="true" t5m="17"/>
+			<sound id="18" name="LARA_WADE" hardcoded="true" t5m="18"/>
+			<sound id="19" name="RUMBLE_LOOP" hardcoded="true" t5m="19"/>
+			<sound id="20" name="METAL_SCRAPE_LOOP" hardcoded="true" t5m="20"/>
+			<sound id="21" name="CRICKET_LOOP" hardcoded="true" t5m="21"/>
+			<sound id="22" name="WOOD_BRIDGE_FALL" hardcoded="true" t5m="22"/>
+			<sound id="23" name="STARGATE_SWIRL" hardcoded="true" t5m="23"/>
+			<sound id="24" name="LARA_KNEES_SHUFFLE" hardcoded="true" t5m="24"/>
+			<sound id="25" name="PUSH_SPX_SWITCH" hardcoded="true" t5m="25"/>
+			<sound id="26" name="LARA_CLIMB3" hardcoded="true" t5m="26"/>
+			<sound id="27" name="LARA_BODYSLAM" hardcoded="true" t5m="27"/>
+			<sound id="28" name="LARA_SHIMMY2" hardcoded="true" t5m="28"/>
+			<sound id="29" name="LARA_JUMP" hardcoded="true" t5m="29"/>
+			<sound id="30" name="LARA_FALL" hardcoded="true" t5m="30"/>
+			<sound id="31" name="LARA_INJURY" hardcoded="true" t5m="31"/>
+			<sound id="32" name="LARA_ROLL" hardcoded="true" t5m="32"/>
+			<sound id="33" name="LARA_SPLASH" hardcoded="true" t5m="33"/>
+			<sound id="34" name="LARA_GETOUT" hardcoded="true" t5m="34"/>
+			<sound id="35" name="LARA_SWIM" hardcoded="true" t5m="35"/>
+			<sound id="36" name="LARA_BREATH" hardcoded="true" t5m="36"/>
+			<sound id="37" name="LARA_BUBBLES" hardcoded="true" t5m="37"/>
+			<sound id="38" name="SPINNING_PUZZLE" hardcoded="true" t5m="38"/>
+			<sound id="39" name="LARA_KEY" hardcoded="true" t5m="39"/>
+			<sound id="40" name="COG_RESAW_LIBRARY" hardcoded="true" t5m="40"/>
+			<sound id="41" name="LARA_GENERAL_DEATH" hardcoded="true" t5m="41"/>
+			<sound id="42" name="LARA_KNEES_DEATH" hardcoded="true" t5m="42"/>
+			<sound id="43" name="LARA_UZI_FIRE" hardcoded="true" t5m="43"/>
+			<sound id="44" name="LARA_UZI_STOP" hardcoded="true" t5m="44"/>
+			<sound id="45" name="LARA_SHOTGUN" hardcoded="true" t5m="45"/>
+			<sound id="46" name="LARA_BLOCK_PUSH1" hardcoded="true" t5m="46"/>
+			<sound id="47" name="LARA_BLOCK_PUSH2" hardcoded="true" t5m="47"/>
+			<sound id="48" name="SARLID_PALACES" hardcoded="true" t5m="48"/>
+			<sound id="49" name="LARA_SHOTGUN_SHELL" hardcoded="true" t5m="49"/>
+			<sound id="50" name="UNDERWATER_DOOR" hardcoded="true" t5m="50"/>
+			<sound id="51" name="LARA_BLKPULL" hardcoded="true" t5m="51"/>
+			<sound id="52" name="LARA_FLOATING" hardcoded="true" t5m="52"/>
+			<sound id="53" name="LARA_FALLDETH" hardcoded="true" t5m="53"/>
+			<sound id="54" name="LARA_GRABHAND" hardcoded="true" t5m="54"/>
+			<sound id="55" name="LARA_GRABBODY" hardcoded="true" t5m="55"/>
+			<sound id="56" name="LARA_GRABFEET" hardcoded="true" t5m="56"/>
+			<sound id="57" name="RATCHET_3SHOT" hardcoded="true" t5m="57"/>
+			<sound id="58" name="RATCHET_1SHOT" hardcoded="true" t5m="58"/>
+			<sound id="59" name="WATER_LOOP_NOTINUSE" hardcoded="true" t5m="59"/>
+			<sound id="60" name="UNDERWATER" hardcoded="true" t5m="60"/>
+			<sound id="61" name="UNDERWATER_SWITCH" hardcoded="true" t5m="61"/>
+			<sound id="62" name="LARA_PICKUP" hardcoded="true" t5m="62"/>
+			<sound id="63" name="PUSHABLE_SOUND" hardcoded="true" t5m="63"/>
+			<sound id="64" name="DOOR_GENERAL" hardcoded="true" t5m="64"/>
+			<sound id="65" name=" hELICOPTER_LOOP" hardcoded="true" t5m="65"/>
+			<sound id="66" name="ROCK_FALL_CRUMBLE" hardcoded="true" t5m="66"/>
+			<sound id="67" name="ROCK_FALL_LAND" hardcoded="true" t5m="67"/>
+			<sound id="68" name="PENDULUM_BLADES" hardcoded="true" t5m="68"/>
+			<sound id="69" name="STALEGTITE" hardcoded="true" t5m="69"/>
+			<sound id="70" name="LARA_THUD" hardcoded="true" t5m="70"/>
+			<sound id="71" name="GENERIC_SWOOSH" hardcoded="true" t5m="71"/>
+			<sound id="72" name="GENERIC_HEAVY_THUD" hardcoded="true" t5m="72"/>
+			<sound id="73" name="CROC_FEET" hardcoded="true" t5m="73"/>
+			<sound id="74" name="SWINGING_FLAMES" hardcoded="true" t5m="74"/>
+			<sound id="75" name="STONE_SCRAPE" hardcoded="true" t5m="75"/>
+			<sound id="76" name="BLAST_CIRCLE" hardcoded="true" t5m="76"/>
+			<sound id="77" name="BAZOOKA_FIRE" hardcoded="true" t5m="77"/>
+			<sound id="78" name="HECKLER&amp;KOCH_FIRE" hardcoded="true" t5m="78"/>
+			<sound id="79" name="WATERFALL_LOOP" hardcoded="true" t5m="79"/>
+			<sound id="80" name="CROC_ATTACK" hardcoded="true" t5m="80"/>
+			<sound id="81" name="CROC_DEATH" hardcoded="true" t5m="81"/>
+			<sound id="82" name="PORTCULLIS_UP" hardcoded="true" t5m="82"/>
+			<sound id="83" name="PORTCULLIS_DOWN" hardcoded="true" t5m="83"/>
+			<sound id="84" name="DOUBLE_DOORS_BANG" hardcoded="true" t5m="84"/>
+			<sound id="85" name="DOUBLE_DOORS_CREAK" hardcoded="true" t5m="85"/>
+			<sound id="86" name="PETES_PYRA_STONE" hardcoded="true" t5m="86"/>
+			<sound id="87" name="PETES_PYRA_PNEU" hardcoded="true" t5m="87"/>
+			<sound id="88" name="AHMET_DIE" hardcoded="true" t5m="88"/>
+			<sound id="89" name="AHMET_ATTACK" hardcoded="true" t5m="89"/>
+			<sound id="90" name="AHMET_HANDS" hardcoded="true" t5m="90"/>
+			<sound id="91" name="AHMET_FEET" hardcoded="true" t5m="91"/>
+			<sound id="92" name="AHMET_SWIPE" hardcoded="true" t5m="92"/>
+			<sound id="93" name="AHMET_WAIT" hardcoded="true" t5m="93"/>
+			<sound id="94" name="GUIDE_JUMP" hardcoded="true" t5m="94"/>
+			<sound id="95" name="GENERAL_FOOTSTEPS1" hardcoded="true" t5m="95"/>
+			<sound id="96" name="GUIDE_LAND_USENOT" hardcoded="true" t5m="96"/>
+			<sound id="97" name="POUR" hardcoded="true" t5m="97"/>
+			<sound id="98" name="SCALE1" hardcoded="true" t5m="98"/>
+			<sound id="99" name="SCALE2" hardcoded="true" t5m="99"/>
+			<sound id="100" name="BEETLARA_WINDUP" hardcoded="true" t5m="100"/>
+			<sound id="101" name="BEETLE_CLK_WHIRR" hardcoded="true" t5m="101"/>
+			<sound id="102" name="BEETLE_CLK_EXP" hardcoded="true" t5m="102"/>
+			<sound id="103" name="MINE_EXP_OVERLAY" hardcoded="true" t5m="103"/>
+			<sound id="104" name="HECKLER&amp;KOCH_STOP" hardcoded="true" t5m="104"/>
+			<sound id="105" name="EXPLOSION1" hardcoded="true" t5m="105"/>
+			<sound id="106" name="EXPLOSION2_VOLWAS80" hardcoded="true" t5m="106"/>
+			<sound id="107" name="EARTHQUAKE_LOOP" hardcoded="true" t5m="107"/>
+			<sound id="108" name="MENU_ROTATE" hardcoded="true" t5m="108"/>
+			<sound id="109" name="MENU_SELECT" hardcoded="true" t5m="109"/>
+			<sound id="110" name="UNUSED_MENU_GAMEBOY" hardcoded="true" t5m="110"/>
+			<sound id="111" name="MENU_CHOOSE" hardcoded="true" t5m="111"/>
+			<sound id="112" name="TICK_TOCK" hardcoded="true" t5m="112"/>
+			<sound id="113" name="UNUSED_MENU_STOPWATCH" hardcoded="true" t5m="113"/>
+			<sound id="114" name="MENU_COMBINE" hardcoded="true" t5m="114"/>
+			<sound id="115" name="UNUSED_MENU_PASSPORT" hardcoded="true" t5m="115"/>
+			<sound id="116" name="MENU_MEDI" hardcoded="true" t5m="116"/>
+			<sound id="117" name="LARA_CLIMB_WALLS_NOISE" hardcoded="true" t5m="117"/>
+			<sound id="118" name="WATER_LOOP" hardcoded="true" t5m="118"/>
+			<sound id="119" name="VONCROY_JUMP" hardcoded="true" t5m="119"/>
+			<sound id="120" name="LOCUSTS_LOOP" hardcoded="true" t5m="120"/>
+			<sound id="121" name="DESSERT_EAGLE_FIRE" hardcoded="true" t5m="121"/>
+			<sound id="122" name="BOULDER_FALL" hardcoded="true" t5m="122"/>
+			<sound id="123" name="LARA_MINI_LOAD" hardcoded="true" t5m="123"/>
+			<sound id="124" name="LARA_MINI_LOCK" hardcoded="true" t5m="124"/>
+			<sound id="125" name="LARA_MINI_FIRE" hardcoded="true" t5m="125"/>
+			<sound id="126" name="GATE_OPENING" hardcoded="true" t5m="126"/>
+			<sound id="127" name="LARA_ELECTRIC_LOOP" hardcoded="true" t5m="127"/>
+			<sound id="128" name="LARA_ELECTRIC_CRACKLES" hardcoded="true" t5m="128"/>
+			<sound id="129" name="BLOOD_LOOP" hardcoded="true" t5m="129"/>
+			<sound id="130" name="BIKE_START" hardcoded="true" t5m="130"/>
+			<sound id="131" name="BIKE_IDLE" hardcoded="true" t5m="131"/>
+			<sound id="132" name="BIKE_ACCELERATE" hardcoded="true" t5m="132"/>
+			<sound id="133" name="BIKE_MOVING" hardcoded="true" t5m="133"/>
+			<sound id="134" name="BIKE_SIDE_IMPACT" hardcoded="true" t5m="134"/>
+			<sound id="135" name="BIKE_FRONT_IMPACT" hardcoded="true" t5m="135"/>
+			<sound id="136" name="SOFT_WIND_LOOP" hardcoded="true" t5m="136"/>
+			<sound id="137" name="BIKE_LAND" hardcoded="true" t5m="137"/>
+			<sound id="138" name="CROCGOD_ROAR" hardcoded="true" t5m="138"/>
+			<sound id="139" name="CROCGOD_WINGS" hardcoded="true" t5m="139"/>
+			<sound id="140" name="CROCGOD_LAND" hardcoded="true" t5m="140"/>
+			<sound id="141" name="CROCGOD_FIRE_ROAR" hardcoded="true" t5m="141"/>
+			<sound id="142" name="BIKE_STOP" hardcoded="true" t5m="142"/>
+			<sound id="143" name="GENERIC_BODY_SLAM" hardcoded="true" t5m="143"/>
+			<sound id="144" name="HECKER&amp;KOCH_OVERLAY" hardcoded="true" t5m="144"/>
+			<sound id="145" name="LARA_SPIKE_DEATH" hardcoded="true" t5m="145"/>
+			<sound id="146" name="LARA_DEATH3" hardcoded="true" t5m="146"/>
+			<sound id="147" name="ROLLING_BALL" hardcoded="true" t5m="147"/>
+			<sound id="148" name="BLK_PLAT_RAISE&amp;LOW" hardcoded="true" t5m="148"/>
+			<sound id="149" name="RUMBLE_NEXTDOOR" hardcoded="true" t5m="149"/>
+			<sound id="150" name="LOOP_FOR_SMALL_FIRES" hardcoded="true" t5m="150"/>
+			<sound id="151" name="CHAINS_LIBRARY" hardcoded="true" t5m="151"/>
+			<sound id="152" name="JEEP_START" hardcoded="true" t5m="152"/>
+			<sound id="153" name="JEEP_IDLE" hardcoded="true" t5m="153"/>
+			<sound id="154" name="JEEP_ACCELERATE" hardcoded="true" t5m="154"/>
+			<sound id="155" name="JEEP_MOVE" hardcoded="true" t5m="155"/>
+			<sound id="156" name="JEEP_STOP" hardcoded="true" t5m="156"/>
+			<sound id="157" name="BATS_1" hardcoded="true" t5m="157"/>
+			<sound id="158" name="ROLLING_DOOR" hardcoded="true" t5m="158"/>
+			<sound id="159" name="LAUNCHER_1" hardcoded="true" t5m="159"/>
+			<sound id="160" name="LAUNCHER_2" hardcoded="true" t5m="160"/>
+			<sound id="161" name="TRAPDOOR_OPEN" hardcoded="true" t5m="161"/>
+			<sound id="162" name="TRAPDOOR_CLOSE" hardcoded="true" t5m="162"/>
+			<sound id="163" name="UNUSED_RESERVOIR_FLUSH" hardcoded="true" t5m="163"/>
+			<sound id="164" name="BABOON_STAND_WAIT" hardcoded="true" t5m="164"/>
+			<sound id="165" name="BABOON_ATTACK_LOW" hardcoded="true" t5m="165"/>
+			<sound id="166" name="BABOON_ATTACK_JUMP" hardcoded="true" t5m="166"/>
+			<sound id="167" name="BABOON_JUMP" hardcoded="true" t5m="167"/>
+			<sound id="168" name="BABOON_DEATH" hardcoded="true" t5m="168"/>
+			<sound id="169" name="BAT_SQUEAL_FULL" hardcoded="true" t5m="169"/>
+			<sound id="170" name="BAT_SQK" hardcoded="true" t5m="170"/>
+			<sound id="171" name="BAT_FLAP" hardcoded="true" t5m="171"/>
+			<sound id="172" name="SPHINX_NOSE_RASP" hardcoded="true" t5m="172"/>
+			<sound id="173" name="SPHINX_WALK" hardcoded="true" t5m="173"/>
+			<sound id="174" name="SPHINX_NOISE" hardcoded="true" t5m="174"/>
+			<sound id="175" name="DOG_HOWL" hardcoded="true" t5m="175"/>
+			<sound id="176" name="DOG_HIT_GROUND" hardcoded="true" t5m="176"/>
+			<sound id="177" name="FOUNTAIN_LOOP" hardcoded="true" t5m="177"/>
+			<sound id="178" name="DOG_FOOT_1" hardcoded="true" t5m="178"/>
+			<sound id="179" name="DOG_JUMP" hardcoded="true" t5m="179"/>
+			<sound id="180" name="DOG_BITE" hardcoded="true" t5m="180"/>
+			<sound id="181" name="DOG_DEATH" hardcoded="true" t5m="181"/>
+			<sound id="182" name="THUNDER_RUMBLE" hardcoded="true" t5m="182"/>
+			<sound id="183" name="THUNDER_CRACK" hardcoded="true" t5m="183"/>
+			<sound id="184" name="WRAITH_WHISPERS" hardcoded="true" t5m="184"/>
+			<sound id="185" name="UNUSED_VULTURE_GLIDE" hardcoded="true" t5m="185"/>
+			<sound id="186" name="UNUSED_SCUBA_DIVER_FLIPPER" hardcoded="true" t5m="186"/>
+			<sound id="187" name="SKEL_FOOTSTEPS" hardcoded="true" t5m="187"/>
+			<sound id="188" name="SKEL_ATTACK" hardcoded="true" t5m="188"/>
+			<sound id="189" name="GENERIC_SWORD_SWOOSH" hardcoded="true" t5m="189"/>
+			<sound id="190" name="SKEL_SWORD_CLANG" hardcoded="true" t5m="190"/>
+			<sound id="191" name="SKEL_STICK_GROUND" hardcoded="true" t5m="191"/>
+			<sound id="192" name="GEN_PULL_SWORD" hardcoded="true" t5m="192"/>
+			<sound id="193" name="SKEL_LAND_HEAVY" hardcoded="true" t5m="193"/>
+			<sound id="194" name="GUIDE_SCARE" hardcoded="true" t5m="194"/>
+			<sound id="195" name="JEEP_DOOR_OPEN" hardcoded="true" t5m="195"/>
+			<sound id="196" name="JEEP_DOOR_CLOSE" hardcoded="true" t5m="196"/>
+			<sound id="197" name="ELEC_ARCING_LOOP" hardcoded="true" t5m="197"/>
+			<sound id="198" name="ELEC_ONE_SHOT" hardcoded="true" t5m="198"/>
+			<sound id="199" name="UNUSED_BOAT_SLOW_DOWN" hardcoded="true" t5m="199"/>
+			<sound id="200" name="LIBRARY_COG_LOOP" hardcoded="true" t5m="200"/>
+			<sound id="201" name="JEEP_SIDE_IMPACT" hardcoded="true" t5m="201"/>
+			<sound id="202" name="JEEP_FRONT_IMPACT" hardcoded="true" t5m="202"/>
+			<sound id="203" name="JEEP_LAND" hardcoded="true" t5m="203"/>
+			<sound id="204" name="SPINNING_GEM_SLOTS" hardcoded="true" t5m="204"/>
+			<sound id="205" name="RUMMBLE" hardcoded="true" t5m="205"/>
+			<sound id="206" name="WARTHOG_HEADBUTT" hardcoded="true" t5m="206"/>
+			<sound id="207" name="WARTHOG_DEATH" hardcoded="true" t5m="207"/>
+			<sound id="208" name="SET_SPIKE_TIMER" hardcoded="true" t5m="208"/>
+			<sound id="209" name="WARTHOG_SQUEAL" hardcoded="true" t5m="209"/>
+			<sound id="210" name="WARTHOG_FEET" hardcoded="true" t5m="210"/>
+			<sound id="211" name="WARTHOG_GRUNT" hardcoded="true" t5m="211"/>
+			<sound id="212" name="SAVE_CRYSTAL" hardcoded="true" t5m="212"/>
+			<sound id="213" name="HORSE_RICOCHETS" hardcoded="true" t5m="213"/>
+			<sound id="214" name="METAL_SHUTTERS_SMASH" hardcoded="true" t5m="214"/>
+			<sound id="215" name="GEM_DROP_ON_FLOOR" hardcoded="true" t5m="215"/>
+			<sound id="216" name="SCORPION_SCREAM" hardcoded="true" t5m="216"/>
+			<sound id="217" name="SCORPION_FEET" hardcoded="true" t5m="217"/>
+			<sound id="218" name="SCORPION_CLAWS" hardcoded="true" t5m="218"/>
+			<sound id="219" name="SCORPION_TAIL_WHIP" hardcoded="true" t5m="219"/>
+			<sound id="220" name="SCORPION_SMALL_FEET" hardcoded="true" t5m="220"/>
+			<sound id="221" name="METAL GATE OPEN" hardcoded="true" t5m="221"/>
+			<sound id="222" name="HORSE_TROTTING" hardcoded="true" t5m="222"/>
+			<sound id="223" name="KN_TEMPLAR_WALK" hardcoded="true" t5m="223"/>
+			<sound id="224" name="KN_TEMPLAR_GURGLES" hardcoded="true" t5m="224"/>
+			<sound id="225" name="KN_SWORD_SCRAPE" hardcoded="true" t5m="225"/>
+			<sound id="226" name="KN_TEMPLAR_ATTACK" hardcoded="true" t5m="226"/>
+			<sound id="227" name="KN_SWORD_CLANG" hardcoded="true" t5m="227"/>
+			<sound id="228" name="KN_SWORD_SWOOSH" hardcoded="true" t5m="228"/>
+			<sound id="229" name="MUMMY_ATTACK" hardcoded="true" t5m="229"/>
+			<sound id="230" name="MUMMY_WALK" hardcoded="true" t5m="230"/>
+			<sound id="231" name="MUMMY_GURGLES" hardcoded="true" t5m="231"/>
+			<sound id="232" name="MUMMY_TAKE_HIT" hardcoded="true" t5m="232"/>
+			<sound id="233" name="SMALL_FAN" hardcoded="true" t5m="233"/>
+			<sound id="234" name="LARGE_FAN" hardcoded="true" t5m="234"/>
+			<sound id="235" name="LARA_CROSSBOW" hardcoded="true" t5m="235"/>
+			<sound id="236" name="SMALL_CREATURE_FEET" hardcoded="true" t5m="236"/>
+			<sound id="237" name="SAS_GADGIE_DIE" hardcoded="true" t5m="237"/>
+			<sound id="238" name="WATER_FLUSHES" hardcoded="true" t5m="238"/>
+			<sound id="239" name="GUID_ZIPPO" hardcoded="true" t5m="239"/>
+			<sound id="240" name="LEAP_SWITCH" hardcoded="true" t5m="240"/>
+			<sound id="241" name="OLD_SWITCH" hardcoded="true" t5m="241"/>
+			<sound id="242" name="DEMIGODS_FEET" hardcoded="true" t5m="242"/>
+			<sound id="243" name="DEMIGODS_BULL_SNORT" hardcoded="true" t5m="243"/>
+			<sound id="244" name="DEMIGODS_BULL_HAMMER" hardcoded="true" t5m="244"/>
+			<sound id="245" name="DEMIGODS_S_WAVE_RUMB" hardcoded="true" t5m="245"/>
+			<sound id="246" name="DEMIGOD_WEAP_SWOOSH" hardcoded="true" t5m="246"/>
+			<sound id="247" name="DEMIGOD_FALCON_SQUEAL" hardcoded="true" t5m="247"/>
+			<sound id="248" name="DEMIGOD_FALCON_PLAS" hardcoded="true" t5m="248"/>
+			<sound id="249" name="DEMIGOD_RISE" hardcoded="true" t5m="249"/>
+			<sound id="250" name="DEMI_TUT_PLASMA_SPRAY" hardcoded="true" t5m="250"/>
+			<sound id="251" name="DEMI_SIREN_SWAVE" hardcoded="true" t5m="251"/>
+			<sound id="252" name="DEMIGODS_TUT_GROWL" hardcoded="true" t5m="252"/>
+			<sound id="253" name="JOBY_ELECTRIC_INSERT" hardcoded="true" t5m="253"/>
+			<sound id="254" name="RAGHEAD_LAND" hardcoded="true" t5m="254"/>
+			<sound id="255" name="DOOR_GEN_THUD" hardcoded="true" t5m="255"/>
+			<sound id="256" name="RAGHEAD_GRUNTS" hardcoded="true" t5m="256"/>
+			<sound id="257" name="RAGHEAD_DIE" hardcoded="true" t5m="257"/>
+			<sound id="258" name="RAGHEAD_JUMP" hardcoded="true" t5m="258"/>
+			<sound id="259" name="RAG_TROOP_STUN" hardcoded="true" t5m="259"/>
+			<sound id="260" name="RAGHEAD_SWORDAWAY" hardcoded="true" t5m="260"/>
+			<sound id="261" name="RAG_TROOP_UZI" hardcoded="true" t5m="261"/>
+			<sound id="262" name="RAGHEAD_SWORD_RICO" hardcoded="true" t5m="262"/>
+			<sound id="263" name="RAG_TROOP_UZI_END" hardcoded="true" t5m="263"/>
+			<sound id="264" name="TROOP_SCORP_CRIES" hardcoded="true" t5m="264"/>
+			<sound id="265" name="SAS_TROOP_FEET" hardcoded="true" t5m="265"/>
+			<sound id="266" name="GENERIC_NRG_CHARGE" hardcoded="true" t5m="266"/>
+			<sound id="267" name="SAS_MG_FIRE" hardcoded="true" t5m="267"/>
+			<sound id="268" name="HAMMER_HEAD_WADE" hardcoded="true" t5m="268"/>
+			<sound id="269" name="SMALL_SWITCH" hardcoded="true" t5m="269"/>
+			<sound id="270" name="UNUSED_CLAW_MUTE_FOOTSTEPS" hardcoded="true" t5m="270"/>
+			<sound id="271" name="SIREN_WING_FLAP" hardcoded="true" t5m="271"/>
+			<sound id="272" name="SIREN_NOIZES" hardcoded="true" t5m="272"/>
+			<sound id="273" name="SIREN_ATTACK" hardcoded="true" t5m="273"/>
+			<sound id="274" name="SIREN_DEATH" hardcoded="true" t5m="274"/>
+			<sound id="275" name="SIREN_GEN_NOISES" hardcoded="true" t5m="275"/>
+			<sound id="276" name="SETT_SIREN_PLASMA" hardcoded="true" t5m="276"/>
+			<sound id="277" name=" hAMMER_HEAD_ATK" hardcoded="true" t5m="277"/>
+			<sound id="278" name="SMALL_DOOR_SUBWAY" hardcoded="true" t5m="278"/>
+			<sound id="279" name="TRAIN_DOOR_OPEN" hardcoded="true" t5m="279"/>
+			<sound id="280" name="TRAIN_DOOR_CLOSE" hardcoded="true" t5m="280"/>
+			<sound id="281" name="VONCROY_KNIFE_SWISH" hardcoded="true" t5m="281"/>
+			<sound id="282" name="TRAIN_UNLINK_BREAK" hardcoded="true" t5m="282"/>
+			<sound id="283" name="OBJ_BOX_HIT" hardcoded="true" t5m="283"/>
+			<sound id="284" name="OBJ_BOX_HIT_CHANCE" hardcoded="true" t5m="284"/>
+			<sound id="285" name="OBJ_GEM_SMASH" hardcoded="true" t5m="285"/>
+			<sound id="286" name="CATBLADES_DRAW" hardcoded="true" t5m="286"/>
+			<sound id="287" name="SWIRLY_LONG_MOVE_SFX" hardcoded="true" t5m="287"/>
+			<sound id="288" name="FOOTSTEPS_MUD" hardcoded="true" t5m="288"/>
+			<sound id="289" name="HORSEMAN_HORSE_NEIGH" hardcoded="true" t5m="289"/>
+			<sound id="290" name="FOOTSTEPS_GRAVEL" hardcoded="true" t5m="290"/>
+			<sound id="291" name="FOOTSTEPS_SAND_&amp;_GRASS" hardcoded="true" t5m="291"/>
+			<sound id="292" name="FOOTSTEPS_WOOD" hardcoded="true" t5m="292"/>
+			<sound id="293" name="FOOTSTEPS_MARBLE" hardcoded="true" t5m="293"/>
+			<sound id="294" name="FOOTSTEPS_METAL" hardcoded="true" t5m="294"/>
+			<sound id="295" name="GEN_SPHINX_DOORTHD" hardcoded="true" t5m="295"/>
+			<sound id="296" name="SETT_PLASMA_1" hardcoded="true" t5m="296"/>
+			<sound id="297" name="SETT_BOLT_1" hardcoded="true" t5m="297"/>
+			<sound id="298" name="SETT_FEET" hardcoded="true" t5m="298"/>
+			<sound id="299" name="SETT_NRG_CHARGE" hardcoded="true" t5m="299"/>
+			<sound id="300" name="SETT_NRG_CHARGE2" hardcoded="true" t5m="300"/>
+			<sound id="301" name="HORSEMAN_TAKEHIT" hardcoded="true" t5m="301"/>
+			<sound id="302" name="HORSEMAN_WALK" hardcoded="true" t5m="302"/>
+			<sound id="303" name="HORSEMAN_GRUNT" hardcoded="true" t5m="303"/>
+			<sound id="304" name="HORSEMAN_FALL" hardcoded="true" t5m="304"/>
+			<sound id="305" name="HORSEMAN_DIE" hardcoded="true" t5m="305"/>
+			<sound id="306" name="MAPPER_SWITCH_ON" hardcoded="true" t5m="306"/>
+			<sound id="307" name="MAPPER_OPEN" hardcoded="true" t5m="307"/>
+			<sound id="308" name="MAPPER_LAZER" hardcoded="true" t5m="308"/>
+			<sound id="309" name="MAPPER_MOVE" hardcoded="true" t5m="309"/>
+			<sound id="310" name="MAPPER_CLUNK" hardcoded="true" t5m="310"/>
+			<sound id="311" name="BLADES_DRAW" hardcoded="true" t5m="311"/>
+			<sound id="312" name="BLADES_CLASH_LOUD" hardcoded="true" t5m="312"/>
+			<sound id="313" name="BLADES_CLASH_QUIET" hardcoded="true" t5m="313"/>
+			<sound id="314" name=" hAMMER_TRAP_BANG" hardcoded="true" t5m="314"/>
+			<sound id="315" name="DOOR_BIG_STONE" hardcoded="true" t5m="315"/>
+			<sound id="316" name="SETT_BIG_ROAR" hardcoded="true" t5m="316"/>
+			<sound id="317" name="BABOON_CHATTER" hardcoded="true" t5m="317"/>
+			<sound id="318" name="BABOON_ROLL" hardcoded="true" t5m="318"/>
+			<sound id="319" name="SWOOSH_SWIRLY_DOUBLE" hardcoded="true" t5m="319"/>
+			<sound id="320" name="DOOR_SETTDOOR_SQK" hardcoded="true" t5m="320"/>
+			<sound id="321" name="DOOR_SETTDOOR_CLANK" hardcoded="true" t5m="321"/>
+			<sound id="322" name="SETT_JUMP_ATTACK" hardcoded="true" t5m="322"/>
+			<sound id="323" name="JOBY_BLOCK" hardcoded="true" t5m="323"/>
+			<sound id="324" name="SETT_TAKE_HIT" hardcoded="true" t5m="324"/>
+			<sound id="325" name="DART_SPITT" hardcoded="true" t5m="325"/>
+			<sound id="326" name="LARA_CROWBAR_GEM" hardcoded="true" t5m="326"/>
+			<sound id="327" name="CROWBAR_DOOR_OPEN" hardcoded="true" t5m="327"/>
+			<sound id="328" name="LARA_LEVER_GEN_SQKS" hardcoded="true" t5m="328"/>
+			<sound id="329" name="HORSEMAN_GETUP" hardcoded="true" t5m="329"/>
+			<sound id="330" name="EXH_BASKET_OPEN" hardcoded="true" t5m="330"/>
+			<sound id="331" name="EXH_MUMCOFF_OPE1" hardcoded="true" t5m="331"/>
+			<sound id="332" name="EXH_MUMCOFF_OPE2" hardcoded="true" t5m="332"/>
+			<sound id="333" name="EXH_MUM_JOLT" hardcoded="true" t5m="333"/>
+			<sound id="334" name="EXH_MUMHEAD_SPIN" hardcoded="true" t5m="334"/>
+			<sound id="335" name="EXH_MUMMY_RAHHH" hardcoded="true" t5m="335"/>
+			<sound id="336" name="EXH_ROLLER_BLINDS" hardcoded="true" t5m="336"/>
+			<sound id="337" name="LARA_LEVER_PART1" hardcoded="true" t5m="337"/>
+			<sound id="338" name="LARA_LEVER_PART2" hardcoded="true" t5m="338"/>
+			<sound id="339" name="LARA_POLE_CLIMB" hardcoded="true" t5m="339"/>
+			<sound id="340" name="LARA_POLE_LOOP" hardcoded="true" t5m="340"/>
+			<sound id="341" name="TRAP_SPIKEBALL_SPK" hardcoded="true" t5m="341"/>
+			<sound id="342" name="LARA_PULLEY" hardcoded="true" t5m="342"/>
+			<sound id="343" name="TEETH_SPIKES" hardcoded="true" t5m="343"/>
+			<sound id="344" name="SAND_LOOP" hardcoded="true" t5m="344"/>
+			<sound id="345" name="LARA_USE_OBJECT" hardcoded="true" t5m="345"/>
+			<sound id="346" name="LIBRARY_COG_SQKS" hardcoded="true" t5m="346"/>
+			<sound id="347" name=" hIT_ROCK" hardcoded="true" t5m="347"/>
+			<sound id="348" name="LARA_NO_FRENCH" hardcoded="true" t5m="348"/>
+			<sound id="349" name="LARA_NO_JAPAN" hardcoded="true" t5m="349"/>
+			<sound id="350" name="LARA_CROW_WRENCH" hardcoded="true" t5m="350"/>
+			<sound id="351" name="LARA_ROPE_CREAK" hardcoded="true" t5m="351"/>
+			<sound id="352" name="BOWLANIM" hardcoded="true" t5m="352"/>
+			<sound id="353" name="SPHINX_DOOR_WOODCRACK" hardcoded="true" t5m="353"/>
+			<sound id="354" name="BEETLE_CLK_WHIRR" hardcoded="true" t5m="354"/>
+			<sound id="355" name="MAPPER_PYRAMID_OPEN" hardcoded="true" t5m="355"/>
+			<sound id="356" name="LIGHT_BEAM_JOBY" hardcoded="true" t5m="356"/>
+			<sound id="357" name="GUIDE_FIRE_LIGHT" hardcoded="true" t5m="357"/>
+			<sound id="358" name="AUTOGUNS" hardcoded="true" t5m="358"/>
+			<sound id="359" name="PULLEY_ANDY" hardcoded="true" t5m="359"/>
+			<sound id="360" name="STEAM" hardcoded="true" t5m="360"/>
+			<sound id="361" name="JOBY_GARAGE_DOOR" hardcoded="true" t5m="361"/>
+			<sound id="362" name="JOBY_WIND" hardcoded="true" t5m="362"/>
+			<sound id="363" name="SANDHAM_IN_THE_HOUSE" hardcoded="true" t5m="363"/>
+			<sound id="364" name="SANDHAM_CONVEYS" hardcoded="true" t5m="364"/>
+			<sound id="365" name="CRANKY_GRAPE_CRUSH" hardcoded="true" t5m="365"/>
+			<sound id="366" name="BIKE_HIT_OBJECTS" hardcoded="true" t5m="366"/>
+			<sound id="367" name="BIKE_HIT_ENEMIES" hardcoded="true" t5m="367"/>
+			<sound id="368" name="FLAME_EMITTER" hardcoded="true" t5m="368"/>
+			<sound id="369" name="LARA_CLICK_SWITCH" hardcoded="true" t5m="369"/>
 		</sounds>
 		<animations>
 			<!-- LARA -->
