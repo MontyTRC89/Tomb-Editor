@@ -51,6 +51,7 @@ namespace TombIDE.Shared.SharedClasses
 					"	LOAD_PIC: " + "pix\\" + (gameVersion == TRVersion.Game.TR2 ? "mansion.pcx" : "house.bmp"),
 					"	TRACK: " + ambientSoundID,
 					"	GAME: data\\" + level.DataFileName.ToLower() + ".tr2",
+					"	COMPLETE:",
 					"",
 					"END:"
 				};

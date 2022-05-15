@@ -10,7 +10,6 @@ using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Bases;
-using TombLib.Scripting.Enums;
 using TombLib.Scripting.GameFlowScript.Parsers;
 using TombLib.Scripting.GameFlowScript.Utils;
 using TombLib.Scripting.GameFlowScript.Writers;
@@ -51,9 +50,7 @@ namespace TombIDE.ScriptingStudio
 
 		private bool IsSilentAction(IIDEEvent obj)
 			=> obj is IDE.ScriptEditor_AppendScriptLinesEvent
-			|| obj is IDE.ScriptEditor_AddNewLevelStringEvent
 			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
-			|| obj is IDE.ScriptEditor_StringPresenceCheckEvent
 			|| obj is IDE.ScriptEditor_RenameLevelEvent;
 
 		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
@@ -66,29 +63,15 @@ namespace TombIDE.ScriptingStudio
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
-				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English));
-				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
-				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened && EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged;
-
 				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
 				{
 					AppendScriptLines(asle.Lines);
 					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_AddNewLevelStringEvent anlse)
-				{
-					AddNewLevelNameString(anlse.LevelName);
-					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
-				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
 					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
-				}
-				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
-				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
-					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
 				{
@@ -96,9 +79,7 @@ namespace TombIDE.ScriptingStudio
 					string newName = rle.NewName;
 
 					RenameRequestedLevelScript(oldName, newName);
-					RenameRequestedLanguageString(oldName, newName);
-
-					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
 			}
 		}
@@ -114,14 +95,6 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private void AddNewLevelNameString(string levelName)
-		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
-
-			if (CurrentEditor is TextEditorBase editor)
-				LanguageStringWriter.WriteNewLevelNameString(editor, levelName);
-		}
-
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
 			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
@@ -130,30 +103,12 @@ namespace TombIDE.ScriptingStudio
 				ScriptReplacer.RenameLevelScript(editor, oldName, newName);
 		}
 
-		private void RenameRequestedLanguageString(string oldName, string newName)
-		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
-
-			if (CurrentEditor is TextEditorBase editor)
-				ScriptReplacer.RenameLanguageString(editor, oldName, newName);
-		}
-
 		private bool IsLevelScriptDefined(string levelName)
 		{
 			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
 
 			if (CurrentEditor is TextEditorBase editor)
 				return DocumentParser.IsLevelScriptDefined(editor.Document, levelName);
-
-			return false;
-		}
-
-		private bool IsLevelLanguageStringDefined(string levelName)
-		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
-
-			if (CurrentEditor is TextEditorBase editor)
-				return DocumentParser.IsLevelLanguageStringDefined(editor.Document, levelName);
 
 			return false;
 		}

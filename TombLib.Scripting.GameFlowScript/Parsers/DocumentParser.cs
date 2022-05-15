@@ -26,19 +26,6 @@ namespace TombLib.Scripting.GameFlowScript.Parsers
 			return false;
 		}
 
-		public static bool IsLevelLanguageStringDefined(TextDocument document, string levelName)
-		{
-			foreach (DocumentLine line in document.Lines)
-			{
-				string lineText = document.GetText(line.Offset, line.Length).Trim();
-
-				if (lineText == levelName)
-					return true;
-			}
-
-			return false;
-		}
-
 		public static DocumentLine FindDocumentLineOfObject(TextDocument document, string objectName, ObjectType type)
 		{
 			foreach (DocumentLine line in document.Lines)

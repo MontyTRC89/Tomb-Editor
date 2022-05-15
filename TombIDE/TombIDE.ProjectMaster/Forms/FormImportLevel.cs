@@ -50,7 +50,7 @@ namespace TombIDE.ProjectMaster
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
 				numeric_SoundID.Value = 33;
 			else if (_targetProject.GameVersion == TRVersion.Game.TR3)
-				numeric_SoundID.Value = 2;
+				numeric_SoundID.Value = 28;
 		}
 
 		#endregion Initialization
