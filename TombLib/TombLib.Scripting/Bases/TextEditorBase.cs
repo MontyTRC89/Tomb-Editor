@@ -297,7 +297,11 @@ namespace TombLib.Scripting.Bases
 			try
 			{
 				string bookmarkFileName = FilePath + ".bkmrk";
-				File.WriteAllText(bookmarkFileName, builder.ToString());
+
+				if (bookmarkedLines.Count() > 0)
+					File.WriteAllText(bookmarkFileName, builder.ToString());
+				else if (File.Exists(bookmarkFileName))
+					File.Delete(bookmarkFileName);
 			}
 			catch
 			{
