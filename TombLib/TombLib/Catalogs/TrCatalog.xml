@@ -5694,26 +5694,26 @@
 	</game>
 	<game id="TombEngine">
 		<limits>
-			<limit name=" TexPages" value="32768" />
-			<limit name=" TexInfos" value="2147483647" />
-			<limit name=" SoundBitsPerSample" value="16" />
-			<limit name=" SoundSampleRate" value="22050" />
-			<limit name=" SoundSampleSize" value="32768" />
-			<limit name=" SoundSampleCount" value="32768" />
-			<limit name=" SoundMapSize" value="4096" />
-			<limit name=" ItemMaxCount" value="2147483647" />
-			<limit name=" ItemSafeCount" value="2147483647" />
-			<limit name=" BoxLimit" value="2147483647" />
-			<limit name=" BoxMinCount" value="1" />
-			<limit name=" OverlapLimit" value="2147483647" />
-			<limit name=" RoomVertexCount" value="2147483647" />
-			<limit name=" RoomFaceCount" value="2147483647" />
-			<limit name=" RoomLightCount" value="2147483647" />
-			<limit name=" RoomDimensions" value="2147483647" />
-			<limit name=" RoomMaxCount" value="2147483647" />
-			<limit name=" RoomSafeCount" value="2147483647" />
-			<limit name=" FloorHeight" value="127" />
-			<limit name=" WorldDimensions" value="400" />
+			<limit  name="TexPages" value="32768" />
+			<limit  name="TexInfos" value="2147483647" />
+			<limit  name="SoundBitsPerSample" value="16" />
+			<limit  name="SoundSampleRate" value="22050" />
+			<limit  name="SoundSampleSize" value="32768" />
+			<limit  name="SoundSampleCount" value="32768" />
+			<limit  name="SoundMapSize" value="4096" />
+			<limit  name="ItemMaxCount" value="2147483647" />
+			<limit  name="ItemSafeCount" value="2147483647" />
+			<limit  name="BoxLimit" value="2147483647" />
+			<limit  name="BoxMinCount" value="1" />
+			<limit  name="OverlapLimit" value="2147483647" />
+			<limit  name="RoomVertexCount" value="2147483647" />
+			<limit  name="RoomFaceCount" value="2147483647" />
+			<limit  name="RoomLightCount" value="2147483647" />
+			<limit  name="RoomDimensions" value="2147483647" />
+			<limit  name="RoomMaxCount" value="2147483647" />
+			<limit  name="RoomSafeCount" value="2147483647" />
+			<limit  name="FloorHeight" value="127" />
+			<limit  name="WorldDimensions" value="400" />
 		</limits>
 			<moveables>
 			<moveable id="0" name=" LARA" use_body_from="12" />
