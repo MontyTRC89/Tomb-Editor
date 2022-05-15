@@ -44,7 +44,10 @@ namespace TombIDE
 		{
 			if (FileVersionInfo.GetVersionInfo(selectedFilePath).OriginalFilename == "launch.exe") // If the selected file is a launcher executable
 				return selectedFilePath;
-			else if (Path.GetFileName(selectedFilePath).ToLower() == "tomb4.exe" || Path.GetFileName(selectedFilePath).ToLower() == "pctomb5.exe")
+			else if (Path.GetFileName(selectedFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 			{
 				string selectedFileDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedFilePath));
 
