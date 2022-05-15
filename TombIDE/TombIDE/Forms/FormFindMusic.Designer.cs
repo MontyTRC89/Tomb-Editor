@@ -36,7 +36,7 @@
 			this.darkLabel1.Name = "darkLabel1";
 			this.darkLabel1.Size = new System.Drawing.Size(449, 13);
 			this.darkLabel1.TabIndex = 0;
-			this.darkLabel1.Text = "In order to install correctly the game, you should download the game\'s /music/ fo" +
+			this.darkLabel1.Text = "In order to correctly install the game, you should download the game\'s /music/ fo" +
     "lder:";
 			this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
