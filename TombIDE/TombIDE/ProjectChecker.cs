@@ -52,6 +52,18 @@ namespace TombIDE
 				return false;
 			}
 
+			if (!Directory.Exists(project.ScriptPath))
+			{
+				errorMessage = "The project's /Script/ directory is missing.";
+				return false;
+			}
+
+			if (!Directory.Exists(project.LevelsPath))
+			{
+				errorMessage = "The project's /Levels/ directory is missing.";
+				return false;
+			}
+
 			if (project.GameVersion != TombLib.LevelData.TRVersion.Game.TR1 && !IsScriptFileValid(project))
 			{
 				errorMessage = "The project does not have a valid SCRIPT.TXT file.";
