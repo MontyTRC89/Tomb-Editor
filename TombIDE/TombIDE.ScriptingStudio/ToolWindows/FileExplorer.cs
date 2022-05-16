@@ -170,6 +170,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 			using (var form = new FormRenameItem(targetItemPath))
 				form.ShowDialog(this);
+
+			treeView.SelectedNodes.Clear();
 		}
 
 		private void DeleteItem()
@@ -194,6 +196,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 					FileSystem.DeleteFile(GetItemPathFromNode(selectedNode), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 				else if (IsDirectoryNode(selectedNode))
 					FileSystem.DeleteDirectory(GetItemPathFromNode(selectedNode), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+
+				treeView.SelectedNodes.Clear();
 			}
 		}
 
