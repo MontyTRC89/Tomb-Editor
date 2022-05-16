@@ -94,7 +94,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			dataGrid.Columns["_RowString"].Visible = false;
 		}
 
-		private void AddPluginMnemonics(DataTable dataTable)
+		public void AddPluginMnemonics(DataTable dataTable)
 		{
 			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
 

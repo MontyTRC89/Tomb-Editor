@@ -113,6 +113,16 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		public static string GetFirstLetterOfCurrentArgument(TextDocument document, int offset)
 		{
+			string flagPrefix = GetFlagPrefixOfCurrentArgument(document, offset);
+
+			if (flagPrefix == null)
+				return null;
+
+			return flagPrefix[0].ToString();
+		}
+
+		public static string GetFlagPrefixOfCurrentArgument(TextDocument document, int offset)
+		{
 			try // TODO: Possibly get rid of this try / catch
 			{
 				int currentArgumentIndex = GetArgumentIndexAtOffset(document, offset);
@@ -135,9 +145,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				if (!currentSyntaxArgument.Contains("_"))
 					return null;
 
-				string flagPrefix = currentSyntaxArgument.Split('_')[0].Split('(')[1];
-
-				return flagPrefix[0].ToString();
+				return currentSyntaxArgument.Split('_')[0].Split('(')[1];
 			}
 			catch
 			{

@@ -3,9 +3,12 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Forms;
@@ -57,6 +60,8 @@ namespace TombIDE.ScriptingStudio
 			FileExplorer.Filter = "*.txt";
 
 			EditorTabControl.PlainTextTypeOverride = typeof(ClassicScriptEditor);
+
+			EditorTabControl.CheckPreviousSession();
 
 			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath);
 
@@ -280,6 +285,36 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (e.Type == WordType.Command)
 				type = RddaReader.GetCommandType(word);
+			else if (e.Type == WordType.Hexadecimal)
+			{
+				try
+				{
+					var textEditor = CurrentEditor as ClassicScriptEditor;
+
+					if (textEditor == null)
+						return;
+
+					int offset = e.HoveredOffset != -1 ? e.HoveredOffset : textEditor.CaretOffset;
+					string currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(textEditor.Document, offset);
+					string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
+
+					using (var reader = XmlReader.Create(xmlPath))
+					{
+						var dataSet = new DataSet();
+						dataSet.ReadXml(reader);
+
+						DataTable dataTable = dataSet.Tables[0];
+
+						ReferenceBrowser.AddPluginMnemonics(dataTable);
+
+						DataRow row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
+
+						if (row != null)
+							word = row[2].ToString();
+					}
+				}
+				catch { }
+			}
 
 			FormReferenceInfo.Show(word, type);
 		}

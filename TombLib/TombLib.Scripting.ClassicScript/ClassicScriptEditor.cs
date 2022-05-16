@@ -395,7 +395,7 @@ namespace TombLib.Scripting.ClassicScript
 			if (type != WordType.Unknown)
 			{
 				ShowToolTip($"For more information about the {hoveredWord} {type}, Press F12");
-				HoveredWordArgs = new WordDefinitionEventArgs(hoveredWord, type);
+				HoveredWordArgs = new WordDefinitionEventArgs(hoveredWord, type, hoveredOffset);
 			}
 		}
 

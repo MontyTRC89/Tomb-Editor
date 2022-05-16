@@ -5,6 +5,7 @@
 		Unknown,
 		Header,
 		Command,
-		MnemonicConstant
+		MnemonicConstant,
+		Hexadecimal
 	}
 }

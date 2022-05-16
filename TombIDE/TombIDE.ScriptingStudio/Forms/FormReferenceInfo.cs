@@ -13,6 +13,8 @@ namespace TombIDE.ScriptingStudio.Forms
 
 	public partial class FormReferenceInfo : DarkForm
 	{
+		public bool WasAlreadyOpened { get; set; }
+
 		#region Construction and public methods
 
 		public FormReferenceInfo()
@@ -31,6 +33,9 @@ namespace TombIDE.ScriptingStudio.Forms
 			OpenDescriptionFile(flag, type);
 
 			Focus();
+
+			if (Visible)
+				WasAlreadyOpened = true;
 		}
 
 		#endregion Construction and public methods
@@ -43,6 +48,7 @@ namespace TombIDE.ScriptingStudio.Forms
 				tabControl.TabPages.Clear();
 
 			Hide();
+			WasAlreadyOpened = false;
 			e.Cancel = true; // This form should never be closed during runtime
 
 			base.OnClosing(e);
@@ -51,7 +57,10 @@ namespace TombIDE.ScriptingStudio.Forms
 		private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tabControl.SelectedTab == null)
+			{
 				Hide();
+				WasAlreadyOpened = false;
+			}
 			else
 				Text = "Information about " + tabControl.SelectedTab.Text;
 		}
@@ -113,10 +122,20 @@ namespace TombIDE.ScriptingStudio.Forms
 
 			if (string.IsNullOrEmpty(textBox.Text))
 			{
-				DarkMessageBox.Show(this, "No description found for the " + flag.ToUpper() + " flag.", "Information",
+				string message;
+
+				if (flag.StartsWith("$"))
+					message = "Couldn't identify the hexadecimal value for the given context.";
+				else
+					message = "No description found for the " + flag.ToUpper() + " flag.";
+
+				DarkMessageBox.Show(this, message, "Information",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 				newTabPage.Dispose();
+
+				if (!WasAlreadyOpened)
+					Hide();
 			}
 
 			if (tabControl.TabPages.Count == 0)

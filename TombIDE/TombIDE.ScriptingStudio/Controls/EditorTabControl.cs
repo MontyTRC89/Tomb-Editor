@@ -34,9 +34,6 @@ namespace TombIDE.ScriptingStudio.Controls
 					SharedMethods.DisposeItems(TabPages.Cast<TabPage>());
 
 					_scriptRootDirectoryPath = value;
-
-					if (!string.IsNullOrWhiteSpace(ScriptRootDirectoryPath))
-						CheckPreviousSession();
 				}
 			}
 		}
@@ -109,7 +106,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		/// <summary>
 		/// Checks if the previous session crashed and left unhandled backup files.
 		/// </summary>
-		private void CheckPreviousSession()
+		public void CheckPreviousSession()
 		{
 			string[] files = Directory.GetFiles(ScriptRootDirectoryPath, $"*{SupportedFormats.Backup}", SearchOption.AllDirectories);
 
