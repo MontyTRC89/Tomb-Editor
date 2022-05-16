@@ -19,6 +19,10 @@ TombIDE:
  * Added the ability to view F12 definitions of constants which were given in decimal or hexadecimal form.
  * Scripting Studio docking layouts now save with the config.
  * Scripting Studio bookmarks now save.
+ * Fixed F12 on directives like "#INCLUDE" not working.
+ * Fixed autocomplete for constants added with "+" not working correctly.
+ * Fixed F12 for constants added with "+" not working correctly.
+ * Fixed mnemonic constants of plugins not being recognized by syntax highlighting when installed in the same session.
  * Fixed an issue where Strings Editor would paste text twice.
  * Fixed an issue where the Syntax Hint in Scripting Studio would extend out of bounds.
  * Fixed an issue where .backup files would be missing before compiling an unsaved script.
