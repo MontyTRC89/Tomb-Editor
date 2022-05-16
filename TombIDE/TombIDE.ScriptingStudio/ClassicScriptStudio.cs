@@ -144,6 +144,10 @@ namespace TombIDE.ScriptingStudio
 					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
 			}
+			else if (obj is IDE.ScriptEditor_ReloadSyntaxHighlightingEvent)
+			{
+				ApplyUserSettings();
+			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
 				IDE.Global.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
@@ -310,9 +314,9 @@ namespace TombIDE.ScriptingStudio
 						DataRow row = null;
 
 						if (e.Type == WordType.Hexadecimal)
-							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
+							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
 						else if (e.Type == WordType.Decimal)
-							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
+							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
 
 						if (row != null)
 							word = row[2].ToString();

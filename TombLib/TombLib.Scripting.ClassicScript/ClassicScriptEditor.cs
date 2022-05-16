@@ -92,6 +92,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void BindEventMethods()
 		{
+			TextArea.TextEntering += TextArea_TextEntering;
 			TextArea.TextEntered += TextEditor_TextEntered;
 			TextChanged += TextEditor_TextChanged;
 
@@ -102,6 +103,18 @@ namespace TombLib.Scripting.ClassicScript
 		#endregion Construction
 
 		#region Events
+
+		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+		{
+			if (AutocompleteEnabled)
+			{
+				if (_completionWindow == null && e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) // Prevents window duplicates
+				{
+					HandleAutocompleteAfterSpaceCtrl();
+					e.Handled = true;
+				}
+			}
+		}
 
 		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
 		{
@@ -153,28 +166,10 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			if (_completionWindow == null) // Prevents window duplicates
 			{
-				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-					HandleAutocompleteAfterSpaceCtrl();
-				else if (Document.GetLineByOffset(CaretOffset).Length == 1)
+				if (Document.GetLineByOffset(CaretOffset).Length == 1)
 					HandleAutocompleteOnEmptyLine();
 				else if (e.Text != "_" && CaretOffset > 1)
-				{
-					string firstLetterOfLastFlag = ArgumentParser.GetFirstLetterOfLastFlag(Document, CaretOffset);
-					string firstLetterOfCurrentFlag = ArgumentParser.GetFirstLetterOfCurrentArgument(Document, CaretOffset);
-
-					if (!string.IsNullOrEmpty(firstLetterOfLastFlag)
-						&& e.Text.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase)
-						&& CaretOffset > 1)
-					{
-						if (!string.IsNullOrEmpty(firstLetterOfCurrentFlag)
-							&& firstLetterOfCurrentFlag.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase))
-							HandleAutocompleteAfterSpace();
-						else
-							HandleAutocompleteForNextFlag();
-					}
-					else
-						HandleAutocompleteAfterSpace();
-				}
+					HandleAutocompleteAfterSpace();
 				else if (e.Text == "_" && CaretOffset > 1)
 					HandleAutocompleteAfterUnderscore();
 			}
@@ -182,9 +177,6 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void HandleAutocompleteAfterSpaceCtrl()
 		{
-			Select(CaretOffset - 1, 1);
-			SelectedText = string.Empty;
-
 			string wholeLineText = CommandParser.GetWholeCommandLineText(Document, CaretOffset);
 
 			if (string.IsNullOrEmpty(wholeLineText))
@@ -206,7 +198,8 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			if ((Document.GetCharAt(CaretOffset - 2) == '='
 				|| Document.GetCharAt(CaretOffset - 2) == ','
-				|| Document.GetCharAt(CaretOffset - 2) == '_')
+				|| Document.GetCharAt(CaretOffset - 2) == '_'
+				|| Document.GetCharAt(CaretOffset - 2) == '+')
 				&& !_autocompleteWorker.IsBusy)
 			{
 				var data = new List<object>
@@ -257,21 +250,6 @@ namespace TombLib.Scripting.ClassicScript
 			ShowCompletionWindow();
 		}
 
-		private void HandleAutocompleteForNextFlag()
-		{
-			if (!_autocompleteWorker.IsBusy)
-			{
-				var data = new List<object>
-				{
-					Text,
-					CaretOffset,
-					ArgumentParser.GetArgumentIndexAtOffset(Document, CaretOffset) - 1
-				};
-
-				_autocompleteWorker.RunWorkerAsync(data);
-			}
-		}
-
 		private void AutocompleteWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			var data = e.Argument as List<object>;
@@ -300,7 +278,7 @@ namespace TombLib.Scripting.ClassicScript
 
 			string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
 
-			if (!word.StartsWith("=") && !word.StartsWith(","))
+			if (!word.StartsWith("=") && !word.StartsWith(",") && !word.StartsWith("+"))
 				_completionWindow.StartOffset = wordStartOffset;
 
 			foreach (ICompletionData item in completionData)
