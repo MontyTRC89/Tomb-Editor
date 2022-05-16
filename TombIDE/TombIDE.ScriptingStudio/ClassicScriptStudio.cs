@@ -285,7 +285,7 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (e.Type == WordType.Command)
 				type = RddaReader.GetCommandType(word);
-			else if (e.Type == WordType.Hexadecimal)
+			else if (e.Type == WordType.Hexadecimal || e.Type == WordType.Decimal)
 			{
 				try
 				{
@@ -307,7 +307,12 @@ namespace TombIDE.ScriptingStudio
 
 						ReferenceBrowser.AddPluginMnemonics(dataTable);
 
-						DataRow row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
+						DataRow row = null;
+
+						if (e.Type == WordType.Hexadecimal)
+							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
+						else if (e.Type == WordType.Decimal)
+							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}_*'")?.FirstOrDefault();
 
 						if (row != null)
 							word = row[2].ToString();

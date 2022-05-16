@@ -126,6 +126,8 @@ namespace TombIDE.ScriptingStudio.Forms
 
 				if (flag.StartsWith("$"))
 					message = "Couldn't identify the hexadecimal value for the given context.";
+				else if (int.TryParse(flag, out _))
+					message = "Couldn't identify the decimal value for the given context.";
 				else
 					message = "No description found for the " + flag.ToUpper() + " flag.";
 

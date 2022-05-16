@@ -16,7 +16,7 @@ TombIDE:
  * Completely redesigned the implementation and handling of TRNG Plugins. Now they are per-project rather than global.
  * Added vanilla TR4 (TRLE), TR3, TR2 and Tomb1Main support with presets.
  * Added "Create a 'Ready To Play' game archive", which allows the user to create a game archive with no dev files.
- * Added the ability to view F12 definitions of constants which were given in hexadecimal form.
+ * Added the ability to view F12 definitions of constants which were given in decimal or hexadecimal form.
  * Scripting Studio docking layouts now save with the config.
  * Scripting Studio bookmarks now save.
  * Fixed an issue where Strings Editor would paste text twice.

@@ -131,6 +131,9 @@ namespace TombLib.Scripting.ClassicScript
 					string word = WordParser.GetWordFromOffset(Document, CaretOffset);
 					WordType type = WordParser.GetWordTypeFromOffset(Document, CaretOffset);
 
+					if (type == WordType.Unknown && int.TryParse(word, out _))
+						type = WordType.Decimal;
+
 					if (!string.IsNullOrEmpty(word) && type != WordType.Unknown)
 						OnWordDefinitionRequested(new WordDefinitionEventArgs(word, type));
 				}
@@ -392,9 +395,12 @@ namespace TombLib.Scripting.ClassicScript
 			string hoveredWord = WordParser.GetWordFromOffset(Document, hoveredOffset);
 			WordType type = WordParser.GetWordTypeFromOffset(Document, hoveredOffset);
 
+			if (type == WordType.Unknown && int.TryParse(hoveredWord, out _))
+				type = WordType.Decimal;
+
 			if (type != WordType.Unknown)
 			{
-				ShowToolTip($"For more information about the {hoveredWord} {type}, Press F12");
+				ShowToolTip($"For more information about the \"{hoveredWord}\" {type}, Press F12");
 				HoveredWordArgs = new WordDefinitionEventArgs(hoveredWord, type, hoveredOffset);
 			}
 		}

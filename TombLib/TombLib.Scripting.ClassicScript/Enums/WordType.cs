@@ -6,6 +6,7 @@
 		Header,
 		Command,
 		MnemonicConstant,
-		Hexadecimal
+		Hexadecimal,
+		Decimal
 	}
 }
