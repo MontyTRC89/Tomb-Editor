@@ -147,7 +147,7 @@ namespace TombLib.Scripting.Bases
 
 		private void InitializeTimers()
 		{
-			TextChangedDelayedInterval = new TimeSpan(0, 0, 0, 0, 100);
+			TextChangedDelayedInterval = new TimeSpan(0, 0, 0, 0, 300);
 			_textChangedDelayedTimer.Tick += TextChangedDelayedTimer_Tick;
 		}
 
@@ -213,6 +213,8 @@ namespace TombLib.Scripting.Bases
 
 		private void TextEditor_TextChanged(object sender, EventArgs e)
 		{
+			IsContentChanged = true;
+
 			_textChangedDelayedTimer.Stop();
 			_textChangedDelayedTimer.Start();
 		}

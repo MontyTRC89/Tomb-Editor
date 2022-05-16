@@ -324,7 +324,10 @@ namespace TombIDE.ScriptingStudio.Bases
 			editor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (editor is TextEditorBase textEditor)
+			{
 				textEditor.KeyDown += TextEditor_KeyDown;
+				textEditor.TextChanged += TextEditor_TextChanged;
+			}		
 
 			ApplyUserSettings(editor);
 
@@ -346,6 +349,9 @@ namespace TombIDE.ScriptingStudio.Bases
 			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
 				FindReplaceForm.Show(this, (CurrentEditor as TextEditorBase).SelectedText);
 		}
+
+		private void TextEditor_TextChanged(object sender, EventArgs e)
+			=> UpdateUndoRedoSaveStates();
 
 		private void ContentExplorer_ObjectClicked(object sender, ObjectClickedEventArgs e)
 			=> CurrentEditor.GoToObject(e.ObjectName, e.IdentifyingObject);
