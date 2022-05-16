@@ -205,7 +205,7 @@ namespace TombIDE
 			if (File.Exists(flepExePath))
 			{
 				button_Special.Image = Icon.ExtractAssociatedIcon(flepExePath).ToBitmap();
-				toolTip.SetToolTip(button_Special, "Launch FLEP (F2)");
+				toolTip.SetToolTip(button_Special, "Launch FLEP");
 				button_Special.Click += Special_LaunchFLEP;
 			}
 			else
@@ -522,9 +522,6 @@ namespace TombIDE
 
 			if (ModifierKeys == Keys.None)
 			{
-				if (e.KeyCode == Keys.F2)
-					LaunchFLEP();
-
 				if (e.KeyCode == Keys.F3)
 					SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
 

@@ -112,6 +112,19 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		private void treeView_DoubleClick(object sender, EventArgs e) => OpenSelectedFile();
 		private void treeView_SelectedNodesChanged(object sender, EventArgs e) => ToggleModificationButtons();
 
+		private void treeView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (treeView.SelectedNodes.Count > 0)
+			{
+				if (e.KeyCode == Keys.Enter)
+					OpenSelectedFile();
+				else if (e.KeyCode == Keys.F2)
+					RenameItem();
+				else if (e.KeyCode == Keys.Delete)
+					DeleteItem();
+			}
+		}
+
 		private void menuItem_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
 		private void menuItem_NewFolder_Click(object sender, EventArgs e) => CreateNewFolder();
 		private void menuItem_ViewInEditor_Click(object sender, EventArgs e) => OpenSelectedFile();
