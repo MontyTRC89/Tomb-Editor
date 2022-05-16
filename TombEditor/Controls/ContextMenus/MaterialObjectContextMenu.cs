@@ -114,6 +114,14 @@ namespace TombEditor.Controls.ContextMenus
                     }));
             }
 
+            if (targetObject is PositionAndScriptBasedObjectInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                Items.Add(new ToolStripMenuItem("Copy Lua name to clipboard", null, (o, e) =>
+                {
+                    Clipboard.SetText((targetObject as PositionAndScriptBasedObjectInstance).LuaName);
+                }));
+            }
+
             if (targetObject is PositionBasedObjectInstance && (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll))
             {
                 Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", Properties.Resources.actions_center_direction_16, (o, e) =>
