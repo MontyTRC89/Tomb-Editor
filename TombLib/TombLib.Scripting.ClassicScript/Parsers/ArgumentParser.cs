@@ -1,5 +1,4 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using System.Linq;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {
@@ -42,16 +41,6 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return wholeLineText.Split(',')[index];
 		}
 
-		public static string GetFirstLetterOfCurrentArgument(TextDocument document, int offset)
-		{
-			string flagPrefix = GetFlagPrefixOfCurrentArgument(document, offset);
-
-			if (flagPrefix == null)
-				return null;
-
-			return flagPrefix[0].ToString();
-		}
-
 		public static string GetFlagPrefixOfCurrentArgument(TextDocument document, int offset)
 		{
 			try // TODO: Possibly get rid of this try / catch
@@ -82,24 +71,6 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			{
 				return null;
 			}
-		}
-
-		public static string GetFirstLetterOfLastFlag(TextDocument document, int offset)
-		{
-			int currentArgumentIndex = GetArgumentIndexAtOffset(document, offset);
-
-			if (currentArgumentIndex == -1 || currentArgumentIndex == 0)
-				return null;
-
-			string prevArgument = GetArgumentFromIndex(document, offset, currentArgumentIndex - 1).Trim();
-
-			if (!prevArgument.Contains("_"))
-				return null;
-
-			if (prevArgument.Contains("="))
-				prevArgument.Split('=').Last().Trim();
-
-			return prevArgument[0].ToString();
 		}
 	}
 }
