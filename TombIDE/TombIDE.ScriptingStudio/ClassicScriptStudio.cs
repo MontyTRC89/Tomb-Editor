@@ -310,26 +310,30 @@ namespace TombIDE.ScriptingStudio
 
 					int offset = e.HoveredOffset != -1 ? e.HoveredOffset : textEditor.CaretOffset;
 					string currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(textEditor.Document, offset);
-					string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
 
-					using (var reader = XmlReader.Create(xmlPath))
+					if (currentFlagPrefix != null)
 					{
-						var dataSet = new DataSet();
-						dataSet.ReadXml(reader);
+						string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
 
-						DataTable dataTable = dataSet.Tables[0];
+						using (var reader = XmlReader.Create(xmlPath))
+						{
+							var dataSet = new DataSet();
+							dataSet.ReadXml(reader);
 
-						ReferenceBrowser.AddPluginMnemonics(dataTable);
+							DataTable dataTable = dataSet.Tables[0];
 
-						DataRow row = null;
+							ReferenceBrowser.AddPluginMnemonics(dataTable);
 
-						if (e.Type == WordType.Hexadecimal)
-							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
-						else if (e.Type == WordType.Decimal)
-							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+							DataRow row = null;
 
-						if (row != null)
-							word = row[2].ToString();
+							if (e.Type == WordType.Hexadecimal)
+								row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+							else if (e.Type == WordType.Decimal)
+								row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+
+							if (row != null)
+								word = row[2].ToString();
+						}
 					}
 				}
 				catch { }
