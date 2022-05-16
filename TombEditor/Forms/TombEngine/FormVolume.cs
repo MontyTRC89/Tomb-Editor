@@ -37,7 +37,9 @@ namespace TombEditor.Forms.TombEngine
             {
                 string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
                 var functions = ScriptingUtils.GetAllFunctionsNames(path);
-                if (functions!=null)
+                functions.Insert(0, string.Empty);
+
+                if (functions != null)
                 {
                     comboboxOnEnter.Items.Clear();
                     comboboxOnEnter.Items.AddRange(functions.ToArray());
