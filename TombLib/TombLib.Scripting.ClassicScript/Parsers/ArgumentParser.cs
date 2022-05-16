@@ -62,7 +62,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
 
-				if (!currentSyntaxArgument.Contains("_") || !currentSyntaxArgument.Contains("."))
+				if (!currentSyntaxArgument.Contains("(") && !currentSyntaxArgument.Contains("."))
 					return null;
 
 				return currentSyntaxArgument.Split('.')[0].Split('(')[1];
