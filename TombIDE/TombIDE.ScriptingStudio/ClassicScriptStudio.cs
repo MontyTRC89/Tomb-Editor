@@ -266,14 +266,22 @@ namespace TombIDE.ScriptingStudio
 
 		private void TextEditor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
-				OpenIncludeFile();
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
+					OpenIncludeFile(editor);
+			}
 		}
 
 		private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			if (e.Key == System.Windows.Input.Key.F5)
-				OpenIncludeFile();
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				if (e.Key == System.Windows.Input.Key.F5 && ModifierKeys == Keys.Control)
+					CreateNewFileAtCaretPosition(editor);
+				else if (e.Key == System.Windows.Input.Key.F5)
+					OpenIncludeFile(editor);
+			}
 		}
 
 		private void TextEditor_WordDefinitionRequested(object sender, WordDefinitionEventArgs e)
@@ -351,19 +359,27 @@ namespace TombIDE.ScriptingStudio
 
 		#region Other methods
 
-		private void OpenIncludeFile()
+		private void CreateNewFileAtCaretPosition(ClassicScriptEditor editor)
 		{
-			if (CurrentEditor is TextEditorBase editor)
+			string filePath = FileExplorer.CreateNewFile();
+
+			if (filePath != null)
 			{
-				string fullFilePath = CommandParser.GetFullIncludePath(editor.Document, editor.CaretOffset);
-
-				if (File.Exists(fullFilePath))
-					EditorTabControl.OpenFile(fullFilePath);
-				else
-					DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-				editor.SelectionLength = 0;
+				string includeValue = filePath.Replace(Path.GetDirectoryName(editor.FilePath), string.Empty).TrimStart('\\');
+				editor.TextArea.PerformTextInput($"{Environment.NewLine}#INCLUDE \"{includeValue}\"");
 			}
+		}
+
+		private void OpenIncludeFile(ClassicScriptEditor editor)
+		{
+			string fullFilePath = CommandParser.GetFullIncludePath(editor.Document, editor.CaretOffset);
+
+			if (File.Exists(fullFilePath))
+				EditorTabControl.OpenFile(fullFilePath);
+			else
+				DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+			editor.SelectionLength = 0;
 		}
 
 		private void CompileTR4Script()

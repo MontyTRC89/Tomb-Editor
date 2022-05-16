@@ -39,6 +39,7 @@
 	<Help>Pomoc</Help>
 
 	<NewFile>Nowy plik...</NewFile>
+	<NewFileAtCaret>Nowy plik na pozycji kursora...</NewFileAtCaret>
 	<Save>Zapisz</Save>
 	<SaveAs>Zapisz jako...</SaveAs>
 	<SaveAll>Zapisz wszystko</SaveAll>

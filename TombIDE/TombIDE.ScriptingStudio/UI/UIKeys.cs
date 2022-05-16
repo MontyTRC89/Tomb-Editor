@@ -5,6 +5,7 @@ namespace TombIDE.ScriptingStudio.UI
 	internal struct UIKeys
 	{
 		public const Keys NewFile = Keys.Control | Keys.N;
+		public const Keys NewFileAtCaret = Keys.Control | Keys.F5;
 		public const Keys Save = Keys.Control | Keys.S;
 		public const Keys SaveAll = Keys.Control | Keys.Shift | Keys.S;
 		public const Keys Build = Keys.F9;

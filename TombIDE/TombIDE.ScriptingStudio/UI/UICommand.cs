@@ -7,6 +7,7 @@
 		// File:
 
 		NewFile,
+		NewFileAtCaret,
 		Save,
 		SaveAs,
 		SaveAll,

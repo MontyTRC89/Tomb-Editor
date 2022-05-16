@@ -144,14 +144,18 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			OnFileOpened(new FileOpenedEventArgs(selectedNodeFileInfo.FullName, editorType));
 		}
 
-		public void CreateNewFile()
+		public string CreateNewFile()
 		{
 			using (var form = new FormFileCreation(RootDirectoryPath, FileCreationMode.New, GetInitialNodePath()))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					File.Create(form.NewFilePath).Close();
 					OnFileOpened(new FileOpenedEventArgs(form.NewFilePath));
+
+					return form.NewFilePath;
 				}
+
+			return null;
 		}
 
 		public void CreateNewFolder()

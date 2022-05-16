@@ -8,4 +8,6 @@
 	<Item LangKey="Uncomment" Command="Uncomment" Icon="Uncomment_16" />
 	<Separator />
 	<Item LangKey="ToggleBookmark" Command="ToggleBookmark" Icon="Bookmark_16" Keys="ToggleBookmark" />
+	<Separator />
+	<Item LangKey="NewFileAtCaret" Command="NewFileAtCaret" Icon="New_16" Keys="NewFileAtCaret" />
 </Items>
