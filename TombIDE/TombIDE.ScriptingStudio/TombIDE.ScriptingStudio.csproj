@@ -126,7 +126,7 @@
     <Compile Include="ToolStrips\StudioStatusStrip.Designer.cs">
       <DependentUpon>StudioStatusStrip.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolStrips\TextEditorContextMenu.cs">
+    <Compile Include="ToolStrips\EditorContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ToolWindows\CompilerLogs.cs">

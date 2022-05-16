@@ -23,6 +23,7 @@ TombIDE:
  * Scripting Studio bookmarks now save.
  * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
  * Fixed some Scripting Studio performance issues.
+ * Fixed Scripting Studio right-click menus not appearing.
  * Fixed F12 on directives like "#INCLUDE" not working.
  * Fixed autocomplete for constants added with "+" not working correctly.
  * Fixed F12 for constants added with "+" not working correctly.

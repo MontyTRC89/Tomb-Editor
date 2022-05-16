@@ -1,8 +1,10 @@
 using DarkUI.Docking;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Objects;
@@ -33,6 +35,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				MenuStrip.DocumentMode = value;
 				ToolStrip.DocumentMode = value;
 				StatusStrip.DocumentMode = value;
+				EditorContextMenu.DocumentMode = value;
 
 				ContentExplorer.DocumentMode = value;
 			}
@@ -70,6 +73,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		public StudioMenuStrip MenuStrip;
 		public StudioToolStrip ToolStrip;
 		public StudioStatusStrip StatusStrip;
+		public EditorContextMenu EditorContextMenu;
 
 		protected DarkDockPanel DockPanel;
 
@@ -139,6 +143,9 @@ namespace TombIDE.ScriptingStudio.Bases
 			ToolStrip.StudioModeChanged += ToolStrip_StudioModeChanged;
 
 			StatusStrip = new StudioStatusStrip() { Dock = DockStyle.Bottom };
+
+			EditorContextMenu = new EditorContextMenu();
+			EditorContextMenu.ItemClicked += ToolStrip_ItemClicked;
 
 			Controls.Add(StatusStrip);
 			Controls.Add(ToolStrip);
@@ -393,6 +400,19 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (CurrentEditor != null)
 				DocumentMode = FileHelper.GetDocumentModeOfEditor(CurrentEditor);
 
+			if (EditorTabControl.SelectedTab != null)
+			{
+				if (CurrentEditor is TextEditorBase)
+				{
+					ElementHost elementHost = EditorTabControl.SelectedTab.Controls.OfType<ElementHost>().FirstOrDefault();
+
+					if (elementHost != null)
+						elementHost.ContextMenuStrip = EditorContextMenu;
+				}
+				else if (CurrentEditor is Control control)
+					control.ContextMenuStrip = EditorContextMenu;
+			}
+
 			ContentExplorer.EditorControl = CurrentEditor;
 			StatusStrip.EditorControl = CurrentEditor;
 
@@ -473,7 +493,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			UpdateUndoRedoSaveStates();
 		}
 
-		private void HandleDocumentCommands(UICommand command)
+		protected virtual void HandleDocumentCommands(UICommand command)
 		{
 			if (CurrentEditor is TextEditorBase textEditor)
 				switch (command)

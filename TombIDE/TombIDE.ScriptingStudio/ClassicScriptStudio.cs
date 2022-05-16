@@ -489,6 +489,21 @@ namespace TombIDE.ScriptingStudio
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 		}
 
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				switch (command)
+				{
+					case UICommand.NewFileAtCaret:
+						CreateNewFileAtCaretPosition(editor);
+						break;
+				}
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
 		#endregion Other methods
 	}
 }
