@@ -24,12 +24,11 @@
 			// label
 			// 
 			this.label.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label.Location = new System.Drawing.Point(10, 10);
 			this.label.Name = "label";
 			this.label.Padding = new System.Windows.Forms.Padding(3);
-			this.label.Size = new System.Drawing.Size(430, 210);
+			this.label.Size = new System.Drawing.Size(360, 360);
 			this.label.TabIndex = 0;
 			this.label.Text = resources.GetString("label.Text");
 			this.label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -39,10 +38,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(450, 230);
+			this.ClientSize = new System.Drawing.Size(380, 380);
 			this.Controls.Add(this.label);
 			this.FlatBorder = true;
-			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
