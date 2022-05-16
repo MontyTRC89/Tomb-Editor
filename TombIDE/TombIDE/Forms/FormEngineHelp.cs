@@ -11,14 +11,14 @@ namespace TombIDE
 			InitializeComponent();
 
 			Location = location;
-        }
+		}
 
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            Close();
-        }
+		protected override void OnLostFocus(EventArgs e)
+		{
+			base.OnLostFocus(e);
+			Close();
+		}
 
-        private void label_Click(object sender, EventArgs e) => Close();
-    }
+		private void label_Click(object sender, EventArgs e) => Close();
+	}
 }

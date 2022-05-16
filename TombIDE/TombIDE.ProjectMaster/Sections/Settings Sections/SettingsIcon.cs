@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {

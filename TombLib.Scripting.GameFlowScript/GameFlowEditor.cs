@@ -36,7 +36,7 @@ namespace TombLib.Scripting.GameFlowScript
 		{
 			if (_completionWindow == null) // Prevents window duplicates
 			{
-				if(e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
 				{
 					Select(CaretOffset - 1, 1);
 					SelectedText = string.Empty;

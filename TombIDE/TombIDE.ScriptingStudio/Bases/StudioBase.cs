@@ -327,7 +327,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			{
 				textEditor.KeyDown += TextEditor_KeyDown;
 				textEditor.TextChanged += TextEditor_TextChanged;
-			}		
+			}
 
 			ApplyUserSettings(editor);
 
