@@ -21,6 +21,7 @@ TombIDE:
  * Added keyboard shortcuts for the File Explorer.
  * Scripting Studio docking layouts now save with the config.
  * Scripting Studio bookmarks now save.
+ * Fixed some Scripting Studio performance issues.
  * Fixed F12 on directives like "#INCLUDE" not working.
  * Fixed autocomplete for constants added with "+" not working correctly.
  * Fixed F12 for constants added with "+" not working correctly.
