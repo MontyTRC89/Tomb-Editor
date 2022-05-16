@@ -141,17 +141,21 @@ namespace TombIDE.ProjectMaster
 
 			if (result == DialogResult.Yes)
 			{
-				string engineDllFilePath = Path.Combine(_ide.Project.EnginePath, ((FileInfo)treeView.SelectedNodes[0].Tag).Name);
+				try
+				{
+					string engineDllFilePath = Path.Combine(_ide.Project.EnginePath, ((FileInfo)treeView.SelectedNodes[0].Tag).Name);
 
-				if (File.Exists(engineDllFilePath))
-					FileSystem.DeleteFile(engineDllFilePath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+					if (File.Exists(engineDllFilePath))
+						FileSystem.DeleteFile(engineDllFilePath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 
-				string pluginDirectoryPath = ((FileInfo)treeView.SelectedNodes[0].Tag).DirectoryName;
+					string pluginDirectoryPath = ((FileInfo)treeView.SelectedNodes[0].Tag).DirectoryName;
 
-				if (Directory.Exists(pluginDirectoryPath))
-					FileSystem.DeleteDirectory(pluginDirectoryPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+					if (Directory.Exists(pluginDirectoryPath))
+						FileSystem.DeleteDirectory(pluginDirectoryPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 
-				UpdatePlugins();
+					UpdatePlugins();
+				}
+				catch { }
 			}
 		}
 
@@ -231,6 +235,9 @@ namespace TombIDE.ProjectMaster
 
 			MnemonicData.SetupConstants(DefaultPaths.InternalNGCDirectory);
 
+			_ide.RaiseEvent(new IDE.ScriptEditor_ReloadSyntaxHighlightingEvent());
+
+			UpdatePluginInfoOverview();
 			treeView.Invalidate();
 		}
 
@@ -350,6 +357,19 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdatePluginInfoOverview()
 		{
+			if (treeView.SelectedNodes.Count == 0)
+			{
+				panel_Logo.BackgroundImage = null;
+				label_NoInfo.Visible = true;
+
+				textBox_Title.Text = string.Empty;
+				textBox_DLLName.Text = string.Empty;
+
+				richTextBox_Description.Text = string.Empty;
+
+				return;
+			}
+
 			label_NoInfo.Visible = false;
 
 			var selectedPluginFile = (FileInfo)treeView.SelectedNodes[0].Tag;
@@ -373,8 +393,11 @@ namespace TombIDE.ProjectMaster
 
 					if (extension == ".jpg" || extension == ".png" || extension == ".bmp" || extension == ".gif")
 					{
-						panel_Logo.BackgroundImage = Image.FromFile(file);
-						logoFound = true;
+						using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+						{
+							panel_Logo.BackgroundImage = Image.FromStream(stream);
+							logoFound = true;
+						}
 
 						break;
 					}

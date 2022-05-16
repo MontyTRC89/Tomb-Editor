@@ -4,7 +4,8 @@ using System.Threading;
 
 namespace TombIDE.Shared
 {
-	public interface IIDEEvent { }
+	public interface IIDEEvent
+	{ }
 
 	public class IDE : IDisposable
 	{
@@ -52,7 +53,8 @@ namespace TombIDE.Shared
 
 		#region ProgramButtonsModified
 
-		public class ProgramButtonsModifiedEvent : IIDEEvent { }
+		public class ProgramButtonsModifiedEvent : IIDEEvent
+		{ }
 
 		public void ProgramButtonsModified() =>
 			RaiseEvent(new ProgramButtonsModifiedEvent());
@@ -61,7 +63,8 @@ namespace TombIDE.Shared
 
 		#region ApplicationRestarting
 
-		public class ApplicationRestartingEvent : IIDEEvent { }
+		public class ApplicationRestartingEvent : IIDEEvent
+		{ }
 
 		/// <summary>
 		/// WARNING: This method doesn't ask IDE.CanClose() for closing permissions !!!
@@ -114,13 +117,15 @@ namespace TombIDE.Shared
 
 		private ProjectLevel _selectedLevel;
 
-		public class SelectedLevelChangedEvent : IIDEEvent { }
+		public class SelectedLevelChangedEvent : IIDEEvent
+		{ }
 
 		#endregion SelectedLevelChanged
 
 		#region SelectedLevelSettingsChanged
 
-		public class SelectedLevelSettingsChangedEvent : IIDEEvent { }
+		public class SelectedLevelSettingsChangedEvent : IIDEEvent
+		{ }
 
 		public void SelectedLevelSettingsChanged() =>
 			RaiseEvent(new SelectedLevelSettingsChangedEvent());
@@ -229,7 +234,8 @@ namespace TombIDE.Shared
 
 		#region ScriptEditor_ContentChanged
 
-		public class ScriptEditor_ContentChangedEvent : IIDEEvent { }
+		public class ScriptEditor_ContentChangedEvent : IIDEEvent
+		{ }
 
 		public void ScriptEditor_IndicateExternalChange() =>
 			RaiseEvent(new ScriptEditor_ContentChangedEvent());
@@ -277,6 +283,13 @@ namespace TombIDE.Shared
 			RaiseEvent(new ScriptEditor_RenameLevelEvent { OldName = targetLevelName, NewName = newName });
 
 		#endregion ScriptEditor_RenameLevel
+
+		#region ScriptEditor_ReloadSyntaxHighlighting
+
+		public class ScriptEditor_ReloadSyntaxHighlightingEvent : IIDEEvent
+		{ }
+
+		#endregion ScriptEditor_ReloadSyntaxHighlighting
 
 		// Construction and destruction
 		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)
