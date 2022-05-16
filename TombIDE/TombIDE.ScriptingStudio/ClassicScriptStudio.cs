@@ -289,6 +289,8 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (e.Type == WordType.Command)
 				type = RddaReader.GetCommandType(word);
+			else if (e.Type == WordType.Directive)
+				type = ReferenceType.NewCommand;
 			else if (e.Type == WordType.Hexadecimal || e.Type == WordType.Decimal)
 			{
 				try

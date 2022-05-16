@@ -147,6 +147,12 @@ namespace TombLib.Scripting.ClassicScript
 					if (type == WordType.Unknown && int.TryParse(word, out _))
 						type = WordType.Decimal;
 
+					if (word != null && word.StartsWith("#"))
+					{
+						type = WordType.Directive;
+						word = word.Split(' ')[0];
+					}
+
 					if (!string.IsNullOrEmpty(word) && type != WordType.Unknown)
 						OnWordDefinitionRequested(new WordDefinitionEventArgs(word, type));
 				}
@@ -375,6 +381,12 @@ namespace TombLib.Scripting.ClassicScript
 
 			if (type == WordType.Unknown && int.TryParse(hoveredWord, out _))
 				type = WordType.Decimal;
+
+			if (hoveredWord != null && hoveredWord.StartsWith("#"))
+			{
+				type = WordType.Directive;
+				hoveredWord = hoveredWord.Split(' ')[0];
+			}
 
 			if (type != WordType.Unknown)
 			{
