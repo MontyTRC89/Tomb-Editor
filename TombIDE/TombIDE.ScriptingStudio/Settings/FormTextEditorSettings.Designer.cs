@@ -194,9 +194,9 @@
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.treeView.ItemHeight = 40;
+			this.treeView.ItemHeight = 48;
 			this.treeView.Location = new System.Drawing.Point(0, 0);
-			this.treeView.MaxDragChange = 40;
+			this.treeView.MaxDragChange = 48;
 			this.treeView.Name = "treeView";
 			this.treeView.Size = new System.Drawing.Size(168, 412);
 			this.treeView.TabIndex = 3;
