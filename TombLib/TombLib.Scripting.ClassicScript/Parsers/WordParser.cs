@@ -83,7 +83,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							return WordType.MnemonicConstant;
 						else if (ch == '$')
 							return WordType.Hexadecimal;
-						else if (ch == ',' || ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || c == '(')
+						else if (ch == ',' || ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(')
 							return WordType.Unknown;
 					}
 
