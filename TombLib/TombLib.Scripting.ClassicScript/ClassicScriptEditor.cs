@@ -4,6 +4,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -230,6 +231,9 @@ namespace TombLib.Scripting.ClassicScript
 					TextUtilities.GetNextCaretPosition(Document, CaretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
 
 				string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+
+				if (!MnemonicData.AllConstantFlags.Any(x => x.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
+					return;
 
 				InitializeCompletionWindow();
 				_completionWindow.StartOffset = wordStartOffset;
