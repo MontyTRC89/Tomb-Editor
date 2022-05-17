@@ -32,33 +32,19 @@ namespace TombEditor.Forms.TombEngine
         {
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
-            this.cbDisableCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbIceTrasparency = new DarkUI.Controls.DarkCheckBox();
-            this.cbHeavyTriggerOnCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbHardShatter = new DarkUI.Controls.DarkCheckBox();
-            this.cbHugeCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbPoisonLaraOnCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbExplodeKillingOnCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbBurnLaraOnCollision = new DarkUI.Controls.DarkCheckBox();
-            this.cbDamageLaraOnContact = new DarkUI.Controls.DarkCheckBox();
-            this.cbGlassTrasparency = new DarkUI.Controls.DarkCheckBox();
-            this.cbScalable = new DarkUI.Controls.DarkCheckBox();
-            this.numScalable = new DarkUI.Controls.DarkNumericUpDown();
             this.tbOCB = new DarkUI.Controls.DarkTextBox();
             this.label1 = new DarkUI.Controls.DarkLabel();
-            this.cbSpecificShatter = new DarkUI.Controls.DarkCheckBox();
             this.lblColor = new DarkUI.Controls.DarkLabel();
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.tbLuaName = new DarkUI.Controls.DarkTextBox();
             this.labelLuaName = new DarkUI.Controls.DarkLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.numScalable)).BeginInit();
             this.SuspendLayout();
             // 
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(45, 378);
+            this.butOK.Location = new System.Drawing.Point(45, 96);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 14;
@@ -71,7 +57,7 @@ namespace TombEditor.Forms.TombEngine
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(131, 378);
+            this.butCancel.Location = new System.Drawing.Point(131, 96);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 15;
@@ -79,173 +65,32 @@ namespace TombEditor.Forms.TombEngine
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
-            // cbDisableCollision
-            // 
-            this.cbDisableCollision.AutoSize = true;
-            this.cbDisableCollision.Location = new System.Drawing.Point(10, 12);
-            this.cbDisableCollision.Name = "cbDisableCollision";
-            this.cbDisableCollision.Size = new System.Drawing.Size(110, 17);
-            this.cbDisableCollision.TabIndex = 0;
-            this.cbDisableCollision.Text = "Disable collision";
-            this.cbDisableCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbIceTrasparency
-            // 
-            this.cbIceTrasparency.AutoSize = true;
-            this.cbIceTrasparency.Location = new System.Drawing.Point(10, 58);
-            this.cbIceTrasparency.Name = "cbIceTrasparency";
-            this.cbIceTrasparency.Size = new System.Drawing.Size(109, 17);
-            this.cbIceTrasparency.TabIndex = 2;
-            this.cbIceTrasparency.Text = "Ice transparency";
-            this.cbIceTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbHeavyTriggerOnCollision
-            // 
-            this.cbHeavyTriggerOnCollision.AutoSize = true;
-            this.cbHeavyTriggerOnCollision.Location = new System.Drawing.Point(10, 219);
-            this.cbHeavyTriggerOnCollision.Name = "cbHeavyTriggerOnCollision";
-            this.cbHeavyTriggerOnCollision.Size = new System.Drawing.Size(199, 17);
-            this.cbHeavyTriggerOnCollision.TabIndex = 9;
-            this.cbHeavyTriggerOnCollision.Text = "Activate heavy trigger on collision";
-            this.cbHeavyTriggerOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbHardShatter
-            // 
-            this.cbHardShatter.AutoSize = true;
-            this.cbHardShatter.Location = new System.Drawing.Point(10, 196);
-            this.cbHardShatter.Name = "cbHardShatter";
-            this.cbHardShatter.Size = new System.Drawing.Size(90, 17);
-            this.cbHardShatter.TabIndex = 8;
-            this.cbHardShatter.Text = "Hard shatter";
-            this.cbHardShatter.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbHugeCollision
-            // 
-            this.cbHugeCollision.AutoSize = true;
-            this.cbHugeCollision.Location = new System.Drawing.Point(10, 173);
-            this.cbHugeCollision.Name = "cbHugeCollision";
-            this.cbHugeCollision.Size = new System.Drawing.Size(100, 17);
-            this.cbHugeCollision.TabIndex = 7;
-            this.cbHugeCollision.Text = "Huge collision";
-            this.cbHugeCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbPoisonLaraOnCollision
-            // 
-            this.cbPoisonLaraOnCollision.AutoSize = true;
-            this.cbPoisonLaraOnCollision.Location = new System.Drawing.Point(10, 150);
-            this.cbPoisonLaraOnCollision.Name = "cbPoisonLaraOnCollision";
-            this.cbPoisonLaraOnCollision.Size = new System.Drawing.Size(148, 17);
-            this.cbPoisonLaraOnCollision.TabIndex = 6;
-            this.cbPoisonLaraOnCollision.Text = "Poison Lara on collision";
-            this.cbPoisonLaraOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbExplodeKillingOnCollision
-            // 
-            this.cbExplodeKillingOnCollision.AutoSize = true;
-            this.cbExplodeKillingOnCollision.Location = new System.Drawing.Point(10, 127);
-            this.cbExplodeKillingOnCollision.Name = "cbExplodeKillingOnCollision";
-            this.cbExplodeKillingOnCollision.Size = new System.Drawing.Size(165, 17);
-            this.cbExplodeKillingOnCollision.TabIndex = 5;
-            this.cbExplodeKillingOnCollision.Text = "Explode killing on collision";
-            this.cbExplodeKillingOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbBurnLaraOnCollision
-            // 
-            this.cbBurnLaraOnCollision.AutoSize = true;
-            this.cbBurnLaraOnCollision.Location = new System.Drawing.Point(10, 104);
-            this.cbBurnLaraOnCollision.Name = "cbBurnLaraOnCollision";
-            this.cbBurnLaraOnCollision.Size = new System.Drawing.Size(138, 17);
-            this.cbBurnLaraOnCollision.TabIndex = 4;
-            this.cbBurnLaraOnCollision.Text = "Burn Lara on collision";
-            this.cbBurnLaraOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbDamageLaraOnContact
-            // 
-            this.cbDamageLaraOnContact.AutoSize = true;
-            this.cbDamageLaraOnContact.Location = new System.Drawing.Point(10, 81);
-            this.cbDamageLaraOnContact.Name = "cbDamageLaraOnContact";
-            this.cbDamageLaraOnContact.Size = new System.Drawing.Size(155, 17);
-            this.cbDamageLaraOnContact.TabIndex = 3;
-            this.cbDamageLaraOnContact.Text = "Damage Lara on collision";
-            this.cbDamageLaraOnContact.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbGlassTrasparency
-            // 
-            this.cbGlassTrasparency.AutoSize = true;
-            this.cbGlassTrasparency.Location = new System.Drawing.Point(10, 35);
-            this.cbGlassTrasparency.Name = "cbGlassTrasparency";
-            this.cbGlassTrasparency.Size = new System.Drawing.Size(122, 17);
-            this.cbGlassTrasparency.TabIndex = 1;
-            this.cbGlassTrasparency.Text = "Glass transparency";
-            this.cbGlassTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
-            // 
-            // cbScalable
-            // 
-            this.cbScalable.AutoSize = true;
-            this.cbScalable.Location = new System.Drawing.Point(10, 265);
-            this.cbScalable.Name = "cbScalable";
-            this.cbScalable.Size = new System.Drawing.Size(68, 17);
-            this.cbScalable.TabIndex = 11;
-            this.cbScalable.Text = "Scalable";
-            this.cbScalable.CheckedChanged += new System.EventHandler(this.cbScalable_CheckedChanged);
-            // 
-            // numScalable
-            // 
-            this.numScalable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numScalable.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numScalable.Location = new System.Drawing.Point(113, 264);
-            this.numScalable.LoopValues = false;
-            this.numScalable.Maximum = new decimal(new int[] {
-            1023,
-            0,
-            0,
-            0});
-            this.numScalable.Name = "numScalable";
-            this.numScalable.Size = new System.Drawing.Size(98, 22);
-            this.numScalable.TabIndex = 12;
-            this.numScalable.ValueChanged += new System.EventHandler(this.numScalable_ValueChanged);
-            this.numScalable.Validated += new System.EventHandler(this.numScalable_Validated);
-            // 
             // tbOCB
             // 
-            this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbOCB.Location = new System.Drawing.Point(73, 292);
+            this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbOCB.Location = new System.Drawing.Point(73, 10);
             this.tbOCB.Name = "tbOCB";
             this.tbOCB.Size = new System.Drawing.Size(138, 22);
             this.tbOCB.TabIndex = 13;
-            this.tbOCB.TextChanged += new System.EventHandler(this.tbOCB_TextChanged);
             this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(7, 294);
+            this.label1.Location = new System.Drawing.Point(7, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 27;
             this.label1.Text = "OCB:";
-            // 
-            // cbSpecificShatter
-            // 
-            this.cbSpecificShatter.AutoSize = true;
-            this.cbSpecificShatter.Location = new System.Drawing.Point(10, 242);
-            this.cbSpecificShatter.Name = "cbSpecificShatter";
-            this.cbSpecificShatter.Size = new System.Drawing.Size(198, 17);
-            this.cbSpecificShatter.TabIndex = 10;
-            this.cbSpecificShatter.Text = "Shatterable by specific moveables";
-            this.cbSpecificShatter.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
             // lblColor
             // 
             this.lblColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblColor.AutoSize = true;
             this.lblColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblColor.Location = new System.Drawing.Point(7, 351);
+            this.lblColor.Location = new System.Drawing.Point(7, 69);
             this.lblColor.Name = "lblColor";
             this.lblColor.Size = new System.Drawing.Size(32, 13);
             this.lblColor.TabIndex = 28;
@@ -255,7 +100,7 @@ namespace TombEditor.Forms.TombEngine
             // 
             this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColor.Location = new System.Drawing.Point(73, 348);
+            this.panelColor.Location = new System.Drawing.Point(73, 66);
             this.panelColor.Name = "panelColor";
             this.panelColor.Size = new System.Drawing.Size(138, 22);
             this.panelColor.TabIndex = 29;
@@ -263,18 +108,18 @@ namespace TombEditor.Forms.TombEngine
             // 
             // tbLuaName
             // 
-            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaName.Location = new System.Drawing.Point(73, 320);
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaName.Location = new System.Drawing.Point(73, 38);
             this.tbLuaName.Name = "tbLuaName";
             this.tbLuaName.Size = new System.Drawing.Size(138, 22);
             this.tbLuaName.TabIndex = 30;
             // 
             // labelLuaName
             // 
+            this.labelLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLuaName.AutoSize = true;
             this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelLuaName.Location = new System.Drawing.Point(7, 322);
+            this.labelLuaName.Location = new System.Drawing.Point(7, 40);
             this.labelLuaName.Name = "labelLuaName";
             this.labelLuaName.Size = new System.Drawing.Size(60, 13);
             this.labelLuaName.TabIndex = 31;
@@ -286,30 +131,18 @@ namespace TombEditor.Forms.TombEngine
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(217, 408);
+            this.ClientSize = new System.Drawing.Size(217, 125);
             this.Controls.Add(this.tbLuaName);
             this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.panelColor);
             this.Controls.Add(this.lblColor);
-            this.Controls.Add(this.cbSpecificShatter);
             this.Controls.Add(this.tbOCB);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.numScalable);
-            this.Controls.Add(this.cbScalable);
-            this.Controls.Add(this.cbGlassTrasparency);
-            this.Controls.Add(this.cbDamageLaraOnContact);
-            this.Controls.Add(this.cbBurnLaraOnCollision);
-            this.Controls.Add(this.cbExplodeKillingOnCollision);
-            this.Controls.Add(this.cbPoisonLaraOnCollision);
-            this.Controls.Add(this.cbHugeCollision);
-            this.Controls.Add(this.cbHardShatter);
-            this.Controls.Add(this.cbHeavyTriggerOnCollision);
-            this.Controls.Add(this.cbDisableCollision);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
-            this.Controls.Add(this.cbIceTrasparency);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(237, 168);
             this.MinimizeBox = false;
             this.Name = "FormStatic";
             this.ShowIcon = false;
@@ -317,8 +150,6 @@ namespace TombEditor.Forms.TombEngine
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Static mesh";
             this.Load += new System.EventHandler(this.FormObject_Load);
-            this.TextChanged += new System.EventHandler(this.tbOCB_TextChanged);
-            ((System.ComponentModel.ISupportInitialize)(this.numScalable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,21 +159,8 @@ namespace TombEditor.Forms.TombEngine
 
         private DarkButton butOK;
         private DarkButton butCancel;
-        private DarkCheckBox cbDisableCollision;
-        private DarkCheckBox cbIceTrasparency;
-        private DarkCheckBox cbHeavyTriggerOnCollision;
-        private DarkCheckBox cbHardShatter;
-        private DarkCheckBox cbHugeCollision;
-        private DarkCheckBox cbPoisonLaraOnCollision;
-        private DarkCheckBox cbExplodeKillingOnCollision;
-        private DarkCheckBox cbBurnLaraOnCollision;
-        private DarkCheckBox cbDamageLaraOnContact;
-        private DarkCheckBox cbGlassTrasparency;
-        private DarkCheckBox cbScalable;
-        private DarkNumericUpDown numScalable;
         private DarkTextBox tbOCB;
         private DarkLabel label1;
-        private DarkCheckBox cbSpecificShatter;
         private DarkLabel lblColor;
         private DarkUI.Controls.DarkPanel panelColor;
         private DarkTextBox tbLuaName;
