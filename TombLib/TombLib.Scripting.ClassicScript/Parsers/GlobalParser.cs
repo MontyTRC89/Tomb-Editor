@@ -129,10 +129,15 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							result += value;
 						else
 						{
-							DataRow row = _cachedDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
+							DataRow row = _cachedDataTable.Select($"flag = '{variable.TrimStart('-').TrimStart()}'")?.FirstOrDefault();
 
 							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
-								result += rowValue;
+							{
+								if (variable.StartsWith("-"))
+									result -= rowValue;
+								else
+									result += rowValue;
+							}
 							else if (variable.StartsWith("-"))
 								result -= GetDefineSum(document, variable.TrimStart('-').TrimStart());
 							else
