@@ -126,11 +126,13 @@
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.treeView.Indent = 0;
-			this.treeView.ItemHeight = 40;
+			this.treeView.ItemHeight = 48;
 			this.treeView.Location = new System.Drawing.Point(1, 53);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
-			this.treeView.MaxDragChange = 40;
+			this.treeView.MaxDragChange = 48;
 			this.treeView.Name = "treeView";
+			this.treeView.OverrideEvenColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView.OverrideOddColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
 			this.treeView.Size = new System.Drawing.Size(472, 434);
 			this.treeView.TabIndex = 0;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);

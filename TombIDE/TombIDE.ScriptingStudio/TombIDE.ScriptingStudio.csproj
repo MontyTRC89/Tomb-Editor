@@ -71,8 +71,7 @@
     <Compile Include="ConfigurationCollection.cs" />
     <Compile Include="Helpers\EditorTypeHelper.cs" />
     <Compile Include="Helpers\FileTreeViewHelper.cs" />
-    <Compile Include="Objects\ReferenceComboItem.cs" />
-    <Compile Include="Objects\ReferenceComboType.cs" />
+    <Compile Include="Objects\ReferenceItemType.cs" />
     <Compile Include="Settings\GameFlowSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

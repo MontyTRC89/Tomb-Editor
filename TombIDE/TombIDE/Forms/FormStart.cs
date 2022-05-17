@@ -423,8 +423,9 @@ namespace TombIDE
 		{
 			foreach (DarkTreeNode node in treeView.Nodes)
 			{
-				int iconHeight = (40 * node.VisibleIndex) + 4;
-				node.IconArea = new Rectangle(new Point(4, iconHeight), new Size(32, 32));
+				int iconHeight = (treeView.ItemHeight * node.VisibleIndex) + ((treeView.ItemHeight - 32) / 2);
+				node.IconArea = new Rectangle(new Point(8, iconHeight), new Size(32, 32));
+				node.TextArea = new Rectangle(new Point(45, node.TextArea.Y), node.TextArea.Size);
 			}
 
 			treeView.Invalidate();

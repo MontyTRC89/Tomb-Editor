@@ -22,7 +22,6 @@
 			// 
 			// treeView
 			// 
-			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Location = new System.Drawing.Point(0, 25);

@@ -32,6 +32,8 @@
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.separator_04 = new System.Windows.Forms.ToolStripSeparator();
 			this.button_OpenInTE = new System.Windows.Forms.ToolStripButton();
 			this.button_Rebuild = new System.Windows.Forms.ToolStripButton();
@@ -45,8 +47,6 @@
 			this.button_OpenInExplorer = new System.Windows.Forms.ToolStripButton();
 			this.button_ViewFileNames = new System.Windows.Forms.ToolStripButton();
 			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.contextMenu.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -207,10 +207,12 @@
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.treeView.ItemHeight = 40;
+			this.treeView.ItemHeight = 48;
 			this.treeView.Location = new System.Drawing.Point(1, 55);
-			this.treeView.MaxDragChange = 40;
+			this.treeView.MaxDragChange = 48;
 			this.treeView.Name = "treeView";
+			this.treeView.OverrideEvenColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView.OverrideOddColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
 			this.treeView.Size = new System.Drawing.Size(316, 262);
 			this.treeView.TabIndex = 0;
 			this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyDown);
@@ -245,6 +247,30 @@
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
 			this.toolStrip.Size = new System.Drawing.Size(316, 30);
 			this.toolStrip.TabIndex = 1;
+			// 
+			// toolStripButton2
+			// 
+			this.toolStripButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripButton2.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_plus_math_16;
+			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton2.Name = "toolStripButton2";
+			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton2.Text = "Create a new level...";
+			this.toolStripButton2.Click += new System.EventHandler(this.button_New_Click);
+			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripButton1.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Import_16;
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
+			this.toolStripButton1.Text = "Import an existing level...";
+			this.toolStripButton1.Click += new System.EventHandler(this.button_Import_Click);
 			// 
 			// separator_04
 			// 
@@ -397,30 +423,6 @@
 			this.button_Refresh.Size = new System.Drawing.Size(23, 27);
 			this.button_Refresh.Text = "Refresh List";
 			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.toolStripButton1.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Import_16;
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton1.Text = "Import an existing level...";
-			this.toolStripButton1.Click += new System.EventHandler(this.button_Import_Click);
-			// 
-			// toolStripButton2
-			// 
-			this.toolStripButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.toolStripButton2.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_plus_math_16;
-			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton2.Name = "toolStripButton2";
-			this.toolStripButton2.Size = new System.Drawing.Size(23, 27);
-			this.toolStripButton2.Text = "Create a new level...";
-			this.toolStripButton2.Click += new System.EventHandler(this.button_New_Click);
 			// 
 			// SectionLevelList
 			// 

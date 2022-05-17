@@ -52,7 +52,7 @@
             this.separator_03,
             this.menuItem_OpenInExplorer});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(190, 201);
+			this.contextMenu.Size = new System.Drawing.Size(190, 179);
 			// 
 			// menuItem_NewFile
 			// 
@@ -86,7 +86,7 @@
 			// 
 			this.menuItem_ViewInEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_ViewInEditor.Enabled = false;
-			this.menuItem_ViewInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_ViewInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_ViewInEditor.Name = "menuItem_ViewInEditor";
 			this.menuItem_ViewInEditor.Size = new System.Drawing.Size(189, 22);
 			this.menuItem_ViewInEditor.Text = "View in Default Editor";
@@ -114,7 +114,7 @@
 			// 
 			this.menuItem_Rename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Rename.Enabled = false;
-			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Rename.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Edit_16;
 			this.menuItem_Rename.Name = "menuItem_Rename";
 			this.menuItem_Rename.ShortcutKeys = System.Windows.Forms.Keys.F2;
@@ -126,7 +126,7 @@
 			// 
 			this.menuItem_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menuItem_Delete.Enabled = false;
-			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_Delete.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
 			this.menuItem_Delete.Name = "menuItem_Delete";
 			this.menuItem_Delete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
@@ -179,7 +179,6 @@
 			this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.ContextMenuStrip = this.contextMenu;
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Location = new System.Drawing.Point(3, 28);

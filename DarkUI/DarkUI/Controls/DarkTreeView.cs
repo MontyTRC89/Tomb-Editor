@@ -118,6 +118,40 @@ namespace DarkUI.Controls
             }
         }
 
+        private Color _overrideOddColor = Color.Transparent;
+
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color OverrideOddColor
+        {
+            get { return _overrideOddColor; }
+            set
+            {
+                if (value != Color.Transparent)
+				{
+                    _overrideOddColor = value;
+
+                }
+            }
+        }
+
+        private Color _overrideEvenColor = Color.Transparent;
+
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color OverrideEvenColor
+        {
+            get { return _overrideEvenColor; }
+            set
+            {
+                if (value != Color.Transparent)
+                {
+                    _overrideEvenColor = value;
+
+                }
+            }
+        }
+
         [Category("Behavior")]
         [Description("Determines whether parent node should be expanded on mouse double-click.")]
         [DefaultValue(true)]
@@ -957,7 +991,7 @@ namespace DarkUI.Controls
 
                 if (!recursive)
                     continue;
-                
+
                 var compNode = FindNode(node, path);
                 if (compNode != null)
                     return compNode;
@@ -1195,8 +1229,17 @@ namespace DarkUI.Controls
             // 1. Draw background
             var bgColor = node.BackColor;
 
-            if(bgColor == Color.Transparent)
-                bgColor = node.Odd ? Colors.HeaderBackground : Colors.GreyBackground;
+            Color oddColor = Colors.HeaderBackground;
+            Color evenColor = Colors.GreyBackground;
+
+            if (OverrideOddColor != Color.Transparent)
+                oddColor = OverrideOddColor;
+
+            if (OverrideEvenColor != Color.Transparent)
+                evenColor = OverrideEvenColor;
+
+            if (bgColor == Color.Transparent)
+                bgColor = node.Odd ? oddColor : evenColor;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
                 bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;

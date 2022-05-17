@@ -1,6 +1,6 @@
 ﻿namespace TombIDE.ScriptingStudio.Objects
 {
-	internal enum ReferenceComboType
+	internal enum ReferenceItemType
 	{
 		MnemonicConstants,
 		EnemyDamageValues,

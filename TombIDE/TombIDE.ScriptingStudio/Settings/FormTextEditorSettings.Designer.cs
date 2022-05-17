@@ -29,8 +29,8 @@
 			this.tabPage_GameFlow = new System.Windows.Forms.TabPage();
 			this.settingsGameFlow = new TombIDE.ScriptingStudio.Settings.GameFlowSettingsControl();
 			this.tabPage_Tomb1Main = new System.Windows.Forms.TabPage();
-			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.settingsTomb1Main = new TombIDE.ScriptingStudio.Settings.Tomb1MainSettingsControl();
+			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.panel_Buttons.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
@@ -176,20 +176,6 @@
 			this.tabPage_Tomb1Main.TabIndex = 3;
 			this.tabPage_Tomb1Main.Text = "Tomb1Main";
 			// 
-			// treeView
-			// 
-			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
-			this.treeView.ExpandOnDoubleClick = false;
-			this.treeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.treeView.ItemHeight = 40;
-			this.treeView.Location = new System.Drawing.Point(0, 0);
-			this.treeView.MaxDragChange = 40;
-			this.treeView.Name = "treeView";
-			this.treeView.Size = new System.Drawing.Size(168, 412);
-			this.treeView.TabIndex = 3;
-			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
-			// 
 			// settingsTomb1Main
 			// 
 			this.settingsTomb1Main.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
@@ -202,6 +188,19 @@
 			this.settingsTomb1Main.Name = "settingsTomb1Main";
 			this.settingsTomb1Main.Size = new System.Drawing.Size(720, 412);
 			this.settingsTomb1Main.TabIndex = 0;
+			// 
+			// treeView
+			// 
+			this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
+			this.treeView.ExpandOnDoubleClick = false;
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView.ItemHeight = 40;
+			this.treeView.Location = new System.Drawing.Point(0, 0);
+			this.treeView.MaxDragChange = 40;
+			this.treeView.Name = "treeView";
+			this.treeView.Size = new System.Drawing.Size(168, 412);
+			this.treeView.TabIndex = 3;
+			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
 			// 
 			// FormTextEditorSettings
 			// 
