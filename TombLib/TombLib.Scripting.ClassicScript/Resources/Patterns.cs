@@ -10,7 +10,7 @@
 		public static string Mnemonics => @"\b(" + string.Join("|", MnemonicData.AllConstantFlags) + @")\b";
 		public static string HexValues => @"\$[a-f0-9]*";
 		public static string Directives => @"#(define|first_id|include)\s";
-		public static string Values => "\\d|\\w|\"|'|\\.|\\\\|/";
+		public static string Values => "\\d|\\w|\"|'|\\.|\\\\";
 
 		/// <summary><c>Name = </c></summary>
 		public static string NameCommand => @"^Name\s*=\s*";

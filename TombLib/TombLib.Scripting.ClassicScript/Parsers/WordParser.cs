@@ -32,7 +32,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 					char c = document.GetCharAt(i);
 
-					if (c == ',' || c == '=' || c == ']' || c == '+' || c == '\n')
+					if (c == ',' || c == '=' || c == ']' || c == '\n' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
 					{
 						wordEnd = i;
 						break;
@@ -44,7 +44,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			{
 				char c = document.GetCharAt(i);
 
-				if (c == ',' || c == '=' || c == '[' || c == '+')
+				if (c == ',' || c == '=' || c == '[' || c == '+' || c == '-' || c == '*' || c == '/' || c == '(')
 				{
 					wordStart = i + 1;
 					break;
@@ -83,7 +83,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							return WordType.MnemonicConstant;
 						else if (ch == '$')
 							return WordType.Hexadecimal;
-						else if (ch == ',' || ch == '=' || ch == '+')
+						else if (ch == ',' || ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || c == '(')
 							return WordType.Unknown;
 					}
 
@@ -104,7 +104,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					return WordType.MnemonicConstant;
 				else if (c == '$')
 					return WordType.Hexadecimal;
-				else if (c == ',' || c == '+' || c == '\n')
+				else if (c == ',' || c == '\n' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
 				{
 					for (int j = offset; j > line.Offset; j--)
 					{
@@ -114,7 +114,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							return WordType.MnemonicConstant;
 						else if (ch == '$')
 							return WordType.Hexadecimal;
-						else if (ch == ',' || ch == '=' || ch == '+')
+						else if (ch == ',' || ch == '=' || ch == '+' || c == '-' || c == '*' || c == '/' || c == '(')
 							return WordType.Unknown;
 					}
 				}

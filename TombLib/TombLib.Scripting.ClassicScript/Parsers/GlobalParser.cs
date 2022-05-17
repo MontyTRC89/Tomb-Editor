@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using NCalc;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -55,14 +56,15 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return -1;
 		}
 
-		private static List<string> _alreadyVisitedDefineKeys = new List<string>();
+		private static Stack<string> _alreadyVisitedVariables = new Stack<string>();
 		private static DataTable _cachedDataTable;
 
 		private static int GetFirstId(TextDocument document, string commandKey, int loopStartLine)
 		{
-			_alreadyVisitedDefineKeys.Clear();
+			_alreadyVisitedVariables.Clear();
 			_cachedDataTable = GetMnemonicConstantsDataTable();
 
+			int result = 0;
 			var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
 
 			try // Not sure if this will work correctly, so putting this into a try / catch for safety
@@ -79,35 +81,49 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 					if (match.Success)
 					{
-						int result = 0;
+						string expressionString = match.Groups[1].Value;
 
-						foreach (string variable in match.Groups[1].Value.Split('+').Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()))
+						IEnumerable<string> variables = expressionString.Split(new[] { '+', '-', '*', '/' })
+							.Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()).Where(x => !string.IsNullOrWhiteSpace(x));
+
+						foreach (string variable in variables)
 						{
-							if (int.TryParse(variable, out int value))
-								result += value;
-							else if (variable.StartsWith("-"))
-								result -= GetDefineSum(document, variable.TrimStart('-').TrimStart());
+							if (int.TryParse(variable, out int _))
+								continue;
+
+							DataRow row = _cachedDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
+
+							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
+								expressionString = expressionString.Replace(variable, rowValue.ToString());
 							else
-								result += GetDefineSum(document, variable);
+								expressionString = expressionString.Replace(variable, GetVariableValue(document, variable).ToString());
 						}
 
-						return result < 1 ? 1 : result;
+						var expression = new Expression(expressionString);
+
+						if (expression.HasErrors())
+							result = 0;
+						else if (expressionString.Contains('/'))
+							result = expression.HasErrors() ? 0 : (int)Math.Floor((double)expression.Evaluate());
+						else
+							result = expression.HasErrors() ? 0 : (int)expression.Evaluate();
 					}
 				}
 			}
 			catch { }
 
-			return 1;
+			return result < 1 ? 1 : result;
 		}
 
-		private static int GetDefineSum(TextDocument document, string defineKey)
+		private static int GetVariableValue(TextDocument document, string variable)
 		{
-			if (_alreadyVisitedDefineKeys.Contains(defineKey)) // Stop infinite loop
+			if (_alreadyVisitedVariables.Contains(variable)) // Stop infinite loop
 				return 0;
 
-			_alreadyVisitedDefineKeys.Add(defineKey);
+			_alreadyVisitedVariables.Push(variable);
 
-			var defineRegex = new Regex($@"^\s*#DEFINE\s+{Regex.Escape(defineKey)}\s+(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
+			int result = 0;
+			var defineRegex = new Regex($@"^\s*#DEFINE\s+{Regex.Escape(variable)}\s+(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
 
 			foreach (DocumentLine line in document.Lines)
 			{
@@ -121,35 +137,37 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 				if (match.Success)
 				{
-					int result = 0;
+					string expressionString = match.Groups[1].Value;
 
-					foreach (string variable in match.Groups[1].Value.Split('+').Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()))
+					IEnumerable<string> variables = expressionString.Split(new[] { '+', '-', '*', '/' })
+						.Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()).Where(x => !string.IsNullOrWhiteSpace(x));
+
+					foreach (string subVariable in variables)
 					{
-						if (int.TryParse(variable, out int value))
-							result += value;
-						else
-						{
-							DataRow row = _cachedDataTable.Select($"flag = '{variable.TrimStart('-').TrimStart()}'")?.FirstOrDefault();
+						if (int.TryParse(subVariable, out int _))
+							continue;
 
-							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
-							{
-								if (variable.StartsWith("-"))
-									result -= rowValue;
-								else
-									result += rowValue;
-							}
-							else if (variable.StartsWith("-"))
-								result -= GetDefineSum(document, variable.TrimStart('-').TrimStart());
-							else
-								result += GetDefineSum(document, variable);
-						}
+						DataRow row = _cachedDataTable.Select($"flag = '{subVariable}'")?.FirstOrDefault();
+
+						if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
+							expressionString = expressionString.Replace(subVariable, rowValue.ToString());
+						else
+							expressionString = expressionString.Replace(subVariable, GetVariableValue(document, subVariable).ToString());
 					}
 
-					return result < 1 ? 1 : result;
+					var expression = new Expression(expressionString);
+
+					if (expression.HasErrors())
+						result = 0;
+					else if (expressionString.Contains('/'))
+						result = expression.HasErrors() ? 0 : (int)Math.Floor((double)expression.Evaluate());
+					else
+						result = expression.HasErrors() ? 0 : (int)expression.Evaluate();
 				}
 			}
 
-			return 0;
+			_alreadyVisitedVariables.Pop();
+			return result;
 		}
 
 		private static IEnumerable<int> GetTakenIndicesList(TextDocument document, string commandKey, int loopStartLine)
