@@ -205,7 +205,10 @@ namespace TombLib.Scripting.ClassicScript
 			if ((Document.GetCharAt(CaretOffset - 2) == '='
 				|| Document.GetCharAt(CaretOffset - 2) == ','
 				|| Document.GetCharAt(CaretOffset - 2) == '_'
-				|| Document.GetCharAt(CaretOffset - 2) == '+')
+				|| Document.GetCharAt(CaretOffset - 2) == '+'
+				|| Document.GetCharAt(CaretOffset - 2) == '-'
+				|| Document.GetCharAt(CaretOffset - 2) == '*'
+				|| Document.GetCharAt(CaretOffset - 2) == '/')
 				&& !_autocompleteWorker.IsBusy)
 			{
 				var data = new List<object>
@@ -284,7 +287,8 @@ namespace TombLib.Scripting.ClassicScript
 
 			string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
 
-			if (!word.StartsWith("=") && !word.StartsWith(",") && !word.StartsWith("+"))
+			if (!word.StartsWith("=") && !word.StartsWith(",") && !word.StartsWith("+")
+				&& !word.StartsWith("-") && !word.StartsWith("*") && !word.StartsWith("/"))
 				_completionWindow.StartOffset = wordStartOffset;
 
 			foreach (ICompletionData item in completionData)
