@@ -4,7 +4,9 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -179,6 +181,8 @@ namespace TombLib.Scripting.ClassicScript
 					HandleAutocompleteAfterSpace();
 				else if (e.Text == "_" && CaretOffset > 1)
 					HandleAutocompleteOnWordWithoutContext();
+				else if (e.Text == "\"" && CaretOffset > 1)
+					TryHandleIncludeAutocomplete();
 			}
 		}
 
@@ -199,6 +203,9 @@ namespace TombLib.Scripting.ClassicScript
 
 				_autocompleteWorker.RunWorkerAsync(data);
 			}
+
+			if (_completionWindow == null)
+				TryHandleIncludeAutocomplete();
 
 			if (_completionWindow == null)
 				HandleAutocompleteOnWordWithoutContext();
@@ -223,6 +230,43 @@ namespace TombLib.Scripting.ClassicScript
 				};
 
 				_autocompleteWorker.RunWorkerAsync(data);
+			}
+			else
+				TryHandleIncludeAutocomplete();
+		}
+
+		private void TryHandleIncludeAutocomplete()
+		{
+			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
+			string lineText = Document.GetText(currentLine);
+
+			if (Regex.IsMatch(lineText, Patterns.IncludeCommand, RegexOptions.IgnoreCase))
+			{
+				InitializeCompletionWindow();
+
+				if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) == '\"')
+					_completionWindow.StartOffset = CaretOffset - 1;
+				else
+					_completionWindow.StartOffset = CaretOffset;
+
+				if (Document.GetCharAt(CaretOffset) == '\"')
+					_completionWindow.EndOffset = CaretOffset + 1;
+				else
+					_completionWindow.EndOffset = CaretOffset;
+
+				string directoryPath = Path.GetDirectoryName(FilePath);
+				var fileDirectory = new DirectoryInfo(directoryPath);
+
+				foreach (FileInfo file in fileDirectory.GetFiles("*.txt", SearchOption.AllDirectories).Where(x => !x.FullName.Equals(FilePath)))
+				{
+					string pathPart = file.FullName.Replace(directoryPath, string.Empty).TrimStart('\\');
+					string completionDataString = $"\"{pathPart}\"";
+
+					_completionWindow.CompletionList.CompletionData.Add(new CompletionData(completionDataString));
+				}
+
+				if (_completionWindow.CompletionList.CompletionData.Count > 0)
+					ShowCompletionWindow();
 			}
 		}
 
