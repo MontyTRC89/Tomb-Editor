@@ -106,7 +106,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 									Match defineMatch = defineRegex.Match(lineText);
 
-									if (defineMatch.Success && int.TryParse(defineMatch.Groups[2].Value.Trim(), out int defineValue))
+									if (defineMatch.Success && int.TryParse(defineMatch.Groups[1].Value.Trim(), out int defineValue))
 									{
 										switch (equationType)
 										{
