@@ -93,7 +93,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							}
 							else
 							{
-								var defineRegex = new Regex($@"^\s*#DEFINE\s+(.*)\s+(\d+)\s*(;.*)?$", RegexOptions.IgnoreCase);
+								var defineRegex = new Regex($@"^\s*#DEFINE\s+{number.Trim()}\s+(\d+)\s*(;.*)?$", RegexOptions.IgnoreCase);
 
 								foreach (DocumentLine line in document.Lines)
 								{
