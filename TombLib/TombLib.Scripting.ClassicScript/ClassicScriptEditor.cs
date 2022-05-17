@@ -178,7 +178,7 @@ namespace TombLib.Scripting.ClassicScript
 				else if (e.Text != "_" && CaretOffset > 1)
 					HandleAutocompleteAfterSpace();
 				else if (e.Text == "_" && CaretOffset > 1)
-					HandleAutocompleteAfterUnderscore();
+					HandleAutocompleteOnWordWithoutContext();
 			}
 		}
 
@@ -199,6 +199,9 @@ namespace TombLib.Scripting.ClassicScript
 
 				_autocompleteWorker.RunWorkerAsync(data);
 			}
+
+			if (_completionWindow == null)
+				HandleAutocompleteOnWordWithoutContext();
 		}
 
 		private void HandleAutocompleteAfterSpace()
@@ -223,27 +226,24 @@ namespace TombLib.Scripting.ClassicScript
 			}
 		}
 
-		private void HandleAutocompleteAfterUnderscore()
+		private void HandleAutocompleteOnWordWithoutContext()
 		{
-			if (Document.GetCharAt(CaretOffset - 1) == '_')
-			{
-				int wordStartOffset =
-					TextUtilities.GetNextCaretPosition(Document, CaretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
+			int wordStartOffset =
+				TextUtilities.GetNextCaretPosition(Document, CaretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
 
-				string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+			string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
 
-				if (!MnemonicData.AllConstantFlags.Any(x => x.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
-					return;
+			if (!MnemonicData.AllConstantFlags.Any(x => x.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
+				return;
 
-				InitializeCompletionWindow();
-				_completionWindow.StartOffset = wordStartOffset;
+			InitializeCompletionWindow();
+			_completionWindow.StartOffset = wordStartOffset;
 
-				foreach (string mnemonicConstant in MnemonicData.AllConstantFlags)
-					if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
-						_completionWindow.CompletionList.CompletionData.Add(new CompletionData(mnemonicConstant));
+			foreach (string mnemonicConstant in MnemonicData.AllConstantFlags)
+				if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
+					_completionWindow.CompletionList.CompletionData.Add(new CompletionData(mnemonicConstant));
 
-				ShowCompletionWindow();
-			}
+			ShowCompletionWindow();
 		}
 
 		private void HandleAutocompleteOnEmptyLine()

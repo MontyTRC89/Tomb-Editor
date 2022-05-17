@@ -24,6 +24,7 @@ TombIDE:
  * Scripting Studio bookmarks now save.
  * #FIRST_ID is now being recognised when pressing F1. (May not be fully accurate yet.)
  * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
+ * Improved autocomplete for TRNG scripting.
  * Fixed some Scripting Studio performance issues.
  * Fixed Scripting Studio right-click menus not appearing.
  * Fixed F12 on directives like "#INCLUDE" not working.
