@@ -1,6 +1,7 @@
 ﻿using NLog;
 using DarkUI.Config;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -12,6 +13,7 @@ using DarkUI.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombEditor.ToolWindows;
 
 namespace TombEditor.Forms
 {
@@ -22,20 +24,23 @@ namespace TombEditor.Forms
 
         // Dockable tool windows are placed on actual dock panel at runtime.
 
-        private readonly ToolWindows.MainView MainView = new ToolWindows.MainView();
-        private readonly ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
-        private readonly ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
-        private readonly ToolWindows.ItemBrowser ItemBrowser = new ToolWindows.ItemBrowser();
-        private readonly ToolWindows.ImportedGeometryBrowser ImportedGeometryBrowser = new ToolWindows.ImportedGeometryBrowser();
-        private readonly ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
-        private readonly ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
-        private readonly ToolWindows.Palette Palette = new ToolWindows.Palette();
-        private readonly ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
-        private readonly ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
-        private readonly ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
+        private readonly List<DarkDockContent> toolWindows = new List<DarkDockContent>
+        {
+            new MainView(),
+            new TriggerList(),
+            new RoomOptions(),
+            new ItemBrowser(),
+            new ImportedGeometryBrowser(),
+            new SectorOptions(),
+            new Lighting(),
+            new Palette(),
+            new TexturePanel(),
+            new ObjectList(),
+            new ToolPalette()
+        };
 
         // Floating tool boxes are placed on 3D view at runtime
-        private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
+        private readonly ToolPaletteFloating ToolBox = new ToolPaletteFloating();
 
         public FormMain(Editor editor)
         {
@@ -59,9 +64,9 @@ namespace TombEditor.Forms
             Application.AddMessageFilter(dockArea.DockResizeFilter);
 
             // Initialize panels
-            MainView.InitializeRendering(_editor.RenderingDevice);
-            ItemBrowser.InitializeRendering(_editor.RenderingDevice);
-            ImportedGeometryBrowser.InitializeRendering(_editor.RenderingDevice);
+            GetWindow<MainView>().InitializeRendering(_editor.RenderingDevice);
+            GetWindow<ItemBrowser>().InitializeRendering(_editor.RenderingDevice);
+            GetWindow<ImportedGeometryBrowser>().InitializeRendering(_editor.RenderingDevice);
 
             // Restore window settings and prepare UI
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -290,6 +295,9 @@ namespace TombEditor.Forms
                 }
             }
 
+            if (obj is Editor.ToolWindowToggleEvent)
+                ToolWindow_Toggle(GetWindow((obj as Editor.ToolWindowToggleEvent).ContentType.FullName) as DarkToolWindow);
+
             if (obj is Editor.LevelFileNameChangedEvent)
                 RefreshRecentProjectsList();
 
@@ -297,6 +305,9 @@ namespace TombEditor.Forms
             if (obj is Editor.EditorQuitEvent)
                 Close();
         }
+
+        private T GetWindow<T>() where T : DarkDockContent => toolWindows.FirstOrDefault(t => t.GetType().FullName == typeof(T).FullName) as T;
+        private DarkDockContent GetWindow(string key) => toolWindows.FirstOrDefault(t => t.GetType().Name == key || t.GetType().FullName == key);
 
         private void UpdateUIColours()
         {
@@ -367,7 +378,7 @@ namespace TombEditor.Forms
                                 if (command != null)
                                 {
                                     subMenu.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
-                                    subMenu.Text = command.FriendlyName;
+                                    subMenu.Text = command.Type == CommandType.Windows ? command.Name.Replace("Show", string.Empty).SplitCamelcase() : command.FriendlyName;
                                 }
                             }
 
@@ -420,39 +431,6 @@ namespace TombEditor.Forms
             return null;
         }
 
-        private DarkDockContent FindDockContentByKey(string key)
-        {
-            switch (key)
-            {
-                case "MainView":
-                    return MainView;
-                case "TriggerList":
-                    return TriggerList;
-                case "Lighting":
-                    return Lighting;
-                case "Palette":
-                    return Palette;
-                case "ItemBrowser":
-                case "ObjectBrowser": // Deprecated name
-                    return ItemBrowser;
-                case "ImportedGeometryBrowser":
-                    return ImportedGeometryBrowser;
-                case "RoomOptions":
-                    return RoomOptions;
-                case "SectorOptions":
-                    return SectorOptions;
-                case "TexturePanel":
-                    return TexturePanel;
-                case "ObjectList":
-                    return ObjectList;
-                case "ToolPalette":
-                    return ToolPalette;
-                default:
-                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
-                    return null;
-            }
-        }
-
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
         {
             if (_editor.Mode != EditorMode.Map2D)
@@ -487,7 +465,7 @@ namespace TombEditor.Forms
         private void LoadWindowLayout(Configuration configuration)
         {
             dockArea.RemoveContent();
-            dockArea.RestoreDockPanelState(configuration.Window_Layout, FindDockContentByKey);
+            dockArea.RestoreDockPanelState(configuration.Window_Layout, GetWindow);
 
             floatingToolStripMenuItem.Checked = configuration.Rendering3D_ToolboxVisible;
             ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
@@ -543,53 +521,11 @@ namespace TombEditor.Forms
             LoadWindowLayout(new Configuration());
         }
 
-        private void sectorOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(SectorOptions);
-        }
-
-        private void roomOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(RoomOptions);
-        }
-
-        private void itemBrowserToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ItemBrowser);
-        }
-
-        private void importedGeometryBrowserToolstripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ImportedGeometryBrowser);
-        }
-
-        private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(TriggerList);
-        }
-
-        private void lightingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(Lighting);
-        }
-
-        private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(Palette);
-        }
-
-        private void texturePanelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(TexturePanel);
-        }
-
-        private void objectListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ObjectList);
-        }
-
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)
         {
+            if (toolWindow == null)
+                return;
+
             if (toolWindow.DockPanel == null)
                 dockArea.AddContent(toolWindow);
             else
@@ -598,16 +534,16 @@ namespace TombEditor.Forms
 
         private void ToolWindow_BuildMenu()
         {
-            sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
-            roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
-            itemBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ItemBrowser);
-            importedGeometryBrowserToolstripMenuItem.Checked = dockArea.ContainsContent(ImportedGeometryBrowser);
-            triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
-            objectListToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectList);
-            lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
-            paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
-            texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
-            dockableToolStripMenuItem.Checked = dockArea.ContainsContent(ToolPalette);
+            sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<SectorOptions>());
+            roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<RoomOptions>());
+            itemBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<ItemBrowser>());
+            importedGeometryBrowserToolstripMenuItem.Checked = dockArea.ContainsContent(GetWindow<ImportedGeometryBrowser>());
+            triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<TriggerList>());
+            objectListToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<ObjectList>());
+            lightingToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<Lighting>());
+            paletteToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<Palette>());
+            texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<TexturePanel>());
+            dockableToolStripMenuItem.Checked = dockArea.ContainsContent(GetWindow<ToolPalette>());
         }
 
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
@@ -620,14 +556,6 @@ namespace TombEditor.Forms
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
-        }
-
-        private void ToolBox_Show(bool show)
-        {
-            if (show)
-                MainView.AddToolbox(ToolBox);
-            else
-                MainView.RemoveToolbox(ToolBox);
         }
 
         protected override void OnDragEnter(DragEventArgs e)
@@ -658,14 +586,12 @@ namespace TombEditor.Forms
                 form.ShowDialog(this);
         }
 
-        private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ToolPalette);
-        }
-
         private void floatingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            ToolBox_Show(floatingToolStripMenuItem.Checked);
+            if (floatingToolStripMenuItem.Checked)
+                GetWindow<MainView>().AddToolbox(ToolBox);
+            else
+                GetWindow<MainView>().RemoveToolbox(ToolBox);
         }
 
         // Only for debugging purposes...

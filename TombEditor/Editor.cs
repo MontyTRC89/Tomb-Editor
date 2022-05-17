@@ -762,6 +762,16 @@ namespace TombEditor
             RaiseEvent(new EditorFocusedEvent());
         }
 
+        // Dock content change event
+        public class ToolWindowToggleEvent : IEditorEvent
+        {
+            public Type ContentType { get; internal set; }
+        }
+        public void ToggleToolWindow(Type contentType)
+        {
+            RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
+        }
+
         // Default control engage event
         public class DefaultControlActivationEvent : IEditorEvent
         {
