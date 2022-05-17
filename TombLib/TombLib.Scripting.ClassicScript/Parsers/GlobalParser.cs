@@ -54,7 +54,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		{
 			try // Not sure if this will work correctly, so putting this into a try / catch for safety
 			{
-				var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{commandKey}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
+				var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
 
 				for (int i = loopStartLine; i <= document.LineCount; i++)
 				{
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					if (processedLineText == null)
 						continue;
 
-					processedLineText = LineParser.EscapeComments(processedLineText);
+					processedLineText = LineParser.EscapeComments(processedLineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
 
 					Match match = firstIdRegex.Match(processedLineText);
 
@@ -93,7 +93,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							}
 							else
 							{
-								var defineRegex = new Regex($@"^\s*#DEFINE\s+{number.Trim()}\s+(\d+)\s*(;.*)?$", RegexOptions.IgnoreCase);
+								var defineRegex = new Regex($@"^\s*#DEFINE\s+{Regex.Escape(number.Trim())}\s+(\d+)\s*(;.*)?$", RegexOptions.IgnoreCase);
 
 								foreach (DocumentLine line in document.Lines)
 								{
@@ -102,7 +102,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 									if (lineText == null)
 										continue;
 
-									lineText = LineParser.EscapeComments(lineText);
+									lineText = LineParser.EscapeComments(lineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
 
 									Match defineMatch = defineRegex.Match(lineText);
 
