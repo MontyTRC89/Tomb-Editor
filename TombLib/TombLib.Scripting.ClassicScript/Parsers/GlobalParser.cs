@@ -1,8 +1,13 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
+using TombLib.Scripting.ClassicScript.Objects;
+using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Helpers;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
@@ -50,81 +55,96 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return -1;
 		}
 
-		private static int GetFirstId(TextDocument document, string commandKey, int loopStartLine) // REFACTOR !!!
+		private static List<string> _alreadyVisitedDefineKeys = new List<string>();
+		private static DataTable _cachedDataTable;
+
+		private static int GetFirstId(TextDocument document, string commandKey, int loopStartLine)
 		{
+			_alreadyVisitedDefineKeys.Clear();
+			_cachedDataTable = GetMnemonicConstantsDataTable();
+
+			var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
+
 			try // Not sure if this will work correctly, so putting this into a try / catch for safety
 			{
-				var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
-
 				for (int i = loopStartLine; i <= document.LineCount; i++)
 				{
-					string processedLineText = CommandParser.GetWholeCommandLineText(document, document.GetLineByNumber(i).Offset);
+					string lineText = CommandParser.GetWholeCommandLineText(document, document.GetLineByNumber(i).Offset);
 
-					if (processedLineText == null)
+					if (lineText == null)
 						continue;
 
-					processedLineText = LineParser.EscapeComments(processedLineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
-
-					Match match = firstIdRegex.Match(processedLineText);
+					lineText = LineParser.EscapeCommentsAndNewLines(lineText);
+					Match match = firstIdRegex.Match(lineText);
 
 					if (match.Success)
 					{
-						string[] numbers = match.Groups[1].Value.Split(new[] { '+', '-' }, StringSplitOptions.RemoveEmptyEntries);
-						int finalResult = 0;
+						int result = 0;
 
-						char[] mathSymbols = match.Groups[1].Value.Where(c => c == '+' || c == '-').ToArray();
-
-						for (int j = 0; j < numbers.Length; j++)
+						foreach (string variable in match.Groups[1].Value.Split('+').Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()))
 						{
-							char equationType = '+';
-
-							if (j > 0)
-								equationType = mathSymbols[j - 1];
-
-							string number = numbers[j];
-
-							if (int.TryParse(number.Trim(), out int value))
-							{
-								switch (equationType)
-								{
-									case '+': finalResult += value; break;
-									case '-': finalResult -= value; break;
-								}
-							}
+							if (int.TryParse(variable, out int value))
+								result += value;
+							else if (variable.StartsWith("-"))
+								result -= GetDefineSum(document, variable.TrimStart('-').TrimStart());
 							else
-							{
-								var defineRegex = new Regex($@"^\s*#DEFINE\s+{Regex.Escape(number.Trim())}\s+(\d+)\s*(;.*)?$", RegexOptions.IgnoreCase);
-
-								foreach (DocumentLine line in document.Lines)
-								{
-									string lineText = CommandParser.GetWholeCommandLineText(document, line.Offset);
-
-									if (lineText == null)
-										continue;
-
-									lineText = LineParser.EscapeComments(lineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
-
-									Match defineMatch = defineRegex.Match(lineText);
-
-									if (defineMatch.Success && int.TryParse(defineMatch.Groups[1].Value.Trim(), out int defineValue))
-									{
-										switch (equationType)
-										{
-											case '+': finalResult += defineValue; break;
-											case '-': finalResult -= defineValue; break;
-										}
-									}
-								}
-							}
+								result += GetDefineSum(document, variable);
 						}
 
-						return finalResult == 0 ? 1 : finalResult;
+						return result < 1 ? 1 : result;
 					}
 				}
 			}
 			catch { }
 
 			return 1;
+		}
+
+		private static int GetDefineSum(TextDocument document, string defineKey)
+		{
+			if (_alreadyVisitedDefineKeys.Contains(defineKey)) // Stop infinite loop
+				return 0;
+
+			_alreadyVisitedDefineKeys.Add(defineKey);
+
+			var defineRegex = new Regex($@"^\s*#DEFINE\s+{Regex.Escape(defineKey)}\s+(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
+
+			foreach (DocumentLine line in document.Lines)
+			{
+				string lineText = CommandParser.GetWholeCommandLineText(document, line.Offset);
+
+				if (lineText == null)
+					continue;
+
+				lineText = LineParser.EscapeCommentsAndNewLines(lineText);
+				Match match = defineRegex.Match(lineText);
+
+				if (match.Success)
+				{
+					int result = 0;
+
+					foreach (string variable in match.Groups[1].Value.Split('+').Select(x => x.Replace('(', ' ').Replace(')', ' ').Trim()))
+					{
+						if (int.TryParse(variable, out int value))
+							result += value;
+						else
+						{
+							DataRow row = _cachedDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
+
+							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
+								result += rowValue;
+							else if (variable.StartsWith("-"))
+								result -= GetDefineSum(document, variable.TrimStart('-').TrimStart());
+							else
+								result += GetDefineSum(document, variable);
+						}
+					}
+
+					return result < 1 ? 1 : result;
+				}
+			}
+
+			return 0;
 		}
 
 		private static IEnumerable<int> GetTakenIndicesList(TextDocument document, string commandKey, int loopStartLine)
@@ -144,6 +164,54 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out int takenIndex))
 						yield return takenIndex;
 			}
+		}
+
+		// TODO: MOVE THIS ELSEWHERE !!!
+
+		private static DataTable GetMnemonicConstantsDataTable()
+		{
+			string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
+
+			using (var reader = XmlReader.Create(xmlPath))
+			{
+				var dataSet = new DataSet();
+				dataSet.ReadXml(reader);
+
+				DataTable dataTable = dataSet.Tables[0];
+
+				AddPluginMnemonics(dataTable);
+
+				return dataTable;
+			}
+		}
+
+		private static void AddPluginMnemonics(DataTable dataTable)
+		{
+			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
+
+			foreach (DataRow row in pluginMnemonicTable.Rows)
+				dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
+		}
+
+		private static DataTable GetPluginMnemonicTable()
+		{
+			var dataTable = new DataTable();
+
+			dataTable.Columns.Add("decimal", typeof(string));
+			dataTable.Columns.Add("hex", typeof(string));
+			dataTable.Columns.Add("flag", typeof(string));
+
+			foreach (PluginConstant mnemonic in MnemonicData.PluginConstants)
+			{
+				DataRow row = dataTable.NewRow();
+				row["decimal"] = mnemonic.DecimalValue;
+				row["hex"] = mnemonic.HexValue;
+				row["flag"] = mnemonic.FlagName;
+
+				dataTable.Rows.Add(row);
+			}
+
+			return dataTable;
 		}
 	}
 }

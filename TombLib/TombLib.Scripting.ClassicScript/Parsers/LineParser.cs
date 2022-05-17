@@ -32,6 +32,9 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return lineText;
 		}
 
+		public static string EscapeCommentsAndNewLines(string lineText)
+			=> EscapeComments(lineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
+
 		public static string RemoveNGStringIndex(string lineText)
 			=> Regex.Replace(lineText, @"^\d+:\s*", string.Empty, RegexOptions.Multiline);
 
