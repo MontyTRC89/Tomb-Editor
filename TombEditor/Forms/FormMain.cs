@@ -319,6 +319,9 @@ namespace TombEditor.Forms
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
             }
+
+            // HACK: MenuStrip textbox has no means of updating other way.
+            tbSearchMenu.BackColor = Colors.GreyBackground;
         }
 
         private void UpdateControls()
