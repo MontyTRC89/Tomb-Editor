@@ -312,9 +312,17 @@ namespace TombIDE.ScriptingStudio
 						DataRow row = null;
 
 						if (e.Type == WordType.Hexadecimal)
-							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+						{
+							row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+								=> r[1].ToString().Equals(word, StringComparison.OrdinalIgnoreCase)
+								&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+						}
 						else if (e.Type == WordType.Decimal)
-							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+						{
+							row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+								=> r[0].ToString().Equals(word, StringComparison.OrdinalIgnoreCase)
+								&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+						}
 
 						if (row != null)
 							word = row[2].ToString();

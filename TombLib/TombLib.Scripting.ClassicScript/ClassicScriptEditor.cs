@@ -483,15 +483,19 @@ namespace TombLib.Scripting.ClassicScript
 						switch (type)
 						{
 							case WordType.MnemonicConstant:
-								row = dataTable.Select($"flag = '{hoveredWord}'")?.FirstOrDefault();
+								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r => r[2].ToString().Equals(hoveredWord));
 								break;
 
 							case WordType.Hexadecimal:
-								row = dataTable.Select($"hex = '{hoveredWord}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+									=> r[1].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)
+									&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
 								break;
 
 							case WordType.Decimal:
-								row = dataTable.Select($"decimal = '{hoveredWord}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+									=> r[0].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)
+									&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
 								break;
 						}
 

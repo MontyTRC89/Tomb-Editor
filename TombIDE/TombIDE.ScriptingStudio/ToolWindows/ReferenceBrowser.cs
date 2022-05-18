@@ -93,7 +93,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			}
 
 			string filter = searchTextBox.Text.Trim();
-			dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
+			dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter.Replace('%', ' ').Replace('*', ' ') + "%'";
 
 			dataGrid.DataSource = dataTable;
 			dataGrid.Columns["_RowString"].Visible = false;
