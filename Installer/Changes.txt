@@ -15,6 +15,7 @@ TombIDE:
  * Completely redesigned the "Create a new level" window.
  * Completely redesigned the implementation and handling of TRNG Plugins. Now they are per-project rather than global.
  * Slightly redesigned the Reference Browser.
+ * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
  * Added vanilla TR4 (TRLE), TR3, TR2 and Tomb1Main support with presets.
  * Added "Create a 'Ready To Play' game archive", which allows the user to create a game archive with no dev files.
  * Added the ability to view F12 definitions of constants which were given in decimal or hexadecimal form.
@@ -23,11 +24,12 @@ TombIDE:
  * Added autocomplete for #INCLUDE directives.
  * Added more details into "hover over" tooltips.
  * Scripting Studio docking layouts now save with the config.
- * Scripting Studio bookmarks now save.
+ * Scripting Studio bookmarks now save with files.
  * #FIRST_ID is now being recognised when pressing F1. (May not be fully accurate yet.)
- * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
  * Improved bracket and quote autoclosing.
  * Generally improved autocomplete for TRNG scripting.
+ * Slightly improved syntax highlighting for TRNG scripting.
+ * Fixed some error false-positives for TRNG scripting.
  * Fixed some Scripting Studio performance issues.
  * Fixed Scripting Studio right-click menus not appearing.
  * Fixed F12 on directives like "#INCLUDE" not working.
