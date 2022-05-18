@@ -15,44 +15,42 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			int wordStart = -1;
 			int wordEnd = -1;
 
-			if (offset == document.TextLength)
+			for (int i = offset; i <= line.EndOffset; i++)
 			{
-				wordEnd = offset;
-				offset--;
+				if (i == line.EndOffset)
+				{
+					wordEnd = i;
+					break;
+				}
+
+				char c = document.GetCharAt(i);
+
+				if (c == ',' || c == '=' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
+				{
+					wordEnd = i;
+					break;
+				}
 			}
+
+			if (offset == line.Offset)
+				wordStart = offset;
 			else
 			{
-				for (int i = offset; i <= line.EndOffset; i++)
+				for (int i = offset - 1; i >= line.Offset; i--)
 				{
-					if (i == line.EndOffset)
+					if (i == line.Offset)
 					{
-						wordEnd = i;
+						wordStart = i;
 						break;
 					}
 
 					char c = document.GetCharAt(i);
 
-					if (c == ',' || c == '=' || c == ']' || c == '\n' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
+					if (c == ',' || c == '=' || c == '+' || c == '-' || c == '*' || c == '/' || c == '(')
 					{
-						wordEnd = i;
+						wordStart = i + 1;
 						break;
 					}
-				}
-			}
-
-			for (int i = offset; i >= line.Offset; i--)
-			{
-				char c = document.GetCharAt(i);
-
-				if (c == ',' || c == '=' || c == '[' || c == '+' || c == '-' || c == '*' || c == '/' || c == '(')
-				{
-					wordStart = i + 1;
-					break;
-				}
-				else if (i == line.Offset)
-				{
-					wordStart = i;
-					break;
 				}
 			}
 
@@ -66,8 +64,6 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		{
 			if (offset > document.TextLength)
 				return WordType.Unknown;
-			else if (offset == document.TextLength)
-				offset--;
 
 			DocumentLine line = document.GetLineByOffset(offset);
 
@@ -75,7 +71,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			{
 				if (i == line.EndOffset)
 				{
-					for (int j = offset; j > line.Offset; j--)
+					for (int j = i - 1; j >= line.Offset; j--)
 					{
 						char ch = document.GetCharAt(j);
 
@@ -94,7 +90,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 				if (c == ']')
 				{
-					for (int j = offset; j >= line.Offset; j--)
+					for (int j = i - 1; j >= line.Offset; j--)
 						if (document.GetCharAt(j) == '[')
 							return WordType.Header;
 				}
@@ -104,9 +100,9 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					return WordType.MnemonicConstant;
 				else if (c == '$')
 					return WordType.Hexadecimal;
-				else if (c == ',' || c == '\n' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
+				else if (c == ',' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
 				{
-					for (int j = offset; j > line.Offset; j--)
+					for (int j = i - 1; j >= line.Offset; j--)
 					{
 						char ch = document.GetCharAt(j);
 

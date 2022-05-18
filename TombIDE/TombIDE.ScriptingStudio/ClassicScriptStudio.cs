@@ -291,10 +291,7 @@ namespace TombIDE.ScriptingStudio
 			ReferenceType type = ReferenceType.MnemonicConstant;
 
 			if (e.Type == WordType.Header)
-			{
-				word = "[" + word + "]";
 				type = ReferenceType.OldCommand;
-			}
 			else if (e.Type == WordType.Command)
 				type = RddaReader.GetCommandType(word);
 			else if (e.Type == WordType.Directive)
