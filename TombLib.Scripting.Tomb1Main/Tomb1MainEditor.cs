@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Bases;
@@ -22,50 +23,88 @@ namespace TombLib.Scripting.Tomb1Main
 
 		private void BindEventMethods()
 		{
+			TextArea.TextEntering += TextArea_TextEntering;
 			TextArea.TextEntered += TextEditor_TextEntered;
 		}
 
-		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
+		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
 		{
-			if (AutocompleteEnabled)
-				HandleAutocomplete(e);
-		}
-
-		private void HandleAutocomplete(TextCompositionEventArgs e)
-		{
-			if (_completionWindow == null) // Prevents window duplicates
+			if (AutocompleteEnabled && e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
 			{
-				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+				if (_completionWindow == null)
 				{
-					Select(CaretOffset - 1, 1);
-					SelectedText = string.Empty;
-
 					InitializeCompletionWindow();
-					_completionWindow.StartOffset = CaretOffset;
+
+					if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) == '\"')
+						_completionWindow.StartOffset = CaretOffset - 1;
+					else if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) != ' ')
+					{
+						int wordStartOffset =
+							TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
+
+						string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+
+						if (!word.StartsWith(":"))
+						{
+							_completionWindow.StartOffset = wordStartOffset;
+
+							if (wordStartOffset - 1 > 0 && Document.GetCharAt(wordStartOffset - 1) == '\"')
+								_completionWindow.StartOffset--;
+						}
+					}
+
+					if (Document.GetCharAt(CaretOffset) == '\"')
+						_completionWindow.EndOffset = CaretOffset + 1;
 
 					foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
 						_completionWindow.CompletionList.CompletionData.Add(item);
 
 					ShowCompletionWindow();
 				}
-				else
+
+				e.Handled = true;
+			}
+		}
+
+		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
+		{
+			if (AutocompleteEnabled && _completionWindow == null)
+				HandleAutocomplete();
+		}
+
+		private void HandleAutocomplete()
+		{
+			string currentLineText = LineParser.EscapeComments(Document.GetText(Document.GetLineByOffset(CaretOffset))).Trim();
+
+			if ((currentLineText.Length == 1 && char.IsLetter(currentLineText[0])) || currentLineText.Equals("\"\""))
+			{
+				InitializeCompletionWindow();
+
+				if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) == '\"')
+					_completionWindow.StartOffset = CaretOffset - 1;
+				else if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) != ' ')
 				{
-					string currentLineText = LineParser.EscapeComments(Document.GetText(Document.GetLineByOffset(CaretOffset))).Trim();
+					int wordStartOffset =
+						TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
 
-					if (currentLineText.Length == 1 || currentLineText.Equals("\"\""))
+					string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+
+					if (!word.StartsWith(":"))
 					{
-						InitializeCompletionWindow();
-						_completionWindow.StartOffset = CaretOffset - 1;
+						_completionWindow.StartOffset = wordStartOffset;
 
-						if (currentLineText.Equals("\"\""))
-							_completionWindow.EndOffset = CaretOffset + 1;
-
-						foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
-							_completionWindow.CompletionList.CompletionData.Add(item);
-
-						ShowCompletionWindow();
+						if (wordStartOffset - 1 > 0 && Document.GetCharAt(wordStartOffset - 1) == '\"')
+							_completionWindow.StartOffset--;
 					}
 				}
+
+				if (Document.GetCharAt(CaretOffset) == '\"')
+					_completionWindow.EndOffset = CaretOffset + 1;
+
+				foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
+					_completionWindow.CompletionList.CompletionData.Add(item);
+
+				ShowCompletionWindow();
 			}
 		}
 
