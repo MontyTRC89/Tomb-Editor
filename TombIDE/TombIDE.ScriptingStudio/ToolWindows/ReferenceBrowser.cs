@@ -11,7 +11,6 @@ using System.Xml;
 using TombIDE.ScriptingStudio.Objects;
 using TombIDE.Shared;
 using TombLib.Scripting.ClassicScript.Enums;
-using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombIDE.ScriptingStudio.ToolWindows
@@ -64,7 +63,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 					DataTable dataTable = dataSet.Tables[0];
 
 					if (treeView.SelectedNodes[0] == treeView.Nodes[0])
-						AddPluginMnemonics(dataTable);
+						MnemonicData.AddPluginMnemonics(dataTable);
 
 					AddFilterRowString(dataTable);
 					SetFriendlyColumnHeaders();
@@ -98,35 +97,6 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 			dataGrid.DataSource = dataTable;
 			dataGrid.Columns["_RowString"].Visible = false;
-		}
-
-		public void AddPluginMnemonics(DataTable dataTable)
-		{
-			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
-
-			foreach (DataRow row in pluginMnemonicTable.Rows)
-				dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
-		}
-
-		private DataTable GetPluginMnemonicTable()
-		{
-			var dataTable = new DataTable();
-
-			dataTable.Columns.Add("decimal", typeof(string));
-			dataTable.Columns.Add("hex", typeof(string));
-			dataTable.Columns.Add("flag", typeof(string));
-
-			foreach (PluginConstant mnemonic in MnemonicData.PluginConstants)
-			{
-				DataRow row = dataTable.NewRow();
-				row["decimal"] = mnemonic.DecimalValue;
-				row["hex"] = mnemonic.HexValue;
-				row["flag"] = mnemonic.FlagName;
-
-				dataTable.Rows.Add(row);
-			}
-
-			return dataTable;
 		}
 
 		private void SetFriendlyColumnHeaders()

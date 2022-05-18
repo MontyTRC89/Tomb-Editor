@@ -21,10 +21,12 @@ TombIDE:
  * Added CTRL+F5 to create a new #INCLUDE file at caret position.
  * Added keyboard shortcuts for the File Explorer.
  * Added autocomplete for #INCLUDE directives.
+ * Added more details into "hover over" tooltips.
  * Scripting Studio docking layouts now save with the config.
  * Scripting Studio bookmarks now save.
  * #FIRST_ID is now being recognised when pressing F1. (May not be fully accurate yet.)
  * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
+ * Improved bracket and quote autoclosing.
  * Generally improved autocomplete for TRNG scripting.
  * Fixed some Scripting Studio performance issues.
  * Fixed Scripting Studio right-click menus not appearing.

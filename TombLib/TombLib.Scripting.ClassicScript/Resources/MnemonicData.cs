@@ -34,6 +34,8 @@ namespace TombLib.Scripting.ClassicScript.Resources
 				allMnemonics.Add(pluginMnemonic.FlagName);
 
 			AllConstantFlags = allMnemonics;
+
+			SetupMnemonicConstantsDataTable();
 		}
 
 		private static List<string> GetMnemonicConstants(string referencesPath)
@@ -126,6 +128,54 @@ namespace TombLib.Scripting.ClassicScript.Resources
 			{
 				return null;
 			}
+		}
+
+		public static DataTable MnemonicConstantsDataTable { get; private set; }
+
+		private static void SetupMnemonicConstantsDataTable()
+		{
+			string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
+
+			using (var reader = XmlReader.Create(xmlPath))
+			{
+				var dataSet = new DataSet();
+				dataSet.ReadXml(reader);
+
+				DataTable dataTable = dataSet.Tables[0];
+
+				AddPluginMnemonics(dataTable);
+
+				MnemonicConstantsDataTable = dataTable;
+			}
+		}
+
+		public static void AddPluginMnemonics(DataTable dataTable)
+		{
+			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
+
+			foreach (DataRow row in pluginMnemonicTable.Rows)
+				dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
+		}
+
+		private static DataTable GetPluginMnemonicTable()
+		{
+			var dataTable = new DataTable();
+
+			dataTable.Columns.Add("decimal", typeof(string));
+			dataTable.Columns.Add("hex", typeof(string));
+			dataTable.Columns.Add("flag", typeof(string));
+
+			foreach (PluginConstant mnemonic in PluginConstants)
+			{
+				DataRow row = dataTable.NewRow();
+				row["decimal"] = mnemonic.DecimalValue;
+				row["hex"] = mnemonic.HexValue;
+				row["flag"] = mnemonic.FlagName;
+
+				dataTable.Rows.Add(row);
+			}
+
+			return dataTable;
 		}
 	}
 }

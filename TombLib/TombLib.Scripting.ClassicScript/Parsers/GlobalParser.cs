@@ -3,11 +3,8 @@ using NCalc;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
-using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Helpers;
 
@@ -57,12 +54,10 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		}
 
 		private static Stack<string> _alreadyVisitedVariables = new Stack<string>();
-		private static DataTable _cachedDataTable;
 
 		private static int GetFirstId(TextDocument document, string commandKey, int loopStartLine)
 		{
 			_alreadyVisitedVariables.Clear();
-			_cachedDataTable = GetMnemonicConstantsDataTable();
 
 			int result = 0;
 			var firstIdRegex = new Regex($@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$", RegexOptions.IgnoreCase);
@@ -91,7 +86,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							if (int.TryParse(variable, out int _))
 								continue;
 
-							DataRow row = _cachedDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
+							DataRow row = MnemonicData.MnemonicConstantsDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
 
 							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
 								expressionString = expressionString.Replace(variable, rowValue.ToString());
@@ -147,7 +142,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 						if (int.TryParse(subVariable, out int _))
 							continue;
 
-						DataRow row = _cachedDataTable.Select($"flag = '{subVariable}'")?.FirstOrDefault();
+						DataRow row = MnemonicData.MnemonicConstantsDataTable.Select($"flag = '{subVariable}'")?.FirstOrDefault();
 
 						if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
 							expressionString = expressionString.Replace(subVariable, rowValue.ToString());
@@ -187,54 +182,6 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out int takenIndex))
 						yield return takenIndex;
 			}
-		}
-
-		// TODO: MOVE THIS ELSEWHERE !!!
-
-		private static DataTable GetMnemonicConstantsDataTable()
-		{
-			string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
-
-			using (var reader = XmlReader.Create(xmlPath))
-			{
-				var dataSet = new DataSet();
-				dataSet.ReadXml(reader);
-
-				DataTable dataTable = dataSet.Tables[0];
-
-				AddPluginMnemonics(dataTable);
-
-				return dataTable;
-			}
-		}
-
-		private static void AddPluginMnemonics(DataTable dataTable)
-		{
-			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
-
-			foreach (DataRow row in pluginMnemonicTable.Rows)
-				dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
-		}
-
-		private static DataTable GetPluginMnemonicTable()
-		{
-			var dataTable = new DataTable();
-
-			dataTable.Columns.Add("decimal", typeof(string));
-			dataTable.Columns.Add("hex", typeof(string));
-			dataTable.Columns.Add("flag", typeof(string));
-
-			foreach (PluginConstant mnemonic in MnemonicData.PluginConstants)
-			{
-				DataRow row = dataTable.NewRow();
-				row["decimal"] = mnemonic.DecimalValue;
-				row["hex"] = mnemonic.HexValue;
-				row["flag"] = mnemonic.FlagName;
-
-				dataTable.Rows.Add(row);
-			}
-
-			return dataTable;
 		}
 	}
 }

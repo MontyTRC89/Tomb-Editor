@@ -4,6 +4,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -111,9 +112,11 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			if (AutocompleteEnabled)
 			{
-				if (_completionWindow == null && e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) // Prevents window duplicates
+				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) // Prevents window duplicates
 				{
-					HandleAutocompleteAfterSpaceCtrl();
+					if (_completionWindow == null)
+						HandleAutocompleteAfterSpaceCtrl();
+
 					e.Handled = true;
 				}
 			}
@@ -190,18 +193,21 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			string wholeLineText = CommandParser.GetWholeCommandLineText(Document, CaretOffset);
 
-			if (string.IsNullOrEmpty(wholeLineText))
-				HandleAutocompleteOnEmptyLine();
-			else if (!_autocompleteWorker.IsBusy)
+			if (_completionWindow == null)
 			{
-				var data = new List<object>
+				if (string.IsNullOrEmpty(wholeLineText))
+					HandleAutocompleteOnEmptyLine();
+				else if (!_autocompleteWorker.IsBusy)
+				{
+					var data = new List<object>
 				{
 					Text,
 					CaretOffset,
 					-1
 				};
 
-				_autocompleteWorker.RunWorkerAsync(data);
+					_autocompleteWorker.RunWorkerAsync(data);
+				}
 			}
 
 			if (_completionWindow == null)
@@ -246,13 +252,24 @@ namespace TombLib.Scripting.ClassicScript
 
 				if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) == '\"')
 					_completionWindow.StartOffset = CaretOffset - 1;
-				else
-					_completionWindow.StartOffset = CaretOffset;
+				else if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) != ' ')
+				{
+					int wordStartOffset =
+						TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStart);
+
+					string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+
+					if (!word.StartsWith("#"))
+					{
+						_completionWindow.StartOffset = wordStartOffset;
+
+						if (wordStartOffset - 1 > 0 && Document.GetCharAt(wordStartOffset - 1) == '\"')
+							_completionWindow.StartOffset--;
+					}
+				}
 
 				if (Document.GetCharAt(CaretOffset) == '\"')
 					_completionWindow.EndOffset = CaretOffset + 1;
-				else
-					_completionWindow.EndOffset = CaretOffset;
 
 				string directoryPath = Path.GetDirectoryName(FilePath);
 				var fileDirectory = new DirectoryInfo(directoryPath);
@@ -431,6 +448,9 @@ namespace TombLib.Scripting.ClassicScript
 			string hoveredWord = WordParser.GetWordFromOffset(Document, hoveredOffset);
 			WordType type = WordParser.GetWordTypeFromOffset(Document, hoveredOffset);
 
+			if (type == WordType.MnemonicConstant && !MnemonicData.AllConstantFlags.Any(x => x.Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)))
+				type = WordType.Unknown;
+
 			if (type == WordType.Unknown && int.TryParse(hoveredWord, out _))
 				type = WordType.Decimal;
 
@@ -442,7 +462,51 @@ namespace TombLib.Scripting.ClassicScript
 
 			if (type != WordType.Unknown)
 			{
-				ShowToolTip($"For more information about the \"{hoveredWord}\" {type}, Press F12");
+				if (type == WordType.MnemonicConstant || type == WordType.Hexadecimal || type == WordType.Decimal)
+				{
+					string currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(Document, hoveredOffset);
+
+					if (currentFlagPrefix == null)
+					{
+						if (type == WordType.MnemonicConstant)
+							ShowToolTip($"For more information about the \"{hoveredWord}\" Constant, Press F12.");
+						else
+							type = WordType.Unknown;
+					}
+					else
+					{
+						DataTable dataTable = MnemonicData.MnemonicConstantsDataTable;
+						DataRow row = null;
+
+						switch (type)
+						{
+							case WordType.MnemonicConstant:
+								row = dataTable.Select($"flag = '{hoveredWord}'")?.FirstOrDefault();
+								break;
+
+							case WordType.Hexadecimal:
+								row = dataTable.Select($"hex = '{hoveredWord}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+								break;
+
+							case WordType.Decimal:
+								row = dataTable.Select($"decimal = '{hoveredWord}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+								break;
+						}
+
+						if (row == null)
+							type = WordType.Unknown;
+						else
+						{
+							ShowToolTip($"{row[2]}\n" +
+								$"{row[1]}\n" +
+								$"{row[0]}\n\n" +
+								$"For more information about the \"{row[2]}\" Constant, Press F12.");
+						}
+					}
+				}
+				else
+					ShowToolTip($"For more information about the \"{hoveredWord}\" {type}, Press F12.");
+
 				HoveredWordArgs = new WordDefinitionEventArgs(hoveredWord, type, hoveredOffset);
 			}
 		}

@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Forms;
@@ -22,6 +21,7 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.ClassicScript.Utils;
 using TombLib.Scripting.ClassicScript.Writers;
 using TombLib.Scripting.Enums;
@@ -313,27 +313,16 @@ namespace TombIDE.ScriptingStudio
 
 					if (currentFlagPrefix != null)
 					{
-						string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, "MnemonicConstants.xml");
+						DataTable dataTable = MnemonicData.MnemonicConstantsDataTable;
+						DataRow row = null;
 
-						using (var reader = XmlReader.Create(xmlPath))
-						{
-							var dataSet = new DataSet();
-							dataSet.ReadXml(reader);
+						if (e.Type == WordType.Hexadecimal)
+							row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
+						else if (e.Type == WordType.Decimal)
+							row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
 
-							DataTable dataTable = dataSet.Tables[0];
-
-							ReferenceBrowser.AddPluginMnemonics(dataTable);
-
-							DataRow row = null;
-
-							if (e.Type == WordType.Hexadecimal)
-								row = dataTable.Select($"hex = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
-							else if (e.Type == WordType.Decimal)
-								row = dataTable.Select($"decimal = '{word}' and flag like '{currentFlagPrefix}*'")?.FirstOrDefault();
-
-							if (row != null)
-								word = row[2].ToString();
-						}
+						if (row != null)
+							word = row[2].ToString();
 					}
 				}
 				catch { }

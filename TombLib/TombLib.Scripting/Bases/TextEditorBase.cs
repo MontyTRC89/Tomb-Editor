@@ -413,20 +413,30 @@ namespace TombLib.Scripting.Bases
 		private void HandleAutoClosing(TextCompositionEventArgs e)
 		{
 			if (AutoCloseParentheses && e.Text == "(")
-				PerformAutoClosing(")");
+				PerformAutoClosing(e, ")");
 
 			if (AutoCloseBraces && e.Text == "{")
-				PerformAutoClosing("}");
+				PerformAutoClosing(e, "}");
 
 			if (AutoCloseBrackets && e.Text == "[")
-				PerformAutoClosing("]");
+				PerformAutoClosing(e, "]");
 
 			if (AutoCloseQuotes && e.Text == "\"")
-				PerformAutoClosing("\"");
+				PerformAutoClosing(e, "\"");
+
+			if (AutoCloseQuotes && e.Text == "'")
+				PerformAutoClosing(e, "'");
 		}
 
-		private void PerformAutoClosing(string closingElement)
+		private void PerformAutoClosing(TextCompositionEventArgs e, string closingElement)
 		{
+			if (Document.GetCharAt(CaretOffset) == closingElement[0])
+			{
+				CaretOffset++;
+				e.Handled = true;
+				return;
+			}
+
 			SelectedText += closingElement;
 			CaretOffset--;
 
