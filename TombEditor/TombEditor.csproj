@@ -736,7 +736,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy  /s /y /i /q "$(ProjectDir)Resources\assets" "$(TargetDir)Assets\"
 rmdir /s /q "$(TargetDir)Runtimes\linux-x64"
-rmdir /s /q "$(TargetDir)Runtimes\osx-x64"</PostBuildEvent>
+rmdir /s /q "$(TargetDir)Runtimes\osx-x64"
+del *.pdb</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
