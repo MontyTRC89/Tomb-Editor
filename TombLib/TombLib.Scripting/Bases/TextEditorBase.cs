@@ -423,14 +423,11 @@ namespace TombLib.Scripting.Bases
 
 			if (AutoCloseQuotes && e.Text == "\"")
 				PerformAutoClosing(e, "\"");
-
-			if (AutoCloseQuotes && e.Text == "'")
-				PerformAutoClosing(e, "'");
 		}
 
 		private void PerformAutoClosing(TextCompositionEventArgs e, string closingElement)
 		{
-			if (Document.GetCharAt(CaretOffset) == closingElement[0])
+			if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == closingElement[0])
 			{
 				CaretOffset++;
 				e.Handled = true;

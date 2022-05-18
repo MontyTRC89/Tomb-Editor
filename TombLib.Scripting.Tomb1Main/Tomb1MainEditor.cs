@@ -80,9 +80,9 @@ namespace TombLib.Scripting.Tomb1Main
 			{
 				InitializeCompletionWindow();
 
-				if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) == '\"')
+				if (Document.GetCharAt(CaretOffset - 1) == '\"')
 					_completionWindow.StartOffset = CaretOffset - 1;
-				else if (CaretOffset - 1 > 0 && Document.GetCharAt(CaretOffset - 1) != ' ')
+				else if (Document.GetCharAt(CaretOffset - 1) != ' ')
 				{
 					int wordStartOffset =
 						TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
