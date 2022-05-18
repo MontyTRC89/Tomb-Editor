@@ -483,7 +483,8 @@ namespace TombLib.Scripting.ClassicScript
 						switch (type)
 						{
 							case WordType.MnemonicConstant:
-								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r => r[2].ToString().Equals(hoveredWord));
+								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+									=> r[2].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase));
 								break;
 
 							case WordType.Hexadecimal:
