@@ -270,7 +270,7 @@ namespace TombLib.Scripting.ClassicScript
 					}
 				}
 
-				if (Document.GetCharAt(CaretOffset) == '\"')
+				if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == '\"')
 					_completionWindow.EndOffset = CaretOffset + 1;
 
 				string directoryPath = Path.GetDirectoryName(FilePath);

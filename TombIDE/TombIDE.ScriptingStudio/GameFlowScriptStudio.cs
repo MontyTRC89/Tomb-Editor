@@ -30,6 +30,8 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.PlainTextTypeOverride = typeof(GameFlowScriptStudio);
 
+			EditorTabControl.CheckPreviousSession();
+
 			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))

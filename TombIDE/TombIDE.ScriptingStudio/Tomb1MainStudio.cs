@@ -25,6 +25,8 @@ namespace TombIDE.ScriptingStudio
 
 			FileExplorer.Filter = "*.json5";
 
+			EditorTabControl.CheckPreviousSession();
+
 			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, true);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))

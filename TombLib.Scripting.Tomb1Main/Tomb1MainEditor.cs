@@ -14,6 +14,9 @@ namespace TombLib.Scripting.Tomb1Main
 {
 	public sealed class Tomb1MainEditor : TextEditorBase
 	{
+		private bool _suppressBracketAutospacing;
+		private DocumentLine _cachedLine;
+
 		public Tomb1MainEditor()
 		{
 			BindEventMethods();
@@ -64,12 +67,33 @@ namespace TombLib.Scripting.Tomb1Main
 
 				e.Handled = true;
 			}
+
+			if (!_suppressBracketAutospacing && e.Text == "\n" && CaretOffset < Document.TextLength)
+			{
+				char prev = Document.GetCharAt(CaretOffset - 1);
+				char next = Document.GetCharAt(CaretOffset);
+
+				if ((prev == '{' && next == '}') || (prev == '[' && next == ']'))
+					_suppressBracketAutospacing = true;
+			}
 		}
 
 		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
 		{
 			if (AutocompleteEnabled && _completionWindow == null)
 				HandleAutocomplete();
+
+			if (_suppressBracketAutospacing && _cachedLine == null)
+			{
+				_cachedLine = Document.GetLineByOffset(CaretOffset);
+
+				TextArea.PerformTextInput("\n");
+				CaretOffset = _cachedLine.EndOffset;
+				TextArea.PerformTextInput("\t");
+
+				_cachedLine = null;
+				_suppressBracketAutospacing = false;
+			}
 		}
 
 		private void HandleAutocomplete()
@@ -98,7 +122,7 @@ namespace TombLib.Scripting.Tomb1Main
 					}
 				}
 
-				if (Document.GetCharAt(CaretOffset) == '\"')
+				if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == '\"')
 					_completionWindow.EndOffset = CaretOffset + 1;
 
 				foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
