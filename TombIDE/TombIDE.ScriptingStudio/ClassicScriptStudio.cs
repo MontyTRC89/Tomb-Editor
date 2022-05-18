@@ -277,9 +277,7 @@ namespace TombIDE.ScriptingStudio
 		{
 			if (CurrentEditor is ClassicScriptEditor editor)
 			{
-				if (e.Key == System.Windows.Input.Key.F5 && ModifierKeys == Keys.Control)
-					CreateNewFileAtCaretPosition(editor);
-				else if (e.Key == System.Windows.Input.Key.F5)
+				if (e.Key == System.Windows.Input.Key.F5 && ModifierKeys != Keys.Control)
 					OpenIncludeFile(editor);
 			}
 		}
@@ -355,8 +353,12 @@ namespace TombIDE.ScriptingStudio
 
 			if (filePath != null)
 			{
+				editor.SuppressAutocomplete = true;
+
 				string includeValue = filePath.Replace(Path.GetDirectoryName(editor.FilePath), string.Empty).TrimStart('\\');
 				editor.TextArea.PerformTextInput($"{Environment.NewLine}#INCLUDE \"{includeValue}\"");
+
+				editor.SuppressAutocomplete = false;
 			}
 		}
 

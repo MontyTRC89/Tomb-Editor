@@ -53,6 +53,8 @@ namespace TombLib.Scripting.ClassicScript
 			}
 		}
 
+		public bool SuppressAutocomplete { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -110,7 +112,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
 		{
-			if (AutocompleteEnabled)
+			if (AutocompleteEnabled && !SuppressAutocomplete)
 			{
 				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) // Prevents window duplicates
 				{
@@ -124,7 +126,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
 		{
-			if (AutocompleteEnabled)
+			if (AutocompleteEnabled && !SuppressAutocomplete)
 				HandleAutocomplete(e);
 		}
 
