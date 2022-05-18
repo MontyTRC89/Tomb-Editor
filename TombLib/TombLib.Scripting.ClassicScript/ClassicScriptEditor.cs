@@ -114,7 +114,7 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			if (AutocompleteEnabled && !SuppressAutocomplete)
 			{
-				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) // Prevents window duplicates
+				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
 				{
 					if (_completionWindow == null)
 						HandleAutocompleteAfterSpaceCtrl();
