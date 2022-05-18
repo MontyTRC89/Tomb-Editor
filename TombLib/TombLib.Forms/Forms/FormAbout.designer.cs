@@ -542,8 +542,8 @@
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(360, 24);
             this.darkLabel16.TabIndex = 28;
-            this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
-    "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
+            this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Embracer " +
+    "Group AB.\r\nThis software is a freeware and intended only for personal and non-co" +
     "mmercial use.";
             // 
             // linkLabel9
