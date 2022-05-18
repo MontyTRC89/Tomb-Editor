@@ -68,7 +68,7 @@ namespace TombLib.Scripting.Tomb1Main
 				e.Handled = true;
 			}
 
-			if (!_suppressBracketAutospacing && e.Text == "\n" && CaretOffset < Document.TextLength)
+			if (!_suppressBracketAutospacing && e.Text == "\n" && CaretOffset > 0 && CaretOffset < Document.TextLength)
 			{
 				char prev = Document.GetCharAt(CaretOffset - 1);
 				char next = Document.GetCharAt(CaretOffset);
