@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using System;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {
@@ -62,7 +63,8 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
 
-				if (!currentSyntaxArgument.Contains("(") && !currentSyntaxArgument.Contains("."))
+				if ((!currentSyntaxArgument.Contains("(") && !currentSyntaxArgument.Contains("."))
+					|| currentSyntaxArgument.IndexOf("(*Array*)", StringComparison.OrdinalIgnoreCase) >= 0)
 					return null;
 
 				return currentSyntaxArgument.Split('.')[0].Split('(')[1];
