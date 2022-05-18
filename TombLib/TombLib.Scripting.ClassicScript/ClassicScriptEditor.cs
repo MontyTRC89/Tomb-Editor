@@ -200,11 +200,11 @@ namespace TombLib.Scripting.ClassicScript
 				else if (!_autocompleteWorker.IsBusy)
 				{
 					var data = new List<object>
-				{
-					Text,
-					CaretOffset,
-					-1
-				};
+					{
+						Text,
+						CaretOffset,
+						-1
+					};
 
 					_autocompleteWorker.RunWorkerAsync(data);
 				}
