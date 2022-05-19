@@ -14,6 +14,7 @@ using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
 using TombLib.Scripting.Tomb1Main;
 using TombLib.Scripting.Tomb1Main.Objects;
+using TombLib.Scripting.Tomb1Main.Resources;
 
 namespace TombIDE.ScriptingStudio.Settings
 {
@@ -225,6 +226,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_CloseBrackets.Checked = config.AutoCloseBrackets;
 			checkBox_CloseQuotes.Checked = config.AutoCloseQuotes;
 			checkBox_CloseBraces.Checked = config.AutoCloseBraces;
+			checkBox_AutoAddCommas.Checked = config.AutoAddCommas;
 
 			checkBox_HighlightCurrentLine.Checked = config.HighlightCurrentLine;
 			checkBox_LineNumbers.Checked = config.ShowLineNumbers;
@@ -258,6 +260,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			config.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
 			config.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
 			config.AutoCloseBraces = checkBox_CloseBraces.Checked;
+			config.AutoAddCommas = checkBox_AutoAddCommas.Checked;
 
 			config.HighlightCurrentLine = checkBox_HighlightCurrentLine.Checked;
 			config.ShowLineNumbers = checkBox_LineNumbers.Checked;
@@ -287,6 +290,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_CloseBrackets.Checked = TextEditorBaseDefaults.AutoCloseBrackets;
 			checkBox_CloseQuotes.Checked = TextEditorBaseDefaults.AutoCloseQuotes;
 			checkBox_CloseBraces.Checked = TextEditorBaseDefaults.AutoCloseBraces;
+			checkBox_AutoAddCommas.Checked = ConfigurationDefaults.AutoAddCommas;
 
 			checkBox_HighlightCurrentLine.Checked = TextEditorBaseDefaults.HighlightCurrentLine;
 			checkBox_LineNumbers.Checked = TextEditorBaseDefaults.ShowLineNumbers;

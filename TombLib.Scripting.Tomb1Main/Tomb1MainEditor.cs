@@ -153,6 +153,9 @@ namespace TombLib.Scripting.Tomb1Main
 			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
 			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
 
+			BracesClosingString = config.AutoAddCommas ? "}," : "}";
+			BracketsClosingString = config.AutoAddCommas ? "]," : "]";
+
 			base.UpdateSettings(configuration);
 		}
 

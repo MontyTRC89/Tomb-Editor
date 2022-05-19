@@ -76,6 +76,11 @@ namespace TombLib.Scripting.Bases
 			set => _textChangedDelayedTimer.Interval = value;
 		}
 
+		public string ParenthesesClosingString { get; set; } = ")";
+		public string BracesClosingString { get; set; } = "}";
+		public string BracketsClosingString { get; set; } = "]";
+		public string QuotesClosingString { get; set; } = "\"";
+
 		#endregion Properties
 
 		#region Configuration
@@ -413,16 +418,16 @@ namespace TombLib.Scripting.Bases
 		private void HandleAutoClosing(TextCompositionEventArgs e)
 		{
 			if (AutoCloseParentheses && e.Text == "(")
-				PerformAutoClosing(e, ")");
+				PerformAutoClosing(e, ParenthesesClosingString);
 
 			if (AutoCloseBraces && e.Text == "{")
-				PerformAutoClosing(e, "}");
+				PerformAutoClosing(e, BracesClosingString);
 
 			if (AutoCloseBrackets && e.Text == "[")
-				PerformAutoClosing(e, "]");
+				PerformAutoClosing(e, BracketsClosingString);
 
 			if (AutoCloseQuotes && e.Text == "\"")
-				PerformAutoClosing(e, "\"");
+				PerformAutoClosing(e, QuotesClosingString);
 		}
 
 		private void PerformAutoClosing(TextCompositionEventArgs e, string closingElement)
@@ -435,7 +440,7 @@ namespace TombLib.Scripting.Bases
 			}
 
 			SelectedText += closingElement;
-			CaretOffset--;
+			CaretOffset -= closingElement.Length;
 
 			SelectionStart = CaretOffset;
 			SelectionLength = 0;

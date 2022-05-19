@@ -6,5 +6,7 @@
 		public const string ColorSchemeFileExtension = ".t1msch";
 
 		public const string SelectedColorSchemeName = "VS15";
+
+		public const bool AutoAddCommas = true;
 	}
 }

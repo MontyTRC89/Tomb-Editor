@@ -9,6 +9,12 @@ namespace TombLib.Scripting.Tomb1Main
 	{
 		public override string DefaultPath { get; }
 
+		#region Properties
+
+		public bool AutoAddCommas { get; set; } = ConfigurationDefaults.AutoAddCommas;
+
+		#endregion Properties
+
 		#region Color scheme
 
 		private string _selectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
