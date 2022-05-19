@@ -35,11 +35,10 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.button_OpenDirectory = new System.Windows.Forms.ToolStripButton();
 			this.button_Refresh = new System.Windows.Forms.ToolStripButton();
-			this.splitContainer = new System.Windows.Forms.SplitContainer();
+			this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
 			this.tableLayoutPanel_List = new System.Windows.Forms.TableLayoutPanel();
 			this.button_Download = new DarkUI.Controls.DarkButton();
 			this.section_PluginList = new DarkUI.Controls.DarkSectionPanel();
-			this.tableLayoutPanel_Details = new System.Windows.Forms.TableLayoutPanel();
 			this.section_PluginDetails = new DarkUI.Controls.DarkSectionPanel();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel_Logo = new System.Windows.Forms.Panel();
@@ -51,20 +50,24 @@
 			this.tableLayoutPanel_Main = new System.Windows.Forms.TableLayoutPanel();
 			this.label_Title = new DarkUI.Controls.DarkLabel();
 			this.panel_Icon = new System.Windows.Forms.Panel();
+			this.splitContainer_PluginInfo = new System.Windows.Forms.SplitContainer();
 			this.contextMenu.SuspendLayout();
 			this.toolStrip.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-			this.splitContainer.Panel1.SuspendLayout();
-			this.splitContainer.Panel2.SuspendLayout();
-			this.splitContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
+			this.splitContainer_Main.Panel1.SuspendLayout();
+			this.splitContainer_Main.Panel2.SuspendLayout();
+			this.splitContainer_Main.SuspendLayout();
 			this.tableLayoutPanel_List.SuspendLayout();
 			this.section_PluginList.SuspendLayout();
-			this.tableLayoutPanel_Details.SuspendLayout();
 			this.section_PluginDetails.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.panel_Logo.SuspendLayout();
 			this.section_Description.SuspendLayout();
 			this.tableLayoutPanel_Main.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer_PluginInfo)).BeginInit();
+			this.splitContainer_PluginInfo.Panel1.SuspendLayout();
+			this.splitContainer_PluginInfo.Panel2.SuspendLayout();
+			this.splitContainer_PluginInfo.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label_01
@@ -72,7 +75,7 @@
 			this.label_01.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_01.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_01.Location = new System.Drawing.Point(9, 140);
+			this.label_01.Location = new System.Drawing.Point(9, 139);
 			this.label_01.Margin = new System.Windows.Forms.Padding(9, 3, 0, 3);
 			this.label_01.Name = "label_01";
 			this.label_01.Size = new System.Drawing.Size(66, 19);
@@ -85,7 +88,7 @@
 			this.label_02.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_02.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_02.Location = new System.Drawing.Point(9, 165);
+			this.label_02.Location = new System.Drawing.Point(9, 164);
 			this.label_02.Margin = new System.Windows.Forms.Padding(9, 3, 0, 6);
 			this.label_02.Name = "label_02";
 			this.label_02.Size = new System.Drawing.Size(66, 21);
@@ -100,7 +103,7 @@
 			this.label_NoInfo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoInfo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoInfo.Name = "label_NoInfo";
-			this.label_NoInfo.Size = new System.Drawing.Size(454, 126);
+			this.label_NoInfo.Size = new System.Drawing.Size(454, 125);
 			this.label_NoInfo.TabIndex = 1;
 			this.label_NoInfo.Text = "Please select a plugin from the list to view its info.";
 			this.label_NoInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -112,7 +115,7 @@
 			this.label_NoLogo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoLogo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoLogo.Name = "label_NoLogo";
-			this.label_NoLogo.Size = new System.Drawing.Size(454, 126);
+			this.label_NoLogo.Size = new System.Drawing.Size(454, 125);
 			this.label_NoLogo.TabIndex = 0;
 			this.label_NoLogo.Text = "No logo image found.";
 			this.label_NoLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -276,29 +279,29 @@
 			this.button_Refresh.Text = "Refresh plugin list";
 			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
 			// 
-			// splitContainer
+			// splitContainer_Main
 			// 
-			this.tableLayoutPanel_Main.SetColumnSpan(this.splitContainer, 2);
-			this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.splitContainer.Location = new System.Drawing.Point(0, 80);
-			this.splitContainer.Margin = new System.Windows.Forms.Padding(0);
-			this.splitContainer.Name = "splitContainer";
+			this.tableLayoutPanel_Main.SetColumnSpan(this.splitContainer_Main, 2);
+			this.splitContainer_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer_Main.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.splitContainer_Main.Location = new System.Drawing.Point(0, 80);
+			this.splitContainer_Main.Margin = new System.Windows.Forms.Padding(0);
+			this.splitContainer_Main.Name = "splitContainer_Main";
 			// 
-			// splitContainer.Panel1
+			// splitContainer_Main.Panel1
 			// 
-			this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanel_List);
-			this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(30, 0, 6, 30);
-			this.splitContainer.Panel1MinSize = 360;
+			this.splitContainer_Main.Panel1.Controls.Add(this.tableLayoutPanel_List);
+			this.splitContainer_Main.Panel1.Padding = new System.Windows.Forms.Padding(30, 0, 6, 30);
+			this.splitContainer_Main.Panel1MinSize = 360;
 			// 
-			// splitContainer.Panel2
+			// splitContainer_Main.Panel2
 			// 
-			this.splitContainer.Panel2.Controls.Add(this.tableLayoutPanel_Details);
-			this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(6, 0, 30, 30);
-			this.splitContainer.Panel2MinSize = 360;
-			this.splitContainer.Size = new System.Drawing.Size(1024, 560);
-			this.splitContainer.SplitterDistance = 512;
-			this.splitContainer.TabIndex = 1;
+			this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_PluginInfo);
+			this.splitContainer_Main.Panel2.Padding = new System.Windows.Forms.Padding(6, 0, 30, 30);
+			this.splitContainer_Main.Panel2MinSize = 360;
+			this.splitContainer_Main.Size = new System.Drawing.Size(1024, 560);
+			this.splitContainer_Main.SplitterDistance = 512;
+			this.splitContainer_Main.TabIndex = 1;
 			// 
 			// tableLayoutPanel_List
 			// 
@@ -343,22 +346,6 @@
 			this.section_PluginList.Size = new System.Drawing.Size(476, 490);
 			this.section_PluginList.TabIndex = 0;
 			// 
-			// tableLayoutPanel_Details
-			// 
-			this.tableLayoutPanel_Details.ColumnCount = 1;
-			this.tableLayoutPanel_Details.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel_Details.Controls.Add(this.section_PluginDetails, 0, 0);
-			this.tableLayoutPanel_Details.Controls.Add(this.section_Description, 0, 1);
-			this.tableLayoutPanel_Details.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel_Details.Location = new System.Drawing.Point(6, 0);
-			this.tableLayoutPanel_Details.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanel_Details.Name = "tableLayoutPanel_Details";
-			this.tableLayoutPanel_Details.RowCount = 2;
-			this.tableLayoutPanel_Details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
-			this.tableLayoutPanel_Details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel_Details.Size = new System.Drawing.Size(472, 530);
-			this.tableLayoutPanel_Details.TabIndex = 3;
-			// 
 			// section_PluginDetails
 			// 
 			this.section_PluginDetails.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -369,7 +356,7 @@
 			this.section_PluginDetails.Margin = new System.Windows.Forms.Padding(0);
 			this.section_PluginDetails.Name = "section_PluginDetails";
 			this.section_PluginDetails.SectionHeader = "Selected Plugin Details";
-			this.section_PluginDetails.Size = new System.Drawing.Size(472, 220);
+			this.section_PluginDetails.Size = new System.Drawing.Size(472, 219);
 			this.section_PluginDetails.TabIndex = 2;
 			// 
 			// tableLayoutPanel3
@@ -389,7 +376,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(468, 192);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(468, 191);
 			this.tableLayoutPanel3.TabIndex = 5;
 			// 
 			// panel_Logo
@@ -406,7 +393,7 @@
 			this.panel_Logo.Location = new System.Drawing.Point(6, 6);
 			this.panel_Logo.Margin = new System.Windows.Forms.Padding(6, 6, 6, 3);
 			this.panel_Logo.Name = "panel_Logo";
-			this.panel_Logo.Size = new System.Drawing.Size(456, 128);
+			this.panel_Logo.Size = new System.Drawing.Size(456, 127);
 			this.panel_Logo.TabIndex = 0;
 			// 
 			// textBox_DLLName
@@ -416,7 +403,7 @@
 			this.textBox_DLLName.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textBox_DLLName.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.textBox_DLLName.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_DLLName.Location = new System.Drawing.Point(81, 165);
+			this.textBox_DLLName.Location = new System.Drawing.Point(81, 164);
 			this.textBox_DLLName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_DLLName.Name = "textBox_DLLName";
 			this.textBox_DLLName.ReadOnly = true;
@@ -430,7 +417,7 @@
 			this.textBox_Title.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textBox_Title.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.textBox_Title.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_Title.Location = new System.Drawing.Point(81, 140);
+			this.textBox_Title.Location = new System.Drawing.Point(81, 139);
 			this.textBox_Title.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_Title.Name = "textBox_Title";
 			this.textBox_Title.ReadOnly = true;
@@ -443,8 +430,8 @@
 			this.section_Description.Controls.Add(this.richTextBox_Description);
 			this.section_Description.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.section_Description.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.section_Description.Location = new System.Drawing.Point(0, 235);
-			this.section_Description.Margin = new System.Windows.Forms.Padding(0, 15, 0, 0);
+			this.section_Description.Location = new System.Drawing.Point(0, 6);
+			this.section_Description.Margin = new System.Windows.Forms.Padding(0);
 			this.section_Description.Name = "section_Description";
 			this.section_Description.SectionHeader = "Plugin Description";
 			this.section_Description.Size = new System.Drawing.Size(472, 295);
@@ -470,7 +457,7 @@
 			this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
 			this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel_Main.Controls.Add(this.label_Title, 1, 0);
-			this.tableLayoutPanel_Main.Controls.Add(this.splitContainer, 0, 1);
+			this.tableLayoutPanel_Main.Controls.Add(this.splitContainer_Main, 0, 1);
 			this.tableLayoutPanel_Main.Controls.Add(this.panel_Icon, 0, 0);
 			this.tableLayoutPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel_Main.Location = new System.Drawing.Point(0, 0);
@@ -507,6 +494,29 @@
 			this.panel_Icon.Size = new System.Drawing.Size(40, 45);
 			this.panel_Icon.TabIndex = 4;
 			// 
+			// splitContainer_PluginInfo
+			// 
+			this.splitContainer_PluginInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer_PluginInfo.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer_PluginInfo.Location = new System.Drawing.Point(6, 0);
+			this.splitContainer_PluginInfo.Name = "splitContainer_PluginInfo";
+			this.splitContainer_PluginInfo.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer_PluginInfo.Panel1
+			// 
+			this.splitContainer_PluginInfo.Panel1.Controls.Add(this.section_PluginDetails);
+			this.splitContainer_PluginInfo.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+			this.splitContainer_PluginInfo.Panel1MinSize = 100;
+			// 
+			// splitContainer_PluginInfo.Panel2
+			// 
+			this.splitContainer_PluginInfo.Panel2.Controls.Add(this.section_Description);
+			this.splitContainer_PluginInfo.Panel2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+			this.splitContainer_PluginInfo.Panel2MinSize = 100;
+			this.splitContainer_PluginInfo.Size = new System.Drawing.Size(472, 530);
+			this.splitContainer_PluginInfo.SplitterDistance = 225;
+			this.splitContainer_PluginInfo.TabIndex = 4;
+			// 
 			// PluginManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -519,13 +529,12 @@
 			this.contextMenu.ResumeLayout(false);
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
-			this.splitContainer.Panel1.ResumeLayout(false);
-			this.splitContainer.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-			this.splitContainer.ResumeLayout(false);
+			this.splitContainer_Main.Panel1.ResumeLayout(false);
+			this.splitContainer_Main.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
+			this.splitContainer_Main.ResumeLayout(false);
 			this.tableLayoutPanel_List.ResumeLayout(false);
 			this.section_PluginList.ResumeLayout(false);
-			this.tableLayoutPanel_Details.ResumeLayout(false);
 			this.section_PluginDetails.ResumeLayout(false);
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel3.PerformLayout();
@@ -533,6 +542,10 @@
 			this.section_Description.ResumeLayout(false);
 			this.tableLayoutPanel_Main.ResumeLayout(false);
 			this.tableLayoutPanel_Main.PerformLayout();
+			this.splitContainer_PluginInfo.Panel1.ResumeLayout(false);
+			this.splitContainer_PluginInfo.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer_PluginInfo)).EndInit();
+			this.splitContainer_PluginInfo.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -551,7 +564,7 @@
 		private System.Windows.Forms.ToolTip toolTip;
 		private DarkUI.Controls.DarkContextMenu contextMenu;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Remove;
-		private System.Windows.Forms.SplitContainer splitContainer;
+		private System.Windows.Forms.SplitContainer splitContainer_Main;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
 		private System.Windows.Forms.ToolStripButton button_Remove;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -561,7 +574,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private DarkUI.Controls.DarkSectionPanel section_PluginDetails;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Main;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Details;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
 		private DarkUI.Controls.DarkSectionPanel section_Description;
 		private DarkUI.Controls.DarkLabel label_Title;
@@ -571,5 +583,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_List;
 		private DarkUI.Controls.DarkButton button_Download;
+		private System.Windows.Forms.SplitContainer splitContainer_PluginInfo;
 	}
 }
