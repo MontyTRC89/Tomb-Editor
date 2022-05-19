@@ -58,7 +58,7 @@ namespace TombIDE
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
 
-			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+			if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
 			{
 				pluginManager = new ProjectMaster.PluginManager();
 				pluginManager.Dock = DockStyle.Fill;
@@ -66,8 +66,8 @@ namespace TombIDE
 			}
 			else
 			{
-				panelButton_Plugins.Enabled = false;
 				panelButton_Plugins.BackgroundImage = Properties.Resources.ide_plugin_30_disabled;
+				toolTip.SetToolTip(panelButton_Plugins, "Plugins are not supported by the current game engine.");
 			}
 
 			if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
@@ -136,7 +136,7 @@ namespace TombIDE
 					levelManager.Initialize(_ide);
 					projectMaster.Initialize(_ide);
 
-					if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+					if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
 						pluginManager.Initialize(_ide);
 
 					SelectIDETab(IDETab.LevelManager);
@@ -647,7 +647,6 @@ namespace TombIDE
 			switch (tab)
 			{
 				case IDETab.LevelManager:
-				{
 					panelButton_LevelManager.BackColor = Color.FromArgb(135, 135, 135);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
@@ -655,9 +654,8 @@ namespace TombIDE
 
 					tablessTabControl.SelectTab(0);
 					break;
-				}
+
 				case IDETab.ProjectManager:
-				{
 					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(135, 135, 135);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
@@ -665,9 +663,8 @@ namespace TombIDE
 
 					tablessTabControl.SelectTab(1);
 					break;
-				}
+
 				case IDETab.ScriptingStudio:
-				{
 					if (timer_ScriptButtonBlinking.Enabled)
 						timer_ScriptButtonBlinking.Stop();
 
@@ -678,9 +675,11 @@ namespace TombIDE
 
 					tablessTabControl.SelectTab(2);
 					break;
-				}
+
 				case IDETab.PluginManager:
-				{
+					if (_ide.Project.GameVersion != TRVersion.Game.TRNG)
+						break;
+
 					panelButton_LevelManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ProjectManager.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
@@ -688,7 +687,6 @@ namespace TombIDE
 
 					tablessTabControl.SelectTab(3);
 					break;
-				}
 			}
 		}
 
