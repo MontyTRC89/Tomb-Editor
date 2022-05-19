@@ -417,6 +417,8 @@ namespace TombIDE.ProjectMaster
 
 				if (File.Exists(descriptionFilePath))
 					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
+				else
+					richTextBox_Description.Text = string.Empty;
 			}
 			catch (Exception ex)
 			{
