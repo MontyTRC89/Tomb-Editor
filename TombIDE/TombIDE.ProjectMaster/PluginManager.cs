@@ -287,6 +287,11 @@ namespace TombIDE.ProjectMaster
 							continue;
 						}
 
+						string fileSubDirectory = Path.GetDirectoryName(unzipFilePath);
+
+						if (!Directory.Exists(fileSubDirectory))
+							Directory.CreateDirectory(fileSubDirectory);
+
 						entry.ExtractToFile(unzipFilePath, true);
 					}
 
