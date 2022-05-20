@@ -138,7 +138,7 @@ namespace TombIDE
 
 		private void button_OpenProject_Click(object sender, EventArgs e) => OpenSelectedProject();
 
-		private void treeView_MouseDown(object sender, MouseEventArgs e) => CheckItemSelection();
+		private void treeView_SelectedNodesChanged(object sender, EventArgs e) => CheckItemSelection();
 
 		private void treeView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{

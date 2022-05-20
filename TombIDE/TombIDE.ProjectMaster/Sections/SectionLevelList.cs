@@ -122,6 +122,8 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Refresh_Click(object sender, EventArgs e) => RefreshLevelList();
 
+		private void treeView_SelectedNodesChanged(object sender, EventArgs e) => CheckItemSelection();
+
 		private void treeView_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (treeView.SelectedNodes.Count == 0)
