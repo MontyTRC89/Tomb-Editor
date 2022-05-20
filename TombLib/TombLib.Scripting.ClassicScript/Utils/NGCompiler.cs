@@ -140,15 +140,23 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
 		}
 
+		private static Stack<string> _visitedFiles = new Stack<string>();
+
 		private static void MergeIncludes()
 		{
+			_visitedFiles.Clear();
+
 			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
+
+			_visitedFiles.Push(vgeScriptFilePath);
 
 			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
 			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+
+			_visitedFiles.Clear();
 		}
 
 		private static void AdjustFormatting()
@@ -177,9 +185,21 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 						if (File.Exists(includedFilePath))
 						{
+							if (_visitedFiles.Any(x => x.Equals(includedFilePath, StringComparison.OrdinalIgnoreCase)))
+								continue;
+
+							_visitedFiles.Push(includedFilePath);
+
 							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
-							newLines.AddRange(File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252)));
+
+							string[] includeLines = File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252));
+							includeLines = ReplaceIncludesWithFileContents(includeLines);
+
+							newLines.AddRange(includeLines);
+
 							newLines.Add("; // // // // </" + partialIncludePath.ToUpper() + "> // // // //");
+
+							_visitedFiles.Pop();
 						}
 
 						continue;
