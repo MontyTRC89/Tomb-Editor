@@ -130,13 +130,13 @@
 			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.treeView.Indent = 0;
 			this.treeView.ItemHeight = 64;
-			this.treeView.Location = new System.Drawing.Point(1, 53);
+			this.treeView.Location = new System.Drawing.Point(1, 55);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.treeView.MaxDragChange = 64;
 			this.treeView.Name = "treeView";
 			this.treeView.OverrideEvenColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.OverrideOddColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
-			this.treeView.Size = new System.Drawing.Size(472, 434);
+			this.treeView.Size = new System.Drawing.Size(472, 432);
 			this.treeView.TabIndex = 0;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
 			// 
@@ -196,7 +196,7 @@
 			this.toolStrip.Location = new System.Drawing.Point(1, 25);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			this.toolStrip.Size = new System.Drawing.Size(472, 28);
+			this.toolStrip.Size = new System.Drawing.Size(472, 30);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "darkToolStrip1";
 			// 
@@ -208,7 +208,7 @@
 			this.button_OpenArchive.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Import_16;
 			this.button_OpenArchive.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.button_OpenArchive.Name = "button_OpenArchive";
-			this.button_OpenArchive.Size = new System.Drawing.Size(23, 25);
+			this.button_OpenArchive.Size = new System.Drawing.Size(23, 27);
 			this.button_OpenArchive.Text = "Install plugin from .zip archive...";
 			this.button_OpenArchive.Click += new System.EventHandler(this.button_OpenArchive_Click);
 			// 
@@ -220,7 +220,7 @@
 			this.button_OpenFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Open_16;
 			this.button_OpenFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.button_OpenFolder.Name = "button_OpenFolder";
-			this.button_OpenFolder.Size = new System.Drawing.Size(23, 25);
+			this.button_OpenFolder.Size = new System.Drawing.Size(23, 27);
 			this.button_OpenFolder.Text = "Install plugin from folder...";
 			this.button_OpenFolder.Click += new System.EventHandler(this.button_OpenFolder_Click);
 			// 
@@ -230,7 +230,7 @@
 			this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
 			// 
 			// button_Remove
 			// 
@@ -241,7 +241,7 @@
 			this.button_Remove.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.button_Remove.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.button_Remove.Name = "button_Remove";
-			this.button_Remove.Size = new System.Drawing.Size(23, 25);
+			this.button_Remove.Size = new System.Drawing.Size(23, 27);
 			this.button_Remove.Text = "Remove from project...";
 			this.button_Remove.Click += new System.EventHandler(this.button_Remove_Click);
 			// 
@@ -251,7 +251,7 @@
 			this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 30);
 			// 
 			// button_OpenDirectory
 			// 
@@ -262,7 +262,7 @@
 			this.button_OpenDirectory.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenDirectory.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.button_OpenDirectory.Name = "button_OpenDirectory";
-			this.button_OpenDirectory.Size = new System.Drawing.Size(23, 25);
+			this.button_OpenDirectory.Size = new System.Drawing.Size(23, 27);
 			this.button_OpenDirectory.Text = "Open plugin directory...";
 			this.button_OpenDirectory.Click += new System.EventHandler(this.button_OpenDirectory_Click);
 			// 
@@ -275,7 +275,7 @@
 			this.button_Refresh.Image = global::TombIDE.ProjectMaster.Properties.Resources.actions_refresh_16;
 			this.button_Refresh.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.button_Refresh.Name = "button_Refresh";
-			this.button_Refresh.Size = new System.Drawing.Size(23, 25);
+			this.button_Refresh.Size = new System.Drawing.Size(23, 27);
 			this.button_Refresh.Text = "Refresh plugin list";
 			this.button_Refresh.Click += new System.EventHandler(this.button_Refresh_Click);
 			// 
