@@ -178,4 +178,19 @@
   <data name="actions_compile_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\actions_compile-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TR1_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr1_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR2_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr2_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR3_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr3_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR4_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr4_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TRNG_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\trng_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

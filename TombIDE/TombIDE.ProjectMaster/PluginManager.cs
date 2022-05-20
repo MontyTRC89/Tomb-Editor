@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.LevelData;
 using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Utils;
 
@@ -33,6 +34,15 @@ namespace TombIDE.ProjectMaster
 		public void Initialize(IDE ide)
 		{
 			_ide = ide;
+
+			switch (_ide.Project.GameVersion)
+			{
+				case TRVersion.Game.TRNG: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break;
+				case TRVersion.Game.TR4: panel_GameLabel.BackgroundImage = Properties.Resources.TR4_LVL; break;
+				case TRVersion.Game.TR3: panel_GameLabel.BackgroundImage = Properties.Resources.TR3_LVL; break;
+				case TRVersion.Game.TR2: panel_GameLabel.BackgroundImage = Properties.Resources.TR2_LVL; break;
+				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
+			}
 
 			string pluginsPath = Path.Combine(_ide.Project.ProjectPath, "Plugins");
 			_pluginsDirectory = new DirectoryInfo(pluginsPath);

@@ -51,6 +51,7 @@
 			this.tableLayoutPanel_Main = new System.Windows.Forms.TableLayoutPanel();
 			this.label_Title = new DarkUI.Controls.DarkLabel();
 			this.panel_Icon = new System.Windows.Forms.Panel();
+			this.panel_GameLabel = new System.Windows.Forms.Panel();
 			this.contextMenu.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
@@ -281,7 +282,7 @@
 			// 
 			// splitContainer_Main
 			// 
-			this.tableLayoutPanel_Main.SetColumnSpan(this.splitContainer_Main, 2);
+			this.tableLayoutPanel_Main.SetColumnSpan(this.splitContainer_Main, 3);
 			this.splitContainer_Main.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer_Main.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.splitContainer_Main.Location = new System.Drawing.Point(0, 80);
@@ -476,9 +477,11 @@
 			// 
 			// tableLayoutPanel_Main
 			// 
-			this.tableLayoutPanel_Main.ColumnCount = 2;
+			this.tableLayoutPanel_Main.ColumnCount = 3;
 			this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+			this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel_Main.Controls.Add(this.panel_GameLabel, 2, 0);
 			this.tableLayoutPanel_Main.Controls.Add(this.label_Title, 1, 0);
 			this.tableLayoutPanel_Main.Controls.Add(this.splitContainer_Main, 0, 1);
 			this.tableLayoutPanel_Main.Controls.Add(this.panel_Icon, 0, 0);
@@ -489,19 +492,20 @@
 			this.tableLayoutPanel_Main.RowCount = 2;
 			this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
 			this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel_Main.Size = new System.Drawing.Size(1024, 640);
 			this.tableLayoutPanel_Main.TabIndex = 3;
 			// 
 			// label_Title
 			// 
+			this.label_Title.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.label_Title.AutoSize = true;
-			this.label_Title.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label_Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title.Location = new System.Drawing.Point(71, 1);
 			this.label_Title.Margin = new System.Windows.Forms.Padding(1);
 			this.label_Title.Name = "label_Title";
-			this.label_Title.Size = new System.Drawing.Size(952, 78);
+			this.label_Title.Size = new System.Drawing.Size(170, 78);
 			this.label_Title.TabIndex = 3;
 			this.label_Title.Text = "Plugin Manager";
 			this.label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -516,6 +520,17 @@
 			this.panel_Icon.Name = "panel_Icon";
 			this.panel_Icon.Size = new System.Drawing.Size(40, 45);
 			this.panel_Icon.TabIndex = 4;
+			// 
+			// panel_GameLabel
+			// 
+			this.panel_GameLabel.BackgroundImage = global::TombIDE.ProjectMaster.Properties.Resources.TRNG_LVL;
+			this.panel_GameLabel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panel_GameLabel.Dock = System.Windows.Forms.DockStyle.Left;
+			this.panel_GameLabel.Location = new System.Drawing.Point(242, 20);
+			this.panel_GameLabel.Margin = new System.Windows.Forms.Padding(0, 20, 0, 15);
+			this.panel_GameLabel.Name = "panel_GameLabel";
+			this.panel_GameLabel.Size = new System.Drawing.Size(40, 45);
+			this.panel_GameLabel.TabIndex = 8;
 			// 
 			// PluginManager
 			// 
@@ -584,5 +599,6 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_List;
 		private DarkUI.Controls.DarkButton button_Download;
 		private System.Windows.Forms.SplitContainer splitContainer_PluginInfo;
+		private System.Windows.Forms.Panel panel_GameLabel;
 	}
 }

@@ -22,6 +22,7 @@
 		private void InitializeComponent()
 		{
 			this.tableLayout_Main = new System.Windows.Forms.TableLayoutPanel();
+			this.panel_GameLabel = new System.Windows.Forms.Panel();
 			this.panel_Icon = new System.Windows.Forms.Panel();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.tableLayoutPanel_List = new System.Windows.Forms.TableLayoutPanel();
@@ -43,9 +44,11 @@
 			// 
 			// tableLayout_Main
 			// 
-			this.tableLayout_Main.ColumnCount = 2;
+			this.tableLayout_Main.ColumnCount = 3;
 			this.tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+			this.tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayout_Main.Controls.Add(this.panel_GameLabel, 2, 0);
 			this.tableLayout_Main.Controls.Add(this.panel_Icon, 0, 0);
 			this.tableLayout_Main.Controls.Add(this.splitContainer, 0, 1);
 			this.tableLayout_Main.Controls.Add(this.label_Title, 1, 0);
@@ -60,6 +63,17 @@
 			this.tableLayout_Main.Size = new System.Drawing.Size(1024, 640);
 			this.tableLayout_Main.TabIndex = 0;
 			// 
+			// panel_GameLabel
+			// 
+			this.panel_GameLabel.BackgroundImage = global::TombIDE.ProjectMaster.Properties.Resources.TRNG_LVL;
+			this.panel_GameLabel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panel_GameLabel.Dock = System.Windows.Forms.DockStyle.Left;
+			this.panel_GameLabel.Location = new System.Drawing.Point(228, 20);
+			this.panel_GameLabel.Margin = new System.Windows.Forms.Padding(0, 20, 0, 15);
+			this.panel_GameLabel.Name = "panel_GameLabel";
+			this.panel_GameLabel.Size = new System.Drawing.Size(40, 45);
+			this.panel_GameLabel.TabIndex = 6;
+			// 
 			// panel_Icon
 			// 
 			this.panel_Icon.BackgroundImage = global::TombIDE.ProjectMaster.Properties.Resources.ide_master_30;
@@ -73,7 +87,7 @@
 			// 
 			// splitContainer
 			// 
-			this.tableLayout_Main.SetColumnSpan(this.splitContainer, 2);
+			this.tableLayout_Main.SetColumnSpan(this.splitContainer, 3);
 			this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer.Location = new System.Drawing.Point(0, 80);
 			this.splitContainer.Margin = new System.Windows.Forms.Padding(0);
@@ -148,14 +162,14 @@
 			// 
 			// label_Title
 			// 
+			this.label_Title.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.label_Title.AutoSize = true;
-			this.label_Title.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_Title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label_Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_Title.Location = new System.Drawing.Point(71, 1);
 			this.label_Title.Margin = new System.Windows.Forms.Padding(1);
 			this.label_Title.Name = "label_Title";
-			this.label_Title.Size = new System.Drawing.Size(952, 78);
+			this.label_Title.Size = new System.Drawing.Size(156, 78);
 			this.label_Title.TabIndex = 1;
 			this.label_Title.Text = "Level Manager";
 			this.label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -208,5 +222,6 @@
 		private System.Windows.Forms.Panel panel_Icon;
 		private DarkUI.Controls.DarkButton button_RebuildAll;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_List;
+		private System.Windows.Forms.Panel panel_GameLabel;
 	}
 }
