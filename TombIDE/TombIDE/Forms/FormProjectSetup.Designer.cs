@@ -312,10 +312,10 @@
 			this.label_SubTitle02.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_SubTitle02.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_SubTitle02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_SubTitle02.Location = new System.Drawing.Point(0, 30);
-			this.label_SubTitle02.Margin = new System.Windows.Forms.Padding(0);
+			this.label_SubTitle02.Location = new System.Drawing.Point(2, 30);
+			this.label_SubTitle02.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
 			this.label_SubTitle02.Name = "label_SubTitle02";
-			this.label_SubTitle02.Size = new System.Drawing.Size(520, 20);
+			this.label_SubTitle02.Size = new System.Drawing.Size(518, 20);
 			this.label_SubTitle02.TabIndex = 2;
 			this.label_SubTitle02.Text = "Extra Options";
 			this.label_SubTitle02.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -526,10 +526,10 @@
 			this.label_SubTitle01.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label_SubTitle01.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_SubTitle01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_SubTitle01.Location = new System.Drawing.Point(0, 30);
-			this.label_SubTitle01.Margin = new System.Windows.Forms.Padding(0);
+			this.label_SubTitle01.Location = new System.Drawing.Point(2, 30);
+			this.label_SubTitle01.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
 			this.label_SubTitle01.Name = "label_SubTitle01";
-			this.label_SubTitle01.Size = new System.Drawing.Size(520, 20);
+			this.label_SubTitle01.Size = new System.Drawing.Size(518, 20);
 			this.label_SubTitle01.TabIndex = 2;
 			this.label_SubTitle01.Text = "General Information";
 			this.label_SubTitle01.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
