@@ -228,8 +228,8 @@
 			this.tableLayoutPanel_Open.Name = "tableLayoutPanel_Open";
 			this.tableLayoutPanel_Open.Padding = new System.Windows.Forms.Padding(5);
 			this.tableLayoutPanel_Open.RowCount = 2;
-			this.tableLayoutPanel_Open.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel_Open.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel_Open.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 54F));
+			this.tableLayoutPanel_Open.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46F));
 			this.tableLayoutPanel_Open.Size = new System.Drawing.Size(308, 72);
 			this.tableLayoutPanel_Open.TabIndex = 0;
 			this.tableLayoutPanel_Open.MouseEnter += new System.EventHandler(this.button_Open_Child_MouseEnter);
@@ -241,10 +241,10 @@
 			this.darkLabel3.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.darkLabel3.ForeColor = System.Drawing.Color.DarkGray;
-			this.darkLabel3.Location = new System.Drawing.Point(54, 37);
+			this.darkLabel3.Location = new System.Drawing.Point(54, 39);
 			this.darkLabel3.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
 			this.darkLabel3.Name = "darkLabel3";
-			this.darkLabel3.Size = new System.Drawing.Size(249, 30);
+			this.darkLabel3.Size = new System.Drawing.Size(249, 28);
 			this.darkLabel3.TabIndex = 2;
 			this.darkLabel3.Text = "Open an existing TombIDE project.";
 			this.darkLabel3.MouseEnter += new System.EventHandler(this.button_Open_Child_MouseEnter);
@@ -273,7 +273,7 @@
 			this.darkLabel4.Location = new System.Drawing.Point(53, 5);
 			this.darkLabel4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
 			this.darkLabel4.Name = "darkLabel4";
-			this.darkLabel4.Size = new System.Drawing.Size(250, 29);
+			this.darkLabel4.Size = new System.Drawing.Size(250, 31);
 			this.darkLabel4.TabIndex = 1;
 			this.darkLabel4.Text = "Open a .trproj file...";
 			this.darkLabel4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
