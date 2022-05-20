@@ -27,29 +27,6 @@ namespace TombIDE.Shared
 
 		/* Main IDE events */
 
-		#region SelectedIDETabChanged
-
-		public class SelectedIDETabChangedEvent : IIDEEvent
-		{
-			public IDETab Previous { get; internal set; }
-			public IDETab Current { get; internal set; }
-		}
-
-		public IDETab SelectedIDETab { get; private set; }
-
-		public void SelectIDETab(IDETab tab)
-		{
-			if (SelectedIDETab != tab)
-			{
-				IDETab previous = SelectedIDETab;
-				SelectedIDETab = tab;
-
-				RaiseEvent(new SelectedIDETabChangedEvent { Previous = previous, Current = tab });
-			}
-		}
-
-		#endregion SelectedIDETabChanged
-
 		#region ProgramButtonsModified
 
 		public class ProgramButtonsModifiedEvent : IIDEEvent
@@ -59,19 +36,6 @@ namespace TombIDE.Shared
 			RaiseEvent(new ProgramButtonsModifiedEvent());
 
 		#endregion ProgramButtonsModified
-
-		#region ApplicationRestarting
-
-		public class ApplicationRestartingEvent : IIDEEvent
-		{ }
-
-		/// <summary>
-		/// WARNING: This method doesn't ask IDE.CanClose() for closing permissions !!!
-		/// </summary>
-		public void RestartApplication() =>
-			RaiseEvent(new ApplicationRestartingEvent());
-
-		#endregion ApplicationRestarting
 
 		#region ProgramClosing
 

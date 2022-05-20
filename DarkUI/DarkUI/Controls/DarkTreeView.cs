@@ -588,7 +588,7 @@ namespace DarkUI.Controls
                 if (node is DarkTreeNodeEx)
                 {
                     var nodeEx = node as DarkTreeNodeEx;
-                    var subTextFont = new Font(Font.FontFamily, Font.Size - 4);
+                    var subTextFont = new Font(Font.FontFamily, 8.25f);
 
                     var textSize = (int)g.MeasureString(nodeEx.Text, Font).Width;
                     var subTextSize = (int)g.MeasureString(nodeEx.SubText, subTextFont).Width;
@@ -1294,7 +1294,7 @@ namespace DarkUI.Controls
                 if (node is DarkTreeNodeEx)
                 {
                     var nodeEx = node as DarkTreeNodeEx;
-                    var subTextFont = new Font(Font.FontFamily, Font.Size - 4);
+                    var subTextFont = new Font(Font.FontFamily, 8.25f);
 
                     g.DrawString(nodeEx.SubText, subTextFont, b, nodeEx.SubTextArea, stringFormat);
                 }

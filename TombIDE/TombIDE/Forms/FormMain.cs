@@ -222,9 +222,7 @@ namespace TombIDE
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.SelectedIDETabChangedEvent)
-				SelectIDETab(((IDE.SelectedIDETabChangedEvent)obj).Current);
-			else if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
+			if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
 				OnProjectPathsChanged(obj);
 			else if (obj is IDE.ScriptEditor_ContentChangedEvent)
 			{
@@ -233,8 +231,6 @@ namespace TombIDE
 				timer_ScriptButtonBlinking.Interval = 1;
 				timer_ScriptButtonBlinking.Start();
 			}
-			else if (obj is IDE.ApplicationRestartingEvent)
-				RestartApplication();
 		}
 
 		#endregion IDE events
