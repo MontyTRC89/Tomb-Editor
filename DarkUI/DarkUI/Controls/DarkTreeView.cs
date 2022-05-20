@@ -593,8 +593,8 @@ namespace DarkUI.Controls
                     var textSize = (int)g.MeasureString(nodeEx.Text, Font).Width;
                     var subTextSize = (int)g.MeasureString(nodeEx.SubText, subTextFont).Width;
 
-                    nodeEx.TextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset - 7, textSize + 1, ItemHeight);
-                    nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset + 11, subTextSize + 1, ItemHeight);
+                    nodeEx.TextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset - ((Font.Height / 2) - 4), textSize + 1, ItemHeight);
+                    nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset + (Font.Height / 2), subTextSize + 1, ItemHeight);
                     nodeEx.FullArea = new Rectangle(indent, yOffset, Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right) - indent, ItemHeight);
                 }
                 else
