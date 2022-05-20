@@ -127,12 +127,12 @@
 			this.treeView.ContextMenuStrip = this.contextMenu;
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.ExpandOnDoubleClick = false;
-			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.treeView.Indent = 0;
-			this.treeView.ItemHeight = 48;
+			this.treeView.ItemHeight = 64;
 			this.treeView.Location = new System.Drawing.Point(1, 53);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
-			this.treeView.MaxDragChange = 48;
+			this.treeView.MaxDragChange = 64;
 			this.treeView.Name = "treeView";
 			this.treeView.OverrideEvenColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.OverrideOddColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));

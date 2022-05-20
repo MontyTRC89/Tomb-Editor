@@ -220,12 +220,7 @@ namespace TombIDE.ProjectMaster
 							pluginName = nameLine.Replace("NAME#", string.Empty).Trim();
 					}
 
-					var node = new DarkTreeNode
-					{
-						Text = pluginName,
-						Tag = dllFile
-					};
-
+					var node = new DarkTreeNodeEx(pluginName, "~/" + dllFile.Name) { Tag = dllFile };
 					treeView.Nodes.Add(node);
 				}
 			}

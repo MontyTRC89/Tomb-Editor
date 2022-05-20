@@ -382,7 +382,7 @@ namespace TombIDE
 
 			foreach (DarkTreeNodeEx node in treeView.Nodes)
 			{
-				int iconYPos = (treeView.ItemHeight * node.VisibleIndex) + ((treeView.ItemHeight - UNIFORM_ICON_SIZE) / 2);
+				int iconYPos = (treeView.ItemHeight * node.VisibleIndex) + ((treeView.ItemHeight - UNIFORM_ICON_SIZE) / 2) - 1;
 
 				node.IconArea = new Rectangle(new Point(LEFT_ICON_MARGIN, iconYPos), new Size(UNIFORM_ICON_SIZE, UNIFORM_ICON_SIZE));
 				node.TextArea = new Rectangle(new Point(LEFT_TEXT_MARGIN, node.TextArea.Y), node.TextArea.Size);

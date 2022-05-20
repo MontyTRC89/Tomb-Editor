@@ -29,8 +29,6 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			button_ViewFileNames.Checked = _ide.IDEConfiguration.ViewFileNames;
-
 			FillLevelList(); // With levels taken from the .trproj file (current _ide.Project)
 		}
 
@@ -51,21 +49,7 @@ namespace TombIDE.ProjectMaster
 
 		private void AddLevelToList(ProjectLevel level, bool reserialize = false)
 		{
-			// Create the node
-			DarkTreeNode node = new DarkTreeNode
-			{
-				Text = level.Name,
-				Tag = level
-			};
-
-			// Adjust the node text if button_ViewFileNames is checked
-			if (button_ViewFileNames.Checked)
-			{
-				if (level.SpecificFile == "$(LatestFile)")
-					node.Text = level.Name + " (" + level.GetLatestPrj2File() + ")";
-				else
-					node.Text = level.Name + " (" + level.SpecificFile + ")";
-			}
+			var node = new DarkTreeNodeEx(level.Name, "~/" + level.GetLatestPrj2File()) { Tag = level };
 
 			// Mark external levels
 			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
@@ -87,15 +71,12 @@ namespace TombIDE.ProjectMaster
 			if (obj is IDE.SelectedLevelSettingsChangedEvent)
 			{
 				// Update the text of the node (if the level name was changed ofc)
-				if (button_ViewFileNames.Checked)
-				{
-					if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.GetLatestPrj2File() + ")";
-					else
-						treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name + " (" + _ide.SelectedLevel.SpecificFile + ")";
-				}
+				if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
+					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.GetLatestPrj2File();
 				else
-					treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
+					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.SpecificFile;
+
+				treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
 
 				// Mark external levels
 				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
@@ -141,16 +122,6 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Refresh_Click(object sender, EventArgs e) => RefreshLevelList();
 
-		private void button_ViewFileNames_Click(object sender, EventArgs e)
-		{
-			button_ViewFileNames.Checked = !button_ViewFileNames.Checked;
-
-			_ide.IDEConfiguration.ViewFileNames = button_ViewFileNames.Checked;
-			_ide.IDEConfiguration.Save();
-
-			AdjustTextOfAllNodes();
-		}
-
 		private void treeView_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (treeView.SelectedNodes.Count == 0)
@@ -190,7 +161,7 @@ namespace TombIDE.ProjectMaster
 
 		private void ShowLevelSetupForm()
 		{
-			using (FormLevelSetup form = new FormLevelSetup(_ide.Project))
+			using (var form = new FormLevelSetup(_ide.Project))
 			{
 				if (form.ShowDialog(this) == DialogResult.OK)
 					OnLevelAdded(form.CreatedLevel, form.GeneratedScriptLines);
@@ -199,7 +170,7 @@ namespace TombIDE.ProjectMaster
 
 		private void ImportLevel()
 		{
-			using (OpenFileDialog dialog = new OpenFileDialog())
+			using (var dialog = new OpenFileDialog())
 			{
 				dialog.Title = "Choose the .prj2 file you want to import";
 				dialog.Filter = "Tomb Editor Levels|*.prj2";
@@ -214,7 +185,7 @@ namespace TombIDE.ProjectMaster
 						if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
 							throw new ArgumentException("You cannot import backup files.");
 
-						using (FormImportLevel form = new FormImportLevel(_ide.Project, dialog.FileName))
+						using (var form = new FormImportLevel(_ide.Project, dialog.FileName))
 						{
 							if (form.ShowDialog(this) == DialogResult.OK)
 								OnLevelAdded(form.ImportedLevel, form.GeneratedScriptLines);
@@ -230,13 +201,13 @@ namespace TombIDE.ProjectMaster
 
 		private void ShowRenameLevelForm()
 		{
-			using (FormRenameLevel form = new FormRenameLevel(_ide))
+			using (var form = new FormRenameLevel(_ide))
 				form.ShowDialog(this); // After the form is done, it will trigger IDE.SelectedLevelSettingsChangedEvent
 		}
 
 		private void DeleteLevel()
 		{
-			ProjectLevel affectedLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
+			var affectedLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
 
 			// We can't allow deleting directories of external levels, so we must handle them differently
 
@@ -286,7 +257,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Scan the project's /Levels/ folder using FormLoading
-			using (FormLoading form = new FormLoading(_ide))
+			using (var form = new FormLoading(_ide))
 			{
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
@@ -298,7 +269,7 @@ namespace TombIDE.ProjectMaster
 					{
 						foreach (DarkTreeNode node in treeView.Nodes)
 						{
-							if (node.Text.ToLower() == cachedNodeText.ToLower())
+							if (node.Text.Equals(cachedNodeText, StringComparison.OrdinalIgnoreCase))
 							{
 								treeView.SelectNode(node);
 								treeView.ScrollTo(node.FullArea.Location);
@@ -315,33 +286,19 @@ namespace TombIDE.ProjectMaster
 
 		private void AdjustTextOfAllNodes()
 		{
-			if (button_ViewFileNames.Checked)
+			foreach (DarkTreeNodeEx node in treeView.Nodes)
 			{
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					ProjectLevel nodeLevel = (ProjectLevel)node.Tag;
+				var nodeLevel = (ProjectLevel)node.Tag;
+				node.Text = nodeLevel.Name;
 
-					if (nodeLevel.SpecificFile == "$(LatestFile)")
-						node.Text = nodeLevel.Name + " (" + nodeLevel.GetLatestPrj2File() + ")";
-					else
-						node.Text = nodeLevel.Name + " (" + nodeLevel.SpecificFile + ")";
+				if (nodeLevel.SpecificFile == "$(LatestFile)")
+					node.SubText = "~/" + nodeLevel.GetLatestPrj2File();
+				else
+					node.SubText = "~/" + nodeLevel.SpecificFile;
 
-					// Mark external levels
-					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
-				}
-			}
-			else
-			{
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					ProjectLevel nodeLevel = (ProjectLevel)node.Tag;
-					node.Text = nodeLevel.Name;
-
-					// Mark external levels
-					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
-				}
+				// Mark external levels
+				if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+					node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 			}
 		}
 
@@ -368,7 +325,7 @@ namespace TombIDE.ProjectMaster
 			// Triggers IDE.SelectedLevelChangedEvent
 			if (treeView.SelectedNodes.Count > 0)
 			{
-				ProjectLevel nodeLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
+				var nodeLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
 
 				// Validation check
 				if (!nodeLevel.IsValidLevel())
@@ -401,14 +358,14 @@ namespace TombIDE.ProjectMaster
 				return;
 			}
 
-			string prj2Path = string.Empty;
+			string prj2Path;
 
 			if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
 				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.GetLatestPrj2File());
 			else
 				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
 				Arguments = "\"" + prj2Path + "\""
@@ -428,7 +385,7 @@ namespace TombIDE.ProjectMaster
 			// Select the new level node
 			foreach (DarkTreeNode node in treeView.Nodes)
 			{
-				if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower())
+				if (((ProjectLevel)node.Tag).Name.Equals(addedLevel.Name, StringComparison.OrdinalIgnoreCase))
 				{
 					treeView.SelectNode(node);
 					CheckItemSelection();
@@ -462,7 +419,7 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Rebuild_Click(object sender, EventArgs e)
 		{
-			BatchCompileList batchList = new BatchCompileList();
+			var batchList = new BatchCompileList();
 
 			string prj2Path;
 
@@ -476,7 +433,7 @@ namespace TombIDE.ProjectMaster
 			string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
 			BatchCompileList.SaveToXml(batchListFilePath, batchList);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
 				Arguments = "\"" + batchListFilePath + "\""
