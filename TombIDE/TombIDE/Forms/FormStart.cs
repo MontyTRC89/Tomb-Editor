@@ -1,3 +1,4 @@
+using DarkUI.Config;
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
@@ -114,9 +115,35 @@ namespace TombIDE
 
 		#region Events
 
-		private void button_Main_New_Click(object sender, EventArgs e) => CreateNewProject();
-		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTrproj();
-		private void button_Main_Import_Click(object sender, EventArgs e) => ImportExe();
+		private void button_New_Child_MouseEnter(object sender, EventArgs e) => panelButton_New.Capture = true;
+		private void button_Open_Child_MouseEnter(object sender, EventArgs e) => panelButton_Open.Capture = true;
+		private void button_Import_Child_MouseEnter(object sender, EventArgs e) => panelButton_Import.Capture = true;
+
+		private void panelButton_MouseEnter(object sender, EventArgs e) => (sender as Control).BackColor = Colors.LighterBackground;
+		private void panelButton_MouseDown(object sender, MouseEventArgs e) => (sender as Control).BackColor = Colors.DarkBackground;
+		private void panelButton_MouseLeave(object sender, EventArgs e) => (sender as Control).BackColor = Colors.LightBackground;
+
+		private void panelButton_New_MouseUp(object sender, MouseEventArgs e) => CreateNewProject();
+		private void panelButton_Open_MouseUp(object sender, MouseEventArgs e) => OpenTrproj();
+		private void panelButton_Import_MouseUp(object sender, MouseEventArgs e) => ImportExe();
+
+		private void panelButton_New_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!panelButton_New.ClientRectangle.Contains(e.Location))
+				panelButton_New.Capture = false;
+		}
+
+		private void panelButton_Open_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!panelButton_Open.ClientRectangle.Contains(e.Location))
+				panelButton_Open.Capture = false;
+		}
+
+		private void panelButton_Import_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!panelButton_Import.ClientRectangle.Contains(e.Location))
+				panelButton_Import.Capture = false;
+		}
 
 		private void contextMenuItem_Rename_Click(object sender, EventArgs e) => RenameProject();
 		private void contextMenuItem_Delete_Click(object sender, EventArgs e) => DeleteProject();
