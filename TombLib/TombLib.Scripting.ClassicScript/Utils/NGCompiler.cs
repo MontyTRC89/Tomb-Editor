@@ -177,7 +177,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			foreach (string line in lines)
 			{
-				if (line.StartsWith("#include", StringComparison.OrdinalIgnoreCase))
+				if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
 					try
 					{
 						string partialIncludePath = line.Split('"')[1].Trim();
