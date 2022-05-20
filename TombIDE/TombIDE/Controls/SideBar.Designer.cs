@@ -198,7 +198,6 @@
 			this.button_Special.Name = "button_Special";
 			this.button_Special.Size = new System.Drawing.Size(42, 42);
 			this.button_Special.TabIndex = 10;
-			this.button_Special.Click += new System.EventHandler(this.Special_LaunchFLEP);
 			// 
 			// tableLayoutPanel_Main
 			// 
@@ -280,7 +279,7 @@
 			this.Controls.Add(this.tableLayoutPanel_Main);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "SideBar";
-			this.Size = new System.Drawing.Size(464, 398);
+			this.Size = new System.Drawing.Size(480, 400);
 			this.flowLayoutPanel_Fixed.ResumeLayout(false);
 			this.tableLayoutPanel_Main.ResumeLayout(false);
 			this.tableLayoutPanel_Main.PerformLayout();
