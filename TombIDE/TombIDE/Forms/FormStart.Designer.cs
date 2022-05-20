@@ -183,10 +183,10 @@
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.treeView.ItemHeight = 48;
+			this.treeView.ItemHeight = 56;
 			this.treeView.Location = new System.Drawing.Point(30, 93);
 			this.treeView.Margin = new System.Windows.Forms.Padding(30, 3, 3, 3);
-			this.treeView.MaxDragChange = 48;
+			this.treeView.MaxDragChange = 56;
 			this.treeView.Name = "treeView";
 			this.treeView.OverrideEvenColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.OverrideOddColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
