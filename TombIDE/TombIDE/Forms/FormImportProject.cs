@@ -39,7 +39,7 @@ namespace TombIDE
 		{
 			base.OnShown(e);
 
-			if (textBox_ProjectName.Text.ToLower() == "engine") // This will ONLY happen when the user intentionally tries to break the software
+			if (textBox_ProjectName.Text.Equals("engine", StringComparison.OrdinalIgnoreCase)) // This will ONLY happen when the user intentionally tries to break the software
 			{
 				DarkMessageBox.Show(this, "LOL you did that on purpose, didn't you? Your project directory cannot be named \"Engine\",\n" +
 					"because it will cause many conflicts inside the software. Please rename the directory before importing.", "Why?",
@@ -65,13 +65,13 @@ namespace TombIDE
 			}
 
 			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
+			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
 			{
 				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
 
 				foreach (string directory in Directory.GetDirectories(parentDirectory))
 				{
-					if (Path.GetFileName(directory).ToLower() == "script")
+					if (Path.GetFileName(directory).Equals("script", StringComparison.OrdinalIgnoreCase))
 					{
 						// Check if a script.txt file exists in the /Script/ directory, if not, then leave the textBox empty
 						if (File.Exists(Path.Combine(directory, "script.txt")))
@@ -88,7 +88,7 @@ namespace TombIDE
 
 				foreach (string directory in Directory.GetDirectories(gameExeDirectory))
 				{
-					if (Path.GetFileName(directory).ToLower() == "script")
+					if (Path.GetFileName(directory).Equals("script", StringComparison.OrdinalIgnoreCase))
 					{
 						// Check if a script.txt file exists in the /Script/ directory, if not, then leave the textBox empty
 						if (File.Exists(Path.Combine(directory, "script.txt")))
@@ -107,13 +107,13 @@ namespace TombIDE
 			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
 
 			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
+			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
 			{
 				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
 
 				foreach (string directory in Directory.GetDirectories(parentDirectory))
 				{
-					if (Path.GetFileName(directory).ToLower() == "levels")
+					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
 					{
 						textBox_LevelsPath.Text = directory;
 						break;
@@ -130,9 +130,9 @@ namespace TombIDE
 
 				foreach (string directory in Directory.GetDirectories(gameExeDirectory))
 				{
-					if (Path.GetFileName(directory).ToLower() == "levels")
+					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
 						levelsPath = directory;
-					else if (Path.GetFileName(directory).ToLower() == "maps")
+					else if (Path.GetFileName(directory).Equals("maps", StringComparison.OrdinalIgnoreCase))
 						mapsPath = directory;
 				}
 
@@ -171,7 +171,7 @@ namespace TombIDE
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
-			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
+			using (var dialog = new BrowseFolderDialog())
 			{
 				dialog.Title = "Select an existing /Script/ folder for the project";
 
@@ -182,7 +182,7 @@ namespace TombIDE
 
 		private void button_BrowseLevels_Click(object sender, EventArgs e)
 		{
-			using (BrowseFolderDialog dialog = new BrowseFolderDialog())
+			using (var dialog = new BrowseFolderDialog())
 			{
 				dialog.Title = "Choose a /Levels/ folder for the project";
 
@@ -208,7 +208,7 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for the project.");
 
-				if (projectName.ToLower() == "engine") // Safety
+				if (projectName.Equals("engine", StringComparison.OrdinalIgnoreCase)) // Safety
 					throw new ArgumentException("Illegal project name.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ScriptPath.Text))
@@ -216,9 +216,6 @@ namespace TombIDE
 
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
-
-				if (ProjectChecker.IsProjectNameDuplicate(projectName))
-					throw new ArgumentException("A project with the same name already exists on the list.");
 
 				TRVersion.Game gameVersion = GetGameVersion(textBox_ExePath.Text);
 
@@ -254,7 +251,7 @@ namespace TombIDE
 				else
 					Directory.CreateDirectory(levelsPath);
 
-				Project importedProject = new Project
+				var importedProject = new Project
 				{
 					Name = projectName,
 					GameVersion = gameVersion,
@@ -347,11 +344,8 @@ namespace TombIDE
 			string gameExeDirectory = Path.GetDirectoryName(gameExeFilePath);
 
 			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).ToLower() == "engine")
-			{
-				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
-				return parentDirectory;
-			}
+			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
+				return Path.GetDirectoryName(gameExeDirectory);
 			else
 				return gameExeDirectory;
 		}

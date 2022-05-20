@@ -257,6 +257,11 @@ namespace DarkUI.Controls
             UpdateNodes();
         }
 
+        private void Nodes_SubTextChanged(object sender, EventArgs e)
+        {
+            UpdateNodes();
+        }
+
         private void Nodes_NodeExpanded(object sender, EventArgs e)
         {
             UpdateNodes();
@@ -484,6 +489,9 @@ namespace DarkUI.Controls
             node.NodeExpanded += Nodes_NodeExpanded;
             node.NodeCollapsed += Nodes_NodeCollapsed;
 
+            if (node is DarkTreeNodeEx)
+                (node as DarkTreeNodeEx).SubTextChanged += Nodes_SubTextChanged;
+
             foreach (var childNode in node.Nodes)
                 HookNodeEvents(childNode);
         }
@@ -577,11 +585,25 @@ namespace DarkUI.Controls
 
             using (var g = CreateGraphics())
             {
-                var textSize = (int)g.MeasureString(node.Text, Font).Width;
-                node.TextArea = new Rectangle(node.IconArea.Right + 2, yOffset, textSize + 1, ItemHeight);
-            }
+                if (node is DarkTreeNodeEx)
+                {
+                    var nodeEx = node as DarkTreeNodeEx;
+                    var subTextFont = new Font(Font.FontFamily, Font.Size - 4);
 
-            node.FullArea = new Rectangle(indent, yOffset, node.TextArea.Right - indent, ItemHeight);
+                    var textSize = (int)g.MeasureString(nodeEx.Text, Font).Width;
+                    var subTextSize = (int)g.MeasureString(nodeEx.SubText, subTextFont).Width;
+
+                    nodeEx.TextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset - 7, textSize + 1, ItemHeight);
+                    nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset + 11, subTextSize + 1, ItemHeight);
+                    nodeEx.FullArea = new Rectangle(indent, yOffset, Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right) - indent, ItemHeight);
+                }
+                else
+                {
+                    var textSize = (int)g.MeasureString(node.Text, Font).Width;
+                    node.TextArea = new Rectangle(node.IconArea.Right + 2, yOffset, textSize + 1, ItemHeight);
+                    node.FullArea = new Rectangle(indent, yOffset, node.TextArea.Right - indent, ItemHeight);
+                }
+            }
 
             if (ContentSize.Width < node.TextArea.Right + 2)
                 ContentSize = new Size(node.TextArea.Right + 2, ContentSize.Height);
@@ -1268,6 +1290,14 @@ namespace DarkUI.Controls
                 };
 
                 g.DrawString(node.Text, Font, b, node.TextArea, stringFormat);
+
+                if (node is DarkTreeNodeEx)
+                {
+                    var nodeEx = node as DarkTreeNodeEx;
+                    var subTextFont = new Font(Font.FontFamily, Font.Size - 4);
+
+                    g.DrawString(nodeEx.SubText, subTextFont, b, nodeEx.SubTextArea, stringFormat);
+                }
             }
 
             // 5. Draw child nodes

@@ -121,9 +121,6 @@ namespace TombIDE
 				if (string.IsNullOrWhiteSpace(textBox_ProjectPath.Text))
 					throw new ArgumentException("You must select a folder where you want to install your project.");
 
-				if (ProjectChecker.IsProjectNameDuplicate(projectName))
-					throw new ArgumentException("A project with the same name already exists on the list.");
-
 				if (comboBox_EngineType.SelectedIndex == 0)
 					throw new ArgumentException("You must specify the engine type of the project.");
 
@@ -188,9 +185,6 @@ namespace TombIDE
 
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
-
-				if (ProjectChecker.IsProjectNameDuplicate(projectName))
-					throw new ArgumentException("A project with the same name already exists on the list.");
 
 				if (comboBox_EngineType.SelectedIndex == 0)
 					throw new ArgumentException("You must specify the engine type of the project.");

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace TombIDE.Shared.SharedClasses
@@ -10,58 +10,24 @@ namespace TombIDE.Shared.SharedClasses
 		/// <summary>
 		/// Returns a list made up of projects taken from each .trproj file path stored in TombIDEProjects.xml.
 		/// </summary>
-		public static List<Project> GetProjectsFromXml()
+		public static IEnumerable<Project> GetProjectsFromXml()
 		{
 			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEProjects.xml");
 
-			if (File.Exists(xmlPath))
+			try
 			{
-				List<string> projectFilePaths = (List<string>)ReadXmlFile(xmlPath, typeof(List<string>));
+				List<string> projectFilePaths = ReadXmlFile<List<string>>(xmlPath);
 				// TombIDEProjects.xml only stores .trproj file paths
 
-				List<Project> projectList = new List<Project>();
-
-				foreach (string path in projectFilePaths)
-				{
-					if (File.Exists(path))
-						projectList.Add(Project.FromFile(path));
-				}
-
-				return projectList;
+				return projectFilePaths
+					.Where(path => File.Exists(path))
+					.Select(path => Project.FromFile(path));
 			}
-			else // TombIDEProjects.xml doesn't exist
+			catch
 			{
 				// Create a new (empty) .xml file
-				SaveXmlFile(xmlPath, typeof(List<string>), new List<string>());
+				SaveXmlFile(xmlPath, new List<string>());
 				return new List<Project>();
-			}
-		}
-
-		public static List<Plugin> GetPluginsFromXml()
-		{
-			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEPlugins.xml");
-
-			if (File.Exists(xmlPath))
-			{
-				List<Plugin> pluginList = (List<Plugin>)ReadXmlFile(xmlPath, typeof(List<Plugin>));
-
-				List<Plugin> validPlugins = new List<Plugin>();
-
-				foreach (Plugin plugin in pluginList)
-				{
-					if (File.Exists(plugin.InternalDllPath))
-						validPlugins.Add(plugin);
-				}
-
-				UpdatePluginsXml(validPlugins);
-
-				return validPlugins;
-			}
-			else // TombIDEPlugins.xml doesn't exist
-			{
-				// Create a new (empty) .xml file
-				SaveXmlFile(xmlPath, typeof(List<Plugin>), new List<Plugin>());
-				return new List<Plugin>();
 			}
 		}
 
@@ -70,35 +36,27 @@ namespace TombIDE.Shared.SharedClasses
 		/// </summary>
 		public static void UpdateProjectsXml(List<Project> projects)
 		{
-			List<string> projectFilePaths = new List<string>();
-
-			foreach (Project project in projects)
-				projectFilePaths.Add(project.GetTrprojFilePath());
+			IEnumerable<string> projectFilePaths = projects
+				.Select(project => project.GetTrprojFilePath());
 
 			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEProjects.xml");
-			SaveXmlFile(xmlPath, typeof(List<string>), projectFilePaths);
+			SaveXmlFile(xmlPath, projectFilePaths.ToList());
 		}
 
-		public static void UpdatePluginsXml(List<Plugin> pluginList)
+		public static T ReadXmlFile<T>(string path)
 		{
-			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEPlugins.xml");
-			SaveXmlFile(xmlPath, typeof(List<Plugin>), pluginList);
-		}
-
-		public static object ReadXmlFile(string path, Type type)
-		{
-			using (StreamReader reader = new StreamReader(path))
+			using (var reader = new StreamReader(path))
 			{
-				XmlSerializer serializer = new XmlSerializer(type);
-				return serializer.Deserialize(reader);
+				var serializer = new XmlSerializer(typeof(T));
+				return (T)serializer.Deserialize(reader);
 			}
 		}
 
-		public static void SaveXmlFile(string path, Type type, object content)
+		public static void SaveXmlFile<T>(string path, T content)
 		{
-			using (StreamWriter writer = new StreamWriter(path))
+			using (var writer = new StreamWriter(path))
 			{
-				XmlSerializer serializer = new XmlSerializer(type);
+				var serializer = new XmlSerializer(typeof(T));
 				serializer.Serialize(writer, content);
 			}
 		}

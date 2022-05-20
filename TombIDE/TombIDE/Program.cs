@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,19 +21,18 @@ namespace TombIDE
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			IDEConfiguration ideConfiguration = IDEConfiguration.Load();
-			List<Project> availableProjects = XmlHandling.GetProjectsFromXml();
-			List<Plugin> availablePlugins = XmlHandling.GetPluginsFromXml();
+			var ideConfiguration = IDEConfiguration.Load();
+			var availableProjects = XmlHandling.GetProjectsFromXml().ToList();
 
-			using (IDE ide = new IDE(ideConfiguration, availableProjects, availablePlugins))
+			using (var ide = new IDE(ideConfiguration, availableProjects))
 			{
 				IDE.Global = ide;
 
-				using (FormStart form = new FormStart(ide))
+				using (var form = new FormStart(ide))
 				{
 					if (args.Length > 0)
 					{
-						if (Path.GetExtension(args[0]).ToLower() != ".trproj")
+						if (!Path.GetExtension(args[0]).Equals(".trproj", StringComparison.OrdinalIgnoreCase))
 						{
 							MessageBox.Show("Invalid file type. TombIDE can only open .trproj files.", "Error",
 								MessageBoxButtons.OK, MessageBoxIcon.Error);

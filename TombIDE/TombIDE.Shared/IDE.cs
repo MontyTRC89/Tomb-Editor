@@ -18,7 +18,6 @@ namespace TombIDE.Shared
 
 		public IDEConfiguration IDEConfiguration { get; }
 		public List<Project> AvailableProjects { get; }
-		public List<Plugin> AvailablePlugins { get; }
 
 		/// <summary>
 		/// The currently opened TombIDE project.
@@ -292,11 +291,10 @@ namespace TombIDE.Shared
 		#endregion ScriptEditor_ReloadSyntaxHighlighting
 
 		// Construction and destruction
-		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)
+		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects)
 		{
 			IDEConfiguration = ideConfiguration;
 			AvailableProjects = availableProjects;
-			AvailablePlugins = availablePlugins;
 		}
 
 		public void Dispose()

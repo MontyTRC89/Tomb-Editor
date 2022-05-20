@@ -38,7 +38,7 @@ namespace TombIDE
 			{
 				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
-				if (string.IsNullOrWhiteSpace(newName) || newName.ToLower() == "engine")
+				if (string.IsNullOrWhiteSpace(newName) || newName.Equals("engine", StringComparison.OrdinalIgnoreCase))
 					throw new ArgumentException("Invalid name.");
 
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
@@ -48,6 +48,11 @@ namespace TombIDE
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
 					if (Path.GetFileName(_targetProject.ProjectPath) != newName && renameDirectory)
 					{
+						string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.ProjectPath), newName);
+
+						if (Directory.Exists(newDirectory))
+							throw new ArgumentException("A directory with the same name already exists in the root directory.");
+
 						HandleDirectoryRenaming();
 
 						_targetProject.Rename(newName, true);
@@ -61,20 +66,23 @@ namespace TombIDE
 					// Check if a project with the same name already exists on the list
 					foreach (Project project in XmlHandling.GetProjectsFromXml())
 					{
-						if (project.Name.ToLower() == newName.ToLower())
+						if (project.Name.Equals(newName, StringComparison.OrdinalIgnoreCase))
 						{
 							// Check if the project we found IS the current _ide.Project
-							if (project.ProjectPath.ToLower() == _targetProject.ProjectPath.ToLower())
+							if (project.ProjectPath.Equals(_targetProject.ProjectPath, StringComparison.OrdinalIgnoreCase))
 							{
 								if (renameDirectory)
 									HandleDirectoryRenaming();
 
 								break;
 							}
-							else
-								throw new ArgumentException("A project with the same name already exists on the list.");
 						}
 					}
+
+					string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.ProjectPath), newName);
+
+					if (Directory.Exists(newDirectory))
+						throw new ArgumentException("A directory with the same name already exists in the root directory.");
 
 					_targetProject.Rename(newName, renameDirectory);
 					_targetProject.Save();

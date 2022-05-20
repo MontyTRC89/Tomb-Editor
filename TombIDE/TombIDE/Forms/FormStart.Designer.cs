@@ -182,7 +182,7 @@
 			this.treeView.ContextMenuStrip = this.contextMenu_ProjectList;
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.ExpandOnDoubleClick = false;
-			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView.ItemHeight = 48;
 			this.treeView.Location = new System.Drawing.Point(30, 93);
 			this.treeView.Margin = new System.Windows.Forms.Padding(30, 3, 3, 3);
@@ -195,8 +195,8 @@
 			this.treeView.TabIndex = 0;
 			this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyDown);
 			this.treeView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyUp);
-			this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseClick);
 			this.treeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDoubleClick);
+			this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
 			// 
 			// contextMenu_ProjectList
 			// 

@@ -1,31 +1,16 @@
 ﻿using System;
 using System.IO;
 using TombIDE.Shared;
-using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
 	internal static class ProjectChecker
 	{
-		public static bool IsProjectNameDuplicate(string projectName)
-		{
-			foreach (Project project in XmlHandling.GetProjectsFromXml())
-			{
-				if (project.Name.ToLower() == projectName.ToLower())
-					return true;
-			}
-
-			return false;
-		}
-
 		/// <summary>
 		/// Checks if the project is installed correctly.
 		/// </summary>
 		public static bool IsValidProject(Project project)
-		{
-			string message; // For Lwmte's outdated VS
-			return IsValidProject(project, out message);
-		}
+			=> IsValidProject(project, out _);
 
 		/// <summary>
 		/// Checks if the project is installed correctly.
@@ -91,7 +76,7 @@ namespace TombIDE
 		{
 			foreach (string file in Directory.GetFiles(project.ScriptPath, "*.txt", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).ToLower() == "script.txt")
+				if (Path.GetFileName(file).Equals("script.txt", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 
