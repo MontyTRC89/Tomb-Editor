@@ -386,7 +386,7 @@ namespace TombIDE
 
 				node.IconArea = new Rectangle(new Point(LEFT_ICON_MARGIN, iconYPos), new Size(UNIFORM_ICON_SIZE, UNIFORM_ICON_SIZE));
 				node.TextArea = new Rectangle(new Point(LEFT_TEXT_MARGIN, node.TextArea.Y), node.TextArea.Size);
-				node.SubTextArea = new Rectangle(new Point(LEFT_TEXT_MARGIN, node.SubTextArea.Y), node.SubTextArea.Size);
+				node.SubTextArea = new Rectangle(new Point(LEFT_TEXT_MARGIN + 1, node.SubTextArea.Y), node.SubTextArea.Size);
 			}
 
 			treeView.Invalidate();
