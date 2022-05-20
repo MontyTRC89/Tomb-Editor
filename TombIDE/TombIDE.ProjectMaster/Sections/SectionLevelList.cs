@@ -286,24 +286,6 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private void AdjustTextOfAllNodes()
-		{
-			foreach (DarkTreeNodeEx node in treeView.Nodes)
-			{
-				var nodeLevel = (ProjectLevel)node.Tag;
-				node.Text = nodeLevel.Name;
-
-				if (nodeLevel.SpecificFile == "$(LatestFile)")
-					node.SubText = "~/" + nodeLevel.GetLatestPrj2File();
-				else
-					node.SubText = "~/" + nodeLevel.SpecificFile;
-
-				// Mark external levels
-				if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-					node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
-			}
-		}
-
 		private void CheckItemSelection()
 		{
 			// Enable / Disable node specific buttons
