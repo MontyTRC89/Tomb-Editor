@@ -17,6 +17,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = DefaultPaths.DOSBoxExecutable,
+				WorkingDirectory = DefaultPaths.DOSDirectory,
 				Arguments =
 					$"-c \"mount C '{DefaultPaths.TR4ScriptCompilerDirectory}'\" " +
 					"-c \"C:\" " +
