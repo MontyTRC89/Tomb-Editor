@@ -1,6 +1,6 @@
 ﻿namespace TombIDE.ProjectMaster
 {
-	partial class ProjectMaster
+	partial class Miscellaneous
 	{
 		private System.ComponentModel.IContainer components = null;
 
@@ -96,6 +96,7 @@
 		}
 
 		#endregion
+
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
 		private SectionProjectSettings section_ProjectInfo;
 		private DarkUI.Controls.DarkLabel label_Title;

@@ -3,9 +3,9 @@ using TombIDE.Shared;
 
 namespace TombIDE.ProjectMaster
 {
-	public partial class ProjectMaster : UserControl
+	public partial class Miscellaneous : UserControl
 	{
-		public ProjectMaster()
+		public Miscellaneous()
 		{
 			InitializeComponent();
 		}

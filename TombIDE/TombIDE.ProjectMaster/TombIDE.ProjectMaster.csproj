@@ -126,11 +126,11 @@
     <Compile Include="Sections\SectionProjectSettings.Designer.cs">
       <DependentUpon>SectionProjectSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectMaster.cs">
+    <Compile Include="Miscellaneous.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProjectMaster.Designer.cs">
-      <DependentUpon>ProjectMaster.cs</DependentUpon>
+    <Compile Include="Miscellaneous.Designer.cs">
+      <DependentUpon>Miscellaneous.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sections\SectionLevelProperties.cs">
@@ -214,8 +214,8 @@
     <EmbeddedResource Include="Sections\SectionProjectSettings.resx">
       <DependentUpon>SectionProjectSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProjectMaster.resx">
-      <DependentUpon>ProjectMaster.cs</DependentUpon>
+    <EmbeddedResource Include="Miscellaneous.resx">
+      <DependentUpon>Miscellaneous.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsIcon.resx">
       <DependentUpon>SettingsIcon.cs</DependentUpon>

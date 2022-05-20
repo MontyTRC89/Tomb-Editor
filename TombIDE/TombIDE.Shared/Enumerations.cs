@@ -3,9 +3,9 @@
 	public enum IDETab
 	{
 		LevelManager,
-		ProjectManager,
 		ScriptingStudio,
-		PluginManager
+		PluginManager,
+		Miscellaneous
 	}
 
 	public enum GameLanguage

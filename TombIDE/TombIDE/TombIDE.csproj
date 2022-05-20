@@ -60,6 +60,12 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Controls\SideBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SideBar.Designer.cs">
+      <DependentUpon>SideBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileFinder.cs" />
     <Compile Include="Forms\FormEngineHelp.cs">
       <SubType>Form</SubType>
@@ -112,6 +118,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\SideBar.resx">
+      <DependentUpon>SideBar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormEngineHelp.resx">
       <DependentUpon>FormEngineHelp.cs</DependentUpon>
     </EmbeddedResource>
