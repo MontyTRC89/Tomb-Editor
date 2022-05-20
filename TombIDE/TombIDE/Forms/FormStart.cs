@@ -326,6 +326,9 @@ namespace TombIDE
 			contextMenuItem_OpenDirectory.Enabled = treeView.SelectedNodes.Count > 0;
 			contextMenuItem_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
 
+			checkBox_Remember.Enabled = treeView.SelectedNodes.Count > 0;
+			button_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
+
 			// // // // // // // //
 			_selectedProject = treeView.SelectedNodes.Count > 0 ? (Project)treeView.SelectedNodes[0].Tag : null;
 			// // // // // // // //

@@ -381,6 +381,7 @@
 			this.button_OpenProject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_OpenProject.Checked = false;
+			this.button_OpenProject.Enabled = false;
 			this.button_OpenProject.Location = new System.Drawing.Point(552, 20);
 			this.button_OpenProject.Margin = new System.Windows.Forms.Padding(0, 20, 20, 20);
 			this.button_OpenProject.Name = "button_OpenProject";
@@ -393,6 +394,7 @@
 			// 
 			this.checkBox_Remember.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.checkBox_Remember.Enabled = false;
 			this.checkBox_Remember.Location = new System.Drawing.Point(20, 20);
 			this.checkBox_Remember.Margin = new System.Windows.Forms.Padding(20, 20, 0, 20);
 			this.checkBox_Remember.Name = "checkBox_Remember";
