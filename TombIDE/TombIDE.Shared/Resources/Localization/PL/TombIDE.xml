@@ -39,7 +39,6 @@
 	<Help>Pomoc</Help>
 
 	<NewFile>Nowy plik...</NewFile>
-	<NewFileAtCaret>Nowy plik na pozycji kursora...</NewFileAtCaret>
 	<Save>Zapisz</Save>
 	<SaveAs>Zapisz jako...</SaveAs>
 	<SaveAll>Zapisz wszystko</SaveAll>
@@ -89,6 +88,9 @@
 	<StatusStrip>Pasek stanu</StatusStrip>
 
 	<About>O TombIDE...</About>
+
+	<TypeFirstAvailableId>Podaj pierwszy dostępny indeks</TypeFirstAvailableId>
+	<NewFileAtCaret>Nowy plik na pozycji kursora...</NewFileAtCaret>
 
 	<Close>Zamknij</Close>
 	<OpenContainingFolder>Otwórz folder zawierający plik</OpenContainingFolder>

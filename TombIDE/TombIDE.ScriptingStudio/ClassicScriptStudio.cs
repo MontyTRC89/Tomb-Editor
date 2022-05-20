@@ -491,6 +491,10 @@ namespace TombIDE.ScriptingStudio
 			{
 				switch (command)
 				{
+					case UICommand.TypeFirstAvailableId:
+						editor.InputFreeIndex();
+						break;
+
 					case UICommand.NewFileAtCaret:
 						CreateNewFileAtCaretPosition(editor);
 						break;

@@ -138,9 +138,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void TextEditor_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.F1)
-				InputFreeIndex();
-			else if (e.Key == Key.F12)
+			if (e.Key == Key.F12)
 			{
 				if (_specialToolTip.IsOpen && HoveredWordArgs != null)
 				{
@@ -405,7 +403,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		// TODO: Refactor
 
-		private void InputFreeIndex()
+		public void InputFreeIndex()
 		{
 			int nextFreeIndex = GlobalParser.GetNextFreeIndex(Document, CaretOffset);
 

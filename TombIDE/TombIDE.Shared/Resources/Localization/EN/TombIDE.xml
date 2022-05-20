@@ -39,7 +39,6 @@
 	<Help>Help</Help>
 
 	<NewFile>New File...</NewFile>
-	<NewFileAtCaret>New File at Caret Position...</NewFileAtCaret>
 	<Save>Save</Save>
 	<SaveAs>Save As...</SaveAs>
 	<SaveAll>Save All</SaveAll>
@@ -89,6 +88,9 @@
 	<StatusStrip>Status Strip</StatusStrip>
 
 	<About>About...</About>
+
+	<TypeFirstAvailableId>Type First Available ID if Applicable</TypeFirstAvailableId>
+	<NewFileAtCaret>New File at Caret Position...</NewFileAtCaret>
 
 	<Close>Close</Close>
 	<OpenContainingFolder>Open Containing Folder</OpenContainingFolder>

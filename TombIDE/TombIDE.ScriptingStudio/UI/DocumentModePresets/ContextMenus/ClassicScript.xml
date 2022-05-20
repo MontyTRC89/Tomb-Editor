@@ -9,5 +9,6 @@
 	<Separator />
 	<Item LangKey="ToggleBookmark" Command="ToggleBookmark" Icon="Bookmark_16" Keys="ToggleBookmark" />
 	<Separator />
+	<Item LangKey="TypeFirstAvailableId" Command="TypeFirstAvailableId" Icon="Asterisk_16" Keys="TypeFirstAvailableId" />
 	<Item LangKey="NewFileAtCaret" Command="NewFileAtCaret" Icon="New_16" Keys="NewFileAtCaret" />
 </Items>

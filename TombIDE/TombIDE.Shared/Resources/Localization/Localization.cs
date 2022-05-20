@@ -30,7 +30,6 @@ namespace TombIDE.Shared.Local
 		public string Help { get; set; }
 
 		public string NewFile { get; set; }
-		public string NewFileAtCaret { get; set; }
 		public string Save { get; set; }
 		public string SaveAs { get; set; }
 		public string SaveAll { get; set; }
@@ -79,6 +78,9 @@ namespace TombIDE.Shared.Local
 		public string StatusStrip { get; set; }
 
 		public string About { get; set; }
+
+		public string TypeFirstAvailableId { get; set; }
+		public string NewFileAtCaret { get; set; }
 
 		public string Close { get; set; }
 		public string OpenContainingFolder { get; set; }

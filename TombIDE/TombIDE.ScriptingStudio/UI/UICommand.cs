@@ -7,7 +7,6 @@
 		// File:
 
 		NewFile,
-		NewFileAtCaret,
 		Save,
 		SaveAs,
 		SaveAll,
@@ -65,6 +64,11 @@
 
 		// Help:
 
-		About
+		About,
+
+		// Other:
+
+		TypeFirstAvailableId,
+		NewFileAtCaret
 	}
 }
