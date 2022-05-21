@@ -257,11 +257,6 @@ namespace DarkUI.Controls
             UpdateNodes();
         }
 
-        private void Nodes_SubTextChanged(object sender, EventArgs e)
-        {
-            UpdateNodes();
-        }
-
         private void Nodes_NodeExpanded(object sender, EventArgs e)
         {
             UpdateNodes();
@@ -490,7 +485,11 @@ namespace DarkUI.Controls
             node.NodeCollapsed += Nodes_NodeCollapsed;
 
             if (node is DarkTreeNodeEx)
-                (node as DarkTreeNodeEx).SubTextChanged += Nodes_SubTextChanged;
+            {
+                (node as DarkTreeNodeEx).SubTextChanged += Nodes_TextChanged;
+                (node as DarkTreeNodeEx).ExtraIconChanged += Nodes_TextChanged;
+            }
+               
 
             foreach (var childNode in node.Nodes)
                 HookNodeEvents(childNode);
