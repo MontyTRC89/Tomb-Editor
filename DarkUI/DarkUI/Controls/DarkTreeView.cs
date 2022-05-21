@@ -596,14 +596,12 @@ namespace DarkUI.Controls
                     nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 4, yOffset + (Font.Height / 2) - 1, subTextSize + 1, ItemHeight);
 
                     if (ShowIcons && nodeEx.ExtraIcon != null)
-                    {
                         nodeEx.ExtraIconArea = new Rectangle(nodeEx.TextArea.Right + 4, nodeEx.TextArea.Y + Font.Height + 1, nodeEx.ExtraIcon.Width, ItemHeight);
 
-                        nodeEx.FullArea = new Rectangle(indent, yOffset,
-                            Math.Max(Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right), nodeEx.ExtraIconArea.Right) - indent, ItemHeight);
-                    }
-                    else
-                        nodeEx.FullArea = new Rectangle(indent, yOffset, Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right) - indent, ItemHeight);
+                    nodeEx.TextArea = new Rectangle(nodeEx.TextArea.X, nodeEx.TextArea.Y,
+                        Math.Max(Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right), nodeEx.ExtraIconArea.Right) + 1 - indent, ItemHeight);
+
+                    nodeEx.FullArea = new Rectangle(indent, yOffset, nodeEx.TextArea.Right - indent, ItemHeight);
                 }
                 else
                 {
