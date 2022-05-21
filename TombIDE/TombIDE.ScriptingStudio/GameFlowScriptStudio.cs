@@ -27,6 +27,7 @@ namespace TombIDE.ScriptingStudio
 			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
 
 			FileExplorer.Filter = "*.txt";
+			FileExplorer.CommentPrefix = "//";
 
 			EditorTabControl.PlainTextTypeOverride = typeof(GameFlowScriptStudio);
 

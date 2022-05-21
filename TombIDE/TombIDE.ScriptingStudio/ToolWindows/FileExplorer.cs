@@ -48,15 +48,17 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			set => fileSystemWatcher.NotifyFilter = value;
 		}
 
+		public string CommentPrefix { get; set; }
+
 		#endregion Properties
 
 		#region Construction
 
 		public FileExplorer() : this(string.Empty)
 		{ }
-		public FileExplorer(string rootDirectoryPath) : this(rootDirectoryPath, string.Empty)
+		public FileExplorer(string rootDirectoryPath) : this(rootDirectoryPath, string.Empty, string.Empty)
 		{ }
-		public FileExplorer(string rootDirectoryPath, string filter)
+		public FileExplorer(string rootDirectoryPath, string filter, string commentPrefix)
 		{
 			InitializeComponent();
 			DockText = Strings.Default.FileExplorer;
@@ -73,6 +75,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			{
 				RootDirectoryPath = rootDirectoryPath;
 				Filter = filter;
+				CommentPrefix = commentPrefix;
 			}
 		}
 
@@ -162,7 +165,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			using (var form = new FormFileCreation(RootDirectoryPath, FileCreationMode.New, GetInitialNodePath()))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					File.Create(form.NewFilePath).Close();
+					File.WriteAllText(form.NewFilePath, $"{CommentPrefix} FILE: {form.NewFilePath.Replace(RootDirectoryPath, string.Empty)}\n");
 					OnFileOpened(new FileOpenedEventArgs(form.NewFilePath));
 
 					return form.NewFilePath;

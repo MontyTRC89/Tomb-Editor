@@ -58,6 +58,7 @@ namespace TombIDE.ScriptingStudio
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 
 			FileExplorer.Filter = "*.txt";
+			FileExplorer.CommentPrefix = ";";
 
 			EditorTabControl.PlainTextTypeOverride = typeof(ClassicScriptEditor);
 

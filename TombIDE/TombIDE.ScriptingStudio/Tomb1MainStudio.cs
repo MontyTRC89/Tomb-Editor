@@ -24,6 +24,7 @@ namespace TombIDE.ScriptingStudio
 			DockPanelState = IDE.Global.IDEConfiguration.T1M_DockPanelState;
 
 			FileExplorer.Filter = "*.json5";
+			FileExplorer.CommentPrefix = "//";
 
 			EditorTabControl.CheckPreviousSession();
 
