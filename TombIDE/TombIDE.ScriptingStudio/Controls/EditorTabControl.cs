@@ -564,6 +564,9 @@ namespace TombIDE.ScriptingStudio.Controls
 				TryOpenContextMenu(e.Location);
 			else
 				base.OnMouseClick(e);
+
+			if (e.Button == MouseButtons.Middle && _toolTip.Active)
+				_toolTip.Hide(this);
 		}
 
 		private const int MOVE_THRESHOLD = 5;
