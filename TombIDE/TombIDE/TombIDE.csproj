@@ -172,6 +172,11 @@
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\open-48.png" />
     <Content Include="Resources\TIDE_Logo.png" />
+    <Content Include="Resources\TR1_LVL.png" />
+    <Content Include="Resources\TR2_LVL.png" />
+    <Content Include="Resources\TR3_LVL.png" />
+    <Content Include="Resources\TR4_LVL.png" />
+    <Content Include="Resources\TRNG_LVL.png" />
     <Content Include="TIDE.ico" />
   </ItemGroup>
   <ItemGroup>

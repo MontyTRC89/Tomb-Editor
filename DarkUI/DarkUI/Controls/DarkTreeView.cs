@@ -595,7 +595,16 @@ namespace DarkUI.Controls
 
                     nodeEx.TextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset - (Font.Height / 2) + 2, textSize + 1, ItemHeight);
                     nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 4, yOffset + (Font.Height / 2) - 1, subTextSize + 1, ItemHeight);
-                    nodeEx.FullArea = new Rectangle(indent, yOffset, Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right) - indent, ItemHeight);
+
+                    if (ShowIcons && nodeEx.ExtraIcon != null)
+                    {
+                        nodeEx.ExtraIconArea = new Rectangle(nodeEx.TextArea.Right + 4, nodeEx.TextArea.Y + Font.Height + 1, nodeEx.ExtraIcon.Width, ItemHeight);
+
+                        nodeEx.FullArea = new Rectangle(indent, yOffset,
+                            Math.Max(Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right), nodeEx.ExtraIconArea.Right) - indent, ItemHeight);
+                    }
+                    else
+                        nodeEx.FullArea = new Rectangle(indent, yOffset, Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right) - indent, ItemHeight);
                 }
                 else
                 {
@@ -1297,6 +1306,9 @@ namespace DarkUI.Controls
                     var subTextFont = new Font(Font.FontFamily, 8.25f);
 
                     g.DrawString(nodeEx.SubText, subTextFont, b, nodeEx.SubTextArea, stringFormat);
+
+                    if (ShowIcons && nodeEx.ExtraIcon != null)
+                        g.DrawImage(nodeEx.ExtraIcon, nodeEx.ExtraIconArea.Location);
                 }
             }
 

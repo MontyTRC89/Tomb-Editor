@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.LevelData;
 
 namespace TombIDE
 {
@@ -382,6 +383,15 @@ namespace TombIDE
 		private void AddProjectToList(Project project, bool reserialize)
 		{
 			var node = new DarkTreeNodeEx(project.Name, project.ProjectPath) { Tag = project };
+
+			switch (project.GameVersion)
+			{
+				case TRVersion.Game.TRNG: node.ExtraIcon = Properties.Resources.TRNG_LVL; break;
+				case TRVersion.Game.TR4: node.ExtraIcon = Properties.Resources.TR4_LVL; break;
+				case TRVersion.Game.TR3: node.ExtraIcon = Properties.Resources.TR3_LVL; break;
+				case TRVersion.Game.TR2: node.ExtraIcon = Properties.Resources.TR2_LVL; break;
+				case TRVersion.Game.TR1: node.ExtraIcon = Properties.Resources.TR1_LVL; break;
+			}
 
 			if (!string.IsNullOrEmpty(project.LaunchFilePath) && File.Exists(project.LaunchFilePath))
 				node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
