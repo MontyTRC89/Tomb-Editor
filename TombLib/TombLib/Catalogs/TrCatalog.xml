@@ -414,7 +414,7 @@
 			<sound id= " 205 " name= " GYM_HINT_26 " t5m= " 205 "/>
 		</sounds>
 		<animations>
-			<anim item="0" id="0"  name="RUNNY" />
+			<anim item="0" id="0"  name="RUN" />
 			<anim item="0" id="1"  name="WALK_FORWARD" />
 			<anim item="0" id="2"  name="WALK_STOP_RIGHT" />
 			<anim item="0" id="3"  name="WALK_STOP_LEFT" />
