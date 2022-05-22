@@ -90,10 +90,10 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			string commandStartLineText = document.GetText(commandStartLine.Offset, commandStartLine.Length);
 			commandStartLineText = LineParser.EscapeComments(commandStartLineText);
 
-			if (commandStartLineText.Contains("="))
-				return GetCorrectCommandVariation(document, commandStartLine.Offset, commandStartLineText.Split('=')[0].Trim());
-			else if (commandStartLineText.Trim().StartsWith("#"))
+			if (commandStartLineText.Trim().StartsWith("#"))
 				return commandStartLineText.Split(' ')[0].Trim();
+			else if (commandStartLineText.Contains("="))
+				return GetCorrectCommandVariation(document, commandStartLine.Offset, commandStartLineText.Split('=')[0].Trim());
 
 			return null;
 		}

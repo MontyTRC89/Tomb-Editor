@@ -4,7 +4,8 @@ using System.Threading;
 
 namespace TombIDE.Shared
 {
-	public interface IIDEEvent { }
+	public interface IIDEEvent
+	{ }
 
 	public class IDE : IDisposable
 	{
@@ -17,7 +18,6 @@ namespace TombIDE.Shared
 
 		public IDEConfiguration IDEConfiguration { get; }
 		public List<Project> AvailableProjects { get; }
-		public List<Plugin> AvailablePlugins { get; }
 
 		/// <summary>
 		/// The currently opened TombIDE project.
@@ -27,49 +27,15 @@ namespace TombIDE.Shared
 
 		/* Main IDE events */
 
-		#region SelectedIDETabChanged
-
-		public class SelectedIDETabChangedEvent : IIDEEvent
-		{
-			public IDETab Previous { get; internal set; }
-			public IDETab Current { get; internal set; }
-		}
-
-		public IDETab SelectedIDETab { get; private set; }
-
-		public void SelectIDETab(IDETab tab)
-		{
-			if (SelectedIDETab != tab)
-			{
-				IDETab previous = SelectedIDETab;
-				SelectedIDETab = tab;
-
-				RaiseEvent(new SelectedIDETabChangedEvent { Previous = previous, Current = tab });
-			}
-		}
-
-		#endregion SelectedIDETabChanged
-
 		#region ProgramButtonsModified
 
-		public class ProgramButtonsModifiedEvent : IIDEEvent { }
+		public class ProgramButtonsModifiedEvent : IIDEEvent
+		{ }
 
 		public void ProgramButtonsModified() =>
 			RaiseEvent(new ProgramButtonsModifiedEvent());
 
 		#endregion ProgramButtonsModified
-
-		#region ApplicationRestarting
-
-		public class ApplicationRestartingEvent : IIDEEvent { }
-
-		/// <summary>
-		/// WARNING: This method doesn't ask IDE.CanClose() for closing permissions !!!
-		/// </summary>
-		public void RestartApplication() =>
-			RaiseEvent(new ApplicationRestartingEvent());
-
-		#endregion ApplicationRestarting
 
 		#region ProgramClosing
 
@@ -114,13 +80,15 @@ namespace TombIDE.Shared
 
 		private ProjectLevel _selectedLevel;
 
-		public class SelectedLevelChangedEvent : IIDEEvent { }
+		public class SelectedLevelChangedEvent : IIDEEvent
+		{ }
 
 		#endregion SelectedLevelChanged
 
 		#region SelectedLevelSettingsChanged
 
-		public class SelectedLevelSettingsChangedEvent : IIDEEvent { }
+		public class SelectedLevelSettingsChangedEvent : IIDEEvent
+		{ }
 
 		public void SelectedLevelSettingsChanged() =>
 			RaiseEvent(new SelectedLevelSettingsChangedEvent());
@@ -162,24 +130,6 @@ namespace TombIDE.Shared
 		}
 
 		#endregion ProjectLevelsPathChanged
-
-		#region RequestedPluginListRefresh
-
-		public class RequestedPluginListRefreshEvent : IIDEEvent { }
-
-		public void RefreshPluginLists() =>
-			RaiseEvent(new RequestedPluginListRefreshEvent());
-
-		#endregion RequestedPluginListRefresh
-
-		#region PluginListsUpdated
-
-		public class PluginListsUpdatedEvent : IIDEEvent { }
-
-		public void FinishPluginListUpdate() =>
-			RaiseEvent(new PluginListsUpdatedEvent());
-
-		#endregion PluginListsUpdated
 
 		#region PRJ2FileDeleted
 
@@ -247,7 +197,8 @@ namespace TombIDE.Shared
 
 		#region ScriptEditor_ContentChanged
 
-		public class ScriptEditor_ContentChangedEvent : IIDEEvent { }
+		public class ScriptEditor_ContentChangedEvent : IIDEEvent
+		{ }
 
 		public void ScriptEditor_IndicateExternalChange() =>
 			RaiseEvent(new ScriptEditor_ContentChangedEvent());
@@ -296,12 +247,18 @@ namespace TombIDE.Shared
 
 		#endregion ScriptEditor_RenameLevel
 
+		#region ScriptEditor_ReloadSyntaxHighlighting
+
+		public class ScriptEditor_ReloadSyntaxHighlightingEvent : IIDEEvent
+		{ }
+
+		#endregion ScriptEditor_ReloadSyntaxHighlighting
+
 		// Construction and destruction
-		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)
+		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects)
 		{
 			IDEConfiguration = ideConfiguration;
 			AvailableProjects = availableProjects;
-			AvailablePlugins = availablePlugins;
 		}
 
 		public void Dispose()

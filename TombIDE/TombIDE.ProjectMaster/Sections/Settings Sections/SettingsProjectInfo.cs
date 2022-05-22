@@ -25,6 +25,12 @@ namespace TombIDE.ProjectMaster
 
 			checkBox_FullPaths.Checked = _ide.IDEConfiguration.ViewFullFolderPaths;
 
+			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1)
+			{
+				button_ChangeScriptPath.Visible = false;
+				textBox_ScriptPath.Width = 589;
+			}
+
 			UpdateProjectInfo();
 		}
 

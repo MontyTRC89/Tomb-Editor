@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using TombIDE.Shared;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -16,8 +17,17 @@ namespace TombIDE.ProjectMaster
 			settings_ProjectInfo.Initialize(ide);
 			settings_Icon.Initialize(ide);
 			settings_SplashScreen.Initialize(ide);
-			settings_StartupImage.Initialize(ide);
-			settings_Logo.Initialize(ide);
+
+			if (ide.Project.GameVersion == TRVersion.Game.TR4 || ide.Project.GameVersion == TRVersion.Game.TRNG)
+			{
+				settings_StartupImage.Initialize(ide);
+				settings_Logo.Initialize(ide);
+			}
+			else
+			{
+				settings_StartupImage.Visible = false;
+				settings_Logo.Visible = false;
+			}
 		}
 	}
 }

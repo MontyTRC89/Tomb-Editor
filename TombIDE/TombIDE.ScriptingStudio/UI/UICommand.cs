@@ -50,6 +50,8 @@
 
 		// View:
 
+		RestoreDefaultLayout,
+
 		ToolStrip, // View start
 
 		ContentExplorer,
@@ -62,6 +64,11 @@
 
 		// Help:
 
-		About
+		About,
+
+		// Other:
+
+		TypeFirstAvailableId,
+		NewFileAtCaret
 	}
 }

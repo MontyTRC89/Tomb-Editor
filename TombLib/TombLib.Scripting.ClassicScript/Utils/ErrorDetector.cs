@@ -161,11 +161,15 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			foreach (DictionaryEntry entry in CommandParser.GetCommandSyntaxResources())
 				if (command.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 				{
-					correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
+					string entryValue = entry.Value.ToString();
+
+					if (entryValue.Contains("["))
+						correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
+
 					break;
 				}
 
-			if (correctSection.Equals("any", StringComparison.OrdinalIgnoreCase))
+			if (string.IsNullOrWhiteSpace(correctSection) || correctSection.Equals("any", StringComparison.OrdinalIgnoreCase))
 				return true;
 
 			for (int i = lineNumber - 1; i > 0; i--)
@@ -173,7 +177,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				DocumentLine currentLine = document.GetLineByNumber(i);
 				string currentLineText = document.GetText(currentLine.Offset, currentLine.Length);
 
-				if (currentLineText.StartsWith("["))
+				if (currentLineText.TrimStart().StartsWith("["))
 				{
 					if (correctSection.Equals("level", StringComparison.OrdinalIgnoreCase))
 					{
@@ -199,7 +203,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			if (lineText == null)
 				return false;
 
-			if (lineText.StartsWith("#"))
+			if (lineText.TrimStart().StartsWith("#"))
 				return true;
 
 			lineText = LineParser.EscapeComments(lineText);
@@ -211,6 +215,9 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			if (string.IsNullOrEmpty(command))
 				return false;
+
+			if (command.Equals("Legend", StringComparison.OrdinalIgnoreCase)) // "Legend=" ignores commas
+				return true;
 
 			int argumentCount = LineParser.EscapeComments(lineText).Split('=')[1].Split(',').Length;
 

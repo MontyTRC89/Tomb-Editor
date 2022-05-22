@@ -1,5 +1,5 @@
-Version 1.4.8
-=============
+Version 1.5
+===========
 
 Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
@@ -18,6 +18,39 @@ WadTool:
  * Fix exception when trying to save wad2 file with very large amount of textures.
  * Fix exception when deleting last frame of an animation.
  * Fix exception if object with same ID is copied from wad with another game version.
+
+TombIDE:
+ * Completely redesigned the Start Page.
+ * Completely redesigned the "Create a new project" window.
+ * Completely redesigned the Project Master, now it's 3 separate tabs. (Level Manager, Plugins Manager and Miscellaneous)
+ * Completely redesigned the "Create a new level" window.
+ * Completely redesigned the implementation and handling of TRNG Plugins. Now they are per-project rather than global.
+ * Slightly redesigned the Reference Browser.
+ * Updated "launch.exe" files for new game projects and renamed them to "PLAY.exe" by default.
+ * Added vanilla TR4 (TRLE), TR3, TR2 and Tomb1Main support with presets.
+ * Added "Create a 'Ready To Play' game archive", which allows the user to create a game archive with no dev files.
+ * Added the ability to view F12 definitions of constants which were given in decimal or hexadecimal form.
+ * Added CTRL+F5 to create a new #INCLUDE file at caret position.
+ * Added keyboard shortcuts for the File Explorer.
+ * Added autocomplete for #INCLUDE directives.
+ * Added more details into "hover over" tooltips.
+ * Scripting Studio docking layouts now save with the config.
+ * Scripting Studio bookmarks now save with files.
+ * #FIRST_ID is now being recognised when pressing F1. (May not be fully accurate yet.)
+ * Improved bracket and quote autoclosing.
+ * Generally improved autocomplete for TRNG scripting.
+ * Slightly improved syntax highlighting for TRNG scripting.
+ * Fixed some error false-positives for TRNG scripting.
+ * Fixed some Scripting Studio performance issues.
+ * Fixed Scripting Studio right-click menus not appearing.
+ * Fixed F12 on directives like "#INCLUDE" not working.
+ * Fixed autocomplete for constants added with "+" not working correctly.
+ * Fixed F12 for constants added with "+" not working correctly.
+ * Fixed mnemonic constants of plugins not being recognized by syntax highlighting when installed in the same session.
+ * Fixed an issue where Strings Editor would paste text twice.
+ * Fixed an issue where the Syntax Hint in Scripting Studio would extend out of bounds.
+ * Fixed an issue where .backup files would be missing before compiling an unsaved script.
+ * Other minor bugfixes.
 
 Version 1.4.7
 =============

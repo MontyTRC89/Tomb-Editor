@@ -1,8 +1,10 @@
 using DarkUI.Docking;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Objects;
@@ -33,6 +35,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				MenuStrip.DocumentMode = value;
 				ToolStrip.DocumentMode = value;
 				StatusStrip.DocumentMode = value;
+				EditorContextMenu.DocumentMode = value;
 
 				ContentExplorer.DocumentMode = value;
 			}
@@ -70,6 +73,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		public StudioMenuStrip MenuStrip;
 		public StudioToolStrip ToolStrip;
 		public StudioStatusStrip StatusStrip;
+		public EditorContextMenu EditorContextMenu;
 
 		protected DarkDockPanel DockPanel;
 
@@ -140,6 +144,9 @@ namespace TombIDE.ScriptingStudio.Bases
 
 			StatusStrip = new StudioStatusStrip() { Dock = DockStyle.Bottom };
 
+			EditorContextMenu = new EditorContextMenu();
+			EditorContextMenu.ItemClicked += ToolStrip_ItemClicked;
+
 			Controls.Add(StatusStrip);
 			Controls.Add(ToolStrip);
 			Controls.Add(MenuStrip);
@@ -156,6 +163,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
 
 			EditorTabControlDocument = new DarkDocument();
+			EditorTabControlDocument.SerializationKey = "EditorTabControlDocument";
 			EditorTabControlDocument.Controls.Add(EditorTabControl);
 		}
 
@@ -295,6 +303,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected abstract void ApplyUserSettings(IEditorControl editor);
 		protected abstract void ApplyUserSettings();
 		protected abstract void Build();
+		protected abstract void RestoreDefaultLayout();
 
 		#endregion Abstract region
 
@@ -322,7 +331,10 @@ namespace TombIDE.ScriptingStudio.Bases
 			editor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (editor is TextEditorBase textEditor)
+			{
 				textEditor.KeyDown += TextEditor_KeyDown;
+				textEditor.TextChanged += TextEditor_TextChanged;
+			}
 
 			ApplyUserSettings(editor);
 
@@ -344,6 +356,9 @@ namespace TombIDE.ScriptingStudio.Bases
 			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
 				FindReplaceForm.Show(this, (CurrentEditor as TextEditorBase).SelectedText);
 		}
+
+		private void TextEditor_TextChanged(object sender, EventArgs e)
+			=> UpdateUndoRedoSaveStates();
 
 		private void ContentExplorer_ObjectClicked(object sender, ObjectClickedEventArgs e)
 			=> CurrentEditor.GoToObject(e.ObjectName, e.IdentifyingObject);
@@ -384,6 +399,19 @@ namespace TombIDE.ScriptingStudio.Bases
 		{
 			if (CurrentEditor != null)
 				DocumentMode = FileHelper.GetDocumentModeOfEditor(CurrentEditor);
+
+			if (EditorTabControl.SelectedTab != null)
+			{
+				if (CurrentEditor is TextEditorBase)
+				{
+					ElementHost elementHost = EditorTabControl.SelectedTab.Controls.OfType<ElementHost>().FirstOrDefault();
+
+					if (elementHost != null)
+						elementHost.ContextMenuStrip = EditorContextMenu;
+				}
+				else if (CurrentEditor is Control control)
+					control.ContextMenuStrip = EditorContextMenu;
+			}
 
 			ContentExplorer.EditorControl = CurrentEditor;
 			StatusStrip.EditorControl = CurrentEditor;
@@ -452,6 +480,9 @@ namespace TombIDE.ScriptingStudio.Bases
 
 				case UICommand.Settings: ShowSettingsForm(); break;
 
+				// View
+				case UICommand.RestoreDefaultLayout: RestoreDefaultLayout(); break;
+
 				// Help
 				case UICommand.About: ShowAboutForm(); break;
 			}
@@ -462,7 +493,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			UpdateUndoRedoSaveStates();
 		}
 
-		private void HandleDocumentCommands(UICommand command)
+		protected virtual void HandleDocumentCommands(UICommand command)
 		{
 			if (CurrentEditor is TextEditorBase textEditor)
 				switch (command)
@@ -486,10 +517,12 @@ namespace TombIDE.ScriptingStudio.Bases
 						stringEditor.GoToPreviousSection();
 						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
 						break;
+
 					case UICommand.NextSection:
 						stringEditor.GoToNextSection();
 						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
 						break;
+
 					case UICommand.ClearString: stringEditor.CurrentDataGrid?.ClearSelectedString(); break;
 					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}
@@ -595,7 +628,7 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		protected void ShowSettingsForm()
 		{
-			using (var form = new FormTextEditorSettings())
+			using (var form = new FormTextEditorSettings(StudioMode))
 				if (form.ShowDialog() == DialogResult.OK)
 				{
 					Configs = new ConfigurationCollection();

@@ -13,6 +13,8 @@
 		PlainText,
 		ClassicScript,
 		Lua,
+		GameFlowScript,
+		Tomb1Main,
 		Strings
 	}
 }

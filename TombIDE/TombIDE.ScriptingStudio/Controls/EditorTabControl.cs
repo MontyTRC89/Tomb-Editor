@@ -34,9 +34,6 @@ namespace TombIDE.ScriptingStudio.Controls
 					SharedMethods.DisposeItems(TabPages.Cast<TabPage>());
 
 					_scriptRootDirectoryPath = value;
-
-					if (!string.IsNullOrWhiteSpace(ScriptRootDirectoryPath))
-						CheckPreviousSession();
 				}
 			}
 		}
@@ -55,6 +52,8 @@ namespace TombIDE.ScriptingStudio.Controls
 		private ToolStripMenuItem menuItem_Save = new ToolStripMenuItem(Strings.Default.Save);
 		private ToolStripMenuItem menuItem_Close = new ToolStripMenuItem(Strings.Default.Close);
 		private ToolStripMenuItem menuItem_OpenFolder = new ToolStripMenuItem(Strings.Default.OpenContainingFolder);
+
+		private ToolTip _toolTip = new ToolTip();
 
 		/// <summary>
 		/// This list is used to store file paths of files which should be reloaded after the main window regains focus.
@@ -109,7 +108,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		/// <summary>
 		/// Checks if the previous session crashed and left unhandled backup files.
 		/// </summary>
-		private void CheckPreviousSession()
+		public void CheckPreviousSession()
 		{
 			string[] files = Directory.GetFiles(ScriptRootDirectoryPath, $"*{SupportedFormats.Backup}", SearchOption.AllDirectories);
 
@@ -399,8 +398,13 @@ namespace TombIDE.ScriptingStudio.Controls
 		public TabPage FindTabPage(Point location)
 		{
 			foreach (TabPage tab in TabPages)
-				if (GetTabRect(TabPages.IndexOf(tab)).Contains(location))
+			{
+				Rectangle tabRect = GetTabRect(TabPages.IndexOf(tab));
+				var adjustedRect = new Rectangle(tabRect.Location.X, tabRect.Location.Y, tabRect.Width - 16, tabRect.Height); // IGNORE x button
+
+				if (adjustedRect.Contains(location))
 					return tab;
+			}
 
 			return null;
 		}
@@ -556,10 +560,53 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			base.OnMouseClick(e);
-
 			if (e.Button == MouseButtons.Right)
 				TryOpenContextMenu(e.Location);
+			else
+				base.OnMouseClick(e);
+
+			if (e.Button == MouseButtons.Middle && _toolTip.Active)
+				_toolTip.Hide(this);
+		}
+
+		private const int MOVE_THRESHOLD = 5;
+		private Point _cachedCursorPosition = new Point();
+
+		protected override void OnMouseHover(EventArgs e)
+		{
+			base.OnMouseHover(e);
+
+			TabPage locationTabPage = FindTabPage(PointToClient(Cursor.Position));
+
+			if (locationTabPage != null)
+			{
+				IEditorControl editorOfTabPage = GetEditorOfTab(locationTabPage);
+
+				if (editorOfTabPage != null)
+				{
+					Point clientCursorPoint = PointToClient(Cursor.Position);
+					_cachedCursorPosition = clientCursorPoint;
+
+					_toolTip.Show(editorOfTabPage.FilePath.Replace(ScriptRootDirectoryPath, string.Empty), this,
+						clientCursorPoint.X, clientCursorPoint.Y + 24, 2000);
+				}
+			}
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if (_toolTip.Active)
+			{
+				int dragDistance = Math.Abs(e.Y - _cachedCursorPosition.Y);
+
+				if (dragDistance < MOVE_THRESHOLD)
+					return;
+
+				_toolTip.Hide(this);
+				_cachedCursorPosition = PointToClient(Cursor.Position);
+			}
+
+			base.OnMouseMove(e);
 		}
 
 		private void TryOpenContextMenu(Point location)

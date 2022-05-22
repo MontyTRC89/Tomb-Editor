@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -134,19 +135,28 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, vgeScriptPath));
 
 			// Copy all the files into the VGE /Script/ directory
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories))
+			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
 				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
 		}
 
+		private static Stack<string> _visitedFiles = new Stack<string>();
+
 		private static void MergeIncludes()
 		{
+			_visitedFiles.Clear();
+
 			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
+
+			_visitedFiles.Push(vgeScriptFilePath);
 
 			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
 			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+
+			_visitedFiles.Clear();
 		}
 
 		private static void AdjustFormatting()
@@ -167,7 +177,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			foreach (string line in lines)
 			{
-				if (line.StartsWith("#include", StringComparison.OrdinalIgnoreCase))
+				if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
 					try
 					{
 						string partialIncludePath = line.Split('"')[1].Trim();
@@ -175,9 +185,21 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 						if (File.Exists(includedFilePath))
 						{
+							if (_visitedFiles.Any(x => x.Equals(includedFilePath, StringComparison.OrdinalIgnoreCase)))
+								continue;
+
+							_visitedFiles.Push(includedFilePath);
+
 							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
-							newLines.AddRange(File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252)));
+
+							string[] includeLines = File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252));
+							includeLines = ReplaceIncludesWithFileContents(includeLines);
+
+							newLines.AddRange(includeLines);
+
 							newLines.Add("; // // // // </" + partialIncludePath.ToUpper() + "> // // // //");
+
+							_visitedFiles.Pop();
 						}
 
 						continue;

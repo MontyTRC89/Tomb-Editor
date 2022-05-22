@@ -6,6 +6,8 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,6 +75,11 @@ namespace TombLib.Scripting.Bases
 			get => _textChangedDelayedTimer.Interval;
 			set => _textChangedDelayedTimer.Interval = value;
 		}
+
+		public string ParenthesesClosingString { get; set; } = ")";
+		public string BracesClosingString { get; set; } = "}";
+		public string BracketsClosingString { get; set; } = "]";
+		public string QuotesClosingString { get; set; } = "\"";
 
 		#endregion Properties
 
@@ -144,7 +151,10 @@ namespace TombLib.Scripting.Bases
 		}
 
 		private void InitializeTimers()
-			=> _textChangedDelayedTimer.Tick += TextChangedDelayedTimer_Tick;
+		{
+			TextChangedDelayedInterval = new TimeSpan(0, 0, 0, 0, 300);
+			_textChangedDelayedTimer.Tick += TextChangedDelayedTimer_Tick;
+		}
 
 		private void InitializeRenderers()
 		{
@@ -208,6 +218,8 @@ namespace TombLib.Scripting.Bases
 
 		private void TextEditor_TextChanged(object sender, EventArgs e)
 		{
+			IsContentChanged = true;
+
 			_textChangedDelayedTimer.Stop();
 			_textChangedDelayedTimer.Start();
 		}
@@ -269,6 +281,8 @@ namespace TombLib.Scripting.Bases
 
 			IsContentChanged = false;
 			IsSilentSession = silentSession;
+
+			RestoreBookmarks();
 		}
 
 		public void Save()
@@ -279,6 +293,56 @@ namespace TombLib.Scripting.Bases
 			base.Save(filePath);
 
 			TryRunContentChangedWorker();
+		}
+
+		private void SaveBookmarks()
+		{
+			IEnumerable<DocumentLine> bookmarkedLines = Document.Lines.Where(line => line.IsBookmarked);
+
+			var builder = new StringBuilder();
+
+			foreach (DocumentLine line in bookmarkedLines)
+				builder.AppendLine(line.LineNumber.ToString());
+
+			try
+			{
+				string bookmarkFileName = FilePath + ".bkmrk";
+
+				if (bookmarkedLines.Count() > 0)
+					File.WriteAllText(bookmarkFileName, builder.ToString());
+				else if (File.Exists(bookmarkFileName))
+					File.Delete(bookmarkFileName);
+			}
+			catch
+			{
+				// Too bad.
+			}
+		}
+
+		private void RestoreBookmarks()
+		{
+			string bookmarkFileName = FilePath + ".bkmrk";
+
+			if (!File.Exists(bookmarkFileName))
+				return;
+
+			try
+			{
+				foreach (string line in File.ReadAllLines(bookmarkFileName))
+				{
+					if (int.TryParse(line, out int lineNumber))
+					{
+						DocumentLine documentLine = Document.GetLineByNumber(lineNumber);
+
+						if (documentLine != null)
+							documentLine.IsBookmarked = true;
+					}
+				}
+			}
+			catch
+			{
+				// Too bad.
+			}
 		}
 
 		#endregion File I/O
@@ -354,22 +418,29 @@ namespace TombLib.Scripting.Bases
 		private void HandleAutoClosing(TextCompositionEventArgs e)
 		{
 			if (AutoCloseParentheses && e.Text == "(")
-				PerformAutoClosing(")");
+				PerformAutoClosing(e, ParenthesesClosingString);
 
 			if (AutoCloseBraces && e.Text == "{")
-				PerformAutoClosing("}");
+				PerformAutoClosing(e, BracesClosingString);
 
 			if (AutoCloseBrackets && e.Text == "[")
-				PerformAutoClosing("]");
+				PerformAutoClosing(e, BracketsClosingString);
 
 			if (AutoCloseQuotes && e.Text == "\"")
-				PerformAutoClosing("\"");
+				PerformAutoClosing(e, QuotesClosingString);
 		}
 
-		private void PerformAutoClosing(string closingElement)
+		private void PerformAutoClosing(TextCompositionEventArgs e, string closingElement)
 		{
+			if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == closingElement[0])
+			{
+				CaretOffset++;
+				e.Handled = true;
+				return;
+			}
+
 			SelectedText += closingElement;
-			CaretOffset--;
+			CaretOffset -= closingElement.Length;
 
 			SelectionStart = CaretOffset;
 			SelectionLength = 0;
@@ -448,7 +519,7 @@ namespace TombLib.Scripting.Bases
 				}
 
 				if (currentLineText.TrimStart().StartsWith(CommentPrefix))
-					builder.AppendLine(whitespaceBuilder.ToString() + currentLineText.TrimStart().Remove(0, 1));
+					builder.AppendLine(whitespaceBuilder.ToString() + currentLineText.TrimStart().Remove(0, CommentPrefix.Length));
 				else
 					builder.AppendLine(currentLineText);
 
@@ -473,6 +544,8 @@ namespace TombLib.Scripting.Bases
 			currentLine.IsBookmarked = !currentLine.IsBookmarked;
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+
+			SaveBookmarks();
 		}
 
 		public void GoToNextBookmark()
@@ -614,6 +687,8 @@ namespace TombLib.Scripting.Bases
 						line.IsBookmarked = false;
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+
+			SaveBookmarks();
 		}
 
 		public void ConvertSpacesToTabs()

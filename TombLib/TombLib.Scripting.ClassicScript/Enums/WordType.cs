@@ -5,6 +5,9 @@
 		Unknown,
 		Header,
 		Command,
-		MnemonicConstant
+		Directive,
+		MnemonicConstant,
+		Hexadecimal,
+		Decimal
 	}
 }

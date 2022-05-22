@@ -68,6 +68,7 @@ namespace TombIDE.Shared.Local
 		public string ReindentOnSave { get; set; }
 		public string Settings { get; set; }
 
+		public string RestoreDefaultLayout { get; set; }
 		public string ContentExplorer { get; set; }
 		public string FileExplorer { get; set; }
 		public string ReferenceBrowser { get; set; }
@@ -77,6 +78,9 @@ namespace TombIDE.Shared.Local
 		public string StatusStrip { get; set; }
 
 		public string About { get; set; }
+
+		public string TypeFirstAvailableId { get; set; }
+		public string NewFileAtCaret { get; set; }
 
 		public string Close { get; set; }
 		public string OpenContainingFolder { get; set; }

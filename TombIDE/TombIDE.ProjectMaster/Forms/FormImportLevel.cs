@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -32,6 +33,24 @@ namespace TombIDE.ProjectMaster
 			textBox_Prj2Path.Tag = prj2FilePath; // Keep the full path in the Tag (because we are visually changing the text later)
 
 			textBox_LevelName.Text = Path.GetFileNameWithoutExtension(prj2FilePath);
+
+			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			{
+				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
+				panel_ScriptSettings.Visible = false;
+				panel_04.Visible = false;
+			}
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			{
+				checkBox_EnableHorizon.Visible = false;
+				panel_ScriptSettings.Height -= 30;
+				Height -= 30;
+			}
+
+			if (_targetProject.GameVersion == TRVersion.Game.TR2)
+				numeric_SoundID.Value = 33;
+			else if (_targetProject.GameVersion == TRVersion.Game.TR3)
+				numeric_SoundID.Value = 28;
 		}
 
 		#endregion Initialization
@@ -153,7 +172,7 @@ namespace TombIDE.ProjectMaster
 				bool horizon = checkBox_EnableHorizon.Checked;
 
 				// // // //
-				GeneratedScriptLines = LevelHandling.GenerateScriptLines(importedLevel, ambientSoundID, horizon);
+				GeneratedScriptLines = LevelHandling.GenerateScriptLines(importedLevel, _targetProject.GameVersion, ambientSoundID, horizon);
 				// // // //
 			}
 

@@ -340,6 +340,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_CloseBrackets.Checked = TextEditorBaseDefaults.AutoCloseBrackets;
 			checkBox_CloseQuotes.Checked = TextEditorBaseDefaults.AutoCloseQuotes;
 
+			checkBox_HighlightCurrentLine.Checked = TextEditorBaseDefaults.HighlightCurrentLine;
+
 			checkBox_WordWrapping.Checked = TextEditorBaseDefaults.WordWrapping;
 
 			checkBox_LineNumbers.Checked = TextEditorBaseDefaults.ShowLineNumbers;

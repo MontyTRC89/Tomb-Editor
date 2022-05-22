@@ -118,6 +118,14 @@ namespace DarkUI.Controls
             }
         }
 
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color OverrideOddColor { get; set; } = Color.Transparent;
+
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color OverrideEvenColor { get; set; } = Color.Transparent;
+
         [Category("Behavior")]
         [Description("Determines whether parent node should be expanded on mouse double-click.")]
         [DefaultValue(true)]
@@ -476,6 +484,13 @@ namespace DarkUI.Controls
             node.NodeExpanded += Nodes_NodeExpanded;
             node.NodeCollapsed += Nodes_NodeCollapsed;
 
+            if (node is DarkTreeNodeEx)
+            {
+                (node as DarkTreeNodeEx).SubTextChanged += Nodes_TextChanged;
+                (node as DarkTreeNodeEx).ExtraIconChanged += Nodes_TextChanged;
+            }
+               
+
             foreach (var childNode in node.Nodes)
                 HookNodeEvents(childNode);
         }
@@ -569,11 +584,32 @@ namespace DarkUI.Controls
 
             using (var g = CreateGraphics())
             {
-                var textSize = (int)g.MeasureString(node.Text, Font).Width;
-                node.TextArea = new Rectangle(node.IconArea.Right + 2, yOffset, textSize + 1, ItemHeight);
-            }
+                if (node is DarkTreeNodeEx)
+                {
+                    var nodeEx = node as DarkTreeNodeEx;
+                    var subTextFont = new Font(Font.FontFamily, 8.25f);
 
-            node.FullArea = new Rectangle(indent, yOffset, node.TextArea.Right - indent, ItemHeight);
+                    var textSize = (int)g.MeasureString(nodeEx.Text, Font).Width;
+                    var subTextSize = (int)g.MeasureString(nodeEx.SubText, subTextFont).Width;
+
+                    nodeEx.TextArea = new Rectangle(nodeEx.IconArea.Right + 2, yOffset - (Font.Height / 2) + 2, textSize + 1, ItemHeight);
+                    nodeEx.SubTextArea = new Rectangle(nodeEx.IconArea.Right + 4, yOffset + (Font.Height / 2) - 1, subTextSize + 1, ItemHeight);
+
+                    if (ShowIcons && nodeEx.ExtraIcon != null)
+                        nodeEx.ExtraIconArea = new Rectangle(nodeEx.TextArea.Right + 4, nodeEx.TextArea.Y + Font.Height + 1, nodeEx.ExtraIcon.Width, ItemHeight);
+
+                    nodeEx.TextArea = new Rectangle(nodeEx.TextArea.X, nodeEx.TextArea.Y,
+                        Math.Max(Math.Max(nodeEx.TextArea.Right, nodeEx.SubTextArea.Right), nodeEx.ExtraIconArea.Right) + 1 - indent, ItemHeight);
+
+                    nodeEx.FullArea = new Rectangle(indent, yOffset, nodeEx.TextArea.Right - indent, ItemHeight);
+                }
+                else
+                {
+                    var textSize = (int)g.MeasureString(node.Text, Font).Width;
+                    node.TextArea = new Rectangle(node.IconArea.Right + 2, yOffset, textSize + 1, ItemHeight);
+                    node.FullArea = new Rectangle(indent, yOffset, node.TextArea.Right - indent, ItemHeight);
+                }
+            }
 
             if (ContentSize.Width < node.TextArea.Right + 2)
                 ContentSize = new Size(node.TextArea.Right + 2, ContentSize.Height);
@@ -957,7 +993,7 @@ namespace DarkUI.Controls
 
                 if (!recursive)
                     continue;
-                
+
                 var compNode = FindNode(node, path);
                 if (compNode != null)
                     return compNode;
@@ -1195,8 +1231,17 @@ namespace DarkUI.Controls
             // 1. Draw background
             var bgColor = node.BackColor;
 
-            if(bgColor == Color.Transparent)
-                bgColor = node.Odd ? Colors.HeaderBackground : Colors.GreyBackground;
+            Color oddColor = Colors.HeaderBackground;
+            Color evenColor = Colors.GreyBackground;
+
+            if (OverrideOddColor != Color.Transparent)
+                oddColor = OverrideOddColor;
+
+            if (OverrideEvenColor != Color.Transparent)
+                evenColor = OverrideEvenColor;
+
+            if (bgColor == Color.Transparent)
+                bgColor = node.Odd ? oddColor : evenColor;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
                 bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
@@ -1251,6 +1296,17 @@ namespace DarkUI.Controls
                 };
 
                 g.DrawString(node.Text, Font, b, node.TextArea, stringFormat);
+
+                if (node is DarkTreeNodeEx)
+                {
+                    var nodeEx = node as DarkTreeNodeEx;
+                    var subTextFont = new Font(Font.FontFamily, 8.25f);
+
+                    g.DrawString(nodeEx.SubText, subTextFont, b, nodeEx.SubTextArea, stringFormat);
+
+                    if (ShowIcons && nodeEx.ExtraIcon != null)
+                        g.DrawImage(nodeEx.ExtraIcon, nodeEx.ExtraIconArea.Location);
+                }
             }
 
             // 5. Draw child nodes

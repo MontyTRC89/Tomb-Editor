@@ -11,7 +11,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		/// #include "My Directory/My File.txt"
 		/// </summary>
 		public static bool IsValidIncludeLine(string lineText)
-			=> lineText.StartsWith("#include ", StringComparison.OrdinalIgnoreCase) && Regex.IsMatch(lineText, "\".*\"");
+			=> lineText.TrimStart().StartsWith("#include ", StringComparison.OrdinalIgnoreCase) && Regex.IsMatch(lineText, "\".*\"");
 
 		public static MatchCollection GetComments(string lineText)
 			=> Regex.Matches(lineText, @"\s*;.*$", RegexOptions.Multiline);
@@ -32,6 +32,9 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return lineText;
 		}
 
+		public static string EscapeCommentsAndNewLines(string lineText)
+			=> EscapeComments(lineText).Replace('>', ' ').Replace('\n', ' ').Replace('\r', ' ');
+
 		public static string RemoveNGStringIndex(string lineText)
 			=> Regex.Replace(lineText, @"^\d+:\s*", string.Empty, RegexOptions.Multiline);
 
@@ -39,14 +42,14 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			=> string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(";");
 
 		public static bool IsSectionHeaderLine(string lineText)
-			=> Regex.IsMatch(lineText, @"^\[\b.*\b\]\s*(;.*)?$");
+			=> Regex.IsMatch(lineText, @"^\s*\[\b.*\b\]\s*(;.*)?$");
 
 		/// <summary>
 		/// Input: "[Options] ; Options section"<br />
 		/// Output: "Options"
 		/// </summary>
 		public static string GetSectionHeaderText(string sectionHeaderLine)
-			=> Regex.Match(sectionHeaderLine, @"^\[(\b.*\b)\]\s*(;.*)?$").Groups[1].Value;
+			=> Regex.Match(sectionHeaderLine, @"^\s*\[(\b.*\b)\]\s*(;.*)?$").Groups[1].Value;
 
 		/// <summary>
 		/// Checks if the line is in the [Strings], [PCStrings] or [PSXStrings] section.

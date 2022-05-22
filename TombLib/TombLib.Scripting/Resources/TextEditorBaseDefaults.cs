@@ -22,6 +22,6 @@
 		public const bool ShowLineNumbers = true;
 
 		public const bool ShowVisualSpaces = false;
-		public const bool ShowVisualTabs = true;
+		public const bool ShowVisualTabs = false;
 	}
 }

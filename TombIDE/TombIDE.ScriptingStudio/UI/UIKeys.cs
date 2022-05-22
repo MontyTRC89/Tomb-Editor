@@ -32,6 +32,9 @@ namespace TombIDE.ScriptingStudio.UI
 		public const Keys ClearString = Keys.Delete;
 		public const Keys RemoveLastString = Keys.Control | Keys.Delete;
 
+		public const Keys TypeFirstAvailableId = Keys.F1;
+		public const Keys NewFileAtCaret = Keys.Control | Keys.F5;
+
 		public Keys GetKeys(string flag)
 		{
 			object value = GetType().GetField(flag)?.GetValue(this);

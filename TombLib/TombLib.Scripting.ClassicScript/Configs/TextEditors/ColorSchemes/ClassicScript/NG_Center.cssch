@@ -2,7 +2,7 @@
 <ColorScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Sections>
     <HtmlColor>Black</HtmlColor>
-    <IsBold>false</IsBold>
+    <IsBold>true</IsBold>
     <IsItalic>false</IsItalic>
   </Sections>
   <Values>
@@ -13,7 +13,7 @@
   <References>
     <HtmlColor>Black</HtmlColor>
     <IsBold>false</IsBold>
-    <IsItalic>false</IsItalic>
+    <IsItalic>true</IsItalic>
   </References>
   <StandardCommands>
     <HtmlColor>Black</HtmlColor>
@@ -26,7 +26,7 @@
     <IsItalic>false</IsItalic>
   </NewCommands>
   <Comments>
-    <HtmlColor>Black</HtmlColor>
+    <HtmlColor>Gray</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </Comments>

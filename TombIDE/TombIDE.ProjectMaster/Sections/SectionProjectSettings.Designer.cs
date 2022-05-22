@@ -41,14 +41,16 @@
 			this.panel_Background.Controls.Add(this.settings_Icon);
 			this.panel_Background.Controls.Add(this.settings_ProjectInfo);
 			this.panel_Background.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel_Background.Location = new System.Drawing.Point(1, 25);
+			this.panel_Background.Location = new System.Drawing.Point(1, 1);
 			this.panel_Background.Name = "panel_Background";
-			this.panel_Background.Size = new System.Drawing.Size(658, 1671);
+			this.panel_Background.Size = new System.Drawing.Size(658, 1695);
 			this.panel_Background.TabIndex = 0;
 			// 
 			// settings_SplashScreen
 			// 
+			this.settings_SplashScreen.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_SplashScreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_SplashScreen.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_SplashScreen.Location = new System.Drawing.Point(9, 808);
 			this.settings_SplashScreen.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_SplashScreen.MaximumSize = new System.Drawing.Size(640, 270);
@@ -59,7 +61,9 @@
 			// 
 			// settings_SpecialFunctions
 			// 
+			this.settings_SpecialFunctions.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_SpecialFunctions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_SpecialFunctions.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_SpecialFunctions.Location = new System.Drawing.Point(9, 12);
 			this.settings_SpecialFunctions.Margin = new System.Windows.Forms.Padding(9, 12, 9, 9);
 			this.settings_SpecialFunctions.MaximumSize = new System.Drawing.Size(640, 130);
@@ -70,7 +74,9 @@
 			// 
 			// settings_Logo
 			// 
+			this.settings_Logo.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_Logo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_Logo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_Logo.Location = new System.Drawing.Point(9, 1382);
 			this.settings_Logo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_Logo.MaximumSize = new System.Drawing.Size(640, 280);
@@ -81,7 +87,9 @@
 			// 
 			// settings_StartupImage
 			// 
+			this.settings_StartupImage.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_StartupImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_StartupImage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_StartupImage.Location = new System.Drawing.Point(9, 1090);
 			this.settings_StartupImage.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_StartupImage.MaximumSize = new System.Drawing.Size(640, 280);
@@ -92,7 +100,9 @@
 			// 
 			// settings_Icon
 			// 
+			this.settings_Icon.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_Icon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_Icon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_Icon.Location = new System.Drawing.Point(9, 486);
 			this.settings_Icon.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_Icon.MaximumSize = new System.Drawing.Size(640, 310);
@@ -103,7 +113,9 @@
 			// 
 			// settings_ProjectInfo
 			// 
+			this.settings_ProjectInfo.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.settings_ProjectInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.settings_ProjectInfo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.settings_ProjectInfo.Location = new System.Drawing.Point(9, 154);
 			this.settings_ProjectInfo.Margin = new System.Windows.Forms.Padding(9, 3, 9, 9);
 			this.settings_ProjectInfo.MaximumSize = new System.Drawing.Size(640, 320);
@@ -118,8 +130,9 @@
 			this.sectionPanel.Controls.Add(this.panel_Background);
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
+			this.sectionPanel.Margin = new System.Windows.Forms.Padding(0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "General Project Settings";
+			this.sectionPanel.SectionHeader = "";
 			this.sectionPanel.Size = new System.Drawing.Size(662, 1699);
 			this.sectionPanel.TabIndex = 0;
 			// 
@@ -129,6 +142,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.Controls.Add(this.sectionPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "SectionProjectSettings";
 			this.Size = new System.Drawing.Size(662, 1699);
 			this.panel_Background.ResumeLayout(false);
