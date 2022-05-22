@@ -373,7 +373,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(light.Length);
                 writer.Write(light.CutOff);
                 writer.Write(light.LightType);
-                writer.Write((byte)(light.CastShadows ? 1 : 0));
+                writer.Write((byte)(light.CastDynamicShadows ? 1 : 0));
             }
 
             // Write static meshes
@@ -445,7 +445,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public float Length;
         public float CutOff;
         public byte LightType;
-        public bool CastShadows;
+        public bool CastDynamicShadows;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

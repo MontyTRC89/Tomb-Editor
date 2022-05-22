@@ -954,6 +954,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Direction.X = -spotDirection.X;
                         newLight.Direction.Y = spotDirection.Y;
                         newLight.Direction.Z = -spotDirection.Z;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.Sun:
                         newLight.LightType = 0;
