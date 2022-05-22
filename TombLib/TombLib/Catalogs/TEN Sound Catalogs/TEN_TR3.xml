@@ -3,7 +3,7 @@
   <SoundInfos>
     <WadSoundInfo>
       <Id>536</Id>
-      <Name>TR2+3_CROW_CAW</Name>
+      <Name>TR3_CROW_CAW</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -14,7 +14,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_CROW_CAW_01.wav</FileName>
+          <FileName>TR3_CROW_CAW_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -22,7 +22,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>537</Id>
-      <Name>TR2+3_CROW_WING_FLAP</Name>
+      <Name>TR3_CROW_WING_FLAP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -33,7 +33,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_CROW_WING_FLAP_01.wav</FileName>
+          <FileName>TR3_CROW_WING_FLAP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -41,7 +41,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>538</Id>
-      <Name>TR2+3_CROW_DEATH</Name>
+      <Name>TR3_CROW_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -50,17 +50,13 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR2+3_CROW_DEATH_01.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>539</Id>
-      <Name>TR2+3_CROW_ATTACK</Name>
+      <Name>TR3_CROW_ATTACK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -71,7 +67,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_CROW_ATTACK_01.wav</FileName>
+          <FileName>TR3_CROW_ATTACK_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -79,7 +75,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>590</Id>
-      <Name>TR2+3_SCUBA_DIVER_ARM</Name>
+      <Name>TR3_SCUBA_DIVER_ARM</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -90,7 +86,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_ARM_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_ARM_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -98,7 +94,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>591</Id>
-      <Name>TR2+3_SCUBA_DIVER_BREATH_LAND</Name>
+      <Name>TR3_SCUBA_DIVER_BREATH_LAND</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -109,7 +105,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_BREATH_LAND_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_BREATH_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -117,7 +113,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>592</Id>
-      <Name>TR2+3_SCUBA_DIVER_BREATH_WATER</Name>
+      <Name>TR3_SCUBA_DIVER_BREATH_WATER</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -128,7 +124,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_BREATH_WATER_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_BREATH_WATER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -136,7 +132,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>593</Id>
-      <Name>TR2+3_SCUBA_DIVER_DEATH</Name>
+      <Name>TR3_SCUBA_DIVER_DEATH</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -147,7 +143,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_DEATH_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_DEATH_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -155,7 +151,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>594</Id>
-      <Name>TR2+3_SCUBA_DIVER_DIVING</Name>
+      <Name>TR3_SCUBA_DIVER_DIVING</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -166,7 +162,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_DIVING_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_DIVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -174,7 +170,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>595</Id>
-      <Name>TR2+3_SCUBA_DIVER_FLIPPER</Name>
+      <Name>TR3_SCUBA_DIVER_FLIPPER</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -185,7 +181,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_SCUBA_DIVER_FLIPPER_01.wav</FileName>
+          <FileName>TR3_SCUBA_DIVER_FLIPPER_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -193,7 +189,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>597</Id>
-      <Name>TR2+3_WINSTON_BRUSH_OFF</Name>
+      <Name>TR3_WINSTON_BRUSH_OFF</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -204,10 +200,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_BRUSH_OFF_01.wav</FileName>
+          <FileName>TR3_WINSTON_BRUSH_OFF_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_BRUSH_OFF_02.wav</FileName>
+          <FileName>TR3_WINSTON_BRUSH_OFF_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -215,7 +211,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>598</Id>
-      <Name>TR2+3_WINSTON_BULLET_TRAY</Name>
+      <Name>TR3_WINSTON_BULLET_TRAY</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -226,7 +222,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_BULLET_TRAY_01.wav</FileName>
+          <FileName>TR3_WINSTON_BULLET_TRAY_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -234,7 +230,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>599</Id>
-      <Name>TR2+3_WINSTON_CUPS</Name>
+      <Name>TR3_WINSTON_CUPS</Name>
       <Volume>25</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>90</Chance>
@@ -245,10 +241,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_CUPS_01.wav</FileName>
+          <FileName>TR3_WINSTON_CUPS_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_CUPS_02.wav</FileName>
+          <FileName>TR3_WINSTON_CUPS_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -256,7 +252,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>600</Id>
-      <Name>TR2+3_WINSTON_FLATULENCE</Name>
+      <Name>TR3_WINSTON_FLATULENCE</Name>
       <Volume>30</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>4</Chance>
@@ -267,10 +263,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_FLATULENCE_01.wav</FileName>
+          <FileName>TR3_WINSTON_FLATULENCE_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_FLATULENCE_01.wav</FileName>
+          <FileName>TR3_WINSTON_FLATULENCE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -278,7 +274,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>601</Id>
-      <Name>TR2+3_WINSTON_FOOTSTEPS</Name>
+      <Name>TR3_WINSTON_FOOTSTEPS</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -289,10 +285,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_FOOTSTEPS_01.wav</FileName>
+          <FileName>TR3_WINSTON_FOOTSTEPS_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_FOOTSTEPS_02.wav</FileName>
+          <FileName>TR3_WINSTON_FOOTSTEPS_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -300,7 +296,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>602</Id>
-      <Name>TR2+3_WINSTON_GET_UP</Name>
+      <Name>TR3_WINSTON_GET_UP</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -311,13 +307,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GET_UP_01.wav</FileName>
+          <FileName>TR3_WINSTON_GET_UP_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GET_UP_02.wav</FileName>
+          <FileName>TR3_WINSTON_GET_UP_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GET_UP_03.wav</FileName>
+          <FileName>TR3_WINSTON_GET_UP_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -325,7 +321,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>603</Id>
-      <Name>TR2+3_WINSTON_SURPRISED</Name>
+      <Name>TR3_WINSTON_SURPRISED</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>10</Chance>
@@ -336,13 +332,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_SURPRISED_01.wav</FileName>
+          <FileName>TR3_WINSTON_SURPRISED_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_SURPRISED_02.wav</FileName>
+          <FileName>TR3_WINSTON_SURPRISED_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_SURPRISED_03.wav</FileName>
+          <FileName>TR3_WINSTON_SURPRISED_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -350,7 +346,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>604</Id>
-      <Name>TR2+3_WINSTON_TAKE_HIT</Name>
+      <Name>TR3_WINSTON_TAKE_HIT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -361,13 +357,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_TAKE_HIT_01.wav</FileName>
+          <FileName>TR3_WINSTON_TAKE_HIT_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_TAKE_HIT_02.wav</FileName>
+          <FileName>TR3_WINSTON_TAKE_HIT_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_TAKE_HIT_03.wav</FileName>
+          <FileName>TR3_WINSTON_TAKE_HIT_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -375,7 +371,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>605</Id>
-      <Name>TR2+3_WINSTON_GRUNT1</Name>
+      <Name>TR3_WINSTON_GRUNT1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>60</Chance>
@@ -386,19 +382,19 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT1_01.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT1_02.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT1_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT1_03.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT1_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT1_04.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT1_04.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT1_05.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT1_05.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -406,7 +402,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>606</Id>
-      <Name>TR2+3_WINSTON_GRUNT2</Name>
+      <Name>TR3_WINSTON_GRUNT2</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -417,16 +413,16 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT2_01.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT2_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT2_02.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT2_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT2_03.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT2_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT2_04.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT2_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -434,7 +430,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>607</Id>
-      <Name>TR2+3_WINSTON_GRUNT3</Name>
+      <Name>TR3_WINSTON_GRUNT3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -445,10 +441,10 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT3_01.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT3_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2+3_WINSTON_GRUNT3_02.wav</FileName>
+          <FileName>TR3_WINSTON_GRUNT3_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -456,7 +452,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>608</Id>
-      <Name>TR2+3_WINSTON_SHUFFLE</Name>
+      <Name>TR3_WINSTON_SHUFFLE</Name>
       <Volume>15</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -467,10 +463,29 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2+3_WINSTON_SHUFFLE_01.wav</FileName>
+          <FileName>TR3_WINSTON_SHUFFLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>665</Id>
+      <Name>TR3_HELICOPTER_LOOP</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR3_HELICOPTER_LOOP.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1091,7 +1106,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>715</Id>
-      <Name>TR3_QUADBIKE_ACCELERATE</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_ACCELERATE</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1102,7 +1117,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_ACCELERATE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1110,7 +1125,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>716</Id>
-      <Name>TR3_QUADBIKE_FRONT_IMPACT</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_FRONT_IMPACT</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1121,7 +1136,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_FRONT_IMPACT_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_FRONT_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1129,7 +1144,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>717</Id>
-      <Name>TR3_QUADBIKE_IDLE</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_IDLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1140,7 +1155,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_IDLE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1148,7 +1163,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>718</Id>
-      <Name>TR3_QUADBIKE_LAND</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_LAND</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1159,7 +1174,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_LAND_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1167,7 +1182,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>719</Id>
-      <Name>TR3_QUADBIKE_MOVE</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_MOVE</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1178,7 +1193,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_MOVE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_MOVE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1186,7 +1201,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>720</Id>
-      <Name>TR3_QUADBIKE_SIDE_IMPACT</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_SIDE_IMPACT</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1197,7 +1212,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_SIDE_IMPACT_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_SIDE_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1205,7 +1220,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>721</Id>
-      <Name>TR3_QUADBIKE_START</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_START</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1216,7 +1231,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_START_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1224,7 +1239,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>722</Id>
-      <Name>TR3_QUADBIKE_STOP</Name>
+      <Name>TR4_VEHICLE_QUADBIKE_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1235,7 +1250,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_QUADBIKE_STOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_QUADBIKE_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1243,7 +1258,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>723</Id>
-      <Name>TR3_RUBBERBOAT_ACCELERATE</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_ACCELERATE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1254,7 +1269,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_ACCELERATE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1262,7 +1277,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>724</Id>
-      <Name>TR3_RUBBERBOAT_IDLE</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_IDLE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1273,7 +1288,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_IDLE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1281,7 +1296,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>725</Id>
-      <Name>TR3_RUBBERBOAT_MOVING</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_MOVING</Name>
       <Volume>68</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1292,7 +1307,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_MOVING_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1300,7 +1315,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>726</Id>
-      <Name>TR3_RUBBERBOAT_SCRAPE</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_SCRAPE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1311,7 +1326,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_scr.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_SCRAPE.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1319,7 +1334,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>727</Id>
-      <Name>TR3_RUBBERBOAT_SLOW_DOWN</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_SLOW_DOWN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1330,7 +1345,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_SLOW_DOWN_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_SLOW_DOWN_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1338,7 +1353,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>728</Id>
-      <Name>TR3_RUBBERBOAT_START</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_START</Name>
       <Volume>76</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1349,7 +1364,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_START_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1357,7 +1372,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>729</Id>
-      <Name>TR3_RUBBERBOAT_STOP</Name>
+      <Name>TR4_VEHICLE_RUBBERBOAT_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1368,7 +1383,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_RUBBERBOAT_STOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_RUBBERBOAT_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1376,7 +1391,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>730</Id>
-      <Name>TR3_UPV_LOOP</Name>
+      <Name>TR4_VEHICLE_UPV_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1387,7 +1402,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_LOOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_UPV_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1395,7 +1410,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>731</Id>
-      <Name>TR3_UPV_START</Name>
+      <Name>TR4_VEHICLE_UPV_START</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1406,7 +1421,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_START_01.wav</FileName>
+          <FileName>TR4_VEHICLE_UPV_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1414,7 +1429,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>732</Id>
-      <Name>TR3_UPV_STOP</Name>
+      <Name>TR4_VEHICLE_UPV_STOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1425,7 +1440,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_UPV_STOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_UPV_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1433,7 +1448,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>733</Id>
-      <Name>TR3_MINE_CART_START</Name>
+      <Name>TR4_VEHICLE_MINECART_START</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1444,7 +1459,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_START_01.wav</FileName>
+          <FileName>TR4_VEHICLE_MINECART_START_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1452,7 +1467,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>734</Id>
-      <Name>TR3_MINE_CART_PULLY_LOOP</Name>
+      <Name>TR4_VEHICLE_MINECART_PULLY_LOOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1463,7 +1478,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_PULLY_LOOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_MINECART_PULLY_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1471,7 +1486,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>735</Id>
-      <Name>TR3_MINE_CART_BRAKE</Name>
+      <Name>TR4_VEHICLE_MINECART_BRAKE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1482,7 +1497,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_BRAKE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_MINECART_BRAKE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1490,7 +1505,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>736</Id>
-      <Name>TR3_MINE_CART_TRACK_LOOP</Name>
+      <Name>TR4_VEHICLE_MINECART_TRACK_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1501,7 +1516,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_MINE_CART_TRACK_LOOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_MINECART_TRACK_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2181,7 +2196,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>770</Id>
-      <Name>TR3_SEAL_MUTE_BREATH_IN</Name>
+      <Name>TR3_SEAL_MUTANT_BREATH_IN</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3496,6 +3511,21 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
+      <Id>838</Id>
+      <Name>TR3_EMPTY1</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>839</Id>
       <Name>TR3_DOORBELL</Name>
       <Volume>85</Volume>
@@ -3796,7 +3826,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>oild_rol.wav</FileName>
+          <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3877,6 +3907,25 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>859</Id>
+      <Name>TR4_VEHICLE_MINECART_WRENCH</Name>
+      <Volume>70</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR4_VEHICLE_MINECART_WRENCH.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>860</Id>
@@ -4031,6 +4080,36 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
+      <Id>868</Id>
+      <Name>TR3_EMPTY2</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>869</Id>
+      <Name>TR3_EMPTY3</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>870</Id>
       <Name>TR3_SMALL_DOOR_SUBWAY</Name>
       <Volume>50</Volume>
@@ -4086,6 +4165,21 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>873</Id>
+      <Name>TR3_EMPTY4</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>874</Id>
@@ -4241,6 +4335,21 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>882</Id>
+      <Name>TR3_EMPTY5</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>883</Id>
@@ -4415,6 +4524,21 @@
       </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>892</Id>
+      <Name>TR3_EMPTY6</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>893</Id>

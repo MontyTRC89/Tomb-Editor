@@ -226,7 +226,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>blu_jmp.wav</FileName>
+          <FileName>TR5_VCI_BLUEMAN_JUMP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -586,7 +586,7 @@
           <FileName>TR5_HAMMER_GOD_HAMMER_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global> 
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -686,7 +686,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>933</Id>
-      <Name>TR5_HITMAN_ELEC_SHORT</Name>
+      <Name>TR5_HITMAN_ELECTRIC_SHORT</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -806,7 +806,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>939</Id>
-      <Name>TR5_IMP_DEATH</Name>
+      <Name>TR5_EMPTY</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -815,11 +815,7 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>imp_die.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -923,7 +919,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>945</Id>
-      <Name>TR5_DIVESUIT_ENGINE</Name>
+      <Name>TR4_VEHICLE_DIVESUIT_ENGINE</Name>
       <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -934,7 +930,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_ENGINE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_DIVESUIT_ENGINE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -942,7 +938,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>946</Id>
-      <Name>TR5_DIVESUIT_HIT</Name>
+      <Name>TR4_VEHICLE_DIVESUIT_HIT</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -953,7 +949,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_HIT_01.wav</FileName>
+          <FileName>TR4_VEHICLE_DIVESUIT_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -961,7 +957,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>947</Id>
-      <Name>TR5_DIVESUIT_BREATHE</Name>
+      <Name>TR4_VEHICLE_DIVESUIT_BREATHE</Name>
       <Volume>40</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -972,7 +968,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_BREATHE_01.wav</FileName>
+          <FileName>TR4_VEHICLE_DIVESUIT_BREATHE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -980,7 +976,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>948</Id>
-      <Name>TR5_DIVESUIT_LOOP</Name>
+      <Name>TR4_VEHICLE_DIVESUIT_LOOP</Name>
       <Volume>70</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -991,7 +987,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_DIVESUIT_LOOP_01.wav</FileName>
+          <FileName>TR4_VEHICLE_DIVESUIT_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2020,7 +2016,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1001</Id>
-      <Name>TR5_ELEC_LIGHT_CRACKLES</Name>
+      <Name>TR5_ELECTRIC_LIGHT_CRACKLES</Name>
       <Volume>50</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -2672,7 +2668,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1035</Id>
-      <Name>TR5_GEN_STONE_DOOR_LOW</Name>
+      <Name>TR5_GENERIC_STONE_DOOR_LOW</Name>
       <Volume>99</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -2683,7 +2679,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_GEN_STONE_DOOR_LOW_01.wav</FileName>
+          <FileName>TR5_GENERIC_STONE_DOOR_LOW_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -2691,7 +2687,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1036</Id>
-      <Name>TR5_GEN_SWORD_SWOOSH_LOW</Name>
+      <Name>TR5_GENERIC_SWORD_SWOOSH_LOW</Name>
       <Volume>95</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2702,7 +2698,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_GEN_SWORD_SWOOSH_LOW_01.wav</FileName>
+          <FileName>TR5_GENERIC_SWORD_SWOOSH_LOW_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -3026,7 +3022,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1053</Id>
-      <Name>TR5_IRIS_ELEC</Name>
+      <Name>TR5_IRIS_ELECTRIC</Name>
       <Volume>55</Volume>
       <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
@@ -3437,25 +3433,6 @@
       <Samples>
         <WadSample>
           <FileName>TR5_OFFICE_DOOR_SQUEAK_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1096</Id>
-      <Name>TR5_PHILOSPHER_STONE</Name>
-      <Volume>78</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-35</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_PHILOSPHER_STONE_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3878,7 +3855,26 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-      <WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1096</Id>
+      <Name>TR5_PHILOSPHER_STONE</Name>
+      <Volume>78</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-35</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_PHILOSPHER_STONE_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>1097</Id>
       <Name>TR5_STAIR_BANISTER_BEND</Name>
       <Volume>75</Volume>
@@ -3937,7 +3933,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1100</Id>
-      <Name>TR5_SWITCH_ELEC_SWAP</Name>
+      <Name>TR5_SWITCH_ELECTRIC_SWAP</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4501,5 +4497,5 @@
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
-    </SoundInfos>
+  </SoundInfos>
 </WadSounds>

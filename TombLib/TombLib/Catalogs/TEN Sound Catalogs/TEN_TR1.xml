@@ -406,10 +406,13 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>rapt_atk.wav</FileName>
+          <FileName>TR1_RAPTOR_ATTACK_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR1_RAPTOR_ATTACK_01.wav</FileName>
+          <FileName>TR1_RAPTOR_ATTACK_02.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>TR1_RAPTOR_ATTACK_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1693,6 +1696,21 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
+      <Id>468</Id>
+      <Name>TR1_EMPTY</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>469</Id>
       <Name>TR1_METAL_DOOR_OPEN</Name>
       <Volume>100</Volume>
@@ -1781,7 +1799,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>LARA_MAGNUMS_01.wav</FileName>
+          <FileName>TR4_LARA_MAGNUMS_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
