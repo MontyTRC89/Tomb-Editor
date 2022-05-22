@@ -1460,46 +1460,6 @@ namespace TombEditor.Forms
                 }
             }
 
-            //TODO - Add the Range filter to TEN targets. Below are the correct ranges for the new soundmap. Stranger1992 , 3rd May 2022
-            if (_levelSettings.GameVersion == Game.TombEngine)
-            {
-                if (id < 381 )
-                {
-                    result = "TR4";
-                    originalId = id;
-                }
-                else if (id >= 381 && id < 473)
-                {
-                    result = "TR1";
-                    originalId = id - 370;
-                }
-                else if (id >= 474 && id < 683)
-                {
-                    result = "TR2";
-                    originalId = id - 500;
-                }           
-                else if (id >= 684 && id < 897)
-                {
-                    result = "TR3";
-                    originalId = id - 1228;
-                }
-                else if (id >= 898 && id < 1127)
-                {
-                    result = "TR5";
-                    originalId = id - 1598;
-                }
-                else if (id >= 1128 && id < 1136)
-                {
-                    result = "Custom Footsteps";
-                    originalId = id - 525;
-                }
-                else if (id >= 1137 && id < 1186)
-                {
-                    result = "Custom";
-                    originalId = id - 525;
-                }
-            }
-
             return result;
         }
             
