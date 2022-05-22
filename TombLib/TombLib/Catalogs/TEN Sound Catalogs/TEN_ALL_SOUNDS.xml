@@ -10550,7 +10550,11 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>TR3_CROW_DEATH_01.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
