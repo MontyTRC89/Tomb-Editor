@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -157,6 +158,30 @@ namespace WadTool
             }
 
             return wadAnim;
+        }
+
+        public bool CheckAnimationIntegrity(WadAnimation anim)
+        {
+            if (anim == null)
+                return true;
+
+            if (anim.StateChanges.Any(sc => sc.Dispatches.Any(d => d.NextAnimation >= Animations.Count)))
+            {
+                Tool.SendMessage("Some state changes refer to non-existent animations.", TombLib.Forms.PopupType.Warning);
+                return false;
+            }
+            else if (anim.NextAnimation >= Animations.Count)
+            {
+                Tool.SendMessage("Next animation field refers to non-existent animation.", TombLib.Forms.PopupType.Warning);
+                return false;
+            }
+            else if (anim.NextFrame > Animations[anim.NextAnimation].WadAnimation.GetRealNumberOfFrames())
+            {
+                Tool.SendMessage("Next frame field refers to non-existent frame.", TombLib.Forms.PopupType.Warning);
+                return false;
+            }
+
+            return true;
         }
 
         public bool SaveChanges(IWin32Window owner = null)  // No owner - no confirmation!

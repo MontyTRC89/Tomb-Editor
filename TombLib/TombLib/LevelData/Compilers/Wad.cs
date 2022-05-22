@@ -406,9 +406,18 @@ namespace TombLib.LevelData.Compilers
                     newAnimation.StateChangeOffset = checked((ushort)_stateChanges.Count);
                     newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
                     newAnimation.NumStateChanges = checked((ushort)oldAnimation.StateChanges.Count);
-                    newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
                     newAnimation.NextFrame = oldAnimation.NextFrame;
                     newAnimation.StateID = oldAnimation.StateId;
+
+                    // Check if next animation contains valid value. If not, set to zero and throw a warning.
+                    if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
+                    {
+                        _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
+                                                     "' refers to incorrect next animation " + oldAnimation.NextAnimation + " in animation " + j + ". It will be set to 0.");
+                        newAnimation.NextAnimation = checked((ushort)lastAnimation);
+                    }
+                    else
+                        newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
 
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
@@ -471,6 +480,15 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
+                            // If dispatch refers to nonexistent animation, ignore it.
+                            if (dispatch.NextAnimation >= oldMoveable.Animations.Count)
+                            {
+                                _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
+                                                             "' has wrong anim dispatch in animation " + j +
+                                                             " which refers to nonexistent animation " + dispatch.NextAnimation + ". It will be removed.");
+                                continue;
+                            }
+
                             var newAnimDispatch = new tr_anim_dispatch();
 
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
@@ -479,9 +497,8 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.NextFrame = dispatch.NextFrame;
 
                             _animDispatches.Add(newAnimDispatch);
+                            lastAnimDispatch++;
                         }
-
-                        lastAnimDispatch += stateChange.Dispatches.Count;
 
                         _stateChanges.Add(newStateChange);
                     }

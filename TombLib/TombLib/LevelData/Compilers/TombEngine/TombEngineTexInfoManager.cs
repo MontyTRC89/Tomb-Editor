@@ -880,12 +880,6 @@ namespace TombLib.LevelData.Compilers
             if (_dataHasBeenLaidOut)
                 throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
 
-            if (isForTriangle && texture.TriangleCoordsOutOfBounds || !isForTriangle && texture.QuadCoordsOutOfBounds)
-            {
-                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
-                return new Result();
-            }
-
             // Only try to remap animated textures if fast mode is disabled
             bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
 

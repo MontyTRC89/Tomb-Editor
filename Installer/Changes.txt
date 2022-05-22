@@ -7,10 +7,12 @@ Tomb Editor:
  * Freely allow editing block subdivisions (ED/RF) for diagonal steps.
  * Flatten starting block too while using bulldozer tool. 
  * Add Alt+T hotkey to quickly show/hide texture panel.
+ * Ignore incorrect anim dispatches instead of stopping level compilation.
  * Fix corrupted MQO imported geometry.
 
 WadTool:
  * Add "Apply" button to animcommand and state change editors.
+ * Add pop-up warnings in case current or imported animation has incorrect anim dispatches.
  * An option to disable packed texture padding when exporting mesh.
  * Fix occasional misfires when picking textures in mesh editor.
  * Fix exception when trying to save wad2 file with very large amount of textures.
