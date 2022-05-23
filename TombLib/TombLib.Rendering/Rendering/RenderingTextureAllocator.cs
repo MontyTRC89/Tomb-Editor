@@ -14,6 +14,7 @@ namespace TombLib.Rendering
 
         public const int MinimumPageCount = 4;
         public const int MaximumPageCount = 32;
+        public const int SafePageCount = 8;
         public const int PageSize = 2048;
 
         public class Description

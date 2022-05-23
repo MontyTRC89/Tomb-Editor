@@ -291,7 +291,7 @@ namespace TombEditor.Controls
 
             var texDescription = new RenderingTextureAllocator.Description();
             if (_editor.Configuration.Rendering3D_SafeMode)
-                texDescription = new RenderingTextureAllocator.Description { Size = new VectorInt3(texDescription.Size.X, texDescription.Size.X, RenderingTextureAllocator.MaximumPageCount / 2) };
+                texDescription = new RenderingTextureAllocator.Description { Size = new VectorInt3(texDescription.Size.X, texDescription.Size.X, RenderingTextureAllocator.SafePageCount) };
 
             _renderingTextures = device.CreateTextureAllocator(texDescription);
             _renderingStateBuffer = device.CreateStateBuffer();
