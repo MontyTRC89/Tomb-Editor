@@ -48,15 +48,17 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			set => fileSystemWatcher.NotifyFilter = value;
 		}
 
+		public string CommentPrefix { get; set; }
+
 		#endregion Properties
 
 		#region Construction
 
 		public FileExplorer() : this(string.Empty)
 		{ }
-		public FileExplorer(string rootDirectoryPath) : this(rootDirectoryPath, string.Empty)
+		public FileExplorer(string rootDirectoryPath) : this(rootDirectoryPath, string.Empty, string.Empty)
 		{ }
-		public FileExplorer(string rootDirectoryPath, string filter)
+		public FileExplorer(string rootDirectoryPath, string filter, string commentPrefix)
 		{
 			InitializeComponent();
 			DockText = Strings.Default.FileExplorer;
@@ -73,6 +75,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			{
 				RootDirectoryPath = rootDirectoryPath;
 				Filter = filter;
+				CommentPrefix = commentPrefix;
 			}
 		}
 
@@ -112,6 +115,19 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		private void treeView_DoubleClick(object sender, EventArgs e) => OpenSelectedFile();
 		private void treeView_SelectedNodesChanged(object sender, EventArgs e) => ToggleModificationButtons();
 
+		private void treeView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (treeView.SelectedNodes.Count > 0)
+			{
+				if (e.KeyCode == Keys.Enter)
+					OpenSelectedFile();
+				else if (e.KeyCode == Keys.F2)
+					RenameItem();
+				else if (e.KeyCode == Keys.Delete)
+					DeleteItem();
+			}
+		}
+
 		private void menuItem_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
 		private void menuItem_NewFolder_Click(object sender, EventArgs e) => CreateNewFolder();
 		private void menuItem_ViewInEditor_Click(object sender, EventArgs e) => OpenSelectedFile();
@@ -144,14 +160,18 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			OnFileOpened(new FileOpenedEventArgs(selectedNodeFileInfo.FullName, editorType));
 		}
 
-		public void CreateNewFile()
+		public string CreateNewFile()
 		{
 			using (var form = new FormFileCreation(RootDirectoryPath, FileCreationMode.New, GetInitialNodePath()))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					File.Create(form.NewFilePath).Close();
+					File.WriteAllText(form.NewFilePath, $"{CommentPrefix} FILE: {form.NewFilePath.Replace(RootDirectoryPath, string.Empty)}\n");
 					OnFileOpened(new FileOpenedEventArgs(form.NewFilePath));
+
+					return form.NewFilePath;
 				}
+
+			return null;
 		}
 
 		public void CreateNewFolder()
@@ -170,6 +190,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 			using (var form = new FormRenameItem(targetItemPath))
 				form.ShowDialog(this);
+
+			treeView.SelectedNodes.Clear();
 		}
 
 		private void DeleteItem()
@@ -194,6 +216,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 					FileSystem.DeleteFile(GetItemPathFromNode(selectedNode), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 				else if (IsDirectoryNode(selectedNode))
 					FileSystem.DeleteDirectory(GetItemPathFromNode(selectedNode), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+
+				treeView.SelectedNodes.Clear();
 			}
 		}
 

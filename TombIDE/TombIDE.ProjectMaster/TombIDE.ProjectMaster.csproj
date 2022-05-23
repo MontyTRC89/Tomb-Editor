@@ -60,11 +60,17 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="Forms\FormPluginManager.cs">
+    <Compile Include="Forms\FormGameArchive.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormPluginManager.Designer.cs">
-      <DependentUpon>FormPluginManager.cs</DependentUpon>
+    <Compile Include="Forms\FormGameArchive.Designer.cs">
+      <DependentUpon>FormGameArchive.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormPleaseWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormPleaseWait.Designer.cs">
+      <DependentUpon>FormPleaseWait.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormImportLevel.cs">
       <SubType>Form</SubType>
@@ -90,13 +96,19 @@
     <Compile Include="Forms\FormRenameLevel.Designer.cs">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSplashPreview.cs">
-      <SubType>Form</SubType>
+    <Compile Include="LevelManager.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\FormSplashPreview.Designer.cs">
-      <DependentUpon>FormSplashPreview.cs</DependentUpon>
+    <Compile Include="LevelManager.Designer.cs">
+      <DependentUpon>LevelManager.cs</DependentUpon>
     </Compile>
     <Compile Include="PakFile.cs" />
+    <Compile Include="PluginManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginManager.Designer.cs">
+      <DependentUpon>PluginManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -108,23 +120,17 @@
     <Compile Include="Sections\SectionLevelList.Designer.cs">
       <DependentUpon>SectionLevelList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sections\SectionPluginList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Sections\SectionPluginList.Designer.cs">
-      <DependentUpon>SectionPluginList.cs</DependentUpon>
-    </Compile>
     <Compile Include="Sections\SectionProjectSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Sections\SectionProjectSettings.Designer.cs">
       <DependentUpon>SectionProjectSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectMaster.cs">
+    <Compile Include="Miscellaneous.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProjectMaster.Designer.cs">
-      <DependentUpon>ProjectMaster.cs</DependentUpon>
+    <Compile Include="Miscellaneous.Designer.cs">
+      <DependentUpon>Miscellaneous.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sections\SectionLevelProperties.cs">
@@ -171,14 +177,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FormGameArchive.resx">
+      <DependentUpon>FormGameArchive.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportLevel.resx">
       <DependentUpon>FormImportLevel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormLevelSetup.resx">
       <DependentUpon>FormLevelSetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPluginManager.resx">
-      <DependentUpon>FormPluginManager.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormPleaseWait.resx">
+      <DependentUpon>FormPleaseWait.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameLauncher.resx">
       <DependentUpon>FormRenameLauncher.cs</DependentUpon>
@@ -186,8 +195,11 @@
     <EmbeddedResource Include="Forms\FormRenameLevel.resx">
       <DependentUpon>FormRenameLevel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSplashPreview.resx">
-      <DependentUpon>FormSplashPreview.cs</DependentUpon>
+    <EmbeddedResource Include="LevelManager.resx">
+      <DependentUpon>LevelManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginManager.resx">
+      <DependentUpon>PluginManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -199,14 +211,11 @@
     <EmbeddedResource Include="Sections\SectionLevelProperties.resx">
       <DependentUpon>SectionLevelProperties.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sections\SectionPluginList.resx">
-      <DependentUpon>SectionPluginList.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Sections\SectionProjectSettings.resx">
       <DependentUpon>SectionProjectSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProjectMaster.resx">
-      <DependentUpon>ProjectMaster.cs</DependentUpon>
+    <EmbeddedResource Include="Miscellaneous.resx">
+      <DependentUpon>Miscellaneous.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\Settings Sections\SettingsIcon.resx">
       <DependentUpon>SettingsIcon.cs</DependentUpon>
@@ -250,7 +259,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\actions_compile-16.png" />
     <Content Include="Resources\actions_refresh-16.png" />
+    <Content Include="Resources\add-48.png" />
     <Content Include="Resources\asterisk-filled-16.png" />
     <Content Include="Resources\forward-arrow-16.png" />
     <Content Include="Resources\general_ArrowDown-16.png" />
@@ -260,8 +271,18 @@
     <Content Include="Resources\general_Open-16.png" />
     <Content Include="Resources\general_plus_math-16.png" />
     <Content Include="Resources\general_trash-16.png" />
+    <Content Include="Resources\ide-master-30.png" />
+    <Content Include="Resources\ide-plugin-30.png" />
+    <Content Include="Resources\ide_projectmanager.png" />
     <Content Include="Resources\image_file.ico" />
+    <Content Include="Resources\import-48.png" />
     <Content Include="Resources\obj_file.ico" />
+    <Content Include="Resources\TE_icon.png" />
+    <Content Include="Resources\TR1_LVL.png" />
+    <Content Include="Resources\TR2_LVL.png" />
+    <Content Include="Resources\TR3_LVL.png" />
+    <Content Include="Resources\TR4_LVL.png" />
+    <Content Include="Resources\TRNG_LVL.png" />
     <Content Include="Resources\wad_file.ico" />
   </ItemGroup>
   <ItemGroup>

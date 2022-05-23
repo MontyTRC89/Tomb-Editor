@@ -15,7 +15,11 @@ namespace TombEditor.ToolWindows
         {
             InitializeComponent();
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
-            cbLightQuality.SelectedIndex = 0; // Reset index to default
+
+            foreach (LightType l in Enum.GetValues(typeof(LightType)))
+                cmbLightTypes.Items.Add(l.ToString().SplitCamelcase());
+
+            cmbLightQuality.SelectedIndex = cmbLightTypes.SelectedIndex = 0; // Reset index to default
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -32,12 +36,13 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            bool isTEN = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
 
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
-                butAddFogBulb.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR3;
+                cbCastShadow.Enabled = isTEN;
 
             // Update light UI
             if (obj is Editor.ObjectChangedEvent ||
@@ -51,8 +56,10 @@ namespace TombEditor.ToolWindows
                 bool HasInOutAngle = false;
                 bool HasDirection = false;
                 bool CanCastShadows = false;
+                bool CanCastDynamicShadows = false;
                 bool CanIlluminateGeometry = false;
-                cbLightQuality.Enabled = false;
+
+                cmbLightQuality.Enabled = false;
 
                 if (light != null)
                     switch (light.Type)
@@ -60,8 +67,9 @@ namespace TombEditor.ToolWindows
                         case LightType.Point:
                             HasInRange = true;
                             HasOutRange = true;
-                            CanCastShadows = true;
                             CanIlluminateGeometry = true;
+                            CanCastShadows = true;
+                            CanCastDynamicShadows = isTEN;
                             break;
 
                         case LightType.Shadow:
@@ -85,8 +93,9 @@ namespace TombEditor.ToolWindows
                             HasOutRange = true;
                             HasInOutAngle = true;
                             HasDirection = true;
-                            CanCastShadows = true;
                             CanIlluminateGeometry = true;
+                            CanCastShadows = true;
+                            CanCastDynamicShadows = isTEN;
                             break;
 
                         case LightType.Sun:
@@ -102,6 +111,7 @@ namespace TombEditor.ToolWindows
                 panelLightColor.Enabled = light != null;
                 cbLightEnabled.Enabled = light != null;
                 cbLightIsObstructedByRoomGeometry.Enabled = CanCastShadows;
+                cbCastShadow.Enabled = CanCastDynamicShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry;
@@ -128,8 +138,9 @@ namespace TombEditor.ToolWindows
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
                 cbLightIsUsedForImportedGeometry.Checked = light?.IsUsedForImportedGeometry ?? false;
-                cbLightQuality.Enabled = light != null;
-                cbLightQuality.SelectedIndex = (int)(light?.Quality ?? 0);
+                cmbLightQuality.Enabled = light != null;
+                cmbLightQuality.SelectedIndex = (int)(light?.Quality ?? 0);
+                cmbLightTypes.SelectedIndex = (int)(light?.Type ?? (LightType)cmbLightTypes.SelectedIndex);
             }
 
             // Update tooltip texts
@@ -237,11 +248,16 @@ namespace TombEditor.ToolWindows
             EditorActions.EditLightColor(this);
         }
 
-        private void cbLightQualityChanged(object sender, EventArgs e)
+        private void cmbLightQualityChanged(object sender, EventArgs e)
         {
-            int index = cbLightQuality.SelectedIndex;
+            int index = cmbLightQuality.SelectedIndex;
             LightQuality newQuality = (LightQuality)index;
             EditorActions.UpdateLightQuality(newQuality);
+        }
+
+        private void butAddLight_Click(object sender, EventArgs e)
+        {
+            EditorActions.PlaceLight((LightType)cmbLightTypes.SelectedIndex);
         }
     }
 }

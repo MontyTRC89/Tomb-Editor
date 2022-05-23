@@ -47,6 +47,205 @@ namespace TombLib.LevelData.IO
             return newProject;
         }
 
+        public static WadMoveable ConvertMoveable(this WadMoveable moveable, Wad2 refWad, IProgressReporter progressReporter = null)
+        {
+            string newSlotName = TrCatalog.GetMoveableTombEngineSlot(refWad.GameVersion, moveable.Id.TypeId);
+
+            switch (newSlotName)
+            {
+                // We need to copy mesh 14 to 7 for {WEAPON}_ANIM for back weapons
+
+                case "SHOTGUN_ANIM":
+                case "CROSSBOW_ANIM":
+                case "HK_ANIM":
+                case "HARPOON_ANIM":
+                case "GRENADE_ANIM":
+                case "ROCKET_ANIM":
+                    {
+                        if (moveable.Bones.Count < 15)
+                            break;
+
+                        progressReporter?.ReportInfo("    Copying mesh #14 to mesh #7 for " + newSlotName);
+
+                        var mesh = moveable.Bones[14].Mesh.Clone();
+                        var oldMesh = moveable.Bones[7].Mesh.Clone();
+
+                        for (int i = 0; i < mesh.VertexPositions.Count; i++)
+                        {
+                            var pos = mesh.VertexPositions[i];
+                            pos.Y += 256;
+                            mesh.VertexPositions[i] = pos;
+                        }
+
+                        moveable.Bones[7].Mesh = mesh;
+                        moveable.Meshes[7] = mesh;
+                        moveable.Bones[14].Mesh = oldMesh;
+                        moveable.Meshes[14] = oldMesh;
+                    }
+                    break;
+
+                // For holsters, we need to put holsters meshes in 1 and 4 and apply the same skeleton from LARA
+
+                case "LARA_HOLSTERS":
+                case "LARA_HOLSTERS_PISTOLS":
+                case "LARA_HOLSTERS_UZIS":
+                case "LARA_HOLSTERS_REVOLVER":
+                    {
+                        if (moveable.Bones.Count <= 8)
+                            break;
+
+                        progressReporter?.ReportInfo("    Copying holsters meshes for " + newSlotName);
+
+                        var laraMoveable = refWad.Moveables[new WadMoveableId(0)];
+                        var newBones = new List<WadBone>();
+                        var newMeshes = new List<WadMesh>();
+
+                        foreach (var oldBone in laraMoveable.Bones)
+                        {
+                            newBones.Add(oldBone.Clone());
+                        }
+
+                        foreach (var oldMesh in laraMoveable.Meshes)
+                        {
+                            newMeshes.Add(oldMesh.Clone());
+                        }
+
+                        newBones[1].Mesh = moveable.Bones[4].Mesh.Clone();
+                        newMeshes[1] = newBones[1].Mesh;
+
+                        newBones[4].Mesh = moveable.Bones[8].Mesh.Clone();
+                        newMeshes[4] = newBones[4].Mesh;
+
+                        moveable.Bones.Clear();
+                        moveable.Bones.AddRange(newBones);
+                        moveable.Meshes.Clear();
+                        moveable.Meshes.AddRange(newMeshes);
+                    }
+                    break;
+
+                // Correct pivot points
+
+                case "EXPANDING_PLATFORM":
+                    {
+                        progressReporter?.ReportInfo("    Adjusting mesh and pivot point for " + newSlotName);
+
+                        for (int m = 0; m < moveable.Bones.Count; m++)
+                        {
+                            var mesh = moveable.Bones[m].Mesh.Clone();
+
+                            for (int i = 0; i < mesh.VertexPositions.Count; i++)
+                            {
+                                Vector3 pos = mesh.VertexPositions[i];
+                                pos.Z += 512;
+                                mesh.VertexPositions[i] = pos;
+                            }
+                            moveable.Bones[m].Mesh = mesh;
+                            moveable.Meshes[m] = mesh;
+                        }
+
+                        foreach (var anim in moveable.Animations)
+                        {
+                            foreach (var frame in anim.KeyFrames)
+                            {
+                                BoundingBox bb = frame.BoundingBox;
+                                bb.Maximum.Z += 512;
+                                bb.Minimum.Z += 512;
+                                frame.BoundingBox = bb;
+                            }
+                        }
+                    }
+                    break;
+
+                // Remove hardcoded TR4 collision box
+
+                case "ANIMATING16":
+                    {
+                        if (refWad.GameVersion.Native() != TRVersion.Game.TR4)
+                            break;
+
+                        progressReporter?.ReportInfo("    Setting hardcoded collision for " + newSlotName);
+
+                        foreach (var anim in moveable.Animations)
+                        {
+                            foreach (var frame in anim.KeyFrames)
+                            {
+                                frame.BoundingBox = new BoundingBox();
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            // Adjust bridge thickness
+
+            if (newSlotName == "TWOBLOCK_PLATFORM" ||
+                newSlotName.Contains("FALLING_BLOCK") ||
+                newSlotName.Contains("TRAPDOOR"))
+            {
+                progressReporter?.ReportInfo("    Adjusting bridge object collision box " + newSlotName);
+
+                if (moveable.Animations.Count > 0)
+                {
+                    var anim = moveable.Animations[0];
+                    for (int f = 0; f < anim.KeyFrames.Count; f++)
+                    {
+                        var oldBB = anim.KeyFrames[f].BoundingBox;
+                        oldBB.Maximum = new Vector3(oldBB.Maximum.X, oldBB.Maximum.Y * 0.8f, oldBB.Maximum.Z);
+                        anim.KeyFrames[f].BoundingBox = oldBB;
+                    }
+                }
+            }
+
+            // Fix bridge collisions
+
+            if (newSlotName.ToLower().Contains("BRIDGE"))
+            {
+                progressReporter?.ReportInfo("    Adjusting bridge bounds for " + newSlotName);
+
+                if (moveable.Animations.Count > 0)
+                {
+                    var anim = moveable.Animations[0];
+                    for (int f = 0; f < anim.KeyFrames.Count; f++)
+                    {
+                        var oldBB = anim.KeyFrames[f].BoundingBox;
+
+                        var newMaxX = Math.Sign(oldBB.Maximum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.X));
+                        var newMaxZ = Math.Sign(oldBB.Maximum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.Z));
+                        var newMinX = Math.Sign(oldBB.Minimum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.X));
+                        var newMinZ = Math.Sign(oldBB.Minimum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.Z));
+
+                        oldBB.Maximum = new Vector3(newMaxX, oldBB.Maximum.Y, newMaxZ);
+                        oldBB.Minimum = new Vector3(newMinX, oldBB.Minimum.Y, newMinZ);
+
+                        anim.KeyFrames[f].BoundingBox = oldBB;
+                    }
+                }
+            }
+
+            // Remap sound slots
+
+            foreach (var animation in moveable.Animations)
+                foreach (var command in animation.AnimCommands)
+                {
+                    if (command.Type != WadAnimCommandType.PlaySound)
+                        continue;
+
+                    try
+                    {
+                        uint soundId = (uint)(command.Parameter2 & 0x3FFF);
+                        uint newSoundId = TrCatalog.GetTombEngineSound(refWad.GameVersion, soundId);
+                        command.Parameter2 = (short)((short)(command.Parameter2 & 0xC000) | (short)newSoundId);
+                    }
+                    catch (Exception)
+                    {
+                        // No sound found, just continue
+                        continue;
+                    }
+                }
+
+            return moveable;
+        }
+
         private static string ConvertProject(string source, IProgressReporter progressReporter)
         {
             try
@@ -125,115 +324,7 @@ namespace TombLib.LevelData.IO
                             continue;
                         }
 
-                        // We need to copy mesh 14 to 7 for {WEAPON}_ANIM for back weapons
-                        if (newSlotName == "SHOTGUN_ANIM" || newSlotName == "CROSSBOW_ANIM" || newSlotName == "HK_ANIM" ||
-                            newSlotName == "HARPOON_ANIM" || newSlotName == "GRENADE_ANIM" || newSlotName == "ROCKET_ANIM")
-                        {
-                            progressReporter.ReportInfo("    Copying mesh #14 to mesh #7 for " + newSlotName);
-
-                            WadMesh mesh = moveable.Value.Bones[14].Mesh.Clone();
-                            for (int i = 0; i < mesh.VertexPositions.Count; i++)
-                            {
-                                Vector3 pos = mesh.VertexPositions[i];
-                                pos.Y += 256;
-                                mesh.VertexPositions[i] = pos;
-                            }
-                            moveable.Value.Bones[7].Mesh = mesh;
-                            moveable.Value.Meshes[7] = mesh;
-                        }
-
-                        // For holsters, we need to put holsters meshes in 1 and 4 and apply the same skeleton from LARA
-                        if (newSlotName == "LARA_HOLSTERS" || newSlotName == "LARA_HOLSTERS_PISTOLS" ||
-                            newSlotName == "LARA_HOLSTERS_UZIS" || newSlotName == "LARA_HOLSTERS_REVOLVER")
-                        {
-                            progressReporter.ReportInfo("    Copying holsters meshes for " + newSlotName);
-
-                            WadMoveable laraMoveable = referenceWad.Moveables[new WadMoveableId(0)];
-                            List<WadBone> newBones = new List<WadBone>();
-                            List<WadMesh> newMeshes = new List<WadMesh>();
-
-                            foreach (WadBone oldBone in laraMoveable.Bones)
-                            {
-                                newBones.Add(oldBone.Clone());
-                            }
-
-                            foreach (WadMesh oldMesh in laraMoveable.Meshes)
-                            {
-                                newMeshes.Add(oldMesh.Clone());
-                            }
-
-                            newBones[1].Mesh = moveable.Value.Bones[4].Mesh.Clone();
-                            newMeshes[1] = newBones[1].Mesh;
-
-                            newBones[4].Mesh = moveable.Value.Bones[8].Mesh.Clone();
-                            newMeshes[4] = newBones[4].Mesh;
-
-                            moveable.Value.Bones.Clear();
-                            moveable.Value.Bones.AddRange(newBones);
-                            moveable.Value.Meshes.Clear();
-                            moveable.Value.Meshes.AddRange(newMeshes);
-                        }
-
-                        if (newSlotName == "TWOBLOCK_PLATFORM" ||
-                            newSlotName.ToLower().Contains("falling_block") ||
-                            newSlotName.ToLower().Contains("trapdoor"))
-                        {
-                            progressReporter.ReportInfo("    Adjusting bridge object collision box " + newSlotName);
-
-                            if (moveable.Value.Animations.Count > 0)
-                            {
-                                WadAnimation anim = moveable.Value.Animations[0];
-                                for (int f = 0; f < anim.KeyFrames.Count; f++)
-                                {
-                                    BoundingBox oldBB = anim.KeyFrames[f].BoundingBox;
-                                    oldBB.Maximum = new Vector3(oldBB.Maximum.X, oldBB.Maximum.Y * 0.8f, oldBB.Maximum.Z);
-                                    anim.KeyFrames[f].BoundingBox = oldBB;
-                                }
-                            }
-                        }
-
-                        if (newSlotName == "EXPANDING_PLATFORM")
-                        {
-                            progressReporter.ReportInfo("    Adjusting mesh and pivot point for " + newSlotName);
-
-                            for (int m = 0; m < moveable.Value.Bones.Count; m++)
-                            {
-                                WadMesh mesh = moveable.Value.Bones[m].Mesh.Clone();
-
-                                for (int i = 0; i < mesh.VertexPositions.Count; i++)
-                                {
-                                    Vector3 pos = mesh.VertexPositions[i];
-                                    pos.Z += 512;
-                                    mesh.VertexPositions[i] = pos;
-                                }
-                                moveable.Value.Bones[m].Mesh = mesh;
-                                moveable.Value.Meshes[m] = mesh;
-                            }
-
-                            foreach (WadAnimation anim in moveable.Value.Animations)
-                            {
-                                foreach (WadKeyFrame frame in anim.KeyFrames)
-                                {
-                                    BoundingBox bb = frame.BoundingBox;
-                                    bb.Maximum.Z += 512;
-                                    bb.Minimum.Z += 512;
-                                    frame.BoundingBox = bb;
-                                }
-                            }
-                        }
-
-                        if (newSlotName == "ANIMATING16")
-                        {
-                            progressReporter.ReportInfo("    Setting hardcoded collision for " + newSlotName);
-
-                            foreach (WadAnimation anim in moveable.Value.Animations)
-                            {
-                                foreach (WadKeyFrame frame in anim.KeyFrames)
-                                {
-                                    frame.BoundingBox = new BoundingBox();
-                                }
-                            }
-                        }
+                        moveable.Value.ConvertMoveable(wad, progressReporter);
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||

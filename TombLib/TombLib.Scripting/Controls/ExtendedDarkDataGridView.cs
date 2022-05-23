@@ -21,6 +21,7 @@ namespace TombLib.Scripting.Controls
 		{
 			CellBeginEdit += OnCellBeginEdit;
 			CellEndEdit += OnCellEndEdit;
+			CellMouseDown += OnCellMouseDown;
 			EditingControlShowing += OnEditingControlShowing;
 		}
 
@@ -37,8 +38,6 @@ namespace TombLib.Scripting.Controls
 					_editingControl.Copy();
 					keyData = Keys.None;
 				}
-				else if (keyData == (Keys.Control | Keys.V))
-					_editingControl.Paste();
 			}
 			else
 			{
@@ -157,6 +156,12 @@ namespace TombLib.Scripting.Controls
 				OnCellContentChanged(new CellContentChangedEventArgs(
 					CachedUndoItem.ColumnIndex, CachedUndoItem.RowIndex,
 					CachedUndoItem.Value, tableCell.Value));
+		}
+
+		private void OnCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right && e.RowIndex != -1 && e.ColumnIndex != -1)
+				CurrentCell = Rows[e.RowIndex].Cells[e.ColumnIndex];
 		}
 
 		#endregion Events

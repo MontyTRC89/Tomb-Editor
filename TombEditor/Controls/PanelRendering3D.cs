@@ -653,6 +653,10 @@ namespace TombEditor.Controls
                                 else if (_editor.Tool.Tool < EditorToolType.Drag)
                                     _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
+                                // HACK: Clear bulldozer's initial block heights
+                                if (_editor.Tool.Tool == EditorToolType.Flatten)
+                                    OnMouseMove(e);
+
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
                                     if (_editor.Tool.Tool == EditorToolType.Smooth)
@@ -2115,7 +2119,7 @@ namespace TombEditor.Controls
                 // Add text message
                 textToDraw.Add(CreateTextTagForObject(
                     light.ObjectMatrix * _viewProjection,
-                    light.Type + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
+                    light.Type.ToString().SplitCamelcase() + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
 
                 // Add the line height of the object
                 AddObjectHeightLine(light.Room, light.Position);

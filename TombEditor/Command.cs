@@ -1772,39 +1772,32 @@ namespace TombEditor
 
             AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+                EditorActions.PlaceLight(LightType.Point);
             });
 
             AddCommand("AddShadow", "Add shadow", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+                EditorActions.PlaceLight(LightType.Shadow);
             });
 
             AddCommand("AddSunLight", "Add sun light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+                EditorActions.PlaceLight(LightType.Sun);
             });
 
             AddCommand("AddSpotLight", "Add directional (spot) light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+                EditorActions.PlaceLight(LightType.Spot);
             });
 
             AddCommand("AddEffectLight", "Add effect light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+                EditorActions.PlaceLight(LightType.Effect);
             });
 
             AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Fog bulb"))
-                    return;
-
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb)
-                {
-                    Color = args.Editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 ?
-                    Vector3.One : (Vector3)args.Editor.LastUsedPaletteColour * 2.0f
-                });
+                EditorActions.PlaceLight(LightType.FogBulb);
             });
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)

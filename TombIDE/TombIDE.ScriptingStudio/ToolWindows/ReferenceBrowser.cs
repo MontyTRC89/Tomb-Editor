@@ -1,4 +1,5 @@
-﻿using DarkUI.Docking;
+﻿using DarkUI.Controls;
+using DarkUI.Docking;
 using DarkUI.Forms;
 using System;
 using System.ComponentModel;
@@ -10,7 +11,6 @@ using System.Xml;
 using TombIDE.ScriptingStudio.Objects;
 using TombIDE.Shared;
 using TombLib.Scripting.ClassicScript.Enums;
-using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombIDE.ScriptingStudio.ToolWindows
@@ -23,31 +23,36 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			DockText = Strings.Default.ReferenceBrowser;
 			searchTextBox.SearchText = Strings.Default.SearchReferences;
 
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.MnemonicConstants, ReferenceComboType.MnemonicConstants));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.EnemyDamageValues, ReferenceComboType.EnemyDamageValues));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.KeyboardScancodes, ReferenceComboType.KeyboardScancodes));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.OCBList, ReferenceComboType.OCBList));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.OldCommandsList, ReferenceComboType.OldCommandsList));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.NewCommandsList, ReferenceComboType.NewCommandsList));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.SoundIndices, ReferenceComboType.SoundIndices));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.MoveableSlotIndices, ReferenceComboType.MoveableSlotIndices));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.StaticObjectIndices, ReferenceComboType.StaticObjectIndices));
-			comboBox_References.Items.Add(new ReferenceComboItem(Strings.Default.VariablePlaceholders, ReferenceComboType.VariablePlaceholders));
+			var constantsNode = new DarkTreeNode(Strings.Default.MnemonicConstants) { Tag = ReferenceItemType.MnemonicConstants };
+
+			treeView.Nodes.Add(constantsNode);
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.EnemyDamageValues) { Tag = ReferenceItemType.EnemyDamageValues });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.KeyboardScancodes) { Tag = ReferenceItemType.KeyboardScancodes });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.OCBList) { Tag = ReferenceItemType.OCBList });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.OldCommandsList) { Tag = ReferenceItemType.OldCommandsList });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.NewCommandsList) { Tag = ReferenceItemType.NewCommandsList });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.SoundIndices) { Tag = ReferenceItemType.SoundIndices });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.MoveableSlotIndices) { Tag = ReferenceItemType.MoveableSlotIndices });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.StaticObjectIndices) { Tag = ReferenceItemType.StaticObjectIndices });
+			treeView.Nodes.Add(new DarkTreeNode(Strings.Default.VariablePlaceholders) { Tag = ReferenceItemType.VariablePlaceholders });
 
 			if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
-				comboBox_References.SelectedIndex = 0;
+				treeView.SelectNode(constantsNode);
 		}
 
-		private void comboBox_References_SelectedIndexChanged(object sender, EventArgs e) => UpdateDataGrid();
+		private void treeView_SelectedNodesChanged(object sender, EventArgs e) => UpdateDataGrid();
 		private void searchTextBox_TextChanged(object sender, EventArgs e) => UpdateDataGrid();
 
 		private void UpdateDataGrid()
 		{
 			dataGrid.Columns.Clear();
 
+			if (treeView.SelectedNodes.Count == 0)
+				return;
+
 			try
 			{
-				string fileName = (comboBox_References.SelectedItem as ReferenceComboItem).ReferenceType.ToString();
+				string fileName = treeView.SelectedNodes[0].Tag.ToString();
 				string xmlPath = Path.Combine(DefaultPaths.ReferencesDirectory, fileName + ".xml");
 
 				using (var reader = XmlReader.Create(xmlPath))
@@ -57,8 +62,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 					DataTable dataTable = dataSet.Tables[0];
 
-					if (comboBox_References.SelectedIndex == 0)
-						AddPluginMnemonics(dataTable);
+					if (treeView.SelectedNodes[0] == treeView.Nodes[0])
+						MnemonicData.AddPluginMnemonics(dataTable);
 
 					AddFilterRowString(dataTable);
 					SetFriendlyColumnHeaders();
@@ -88,39 +93,10 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			}
 
 			string filter = searchTextBox.Text.Trim();
-			dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
+			dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter.Replace('%', ' ').Replace('*', ' ') + "%'";
 
 			dataGrid.DataSource = dataTable;
 			dataGrid.Columns["_RowString"].Visible = false;
-		}
-
-		private void AddPluginMnemonics(DataTable dataTable)
-		{
-			DataTable pluginMnemonicTable = GetPluginMnemonicTable();
-
-			foreach (DataRow row in pluginMnemonicTable.Rows)
-				dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
-		}
-
-		private DataTable GetPluginMnemonicTable()
-		{
-			var dataTable = new DataTable();
-
-			dataTable.Columns.Add("decimal", typeof(string));
-			dataTable.Columns.Add("hex", typeof(string));
-			dataTable.Columns.Add("flag", typeof(string));
-
-			foreach (PluginConstant mnemonic in MnemonicData.PluginConstants)
-			{
-				DataRow row = dataTable.NewRow();
-				row["decimal"] = mnemonic.DecimalValue;
-				row["hex"] = mnemonic.HexValue;
-				row["flag"] = mnemonic.FlagName;
-
-				dataTable.Rows.Add(row);
-			}
-
-			return dataTable;
 		}
 
 		private void SetFriendlyColumnHeaders()
@@ -154,22 +130,23 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
+			if (treeView.SelectedNodes.Count == 0)
+				return;
+
 			if (e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
 			{
-				var comboBoxItem = comboBox_References.SelectedItem as ReferenceComboItem;
-
-				switch (comboBoxItem.ReferenceType)
+				switch ((ReferenceItemType)treeView.SelectedNodes[0].Tag)
 				{
-					case ReferenceComboType.MnemonicConstants:
+					case ReferenceItemType.MnemonicConstants:
 						OnReferenceDefinitionRequested(new ReferenceDefinitionEventArgs(
 							dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.MnemonicConstant)); break;
-					case ReferenceComboType.OldCommandsList:
+					case ReferenceItemType.OldCommandsList:
 						OnReferenceDefinitionRequested(new ReferenceDefinitionEventArgs(
 							dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OldCommand)); break;
-					case ReferenceComboType.NewCommandsList:
+					case ReferenceItemType.NewCommandsList:
 						OnReferenceDefinitionRequested(new ReferenceDefinitionEventArgs(
 							dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NewCommand)); break;
-					case ReferenceComboType.OCBList:
+					case ReferenceItemType.OCBList:
 						OnReferenceDefinitionRequested(new ReferenceDefinitionEventArgs(
 							dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCB)); break;
 				}

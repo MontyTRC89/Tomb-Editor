@@ -56,11 +56,28 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Settings\Tomb1MainSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\Tomb1MainSettingsControl.Designer.cs">
+      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tomb1MainStudio.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GameFlowScriptStudio.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ConfigurationCollection.cs" />
     <Compile Include="Helpers\EditorTypeHelper.cs" />
     <Compile Include="Helpers\FileTreeViewHelper.cs" />
-    <Compile Include="Objects\ReferenceComboItem.cs" />
-    <Compile Include="Objects\ReferenceComboType.cs" />
+    <Compile Include="Objects\ReferenceItemType.cs" />
+    <Compile Include="Settings\GameFlowSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\GameFlowSettingsControl.Designer.cs">
+      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings\ClassicScriptSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -108,7 +125,7 @@
     <Compile Include="ToolStrips\StudioStatusStrip.Designer.cs">
       <DependentUpon>StudioStatusStrip.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolStrips\TextEditorContextMenu.cs">
+    <Compile Include="ToolStrips\EditorContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ToolWindows\CompilerLogs.cs">
@@ -190,9 +207,14 @@
     <Compile Include="UI\UICommand.cs" />
     <Compile Include="UI\Objects\UIElementArgs.cs" />
     <Compile Include="UI\UIKeys.cs" />
-    <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Settings\Tomb1MainSettingsControl.resx">
+      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\GameFlowSettingsControl.resx">
+      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\ClassicScriptSettingsControl.resx">
       <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -244,6 +266,14 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj">
+      <Project>{98e13bc4-6196-4346-ab4f-92de33d84589}</Project>
+      <Name>TombLib.Scripting.GameFlowScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj">
+      <Project>{7987fd7b-aac9-4c7f-8188-c54fde35c3d6}</Project>
+      <Name>TombLib.Scripting.Tomb1Main</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
       <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
@@ -298,6 +328,36 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Tomb1Main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

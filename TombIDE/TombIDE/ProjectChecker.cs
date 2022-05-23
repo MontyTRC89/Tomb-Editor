@@ -1,31 +1,16 @@
 ﻿using System;
 using System.IO;
 using TombIDE.Shared;
-using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
 	internal static class ProjectChecker
 	{
-		public static bool IsProjectNameDuplicate(string projectName)
-		{
-			foreach (Project project in XmlHandling.GetProjectsFromXml())
-			{
-				if (project.Name.ToLower() == projectName.ToLower())
-					return true;
-			}
-
-			return false;
-		}
-
 		/// <summary>
 		/// Checks if the project is installed correctly.
 		/// </summary>
 		public static bool IsValidProject(Project project)
-		{
-			string message; // For Lwmte's outdated VS
-			return IsValidProject(project, out message);
-		}
+			=> IsValidProject(project, out _);
 
 		/// <summary>
 		/// Checks if the project is installed correctly.
@@ -33,6 +18,12 @@ namespace TombIDE
 		public static bool IsValidProject(Project project, out string errorMessage)
 		{
 			errorMessage = string.Empty;
+
+			if (!Directory.Exists(project.ProjectPath))
+			{
+				errorMessage = "Project directory doesn't exist.";
+				return false;
+			}
 
 			if (Path.GetFileName(project.ProjectPath).Equals("engine", StringComparison.OrdinalIgnoreCase))
 			{
@@ -46,7 +37,19 @@ namespace TombIDE
 				return false;
 			}
 
-			if (!IsScriptFileValid(project))
+			if (!Directory.Exists(project.ScriptPath))
+			{
+				errorMessage = "The project's /Script/ directory is missing.";
+				return false;
+			}
+
+			if (!Directory.Exists(project.LevelsPath))
+			{
+				errorMessage = "The project's /Levels/ directory is missing.";
+				return false;
+			}
+
+			if (project.GameVersion != TombLib.LevelData.TRVersion.Game.TR1 && !IsScriptFileValid(project))
 			{
 				errorMessage = "The project does not have a valid SCRIPT.TXT file.";
 				return false;
@@ -59,7 +62,10 @@ namespace TombIDE
 		{
 			foreach (string file in Directory.GetFiles(project.EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).ToLower() == "tomb4.exe" || Path.GetFileName(file).ToLower() == "pctomb5.exe")
+				if (Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 
@@ -70,7 +76,7 @@ namespace TombIDE
 		{
 			foreach (string file in Directory.GetFiles(project.ScriptPath, "*.txt", SearchOption.TopDirectoryOnly))
 			{
-				if (Path.GetFileName(file).ToLower() == "script.txt")
+				if (Path.GetFileName(file).Equals("script.txt", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 

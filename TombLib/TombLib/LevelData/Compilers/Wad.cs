@@ -23,30 +23,6 @@ namespace TombLib.LevelData.Compilers
         private int _soundMapSize = 0;
         private short[] _finalSoundMap;
 
-        private void FixWadTextureCoordinates(ref TextureArea texture)
-        {
-            texture.TexCoord0.X = Math.Max(0.0f, texture.TexCoord0.X);
-            texture.TexCoord0.Y = Math.Max(0.0f, texture.TexCoord0.Y);
-            texture.TexCoord1.X = Math.Max(0.0f, texture.TexCoord1.X);
-            texture.TexCoord1.Y = Math.Max(0.0f, texture.TexCoord1.Y);
-            texture.TexCoord2.X = Math.Max(0.0f, texture.TexCoord2.X);
-            texture.TexCoord2.Y = Math.Max(0.0f, texture.TexCoord2.Y);
-            texture.TexCoord3.X = Math.Max(0.0f, texture.TexCoord3.X);
-            texture.TexCoord3.Y = Math.Max(0.0f, texture.TexCoord3.Y);
-
-            if (!texture.TextureIsInvisible && !texture.TextureIsUnavailable)
-            {
-                texture.TexCoord0.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord0.X);
-                texture.TexCoord0.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord0.Y);
-                texture.TexCoord1.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord1.X);
-                texture.TexCoord1.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord1.Y);
-                texture.TexCoord2.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord2.X);
-                texture.TexCoord2.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord2.Y);
-                texture.TexCoord3.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord3.X);
-                texture.TexCoord3.Y = Math.Min(texture.Texture.Image.Height , texture.TexCoord3.Y);
-            }
-        }
-
         private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false)
         {
@@ -171,7 +147,7 @@ namespace TombLib.LevelData.Compilers
                 var poly = oldMesh.Polys[j];
 
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
-                if(poly.ShineStrength > 0)
+                if (poly.ShineStrength > 0)
                 {
                     if (useShades)
                         _progressReporter.ReportWarn("Stray shiny effect found on " + objectString + " " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
@@ -189,7 +165,7 @@ namespace TombLib.LevelData.Compilers
                 bool agressivePacking = _level.Settings.AgressiveTexturePacking;
 
                 var texture = poly.Texture;
-                FixWadTextureCoordinates(ref poly.Texture);
+                texture.ClampToBounds();
 
                 foreach (bool doubleSided in new[] { false, true })
                 {
@@ -406,9 +382,18 @@ namespace TombLib.LevelData.Compilers
                     newAnimation.StateChangeOffset = checked((ushort)_stateChanges.Count);
                     newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
                     newAnimation.NumStateChanges = checked((ushort)oldAnimation.StateChanges.Count);
-                    newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
                     newAnimation.NextFrame = oldAnimation.NextFrame;
                     newAnimation.StateID = oldAnimation.StateId;
+
+                    // Check if next animation contains valid value. If not, set to zero and throw a warning.
+                    if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
+                    {
+                        _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
+                                                     "' refers to incorrect next animation " + oldAnimation.NextAnimation + " in animation " + j + ". It will be set to 0.");
+                        newAnimation.NextAnimation = checked((ushort)lastAnimation);
+                    }
+                    else
+                        newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
 
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
@@ -471,6 +456,15 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
+                            // If dispatch refers to nonexistent animation, ignore it.
+                            if (dispatch.NextAnimation >= oldMoveable.Animations.Count)
+                            {
+                                _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
+                                                             "' has wrong anim dispatch in animation " + j +
+                                                             " which refers to nonexistent animation " + dispatch.NextAnimation + ". It will be removed.");
+                                continue;
+                            }
+
                             var newAnimDispatch = new tr_anim_dispatch();
 
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
@@ -479,9 +473,8 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.NextFrame = dispatch.NextFrame;
 
                             _animDispatches.Add(newAnimDispatch);
+                            lastAnimDispatch++;
                         }
-
-                        lastAnimDispatch += stateChange.Dispatches.Count;
 
                         _stateChanges.Add(newStateChange);
                     }

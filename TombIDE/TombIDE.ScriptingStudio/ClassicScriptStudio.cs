@@ -1,9 +1,12 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Docking;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
@@ -18,6 +21,7 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.ClassicScript.Utils;
 using TombLib.Scripting.ClassicScript.Writers;
 using TombLib.Scripting.Enums;
@@ -44,7 +48,7 @@ namespace TombIDE.ScriptingStudio
 
 		public ClassicScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
-			DockPanelState = DefaultLayouts.ClassicScriptLayout;
+			DockPanelState = IDE.Global.IDEConfiguration.CS_DockPanelState;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 
@@ -54,8 +58,11 @@ namespace TombIDE.ScriptingStudio
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 
 			FileExplorer.Filter = "*.txt";
+			FileExplorer.CommentPrefix = ";";
 
 			EditorTabControl.PlainTextTypeOverride = typeof(ClassicScriptEditor);
+
+			EditorTabControl.CheckPreviousSession();
 
 			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath);
 
@@ -137,6 +144,15 @@ namespace TombIDE.ScriptingStudio
 
 					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
+			}
+			else if (obj is IDE.ScriptEditor_ReloadSyntaxHighlightingEvent)
+			{
+				ApplyUserSettings();
+			}
+			else if (obj is IDE.ProgramClosingEvent)
+			{
+				IDE.Global.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Global.IDEConfiguration.Save();
 			}
 		}
 
@@ -251,14 +267,20 @@ namespace TombIDE.ScriptingStudio
 
 		private void TextEditor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
-				OpenIncludeFile();
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
+					OpenIncludeFile(editor);
+			}
 		}
 
 		private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			if (e.Key == System.Windows.Input.Key.F5)
-				OpenIncludeFile();
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				if (e.Key == System.Windows.Input.Key.F5 && ModifierKeys != Keys.Control)
+					OpenIncludeFile(editor);
+			}
 		}
 
 		private void TextEditor_WordDefinitionRequested(object sender, WordDefinitionEventArgs e)
@@ -268,12 +290,47 @@ namespace TombIDE.ScriptingStudio
 			ReferenceType type = ReferenceType.MnemonicConstant;
 
 			if (e.Type == WordType.Header)
-			{
-				word = "[" + word + "]";
 				type = ReferenceType.OldCommand;
-			}
 			else if (e.Type == WordType.Command)
 				type = RddaReader.GetCommandType(word);
+			else if (e.Type == WordType.Directive)
+				type = ReferenceType.NewCommand;
+			else if (e.Type == WordType.Hexadecimal || e.Type == WordType.Decimal)
+			{
+				try
+				{
+					var textEditor = CurrentEditor as ClassicScriptEditor;
+
+					if (textEditor == null)
+						return;
+
+					int offset = e.HoveredOffset != -1 ? e.HoveredOffset : textEditor.CaretOffset;
+					string currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(textEditor.Document, offset);
+
+					if (currentFlagPrefix != null)
+					{
+						DataTable dataTable = MnemonicData.MnemonicConstantsDataTable;
+						DataRow row = null;
+
+						if (e.Type == WordType.Hexadecimal)
+						{
+							row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+								=> r[1].ToString().Equals(word, StringComparison.OrdinalIgnoreCase)
+								&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+						}
+						else if (e.Type == WordType.Decimal)
+						{
+							row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
+								=> r[0].ToString().Equals(word, StringComparison.OrdinalIgnoreCase)
+								&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+						}
+
+						if (row != null)
+							word = row[2].ToString();
+					}
+				}
+				catch { }
+			}
 
 			FormReferenceInfo.Show(word, type);
 		}
@@ -299,25 +356,60 @@ namespace TombIDE.ScriptingStudio
 
 		#region Other methods
 
-		private void OpenIncludeFile()
+		private void CreateNewFileAtCaretPosition(ClassicScriptEditor editor)
 		{
-			if (CurrentEditor is TextEditorBase editor)
+			string filePath = FileExplorer.CreateNewFile();
+
+			if (filePath != null)
 			{
-				string fullFilePath = CommandParser.GetFullIncludePath(editor.Document, editor.CaretOffset);
+				editor.SuppressAutocomplete = true;
 
-				if (File.Exists(fullFilePath))
-					EditorTabControl.OpenFile(fullFilePath);
-				else
-					DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				string includeValue = filePath.Replace(Path.GetDirectoryName(editor.FilePath), string.Empty).TrimStart('\\');
+				editor.TextArea.PerformTextInput($"{Environment.NewLine}#INCLUDE \"{includeValue}\"");
 
-				editor.SelectionLength = 0;
+				editor.SuppressAutocomplete = false;
+			}
+		}
+
+		private void OpenIncludeFile(ClassicScriptEditor editor)
+		{
+			string fullFilePath = CommandParser.GetFullIncludePath(editor.Document, editor.CaretOffset);
+
+			if (File.Exists(fullFilePath))
+				EditorTabControl.OpenFile(fullFilePath);
+			else
+				DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+			editor.SelectionLength = 0;
+		}
+
+		private void CompileTR4Script()
+		{
+			try
+			{
+				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
+
+				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+				{
+					if (!DockPanel.ContainsContent(CompilerLogs))
+					{
+						CompilerLogs.DockArea = DarkDockArea.Bottom;
+						DockPanel.AddContent(CompilerLogs);
+					}
+
+					CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+				}
+
+				CompilerLogs.UpdateLogs(logs);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
 		private async void CompileTRNGScript()
 		{
-			EditorTabControl.SaveAll();
-
 			try
 			{
 				FormCompiling.ShowCompilingMode();
@@ -333,7 +425,15 @@ namespace TombIDE.ScriptingStudio
 					CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
 
 					if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					{
+						if (!DockPanel.ContainsContent(CompilerLogs))
+						{
+							CompilerLogs.DockArea = DarkDockArea.Bottom;
+							DockPanel.AddContent(CompilerLogs);
+						}
+
 						CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+					}
 
 					if (FormCompiling.Visible)
 						FormCompiling.Close();
@@ -369,7 +469,41 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		protected override void Build()
-			=> CompileTRNGScript();
+		{
+			EditorTabControl.SaveAll();
+
+			if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
+				CompileTR4Script();
+			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+				CompileTRNGScript();
+		}
+
+		protected override void RestoreDefaultLayout()
+		{
+			DockPanelState = DefaultLayouts.ClassicScriptLayout;
+
+			DockPanel.RemoveContent();
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			if (CurrentEditor is ClassicScriptEditor editor)
+			{
+				switch (command)
+				{
+					case UICommand.TypeFirstAvailableId:
+						editor.InputFreeIndex();
+						break;
+
+					case UICommand.NewFileAtCaret:
+						CreateNewFileAtCaretPosition(editor);
+						break;
+				}
+			}
+
+			base.HandleDocumentCommands(command);
+		}
 
 		#endregion Other methods
 	}

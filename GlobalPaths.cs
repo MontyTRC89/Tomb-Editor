@@ -16,6 +16,8 @@ internal static class DefaultPaths
 
 	public static string ClassicScriptColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "ClassicScript");
 	public static string LuaColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Lua");
+	public static string GameFlowColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "GameFlowScript");
+	public static string T1MColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Tomb1Main");
 
 	#endregion Configs
 
@@ -36,6 +38,11 @@ internal static class DefaultPaths
 	#region TIDE
 
 	public static string TIDEDirectory => Path.Combine(ProgramDirectory, "TIDE");
+
+	public static string DOSDirectory => Path.Combine(TIDEDirectory, "DOS");
+	public static string TR4ScriptCompilerDirectory => Path.Combine(DOSDirectory, "TR4");
+
+	public static string GameFlowDirectory => Path.Combine(TIDEDirectory, "GFL");
 
 	public static string InternalNGCDirectory => Path.Combine(TIDEDirectory, "NGC");
 	public static string VGEDirectory => Path.Combine(InternalNGCDirectory, "VGE");
@@ -59,6 +66,8 @@ internal static class DefaultPaths
 	public static string FileAssociationExecutable => Path.Combine(ProgramDirectory, "File Association.exe");
 
 	public static string NGCExecutable => Path.Combine(InternalNGCDirectory, "NG_Center.exe");
+	public static string DOSBoxExecutable => Path.Combine(DOSDirectory, "DOSBox.exe");
+	public static string GameFlowExecutable => Path.Combine(GameFlowDirectory, "gameflow.exe");
 
 	#endregion .EXEs
 

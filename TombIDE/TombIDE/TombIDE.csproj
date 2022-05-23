@@ -60,12 +60,24 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Controls\SideBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SideBar.Designer.cs">
+      <DependentUpon>SideBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileFinder.cs" />
     <Compile Include="Forms\FormEngineHelp.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormEngineHelp.Designer.cs">
       <DependentUpon>FormEngineHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormFindMusic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFindMusic.Designer.cs">
+      <DependentUpon>FormFindMusic.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormImportProject.cs">
       <SubType>Form</SubType>
@@ -106,8 +118,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\SideBar.resx">
+      <DependentUpon>SideBar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormEngineHelp.resx">
       <DependentUpon>FormEngineHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFindMusic.resx">
+      <DependentUpon>FormFindMusic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportProject.resx">
       <DependentUpon>FormImportProject.cs</DependentUpon>
@@ -146,10 +164,19 @@
     <Content Include="Resources\ide-folder-30.png" />
     <Content Include="Resources\ide-master-30.png" />
     <Content Include="Resources\ide-play-30.png" />
+    <Content Include="Resources\ide-plugin-30.png" />
+    <Content Include="Resources\ide-plugin-30_disabled.png" />
     <Content Include="Resources\ide-script-30.png" />
     <Content Include="Resources\ide-tools-30.png" />
+    <Content Include="Resources\ide_projectmanager.png" />
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\open-48.png" />
+    <Content Include="Resources\TIDE_Logo.png" />
+    <Content Include="Resources\TR1_LVL.png" />
+    <Content Include="Resources\TR2_LVL.png" />
+    <Content Include="Resources\TR3_LVL.png" />
+    <Content Include="Resources\TR4_LVL.png" />
+    <Content Include="Resources\TRNG_LVL.png" />
     <Content Include="TIDE.ico" />
   </ItemGroup>
   <ItemGroup>

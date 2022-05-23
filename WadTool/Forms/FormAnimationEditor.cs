@@ -1720,6 +1720,7 @@ namespace WadTool
                 return;
             }
 
+            _editor.CheckAnimationIntegrity(animation);
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
             
             if (containsMetadata)
@@ -2549,6 +2550,7 @@ namespace WadTool
 
             var node = (AnimationNode)lstAnimations.SelectedItem.Tag;
             SelectAnimation(node);
+            _editor.CheckAnimationIntegrity(node.WadAnimation);
         }
 
         private void butTransportSound_Click(object sender, EventArgs e)

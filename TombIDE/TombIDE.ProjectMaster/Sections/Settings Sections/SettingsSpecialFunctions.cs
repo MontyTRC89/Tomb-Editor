@@ -1,11 +1,10 @@
 using DarkUI.Forms;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
-using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -49,7 +48,8 @@ namespace TombIDE.ProjectMaster
 						|| fileName == "DETECTED CRASH.txt"
 						|| fileName == "LastExtraction.lst"
 						|| (fileName.StartsWith("Last_Crash_") && (fileName.EndsWith(".txt") || fileName.EndsWith(".mem")))
-						|| fileName.EndsWith("_warm_up_log.txt"))
+						|| fileName.EndsWith("_warm_up_log.txt")
+						|| Path.GetExtension(fileName).Equals(".log", StringComparison.OrdinalIgnoreCase))
 					{
 						File.Delete(file);
 						wereFilesDeleted = true;
@@ -94,32 +94,10 @@ namespace TombIDE.ProjectMaster
 			textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
 		}
 
-		private void button_BatchBuild_Click(object sender, EventArgs e)
+		private void button_BuildArchive_Click(object sender, EventArgs e)
 		{
-			BatchCompileList batchList = new BatchCompileList();
-
-			foreach (ProjectLevel level in _ide.Project.Levels)
-			{
-				string prj2Path;
-
-				if (level.SpecificFile == "$(LatestFile)")
-					prj2Path = Path.Combine(level.FolderPath, level.GetLatestPrj2File());
-				else
-					prj2Path = Path.Combine(level.FolderPath, level.SpecificFile);
-
-				batchList.Files.Add(prj2Path);
-			}
-
-			string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
-			BatchCompileList.SaveToXml(batchListFilePath, batchList);
-
-			ProcessStartInfo startInfo = new ProcessStartInfo
-			{
-				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-				Arguments = "\"" + batchListFilePath + "\""
-			};
-
-			Process.Start(startInfo);
+			using (var form = new FormGameArchive(_ide))
+				form.ShowDialog();
 		}
 	}
 }

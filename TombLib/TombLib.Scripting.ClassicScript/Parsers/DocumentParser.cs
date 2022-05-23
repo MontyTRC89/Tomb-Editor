@@ -119,7 +119,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				switch (type)
 				{
 					case ObjectType.Section:
-						if (lineText.StartsWith(objectName))
+						if (lineText.TrimStart().StartsWith(objectName))
 							return line;
 						break;
 

@@ -654,7 +654,7 @@ namespace WadTool
             var newIds = objectIdsToMove.ToArray();
 
             // If destination is TombEngine, try to remap object IDs
-            if (destinationWad.GameVersion == TRVersion.Game.TombEngine)
+            if (sourceWad.GameVersion != TRVersion.Game.TombEngine && destinationWad.GameVersion == TRVersion.Game.TombEngine)
             {
                 for (int i = 0; i < objectIdsToMove.Count; ++i)
                 {
@@ -767,32 +767,10 @@ namespace WadTool
                 }
                 else
                 {
-                    destinationWad.Add(newIds[i], obj);
-
                     if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable)
-                    {
-                        var moveable = obj as WadMoveable;
-                        foreach (var animation in moveable.Animations)
-                        {
-                            foreach (var command in animation.AnimCommands)
-                            {
-                                if (command.Type == WadAnimCommandType.PlaySound)
-                                {
-                                    try
-                                    {
-                                        uint soundId = (uint)(command.Parameter2 & 0x3FFF);
-                                        uint newSoundId = TrCatalog.GetTombEngineSound(sourceWad.GameVersion, soundId);
-                                        command.Parameter2 = (short)((command.Parameter2 & 0xC000) | newSoundId);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        // No sound found, just continue
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                        (obj as WadMoveable).ConvertMoveable(sourceWad);
+
+                    destinationWad.Add(newIds[i], obj);
                 }
             }
 

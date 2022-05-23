@@ -25,6 +25,22 @@ namespace TombIDE.ProjectMaster
 			_targetProject = targetProject;
 
 			InitializeComponent();
+
+			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			{
+				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
+				panel_ScriptSettings.Visible = false;
+			}
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			{
+				checkBox_EnableHorizon.Visible = false;
+				panel_ScriptSettings.Height -= 35;
+			}
+
+			if (_targetProject.GameVersion == TRVersion.Game.TR2)
+				numeric_SoundID.Value = 33;
+			else if (_targetProject.GameVersion == TRVersion.Game.TR3)
+				numeric_SoundID.Value = 28;
 		}
 
 		#endregion Initialization
@@ -36,6 +52,7 @@ namespace TombIDE.ProjectMaster
 			base.OnShown(e);
 
 			textBox_LevelName.Text = "New Level";
+			textBox_LevelName.Focus();
 			textBox_LevelName.SelectAll();
 		}
 
@@ -123,7 +140,13 @@ namespace TombIDE.ProjectMaster
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
 
-                level.Settings.LoadDefaultSoundCatalog();
+				if (_targetProject.GameVersion == TRVersion.Game.TR3)
+				{
+					level.Settings.AgressiveTexturePacking = true;
+					level.Settings.TexturePadding = 1;
+				}
+
+				level.Settings.LoadDefaultSoundCatalog();
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
@@ -133,7 +156,7 @@ namespace TombIDE.ProjectMaster
 					bool horizon = checkBox_EnableHorizon.Checked;
 
 					// // // //
-					GeneratedScriptLines = LevelHandling.GenerateScriptLines(createdLevel, ambientSoundID, horizon);
+					GeneratedScriptLines = LevelHandling.GenerateScriptLines(createdLevel, _targetProject.GameVersion, ambientSoundID, horizon);
 					// // // //
 				}
 
@@ -153,22 +176,16 @@ namespace TombIDE.ProjectMaster
 
 		private void checkBox_GenerateSection_CheckedChanged(object sender, EventArgs e)
 		{
-			if (checkBox_GenerateSection.Checked)
-			{
-				panel_ScriptSettings.Visible = true;
-				panel_01.Height = 108;
-				Height = 277;
-			}
-			else
-			{
-				panel_ScriptSettings.Visible = false;
-				panel_01.Height = 35;
-				Height = 204;
-			}
+			panel_ScriptSettings.Enabled = checkBox_GenerateSection.Checked;
 		}
 
-		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+		private void button_OpenAudioFolder_Click(object sender, EventArgs e)
+		{
+			if (_targetProject.GameVersion == TRVersion.Game.TR1)
+				SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "music"));
+			else
+				SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+		}
 
 		#endregion Events
 	}

@@ -7,7 +7,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 	{
 		public static string GetWordFromOffset(TextDocument document, int offset)
 		{
-			if (offset >= document.TextLength)
+			if (offset > document.TextLength)
 				return null;
 
 			DocumentLine line = document.GetLineByOffset(offset);
@@ -15,30 +15,42 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			int wordStart = -1;
 			int wordEnd = -1;
 
-			for (int i = offset; i < line.EndOffset; i++)
+			for (int i = offset; i <= line.EndOffset; i++)
 			{
+				if (i == line.EndOffset)
+				{
+					wordEnd = i;
+					break;
+				}
+
 				char c = document.GetCharAt(i);
 
-				if (c == ',' || c == '=' || c == ']')
+				if (c == ',' || c == '=' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
 				{
 					wordEnd = i;
 					break;
 				}
 			}
 
-			for (int i = offset; i >= line.Offset; i--)
+			if (offset == line.Offset)
+				wordStart = offset;
+			else
 			{
-				char c = document.GetCharAt(i);
+				for (int i = offset - 1; i >= line.Offset; i--)
+				{
+					if (i == line.Offset)
+					{
+						wordStart = i;
+						break;
+					}
 
-				if (c == ',' || c == '=' || c == '[')
-				{
-					wordStart = i + 1;
-					break;
-				}
-				else if (i == line.Offset)
-				{
-					wordStart = i;
-					break;
+					char c = document.GetCharAt(i);
+
+					if (c == ',' || c == '=' || c == '+' || c == '-' || c == '*' || c == '/' || c == '(')
+					{
+						wordStart = i + 1;
+						break;
+					}
 				}
 			}
 
@@ -50,31 +62,59 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		public static WordType GetWordTypeFromOffset(TextDocument document, int offset)
 		{
-			if (offset >= document.TextLength)
+			if (offset > document.TextLength)
 				return WordType.Unknown;
 
 			DocumentLine line = document.GetLineByOffset(offset);
 
-			for (int i = offset; i < line.EndOffset; i++)
-				switch (document.GetCharAt(i))
+			for (int i = offset; i <= line.EndOffset; i++)
+			{
+				if (i == line.EndOffset)
 				{
-					case ']':
-						for (int j = offset; j >= line.Offset; j--)
-							if (document.GetCharAt(j) == '[')
-								return WordType.Header;
-						return WordType.Unknown;
+					for (int j = i - 1; j >= line.Offset; j--)
+					{
+						char ch = document.GetCharAt(j);
 
-					case '=':
-						return WordType.Command;
+						if (ch == '_')
+							return WordType.MnemonicConstant;
+						else if (ch == '$')
+							return WordType.Hexadecimal;
+						else if (ch == ',' || ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(')
+							return WordType.Unknown;
+					}
 
-					case ',':
-						for (int j = offset; j > line.Offset; j--)
-							if (document.GetCharAt(j) == '_')
-								return WordType.MnemonicConstant;
-							else if (document.GetCharAt(j) == ',' || document.GetCharAt(j) == '=')
-								return WordType.Unknown;
-						return WordType.Unknown;
+					break;
 				}
+
+				char c = document.GetCharAt(i);
+
+				if (c == ']')
+				{
+					for (int j = i - 1; j >= line.Offset; j--)
+						if (document.GetCharAt(j) == '[')
+							return WordType.Header;
+				}
+				else if (c == '=')
+					return WordType.Command;
+				else if (c == '_')
+					return WordType.MnemonicConstant;
+				else if (c == '$')
+					return WordType.Hexadecimal;
+				else if (c == ',' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
+				{
+					for (int j = i - 1; j >= line.Offset; j--)
+					{
+						char ch = document.GetCharAt(j);
+
+						if (ch == '_')
+							return WordType.MnemonicConstant;
+						else if (ch == '$')
+							return WordType.Hexadecimal;
+						else if (ch == ',' || ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(')
+							return WordType.Unknown;
+					}
+				}
+			}
 
 			return WordType.Unknown;
 		}

@@ -26,6 +26,20 @@ namespace TombIDE.Shared.SharedClasses
 			Process.Start(startInfo);
 		}
 
+		public static void CopyFilesRecursively(string sourcePath, string targetPath)
+		{
+			if (!Directory.Exists(targetPath))
+				Directory.CreateDirectory(targetPath);
+
+			// Create directories
+			foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+				Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+
+			// Copy files
+			foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+				File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+		}
+
 		public static void DeleteFiles(string[] files)
 		{
 			foreach (string file in files)
@@ -38,7 +52,7 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static void DisposeItems(params IDisposable[] items)
 		{
-			if(items != null)
+			if (items != null)
 				for (int i = 0; i < items.Length; i++)
 					items[i].Dispose();
 		}

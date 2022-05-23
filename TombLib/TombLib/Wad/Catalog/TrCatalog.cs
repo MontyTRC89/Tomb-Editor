@@ -173,7 +173,8 @@ namespace TombLib.Wad.Catalog
                 throw new Exception("Sound ID not found");
             }
 
-            return (uint)game.Sounds[id].TombEngineSlot;
+            var newSlot = game.Sounds[id].TombEngineSlot;
+            return newSlot == -1 ? id : (uint)game.Sounds[id].TombEngineSlot;
         }
 
         public static uint GetMoveableSkin(TRVersion.Game version, uint id)

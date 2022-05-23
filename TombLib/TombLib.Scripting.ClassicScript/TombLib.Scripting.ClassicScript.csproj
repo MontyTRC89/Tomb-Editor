@@ -38,6 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="NCalc, Version=3.5.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CoreCLR-NCalc.2.2.101\lib\net45\NCalc.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -113,6 +116,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Utils\TR4Compiler.cs" />
     <Compile Include="Workers\ClassicScriptNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>

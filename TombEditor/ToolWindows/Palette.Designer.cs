@@ -35,7 +35,7 @@
             this.paletteToolBar.Dock = System.Windows.Forms.DockStyle.Left;
             this.paletteToolBar.Location = new System.Drawing.Point(0, 25);
             this.paletteToolBar.Name = "paletteToolBar";
-            this.paletteToolBar.Size = new System.Drawing.Size(30, 111);
+            this.paletteToolBar.Size = new System.Drawing.Size(30, 116);
             this.paletteToolBar.TabIndex = 84;
             // 
             // butResetToDefaults
@@ -81,7 +81,7 @@
             this.lightPalette.Margin = new System.Windows.Forms.Padding(2);
             this.lightPalette.Name = "lightPalette";
             this.lightPalette.Padding = new System.Windows.Forms.Padding(3);
-            this.lightPalette.Size = new System.Drawing.Size(615, 111);
+            this.lightPalette.Size = new System.Drawing.Size(615, 116);
             this.lightPalette.TabIndex = 82;
             this.lightPalette.TabStop = false;
             // 
@@ -96,7 +96,7 @@
             this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "Palette";
             this.SerializationKey = "Palette";
-            this.Size = new System.Drawing.Size(645, 136);
+            this.Size = new System.Drawing.Size(645, 141);
             this.paletteToolBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.ResumeLayout(false);

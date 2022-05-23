@@ -239,8 +239,8 @@
 			// 
 			// treeView
 			// 
-			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Enabled = false;
+			this.treeView.ExpandOnDoubleClick = false;
 			this.treeView.Location = new System.Drawing.Point(6, 176);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.treeView.MaxDragChange = 20;

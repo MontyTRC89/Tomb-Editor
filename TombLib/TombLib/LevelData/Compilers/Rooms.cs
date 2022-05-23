@@ -565,7 +565,7 @@ namespace TombLib.LevelData.Compilers
                             ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
                             var texture = poly.Texture;
-                            FixWadTextureCoordinates(ref texture);
+                            texture.ClampToBounds();
 
                             var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
                             var copyFace = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
@@ -721,16 +721,7 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
-
-                                // TODO: what happens for flipped textures?
-                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
-                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
-                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
-                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
-                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
-                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
-                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
-                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
+                                texture.ClampToBounds();
 
                                 var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
                                 var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;

@@ -157,4 +157,40 @@
   <data name="general_Open_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\general_open-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="add_48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\add-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="import_48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\import-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TE_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\te_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ide_master_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\ide-master-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ide_plugin_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\ide-plugin-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ide_projectmanager" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\ide_projectmanager.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_compile_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\actions_compile-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR1_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr1_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR2_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr2_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR3_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr3_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TR4_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\tr4_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TRNG_LVL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\trng_lvl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

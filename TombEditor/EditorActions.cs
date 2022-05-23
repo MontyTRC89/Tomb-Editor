@@ -2114,6 +2114,14 @@ namespace TombEditor
                     AllocateScriptIds(obj);
         }
 
+        public static void PlaceLight(LightType type)
+        {
+            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4) ?
+                Vector3.One : (Vector3)_editor.LastUsedPaletteColour * 2.0f;
+
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
+        }
+
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
             if (!(instance is ISpatial))
