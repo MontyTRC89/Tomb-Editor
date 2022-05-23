@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="D:\Repositories\Tomb-Editor\TombLib\TombLib\obj/Debug/version.txt" />
+    <EmbeddedResource Remove="D:\Repositories\Tomb-Editor\TombLib\TombLib\obj/Release/version.txt" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
