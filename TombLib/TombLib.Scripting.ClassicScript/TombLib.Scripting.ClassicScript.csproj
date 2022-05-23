@@ -24,18 +24,10 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Update="Controls\StringDataGridView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="StringEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Workers\ClassicScriptNodesProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Workers\StringFileNodesProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\StringDataGridView.cs" />
+    <Compile Update="StringEditor.cs" />
+    <Compile Update="Workers\ClassicScriptNodesProvider.cs" />
+    <Compile Update="Workers\StringFileNodesProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Configs\TextEditors\ColorSchemes\ClassicScript\Monokai.cssch">
@@ -102,9 +94,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.101" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 </Project>

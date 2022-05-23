@@ -84,96 +84,48 @@
     <Compile Include="..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Update="Controls\ContextMenus\GridPaintContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ContextMenus\Space2DMapContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\PanelRenderingImportedGeometry.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\PanelRenderingSprite.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\ContextMenus\GridPaintContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\Space2DMapContextMenu.cs" />
+    <Compile Update="Controls\PanelRenderingImportedGeometry.cs" />
+    <Compile Update="Controls\PanelRenderingSprite.cs" />
     <Compile Update="Controls\RichTextLabel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\ContextMenus\BaseContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ContextMenus\SelectedGeometryContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ContextMenus\BlockContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ContextMenus\SelectedRoomContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ContextMenus\MaterialObjectContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\ContextMenus\BaseContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\SelectedGeometryContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\BlockContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\SelectedRoomContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\MaterialObjectContextMenu.cs" />
     <Compile Update="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\PanelRenderingItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ImportedGeometryBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\Lighting.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\MainView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ObjectList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\Palette.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\TexturePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ToolPalette.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ToolPaletteFloating.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\TriggerList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\RoomOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ItemBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\SectorOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Controls\PanelRenderingItem.cs" />
+    <Compile Update="ToolWindows\ImportedGeometryBrowser.cs" />
+    <Compile Update="ToolWindows\Lighting.cs" />
+    <Compile Update="ToolWindows\MainView.cs" />
+    <Compile Update="ToolWindows\ObjectList.cs" />
+    <Compile Update="ToolWindows\Palette.cs" />
+    <Compile Update="ToolWindows\TexturePanel.cs" />
+    <Compile Update="ToolWindows\ToolPalette.cs" />
+    <Compile Update="ToolWindows\ToolPaletteFloating.cs" />
+    <Compile Update="ToolWindows\TriggerList.cs" />
+    <Compile Update="ToolWindows\RoomOptions.cs" />
+    <Compile Update="ToolWindows\ItemBrowser.cs" />
+    <Compile Update="ToolWindows\SectorOptions.cs" />
     <Compile Update="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\Panel2DGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\PanelRendering3D.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\PanelTextureMap.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\PanelRendering3D.cs" />
+    <Compile Update="Controls\PanelTextureMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj" />
@@ -197,16 +149,7 @@
     <Content Include="TE.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NLog" Version="5.0.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="4.9.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="EditorCommands.cs" />

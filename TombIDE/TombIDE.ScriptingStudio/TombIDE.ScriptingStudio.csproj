@@ -42,42 +42,24 @@
     <Compile Update="Settings\ClassicScriptSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="ToolWindows\ContentExplorer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\SearchResults.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\ContentExplorer.cs" />
+    <Compile Update="ToolWindows\SearchResults.cs" />
     <Compile Update="Controls\EditorTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\SearchTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\SearchTextBox.cs" />
     <Compile Update="ToolStrips\StudioStatusStrip.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="ToolStrips\EditorContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\CompilerLogs.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\FileExplorer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ReferenceBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ToolStrips\EditorContextMenu.cs" />
+    <Compile Update="ToolWindows\CompilerLogs.cs" />
+    <Compile Update="ToolWindows\FileExplorer.cs" />
+    <Compile Update="ToolWindows\ReferenceBrowser.cs" />
     <Compile Update="Controls\SyntaxPreview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="ToolStrips\StudioMenuStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ToolStrips\StudioToolStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="ToolStrips\StudioMenuStrip.cs" />
+    <Compile Update="ToolStrips\StudioToolStrip.cs" />
     <Compile Update="Bases\StudioBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -151,12 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="FileHandling.cs" />
