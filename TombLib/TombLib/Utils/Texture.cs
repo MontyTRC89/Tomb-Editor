@@ -449,7 +449,6 @@ namespace TombLib.Utils
             }
         }
 
-        // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
         public void ClampToBounds()
         {
             TexCoord0.X = Math.Max(0.0f, TexCoord0.X);

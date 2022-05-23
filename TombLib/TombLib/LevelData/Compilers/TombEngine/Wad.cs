@@ -21,30 +21,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private int _soundMapSize = 0;
         private short[] _finalSoundMap;
 
-        private void FixWadTextureCoordinates(ref TextureArea texture)
-        {
-            texture.TexCoord0.X = Math.Max(0.0f, texture.TexCoord0.X);
-            texture.TexCoord0.Y = Math.Max(0.0f, texture.TexCoord0.Y);
-            texture.TexCoord1.X = Math.Max(0.0f, texture.TexCoord1.X);
-            texture.TexCoord1.Y = Math.Max(0.0f, texture.TexCoord1.Y);
-            texture.TexCoord2.X = Math.Max(0.0f, texture.TexCoord2.X);
-            texture.TexCoord2.Y = Math.Max(0.0f, texture.TexCoord2.Y);
-            texture.TexCoord3.X = Math.Max(0.0f, texture.TexCoord3.X);
-            texture.TexCoord3.Y = Math.Max(0.0f, texture.TexCoord3.Y);
-
-            if (!texture.TextureIsInvisible && !texture.TextureIsUnavailable)
-            {
-                texture.TexCoord0.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord0.X);
-                texture.TexCoord0.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord0.Y);
-                texture.TexCoord1.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord1.X);
-                texture.TexCoord1.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord1.Y);
-                texture.TexCoord2.X = Math.Min(texture.Texture.Image.Width , texture.TexCoord2.X);
-                texture.TexCoord2.Y = Math.Min(texture.Texture.Image.Height, texture.TexCoord2.Y);
-                texture.TexCoord3.X = Math.Min(texture.Texture.Image.Width, texture.TexCoord3.X);
-                texture.TexCoord3.Y = Math.Min(texture.Texture.Image.Height , texture.TexCoord3.Y);
-            }
-        }
-
         private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                             bool isWaterfall = false, bool isOptics = false)
         {
@@ -104,7 +80,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
                 
                 var texture = poly.Texture;
-                FixWadTextureCoordinates(ref texture);
+                texture.ClampToBounds();
 
                 foreach (bool doubleSided in new[] { false, true })
                 {

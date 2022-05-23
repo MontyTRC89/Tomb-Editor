@@ -496,7 +496,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 int index3 = tempIndices[3];
 
                                 var texture = poly.Texture;
-                                FixWadTextureCoordinates(ref texture);
+                                texture.ClampToBounds();
 
                                 int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
                                                                   new int[] { index0, index1, index2, index3 };
@@ -660,6 +660,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
                                     texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                     texture.TexCoord3 = texture.TexCoord2;
+                                    texture.ClampToBounds();
 
                                     var realBlendMode = texture.BlendMode;
                                     if (texture.BlendMode == BlendMode.Normal)
@@ -667,16 +668,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                     if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
                                         realBlendMode = BlendMode.AlphaTest;
-
-                                    // TODO: what happens for flipped textures?
-                                    if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
-                                    if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
-                                    if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
-                                    if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
-                                    if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
-                                    if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
-                                    if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
-                                    if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                     if (doubleSided)
                                     {
