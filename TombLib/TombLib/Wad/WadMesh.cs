@@ -525,6 +525,8 @@ namespace TombLib.Wad
                                 area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
                             else
                                 area.TexCoord3 = area.TexCoord2;
+
+                            area.ClampToBounds();
                         }
 
                         area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
