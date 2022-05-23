@@ -7908,6 +7908,20 @@
 			<sound id="1186" name="LEVELBUILDER_CUSTOM_50" t5m="1186" />
 		</sounds>
 		<animations>
+			<!--LARA EXTRA ANIMATIONS -->
+			<anim item="1" id="0" name="UNSURE?" />
+			<anim item="1" id="1" name="WAKING UP" />
+			<anim item="1" id="2" name="XIAN SPEAR GUARD IMPALE" />
+			<anim item="1" id="3" name="SUBWAY TRAIN DEATH"/>
+			<anim item="1" id="4" name="TYRANNOSAUR DEATH" />
+			<anim item="1" id="5" name="UNSURE?" />
+			<anim item="1" id="6" name="GIANT MUTANT DEATH" />
+			<anim item="1" id="7" name="GIANT MUTANT DEATH END" />
+			<anim item="1" id="8" name="TYRANNOSAUR DEATH END" />
+			<anim item="1" id="9" name="SHIVA IMPALE DEATH" />
+			<anim item="1" id="10" name="SHIVA IMPALE DEATH END" />
+			<anim item="1" id="11" name="TNT ACTIVATION" />			
+			
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
