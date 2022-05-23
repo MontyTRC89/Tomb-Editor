@@ -30,6 +30,7 @@ namespace FileAssociation
 		private static void OpenGUI()
 		{
 			Application.EnableVisualStyles();
+			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new FormMain());
 		}

@@ -271,7 +271,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		public void Load(string filePath, bool silentSession)
 		{
-			string[] fileLines = File.ReadAllLines(filePath, Encoding.GetEncoding(1252));
+			string[] fileLines = File.ReadAllLines(filePath);
 			UpdateContent(fileLines);
 
 			FilePath = filePath;
@@ -285,7 +285,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		public void Save(string filePath)
 		{
-			File.WriteAllText(filePath, Content, Encoding.GetEncoding(1252));
+			File.WriteAllText(filePath, Content);
 
 			TryRunContentChangedWorker();
 		}
@@ -525,7 +525,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Other methods
 
-		public void UpdateSettings(ConfigurationBase configuration) // TODO: Create it's own settings for the StringEditor
+		public void UpdateSettings(Bases.ConfigurationBase configuration) // TODO: Create it's own settings for the StringEditor
 		{
 			var config = configuration as ClassicScriptEditorConfiguration;
 

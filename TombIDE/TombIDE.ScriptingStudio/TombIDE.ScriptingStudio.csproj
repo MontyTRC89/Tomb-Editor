@@ -1,34 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2397EA24-CB8E-482F-8E93-F3D626D255E5}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombIDE.ScriptingStudio</RootNamespace>
-    <AssemblyName>TombIDE.ScriptingStudio</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomTabControl">
@@ -38,270 +22,79 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="Settings\Tomb1MainSettingsControl.cs">
+    <Compile Update="Settings\Tomb1MainSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\Tomb1MainSettingsControl.Designer.cs">
-      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tomb1MainStudio.cs">
+    <Compile Update="Tomb1MainStudio.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GameFlowScriptStudio.cs">
+    <Compile Update="GameFlowScriptStudio.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ConfigurationCollection.cs" />
-    <Compile Include="Helpers\EditorTypeHelper.cs" />
-    <Compile Include="Helpers\FileTreeViewHelper.cs" />
-    <Compile Include="Objects\ReferenceItemType.cs" />
-    <Compile Include="Settings\GameFlowSettingsControl.cs">
+    <Compile Update="Settings\GameFlowSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\GameFlowSettingsControl.Designer.cs">
-      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\ClassicScriptSettingsControl.cs">
+    <Compile Update="Settings\ClassicScriptSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\ClassicScriptSettingsControl.Designer.cs">
-      <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\FormSaveSchemeAs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings\FormSaveSchemeAs.Designer.cs">
-      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\FormTextEditorSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings\FormTextEditorSettings.Designer.cs">
-      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolStrips\ToolStripExtensions.cs" />
-    <Compile Include="UI\Modes\DocumentMode.cs" />
-    <Compile Include="ToolWindows\ContentExplorer.cs">
+    <Compile Update="ToolWindows\ContentExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ContentExplorer.Designer.cs">
-      <DependentUpon>ContentExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\SearchResults.cs">
+    <Compile Update="ToolWindows\SearchResults.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\SearchResults.Designer.cs">
-      <DependentUpon>SearchResults.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EditorTabControl.cs">
+    <Compile Update="Controls\EditorTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SearchTextBox.cs">
+    <Compile Update="Controls\SearchTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EventDelegates.cs" />
-    <Compile Include="Objects\ReferenceDefinitionEventArgs.cs" />
-    <Compile Include="Objects\FileOpenedEventArgs.cs" />
-    <Compile Include="ToolStrips\StudioStatusStrip.cs">
+    <Compile Update="ToolStrips\StudioStatusStrip.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolStrips\StudioStatusStrip.Designer.cs">
-      <DependentUpon>StudioStatusStrip.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolStrips\EditorContextMenu.cs">
+    <Compile Update="ToolStrips\EditorContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ToolWindows\CompilerLogs.cs">
+    <Compile Update="ToolWindows\CompilerLogs.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\CompilerLogs.Designer.cs">
-      <DependentUpon>CompilerLogs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\FileExplorer.cs">
+    <Compile Update="ToolWindows\FileExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\FileExplorer.Designer.cs">
-      <DependentUpon>FileExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ReferenceBrowser.cs">
+    <Compile Update="ToolWindows\ReferenceBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ReferenceBrowser.Designer.cs">
-      <DependentUpon>ReferenceBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SyntaxPreview.cs">
+    <Compile Update="Controls\SyntaxPreview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ToolStrips\StudioMenuStrip.cs">
+    <Compile Update="ToolStrips\StudioMenuStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ToolStrips\StudioToolStrip.cs">
+    <Compile Update="ToolStrips\StudioToolStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\FormFileCreation.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFileCreation.Designer.cs">
-      <DependentUpon>FormFileCreation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormFolderCreation.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFolderCreation.Designer.cs">
-      <DependentUpon>FormFolderCreation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormNGCompilingStatus.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormNGCompilingStatus.Designer.cs">
-      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormReferenceInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormReferenceInfo.Designer.cs">
-      <DependentUpon>FormReferenceInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormRenameItem.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormRenameItem.Designer.cs">
-      <DependentUpon>FormRenameItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Bases\StudioBase.cs">
+    <Compile Update="Bases\StudioBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ClassicScriptStudio.cs">
+    <Compile Update="ClassicScriptStudio.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SupportedFormats.cs" />
-    <Compile Include="UI\Modes\StudioMode.cs" />
-    <Compile Include="UI\Objects\StudioItemParser.cs" />
-    <Compile Include="UI\Objects\StudioToolStripItem.cs" />
-    <Compile Include="UI\Objects\ToolStripXmlReader.cs" />
-    <Compile Include="UI\UICommand.cs" />
-    <Compile Include="UI\Objects\UIElementArgs.cs" />
-    <Compile Include="UI\UIKeys.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Settings\Tomb1MainSettingsControl.resx">
-      <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings\GameFlowSettingsControl.resx">
-      <DependentUpon>GameFlowSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings\ClassicScriptSettingsControl.resx">
-      <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings\FormSaveSchemeAs.resx">
-      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings\FormTextEditorSettings.resx">
-      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ContentExplorer.resx">
-      <DependentUpon>ContentExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\FileExplorer.resx">
-      <DependentUpon>FileExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ReferenceBrowser.resx">
-      <DependentUpon>ReferenceBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\CompilerLogs.resx">
-      <DependentUpon>CompilerLogs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\SearchResults.resx">
-      <DependentUpon>SearchResults.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFileCreation.resx">
-      <DependentUpon>FormFileCreation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFolderCreation.resx">
-      <DependentUpon>FormFolderCreation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormNGCompilingStatus.resx">
-      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormReferenceInfo.resx">
-      <DependentUpon>FormReferenceInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormRenameItem.resx">
-      <DependentUpon>FormRenameItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolStrips\StudioStatusStrip.resx">
-      <DependentUpon>StudioStatusStrip.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj">
-      <Project>{98e13bc4-6196-4346-ab4f-92de33d84589}</Project>
-      <Name>TombLib.Scripting.GameFlowScript</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj">
-      <Project>{7987fd7b-aac9-4c7f-8188-c54fde35c3d6}</Project>
-      <Name>TombLib.Scripting.Tomb1Main</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
-      <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
-      <Name>TombLib.Scripting.ClassicScript</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj">
-      <Project>{87D4149C-E716-49F6-848F-ACA345D11B30}</Project>
-      <Name>TombLib.Scripting.Lua</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj">
-      <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
-      <Name>TombLib.Scripting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
-      <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
-      <Name>TombIDE.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
-      <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
-      <Name>TombLib.Forms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
-      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".editorconfig" />
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\..\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
+    <ProjectReference Include="..\..\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
@@ -359,5 +152,21 @@
   <ItemGroup>
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="FileHandling.cs" />
+    <Compile Remove="StudioBase.cs" />
+    <Compile Remove="StudioBase.Designer.cs" />
+    <Compile Remove="UI\DocumentModePresets\MenuStripPresets.cs" />
+    <Compile Remove="UI\DocumentModePresets\ToolStripPresets.cs" />
+    <Compile Remove="UI\StudioModePresets\MenuStripPresets.cs" />
+    <Compile Remove="UI\StudioModePresets\ToolStripPresets.cs" />
+    <Compile Remove="UI\UIElement.cs" />
+    <EmbeddedResource Remove="StudioBase.resx" />
+  </ItemGroup>
 </Project>

@@ -1,92 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <LangVersion>6</LangVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombLib</RootNamespace>
-    <AssemblyName>TombLib</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowedReferenceRelatedFileExtensions>
-      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
-           Only *.allowedextension files will be included, which doesn't exist in my case.
-       -->
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AssimpNet, Version=5.0.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AssimpNet.5.0.0-beta1\lib\net40\AssimpNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="CH.SipHash, Version=1.0.2.0, Culture=neutral, PublicKeyToken=c4623ee9f7e84804, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CH.SipHash.1.0.2\lib\net45\CH.SipHash.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ColorThief.Desktop.v45, Version=1.1.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ksemenenko.ColorThief.1.1.1.4\lib\net45\ColorThief.Desktop.v45.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MiniZ.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MiniZ.Net.1.0.0\lib\MiniZ.Net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio.Flac, Version=1.0.5702.29018, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NAudio.Flac.1.0.5702.29018\lib\net45\NAudio.Flac.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="NVorbis, Version=0.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NVorbis.0.8.5.0\lib\NVorbis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Pfim, Version=0.5.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Pfim.0.5.2\lib\netstandard1.0\Pfim.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\..\Libs\SharpDX.dll</HintPath>
     </Reference>
@@ -111,28 +46,6 @@
     <Reference Include="SharpDX.Toolkit.Graphics">
       <HintPath>..\..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing.PSD, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PSD.Loader.0.1.1\lib\net40\System.Drawing.PSD.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -141,243 +54,6 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
-    <Compile Include="Graphics\Frustum.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\FloorData.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\LevelCompilerTombEngine.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\Pathfinding.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\PathfindingDecompiled.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\Rooms.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\Structs.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\TombEngineTexInfoManager.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\Textures.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\TombEngine.cs" />
-    <Compile Include="LevelData\Compilers\TombEngine\Wad.cs" />
-    <Compile Include="LevelData\Compilers\Tr1.cs" />
-    <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
-    <Compile Include="LevelData\Instances\ObjectGroup.cs" />
-    <Compile Include="LevelData\Instances\MemoInstance.cs" />
-    <Compile Include="LevelData\Instances\SpriteInstance.cs" />
-    <Compile Include="LevelData\Instances\ScriptInstance.cs" />
-    <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
-    <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
-    <Compile Include="LevelData\LuaScriptID.cs" />
-    <Compile Include="LevelData\ReloadableResource.cs" />
-    <Compile Include="NG\NgEncryption.cs" />
-    <Compile Include="Types\BoundingBox.cs" />
-    <Compile Include="Types\BoundingSphere.cs" />
-    <Compile Include="Utils\ImageQuantizer.cs" />
-    <Compile Include="Utils\Levenshtein.cs" />
-    <Compile Include="Utils\TextExtensions.cs" />
-    <Compile Include="Utils\NaturalComparer.cs" />
-    <Compile Include="Utils\Configuration.cs" />
-    <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
-    <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
-    <Compile Include="GeometryIO\Exporters\Assimp.cs" />
-    <Compile Include="GeometryIO\Exporters\Metasequoia.cs" />
-    <Compile Include="GeometryIO\Exporters\Obj.cs" />
-    <Compile Include="GeometryIO\Importers\Assimp.cs" />
-    <Compile Include="GeometryIO\Importers\Metasequoia.cs" />
-    <Compile Include="GeometryIO\IOAnimation.cs" />
-    <Compile Include="GeometryIO\IOFrame.cs" />
-    <Compile Include="GeometryIO\IOGeometrySettings.cs" />
-    <Compile Include="GeometryIO\IOMaterial.cs" />
-    <Compile Include="GeometryIO\IOMesh.cs" />
-    <Compile Include="GeometryIO\IOModel.cs" />
-    <Compile Include="GeometryIO\IOPolygon.cs" />
-    <Compile Include="GeometryIO\IOSettingsPresets.cs" />
-    <Compile Include="GeometryIO\IOSubmesh.cs" />
-    <Compile Include="GeometryIO\IOVertex.cs" />
-    <Compile Include="Graphics\AnimationNode.cs" />
-    <Compile Include="Graphics\FreeCamera.cs" />
-    <Compile Include="Graphics\Material.cs" />
-    <Compile Include="Graphics\ObjectMesh.cs" />
-    <Compile Include="Graphics\ObjectVertex.cs" />
-    <Compile Include="Graphics\SharpDxConversions.cs" />
-    <Compile Include="Graphics\Submesh.cs" />
-    <Compile Include="Graphics\WadRenderer.cs" />
-    <Compile Include="IO\BinaryWriterFast.cs" />
-    <Compile Include="LevelData\AnimatedTextureSet.cs" />
-    <Compile Include="LevelData\Block.cs" />
-    <Compile Include="LevelData\Instances\CameraInstance.cs" />
-    <Compile Include="LevelData\Enumerations.cs" />
-    <Compile Include="LevelData\Instances\GhostBlockInstance.cs" />
-    <Compile Include="LevelData\Compilers\FloorData.cs" />
-    <Compile Include="LevelData\Compilers\LevelCompiler.cs" />
-    <Compile Include="LevelData\Compilers\LevelCompilerClassicTR.cs" />
-    <Compile Include="LevelData\Compilers\Ng.cs" />
-    <Compile Include="LevelData\Compilers\Pathfinding.cs" />
-    <Compile Include="LevelData\Compilers\PathfindingDecompiled.cs" />
-    <Compile Include="LevelData\Compilers\Rooms.cs" />
-    <Compile Include="LevelData\Compilers\Structs.cs" />
-    <Compile Include="LevelData\Compilers\Textures.cs" />
-    <Compile Include="LevelData\Compilers\Tr2.cs" />
-    <Compile Include="LevelData\Compilers\Tr3.cs" />
-    <Compile Include="LevelData\Compilers\Tr4.cs" />
-    <Compile Include="LevelData\Compilers\Tr5.cs" />
-    <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
-    <Compile Include="LevelData\Compilers\Util\SpriteAllocator.cs" />
-    <Compile Include="LevelData\Compilers\Wad.cs" />
-    <Compile Include="LevelData\Instances\FlybyCameraInstance.cs" />
-    <Compile Include="LevelData\ImportedGeometry.cs" />
-    <Compile Include="LevelData\Instances\ImportedGeometryInstance.cs" />
-    <Compile Include="LevelData\IO\Prj2Chunks.cs" />
-    <Compile Include="LevelData\IO\Prj2Loader.cs" />
-    <Compile Include="LevelData\IO\Prj2Writer.cs" />
-    <Compile Include="LevelData\IO\PrjLoader.cs" />
-    <Compile Include="Graphics\Animation.cs" />
-    <Compile Include="Graphics\ArcBallCamera.cs" />
-    <Compile Include="Graphics\Bone.cs" />
-    <Compile Include="Graphics\Camera.cs" />
-    <Compile Include="Graphics\BaseGizmo.cs" />
-    <Compile Include="Graphics\IRenderableObject.cs" />
-    <Compile Include="Graphics\PickingResult.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Circle.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Cone.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Cube.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.LinesCube.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Plane.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Sphere.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Torus.cs" />
-    <Compile Include="Graphics\SolidVertex.cs" />
-    <Compile Include="IO\ChunkId.cs" />
-    <Compile Include="IO\ChunkReader.cs" />
-    <Compile Include="IO\ChunkWriter.cs" />
-    <Compile Include="IO\LEB128.cs" />
-    <Compile Include="LevelData\Instances\ItemInstance.cs" />
-    <Compile Include="LevelData\Level.cs" />
-    <Compile Include="LevelData\LevelSettings.cs" />
-    <Compile Include="LevelData\LevelSettingsWatcher.cs" />
-    <Compile Include="LevelData\LevelTexture.cs" />
-    <Compile Include="LevelData\Instances\LightInstance.cs" />
-    <Compile Include="LevelData\Instances\MoveableInstance.cs" />
-    <Compile Include="LevelData\Instances\ObjectInstance.cs" />
-    <Compile Include="LevelData\Instances\PortalInstance.cs" />
-    <Compile Include="LevelData\ReferencedWad.cs" />
-    <Compile Include="LevelData\ReferenceSoundsCatalog.cs" />
-    <Compile Include="LevelData\Room.cs" />
-    <Compile Include="LevelData\RoomGeometry.cs" />
-    <Compile Include="LevelData\ScriptID.cs" />
-    <Compile Include="LevelData\Instances\SinkInstance.cs" />
-    <Compile Include="LevelData\Instances\SoundSourceInstance.cs" />
-    <Compile Include="LevelData\Instances\StaticInstance.cs" />
-    <Compile Include="LevelData\Instances\TriggerInstance.cs" />
-    <Compile Include="Script\IScriptCompiler.cs" />
-    <Compile Include="Script\LanguageScript.cs" />
-    <Compile Include="Script\LevelScript.cs" />
-    <Compile Include="Script\LevelScriptCatalog.cs" />
-    <Compile Include="Script\Enumerations.cs" />
-    <Compile Include="Script\ScriptCompilerLegacy.cs" />
-    <Compile Include="Script\ScriptCompilerNew.cs" />
-    <Compile Include="Script\ScriptCompilerTR5Main.cs" />
-    <Compile Include="Script\ScriptCompilerTRNG.cs" />
-    <Compile Include="Utils\BrowseFolderDialog.cs" />
-    <Compile Include="Utils\DataVersion.cs" />
-    <Compile Include="Utils\MathC.cs" />
-    <Compile Include="NG\NgParameterInfo.cs" />
-    <Compile Include="NG\NgParameterRange.cs" />
-    <Compile Include="NG\NgTriggerSubtypes.cs" />
-    <Compile Include="NG\NgCatalog.cs" />
-    <Compile Include="NG\NgTriggerSubtype.cs" />
-    <Compile Include="Types\Ray.cs" />
-    <Compile Include="Types\RectangleInt2.cs" />
-    <Compile Include="Types\Rectangle2.cs" />
-    <Compile Include="ResourcesC\ResourcesC.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ResourcesC.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\Cache.cs" />
-    <Compile Include="Utils\CollectionUtils.cs" />
-    <Compile Include="Utils\Collision.cs" />
-    <Compile Include="Utils\ConditionallyOwned.cs" />
-    <Compile Include="Utils\DictionaryWhere.cs" />
-    <Compile Include="Utils\DictionarySelect.cs" />
-    <Compile Include="Utils\FileFormat.cs" />
-    <Compile Include="Utils\FileSystemWatcherManager.cs" />
-    <Compile Include="Utils\Hash.cs" />
-    <Compile Include="Utils\IDialogDescription.cs" />
-    <Compile Include="Utils\ImageC.cs" />
-    <Compile Include="Graphics\TextureLoad.cs" />
-    <Compile Include="Graphics\InputLayouts.cs" />
-    <Compile Include="Graphics\KeyFrame.cs" />
-    <Compile Include="Graphics\Mesh.cs" />
-    <Compile Include="Graphics\Model.cs" />
-    <Compile Include="Graphics\AnimatedModel.cs" />
-    <Compile Include="Graphics\StaticModel.cs" />
-    <Compile Include="Graphics\Vertex.cs" />
-    <Compile Include="IO\BinaryReaderEx.cs" />
-    <Compile Include="IO\BinaryWriterEx.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\IProgressReporter.cs" />
-    <Compile Include="Utils\LevelFileDialog.cs" />
-    <Compile Include="Utils\Logging.cs" />
-    <Compile Include="Utils\NegativeIndexArray.cs" />
-    <Compile Include="Utils\PathC.cs" />
-    <Compile Include="Utils\PolygonFunctions.cs" />
-    <Compile Include="Utils\RectTransformation.cs" />
-    <Compile Include="Utils\RectPacker.cs" />
-    <Compile Include="Utils\ReferenceEqualityComparer.cs" />
-    <Compile Include="Graphics\Spline.cs" />
-    <Compile Include="Utils\ScriptingUtils.cs" />
-    <Compile Include="Utils\Swap.cs" />
-    <Compile Include="Utils\Texture.cs" />
-    <Compile Include="Utils\RectPackerTree.cs" />
-    <Compile Include="Utils\Undo.cs" />
-    <Compile Include="Utils\VertexNormalAverageHelper.cs" />
-    <Compile Include="Utils\ZLib.cs" />
-    <Compile Include="Types\VectorInt2.cs" />
-    <Compile Include="Types\VectorInt3.cs" />
-    <Compile Include="Wad\Catalog\TrCatalog.cs" />
-    <Compile Include="Wad\WadLight.cs" />
-    <Compile Include="Wad\IWadObject.cs" />
-    <Compile Include="Wad\TrLevels\Structs.cs" />
-    <Compile Include="Wad\TrLevels\TrLevel.cs" />
-    <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />
-    <Compile Include="Wad\WadBone.cs" />
-    <Compile Include="Wad\Wad2Chunks.cs" />
-    <Compile Include="Wad\Wad2Loader.cs" />
-    <Compile Include="Wad\Wad2Writer.cs" />
-    <Compile Include="Wad\WadAnimCommand.cs" />
-    <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
-    <Compile Include="Wad\WadSample.cs" />
-    <Compile Include="Wad\WadSoundInfo.cs" />
-    <Compile Include="Wad\WadSoundPlayer.cs" />
-    <Compile Include="Wad\WadSounds.cs" />
-    <Compile Include="Wad\WadSprite.cs" />
-    <Compile Include="Wad\WadSpriteSequence.cs" />
-    <Compile Include="Wad\Enumerations.cs" />
-    <Compile Include="Wad\Tr4Wad\Tr4Wad.cs" />
-    <Compile Include="Wad\Wad2.cs" />
-    <Compile Include="Wad\WadTexture.cs" />
-    <Compile Include="Wad\WadAnimation.cs" />
-    <Compile Include="Wad\WadAnimDispatch.cs" />
-    <Compile Include="Wad\WadKeyFrame.cs" />
-    <Compile Include="Wad\WadKeyFrameRotation.cs" />
-    <Compile Include="Wad\WadMesh.cs" />
-    <Compile Include="Wad\WadMoveable.cs" />
-    <Compile Include="Wad\WadPolygon.cs" />
-    <Compile Include="Wad\WadStateChange.cs" />
-    <Compile Include="Wad\WadStatic.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
-    <Compile Include="Graphics\Primitives\GeometricPrimitive.GridPlane.cs" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ResourcesC\Extra.Tr5.pc.png" />
-    <None Include="ResourcesC\font.bin" />
-    <None Include="ResourcesC\Font.pc.png" />
-    <None Include="ResourcesC\palette.bin" />
-    <None Include="ResourcesC\pcsky.raw.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(ProjectDir)obj/$(ConfigurationName)/version.txt">
@@ -386,21 +62,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Catalogs\TrCatalog.xml">
+    <None Update="Catalogs\TrCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Catalogs\NgCatalog.xml">
+    <None Update="Catalogs\NgCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Catalogs\Sounds.tr1.xml">
@@ -443,12 +116,35 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <Error Condition="!Exists('..\..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
-    <Error Condition="!Exists('..\..\packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
+  <ItemGroup>
+    <PackageReference Include="Aspose.PSD" Version="22.5.0" />
+    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="HashDepot" Version="2.0.3" />
+    <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.3" />
+    <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
+    <PackageReference Include="NetMiniZ" Version="1.2.2" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="NVorbis" Version="0.10.4" />
+    <PackageReference Include="Pfim" Version="0.10.3" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.9.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="GeometryIO\IOBone.cs" />
+    <Compile Remove="IO\SimplerChunkWriter.cs" />
+    <Compile Remove="Script\ScriptCompilerTr4OrTr5.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
 git describe --tags --long --dirty &gt; "$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
@@ -462,17 +158,9 @@ echo Git-Describe: %25GIT_DESCRIBE%25
 )&gt;"$(ProjectDir)obj/$(ConfigurationName)/version.txt"
 SET ERRORLEVEL = 0</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\..\packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets" Condition="Exists('..\..\packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets')" />
   <PropertyGroup>
     <PostBuildEvent>xcopy  /s /y /i /q "$(SolutionDir)Libs\Native" "$(TargetDir)Native\"
 rmdir /s /q "$(TargetDir)runtimes"
 mkdir "$(TargetDir)Runtimes"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

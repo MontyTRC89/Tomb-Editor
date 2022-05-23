@@ -59,7 +59,7 @@ namespace DarkUI.Controls
         }
 
         [DefaultValue(false)]
-        [IODescription("StatusStripSizingGripDescr")]
+        [Description("StatusStripSizingGripDescr")]
         public new bool SizingGrip
         {
             get { return base.SizingGrip; }

@@ -1,20 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <LangVersion>6</LangVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{330CCD5E-D061-4C40-B568-BF367213C525}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombEditor</RootNamespace>
-    <AssemblyName>TombEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,34 +18,21 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AllowedReferenceRelatedFileExtensions>
-      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
-           Only *.allowedextension files will be included, which doesn't exist in my case.
-       -->
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -69,13 +44,6 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -105,27 +73,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="System">
+    <Reference Update="System">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -134,587 +84,102 @@
     <Compile Include="..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="Controls\ContextMenus\GridPaintContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\GridPaintContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\Space2DMapContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRenderingImportedGeometry.cs">
+    <Compile Update="Controls\PanelRenderingImportedGeometry.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRenderingSprite.cs">
+    <Compile Update="Controls\PanelRenderingSprite.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\RichTextLabel.cs">
+    <Compile Update="Controls\RichTextLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ToolBox.cs">
+    <Compile Update="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ToolBox.Designer.cs">
-      <DependentUpon>ToolBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormBumpMaps.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormBumpMaps.Designer.cs">
-      <DependentUpon>FormBumpMaps.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMemo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMemo.Designer.cs">
-      <DependentUpon>FormMemo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormRoomProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormRoomProperties.Designer.cs">
-      <DependentUpon>FormRoomProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSprite.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSprite.Designer.cs">
-      <DependentUpon>FormSprite.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormFindTextures.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFindTextures.Designer.cs">
-      <DependentUpon>FormFindTextures.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormImportPrj.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormImportPrj.Designer.cs">
-      <DependentUpon>FormImportPrj.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormOptions.Designer.cs">
-      <DependentUpon>FormOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormQuickItemgroup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormQuickItemgroup.Designer.cs">
-      <DependentUpon>FormQuickItemgroup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormReplaceObject.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormReplaceObject.Designer.cs">
-      <DependentUpon>FormReplaceObject.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormResizeRoom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormResizeRoom.Designer.cs">
-      <DependentUpon>FormResizeRoom.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSelectRoomByTags.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSelectRoomByTags.Designer.cs">
-      <DependentUpon>FormSelectRoomByTags.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormToolBarLayout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormToolBarLayout.Designer.cs">
-      <DependentUpon>FormToolBarLayout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormFlybyCamera.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormFlybyCamera.Designer.cs">
-      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormVolume.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormVolume.Designer.cs">
-      <DependentUpon>FormVolume.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormCamera.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormCamera.Designer.cs">
-      <DependentUpon>FormCamera.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormMoveable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormMoveable.Designer.cs">
-      <DependentUpon>FormMoveable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormSink.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormSink.Designer.cs">
-      <DependentUpon>FormSink.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormSoundSource.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormSoundSource.Designer.cs">
-      <DependentUpon>FormSoundSource.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormStatic.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TombEngine\FormStatic.Designer.cs">
-      <DependentUpon>FormStatic.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Hotkey.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ContextMenus\SelectedGeometryContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\SelectedGeometryContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ContextMenus\BlockContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\BlockContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ContextMenus\SelectedRoomContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\SelectedRoomContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DepthBar.cs" />
-    <Compile Include="Controls\ContextMenus\MaterialObjectContextMenu.cs">
+    <Compile Update="Controls\ContextMenus\MaterialObjectContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ImportedGeometryManager.cs">
+    <Compile Update="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ImportedGeometryManager.Designer.cs">
-      <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PanelPalette.cs">
+    <Compile Update="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EditorAction.cs" />
-    <Compile Include="Command.cs" />
-    <Compile Include="Forms\FormKeyboardLayout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormKeyboardLayout.Designer.cs">
-      <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormPreviewTexture.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormPreviewTexture.Designer.cs">
-      <DependentUpon>FormPreviewTexture.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormPreviewWad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormPreviewWad.Designer.cs">
-      <DependentUpon>FormPreviewWad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormTextureRemap.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormTextureRemap.Designer.cs">
-      <DependentUpon>FormTextureRemap.cs</DependentUpon>
-    </Compile>
-    <Compile Include="KeyMessageFilter.cs" />
-    <Compile Include="ObjectHighlight.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SectorColoringManager.cs" />
-    <Compile Include="KeyboardLayout.cs" />
-    <Compile Include="Controls\PanelRenderingItem.cs">
+    <Compile Update="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EditorActions.cs" />
-    <Compile Include="EditorState.cs" />
-    <Compile Include="Forms\FormCamera.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormCamera.Designer.cs">
-      <DependentUpon>FormCamera.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormChooseRoom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormChooseRoom.Designer.cs">
-      <DependentUpon>FormChooseRoom.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormImportedGeometry.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormImportedGeometry.Designer.cs">
-      <DependentUpon>FormImportedGeometry.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormLevelSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormLevelSettings.designer.cs">
-      <DependentUpon>FormLevelSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSearch.Designer.cs">
-      <DependentUpon>FormSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormStatic.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormStatic.Designer.cs">
-      <DependentUpon>FormStatic.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormOperationDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormOperationDialog.Designer.cs">
-      <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormFootStepSounds.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFootStepSounds.Designer.cs">
-      <DependentUpon>FormFootStepSounds.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMoveable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMoveable.Designer.cs">
-      <DependentUpon>FormMoveable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormFlybyCamera.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFlybyCamera.Designer.cs">
-      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormAnimatedTextures.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAnimatedTextures.Designer.cs">
-      <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSoundSource.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSoundSource.Designer.cs">
-      <DependentUpon>FormSoundSource.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSink.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSink.Designer.cs">
-      <DependentUpon>FormSink.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Gizmo.cs" />
-    <Compile Include="ObjectClipboardData.cs" />
-    <Compile Include="RoomClipboardData.cs" />
-    <Compile Include="SectorsClipboardData.cs" />
-    <Compile Include="Statistics.cs" />
-    <Compile Include="ToolWindows\ImportedGeometryBrowser.cs">
+    <Compile Update="ToolWindows\ImportedGeometryBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ImportedGeometryBrowser.Designer.cs">
-      <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\Lighting.cs">
+    <Compile Update="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\Lighting.Designer.cs">
-      <DependentUpon>Lighting.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\MainView.cs">
+    <Compile Update="ToolWindows\MainView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\MainView.Designer.cs">
-      <DependentUpon>MainView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ObjectList.cs">
+    <Compile Update="ToolWindows\ObjectList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ObjectList.Designer.cs">
-      <DependentUpon>ObjectList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\Palette.cs">
+    <Compile Update="ToolWindows\Palette.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\Palette.Designer.cs">
-      <DependentUpon>Palette.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\TexturePanel.cs">
+    <Compile Update="ToolWindows\TexturePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\TexturePanel.Designer.cs">
-      <DependentUpon>TexturePanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ToolPalette.cs">
+    <Compile Update="ToolWindows\ToolPalette.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ToolPalette.Designer.cs">
-      <DependentUpon>ToolPalette.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ToolPaletteFloating.cs">
+    <Compile Update="ToolWindows\ToolPaletteFloating.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ToolPaletteFloating.Designer.cs">
-      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\TriggerList.cs">
+    <Compile Update="ToolWindows\TriggerList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\TriggerList.Designer.cs">
-      <DependentUpon>TriggerList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TestLevel.cs" />
-    <Compile Include="TombLauncher.cs" />
-    <Compile Include="ToolWindows\RoomOptions.cs">
+    <Compile Update="ToolWindows\RoomOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\RoomOptions.Designer.cs">
-      <DependentUpon>RoomOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ItemBrowser.cs">
+    <Compile Update="ToolWindows\ItemBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ItemBrowser.Designer.cs">
-      <DependentUpon>ItemBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\SectorOptions.cs">
+    <Compile Update="ToolWindows\SectorOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\SectorOptions.Designer.cs">
-      <DependentUpon>SectorOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Panel2DMap.cs">
+    <Compile Update="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Panel2DGrid.cs">
+    <Compile Update="Controls\Panel2DGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D.cs">
+    <Compile Update="Controls\PanelRendering3D.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelTextureMap.cs">
+    <Compile Update="Controls\PanelTextureMap.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Editor.cs" />
-    <Compile Include="Effects.cs" />
-    <Compile Include="Forms\FormTrigger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormTrigger.Designer.cs">
-      <DependentUpon>FormTrigger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Undo.cs" />
-    <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
-      <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ToolBox.resx">
-      <DependentUpon>ToolBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormBumpMaps.resx">
-      <DependentUpon>FormBumpMaps.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMemo.resx">
-      <DependentUpon>FormMemo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormRoomProperties.resx">
-      <DependentUpon>FormRoomProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSprite.resx">
-      <DependentUpon>FormSprite.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFindTextures.resx">
-      <DependentUpon>FormFindTextures.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormImportPrj.resx">
-      <DependentUpon>FormImportPrj.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
-      <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormOptions.resx">
-      <DependentUpon>FormOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPreviewTexture.resx">
-      <DependentUpon>FormPreviewTexture.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPreviewWad.resx">
-      <DependentUpon>FormPreviewWad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormQuickItemgroup.resx">
-      <DependentUpon>FormQuickItemgroup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormReplaceObject.resx">
-      <DependentUpon>FormReplaceObject.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormResizeRoom.resx">
-      <DependentUpon>FormResizeRoom.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSelectRoomByTags.resx">
-      <DependentUpon>FormSelectRoomByTags.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTextureRemap.resx">
-      <DependentUpon>FormTextureRemap.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormToolBarLayout.resx">
-      <DependentUpon>FormToolBarLayout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormFlybyCamera.resx">
-      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormVolume.resx">
-      <DependentUpon>FormVolume.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormCamera.resx">
-      <DependentUpon>FormCamera.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormMoveable.resx">
-      <DependentUpon>FormMoveable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormSink.resx">
-      <DependentUpon>FormSink.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormSoundSource.resx">
-      <DependentUpon>FormSoundSource.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TombEngine\FormStatic.resx">
-      <DependentUpon>FormStatic.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ImportedGeometryBrowser.resx">
-      <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
-      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormCamera.resx">
-      <DependentUpon>FormCamera.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormImportedGeometry.resx">
-      <DependentUpon>FormImportedGeometry.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSearch.resx">
-      <DependentUpon>FormSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\Lighting.resx">
-      <DependentUpon>Lighting.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\MainView.resx">
-      <DependentUpon>MainView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ItemBrowser.resx">
-      <DependentUpon>ItemBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ObjectList.resx">
-      <DependentUpon>ObjectList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\Palette.resx">
-      <DependentUpon>Palette.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
-      <DependentUpon>SectorOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\FormChooseRoom.resx">
-      <DependentUpon>FormChooseRoom.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormLevelSettings.resx">
-      <DependentUpon>FormLevelSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormStatic.resx">
-      <DependentUpon>FormStatic.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormOperationDialog.resx">
-      <DependentUpon>FormOperationDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFootStepSounds.resx">
-      <DependentUpon>FormFootStepSounds.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMoveable.resx">
-      <DependentUpon>FormMoveable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFlybyCamera.resx">
-      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAnimatedTextures.resx">
-      <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSoundSource.resx">
-      <DependentUpon>FormSoundSource.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSink.resx">
-      <DependentUpon>FormSink.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTrigger.resx">
-      <DependentUpon>FormTrigger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\RoomOptions.resx">
-      <DependentUpon>RoomOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\TexturePanel.resx">
-      <DependentUpon>TexturePanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ToolPalette.resx">
-      <DependentUpon>ToolPalette.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\TriggerList.resx">
-      <DependentUpon>TriggerList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
-      <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
-      <Name>TombLib.Forms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj">
-      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
-      <Name>TombLib.Rendering</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj">
-      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -729,32 +194,28 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons_actions\actions_TEN-16.png" />
     <Content Include="TE.ico" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.9.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="EditorCommands.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy  /s /y /i /q "$(ProjectDir)Resources\assets" "$(TargetDir)Assets\"
 rmdir /s /q "$(TargetDir)Runtimes\linux-x64"
 rmdir /s /q "$(TargetDir)Runtimes\osx-x64"
 del *.pdb</PostBuildEvent>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
-  </Target>
-  <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <PropertyGroup />
 </Project>

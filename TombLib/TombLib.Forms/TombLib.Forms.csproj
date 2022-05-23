@@ -1,279 +1,114 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TombLib</RootNamespace>
-    <AssemblyName>TombLib.Forms</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowedReferenceRelatedFileExtensions>
-      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
-           Only *.allowedextension files will be included, which doesn't exist in my case.
-       -->
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\Libs\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\..\Libs\SharpDX.Direct3D11.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D11, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Direct3D11.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D11.Effects">
+      <HintPath>..\..\Libs\SharpDX.Direct3D11.Effects.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D11.Effects, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Direct3D11.Effects.dll</HintPath>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\Libs\SharpDX.DXGI.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.DXGI.dll</HintPath>
+    <Reference Include="SharpDX.Toolkit">
+      <HintPath>..\..\Libs\SharpDX.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Toolkit.dll</HintPath>
+    <Reference Include="SharpDX.Toolkit.Graphics">
+      <HintPath>..\..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Controls\AnimationTrackBar.cs">
+    <Compile Update="Controls\AnimationTrackBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\AnimationTrackBar.Designer.cs">
-      <DependentUpon>AnimationTrackBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DarkAutocompleteTextBox.cs">
+    <Compile Update="Controls\DarkAutocompleteTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkDataGridViewControls.cs">
+    <Compile Update="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
-      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DarkScrollBarC.cs">
+    <Compile Update="Controls\DarkScrollBarC.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkSearchableComboBox.cs">
+    <Compile Update="Controls\DarkSearchableComboBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\DarkSearchableComboBox.Designer.cs">
-      <DependentUpon>DarkSearchableComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DarkTabbedContainer.cs">
+    <Compile Update="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MovementTimer.cs" />
-    <Compile Include="Controls\PanelItemPreview.cs">
+    <Compile Update="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PopUpWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\RealtimeColorDialog.cs">
+    <Compile Update="Controls\RealtimeColorDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\RenderingPanel.cs">
+    <Compile Update="Controls\RenderingPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SoundInfoEditor.cs">
+    <Compile Update="Controls\SoundInfoEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SoundInfoEditor.Designer.cs">
-      <DependentUpon>SoundInfoEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TextureMapBase.cs">
+    <Compile Update="Controls\TextureMapBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\FormOptionsBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormOptionsBase.Designer.cs">
-      <DependentUpon>FormOptionsBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\TaskbarProgress.cs" />
-    <Compile Include="Controls\TriggerParameterControl.cs">
+    <Compile Update="Controls\TriggerParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\TriggerParameterControl.designer.cs">
-      <DependentUpon>TriggerParameterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\WadTreeControl.cs">
+    <Compile Update="Controls\WadTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\AnimationImportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\AnimationImportDialog.Designer.cs">
-      <DependentUpon>AnimationImportDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormAbout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAbout.designer.cs">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormInputBox.Designer.cs">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\GraphicalDialogHandler.cs" />
-    <Compile Include="Forms\GeometryIOSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\GeometryIOSettingsDialog.Designer.cs">
-      <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\PopUpInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PopUpInfo.Designer.cs">
-      <DependentUpon>PopUpInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\PopUpSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PopUpSearch.Designer.cs">
-      <DependentUpon>PopUpSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\ClipboardEvents.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
-    <Compile Include="Utils\SingleInstanceManagement.cs" />
-    <Compile Include="Utils\SynchronizationCallback.cs" />
-    <Compile Include="Utils\WinFormsUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\AnimationTrackBar.resx">
-      <DependentUpon>AnimationTrackBar.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
-      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DarkSearchableComboBox.resx">
-      <DependentUpon>DarkSearchableComboBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
-      <DependentUpon>SoundInfoEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
-      <DependentUpon>TriggerParameterControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\WadTreeControl.resx">
-      <DependentUpon>WadTreeControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AnimationImportDialog.resx">
-      <DependentUpon>AnimationImportDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormInputBox.resx">
-      <DependentUpon>FormInputBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormOptionsBase.resx">
-      <DependentUpon>FormOptionsBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PopUpInfo.resx">
-      <DependentUpon>PopUpInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PopUpSearch.resx">
-      <DependentUpon>PopUpSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
-      <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
-      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
-      <Name>TombLib.Rendering</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.csproj">
-      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.9.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="Forms\DarkDataGridViewControls.cs" />
+    <Compile Remove="Forms\DarkDataGridViewControls.Designer.cs" />
+    <Compile Remove="Forms\FormPopUpSearch.cs" />
+    <Compile Remove="Forms\FormPopUpSearch.Designer.cs" />
+    <EmbeddedResource Remove="Forms\DarkDataGridViewControls.resx" />
+    <EmbeddedResource Remove="Forms\FormPopUpSearch.resx" />
+  </ItemGroup>
 </Project>
