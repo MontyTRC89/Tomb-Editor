@@ -455,6 +455,7 @@ namespace TombLib.LevelData.IO
                 }
 
                 level.Settings.GameVersion = TRVersion.Game.TombEngine;
+                level.Settings.ConvertLevelExtension();
 
                 newPath = Path.Combine(
                     Path.GetDirectoryName(source),
