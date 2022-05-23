@@ -33,23 +33,23 @@ namespace TombEditor.Forms.TombEngine
 
         private void ReloadFunctions()
         {
-            if (_editor.Level.Settings.TenLuaScriptFile != null)
+            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile.Trim()))
+                return;
+
+            string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
+            var functions = ScriptingUtils.GetAllFunctionsNames(path);
+            functions.Insert(0, string.Empty);
+
+            if (functions != null)
             {
-                string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
-                var functions = ScriptingUtils.GetAllFunctionsNames(path);
-                functions.Insert(0, string.Empty);
+                comboboxOnEnter.Items.Clear();
+                comboboxOnEnter.Items.AddRange(functions.ToArray());
 
-                if (functions != null)
-                {
-                    comboboxOnEnter.Items.Clear();
-                    comboboxOnEnter.Items.AddRange(functions.ToArray());
+                comboboxOnInside.Items.Clear();
+                comboboxOnInside.Items.AddRange(functions.ToArray());
 
-                    comboboxOnInside.Items.Clear();
-                    comboboxOnInside.Items.AddRange(functions.ToArray());
-
-                    comboboxOnLeave.Items.Clear();
-                    comboboxOnLeave.Items.AddRange(functions.ToArray());
-                }
+                comboboxOnLeave.Items.Clear();
+                comboboxOnLeave.Items.AddRange(functions.ToArray());
             }
         }
 

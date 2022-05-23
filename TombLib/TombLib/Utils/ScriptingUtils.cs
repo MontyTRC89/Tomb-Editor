@@ -10,9 +10,14 @@ namespace TombLib.Utils
         {
             const string tableName = "LevelFuncs";
             string[] reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+
+            var result = new List<string>();
+
             try
             {
-                var result = new List<string>();
+                if (!File.Exists(path))
+                    return result;
+
                 var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
 
                 foreach (string l in lines)
@@ -66,7 +71,7 @@ namespace TombLib.Utils
             }
             catch
             {
-                return null;
+                return result;
             }
         }
     }
