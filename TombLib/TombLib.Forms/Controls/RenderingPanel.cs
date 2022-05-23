@@ -94,9 +94,16 @@ namespace TombLib.Controls
                 return;
             }
 
-            SwapChain.Clear(ClearColor);
-            OnDraw();
-            SwapChain.Present();
+            try
+            {
+                SwapChain.Clear(ClearColor);
+                OnDraw();
+                SwapChain.Present();
+            }
+            catch (Exception ex)
+            {
+                Device.HandleException(ex);
+            }
         }
 
         protected virtual void OnDraw()

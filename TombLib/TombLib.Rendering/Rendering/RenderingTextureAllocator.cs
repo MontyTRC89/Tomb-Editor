@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TombLib.Utils;
-using Vector2 = System.Numerics.Vector2;
 
 namespace TombLib.Rendering
 {

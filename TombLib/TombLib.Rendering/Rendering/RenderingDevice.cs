@@ -10,6 +10,7 @@ namespace TombLib.Rendering
     public abstract class RenderingDevice : IDisposable
     {
         public abstract void Dispose();
+        public abstract void HandleException(Exception ex);
 
         public abstract RenderingSwapChain CreateSwapChain(RenderingSwapChain.Description description);
         public abstract RenderingTextureAllocator CreateTextureAllocator(RenderingTextureAllocator.Description description);
@@ -17,7 +18,5 @@ namespace TombLib.Rendering
         public abstract RenderingDrawingTest CreateDrawingTest(RenderingDrawingTest.Description description);
         public abstract RenderingDrawingRoom CreateDrawingRoom(RenderingDrawingRoom.Description description);
         public abstract RenderingFont CreateFont(RenderingFont.Description description);
-
-        public RenderingTextureAllocator CreateTextureAllocator() => CreateTextureAllocator(new RenderingTextureAllocator.Description());
     }
 }

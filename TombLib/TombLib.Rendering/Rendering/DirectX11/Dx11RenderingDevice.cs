@@ -282,6 +282,21 @@ namespace TombLib.Rendering.DirectX11
             }
         }
 
+        public override void HandleException(Exception ex)
+        {
+            if (ex is SharpDXException)
+            {
+                var dex = (ex as SharpDXException);
+                switch (unchecked((uint)dex.HResult))
+                {
+                    case 0x887A0005:
+                        logger.Error("Renderer unexpectedly stopped due to DXGI_ERROR_DEVICE_REMOVED exception. Error code: " + Device.DeviceRemovedReason.Code + "\n" +
+                                     "Additional message: " + dex.Message);
+                        break;
+                }
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint CompressColor(Vector3 color, float alpha = 1.0f, bool average = true)
         {
