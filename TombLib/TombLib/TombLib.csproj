@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="BunLabs.NAudio.Flac.EonZeNx" Version="3.0.1" />
     <PackageReference Include="HashDepot" Version="2.0.3" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
     <PackageReference Include="NAudio" Version="2.1.0" />
