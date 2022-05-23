@@ -2119,7 +2119,7 @@ namespace TombEditor.Controls
                 // Add text message
                 textToDraw.Add(CreateTextTagForObject(
                     light.ObjectMatrix * _viewProjection,
-                    light.Type + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
+                    light.Type.ToString().SplitCamelcase() + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
 
                 // Add the line height of the object
                 AddObjectHeightLine(light.Room, light.Position);
