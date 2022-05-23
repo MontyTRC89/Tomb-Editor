@@ -98,6 +98,7 @@ namespace TombLib.Controls
             {
                 e.Graphics.DrawString("Rendering: Fatal error has occured." + Environment.NewLine + "Save the log file and report this error to the dev team.", Font, Brushes.DarkGray, ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                OnDraw();
                 return;
             }
 
