@@ -889,7 +889,7 @@
 			<sprite_sequence id="206" name="Pickup 6" />
 			<sprite_sequence id="220" name="Extra Fire (Ice Palace)" />
 			<sprite_sequence id="224" name="Gray disk" />
-			<sprite_sequence id="229" name="Grenade blast " zoom="-2.4" />
+			<sprite_sequence id="229" name="Grenade blast" zoom="-2.4" />
 			<sprite_sequence id="230" name="Splash" />
 			<sprite_sequence id="231" name="Bubbles" />
 			<sprite_sequence id="233" name="Blood splatter" />
@@ -897,11 +897,11 @@
 			<sprite_sequence id="236" name="Flash (looks like distant light)" />
 			<sprite_sequence id="238" name="Bullet hit" />
 			<sprite_sequence id="239" name="Sparkles (Floating Islands, Dragon's Lair)" />
-			<sprite_sequence id="246" name="Flamethrower (repeat of grenade blast) " zoom="-2.4" />
+			<sprite_sequence id="246" name="Flamethrower (repeat of grenade blast)" zoom="-2.4" />
 			<sprite_sequence id="250" name="Sprayed particles" />
 			<sprite_sequence id="252" name="Fire" />
-			<sprite_sequence id="255" name="Standard symbols " zoom="1.3712" />
-			<sprite_sequence id="261" name="Assault-course numerals and punctuation " zoom="1.3712" />
+			<sprite_sequence id="255" name="Standard symbols" zoom="1.3712" />
+			<sprite_sequence id="261" name="Assault-course numerals and punctuation" zoom="1.3712" />
 			<sprite_sequence id="289" name="Cellar artifact 1 (gold mask)" />
 			<sprite_sequence id="290" name="Cellar artifact 2 (rounded statue)" />
 			<sprite_sequence id="291" name="Cellar artifact 3 (flattened statue)" />
