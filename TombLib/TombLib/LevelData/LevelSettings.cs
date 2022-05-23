@@ -565,6 +565,10 @@ namespace TombLib.LevelData
                 case TRVersion.Game.TR5:
                     catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr5.xml";
                     break;
+
+                case TRVersion.Game.TombEngine:
+                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Sound Catalogs\\TEN_TR4_DEFAULT.xml";
+                    break;
             }
 
             if (!string.IsNullOrEmpty(catalogName) && File.Exists(catalogName))
