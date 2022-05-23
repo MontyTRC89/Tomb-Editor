@@ -22,6 +22,11 @@
     </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="SharpDX">
       <HintPath>..\..\Libs\SharpDX.dll</HintPath>
     </Reference>
@@ -133,6 +138,9 @@
     <Compile Remove="GeometryIO\IOBone.cs" />
     <Compile Remove="IO\SimplerChunkWriter.cs" />
     <Compile Remove="Script\ScriptCompilerTr4OrTr5.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="D:\Repositories\Tomb-Editor\TombLib\TombLib\obj/Debug/version.txt" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
