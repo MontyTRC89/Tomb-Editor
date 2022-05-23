@@ -7916,12 +7916,11 @@
 			<anim item="1" id="4" name="TYRANNOSAUR DEATH" />
 			<anim item="1" id="5" name="UNSURE?" />
 			<anim item="1" id="6" name="GIANT MUTANT DEATH" />
-			<anim item="1" id="7" name="GIANT MUTANT DEATH END" />
-			<anim item="1" id="8" name="TYRANNOSAUR DEATH END" />
-			<anim item="1" id="9" name="SHIVA IMPALE DEATH" />
-			<anim item="1" id="10" name="SHIVA IMPALE DEATH END" />
-			<anim item="1" id="11" name="TNT ACTIVATION" />			
-			
+			<anim item="1" id="7" name="SHIVA IMPALE DEATH" />
+			<anim item="1" id="8" name="TNT ACTIVATION" />	
+			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />				
+			<anim item="1" id="10" name="MIDAS GOLDEN DEATH" />
+			<anim item="1" id="11" name="GONG STRIKE" />					
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
