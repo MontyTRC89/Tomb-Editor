@@ -68,17 +68,10 @@ namespace TombLib.LevelData.IO
                         if (moveable.Bones.Count < 15)
                             break;
 
-                        progressReporter?.ReportInfo("    Copying mesh #14 to mesh #7 for " + newSlotName);
+                        progressReporter?.ReportInfo("    Swapping back holster mesh #14 to mesh #7 for " + newSlotName);
 
                         var mesh = moveable.Bones[14].Mesh.Clone();
                         var oldMesh = moveable.Bones[7].Mesh.Clone();
-
-                        for (int i = 0; i < mesh.VertexPositions.Count; i++)
-                        {
-                            var pos = mesh.VertexPositions[i];
-                            pos.Y += 256;
-                            mesh.VertexPositions[i] = pos;
-                        }
 
                         moveable.Bones[7].Mesh = mesh;
                         moveable.Meshes[7] = mesh;
