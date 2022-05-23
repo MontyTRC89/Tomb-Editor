@@ -1343,59 +1343,59 @@
 			<limit name="WorldDimensions" value="100" />
 		</limits>
 		<moveables>
-			<moveable id="0" name="Lara" use_body_from="315" />
-			<moveable id="1" name="Lara pistol animation" use_body_from="315" hidden="true" />
-			<moveable id="2" name="Lara's ponytail" hidden="true" />
-			<moveable id="3" name="Lara shotgun animation" use_body_from="315" hidden="true" />
-			<moveable id="4" name="Lara Desert-Eagle animation" use_body_from="315" hidden="true" />
-			<moveable id="5" name="Lara Uzi animation" use_body_from="315" hidden="true" />
+			<moveable id="0" name="Lara" use_body_from="315" t5m="LARA"/>
+			<moveable id="1" name="Lara pistol animation" use_body_from="315" hidden="true" t5m="PISTOLS_ANIM"/>
+			<moveable id="2" name="Lara's ponytail" hidden="true" t5m="HAIR"/>
+			<moveable id="3" name="Lara shotgun animation" use_body_from="315" hidden="true" t5m="SHOTGUN_ANIM"/>
+			<moveable id="4" name="Lara Desert-Eagle animation" use_body_from="315" hidden="true" t5m="REVOLVER_ANIM" />
+			<moveable id="5" name="Lara Uzi animation" use_body_from="315" hidden="true" t5m="UZI_ANIM"/>
 			<moveable id="6" name="Lara MP5 animation" use_body_from="315" hidden="true" />
 			<moveable id="7" name="Lara rocket-launcher animation" use_body_from="315" t5m="ROCKET_ANIM" hidden="true" />
-			<moveable id="8" name="Lara grenade-launcher animation" use_body_from="315" hidden="true" />
+			<moveable id="8" name="Lara grenade-launcher animation" use_body_from="315" hidden="true" t5m="GRENADE_ANIM"/>
 			<moveable id="9" name="Lara harpoon-gun animation" use_body_from="315" t5m="HARPOON_ANIM" hidden="true" />
-			<moveable id="10" name="Lara flare animation" use_body_from="315" hidden="true" />
-			<moveable id="11" name="Lara UPV animation" use_body_from="315" hidden="true" />
-			<moveable id="12" name="UPV" show_with="11" essential="false" />
+			<moveable id="10" name="Lara flare animation" use_body_from="315" hidden="true" t5m="FLARE_ANIM"/>
+			<moveable id="11" name="Lara UPV animation" use_body_from="315" hidden="true" t5m="UPV_LARA_ANIMS"/>
+			<moveable id="12" name="UPV" show_with="11" essential="false" t5m="UPV"/>
 			<moveable id="13" name="Lara misc animations" use_body_from="315" hidden="true" />
-			<moveable id="14" name="Kayak" show_with="11" essential="false" />
-			<moveable id="15" name="Inflatable boat" show_with="11" essential="false" />
-			<moveable id="16" name="Quadbike" show_with="11" essential="false" />
-			<moveable id="17" name="Mine cart" show_with="11" essential="false" />
-			<moveable id="18" name="Big gun" show_with="11" essential="false" />
+			<moveable id="14" name="Kayak" show_with="11" essential="false" t5m="KAYAK"/>
+			<moveable id="15" name="Inflatable boat" show_with="11" essential="false" t5m="RUBBER_BOAT"/>
+			<moveable id="16" name="Quadbike" show_with="11" essential="false" t5m="QUAD"/>
+			<moveable id="17" name="Mine cart" show_with="11" essential="false" t5m="MINECART"/>
+			<moveable id="18" name="Big gun" show_with="11" essential="false" t5m="BIGGUN"/>
 			<moveable id="19" name="Hydro propeller" show_with="11" essential="false" />
-			<moveable id="20" name="Tribesman with spiked ax" essential="false" />
-			<moveable id="21" name="Tribesman with poison-dart gun" essential="false" />
-			<moveable id="22" name="Dog" essential="false" />
-			<moveable id="23" name="Rat" essential="false" />
-			<moveable id="24" name="Kill All Triggers" essential="false" />
-			<moveable id="25" name="Killer whale" essential="false" />
-			<moveable id="26" name="Scuba diver" essential="false" />
-			<moveable id="27" name="Crow" essential="false" />
-			<moveable id="28" name="Tiger" essential="false" />
-			<moveable id="29" name="Vulture" essential="false" />
-			<moveable id="30" name="Assault-course target" essential="false" />
-			<moveable id="31" name="Crawler mutant in closet" essential="false" />
+			<moveable id="20" name="Tribesman with spiked ax" essential="false" t5m="TRIBESMAN_WITH_AX"/>
+			<moveable id="21" name="Tribesman with poison-dart gun" essential="false" t5m="TRIBESMAN_WITH_DARTS"/>
+			<moveable id="22" name="Dog" essential="false" t5m="DOG"/>
+			<moveable id="23" name="Rat" essential="false" t5m="BIG_RAT"/>
+			<moveable id="24" name="Kill All Triggers" essential="false" t5m="KILL_ALL_TRIGGERS"/>
+			<moveable id="25" name="Killer whale" essential="false" t5m="WHALE"/>
+			<moveable id="26" name="Scuba diver" essential="false" t5m="SCUBA_DIVER"/>
+			<moveable id="27" name="Crow" essential="false" t5m="CROW"/>
+			<moveable id="28" name="Tiger" essential="false" t5m="TIGER"/>
+			<moveable id="29" name="Vulture" essential="false" t5m="EAGLE"/>
+			<moveable id="30" name="Assault-course target" essential="false" t5m="SHOOT_SWITCH1" />
+			<moveable id="31" name="Crawler mutant in closet" essential="false"/>
 			<moveable id="32" name="Crocodile (in water)" essential="false" />
-			<moveable id="34" name="Compsognathus" essential="false" />
-			<moveable id="35" name="Lizard thing" essential="false" />
-			<moveable id="36" name="Puna guy" essential="false" />
+			<moveable id="34" name="Compsognathus" essential="false" t5m="SMALL_DINOSAUR"/>
+			<moveable id="35" name="Lizard thing" essential="false" t5m="LIZARD"/>
+			<moveable id="36" name="Puna guy" essential="false" t5m="PUNA_BOSS"/>
 			<moveable id="37" name="Mercenary" essential="false" />
 			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" />
 			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" />
 			<moveable id="40" name="RX-Tech guy with gun" essential="false" />
-			<moveable id="41" name="Dog (Antarctica)" essential="false" />
+			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
 			<moveable id="42" name="Crawler mutant" essential="false" />
 			<moveable id="44" name="Tinnos wasp" essential="false" />
 			<moveable id="45" name="Tinnos monster" essential="false" />
 			<moveable id="46" name="Brute mutant (with claw)" essential="false" />
 			<moveable id="47" name="Tinnos wasp respawn point" essential="false" />
 			<moveable id="48" name="Raptor respawn point" />
-			<moveable id="49" name="Willardspider" essential="false" />
+			<moveable id="49" name="Willardspider" essential="false"/>
 			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" />
 			<moveable id="51" name="London goon" essential="false" />
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" />
 			<moveable id="56" name="London guard" essential="false" />
-			<moveable id="57" name="Sophia Lee" essential="false" />
+			<moveable id="57" name="Sophia Lee" essential="false" t5m="SOPHIA_LEE_BOSS"/>
 			<moveable id="58" name="Thames Wharf machine" essential="false" />
 			<moveable id="60" name="MP with stick" essential="false" />
 			<moveable id="61" name="MP with gun" essential="false" />
@@ -1407,9 +1407,9 @@
 			<moveable id="67" name="Electrified wire" essential="false" />
 			<moveable id="68" name="Killer tripwire" essential="false" />
 			<moveable id="69" name="Cobra / Rattlesnake" essential="false" />
-			<moveable id="70" name="Temple statue" essential="false" />
+			<moveable id="70" name="Temple statue" essential="false" t5m="SHIVA"/>
 			<moveable id="71" name="Monkey" essential="false" />
-			<moveable id="73" name="Tony Firehands" essential="false" />
+			<moveable id="73" name="Tony Firehands" essential="false" t5m="TONY_BOSS"/>
 			<moveable id="74" ai="true" name="AI Guard" essential="false" />
 			<moveable id="75" ai="true" name="AI Ambush" essential="false" />
 			<moveable id="76" ai="true" name="AI Patrol 1" essential="false" />
@@ -1444,10 +1444,10 @@
 			<moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" essential="false" />
 			<moveable id="120" name="Fan" essential="false" />
 			<moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" essential="false" />
-			<moveable id="122" name="Temple statue (original petrified state)" essential="false" />
+			<moveable id="122" name="Temple statue (original petrified state)" essential="false" t5m="SHIVA_STATUE"/>
 			<moveable id="123" name="Monkey with medipack" use_body_from="71" />
 			<moveable id="124" name="Monkey with key" use_body_from="71" />
-			<moveable id="127" name="Zipline handle" essential="false" />
+			<moveable id="127" name="Zipline handle" essential="false"/>
 			<moveable id="128" name="Above-water switch" essential="false" />
 			<moveable id="129" name="Above-water switch" essential="false" />
 			<moveable id="130" name="Underwater switch" essential="false" />
@@ -1579,7 +1579,7 @@
 			<moveable id="312" name="Big missile" essential="false" />
 			<moveable id="313" name="Smoke" essential="false" />
 			<moveable id="314" name="Movable Boom" essential="false" />
-			<moveable id="315" name="Lara true appearance" hidden="true" />
+			<moveable id="315" name="Lara true appearance" hidden="true" t5m="LARA_SKIN"/>
 			<moveable id="317" name="Unknown visible #317" />
 			<moveable id="318" name="Alarm light" essential="false" />
 			<moveable id="319" name="Light" essential="false" />
