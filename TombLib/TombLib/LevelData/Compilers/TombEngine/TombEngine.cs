@@ -418,7 +418,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     using (var writer = new BinaryWriter(fs))
                     {
-                        writer.Write(new byte[] { 0x54, 0x52, 0x34, 0x00 });
+                        writer.Write(new byte[] { 0x54, 0x45, 0x4E, 0x00 }); // TEN
                         writer.Write((int)inStream.Length);
                         writer.Write((int)data.Length);
                         writer.Write(data, 0, data.Length);
