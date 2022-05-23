@@ -73,10 +73,19 @@ namespace TombLib.LevelData.IO
                         var mesh = moveable.Bones[14].Mesh.Clone();
                         var oldMesh = moveable.Bones[7].Mesh.Clone();
 
+                        for (int i = 0; i < mesh.VertexPositions.Count; i++)
+                        {
+                            var pos = mesh.VertexPositions[i];
+                            pos.Y += 200;
+                            pos.Z -= 20;
+                            mesh.VertexPositions[i] = pos;
+                        }
+
+                        mesh.BoundingBox = mesh.CalculateBoundingBox();
+                        oldMesh.BoundingBox = oldMesh.CalculateBoundingBox();
+
                         moveable.Bones[7].Mesh = mesh;
-                        moveable.Meshes[7] = mesh;
                         moveable.Bones[14].Mesh = oldMesh;
-                        moveable.Meshes[14] = oldMesh;
                     }
                     break;
 
