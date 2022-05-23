@@ -4,7 +4,9 @@ Version 1.5
 Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
  * Automatically search subfolders in sample paths to find sound samples.
- * Freely allow editing block subdivisions (ED/RF) for diagonal steps.
+ * Allow editing block subdivisions (ED/RF) for diagonal steps.
+ * Allow to change light type for existing lights.
+ * Add shadow property for lights (forthcoming in TEN).
  * Flatten starting block too while using bulldozer tool. 
  * Add Alt+T hotkey to quickly show/hide texture panel.
  * Ignore incorrect anim dispatches instead of stopping level compilation.

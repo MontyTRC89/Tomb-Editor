@@ -15,7 +15,7 @@ namespace TombLib.LevelData
     public class LightInstance : PositionBasedObjectInstance, IColorable, IReplaceable, IRotateableYX
     {
         public LightQuality Quality { get; set; } = LightQuality.Default;
-        public LightType Type { get; }
+        public LightType Type { get; set; }
         public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public float Intensity { get; set; } = 0.5f;
         public float InnerRange { get; set; } = 1.0f;

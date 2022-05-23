@@ -36,18 +36,15 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            bool isTEN = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
-
-            // Disable version-specific controls
-            if (obj is Editor.InitEvent ||
-                obj is Editor.GameVersionChangedEvent ||
-                obj is Editor.LevelChangedEvent)
-                cbCastShadow.Enabled = isTEN;
 
             // Update light UI
-            if (obj is Editor.ObjectChangedEvent ||
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.ObjectChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent)
             {
+                var isTEN = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
                 var light = _editor.SelectedObject as LightInstance;
 
                 // Get light type
@@ -250,14 +247,17 @@ namespace TombEditor.ToolWindows
 
         private void cmbLightQualityChanged(object sender, EventArgs e)
         {
-            int index = cmbLightQuality.SelectedIndex;
-            LightQuality newQuality = (LightQuality)index;
-            EditorActions.UpdateLightQuality(newQuality);
+            EditorActions.UpdateLightQuality((LightQuality)cmbLightQuality.SelectedIndex);
         }
 
         private void butAddLight_Click(object sender, EventArgs e)
         {
             EditorActions.PlaceLight((LightType)cmbLightTypes.SelectedIndex);
+        }
+
+        private void cmbLightTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EditorActions.UpdateLightType((LightType)cmbLightTypes.SelectedIndex);
         }
     }
 }

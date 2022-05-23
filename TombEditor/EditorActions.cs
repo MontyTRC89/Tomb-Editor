@@ -3846,6 +3846,16 @@ namespace TombEditor
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
+        public static void UpdateLightType(LightType type)
+        {
+            var light = _editor?.SelectedObject as LightInstance;
+            if (light == null)
+                return;
+            light.Type = type;
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            _editor.ObjectChange(light, ObjectChangeType.Change);
+        }
+
         public static void EditLightColor(IWin32Window owner)
         {
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,

@@ -432,6 +432,7 @@
             this.cmbLightTypes.Size = new System.Drawing.Size(114, 23);
             this.cmbLightTypes.TabIndex = 81;
             this.toolTip.SetToolTip(this.cmbLightTypes, "Light type to place");
+            this.cmbLightTypes.SelectedIndexChanged += new System.EventHandler(this.cmbLightTypes_SelectedIndexChanged);
             // 
             // cbCastShadow
             // 
