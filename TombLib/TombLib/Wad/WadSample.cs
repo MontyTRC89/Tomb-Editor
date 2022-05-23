@@ -8,6 +8,7 @@ using TombLib.Utils;
 using System.Xml.Serialization;
 using TombLib.LevelData;
 using TombLib.Wad.Catalog;
+using NAudio.Flac;
 
 namespace TombLib.Wad
 {
@@ -220,6 +221,10 @@ namespace TombLib.Wad
                 return new WaveFileReader(dataStream);
             else if (startWord == 0x5367674f) // "OggS"
                 return new VorbisWaveReader(dataStream);
+            else if (startWord == 0x43614C66) // "fLaC"
+                return new FlacReader(dataStream);
+            else if (startWord == 0x4D524F46) // "FORM"
+                return new FlacReader(dataStream);
 
             // Mp3 files are hard to identify,
             // so let's just give that a shot if it's obviously not one of the others.
