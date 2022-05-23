@@ -80,7 +80,7 @@ namespace TombLib.Controls
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null)
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null || SwapChain.RenderException != null)
                 e.Graphics.Clear(Parent.BackColor);
             // Don't paint the background if being rendered
         }
