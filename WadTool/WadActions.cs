@@ -760,7 +760,7 @@ namespace WadTool
                 if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable) // TEN moveables sometimes need conversion procedures.
                 {
                     var mov = (obj as WadMoveable).Clone();
-                    mov.ConvertMoveable(sourceWad);
+                    mov.ConvertMoveable(sourceWad.GameVersion, sourceWad);
                     obj = mov;
                 }
 
