@@ -2431,6 +2431,31 @@
 			<anim item="63" id="20" name="STAND_TO_HOLD_AIM" />
 			<anim item="63" id="21" name="HOLD_SHOOT" />
 			<anim item="63" id="22" name="HOLD_AIM_TO_STAND" />
+			
+			<!--Temple Statue-->
+			<anim item="70" id="0" name="IDLE" />
+			<anim item="70" id="1" name="IDLE_TO_WALK_RIGHT" />
+			<anim item="70" id="2" name="WALK_TO_IDLE_RIGHT" />
+			<anim item="70" id="3" name="WALK_TO_IDLE_LEFT" />
+			<anim item="70" id="4" name="IDLE_TO_GUARD_IDLE" />
+			<anim item="70" id="5" name="GUARD_IDLE" />
+			<anim item="70" id="6" name="GUARD_IDLE_TO_IDLE" />
+			<anim item="70" id="7" name="WALK_FORWARD" />
+			<anim item="70" id="8" name="WALK_FORWARD_GUARDED" />
+			<anim item="70" id="9" name="WALK_FORWARD_TO_GUARDED_RIGHT_3" />
+			<anim item="70" id="10" name="WALK_FORWARD_TO_GUARDED_LEFT_1" />
+			<anim item="70" id="11" name="WALK_FORWARD_TO_GUARDED_LEFT_2" />
+			<anim item="70" id="12" name="WALK_FORWARD_TO_GUARDED_RIGHT_1" />
+			<anim item="70" id="13" name="WALK_FORWARD_TO_GUARDED_RIGHT_2" />
+			<anim item="70" id="14" name="INACTIVE" />
+			<anim item="70" id="15" name="WALK_FORWARD_UNGUARD_RIGHT" />
+			<anim item="70" id="16" name="WALK_FORWARD_UNGUARD_LEFT" />
+			<anim item="70" id="17" name="ATTACK_GRAB" />
+			<anim item="70" id="18" name="KILL" />
+			<anim item="70" id="19" name="ATTACK" />
+			<anim item="70" id="20" name="WALK_BACK_LEFT" />
+			<anim item="70" id="21" name="WALK_BACK_RIGHT" />
+			<anim item="70" id="22" name="DEATH" />	
 
 		</animations>
 		<states>
@@ -2653,7 +2678,18 @@
 			<state item="63" id="12" name="KNEEL_AIM" />
 			<state item="63" id="13" name="KNEEL_SHOOT" />
 			<state item="63" id="14" name="KNEEL_STOP" />
-
+			
+			<!-- Temple Statue -->
+			<state item="70" id="0" name="IDLE "/>
+			<state item="70" id="1" name="WALK_FORWARD "/>
+			<state item="70" id="2" name="GUARD_IDLE "/>
+			<state item="70" id="3" name="WALK_FORWARD_GUARDING "/>
+			<state item="70" id="4" name="INACTIVE "/>
+			<state item="70" id="5" name="ATTACK_GRAB "/>
+			<state item="70" id="6" name="KILL "/>
+			<state item="70" id="7" name="ATTACK "/>
+			<state item="70" id="8" name="WALK_BACK "/>
+			<state item="70" id="9" name="DEATH "/>
 		</states>
 	</game>
 	<game id="TR4">
@@ -7871,6 +7907,32 @@
 			<sound id="1185" name="LEVELBUILDER_CUSTOM_49" t5m="1185" />
 			<sound id="1186" name="LEVELBUILDER_CUSTOM_50" t5m="1186" />
 		</sounds>
+		<animations>
+			<!--Shiva-->
+			<anim item="244" id="0" name="IDLE" />
+			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
+			<anim item="244" id="2" name="WALK_TO_IDLE_RIGHT" />
+			<anim item="244" id="3" name="WALK_TO_IDLE_LEFT" />
+			<anim item="244" id="4" name="IDLE_TO_GUARD_IDLE" />
+			<anim item="244" id="5" name="GUARD_IDLE" />
+			<anim item="244" id="6" name="GUARD_IDLE_TO_IDLE" />
+			<anim item="244" id="7" name="WALK_FORWARD" />
+			<anim item="244" id="8" name="WALK_FORWARD_GUARDED" />
+			<anim item="244" id="9" name="WALK_FORWARD_TO_GUARDED_RIGHT_3" />
+			<anim item="244" id="10" name="WALK_FORWARD_TO_GUARDED_LEFT_1" />
+			<anim item="244" id="11" name="WALK_FORWARD_TO_GUARDED_LEFT_2" />
+			<anim item="244" id="12" name="WALK_FORWARD_TO_GUARDED_RIGHT_1" />
+			<anim item="244" id="13" name="WALK_FORWARD_TO_GUARDED_RIGHT_2" />
+			<anim item="244" id="14" name="INACTIVE" />
+			<anim item="244" id="15" name="WALK_FORWARD_UNGUARD_RIGHT" />
+			<anim item="244" id="16" name="WALK_FORWARD_UNGUARD_LEFT" />
+			<anim item="244" id="17" name="ATTACK_GRAB" />
+			<anim item="244" id="18" name="KILL" />
+			<anim item="244" id="19" name="ATTACK" />
+			<anim item="244" id="20" name="WALK_BACK_LEFT" />
+			<anim item="244" id="21" name="WALK_BACK_RIGHT" />
+			<anim item="244" id="22" name="DEATH" />	  	
+		</animations>
 		<states>
 			<!-- Lara -->
 			<state item="0" id="139" name="SHIMMY_45_OUTER_LEFT" />
@@ -7890,6 +7952,18 @@
 			<state item="0" id="153" name="CRAWL_EXIT_DOWN_STEP" />
 			<state item="0" id="154" name="CRAWL_EXIT_JUMP" />
 			<state item="0" id="155" name="CRAWL_EXIT_FLIP" />
+		
+			<!-- Shiva -->
+			<state item="244" id="0" name="IDLE "/>
+			<state item="244" id="1" name="WALK_FORWARD "/>
+			<state item="244" id="2" name="GUARD_IDLE "/>
+			<state item="244" id="3" name="WALK_FORWARD_GUARDING "/>
+			<state item="244" id="4" name="INACTIVE "/>
+			<state item="244" id="5" name="ATTACK_GRAB "/>
+			<state item="244" id="6" name="KILL "/>
+			<state item="244" id="7" name="ATTACK "/>
+			<state item="244" id="8" name="WALK_BACK "/>
+			<state item="244" id="9" name="DEATH "/>
 		</states>
 	</game>
 </xml>
