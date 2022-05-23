@@ -33,7 +33,7 @@ namespace TombLib.Wad
         {
             WadBone newBone = new WadBone();
             newBone.Name = Name;
-            newBone.Mesh = Mesh;
+            newBone.Mesh = Mesh.Clone();
             newBone.Translation = Translation;
             newBone.OpCode = OpCode;
 

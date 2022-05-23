@@ -165,18 +165,16 @@ namespace TombLib.Wad
                 property.SetValue(wadObject, newId);
             }
 
-            var textures = MeshTexturesUnique;
-
             // Add object
             if (newId is WadMoveableId)
             {
-                var mov = (WadMoveable)wadObject;
+                var mov = ((WadMoveable)wadObject).Clone();
                 mov.Meshes.ForEach(m => MergeSimilarTextures(m)); // Find texture duplicates
                 Moveables[(WadMoveableId)newId] = mov;
             }
             else if (newId is WadStaticId)
             {
-                var st = (WadStatic)wadObject;
+                var st = ((WadStatic)wadObject).Clone();
                 MergeSimilarTextures(st.Mesh); // Find texture duplicates
                 Statics[(WadStaticId)newId] = st;
             }

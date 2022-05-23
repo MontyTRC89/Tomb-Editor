@@ -750,10 +750,6 @@ namespace WadTool
                 } while (destinationWad.Contains(newIds[i]) || newIds.Take(i).Contains(newIds[i])); // There also must not be collisions with the other custom assigned ids.
             }
 
-            // HACK: Until this is fixed... https://github.com/MontyTRC89/Tomb-Editor/issues/413
-            // We just block copying of same object to another slot and warn user it's in another slot.
-            var failedIdList = new List<IWadObjectId>();
-
             // Move objects
             for (int i = 0; i < objectIdsToMove.Count; ++i)
             {
@@ -761,42 +757,24 @@ namespace WadTool
                 if (obj == null)
                     continue;
 
-                if (destinationWad.Contains(obj)) // Aforementioned HACK continues here - just add object which failed to copy to failed list
+                if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable) // TEN moveables sometimes need conversion procedures.
                 {
-                    failedIdList.Add(newIds[i]);
+                    var mov = (obj as WadMoveable).Clone();
+                    mov.ConvertMoveable(sourceWad);
+                    obj = mov;
                 }
-                else
-                {
-                    if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable)
-                        (obj as WadMoveable).ConvertMoveable(sourceWad);
 
-                    destinationWad.Add(newIds[i], obj);
-                }
+                destinationWad.Add(newIds[i], obj);
             }
 
-            // Aforementioned HACK continues here - count amount of actually copied objects
-            int actualAmountOfCopiedObjects = objectIdsToMove.Count - failedIdList.Count;
-            if (actualAmountOfCopiedObjects > 0)
-            {
-                // Update the situation
-                tool.WadChanged(WadArea.Destination);
+            // Update the situation
+            tool.WadChanged(WadArea.Destination);
 
-                string infoString = (objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.";
+            // Indicate that object is copied
+            string infoString = (objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.";
+            tool.SendMessage(infoString, PopupType.Info);
 
-                // Aforementioned HACK continues here - additionally inform user that some objects are in different slots.
-                if (failedIdList.Count > 0)
-                {
-                    infoString += "\n" + failedIdList.Count + " object" +
-                        (failedIdList.Count > 1 ? "s" : "") + " weren't copied because " +
-                        (failedIdList.Count > 1 ? "they are" : "it's") + " already in different slot" +
-                        (failedIdList.Count > 1 ? "s." : ".");
-                }
-
-                // Indicate that object is copied
-                tool.SendMessage(infoString, PopupType.Info);
-            }
-
-            return newIds.Where(item => !failedIdList.Any(failed => failed == item)).ToList();
+            return newIds.ToList();
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
