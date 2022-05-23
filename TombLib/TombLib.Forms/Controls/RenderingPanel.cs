@@ -94,16 +94,16 @@ namespace TombLib.Controls
                 return;
             }
 
-            try
+            if (SwapChain.RenderException != null)
             {
-                SwapChain.Clear(ClearColor);
-                OnDraw();
-                SwapChain.Present();
+                e.Graphics.DrawString("Rendering: Fatal error has occured." + Environment.NewLine + "Save the log file and report this error to the dev team.", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                return;
             }
-            catch (Exception ex)
-            {
-                Device.HandleException(ex);
-            }
+
+            SwapChain.Clear(ClearColor);
+            OnDraw();
+            SwapChain.Present();
         }
 
         protected virtual void OnDraw()

@@ -39,6 +39,7 @@ namespace TombLib.Rendering
         }
 
         public VectorInt2 Size { get; protected set; }
+        public Exception RenderException { get; protected set; }
 
         public abstract void Dispose();
         public abstract void Clear(Vector4 color);
