@@ -6,20 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Automation;
-using TestStack.White;
-using TestStack.White.Configuration;
-using TestStack.White.UIItems;
-using TestStack.White.UIItems.WindowItems;
-using TestStack.White.WindowsAPI;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
 	public static class NGCompiler
 	{
 		// Increase timeout for really long scripts compilation
-		static NGCompiler()
-			=> CoreAppXmlConfiguration.Instance.BusyTimeout = 40000;
+		//static NGCompiler()
+		//	=> CoreAppXmlConfiguration.Instance.BusyTimeout = 40000;
 
 		public static bool AreLibrariesRegistered()
 		{
@@ -47,79 +41,81 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			AdjustFormatting();
 
-			var ngCenter = Application.Launch(DefaultPaths.NGCExecutable); // Runs NG_Center.exe
-			return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter); // Does some actions in NG Center
+			//var ngCenter = Application.Launch(DefaultPaths.NGCExecutable); // Runs NG_Center.exe
+			//return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter); // Does some actions in NG Center
+
+			return false;
 		}
 
-		private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, Application ngCenter)
-		{
-			try
-			{
-				// FIND THE MAIN NG CENTER WINDOW
-				List<Window> windowList = ngCenter.GetWindows(); // Gets a list of all windows which belong to NG Center
-				Window mainNGCenterWindow = windowList.Find(x => x.Title.StartsWith("NG Center 1.5"));
+		//private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, Application ngCenter)
+		//{
+		//	try
+		//	{
+		//		// FIND THE MAIN NG CENTER WINDOW
+		//		List<Window> windowList = ngCenter.GetWindows(); // Gets a list of all windows which belong to NG Center
+		//		Window mainNGCenterWindow = windowList.Find(x => x.Title.StartsWith("NG Center 1.5"));
 
-				if (mainNGCenterWindow == null) // If the main window wasn't found
-				{
-					// CLOSE PROBLEM MESSAGE BOXES (if there are any)
-					windowList = ngCenter.GetWindows();
-					Window ngcProblemMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+		//		if (mainNGCenterWindow == null) // If the main window wasn't found
+		//		{
+		//			// CLOSE PROBLEM MESSAGE BOXES (if there are any)
+		//			windowList = ngCenter.GetWindows();
+		//			Window ngcProblemMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-					if (ngcProblemMessageBox != null)
-						ngcProblemMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+		//			if (ngcProblemMessageBox != null)
+		//				ngcProblemMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
-					return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
-				}
+		//			return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
+		//		}
 
-				// CLOSE THE UPDATER MESSAGE BOX (if there is one)
-				windowList = ngCenter.GetWindows();
-				Window ngcUpdateMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+		//		// CLOSE THE UPDATER MESSAGE BOX (if there is one)
+		//		windowList = ngCenter.GetWindows();
+		//		Window ngcUpdateMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				if (ngcUpdateMessageBox != null)
-					ngcUpdateMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+		//		if (ngcUpdateMessageBox != null)
+		//			ngcUpdateMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
-				// CLICK THE "Build" BUTTON
-				Button buildButton = mainNGCenterWindow.Get<Button>("Build");
-				buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
+		//		// CLICK THE "Build" BUTTON
+		//		Button buildButton = mainNGCenterWindow.Get<Button>("Build");
+		//		buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
 
-				// CHECK IF AN ERROR MESSAGE BOX APPEARED
-				windowList = ngCenter.GetWindows();
-				Window ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+		//		// CHECK IF AN ERROR MESSAGE BOX APPEARED
+		//		windowList = ngCenter.GetWindows();
+		//		Window ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				if (ngcErrorMessageBox != null) // If the first build attempt failed
-				{
-					ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
-					buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN); // Try again
+		//		if (ngcErrorMessageBox != null) // If the first build attempt failed
+		//		{
+		//			ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+		//			buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN); // Try again
 
-					// CHECK IF AN ERROR MESSAGE BOX APPEARED
-					windowList = ngCenter.GetWindows();
-					ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+		//			// CHECK IF AN ERROR MESSAGE BOX APPEARED
+		//			windowList = ngCenter.GetWindows();
+		//			ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-					if (ngcErrorMessageBox != null) // If the second build attempt failed
-						return false;
-				}
+		//			if (ngcErrorMessageBox != null) // If the second build attempt failed
+		//				return false;
+		//		}
 
-				// CLICK THE "Show Log" BUTTON AND UPDATE PATHS FROM VGE TO PROJECT
-				Button logButton = mainNGCenterWindow.Get<Button>("Show Log");
-				logButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
+		//		// CLICK THE "Show Log" BUTTON AND UPDATE PATHS FROM VGE TO PROJECT
+		//		Button logButton = mainNGCenterWindow.Get<Button>("Show Log");
+		//		logButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
 
-				UpdatePathsInsideLogs(projectEnginePath);
+		//		UpdatePathsInsideLogs(projectEnginePath);
 
-				// DONE
-				ngCenter.Close();
+		//		// DONE
+		//		ngCenter.Close();
 
-				CopyCompiledFilesToProject(projectEnginePath);
+		//		CopyCompiledFilesToProject(projectEnginePath);
 
-				await KillNotepadProcess();
+		//		await KillNotepadProcess();
 
-				return true;
-			}
-			catch (ElementNotAvailableException)
-			{
-				// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
-				return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
-			}
-		}
+		//		return true;
+		//	}
+		//	catch (ElementNotAvailableException)
+		//	{
+		//		// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
+		//		return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
+		//	}
+		//}
 
 		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
 		{
@@ -150,11 +146,11 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			_visitedFiles.Push(vgeScriptFilePath);
 
-			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string[] lines = File.ReadAllLines(vgeScriptFilePath);
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
-			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, newFileContent);
 
 			_visitedFiles.Clear();
 		}
@@ -163,12 +159,12 @@ namespace TombLib.Scripting.ClassicScript.Utils
 		{
 			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
 
-			string fileContent = File.ReadAllText(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string fileContent = File.ReadAllText(vgeScriptFilePath);
 
 			while (fileContent.Contains(" ="))
 				fileContent = fileContent.Replace(" =", "=");
 
-			File.WriteAllText(vgeScriptFilePath, fileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, fileContent);
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines)
@@ -192,7 +188,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
 
-							string[] includeLines = File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252));
+							string[] includeLines = File.ReadAllLines(includedFilePath);
 							includeLines = ReplaceIncludesWithFileContents(includeLines);
 
 							newLines.AddRange(includeLines);
@@ -220,7 +216,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			// Replace the VGE paths in the log file with the current project ones
 			string newFileContent = logFileContent.Replace(DefaultPaths.VGEDirectory, projectEnginePath);
 
-			File.WriteAllText(logFilePath, newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(logFilePath, newFileContent);
 		}
 
 		private static void CopyCompiledFilesToProject(string projectEnginePath)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Drawing.PSD;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -395,13 +394,13 @@ namespace TombLib.Utils
             { // dds image
                 return FromPfimImage(Pfim.Dds.Create(stream, new Pfim.PfimConfig()));
             }
-            else if (startBytes[0] == 0x38 && startBytes[1] == 0x42 && startBytes[2] == 0x50 && startBytes[3] == 0x53)
-            { // psd image
-                PsdFile image = new PsdFile();
-                image.Load(stream);
-                using (Image image2 = ImageDecoder.DecodeImage(image))
-                    return FromSystemDrawingImage(image2);
-            }
+            //else if (startBytes[0] == 0x38 && startBytes[1] == 0x42 && startBytes[2] == 0x50 && startBytes[3] == 0x53)
+            //{ // psd image
+			//	PsdFile image = new PsdFile();
+			//	image.Load(stream);
+			//	using (Image image2 = ImageDecoder.DecodeImage(image))
+			//		return FromSystemDrawingImage(image2);
+			//}
             else if (IsTga(startBytes))
             { // tga image
                 return FromPfimImage(Pfim.Targa.Create(stream, new Pfim.PfimConfig()));

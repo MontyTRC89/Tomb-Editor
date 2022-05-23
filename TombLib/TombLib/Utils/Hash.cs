@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HashDepot;
+using System;
 
 namespace TombLib.Utils
 {
@@ -19,7 +20,7 @@ namespace TombLib.Utils
 
         public static Hash FromByteArray(byte[] data)
         {
-            ulong result = CH.SipHash.SipHash.SipHash_2_4_UlongCast_ForcedInline(data, _keyLow, _keyHigh);
+            ulong result = XXHash.Hash64(data, _keyLow); // TODO: Check if .NET 6.0 port of this is done well.
             // TODO are 64 bit hashes really enough?
             // Seems a little bit risky.
             return new Hash { HashLow = result, HashHigh = 0 };
