@@ -10,6 +10,7 @@ Tomb Editor:
  * Flatten starting block too while using bulldozer tool. 
  * Add Alt+T hotkey to quickly show/hide texture panel.
  * Ignore incorrect anim dispatches instead of stopping level compilation.
+ * Better handling and fallback to safe mode in case of rendering errors.
  * Fix corrupted MQO imported geometry.
 
 WadTool:
