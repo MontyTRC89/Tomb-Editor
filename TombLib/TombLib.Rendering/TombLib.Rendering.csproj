@@ -1,4 +1,4 @@
-﻿<Project InitialTargets="FxCompile" Sdk="Microsoft.NET.Sdk">
+﻿<Project InitialTargets="FxCompileEx" Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
@@ -60,7 +60,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
-  <Target Name="EmbedShaderFilesTarget" AfterTargets="FxCompile;FxExport" BeforeTargets="EmbeddedResource">
+  <Target Name="EmbedShaderFilesTarget" AfterTargets="FxCompileEx;FxExport" BeforeTargets="EmbeddedResource">
     <ItemGroup>
       <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(VertexShader.Identity)', '.cso'))" Condition="'%(VertexShader.Identity)'!=''">
         <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
@@ -161,6 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.HLSL.CSharpVB" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" />
     <PackageReference Include="NLog" Version="5.0.0" />
   </ItemGroup>
+  <Import Project="FxCompileEx.targets" />
 </Project>
