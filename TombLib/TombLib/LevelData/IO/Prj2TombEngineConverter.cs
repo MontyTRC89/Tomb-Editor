@@ -80,9 +80,7 @@ namespace TombLib.LevelData.IO
                             pos.Z -= 20;
                             mesh.VertexPositions[i] = pos;
                         }
-
                         mesh.BoundingBox = mesh.CalculateBoundingBox();
-                        oldMesh.BoundingBox = oldMesh.CalculateBoundingBox();
 
                         moveable.Bones[7].Mesh = mesh;
                         moveable.Bones[14].Mesh = oldMesh;
