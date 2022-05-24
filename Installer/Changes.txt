@@ -56,6 +56,9 @@ TombIDE:
  * Fixed an issue where the Syntax Hint in Scripting Studio would extend out of bounds.
  * Fixed an issue where .backup files would be missing before compiling an unsaved script.
  * Other minor bugfixes.
+ 
+General:
+ * Stabilize gizmo positioning.
 
 Version 1.4.7
 =============
