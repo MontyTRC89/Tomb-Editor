@@ -10,7 +10,7 @@ namespace Example
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
         }

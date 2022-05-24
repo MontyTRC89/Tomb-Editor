@@ -19,7 +19,7 @@ namespace TombIDE
 			UpdateNGCompilerPaths();
 
 			Application.EnableVisualStyles();
-			Application.SetHighDpiMode(HighDpiMode.SystemAware);
+			Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			var ideConfiguration = IDEConfiguration.Load();

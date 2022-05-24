@@ -61,7 +61,7 @@ namespace TombEditor
 
                     // Setup application
                     Application.EnableVisualStyles();
-                    Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                    Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                     Application.ThreadException += (sender, e) =>

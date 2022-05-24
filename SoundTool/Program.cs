@@ -63,7 +63,7 @@ namespace SoundTool
                 mutex.WaitOne(TimeSpan.Zero, true))
             {
                 Application.EnableVisualStyles();
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
 
