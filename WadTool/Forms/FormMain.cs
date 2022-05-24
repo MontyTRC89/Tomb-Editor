@@ -658,5 +658,10 @@ namespace WadTool
             using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, (_tool.MainSelection?.Id ?? null), _tool.DestinationWad) { ShowEditingTools = true })
                 form.ShowDialog(this);
         }
+
+        private void treeDestWad_MetadataChanged(object sender, EventArgs e)
+        {
+            _tool.ToggleUnsavedChanges(true);
+        }
     }
 }

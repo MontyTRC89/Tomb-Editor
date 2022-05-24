@@ -1,4 +1,5 @@
 ﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -72,6 +73,7 @@ namespace TombLib.Wad
             WriteSpriteSequences(chunkIO, wad, spriteTable);
             WriteMoveables(chunkIO, wad, textureTable);
             WriteStatics(chunkIO, wad, textureTable);
+            WriteMetadata(chunkIO, wad);
             chunkIO.WriteChunkEnd();
         }
 
@@ -375,6 +377,25 @@ namespace TombLib.Wad
                         });
                     });
                 }
+            });
+        }
+
+        public static void WriteMetadata(ChunkWriter chunkIO, Wad2 wad)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.Metadata, () =>
+            {
+                var date = DateTime.Now;
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.Timestamp, () =>
+                {
+                    LEB128.Write(chunkIO.Raw, date.Year);
+                    LEB128.Write(chunkIO.Raw, date.Month);
+                    LEB128.Write(chunkIO.Raw, date.Day);
+                    LEB128.Write(chunkIO.Raw, date.Hour);
+                    LEB128.Write(chunkIO.Raw, date.Minute);
+                    LEB128.Write(chunkIO.Raw, date.Second);
+                });
+
+                chunkIO.WriteChunkString(Wad2Chunks.UserNotes, wad.UserNotes);
             });
         }
     }

@@ -14,6 +14,7 @@ Tomb Editor:
  * Fix corrupted MQO imported geometry.
 
 WadTool:
+ * Add embedded wad metadata: timestamp and user notes.
  * Add "Apply" button to animcommand and state change editors.
  * Add pop-up warnings in case current or imported animation has incorrect anim dispatches.
  * An option to disable packed texture padding when exporting mesh.
