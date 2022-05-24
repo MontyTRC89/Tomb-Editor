@@ -422,6 +422,9 @@ namespace TombLib.LevelData.IO
                     // Copy all sounds
                     newWad.Sounds = wad.Sounds;
 
+                    // Set comment to indicate that wad was autoconverted
+                    newWad.UserNotes = "Autoconverted from " + Path.GetFileName(source);
+
                     // Save the Wad2 
                     newFileName = Path.GetFileNameWithoutExtension(wad.FileName);
                     newPath = Path.Combine(
