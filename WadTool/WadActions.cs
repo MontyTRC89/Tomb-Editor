@@ -158,6 +158,7 @@ namespace WadTool
             // Save the wad2
             try
             {
+                wadToSave.Timestamp = DateTime.Now;
                 Wad2Writer.SaveToFile(wadToSave, outPath);
 
                 // Immediately reload new wad, if it wasn't saved before (new or imported)

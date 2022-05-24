@@ -211,6 +211,9 @@ namespace WadTool
 
                 butSave.Enabled = reallyHasUnsavedChanges;
                 saveWad2ToolStripMenuItem.Enabled = reallyHasUnsavedChanges;
+
+                if (!hasUnsavedChanges)
+                    treeDestWad.UpdateMetadata(); // Refresh timestamp
             }
             else
             {

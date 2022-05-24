@@ -111,7 +111,7 @@ namespace TombLib.Controls
                 });
         }
 
-        private void UpdateMetadata()
+        public void UpdateMetadata()
         {
             tbDate.Text = Wad?.Timestamp.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern);
             tbNotes.Text = Wad?.UserNotes;

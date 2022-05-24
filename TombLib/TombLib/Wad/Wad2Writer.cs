@@ -1,12 +1,9 @@
 ﻿using NLog;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using TombLib.IO;
 using TombLib.Utils;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -384,15 +381,14 @@ namespace TombLib.Wad
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Metadata, () =>
             {
-                var date = DateTime.Now;
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.Timestamp, () =>
                 {
-                    LEB128.Write(chunkIO.Raw, date.Year);
-                    LEB128.Write(chunkIO.Raw, date.Month);
-                    LEB128.Write(chunkIO.Raw, date.Day);
-                    LEB128.Write(chunkIO.Raw, date.Hour);
-                    LEB128.Write(chunkIO.Raw, date.Minute);
-                    LEB128.Write(chunkIO.Raw, date.Second);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Year);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Month);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Day);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Hour);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Minute);
+                    LEB128.Write(chunkIO.Raw, wad.Timestamp.Second);
                 });
 
                 chunkIO.WriteChunkString(Wad2Chunks.UserNotes, wad.UserNotes);
