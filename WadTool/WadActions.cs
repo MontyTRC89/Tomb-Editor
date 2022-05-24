@@ -743,7 +743,7 @@ namespace WadTool
                     }
                     else
                     {
-                        destinationWad.Remove(objectIdsToMove[i]);
+                        destinationWad.Remove(newIds[i]);
                         tool.WadChanged(WadArea.Destination);
                         break;
                     }
