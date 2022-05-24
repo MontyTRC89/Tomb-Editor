@@ -30,7 +30,7 @@ namespace WadTool
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
                 Application.EnableVisualStyles();
-                Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
+                Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 Application.ThreadException += (sender, e) =>
