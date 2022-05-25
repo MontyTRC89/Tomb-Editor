@@ -22,11 +22,6 @@
     </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="obj\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="SharpDX">
       <HintPath>..\..\Libs\SharpDX.dll</HintPath>
     </Reference>
@@ -59,12 +54,6 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)obj/$(ConfigurationName)/version.txt">
-      <LogicalName>version</LogicalName>
-      <Visible>false</Visible>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Catalogs\TrCatalog.xml">
@@ -139,23 +128,6 @@
     <Compile Remove="IO\SimplerChunkWriter.cs" />
     <Compile Remove="Script\ScriptCompilerTr4OrTr5.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="D:\Repositories\Tomb-Editor\TombLib\TombLib\obj/Debug/version.txt" />
-    <EmbeddedResource Remove="D:\Repositories\Tomb-Editor\TombLib\TombLib\obj/Release/version.txt" />
-  </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent>REM Create a file at "$(ProjectDir)obj/$(ConfigurationName)/version.txt" that contains information about the git version.
-git describe --tags --long --dirty &gt; "$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
-set /p HEAD=&lt;"$(SolutionDir).git/HEAD"
-set /p COMMIT_HASH=&lt;"$(SolutionDir).git/%25HEAD:~5%25"
-set /p GIT_DESCRIBE=&lt;"$(ProjectDir)obj/$(ConfigurationName)/versionGit.txt"
-(
-echo Head: %25HEAD:~5%25
-echo Commit-Hash: %25COMMIT_HASH%25
-echo Git-Describe: %25GIT_DESCRIBE%25
-)&gt;"$(ProjectDir)obj/$(ConfigurationName)/version.txt"
-SET ERRORLEVEL = 0</PreBuildEvent>
-  </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy  /s /y /i /q "$(SolutionDir)Libs\Native" "$(TargetDir)Native\"
 rmdir /s /q "$(TargetDir)runtimes"

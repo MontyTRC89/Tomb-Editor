@@ -1,9 +1,14 @@
-﻿using System;
+﻿using FlaUI.Core;
+using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Exceptions;
+using FlaUI.Core.Input;
+using FlaUI.Core.WindowsAPI;
+using FlaUI.UIA2;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,10 +16,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 {
 	public static class NGCompiler
 	{
-		// Increase timeout for really long scripts compilation
-		//static NGCompiler()
-		//	=> CoreAppXmlConfiguration.Instance.BusyTimeout = 40000;
-
 		public static bool AreLibrariesRegistered()
 		{
 			bool requiredFilesExist = File.Exists(DefaultPaths.MscomctlSystemFile)
@@ -41,81 +42,58 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			AdjustFormatting();
 
-			//var ngCenter = Application.Launch(DefaultPaths.NGCExecutable); // Runs NG_Center.exe
-			//return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter); // Does some actions in NG Center
-
-			return false;
+			using UIA2Automation automation = new();
+			var ngCenter = Application.Launch(DefaultPaths.NGCExecutable); // Runs NG_Center.exe
+			return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter); // Does some actions in NG Center
 		}
 
-		//private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, Application ngCenter)
-		//{
-		//	try
-		//	{
-		//		// FIND THE MAIN NG CENTER WINDOW
-		//		List<Window> windowList = ngCenter.GetWindows(); // Gets a list of all windows which belong to NG Center
-		//		Window mainNGCenterWindow = windowList.Find(x => x.Title.StartsWith("NG Center 1.5"));
+		private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, UIA2Automation automation, Application ngCenter)
+		{
+			try
+			{
+				Window window = ngCenter.GetAllTopLevelWindows(automation).FirstOrDefault();
 
-		//		if (mainNGCenterWindow == null) // If the main window wasn't found
-		//		{
-		//			// CLOSE PROBLEM MESSAGE BOXES (if there are any)
-		//			windowList = ngCenter.GetWindows();
-		//			Window ngcProblemMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+				if (window == null)
+					return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
 
-		//			if (ngcProblemMessageBox != null)
-		//				ngcProblemMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
+					Keyboard.Press(VirtualKeyShort.ESCAPE);
 
-		//			return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
-		//		}
+				Button buildButton = window.FindFirstDescendant(cf => cf.ByText("Build"))?.AsButton();
 
-		//		// CLOSE THE UPDATER MESSAGE BOX (if there is one)
-		//		windowList = ngCenter.GetWindows();
-		//		Window ngcUpdateMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+				if (buildButton == null)
+					return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
 
-		//		if (ngcUpdateMessageBox != null)
-		//			ngcUpdateMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+				buildButton.Click();
 
-		//		// CLICK THE "Build" BUTTON
-		//		Button buildButton = mainNGCenterWindow.Get<Button>("Build");
-		//		buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
+				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
+				{
+					Keyboard.Press(VirtualKeyShort.ESCAPE);
+					buildButton.Click();
 
-		//		// CHECK IF AN ERROR MESSAGE BOX APPEARED
-		//		windowList = ngCenter.GetWindows();
-		//		Window ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+					if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
+						return false;
+				}
 
-		//		if (ngcErrorMessageBox != null) // If the first build attempt failed
-		//		{
-		//			ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
-		//			buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN); // Try again
+				Button logButton = window.FindFirstDescendant(cf => cf.ByText("Show Log"))?.AsButton();
+				logButton.Click();
 
-		//			// CHECK IF AN ERROR MESSAGE BOX APPEARED
-		//			windowList = ngCenter.GetWindows();
-		//			ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+				UpdatePathsInsideLogs(projectEnginePath);
 
-		//			if (ngcErrorMessageBox != null) // If the second build attempt failed
-		//				return false;
-		//		}
+				ngCenter.Close();
 
-		//		// CLICK THE "Show Log" BUTTON AND UPDATE PATHS FROM VGE TO PROJECT
-		//		Button logButton = mainNGCenterWindow.Get<Button>("Show Log");
-		//		logButton.KeyIn(KeyboardInput.SpecialKeys.RETURN);
+				CopyCompiledFilesToProject(projectEnginePath);
 
-		//		UpdatePathsInsideLogs(projectEnginePath);
+				await KillNotepadProcess();
 
-		//		// DONE
-		//		ngCenter.Close();
-
-		//		CopyCompiledFilesToProject(projectEnginePath);
-
-		//		await KillNotepadProcess();
-
-		//		return true;
-		//	}
-		//	catch (ElementNotAvailableException)
-		//	{
-		//		// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
-		//		return await RunScriptedNGCenterEvents(projectEnginePath, ngCenter);
-		//	}
-		//}
+				return true;
+			}
+			catch (ElementNotAvailableException)
+			{
+				// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
+				return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
+			}
+		}
 
 		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
 		{
