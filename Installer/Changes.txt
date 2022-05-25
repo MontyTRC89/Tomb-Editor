@@ -10,9 +10,11 @@ Tomb Editor:
  * Flatten starting block too while using bulldozer tool. 
  * Add Alt+T hotkey to quickly show/hide texture panel.
  * Ignore incorrect anim dispatches instead of stopping level compilation.
+ * Better handling and fallback to safe mode in case of rendering errors.
  * Fix corrupted MQO imported geometry.
 
 WadTool:
+ * Add embedded wad metadata: timestamp and user notes.
  * Add "Apply" button to animcommand and state change editors.
  * Add pop-up warnings in case current or imported animation has incorrect anim dispatches.
  * An option to disable packed texture padding when exporting mesh.
@@ -54,6 +56,9 @@ TombIDE:
  * Fixed an issue where the Syntax Hint in Scripting Studio would extend out of bounds.
  * Fixed an issue where .backup files would be missing before compiling an unsaved script.
  * Other minor bugfixes.
+ 
+General:
+ * Stabilize gizmo positioning.
 
 Version 1.4.7
 =============

@@ -286,7 +286,14 @@ namespace TombEditor.Controls
         {
             base.InitializeRendering(device, antialias);
 
-            _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
+            // Fall back to half of the max. page count for texture allocation, if editor is in safe mode.
+            // This workaround is needed for very old PCs which have troubles with providing D3D device caps.
+
+            var texDescription = new RenderingTextureAllocator.Description();
+            if (_editor.Configuration.Rendering3D_SafeMode)
+                texDescription = new RenderingTextureAllocator.Description { Size = new VectorInt3(texDescription.Size.X, texDescription.Size.X, RenderingTextureAllocator.SafePageCount) };
+
+            _renderingTextures = device.CreateTextureAllocator(texDescription);
             _renderingStateBuffer = device.CreateStateBuffer();
             _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
 
@@ -3532,6 +3539,14 @@ namespace TombEditor.Controls
             if (_editor == null || _editor.Level == null || _editor.SelectedRoom == null || _legacyDevice == null)
                 return;
 
+            // If any render exceptions were raised, bring app into safe mode and bypass rendering.
+            if (SwapChain.RenderException != null)
+            {
+                if (!_editor.Configuration.Rendering3D_SafeMode)
+                    _editor.Configuration.Rendering3D_SafeMode = true;
+                return;
+            }
+
             _watch.Restart();
 
             // New rendering setup
@@ -3675,8 +3690,6 @@ namespace TombEditor.Controls
             // At last, construct additional labels and draw all in-game text
             DrawText(roomsToDraw, textToDraw);
         }
-
-
 
         private static float GetFloorHeight(Room room, Vector3 position)
         {

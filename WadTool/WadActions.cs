@@ -158,6 +158,7 @@ namespace WadTool
             // Save the wad2
             try
             {
+                wadToSave.Timestamp = DateTime.Now;
                 Wad2Writer.SaveToFile(wadToSave, outPath);
 
                 // Immediately reload new wad, if it wasn't saved before (new or imported)
@@ -743,7 +744,7 @@ namespace WadTool
                     }
                     else
                     {
-                        destinationWad.Remove(objectIdsToMove[i]);
+                        destinationWad.Remove(newIds[i]);
                         tool.WadChanged(WadArea.Destination);
                         break;
                     }
@@ -760,7 +761,7 @@ namespace WadTool
                 if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable) // TEN moveables sometimes need conversion procedures.
                 {
                     var mov = (obj as WadMoveable).Clone();
-                    mov.ConvertMoveable(sourceWad);
+                    mov.ConvertMoveable(sourceWad.GameVersion, sourceWad);
                     obj = mov;
                 }
 

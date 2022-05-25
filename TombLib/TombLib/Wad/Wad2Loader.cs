@@ -28,6 +28,10 @@ namespace TombLib.Wad
                 }
             }
 
+            // Set timestamp as file creation time, if metadata is missing
+            if (result.Timestamp == DateTime.MinValue)
+                result.Timestamp = File.GetLastWriteTime(fileName);
+
             return result;
         }
 
@@ -47,7 +51,7 @@ namespace TombLib.Wad
 
         private static Wad2 LoadWad2(ChunkReader chunkIO)
         {
-            var wad = new Wad2();
+            var wad = new Wad2() { Timestamp = DateTime.MinValue };
 
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSprite> sprites = null;
@@ -67,6 +71,8 @@ namespace TombLib.Wad
                     incompatible = ((SoundSystem)chunkIO.ReadChunkLong(chunkSize)) == SoundSystem.None;
                     return true;
                 }
+                else if (LoadMetadata(chunkIO, id, wad))
+                    return true;
                 else if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
                 else if (LoadSprites(chunkIO, id, wad, ref sprites))
@@ -85,6 +91,36 @@ namespace TombLib.Wad
 
             wad.HasUnknownData = chunkIO.UnknownChunksFound;
             return wad;
+        }
+
+        private static bool LoadMetadata(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        {
+            if (idOuter != Wad2Chunks.Metadata)
+                return false;
+
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id == Wad2Chunks.Timestamp)
+                {
+                    wad.Timestamp = new DateTime(LEB128.ReadInt(chunkIO.Raw),   // Year
+                                                 LEB128.ReadInt(chunkIO.Raw),   // Month
+                                                 LEB128.ReadInt(chunkIO.Raw),   // Day
+                                                 LEB128.ReadInt(chunkIO.Raw),   // Hours
+                                                 LEB128.ReadInt(chunkIO.Raw),   // Minutes
+                                                 LEB128.ReadInt(chunkIO.Raw));  // Seconds
+
+                    chunkIO.ReadChunks((id2, chunkSize2) => { return false; });
+                    return true;
+                }
+                else if (id == Wad2Chunks.UserNotes)
+                {
+                    wad.UserNotes = chunkIO.ReadChunkString(chunkSize);
+                    return true;
+                }
+                else
+                    return false;
+            });
+            return true;
         }
 
         private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadTexture> outTextures)

@@ -80,7 +80,7 @@ namespace TombLib.Controls
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null)
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null || SwapChain.RenderException != null)
                 e.Graphics.Clear(Parent.BackColor);
             // Don't paint the background if being rendered
         }
@@ -94,16 +94,17 @@ namespace TombLib.Controls
                 return;
             }
 
-            try
+            if (SwapChain.RenderException != null)
             {
-                SwapChain.Clear(ClearColor);
+                e.Graphics.DrawString("Rendering: Fatal error has occured." + Environment.NewLine + "Save the log file and report this error to the dev team.", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
                 OnDraw();
-                SwapChain.Present();
+                return;
             }
-            catch (Exception ex)
-            {
-                Device.HandleException(ex);
-            }
+
+            SwapChain.Clear(ClearColor);
+            OnDraw();
+            SwapChain.Present();
         }
 
         protected virtual void OnDraw()

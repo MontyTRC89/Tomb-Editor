@@ -82,6 +82,7 @@ namespace TombEditor
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
+        public bool Rendering3D_SafeMode { get; set; } = false;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;

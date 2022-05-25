@@ -1,4 +1,5 @@
-﻿using SharpDX.Direct3D11;
+﻿using NLog;
+using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace TombLib.Rendering.DirectX11
 {
     public class Dx11RenderingSwapChain : RenderingSwapChain
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public readonly Dx11RenderingDevice Device;
         public readonly SwapChain SwapChain;
         public Texture2D BackBuffer;
@@ -25,6 +28,7 @@ namespace TombLib.Rendering.DirectX11
         {
             Device = device;
             Size = description.Size;
+            RenderException = null;
             SwapChain = new SwapChain(device.Factory, device.Device,
                 new SwapChainDescription
                 {
@@ -110,7 +114,48 @@ namespace TombLib.Rendering.DirectX11
 
         public override void Present()
         {
-            SwapChain.Present(0, PresentFlags.None);
+            try
+            {
+                SwapChain.Present(0, PresentFlags.None);
+            }
+            catch (Exception ex)
+            {
+                if (RenderException == null)
+                {
+                    string message = string.Empty;
+
+                    switch (unchecked((uint)ex.HResult))
+                    {
+                        case 0x887A0005:
+                            message = "Renderer unexpectedly stopped due to DXGI_ERROR_DEVICE_REMOVED exception. Error code: " + Device.Device.DeviceRemovedReason.Code;
+                            break;
+
+                        case 0x887A0020:
+                            message = "Rendering device was lost due to DXGI_ERROR_DRIVER_INTERNAL_ERROR exception. Error code: " + Device.Device.DeviceRemovedReason.Code;
+                            break;
+
+                        case 0x887A0006:
+                            message = "Rendering device stopped responding due to DXGI_ERROR_DEVICE_HUNG exception.";
+                            break;
+
+                        case 0x887A0007:
+                            message = "Rendering device was lost due to DXGI_ERROR_DEVICE_RESET exception.";
+                            break;
+
+                        case 0x887A0001:
+                            message = "Rendering device received invalid call. Possibly one of the shaders was badly modified.";
+                            break;
+
+                        default:
+                            message = "Unknown error was encountered while rendering.";
+                            break;
+                    }
+
+                    message += "\n" + "Additional message: " + ex.Message;
+                    logger.Error(message);
+                    RenderException = ex;
+                }
+            }
         }
 
         public override void Resize(VectorInt2 newSize)

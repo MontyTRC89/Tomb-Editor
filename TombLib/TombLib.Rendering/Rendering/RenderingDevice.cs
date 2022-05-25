@@ -10,8 +10,6 @@ namespace TombLib.Rendering
     public abstract class RenderingDevice : IDisposable
     {
         public abstract void Dispose();
-        public abstract void HandleException(Exception ex);
-
         public abstract RenderingSwapChain CreateSwapChain(RenderingSwapChain.Description description);
         public abstract RenderingTextureAllocator CreateTextureAllocator(RenderingTextureAllocator.Description description);
         public abstract RenderingStateBuffer CreateStateBuffer();

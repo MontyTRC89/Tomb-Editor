@@ -22,14 +22,17 @@ namespace TombLib.Wad
 
     public class Wad2
     {
-        public bool HasUnknownData { get; set; } = false;
         public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
 
-        public WadSounds Sounds { get; set; }
         public string FileName { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public string UserNotes { get; set; } = string.Empty;
+        public bool HasUnknownData { get; set; } = false;
+
+        public WadSounds Sounds { get; set; }
 
         public Wad2()
         {
@@ -109,13 +112,17 @@ namespace TombLib.Wad
 
                 var oldWad = new Tr4Wad.Tr4Wad();
                 oldWad.LoadWad(fileName);
-                return Tr4WadOperations.ConvertTr4Wad(oldWad, progressReporter);
+                var newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, progressReporter);
+                newWad.Timestamp = File.GetLastWriteTime(fileName);
+                return newWad;
             }
             else
             {
                 var originalLevel = new TrLevel();
                 originalLevel.LoadLevel(fileName, allowTRNGDecryption);
-                return TrLevelOperations.ConvertTrLevel(originalLevel);
+                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
+                newWad.Timestamp = File.GetLastWriteTime(fileName);
+                return newWad;
             }
         }
 

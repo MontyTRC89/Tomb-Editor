@@ -47,9 +47,12 @@ namespace TombLib.LevelData.IO
             return newProject;
         }
 
-        public static WadMoveable ConvertMoveable(this WadMoveable moveable, Wad2 refWad, IProgressReporter progressReporter = null)
+        public static WadMoveable ConvertMoveable(this WadMoveable moveable, TRVersion.Game sourceVersion, Wad2 refWad, IProgressReporter progressReporter = null)
         {
-            string newSlotName = TrCatalog.GetMoveableTombEngineSlot(refWad.GameVersion, moveable.Id.TypeId);
+            if (sourceVersion == TRVersion.Game.TombEngine)
+                return moveable;
+
+            string newSlotName = TrCatalog.GetMoveableTombEngineSlot(sourceVersion, moveable.Id.TypeId);
 
             switch (newSlotName)
             {
@@ -65,7 +68,7 @@ namespace TombLib.LevelData.IO
                         if (moveable.Bones.Count < 15)
                             break;
 
-                        progressReporter?.ReportInfo("    Copying mesh #14 to mesh #7 for " + newSlotName);
+                        progressReporter?.ReportInfo("    Swapping back holster mesh #14 to mesh #7 for " + newSlotName);
 
                         var mesh = moveable.Bones[14].Mesh.Clone();
                         var oldMesh = moveable.Bones[7].Mesh.Clone();
@@ -73,14 +76,14 @@ namespace TombLib.LevelData.IO
                         for (int i = 0; i < mesh.VertexPositions.Count; i++)
                         {
                             var pos = mesh.VertexPositions[i];
-                            pos.Y += 256;
+                            pos.Y += 200;
+                            pos.Z -= 20;
                             mesh.VertexPositions[i] = pos;
                         }
+                        mesh.BoundingBox = mesh.CalculateBoundingBox();
 
                         moveable.Bones[7].Mesh = mesh;
-                        moveable.Meshes[7] = mesh;
                         moveable.Bones[14].Mesh = oldMesh;
-                        moveable.Meshes[14] = oldMesh;
                     }
                     break;
 
@@ -92,6 +95,9 @@ namespace TombLib.LevelData.IO
                 case "LARA_HOLSTERS_REVOLVER":
                     {
                         if (moveable.Bones.Count <= 8)
+                            break;
+
+                        if (!refWad.Moveables.ContainsKey(new WadMoveableId(0)))
                             break;
 
                         progressReporter?.ReportInfo("    Copying holsters meshes for " + newSlotName);
@@ -324,7 +330,7 @@ namespace TombLib.LevelData.IO
                             continue;
                         }
 
-                        moveable.Value.ConvertMoveable(wad, progressReporter);
+                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, referenceWad, progressReporter);
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
@@ -413,6 +419,9 @@ namespace TombLib.LevelData.IO
 
                     // Copy all sounds
                     newWad.Sounds = wad.Sounds;
+
+                    // Set comment to indicate that wad was autoconverted
+                    newWad.UserNotes = "Autoconverted from " + Path.GetFileName(source);
 
                     // Save the Wad2 
                     newFileName = Path.GetFileNameWithoutExtension(wad.FileName);

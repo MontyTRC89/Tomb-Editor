@@ -9,6 +9,7 @@ using TombLib.Wad;
 using System.Drawing;
 using DarkUI.Config;
 using TombLib.Forms;
+using System.Globalization;
 
 namespace TombLib.Controls
 {
@@ -19,10 +20,19 @@ namespace TombLib.Controls
         private DarkComboBox suggestedGameVersionComboBox;
         private DarkLabel darkLabel1;
         private DarkButton butSearch;
-
-        public event EventHandler ClickOnEmpty;
+        private DarkTextBox tbDate;
+        private DarkLabel darkLabel3;
+        private DarkTextBox tbNotes;
+        private DarkLabel darkLabel2;
+        private DarkPanel panelMetadata;
+        private DarkPanel panelTree;
+        private DarkPanel panelVersion;
 
         public bool ItemSelected => tree.SelectedNodes.Count > 0 && tree.SelectedNodes[0].Nodes.Count == 0;
+
+        [Category("Behavior")]
+        [DefaultValue(true)]
+        public bool ReadOnly { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Wad2 Wad
@@ -42,6 +52,7 @@ namespace TombLib.Controls
                      ControlStyles.UserPaint, true);
 
             tree.SelectedNodes.CollectionChanged += (s, e) => { if (!_changing) SelectedWadObjectIdsChanged?.Invoke(this, EventArgs.Empty); };
+            tbNotes.TextChanged +=(s, e) => { MetadataChanged?.Invoke(this, EventArgs.Empty); };
 
             // Populate game version
             foreach (var gameVersion in TRVersion.NativeVersions)
@@ -50,17 +61,18 @@ namespace TombLib.Controls
 
         public IEnumerable<IWadObjectId> SelectedWadObjectIds => tree.SelectedNodes.Select(node => node.Tag).OfType<IWadObjectId>();
 
+        public event EventHandler ClickOnEmpty;
         public event EventHandler SelectedWadObjectIdsChanged;
+        public event EventHandler MetadataChanged;
 
         public void UpdateContent()
         {
             bool wadLoaded = Wad != null;
-            tree.Visible = wadLoaded;
-            tree.Enabled = wadLoaded;
-            suggestedGameVersionComboBox.Visible = wadLoaded;
-            suggestedGameVersionComboBox.Enabled = wadLoaded;
-            darkLabel1.Visible = wadLoaded;
-            butSearch.Visible = wadLoaded;
+            panelVersion.Visible = wadLoaded;
+            panelMetadata.Visible = wadLoaded;
+            panelTree.Visible = wadLoaded;
+
+            tbNotes.ReadOnly = ReadOnly;
 
             // Update game version control
             if (wadLoaded)
@@ -70,6 +82,9 @@ namespace TombLib.Controls
             }
             else
                 suggestedGameVersionComboBox.SelectedItem = null;
+
+            // Update metadata
+            UpdateMetadata();
 
             // Update tree
             KeepSelection(() =>
@@ -94,6 +109,12 @@ namespace TombLib.Controls
 
                     tree.Nodes.AddRange(nodes);
                 });
+        }
+
+        public void UpdateMetadata()
+        {
+            tbDate.Text = Wad?.Timestamp.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern);
+            tbNotes.Text = Wad?.UserNotes;
         }
 
         private static DarkTreeNode AddOrReuseChild(IList<DarkTreeNode> nodes, string text)
@@ -241,20 +262,27 @@ namespace TombLib.Controls
             this.suggestedGameVersionComboBox = new DarkUI.Controls.DarkComboBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butSearch = new DarkUI.Controls.DarkButton();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.tbNotes = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
+            this.tbDate = new DarkUI.Controls.DarkTextBox();
+            this.panelMetadata = new DarkUI.Controls.DarkPanel();
+            this.panelTree = new DarkUI.Controls.DarkPanel();
+            this.panelVersion = new DarkUI.Controls.DarkPanel();
+            this.panelMetadata.SuspendLayout();
+            this.panelTree.SuspendLayout();
+            this.panelVersion.SuspendLayout();
             this.SuspendLayout();
             // 
             // tree
             // 
-            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tree.Enabled = false;
+            this.tree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tree.ExpandOnDoubleClick = false;
-            this.tree.Location = new System.Drawing.Point(0, 30);
+            this.tree.Location = new System.Drawing.Point(0, 0);
             this.tree.MaxDragChange = 20;
             this.tree.MultiSelect = true;
             this.tree.Name = "tree";
-            this.tree.Size = new System.Drawing.Size(150, 120);
+            this.tree.Size = new System.Drawing.Size(288, 561);
             this.tree.TabIndex = 1;
             this.tree.Click += new System.EventHandler(this.tree_Click);
             this.tree.DoubleClick += new System.EventHandler(this.tree_DoubleClick);
@@ -267,11 +295,10 @@ namespace TombLib.Controls
             // 
             this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.suggestedGameVersionComboBox.Enabled = false;
             this.suggestedGameVersionComboBox.FormattingEnabled = true;
-            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(84, 3);
+            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(81, 3);
             this.suggestedGameVersionComboBox.Name = "suggestedGameVersionComboBox";
-            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(39, 21);
+            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(178, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
             this.suggestedGameVersionComboBox.Resize += new System.EventHandler(this.suggestedGameVersionComboBox_Resize);
@@ -280,7 +307,7 @@ namespace TombLib.Controls
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 6);
+            this.darkLabel1.Location = new System.Drawing.Point(0, 6);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(75, 13);
             this.darkLabel1.TabIndex = 3;
@@ -291,22 +318,102 @@ namespace TombLib.Controls
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Checked = false;
             this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(129, 3);
+            this.butSearch.Location = new System.Drawing.Point(265, 3);
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(21, 21);
             this.butSearch.TabIndex = 5;
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
+            // darkLabel2
+            // 
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.BackColor = System.Drawing.Color.Transparent;
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(0, 7);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(34, 13);
+            this.darkLabel2.TabIndex = 0;
+            this.darkLabel2.Text = "Date:";
+            // 
+            // tbNotes
+            // 
+            this.tbNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbNotes.Location = new System.Drawing.Point(40, 33);
+            this.tbNotes.Name = "tbNotes";
+            this.tbNotes.Size = new System.Drawing.Size(248, 22);
+            this.tbNotes.TabIndex = 1;
+            this.tbNotes.TextChanged += new System.EventHandler(this.tbNotes_TextChanged);
+            // 
+            // darkLabel3
+            // 
+            this.darkLabel3.AutoSize = true;
+            this.darkLabel3.BackColor = System.Drawing.Color.Transparent;
+            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel3.Location = new System.Drawing.Point(0, 35);
+            this.darkLabel3.Name = "darkLabel3";
+            this.darkLabel3.Size = new System.Drawing.Size(40, 13);
+            this.darkLabel3.TabIndex = 2;
+            this.darkLabel3.Text = "Notes:";
+            // 
+            // tbDate
+            // 
+            this.tbDate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbDate.Location = new System.Drawing.Point(40, 5);
+            this.tbDate.Name = "tbDate";
+            this.tbDate.ReadOnly = true;
+            this.tbDate.Size = new System.Drawing.Size(248, 22);
+            this.tbDate.TabIndex = 3;
+            // 
+            // panelMetadata
+            // 
+            this.panelMetadata.Controls.Add(this.tbDate);
+            this.panelMetadata.Controls.Add(this.darkLabel3);
+            this.panelMetadata.Controls.Add(this.darkLabel2);
+            this.panelMetadata.Controls.Add(this.tbNotes);
+            this.panelMetadata.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelMetadata.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.panelMetadata.Location = new System.Drawing.Point(0, 591);
+            this.panelMetadata.Name = "panelMetadata";
+            this.panelMetadata.Size = new System.Drawing.Size(288, 56);
+            this.panelMetadata.TabIndex = 11;
+            // 
+            // panelTree
+            // 
+            this.panelTree.Controls.Add(this.tree);
+            this.panelTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTree.Location = new System.Drawing.Point(0, 30);
+            this.panelTree.Name = "panelTree";
+            this.panelTree.Size = new System.Drawing.Size(288, 561);
+            this.panelTree.TabIndex = 12;
+            // 
+            // panelVersion
+            // 
+            this.panelVersion.Controls.Add(this.suggestedGameVersionComboBox);
+            this.panelVersion.Controls.Add(this.darkLabel1);
+            this.panelVersion.Controls.Add(this.butSearch);
+            this.panelVersion.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelVersion.Location = new System.Drawing.Point(0, 0);
+            this.panelVersion.Margin = new System.Windows.Forms.Padding(0);
+            this.panelVersion.Name = "panelVersion";
+            this.panelVersion.Size = new System.Drawing.Size(288, 30);
+            this.panelVersion.TabIndex = 13;
+            // 
             // WadTreeView
             // 
-            this.Controls.Add(this.butSearch);
-            this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.suggestedGameVersionComboBox);
-            this.Controls.Add(this.tree);
+            this.Controls.Add(this.panelTree);
+            this.Controls.Add(this.panelVersion);
+            this.Controls.Add(this.panelMetadata);
             this.Name = "WadTreeView";
+            this.Size = new System.Drawing.Size(288, 647);
             this.Click += new System.EventHandler(this.WadTreeView_Click);
+            this.panelMetadata.ResumeLayout(false);
+            this.panelMetadata.PerformLayout();
+            this.panelTree.ResumeLayout(false);
+            this.panelVersion.ResumeLayout(false);
+            this.panelVersion.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -356,8 +463,13 @@ namespace TombLib.Controls
         private void suggestedGameVersionComboBox_Resize(object sender, EventArgs e)
         {
             butSearch.Size = new Size(suggestedGameVersionComboBox.Size.Height, suggestedGameVersionComboBox.Size.Height);
-            butSearch.Location = new Point(ClientSize.Width - butSearch.Size.Width - Padding.Right, suggestedGameVersionComboBox.Location.Y);
-            suggestedGameVersionComboBox.Size = new Size(ClientSize.Width - suggestedGameVersionComboBox.Location.X - butSearch.Size.Width - Padding.Right - 5, suggestedGameVersionComboBox.Size.Height);
+            butSearch.Location = new Point(ClientSize.Width - butSearch.Size.Width - Padding.Right - Margin.Right, suggestedGameVersionComboBox.Location.Y);
+            suggestedGameVersionComboBox.Size = new Size(ClientSize.Width - suggestedGameVersionComboBox.Location.X - butSearch.Size.Width - Padding.Right - Margin.Right - 5, suggestedGameVersionComboBox.Size.Height);
+        }
+
+        private void tbNotes_TextChanged(object sender, EventArgs e)
+        {
+            Wad.UserNotes = tbNotes.Text;
         }
     }
 }

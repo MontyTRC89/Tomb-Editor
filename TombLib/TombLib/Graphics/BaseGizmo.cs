@@ -73,6 +73,7 @@ namespace TombLib.Graphics
 
         private GizmoMode _mode;
         private Vector3 _scaleBase;
+        private Vector3 _initialPosition;
         private float _rotationLastMouseAngle;
         private float _rotationLastMouseRadius;
         private float _rotationPickAngle;
@@ -142,10 +143,12 @@ namespace TombLib.Graphics
             if (!DrawGizmo || _mode == GizmoMode.None)
                 return false;
 
+            // Init movement variables
             bool upside = Orientation == GizmoOrientation.UpsideDown;
-            bool flippedScale = false;
+            var arrowShift = (upside ? -Size : Size) * _arrowHeadOffsetMultiplier;
 
             // Flip sizing dimensions if object is rotateable on Y axis
+            bool flippedScale = false;
             if ((_mode == GizmoMode.ScaleX || _mode == GizmoMode.ScaleZ) && SupportRotationY)
                 flippedScale = MathC.RadToDeg(RotationY) % 180.0f >= 45.0f;
 
@@ -157,8 +160,9 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
                         {
-                            GizmoMove(new Vector3(intersection.X - (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, Position.Y, Position.Z));
-                            GizmoMoveDelta(new Vector3(intersection.X - (upside ? -Size : Size) * _arrowHeadOffsetMultiplier - Position.X, 0.0f, 0.0f));
+                            var delta = _initialPosition.X - arrowShift;
+                            GizmoMove(new Vector3(intersection.X - arrowShift - delta, Position.Y, Position.Z));
+                            GizmoMoveDelta(new Vector3(intersection.X - arrowShift - delta - Position.X, 0.0f, 0.0f));
                         }
                     }
                     break;
@@ -167,8 +171,9 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
                         {
-                            GizmoMove(new Vector3(Position.X, intersection.Y - (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, Position.Z));
-                            GizmoMoveDelta(new Vector3(0.0f, intersection.Y - (upside ? -Size : Size) * _arrowHeadOffsetMultiplier - Position.Y, 0.0f));
+                            var delta = _initialPosition.Y - arrowShift;
+                            GizmoMove(new Vector3(Position.X, intersection.Y - arrowShift - delta, Position.Z));
+                            GizmoMoveDelta(new Vector3(0.0f, intersection.Y - arrowShift - delta - Position.Y, 0.0f));
                         }
                     }
                     break;
@@ -177,8 +182,9 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
                         {
-                            GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + (upside ? -Size : Size) * _arrowHeadOffsetMultiplier));
-                            GizmoMoveDelta(new Vector3(0.0f, 0.0f, intersection.Z + (upside ? -Size : Size) * _arrowHeadOffsetMultiplier - Position.Z));
+                            var delta = _initialPosition.Z - arrowShift;
+                            GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z - arrowShift - delta));
+                            GizmoMoveDelta(new Vector3(0.0f, 0.0f, intersection.Z - arrowShift - delta - Position.Z));
                         }
                     }
                     break;
@@ -186,27 +192,33 @@ namespace TombLib.Graphics
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
+                        {
                             if (flippedScale)
                                 GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                             else
                                 GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                        }
                     }
                     break;
                 case GizmoMode.ScaleY:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
+                        {
                             GizmoScaleY(_scaleBase.Y * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
+                        }
                     }
                     break;
                 case GizmoMode.ScaleZ:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
+                        {
                             if (flippedScale)
                                 GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
                             else
                                 GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                        }
                     }
                     break;
                 case GizmoMode.RotateY:
@@ -274,54 +286,78 @@ namespace TombLib.Graphics
             return oldMode != GizmoMode.None;
         }
 
+        private void CalculateInitialPosition(Vector3 pickPosition)
+        { 
+            if (_mode == GizmoMode.None) 
+                _initialPosition = pickPosition - Position; 
+        }
+
         public PickingResultGizmo DoPicking(Ray ray)
         {
             if (!DrawGizmo)
                 return null;
 
-            bool upside = Orientation == GizmoOrientation.UpsideDown;
+            // Init movement variables
+            var pickPos = Vector3.Zero;
+            var upsideSize = Orientation == GizmoOrientation.UpsideDown ? -Size : Size;
+            var arrowShift = upsideSize * _arrowHeadOffsetMultiplier;
+            var scaleShift = upsideSize  / 2.0f;
 
             // Check for translation
             if (SupportTranslateX)
             {
-                float unused;
-                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * (upside ? - Size : Size) * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.5f);
-                if (Collision.RayIntersectsSphere(ray, sphereX, out unused))
+                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * arrowShift, TranslationConeSize / 1.5f);
+                if (Collision.RayIntersectsSphere(ray, sphereX, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.TranslateX);
+                }
             }
             if (SupportTranslateY)
             {
-                float unused;
-                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.5f);
-                if (Collision.RayIntersectsSphere(ray, sphereY, out unused))
+                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * arrowShift, TranslationConeSize / 1.5f);
+                if (Collision.RayIntersectsSphere(ray, sphereY, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.TranslateY);
+                }
             }
             if (SupportTranslateZ)
             {
-                float unused;
-                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.5f);
-                if (Collision.RayIntersectsSphere(ray, sphereZ, out unused))
+                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * arrowShift, TranslationConeSize / 1.5f);
+                if (Collision.RayIntersectsSphere(ray, sphereZ, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.TranslateZ);
+                }
             }
 
             // Check for scale
             if (SupportScale)
             {
-                float unused;
-                BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * (upside ? -Size : Size) / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                     Position + Vector3.UnitX * (upside ? -Size : Size) / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (Collision.RayIntersectsBox(ray, scaleX, out unused))
+                BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * scaleShift - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position + Vector3.UnitX * scaleShift + new Vector3(ScaleCubeSize / 2.0f));
+                if (Collision.RayIntersectsBox(ray, scaleX, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.ScaleX);
+                }
 
-                BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * (upside ? -Size : Size) / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                     Position + Vector3.UnitY * (upside ? -Size : Size) / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (Collision.RayIntersectsBox(ray, scaleY, out unused))
+                BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * scaleShift - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position + Vector3.UnitY * scaleShift + new Vector3(ScaleCubeSize / 2.0f));
+                if (Collision.RayIntersectsBox(ray, scaleY, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.ScaleY);
+                }
 
-                BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * (upside ? -Size : Size) / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                     Position - Vector3.UnitZ * (upside ? -Size : Size) / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (Collision.RayIntersectsBox(ray, scaleZ, out unused))
+                BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * scaleShift - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position - Vector3.UnitZ * scaleShift + new Vector3(ScaleCubeSize / 2.0f));
+                if (Collision.RayIntersectsBox(ray, scaleZ, out pickPos))
+                {
+                    CalculateInitialPosition(pickPos);
                     return new PickingResultGizmo(GizmoMode.ScaleZ);
+                }
             }
 
             // Check for rotation
