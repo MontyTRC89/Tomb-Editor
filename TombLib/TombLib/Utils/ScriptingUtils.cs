@@ -18,7 +18,7 @@ namespace TombLib.Utils
                 if (!File.Exists(path))
                     return result;
 
-                var lines = File.ReadAllLines(path);
+                var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
 
                 foreach (string l in lines)
                 {

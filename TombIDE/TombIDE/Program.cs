@@ -16,6 +16,8 @@ namespace TombIDE
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 			UpdateNGCompilerPaths();
 
 			Application.EnableVisualStyles();

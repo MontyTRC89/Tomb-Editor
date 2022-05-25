@@ -64,6 +64,9 @@
     <Content Include="TIDE.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombIDE.ProjectMaster\TombIDE.ProjectMaster.csproj" />
     <ProjectReference Include="..\TombIDE.ScriptingStudio\TombIDE.ScriptingStudio.csproj" />

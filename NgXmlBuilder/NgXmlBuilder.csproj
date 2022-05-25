@@ -156,6 +156,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="xml.ico" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <None Update="NG\STATE_ID_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

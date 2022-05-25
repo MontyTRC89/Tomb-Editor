@@ -36,5 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 </Project>

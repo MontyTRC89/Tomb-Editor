@@ -15,6 +15,9 @@
     <OutputPath>..\..\BuildRelease\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>

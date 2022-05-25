@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
@@ -18,6 +19,8 @@ namespace SoundTool
         [STAThread]
         public static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             var extensions = new List<string>() { ".xml", ".txt" };
 
             string startFile = null;

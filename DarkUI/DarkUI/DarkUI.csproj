@@ -115,4 +115,7 @@
   <ItemGroup>
     <Content Include="Resources\grip_fill.png" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
 </Project>

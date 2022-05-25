@@ -24,6 +24,7 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <Compile Update="LuaTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

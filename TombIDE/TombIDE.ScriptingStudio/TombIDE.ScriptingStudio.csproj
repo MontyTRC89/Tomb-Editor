@@ -145,4 +145,7 @@
     <Compile Remove="UI\UIElement.cs" />
     <EmbeddedResource Remove="StudioBase.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
 </Project>

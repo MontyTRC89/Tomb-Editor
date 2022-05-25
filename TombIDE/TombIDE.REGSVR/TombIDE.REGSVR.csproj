@@ -49,6 +49,9 @@
     <EmbeddedResource Include="COM\Richtx32.ocx" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />
   </ItemGroup>
 </Project>
