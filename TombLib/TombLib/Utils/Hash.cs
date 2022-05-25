@@ -5,10 +5,6 @@ namespace TombLib.Utils
 {
     public struct Hash : IEquatable<Hash>
     {
-        private static readonly Random _rng = new Random();
-        private static readonly ulong _keyLow = (ulong)_rng.Next() ^ ((ulong)_rng.Next() << 32);
-        private static readonly ulong _keyHigh = (ulong)_rng.Next() ^ ((ulong)_rng.Next() << 32);
-
         public ulong HashLow;
         public ulong HashHigh;
 
@@ -20,7 +16,9 @@ namespace TombLib.Utils
 
         public static Hash FromByteArray(byte[] data)
         {
-            ulong result = XXHash.Hash64(data, _keyLow); // TODO: Check if .NET 6.0 port of this is done well.
+            byte[] key = { 0x10, 0x21, 0x32, 0x23, 0x14, 0x25, 0x36, 0x27, 0x18, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+
+            ulong result = SipHash24.Hash64(data, key); // TODO: Check if .NET 6.0 port of this is done well.
             // TODO are 64 bit hashes really enough?
             // Seems a little bit risky.
             return new Hash { HashLow = result, HashHigh = 0 };
