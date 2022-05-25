@@ -126,13 +126,13 @@
     <PackageReference Include="BunLabs.NAudio.Flac.EonZeNx" Version="3.0.1" />
     <PackageReference Include="HashDepot" Version="2.0.3" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="11.1.2" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageReference Include="NetMiniZ" Version="1.4.0-preview.2" />
     <PackageReference Include="NetMiniZ.Native" Version="1.4.0" />
     <PackageReference Include="NLog" Version="5.0.0" />
     <PackageReference Include="NVorbis" Version="0.10.4" />
-    <PackageReference Include="Pfim" Version="0.10.3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="GeometryIO\IOBone.cs" />

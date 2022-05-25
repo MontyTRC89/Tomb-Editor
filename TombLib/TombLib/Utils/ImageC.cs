@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ColorThiefDotNet;
+using ImageMagick;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -6,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using ColorThiefDotNet;
 using TombLib.LevelData;
 
 namespace TombLib.Utils
@@ -347,36 +348,11 @@ namespace TombLib.Utils
             return true;
         }
 
-        private static ImageC FromPfimImage(Pfim.IImage image)
+        private static ImageC FromMagickImage(MagickImage image)
         {
-            switch (image.Format)
-            {
-                case Pfim.ImageFormat.Rgba32:
-                    return new ImageC(image.Width, image.Height, image.Data);
-                case Pfim.ImageFormat.Rgb24:
-                    byte[] data = image.Data;
-                    int stride = image.Stride;
-                    ImageC result = CreateNew(image.Width, image.Height);
-                    for (int y = 0; y < result.Height; ++y)
-                    {
-                        int inputIndex = y * stride;
-                        int outputIndex = y * result.Width * PixelSize;
-
-                        for (int x = 0; x < result.Width; ++x)
-                        {
-                            result._data[outputIndex + 0] = data[inputIndex + 0];
-                            result._data[outputIndex + 1] = data[inputIndex + 1];
-                            result._data[outputIndex + 2] = data[inputIndex + 2];
-                            result._data[outputIndex + 3] = 0xff;
-
-                            inputIndex += 3;
-                            outputIndex += 4;
-                        }
-                    }
-                    return result;
-                default:
-                    throw new NotImplementedException("Pfim image library type " + image.Format + " not handled!");
-            }
+            var data = image.GetPixels().ToByteArray("BGRA");
+            ImageC result = FromByteArray(data, image.Width, image.Height);
+            return result;
         }
 
         public static ImageC FromStream(Stream stream)
@@ -389,38 +365,15 @@ namespace TombLib.Utils
             stream.Read(startBytes, 0, 18);
             stream.Position = startPos;
 
-            // Detect special image types
-            if (startBytes[0] == 0x44 && startBytes[1] == 0x44 && startBytes[2] == 0x53 && startBytes[3] == 0x20)
-            { // dds image
-                return FromPfimImage(Pfim.Dds.Create(stream, new Pfim.PfimConfig()));
-            }
-            //else if (startBytes[0] == 0x38 && startBytes[1] == 0x42 && startBytes[2] == 0x50 && startBytes[3] == 0x53)
-            //{ // psd image
-			//	PsdFile image = new PsdFile();
-			//	image.Load(stream);
-			//	using (Image image2 = ImageDecoder.DecodeImage(image))
-			//		return FromSystemDrawingImage(image2);
-			//}
-            else if (IsTga(startBytes))
-            { // tga image
-                return FromPfimImage(Pfim.Targa.Create(stream, new Pfim.PfimConfig()));
-            }
-            else
-            { // other image
-                using (Image image = Image.FromStream(stream))
-                    return FromSystemDrawingImage(image);
-            }
+            using (var image = new MagickImage(stream))
+                return FromMagickImage(image);
         }
 
         public static ImageC FromFile(string path)
         {
             Console.WriteLine(path);
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                var result = FromStream(stream);
-                result.FileName = path;
-                return result;
-            }
+            using (var image = new MagickImage(path))
+                return FromMagickImage(image);
         }
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
@@ -431,6 +384,8 @@ namespace TombLib.Utils
             new FileFormat("Jpeg Image", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
             new FileFormat("Graphics Interchange Format", "gif"),
             new FileFormat("Photoshop File", "psd"),
+            new FileFormat("GIMP File", "xcf"),
+            new FileFormat("TIFF", "tif", "tiff"),
             new FileFormat("Windows Meta File", "wmf", "emf")
         };
 

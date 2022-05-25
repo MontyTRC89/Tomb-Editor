@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using NAudio.Flac;
 using NAudio.Vorbis;
 using NLog;
 using System;
@@ -8,7 +9,6 @@ using TombLib.Utils;
 using System.Xml.Serialization;
 using TombLib.LevelData;
 using TombLib.Wad.Catalog;
-using NAudio.Flac;
 
 namespace TombLib.Wad
 {
