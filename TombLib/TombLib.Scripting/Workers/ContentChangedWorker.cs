@@ -67,7 +67,7 @@ namespace TombLib.Scripting.Workers
 			try
 			{
 				string editorContent = e.Argument.ToString();
-				string fileContent = File.ReadAllText(_filePath);
+				string fileContent = File.ReadAllText(_filePath, Encoding.GetEncoding(1252));
 
 				bool isChanged = editorContent != fileContent;
 
@@ -114,7 +114,7 @@ namespace TombLib.Scripting.Workers
 		private void CreateBackupFile(string originalFilePath, string editorContent)
 		{
 			string backupFilePath = originalFilePath + ".backup";
-			File.WriteAllText(backupFilePath, editorContent);
+			File.WriteAllText(backupFilePath, editorContent, Encoding.GetEncoding(1252));
 		}
 
 		private void DeleteBackupFile(string originalFilePath)

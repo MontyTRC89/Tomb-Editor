@@ -223,7 +223,7 @@ namespace TombIDE.ProjectMaster
 
 					if (File.Exists(btnFilePath))
 					{
-						string nameLine = File.ReadAllLines(btnFilePath)
+						string nameLine = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252))
 							.FirstOrDefault(line => line.StartsWith("NAME#"));
 
 						if (nameLine != null)
@@ -426,7 +426,7 @@ namespace TombIDE.ProjectMaster
 					Path.GetFileNameWithoutExtension(selectedPluginFile.FullName) + ".txt");
 
 				if (File.Exists(descriptionFilePath))
-					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath);
+					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
 				else
 					richTextBox_Description.Text = string.Empty;
 			}

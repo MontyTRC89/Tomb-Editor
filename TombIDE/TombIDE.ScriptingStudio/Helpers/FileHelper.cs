@@ -37,7 +37,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 
 		public static bool IsStringFile(string filePath)
 		{
-			string[] lines = File.ReadAllLines(filePath);
+			string[] lines = File.ReadAllLines(filePath, Encoding.GetEncoding(1252));
 
 			foreach (string line in lines)
 				if (LineParser.IsSectionHeaderLine(line))
@@ -54,7 +54,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 
 		public static bool IsClassicScriptFile(string filePath)
 		{
-			string[] lines = File.ReadAllLines(filePath);
+			string[] lines = File.ReadAllLines(filePath, Encoding.GetEncoding(1252));
 
 			foreach (string line in lines)
 				if (LineParser.IsSectionHeaderLine(line))

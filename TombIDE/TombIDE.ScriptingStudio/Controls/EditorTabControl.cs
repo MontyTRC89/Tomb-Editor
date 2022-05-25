@@ -132,7 +132,7 @@ namespace TombIDE.ScriptingStudio.Controls
 				if (!File.Exists(file))
 					continue;
 
-				string backupFileContent = File.ReadAllText(file);
+				string backupFileContent = File.ReadAllText(file, Encoding.GetEncoding(1252));
 				string originalFilePath = FileHelper.GetOriginalFilePathFromBackupFile(file);
 
 				// Open the original file and replace the whole text of the TextEditor with the backup file content
@@ -240,7 +240,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			foreach (TabPage tab in tabPagesOfFile)
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
-				string fileContent = File.ReadAllText(editor.FilePath);
+				string fileContent = File.ReadAllText(editor.FilePath, Encoding.GetEncoding(1252));
 
 				if (editor.Content != fileContent)
 				{
@@ -252,7 +252,7 @@ namespace TombIDE.ScriptingStudio.Controls
 					if (result == DialogResult.Yes)
 					{
 						// Re-read the file, because the user might've changed the file another time
-						fileContent = File.ReadAllText(editor.FilePath);
+						fileContent = File.ReadAllText(editor.FilePath, Encoding.GetEncoding(1252));
 						editor.Content = fileContent;
 					}
 					else if (result == DialogResult.No)
