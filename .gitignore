@@ -1,6 +1,7 @@
 thumbs.db
 /Build
 /BuildRelease
+/~Publish
 *.user
 *.cache
 *.VC.db
