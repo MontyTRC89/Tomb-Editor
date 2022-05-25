@@ -350,6 +350,8 @@ namespace TombLib.Utils
 
         private static ImageC FromMagickImage(MagickImage image)
         {
+            image.AutoOrient();
+
             var data = image.GetPixels().ToByteArray("BGRA");
             ImageC result = FromByteArray(data, image.Width, image.Height);
             return result;
