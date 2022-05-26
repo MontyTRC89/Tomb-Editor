@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
+using System.Reflection;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -11,8 +10,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        private const string _indent = "    ";
-
         private void WriteLevelTombEngine()
         {
             // Now begin to compile the geometry block in a MemoryStream
@@ -398,10 +395,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Write data
                     ReportProgress(97, "Writing level data to file.");
 
-                    writer.Write((byte)_level.Settings.Tr5LaraType);
-                    writer.Write((byte)_level.Settings.Tr5WeatherType);
-
-                    // In TR5 geometry data is not compressed
                     byte[] geometryData = geometryDataBuffer;
                     writer.Write(geometryData);
 
@@ -418,7 +411,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     using (var writer = new BinaryWriter(fs))
                     {
-                        writer.Write(new byte[] { 0x54, 0x45, 0x4E, 0x00 }); // TEN
+                        // TEN header
+                        writer.Write(new byte[] { 0x54, 0x45, 0x4E, 0x00 });
+
+                        // TE compiler version
+                        var version = Assembly.GetExecutingAssembly().GetName().Version;
+                        writer.Write(new byte[] { (byte)version.Major, (byte)version.Minor, (byte)version.Build, 0x00 });
+
+                        // Hashed system name (reserved for quick start feature)
+                        writer.Write(Environment.MachineName.GetHashCode());
+
+                        // Geometry data
                         writer.Write((int)inStream.Length);
                         writer.Write((int)data.Length);
                         writer.Write(data, 0, data.Length);
