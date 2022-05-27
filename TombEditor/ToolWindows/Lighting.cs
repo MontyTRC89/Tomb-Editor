@@ -108,7 +108,7 @@ namespace TombEditor.ToolWindows
                 panelLightColor.Enabled = light != null;
                 cbLightEnabled.Enabled = light != null;
                 cbLightIsObstructedByRoomGeometry.Enabled = CanCastShadows;
-                cbCastShadow.Enabled = CanCastDynamicShadows;
+                cbLightCastsShadow.Enabled = CanCastDynamicShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry;
@@ -135,6 +135,7 @@ namespace TombEditor.ToolWindows
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
                 cbLightIsUsedForImportedGeometry.Checked = light?.IsUsedForImportedGeometry ?? false;
+                cbLightCastsShadow.Checked = light?.CastDynamicShadows ?? false;
                 cmbLightQuality.Enabled = light != null;
                 cmbLightQuality.SelectedIndex = (int)(light?.Quality ?? 0);
                 cmbLightTypes.SelectedIndex = (int)(light?.Type ?? (LightType)cmbLightTypes.SelectedIndex);
@@ -176,6 +177,12 @@ namespace TombEditor.ToolWindows
         {
             EditorActions.UpdateLight<bool>((light, value) => light.IsUsedForImportedGeometry == value, (light, value) => light.IsUsedForImportedGeometry = value,
                 light => cbLightIsUsedForImportedGeometry.Checked);
+        }
+
+        private void cbLightCastsShadow_CheckedChanged(object sender, EventArgs e)
+        {
+            EditorActions.UpdateLight<bool>((light, value) => light.CastDynamicShadows == value, (light, value) => light.CastDynamicShadows = value,
+                light => cbLightCastsShadow.Checked);
         }
 
         private static bool Compare(float firstValue, float secondValue, NumericUpDown control)

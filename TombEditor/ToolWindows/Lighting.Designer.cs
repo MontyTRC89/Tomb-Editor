@@ -40,7 +40,7 @@
             this.cbLightIsUsedForImportedGeometry = new DarkUI.Controls.DarkCheckBox();
             this.cmbLightQuality = new DarkUI.Controls.DarkComboBox();
             this.cmbLightTypes = new DarkUI.Controls.DarkComboBox();
-            this.cbCastShadow = new DarkUI.Controls.DarkCheckBox();
+            this.cbLightCastsShadow = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).BeginInit();
@@ -434,16 +434,17 @@
             this.toolTip.SetToolTip(this.cmbLightTypes, "Light type to place");
             this.cmbLightTypes.SelectedIndexChanged += new System.EventHandler(this.cmbLightTypes_SelectedIndexChanged);
             // 
-            // cbCastShadow
+            // cbLightCastsShadow
             // 
-            this.cbCastShadow.Enabled = false;
-            this.cbCastShadow.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbCastShadow.Location = new System.Drawing.Point(3, 119);
-            this.cbCastShadow.Name = "cbCastShadow";
-            this.cbCastShadow.Size = new System.Drawing.Size(70, 22);
-            this.cbCastShadow.TabIndex = 87;
-            this.cbCastShadow.Text = "Shadow";
-            this.toolTip.SetToolTip(this.cbCastShadow, "Determines whether this light can cast shadows");
+            this.cbLightCastsShadow.Enabled = false;
+            this.cbLightCastsShadow.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightCastsShadow.Location = new System.Drawing.Point(3, 119);
+            this.cbLightCastsShadow.Name = "cbLightCastsShadow";
+            this.cbLightCastsShadow.Size = new System.Drawing.Size(70, 22);
+            this.cbLightCastsShadow.TabIndex = 87;
+            this.cbLightCastsShadow.Text = "Shadow";
+            this.toolTip.SetToolTip(this.cbLightCastsShadow, "Determines whether this light can cast shadows");
+            this.cbLightCastsShadow.CheckedChanged += new System.EventHandler(this.cbLightCastsShadow_CheckedChanged);
             // 
             // darkLabel6
             // 
@@ -460,7 +461,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cbCastShadow);
+            this.Controls.Add(this.cbLightCastsShadow);
             this.Controls.Add(this.cmbLightTypes);
             this.Controls.Add(this.cmbLightQuality);
             this.Controls.Add(this.cbLightIsUsedForImportedGeometry);
@@ -527,7 +528,7 @@
         private DarkUI.Controls.DarkCheckBox cbLightIsUsedForImportedGeometry;
         private DarkUI.Controls.DarkComboBox cmbLightQuality;
         private DarkUI.Controls.DarkComboBox cmbLightTypes;
-        private DarkUI.Controls.DarkCheckBox cbCastShadow;
+        private DarkUI.Controls.DarkCheckBox cbLightCastsShadow;
         private DarkUI.Controls.DarkLabel darkLabel6;
     }
 }
