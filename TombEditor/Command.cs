@@ -776,7 +776,7 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("StampObject", "Clone", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("StampObject", "Stamp object", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.TryStampObject(args.Editor.SelectedObject, args.Window);
             });
