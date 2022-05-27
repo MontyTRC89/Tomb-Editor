@@ -10,7 +10,7 @@ namespace TombLib.Utils
         {
             using (var outStream = new MemoryStream())
             {
-                NetMiniZ.NetMiniZ.Compress(inStream, outStream, compressionLevel);
+                MiniZ.Functions.Compress(inStream, outStream, compressionLevel);
                 return outStream.ToArray();
             }
         }
@@ -19,7 +19,7 @@ namespace TombLib.Utils
         {
             using (var outStream = new MemoryStream())
             {
-                NetMiniZ.NetMiniZ.Decompress(inStream, outStream);
+                MiniZ.Functions.Decompress(inStream, outStream);
                 return outStream.ToArray();
             }
         }
