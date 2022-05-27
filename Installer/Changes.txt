@@ -5,6 +5,7 @@ Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
  * Automatically search subfolders in sample paths to find sound samples.
  * Allow editing block subdivisions (ED/RF) for diagonal steps.
+ * Allow group editing of object tint.
  * Allow to change light type for existing lights.
  * Add shadow property for lights (forthcoming in TEN).
  * Flatten starting block too while using bulldozer tool. 

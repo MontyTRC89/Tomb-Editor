@@ -537,6 +537,10 @@ namespace TombLib.LevelData
                 {
                     changeColor = false;
                 }
+                else if (obj is ObjectGroup)
+                {
+                    changeColor = (obj as ObjectGroup).Any(o => o.CanBeColored());
+                }
 
                 return changeColor;
             }
