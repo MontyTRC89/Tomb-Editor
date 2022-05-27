@@ -5,6 +5,7 @@ Tomb Editor:
  * Choose room when creating a portal by double-clicking on item in list.
  * Automatically search subfolders in sample paths to find sound samples.
  * Allow editing block subdivisions (ED/RF) for diagonal steps.
+ * Allow group editing of object tint.
  * Allow to change light type for existing lights.
  * Add shadow property for lights (forthcoming in TEN).
  * Flatten starting block too while using bulldozer tool. 
@@ -12,6 +13,7 @@ Tomb Editor:
  * Ignore incorrect anim dispatches instead of stopping level compilation.
  * Better handling and fallback to safe mode in case of rendering errors.
  * Fix corrupted MQO imported geometry.
+ * Fix incorrect mesh light type importing in retail levels.
 
 WadTool:
  * Add embedded wad metadata: timestamp and user notes.

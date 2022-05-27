@@ -322,72 +322,6 @@ namespace TombLib.Wad.TrLevels
                                 levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
 
                                 continue;
-
-                                /*var filler = levelReader.ReadUInt16();
-                                var smeshes = new List<tr_room_staticmesh>();
-                                for (var k=0;k<numStatics;k++)
-                                {
-                                    var sm = new tr_room_staticmesh();
-                                    sm.X = levelReader.ReadInt32();
-                                    sm.Y = levelReader.ReadInt32();
-                                    sm.Z = levelReader.ReadInt32();
-                                    // Absolute position in world coordinates
-                                    sm.Rotation= levelReader.ReadUInt16();
-                                    sm.Intensity1 = levelReader.ReadUInt16();
-                                    sm.Intensity2 = levelReader.ReadUInt16();
-                                    sm.ObjectID = levelReader.ReadUInt16();
-                                    smeshes.Add(sm);
-                                }
-                                //levelReader.ReadBytes((int)(20 * numStatics));
-                                var layer = levelReader.ReadBytes((int)(56 * numLayers));
-                                var quads = new List<tr_face4>();
-                                var tris = new List<tr_face4>();
-
-                                for (var k=0;k<numQuads;k++)
-                                {
-                                    var q = new tr_face4();
-                                    q.Vertices = new ushort[4];
-                                    q.Vertices[0] = levelReader.ReadUInt16();
-                                    q.Vertices[1] = levelReader.ReadUInt16();
-                                    q.Vertices[2] = levelReader.ReadUInt16();
-                                    q.Vertices[3] = levelReader.ReadUInt16();
-                                    q.Texture = levelReader.ReadUInt16();
-                                    quads.Add(q);
-
-                                }
-                                //levelReader.ReadBytes((int)(10 * numQuads));
-                                //levelReader.ReadBytes((int)(8 * numTriangles));
-                                for (var k = 0; k < numTriangles; k++)
-                                {
-                                    var q = new tr_face4();
-                                    q.Vertices = new ushort[3];
-                                    q.Vertices[0] = levelReader.ReadUInt16();
-                                    q.Vertices[1] = levelReader.ReadUInt16();
-                                    q.Vertices[2] = levelReader.ReadUInt16();
-                                    q.Texture = levelReader.ReadUInt16();
-                                    tris.Add(q);
-
-                                }
-
-                                if (numTriangles % 2 != 0)
-                                    filler = levelReader.ReadUInt16();
-                                //levelReader.ReadBytes((int)(28 * numVertices));
-                                var vertices = new List<tr_room_vertex>();
-                                for (var k = 0; k < numVertices; k++)
-                                {
-                                    var q = new tr_room_vertex();
-                                    q.Position = new tr_vertex();
-                                    q.Position.X = (short)levelReader.ReadSingle();
-                                    q.Position.Y = (short)levelReader.ReadSingle();
-                                    q.Position.Z = (short)levelReader.ReadSingle();
-                                    levelReader.ReadSingle();
-                                    levelReader.ReadSingle();
-                                    levelReader.ReadSingle();
-                                    levelReader.ReadUInt32();
-
-                                }*/
-
-                                //levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
                             }
                         }
 
@@ -412,38 +346,28 @@ namespace TombLib.Wad.TrLevels
                             mesh.Radius = levelReader.ReadInt32();
                             numBytes += 10;
 
-                            var numVertices = levelReader.ReadUInt16();
-                            levelReader.ReadBlockArray(out mesh.Vertices, numVertices);
-                            numBytes += 2 + 6 * numVertices;
+                            mesh.NumVertices = levelReader.ReadInt16();
+                            levelReader.ReadBlockArray(out mesh.Vertices, mesh.NumVertices);
+                            numBytes += 2 + 6 * mesh.NumVertices;
 
                             mesh.Normals = new tr_vertex[0];
                             mesh.Lights = new short[0];
 
-                            var numNormals = levelReader.ReadInt16();
-                            if (numNormals > 0)
+                            mesh.NumNormals = levelReader.ReadInt16();
+                            if (mesh.NumNormals > 0)
                             {
-                                levelReader.ReadBlockArray(out mesh.Normals, numNormals);
-                                numBytes += 2 + 6 * numNormals;
+                                levelReader.ReadBlockArray(out mesh.Normals, mesh.NumNormals);
+                                numBytes += 2 + 6 * mesh.NumNormals;
                             }
                             else
                             {
-                                levelReader.ReadBlockArray(out mesh.Lights, -numNormals);
-                                numBytes += 2 - 2 * numNormals;
+                                levelReader.ReadBlockArray(out mesh.Lights, -mesh.NumNormals);
+                                numBytes += 2 - 2 * mesh.NumNormals;
                             }
 
-                            var numTexturedRectangles = 0;
-                            var numColoredRectangles = 0;
-                            var numTexturedTriangles = 0;
-                            var numColoredTriangles = 0;
-
-                            mesh.TexturedQuads = new tr_face4[0];
-                            mesh.TexturedTriangles = new tr_face3[0];
-                            mesh.ColoredRectangles = new tr_face4[0];
-                            mesh.ColoredTriangles = new tr_face3[0];
-
-                            numTexturedRectangles = levelReader.ReadUInt16();
-                            mesh.TexturedQuads = new tr_face4[numTexturedRectangles];
-                            for (var i = 0; i < numTexturedRectangles; i++)
+                            mesh.NumTexturedQuads = levelReader.ReadInt16();
+                            mesh.TexturedQuads = new tr_face4[mesh.NumTexturedQuads];
+                            for (var i = 0; i < mesh.NumTexturedQuads; i++)
                             {
                                 var poly = new tr_face4();
                                 poly.Index0 = levelReader.ReadUInt16();
@@ -456,9 +380,9 @@ namespace TombLib.Wad.TrLevels
                                 mesh.TexturedQuads[i] = poly;
                             }
 
-                            numTexturedTriangles = levelReader.ReadUInt16();
-                            mesh.TexturedTriangles = new tr_face3[numTexturedTriangles];
-                            for (var i = 0; i < numTexturedTriangles; i++)
+                            mesh.NumTexturedTriangles = levelReader.ReadInt16();
+                            mesh.TexturedTriangles = new tr_face3[mesh.NumTexturedTriangles];
+                            for (var i = 0; i < mesh.NumTexturedTriangles; i++)
                             {
                                 var poly = new tr_face3();
                                 poly.Index0 = levelReader.ReadUInt16();
@@ -472,9 +396,9 @@ namespace TombLib.Wad.TrLevels
 
                             if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
                             {
-                                numColoredRectangles = levelReader.ReadUInt16();
-                                mesh.ColoredRectangles = new tr_face4[numColoredRectangles];
-                                for (var i = 0; i < numColoredRectangles; i++)
+                                mesh.NumColoredQuads = levelReader.ReadInt16();
+                                mesh.ColoredQuads = new tr_face4[mesh.NumColoredQuads];
+                                for (var i = 0; i < mesh.NumColoredQuads; i++)
                                 {
                                     var poly = new tr_face4();
                                     poly.Index0 = levelReader.ReadUInt16();
@@ -482,12 +406,12 @@ namespace TombLib.Wad.TrLevels
                                     poly.Index2 = levelReader.ReadUInt16();
                                     poly.Index3 = levelReader.ReadUInt16();
                                     poly.Texture = levelReader.ReadUInt16();
-                                    mesh.ColoredRectangles[i] = poly;
+                                    mesh.ColoredQuads[i] = poly;
                                 }
 
-                                numColoredTriangles = levelReader.ReadUInt16();
-                                mesh.ColoredTriangles = new tr_face3[numColoredTriangles];
-                                for (var i = 0; i < numColoredTriangles; i++)
+                                mesh.NumColoredTriangles = levelReader.ReadInt16();
+                                mesh.ColoredTriangles = new tr_face3[mesh.NumColoredTriangles];
+                                for (var i = 0; i < mesh.NumColoredTriangles; i++)
                                 {
                                     var poly = new tr_face3();
                                     poly.Index0 = levelReader.ReadUInt16();
@@ -496,19 +420,21 @@ namespace TombLib.Wad.TrLevels
                                     poly.Texture = levelReader.ReadUInt16();
                                     mesh.ColoredTriangles[i] = poly;
                                 }
-                            }
 
-                            if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
-                            {
-                                numBytes += 2 + numTexturedRectangles * 10;
-                                numBytes += 2 + numTexturedTriangles * 8;
-                                numBytes += 2 + numColoredRectangles * 10;
-                                numBytes += 2 + numColoredTriangles * 8;
+                                numBytes += 2 + mesh.NumTexturedQuads * 10;
+                                numBytes += 2 + mesh.NumTexturedTriangles * 8;
+                                numBytes += 2 + mesh.NumColoredQuads * 10;
+                                numBytes += 2 + mesh.NumColoredTriangles * 8;
                             }
                             else
                             {
-                                numBytes += 2 + numTexturedRectangles * 12;
-                                numBytes += 2 + numTexturedTriangles * 10;
+                                mesh.NumColoredQuads = 0;
+                                mesh.NumColoredTriangles  = 0;
+                                mesh.ColoredQuads = new tr_face4[0];
+                                mesh.ColoredTriangles  = new tr_face3[0];
+
+                                numBytes += 2 + mesh.NumTexturedQuads * 12;
+                                numBytes += 2 + mesh.NumTexturedTriangles * 10;
                             }
 
                             long offset2 = levelReader.BaseStream.Position;

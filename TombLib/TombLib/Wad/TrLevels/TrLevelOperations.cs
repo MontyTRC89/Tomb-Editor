@@ -165,7 +165,7 @@ namespace TombLib.Wad.TrLevels
                 mesh.Polys.Add(poly);
             }
 
-            foreach (var oldPoly in oldMesh.ColoredRectangles)
+            foreach (var oldPoly in oldMesh.ColoredQuads)
             {
                 WadPolygon poly = new WadPolygon();
                 poly.Shape = WadPolygonShape.Quad;

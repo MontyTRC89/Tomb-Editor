@@ -9,7 +9,7 @@ namespace TombLib.LevelData
     /// <summary>
     /// Represents a group of objects multi-selected by ctrl-clicking.
     /// </summary>
-    public class ObjectGroup : PositionBasedObjectInstance, IRotateableY, IEnumerable<PositionBasedObjectInstance>
+    public class ObjectGroup : PositionBasedObjectInstance, IRotateableY, IColorable, IEnumerable<PositionBasedObjectInstance>
     {
         private readonly HashSet<PositionBasedObjectInstance> _objects = new HashSet<PositionBasedObjectInstance>();
 
@@ -77,6 +77,25 @@ namespace TombLib.LevelData
 
                 foreach (var i in _objects.OfType<IRotateableY>())
                     i.RotationY += difference;
+            }
+        }
+
+        public Vector3 Color
+        {
+            get
+            {
+                if (RootObject.CanBeColored())
+                    return (RootObject as IColorable).Color; // Prioritize root object for picking color
+                else if (this.Any(o => o.CanBeColored()))
+                    return (this.First(o => o.CanBeColored()) as IColorable).Color;
+                else
+                    return Vector3.Zero;
+            }
+
+            set
+            {
+                foreach (var o in this.Where(o => o.CanBeColored()))
+                    (o as IColorable).Color = value;
             }
         }
 
