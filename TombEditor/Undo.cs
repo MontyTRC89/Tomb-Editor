@@ -436,7 +436,15 @@ namespace TombEditor
 
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
-        public void PushObjectPropertyChanged(PositionBasedObjectInstance obj) => Push(new ChangeObjectPropertyUndoInstance(this, obj));
+
+        public void PushObjectPropertyChanged(PositionBasedObjectInstance obj)
+        {
+            if (obj is ObjectGroup)
+                Push(((ObjectGroup)obj).Select(o => new ChangeObjectPropertyUndoInstance(this, o)).Cast<UndoRedoInstance>().ToList());
+            else
+                Push(new ChangeObjectPropertyUndoInstance(this, obj));
+        }
+
         public void PushObjectTransformed(PositionBasedObjectInstance obj)
         {
             if (obj is ObjectGroup)
