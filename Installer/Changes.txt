@@ -12,6 +12,7 @@ Tomb Editor:
  * Ignore incorrect anim dispatches instead of stopping level compilation.
  * Better handling and fallback to safe mode in case of rendering errors.
  * Fix corrupted MQO imported geometry.
+ * Fix incorrect mesh light type importing in retail levels.
 
 WadTool:
  * Add embedded wad metadata: timestamp and user notes.

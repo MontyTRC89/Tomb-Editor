@@ -238,8 +238,8 @@
         public tr_face4[] TexturedQuads;
         public short NumTexturedTriangles;
         public tr_face3[] TexturedTriangles;
-        public short NumColoredRectangles;
-        public tr_face4[] ColoredRectangles;
+        public short NumColoredQuads;
+        public tr_face4[] ColoredQuads;
         public short NumColoredTriangles;
         public tr_face3[] ColoredTriangles;
         public int MeshSize;
@@ -319,7 +319,7 @@
 
             //  writer.WriteBlockArray(Meshes[i].TexturedTriangles);
 
-            writer.Write(NumColoredRectangles);
+            writer.Write(NumColoredQuads);
             //writer.WriteBlockArray(Meshes[i].ColoredRectangles);
 
             writer.Write(NumColoredTriangles);
