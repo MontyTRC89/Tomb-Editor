@@ -9,10 +9,10 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>..\Build ($(Platform))\</OutputPath>
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>..\BuildRelease ($(Platform))\</OutputPath>
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
@@ -23,36 +23,35 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GlobalPaths.cs">
+    <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-    <Compile Update="Workers\T1MNodesProvider.cs">
+    <Compile Update="Workers\GameFlowNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\Tomb1Main\Monokai.t1msch">
+    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Monokai.gflsch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Configs\TextEditors\ColorSchemes\Tomb1Main\NG_Center.t1msch">
+    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Obsidian.gflsch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Configs\TextEditors\ColorSchemes\Tomb1Main\Obsidian.t1msch">
+    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\NG_Center.gflsch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Configs\TextEditors\ColorSchemes\Tomb1Main\VS15.t1msch">
+    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\VS15.gflsch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj" />
-    <ProjectReference Include="..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
   </ItemGroup>
 </Project>

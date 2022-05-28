@@ -78,8 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-    <ProjectReference Include="..\..\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
-    <ProjectReference Include="..\..\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj" />
