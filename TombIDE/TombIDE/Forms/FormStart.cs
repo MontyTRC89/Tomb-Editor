@@ -3,11 +3,9 @@ using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
@@ -368,8 +366,7 @@ namespace TombIDE
 					_ide.IDEConfiguration.Save();
 
 					// Restart the application (without any arguments)
-					Application.Exit();
-					Process.Start(Assembly.GetExecutingAssembly().Location);
+					Application.Restart();
 				}
 				else if (result == DialogResult.Cancel) // Cancel means the user closed the program
 					Application.Exit();
