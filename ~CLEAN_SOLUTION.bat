@@ -15,12 +15,12 @@ FOR /d %%F IN (Build*) DO (
 	@IF EXIST %%F RMDIR /S /Q "%%F"
 )
 
-FOR /d %%F IN (~Publish) DO (
+FOR /d %%F IN (~Publish?) DO (
     echo Deleting folder: %%F
 	@IF EXIST %%F RMDIR /S /Q "%%F"
 )
 
-FOR /d %%F IN (packages) DO (
+FOR /d %%F IN (packages?) DO (
     echo Deleting folder: %%F
 	@IF EXIST %%F RMDIR /S /Q "%%F"
 )
