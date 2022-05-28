@@ -1,8 +1,12 @@
 thumbs.db
 /Build
+/Build (AnyCPU)
+/Build (x64)
+/Build (x86)
 /BuildRelease
-/BuildRelease64
-/BuildRelease86
+/BuildRelease (AnyCPU)
+/BuildRelease (x64)
+/BuildRelease (x86)
 /~Publish
 *.user
 *.cache
@@ -14,9 +18,13 @@ bin/
 packages/
 *.vspx
 /BuildNgXmlBuilder
+/BuildNgXmlBuilder (AnyCPU)
+/BuildNgXmlBuilder (x64)
+/BuildNgXmlBuilder (x86)
 /BuildNgXmlBuilderRelease
-/BuildNgXmlBuilderRelease64
-/BuildNgXmlBuilderRelease86
+/BuildNgXmlBuilderRelease (AnyCPU)
+/BuildNgXmlBuilderRelease (x64)
+/BuildNgXmlBuilderRelease (x86)
 
 # JetBrains IDEs
 .idea/

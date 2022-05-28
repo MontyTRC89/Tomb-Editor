@@ -6,22 +6,22 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\Build\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\..\BuildRelease64\</OutputPath>
-    <Optimize>True</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\..\BuildRelease86\</OutputPath>
-    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomTabControl">
@@ -88,59 +88,31 @@
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\PlainText.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\PlainText.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\ClassicScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Lua.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\PlainText.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\GameFlowScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\GameFlowScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Lua.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\PlainText.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Tomb1Main.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Lua.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\PlainText.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Strings.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Tomb1Main.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Lua.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\PlainText.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Strings.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Tomb1Main.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\GameFlowScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Lua.xml" />
     <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Tomb1Main.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
   </ItemGroup>
   <ItemGroup>

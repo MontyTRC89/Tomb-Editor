@@ -1,55 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
-    <LangVersion>6</LangVersion>
     <OutputType>WinExe</OutputType>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\Build\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\BuildRelease ($(Platform))\</OutputPath>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\BuildRelease64\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AllowedReferenceRelatedFileExtensions>
-      .allowedextension
-    </AllowedReferenceRelatedFileExtensions>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Optimize>True</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\BuildRelease86\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AllowedReferenceRelatedFileExtensions>
-      .allowedextension
-    </AllowedReferenceRelatedFileExtensions>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>TE.ico</ApplicationIcon>
@@ -86,9 +58,6 @@
     <Reference Include="SharpDX.Toolkit.Graphics, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
-    <Reference Update="System">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -146,18 +115,6 @@
     <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj" />
     <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TE.ico" />

@@ -2,49 +2,25 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\Build\</OutputPath>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\BuildRelease ($(Platform))\</OutputPath>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\BuildRelease64\</OutputPath>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowedReferenceRelatedFileExtensions>
-      .allowedextension
-    </AllowedReferenceRelatedFileExtensions>
-    <Optimize>True</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>none</DebugType>
-    <OutputPath>..\BuildRelease86\</OutputPath>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowedReferenceRelatedFileExtensions>
-      .allowedextension
-    </AllowedReferenceRelatedFileExtensions>
-    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>WT.ico</ApplicationIcon>
@@ -96,13 +72,6 @@
     <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj" />
     <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Content Include="WT.ico" />
