@@ -133,8 +133,10 @@
     <Compile Remove="Script\ScriptCompilerTr4OrTr5.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy  /s /y /i /q "$(SolutionDir)Libs\Native" "$(TargetDir)Native\"
-rmdir /s /q "$(TargetDir)runtimes"
-mkdir "$(TargetDir)Runtimes"</PostBuildEvent>
+    <PostBuildEvent>
+        xcopy /s /y /i /q "$(MSBuildProjectDirectory)\..\..\Libs\Native" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Native\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\"
+        mkdir "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\"
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
