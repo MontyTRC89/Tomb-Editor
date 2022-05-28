@@ -89,6 +89,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\PanelRenderingItem.cs" />
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="ToolWindows\ImportedGeometryBrowser.cs" />
     <Compile Update="ToolWindows\Lighting.cs" />
     <Compile Update="ToolWindows\MainView.cs" />
@@ -125,6 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="EditorCommands.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>

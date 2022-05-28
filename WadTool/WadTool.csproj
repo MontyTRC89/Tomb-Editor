@@ -66,6 +66,11 @@
     <Compile Update="Controls\PanelRenderingSkeleton.cs" />
     <Compile Update="Controls\PanelRenderingStaticEditor.cs" />
     <Compile Update="Controls\PanelTextureMap.cs" />
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj" />
@@ -79,6 +84,12 @@
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>SET ERRORLEVEL = 0</PostBuildEvent>
