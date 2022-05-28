@@ -157,17 +157,34 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
+        xcopy /s /y /i /q "$(MSBuildProjectDirectory)\..\Libs\Native\" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Native\"
         xcopy /s /y /i /q "$(MSBuildProjectDirectory)\Resources\assets\" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Assets\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\linux-x64\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\linux-x86\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\linux-arm\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\linux-arm64\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\osx-x64\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\osx-x86\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\unix\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\win-arm\"
-        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Runtimes\win-arm64\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-x64\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-x86\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-arm\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-arm64\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\osx-x64\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\osx-x86\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\unix\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\win-arm\"
+        rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\win-arm64\"
+        ren "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\" "runtimes_TEMP"
+        ren "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes_TEMP\" "Runtimes"
     </PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup />
+  <Target Name="AfterPublishActions" AfterTargets="Publish">
+    <Exec Command="xcopy /s /y /i /q &quot;$(MSBuildProjectDirectory)\..\Libs\Native\&quot; &quot;$(MSBuildProjectDirectory)\..\~Publish\Native\&quot;" />
+    <Exec Command="xcopy /s /y /i /q &quot;$(MSBuildProjectDirectory)\Resources\assets\&quot; &quot;$(MSBuildProjectDirectory)\..\~Publish\Assets\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\linux-x64\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\linux-x86\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\linux-arm\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\linux-arm64\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\osx-x64\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\osx-x86\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\unix\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\win-arm\&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\win-arm64\&quot;" />
+    <Exec Command="ren &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes\&quot; &quot;runtimes_TEMP&quot;" />
+    <Exec Command="ren &quot;$(MSBuildProjectDirectory)\..\~Publish\runtimes_TEMP\&quot; &quot;Runtimes&quot;" />
+  </Target>
 </Project>
