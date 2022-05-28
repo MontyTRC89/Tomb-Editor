@@ -6,20 +6,34 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\Build\</OutputPath>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>none</DebugType>
-    <OutputPath>..\..\BuildRelease\</OutputPath>
+    <OutputPath>..\..\BuildRelease64\</OutputPath>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowedReferenceRelatedFileExtensions>
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>none</DebugType>
+    <OutputPath>..\..\BuildRelease86\</OutputPath>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowedReferenceRelatedFileExtensions>
+      .allowedextension
+    </AllowedReferenceRelatedFileExtensions>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">

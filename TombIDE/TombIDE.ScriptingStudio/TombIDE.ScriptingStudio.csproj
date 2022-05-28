@@ -6,13 +6,22 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\Build\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>none</DebugType>
-    <OutputPath>..\..\BuildRelease\</OutputPath>
+    <OutputPath>..\..\BuildRelease64\</OutputPath>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>none</DebugType>
+    <OutputPath>..\..\BuildRelease86\</OutputPath>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomTabControl">

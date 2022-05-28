@@ -1,6 +1,8 @@
 thumbs.db
 /Build
 /BuildRelease
+/BuildRelease64
+/BuildRelease86
 /~Publish
 *.user
 *.cache
@@ -13,6 +15,8 @@ packages/
 *.vspx
 /BuildNgXmlBuilder
 /BuildNgXmlBuilderRelease
+/BuildNgXmlBuilderRelease64
+/BuildNgXmlBuilderRelease86
 
 # JetBrains IDEs
 .idea/

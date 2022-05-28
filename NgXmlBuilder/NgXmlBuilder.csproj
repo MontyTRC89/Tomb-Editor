@@ -3,18 +3,31 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>Debug;Release (x64);Release (x86)</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\BuildNgXmlBuilder\</OutputPath>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release (x64)|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>none</DebugType>
-    <OutputPath>..\BuildNgXmlBuilderRelease\</OutputPath>
+    <OutputPath>..\BuildNgXmlBuilderRelease64\</OutputPath>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowedReferenceRelatedFileExtensions>
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (x86)|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>none</DebugType>
+    <OutputPath>..\BuildNgXmlBuilderRelease86\</OutputPath>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowedReferenceRelatedFileExtensions>
+      .allowedextension
+    </AllowedReferenceRelatedFileExtensions>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>xml.ico</ApplicationIcon>
