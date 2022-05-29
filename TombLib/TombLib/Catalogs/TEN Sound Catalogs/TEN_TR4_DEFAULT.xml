@@ -186,10 +186,10 @@
       <Name>TR4_LARA_RELOAD</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
-      <Chance>10</Chance>
+      <Chance>100</Chance>
       <PitchFactor>20</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
