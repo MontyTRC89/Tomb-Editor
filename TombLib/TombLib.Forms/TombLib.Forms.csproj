@@ -80,6 +80,11 @@
     <Compile Update="Controls\WadTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
@@ -97,5 +102,11 @@
     <Compile Remove="Forms\FormPopUpSearch.Designer.cs" />
     <EmbeddedResource Remove="Forms\DarkDataGridViewControls.resx" />
     <EmbeddedResource Remove="Forms\FormPopUpSearch.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
