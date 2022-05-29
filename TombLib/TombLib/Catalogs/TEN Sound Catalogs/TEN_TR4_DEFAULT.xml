@@ -542,28 +542,6 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>27</Id>
-      <Name>TR4_LARA_BODYSLAM</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>OneShotWait</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
       <Id>28</Id>
       <Name>TR4_LARA_SHIMMY2</Name>
       <Volume>18</Volume>
