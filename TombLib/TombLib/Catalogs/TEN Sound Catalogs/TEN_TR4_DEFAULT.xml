@@ -194,7 +194,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_weapon_reload_01.wav</FileName>
+          <FileName>tr4_lara_reload_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -8113,7 +8113,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
