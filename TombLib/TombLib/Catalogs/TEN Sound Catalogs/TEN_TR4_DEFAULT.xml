@@ -186,15 +186,15 @@
       <Name>TR4_LARA_RELOAD</Name>
       <Volume>80</Volume>
       <RangeInSectors>13</RangeInSectors>
-      <Chance>10</Chance>
+      <Chance>100</Chance>
       <PitchFactor>20</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_weapon_reload_01.wav</FileName>
+          <FileName>tr4_lara_reload_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -540,28 +540,6 @@
       </Samples>
       <Global>true</Global>
       <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>27</Id>
-      <Name>TR4_LARA_BODYSLAM</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>OneShotWait</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR1_LARA_BODYSLAM_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>28</Id>
@@ -1186,7 +1164,7 @@
           <FileName>undwatr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1239,7 +1217,7 @@
           <FileName>l_pshblk.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2523,7 +2501,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_stt.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2542,7 +2520,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_IDLE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2561,7 +2539,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_ACCELERATE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2580,7 +2558,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_MOVE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2599,7 +2577,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_SIDE_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2618,7 +2596,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_FRONT_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2656,7 +2634,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_lnd.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2751,7 +2729,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_stp.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2827,7 +2805,7 @@
           <FileName>TR4_LARA_death_general_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2846,7 +2824,7 @@
           <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2941,7 +2919,7 @@
           <FileName>TR4_VEHICLE_JEEP_stt.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2960,7 +2938,7 @@
           <FileName>TR4_VEHICLE_JEEP_idle.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2979,7 +2957,7 @@
           <FileName>TR4_VEHICLE_JEEP_ACCELERATE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2998,7 +2976,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_MOVE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3017,7 +2995,7 @@
           <FileName>TR4_VEHICLE_JEEP_stp.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3171,7 +3149,7 @@
           <FileName>TR4_weapon_hk_stop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3619,7 +3597,7 @@
           <FileName>TR4_LARA_footsteps_sandgrass_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3814,7 +3792,7 @@
           <FileName>jp_dopen.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3833,7 +3811,7 @@
           <FileName>jp_dcls.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3852,7 +3830,7 @@
           <FileName>l_vander.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3871,7 +3849,7 @@
           <FileName>vander.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3924,7 +3902,7 @@
           <FileName>TR4_VEHICLE_JEEP_SIDE_IMPACT.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3943,7 +3921,7 @@
           <FileName>TR4_VEHICLE_JEEP_fi.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3962,7 +3940,7 @@
           <FileName>TR4_VEHICLE_JEEP_lnd.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6435,7 +6413,7 @@
           <FileName>TR4_LARA_Lever_Squeak_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6701,7 +6679,7 @@
           <FileName>TR4_LARA_Pulley_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7159,7 +7137,7 @@
           <FileName>hit_rock.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7178,7 +7156,7 @@
           <FileName>TR4_VEHICLE_MOTORBIKE_HIT_ENEMIES.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7197,7 +7175,7 @@
           <FileName>l_flame.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7437,7 +7415,7 @@
           <FileName>TR4_weapon_flare_ignite_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7456,7 +7434,7 @@
           <FileName>TR4_weapon_flare_burn_underwater_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7608,7 +7586,7 @@
           <FileName>TR4_VEHICLE_SPEEDBOAT_START_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7665,7 +7643,7 @@
           <FileName>TR4_VEHICLE_SNOWMOBILE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7817,7 +7795,7 @@
           <FileName>TR4_VEHICLE_SPEEDBOAT_BODY_SLUMP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7836,7 +7814,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7855,7 +7833,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_FRONT_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7874,7 +7852,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7893,7 +7871,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_LAND_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7912,7 +7890,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_MOVE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7931,7 +7909,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_SIDE_IMPACT_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7950,7 +7928,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_START_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7969,7 +7947,7 @@
           <FileName>TR4_VEHICLE_QUADBIKE_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7988,7 +7966,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_ACCELERATE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8007,7 +7985,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_IDLE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8026,7 +8004,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_MOVING_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8045,7 +8023,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_SCRAPE.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8064,7 +8042,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_SLOW_DOWN_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8083,7 +8061,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_START_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8102,7 +8080,7 @@
           <FileName>TR4_VEHICLE_RUBBERBOAT_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8113,7 +8091,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
@@ -8121,7 +8099,7 @@
           <FileName>TR4_VEHICLE_UPV_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8140,7 +8118,7 @@
           <FileName>TR4_VEHICLE_UPV_START_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8159,7 +8137,7 @@
           <FileName>TR4_VEHICLE_UPV_STOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8178,7 +8156,7 @@
           <FileName>TR4_VEHICLE_MINECART_START_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8197,7 +8175,7 @@
           <FileName>TR4_VEHICLE_MINECART_PULLY_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8216,7 +8194,7 @@
           <FileName>TR4_VEHICLE_MINECART_BRAKE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8235,7 +8213,7 @@
           <FileName>TR4_VEHICLE_MINECART_TRACK_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8254,7 +8232,7 @@
           <FileName>TR4_VEHICLE_MINECART_WRENCH.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8273,7 +8251,7 @@
           <FileName>TR4_VEHICLE_DIVESUIT_ENGINE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8292,7 +8270,7 @@
           <FileName>TR4_VEHICLE_DIVESUIT_HIT_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8311,7 +8289,7 @@
           <FileName>TR4_VEHICLE_DIVESUIT_BREATHE_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8330,7 +8308,7 @@
           <FileName>TR4_VEHICLE_DIVESUIT_LOOP_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8345,7 +8323,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8360,7 +8338,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8375,7 +8353,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8390,7 +8368,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8405,7 +8383,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8420,7 +8398,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8435,7 +8413,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8450,7 +8428,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -8600,7 +8578,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
   </SoundInfos>

@@ -2070,13 +2070,19 @@ namespace TombEditor
                     switch (type)
                     {
                         case BlockFaceType.Floor:
-                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, texture);
-                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, texture);
+                            if (!room.Blocks[x, z].IsFullWall)
+                            {
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, texture);
+                            }
                             break;
 
                         case BlockFaceType.Ceiling:
-                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, texture);
-                            ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, texture);
+                            if (!room.Blocks[x, z].IsFullWall)
+                            {
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, texture);
+                            }
                             break;
 
                         case BlockFaceType.Wall:

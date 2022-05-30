@@ -436,6 +436,7 @@ namespace TombLib.LevelData
             return (Flags & flag) == flag;
         }
 
+        public bool IsFullWall => Type == BlockType.BorderWall || (Type == BlockType.Wall && Floor.DiagonalSplit == DiagonalSplit.None);
         public bool IsAnyWall => Type != BlockType.Floor;
         public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
         public bool HasGhostBlock => GhostBlock != null;
