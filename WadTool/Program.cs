@@ -33,6 +33,7 @@ namespace WadTool
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
                 Application.EnableVisualStyles();
+                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
                 Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);

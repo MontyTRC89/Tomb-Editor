@@ -21,6 +21,7 @@ namespace TombIDE
 			UpdateNGCompilerPaths();
 
 			Application.EnableVisualStyles();
+			Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
 			Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
 			Application.SetCompatibleTextRenderingDefault(false);
 
