@@ -929,6 +929,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.LightType = 1;
                         newLight.In  = light.InnerRange * Level.BlockSizeUnit;
                         newLight.Out = light.OuterRange * Level.BlockSizeUnit;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.Shadow:
                         newLight.LightType = 3;
@@ -957,6 +958,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Direction.X = -sunDirection.X;
                         newLight.Direction.Y = sunDirection.Y;
                         newLight.Direction.Z = -sunDirection.Z;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
