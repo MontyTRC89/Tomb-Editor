@@ -2015,47 +2015,6 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>1001</Id>
-      <Name>TR5_ELECTRIC_LIGHT_CRACKLES</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>7</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>70</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_ELEC_LIGHT_CRACKLES_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR5_ELEC_LIGHT_CRACKLES_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1002</Id>
-      <Name>TR5_ELECTRIC_WIRES</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>6</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>30</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_ELECTRIC_WIRES_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
       <Id>1003</Id>
       <Name>TR5_WATERWHEEL</Name>
       <Volume>80</Volume>
@@ -3774,82 +3733,6 @@
       <Samples>
         <WadSample>
           <FileName>TR5_SMALL_METAL_VENT_HINGE_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1092</Id>
-      <Name>TR5_SMASH_GLASS</Name>
-      <Volume>85</Volume>
-      <RangeInSectors>20</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-10</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_SMASH_GLASS_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1093</Id>
-      <Name>TR5_SMASH_METAL</Name>
-      <Volume>80</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>25</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_SMASH_METAL_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1094</Id>
-      <Name>TR5_SMASH_ROCK</Name>
-      <Volume>95</Volume>
-      <RangeInSectors>13</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-15</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_SMASH_ROCK_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1095</Id>
-      <Name>TR5_SMASH_WOOD</Name>
-      <Volume>70</Volume>
-      <RangeInSectors>13</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-10</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_SMASH_WOOD_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
