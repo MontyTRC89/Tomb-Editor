@@ -41,7 +41,6 @@ namespace WadTool
             panelRendering.DrawGrid = true;
             panelRendering.DrawGizmo = true;
             panelRendering.DrawLights = true;
-            comboLightType.SelectedIndex = (int)_static.Mesh.LightingType;
             UpdateVisibilityBoxUI();
             UpdateCollisionBoxUI();
             UpdatePositionUI();
@@ -151,6 +150,7 @@ namespace WadTool
                 _static.Mesh = form.SelectedMesh.Clone();
                 panelRendering.UpdateMesh();
                 panelRendering.Invalidate();
+                UpdateLightUI();
             }
         }
 
@@ -239,6 +239,8 @@ namespace WadTool
                 numIntensity.Enabled = false;
                 numRadius.Enabled = false;
             }
+
+            comboLightType.SelectedIndex = (int)_static.Mesh.LightingType;
         }
 
         private void numIntensity_ValueChanged(object sender, EventArgs e)
