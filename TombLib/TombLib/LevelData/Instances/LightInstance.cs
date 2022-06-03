@@ -27,7 +27,7 @@ namespace TombLib.LevelData
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
         public bool IsUsedForImportedGeometry { get; set; } = true;
-        public bool CastDynamicShadows { get; set; } = true;
+        public bool CastDynamicShadows { get; set; } = false;
 
         private float _rotationX;
         private float _rotationY;
