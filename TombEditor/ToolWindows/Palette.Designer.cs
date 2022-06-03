@@ -35,7 +35,7 @@
             this.paletteToolBar.Dock = System.Windows.Forms.DockStyle.Left;
             this.paletteToolBar.Location = new System.Drawing.Point(0, 25);
             this.paletteToolBar.Name = "paletteToolBar";
-            this.paletteToolBar.Size = new System.Drawing.Size(30, 116);
+            this.paletteToolBar.Size = new System.Drawing.Size(29, 116);
             this.paletteToolBar.TabIndex = 84;
             // 
             // butResetToDefaults
@@ -45,7 +45,7 @@
             this.butResetToDefaults.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
             this.butResetToDefaults.Location = new System.Drawing.Point(3, 3);
             this.butResetToDefaults.Name = "butResetToDefaults";
-            this.butResetToDefaults.Size = new System.Drawing.Size(24, 24);
+            this.butResetToDefaults.Size = new System.Drawing.Size(23, 23);
             this.butResetToDefaults.TabIndex = 5;
             this.butResetToDefaults.Tag = "ResetPalette";
             // 
@@ -54,9 +54,9 @@
             this.butSampleFromTextures.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSampleFromTextures.Checked = false;
             this.butSampleFromTextures.Image = global::TombEditor.Properties.Resources.actions_TextureMode_16;
-            this.butSampleFromTextures.Location = new System.Drawing.Point(3, 33);
+            this.butSampleFromTextures.Location = new System.Drawing.Point(3, 32);
             this.butSampleFromTextures.Name = "butSampleFromTextures";
-            this.butSampleFromTextures.Size = new System.Drawing.Size(24, 24);
+            this.butSampleFromTextures.Size = new System.Drawing.Size(23, 23);
             this.butSampleFromTextures.TabIndex = 6;
             this.butSampleFromTextures.Tag = "SamplePaletteFromTextures";
             // 
@@ -66,9 +66,9 @@
             this.butEditColor.Checked = false;
             this.butEditColor.Enabled = false;
             this.butEditColor.Image = global::TombEditor.Properties.Resources.general_edit_16;
-            this.butEditColor.Location = new System.Drawing.Point(3, 63);
+            this.butEditColor.Location = new System.Drawing.Point(3, 61);
             this.butEditColor.Name = "butEditColor";
-            this.butEditColor.Size = new System.Drawing.Size(24, 24);
+            this.butEditColor.Size = new System.Drawing.Size(23, 23);
             this.butEditColor.TabIndex = 7;
             this.butEditColor.Tag = "EditObjectColor";
             this.toolTip.SetToolTip(this.butEditColor, "Edit color for selected object");
@@ -77,11 +77,11 @@
             // 
             this.lightPalette.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lightPalette.Editable = true;
-            this.lightPalette.Location = new System.Drawing.Point(30, 25);
+            this.lightPalette.Location = new System.Drawing.Point(29, 25);
             this.lightPalette.Margin = new System.Windows.Forms.Padding(2);
             this.lightPalette.Name = "lightPalette";
             this.lightPalette.Padding = new System.Windows.Forms.Padding(3);
-            this.lightPalette.Size = new System.Drawing.Size(615, 116);
+            this.lightPalette.Size = new System.Drawing.Size(616, 116);
             this.lightPalette.TabIndex = 82;
             this.lightPalette.TabStop = false;
             // 
