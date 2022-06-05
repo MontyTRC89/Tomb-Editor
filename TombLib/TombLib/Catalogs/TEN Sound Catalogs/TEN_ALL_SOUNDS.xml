@@ -257,7 +257,7 @@
           <FileName>TR4_Metal_Scrape_Loop1_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -478,7 +478,7 @@
           <FileName>TR4_Metal_Scrape_Loop1_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -539,21 +539,6 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>27</Id>
-      <Name>TR4_Body_Slam(Unused)</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -742,7 +727,7 @@
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -761,7 +746,7 @@
           <FileName>TR4_Senet_Puzzle_Spin_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -975,7 +960,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>50</Id>
-      <Name>TR4_Underwater_Door_Open</Name>
+      <Name>TR4_Underwater_Door_Open_</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1214,7 +1199,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>63</Id>
@@ -1289,7 +1274,7 @@
           <FileName>TR4_Rock_Fall_Crumble_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1308,7 +1293,7 @@
           <FileName>TR4_Rock_Fall_Land_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1542,7 +1527,7 @@
           <FileName>TR4_Waterfall_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1899,7 +1884,7 @@
           <FileName>TR4_Pour_Water_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1956,7 +1941,7 @@
           <FileName>TR4_Clockwork_Beetle_Windup_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1975,7 +1960,7 @@
           <FileName>TR4_Clockwork_Beetle_Click_Whirr_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1994,12 +1979,12 @@
           <FileName>TR4_Clockwork_Beetle_Click_Explode_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>103</Id>
-      <Name>TR4_Mine_Explosion_Overlay</Name>
+      <Name>TR4_Mine_Exp_Overlay</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2013,7 +1998,7 @@
           <FileName>TR4_Mine_Explosion_Overlay_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2320,7 +2305,7 @@
           <FileName>TR4_Locusts_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2858,7 +2843,7 @@
           <FileName>TR4_Rumble_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2877,7 +2862,7 @@
           <FileName>TR4_Rumble_Nextdoor_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3050,7 +3035,7 @@
           <FileName>TR4_Bats_08.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3150,7 +3135,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>163</Id>
-      <Name>TR4_HK_Stop</Name>
+      <Name>TR4_Lara_HK_Stop</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3165,7 +3150,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>164</Id>
@@ -3590,7 +3575,7 @@
           <FileName>TR4_Wraith_Whispers_03.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4154,7 +4139,7 @@
           <FileName>TR4_Horse_Ricochet_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4674,7 +4659,7 @@
           <FileName>TR4_Water_Flushes_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5024,7 +5009,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>257</Id>
-      <Name>TR4_Baddy_Death</Name>
+      <Name>TR4_Baddy_Die</Name>
       <Volume>99</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5117,7 +5102,7 @@
           <FileName>TR4_Baddy_Uzi_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5136,7 +5121,7 @@
           <FileName>TR4_Baddy_Ricochet_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5483,7 +5468,7 @@
           <FileName>TR4_Train_Door_Close_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5502,7 +5487,7 @@
           <FileName>TR4_Voncroy_Knife_Swish_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5906,7 +5891,7 @@
           <FileName>TR4_Horseman_Takehit_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6042,7 +6027,7 @@
           <FileName>TR4_Mapper_Laser_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6365,7 +6350,7 @@
           <FileName>TR4_Dart_Spit_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7001,7 +6986,7 @@
           <FileName>TR4_SAS_Machine_Gun_Fire_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7292,7 +7277,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>374</Id>
@@ -7314,7 +7299,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>375</Id>
@@ -7333,7 +7318,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>376</Id>
@@ -7352,7 +7337,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>377</Id>
@@ -7371,7 +7356,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>378</Id>
@@ -7390,7 +7375,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>379</Id>
@@ -7427,8 +7412,8 @@
           <FileName>TR4_Flare_Ignite_Underwater_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>381</Id>
@@ -7446,8 +7431,8 @@
           <FileName>TR4_Flare_Burn_Underwater_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>382</Id>
@@ -7621,7 +7606,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>391</Id>
@@ -9050,7 +9035,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>463</Id>
-      <Name>TR1_NM_Drill_Engine_Start</Name>
+      <Name>TR1_Nm_Drill_Engine_Start</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -9061,7 +9046,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_NM_Drill_Engine_Start_01.wav</FileName>
+          <FileName>TR1_Nm_Drill_Engine_Start_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9069,7 +9054,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>464</Id>
-      <Name>TR1_NM_Drill_Engine_Loop</Name>
+      <Name>TR1_Nm_Drill_Engine_Loop</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -9080,7 +9065,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_NM_Drill_Engine_Loop_01.wav</FileName>
+          <FileName>TR1_Nm_Drill_Engine_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9088,7 +9073,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>465</Id>
-      <Name>TR1_NM_Conveyor_Belt</Name>
+      <Name>TR1_Nm_Conveyor_Belt</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -9099,7 +9084,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_NM_Conveyor_Belt_01.wav</FileName>
+          <FileName>TR1_Nm_Conveyor_Belt_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9107,7 +9092,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>466</Id>
-      <Name>TR1_NM_Hut_Lowered</Name>
+      <Name>TR1_Nm_Hut_Lowered</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -9118,7 +9103,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_NM_Hut_Lowered_01.wav</FileName>
+          <FileName>TR1_Nm_Hut_Lowered_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9126,7 +9111,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>467</Id>
-      <Name>TR1_NM_Hut_Hit_Ground</Name>
+      <Name>TR1_Nm_Hut_Hit_Ground</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -9137,7 +9122,7 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR1_NM_Hut_Hit_Ground_01.wav</FileName>
+          <FileName>TR1_Nm_Hut_Hit_Ground_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -9251,7 +9236,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>474</Id>
@@ -9270,7 +9255,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>475</Id>
@@ -9289,7 +9274,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>476</Id>
@@ -9308,7 +9293,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>477</Id>
@@ -9327,7 +9312,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>478</Id>
@@ -9346,7 +9331,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>479</Id>
@@ -9365,7 +9350,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>480</Id>
@@ -9384,7 +9369,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>481</Id>
@@ -9403,7 +9388,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>482</Id>
@@ -9422,7 +9407,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>483</Id>
@@ -9441,7 +9426,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>484</Id>
@@ -9460,7 +9445,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>485</Id>
@@ -9485,7 +9470,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>486</Id>
@@ -9510,7 +9495,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>487</Id>
@@ -9529,7 +9514,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>488</Id>
@@ -9551,7 +9536,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>489</Id>
@@ -9570,7 +9555,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>490</Id>
@@ -9589,7 +9574,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>491</Id>
@@ -9608,7 +9593,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>492</Id>
@@ -9627,7 +9612,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>493</Id>
@@ -9646,7 +9631,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>494</Id>
@@ -9665,7 +9650,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>495</Id>
@@ -9684,7 +9669,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>496</Id>
@@ -9703,7 +9688,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>497</Id>
@@ -9722,7 +9707,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>498</Id>
@@ -9741,7 +9726,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>499</Id>
@@ -9769,7 +9754,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>500</Id>
@@ -9788,7 +9773,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>501</Id>
@@ -9807,7 +9792,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>502</Id>
@@ -9826,7 +9811,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>503</Id>
@@ -9845,7 +9830,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>504</Id>
@@ -9864,7 +9849,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>505</Id>
@@ -9883,7 +9868,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>506</Id>
@@ -9902,7 +9887,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>507</Id>
@@ -9930,7 +9915,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>508</Id>
@@ -9949,7 +9934,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>509</Id>
@@ -9968,7 +9953,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>510</Id>
@@ -9987,7 +9972,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>511</Id>
@@ -10006,7 +9991,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>512</Id>
@@ -10025,7 +10010,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>513</Id>
@@ -10044,7 +10029,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>514</Id>
@@ -10088,7 +10073,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>516</Id>
@@ -10107,7 +10092,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>517</Id>
@@ -10126,7 +10111,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>518</Id>
@@ -10148,7 +10133,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>519</Id>
@@ -10167,7 +10152,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>520</Id>
@@ -10186,7 +10171,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>521</Id>
@@ -10205,7 +10190,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>522</Id>
@@ -10224,7 +10209,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>523</Id>
@@ -10243,7 +10228,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>524</Id>
@@ -10262,7 +10247,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>525</Id>
@@ -10287,7 +10272,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>526</Id>
@@ -10306,7 +10291,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>527</Id>
@@ -10325,7 +10310,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>528</Id>
@@ -10344,7 +10329,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>529</Id>
@@ -10369,7 +10354,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>530</Id>
@@ -10388,7 +10373,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>531</Id>
@@ -10410,7 +10395,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>532</Id>
@@ -10429,7 +10414,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>533</Id>
@@ -10448,7 +10433,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>534</Id>
@@ -10467,7 +10452,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>535</Id>
@@ -10486,7 +10471,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>536</Id>
@@ -10505,7 +10490,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>537</Id>
@@ -10524,7 +10509,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>538</Id>
@@ -10543,7 +10528,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>539</Id>
@@ -10562,7 +10547,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>540</Id>
@@ -10581,7 +10566,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>541</Id>
@@ -10603,7 +10588,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>542</Id>
@@ -10625,7 +10610,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>543</Id>
@@ -10644,7 +10629,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>544</Id>
@@ -10663,7 +10648,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>545</Id>
@@ -10682,7 +10667,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>546</Id>
@@ -10701,7 +10686,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>547</Id>
@@ -10720,7 +10705,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>548</Id>
@@ -10739,7 +10724,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>549</Id>
@@ -10758,7 +10743,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>550</Id>
@@ -10777,7 +10762,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>551</Id>
@@ -10796,7 +10781,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>552</Id>
@@ -10821,7 +10806,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>553</Id>
@@ -10840,7 +10825,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>554</Id>
@@ -10859,7 +10844,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>555</Id>
@@ -10878,7 +10863,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>556</Id>
@@ -10897,7 +10882,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>557</Id>
@@ -10916,7 +10901,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>558</Id>
@@ -10935,7 +10920,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>559</Id>
@@ -10954,7 +10939,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>560</Id>
@@ -10973,7 +10958,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>561</Id>
@@ -10992,7 +10977,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>562</Id>
@@ -11011,7 +10996,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>563</Id>
@@ -11030,7 +11015,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>564</Id>
@@ -11049,7 +11034,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>565</Id>
@@ -11068,7 +11053,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>566</Id>
@@ -11087,7 +11072,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>567</Id>
@@ -11112,7 +11097,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>568</Id>
@@ -11131,7 +11116,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>569</Id>
@@ -11159,7 +11144,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>570</Id>
@@ -11178,7 +11163,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>571</Id>
@@ -11197,7 +11182,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>572</Id>
@@ -11222,7 +11207,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>573</Id>
@@ -11247,7 +11232,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>574</Id>
@@ -11272,7 +11257,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>575</Id>
@@ -11297,7 +11282,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>576</Id>
@@ -11316,7 +11301,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>577</Id>
@@ -11335,7 +11320,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>578</Id>
@@ -11354,7 +11339,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>579</Id>
@@ -11379,7 +11364,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>580</Id>
@@ -11398,7 +11383,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>581</Id>
@@ -11417,7 +11402,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>582</Id>
@@ -11436,7 +11421,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>583</Id>
@@ -11455,7 +11440,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>584</Id>
@@ -11474,7 +11459,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>585</Id>
@@ -11493,7 +11478,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>586</Id>
@@ -11512,7 +11497,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>587</Id>
@@ -11534,7 +11519,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>588</Id>
@@ -11553,7 +11538,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>589</Id>
@@ -11578,7 +11563,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>590</Id>
@@ -11597,7 +11582,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>591</Id>
@@ -11616,7 +11601,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>592</Id>
@@ -11635,7 +11620,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>593</Id>
@@ -11654,7 +11639,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>594</Id>
@@ -11673,7 +11658,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>595</Id>
@@ -11692,7 +11677,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>596</Id>
@@ -11711,7 +11696,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>597</Id>
@@ -11733,7 +11718,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>598</Id>
@@ -11752,7 +11737,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>599</Id>
@@ -11774,7 +11759,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>600</Id>
@@ -11796,7 +11781,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>601</Id>
@@ -11818,7 +11803,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>602</Id>
@@ -11843,7 +11828,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>603</Id>
@@ -11868,7 +11853,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>604</Id>
@@ -11893,7 +11878,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>605</Id>
@@ -11924,7 +11909,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>606</Id>
@@ -11952,7 +11937,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>607</Id>
@@ -11974,7 +11959,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>608</Id>
@@ -11993,7 +11978,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>609</Id>
@@ -12012,7 +11997,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>610</Id>
@@ -12031,7 +12016,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>611</Id>
@@ -12050,7 +12035,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>612</Id>
@@ -12069,7 +12054,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>613</Id>
@@ -12088,7 +12073,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>614</Id>
@@ -12107,7 +12092,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>615</Id>
@@ -12126,7 +12111,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>616</Id>
@@ -12145,7 +12130,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>617</Id>
@@ -12164,7 +12149,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>618</Id>
@@ -12183,7 +12168,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>619</Id>
@@ -12202,7 +12187,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>620</Id>
@@ -12221,7 +12206,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>621</Id>
@@ -12240,7 +12225,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>622</Id>
@@ -12259,7 +12244,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>623</Id>
@@ -12278,7 +12263,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>624</Id>
@@ -12297,7 +12282,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>625</Id>
@@ -12316,7 +12301,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>626</Id>
@@ -12335,7 +12320,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>627</Id>
@@ -12354,7 +12339,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>628</Id>
@@ -12373,7 +12358,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>629</Id>
@@ -12401,7 +12386,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>630</Id>
@@ -12420,7 +12405,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>631</Id>
@@ -12439,7 +12424,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>632</Id>
@@ -12458,7 +12443,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>633</Id>
@@ -12477,7 +12462,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>634</Id>
@@ -12496,7 +12481,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>635</Id>
@@ -12515,7 +12500,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>636</Id>
@@ -12534,7 +12519,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>637</Id>
@@ -12553,7 +12538,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>638</Id>
@@ -12572,7 +12557,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>639</Id>
@@ -12591,7 +12576,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>640</Id>
@@ -12610,7 +12595,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>641</Id>
@@ -12629,7 +12614,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>642</Id>
@@ -12648,7 +12633,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>643</Id>
@@ -12670,7 +12655,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>644</Id>
@@ -12689,7 +12674,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>645</Id>
@@ -12708,7 +12693,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>646</Id>
@@ -12727,7 +12712,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>647</Id>
@@ -12746,7 +12731,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>648</Id>
@@ -12765,7 +12750,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>649</Id>
@@ -12784,7 +12769,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>650</Id>
@@ -12803,7 +12788,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>651</Id>
@@ -12825,7 +12810,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>652</Id>
@@ -12844,7 +12829,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>653</Id>
@@ -12863,7 +12848,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>654</Id>
@@ -12882,7 +12867,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>655</Id>
@@ -12901,7 +12886,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>656</Id>
@@ -12920,7 +12905,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>657</Id>
@@ -12939,7 +12924,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>658</Id>
@@ -12958,7 +12943,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>659</Id>
@@ -12977,7 +12962,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>660</Id>
@@ -12996,7 +12981,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>661</Id>
@@ -13015,7 +13000,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>662</Id>
@@ -13034,7 +13019,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>663</Id>
@@ -13053,7 +13038,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>664</Id>
@@ -13078,7 +13063,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>665</Id>
@@ -13097,7 +13082,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>666</Id>
@@ -13116,7 +13101,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>667</Id>
@@ -13135,7 +13120,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>668</Id>
@@ -13154,7 +13139,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>669</Id>
@@ -13173,7 +13158,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>670</Id>
@@ -13192,7 +13177,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>671</Id>
@@ -13211,7 +13196,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>672</Id>
@@ -13230,7 +13215,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>673</Id>
@@ -13249,7 +13234,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>674</Id>
@@ -13268,7 +13253,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>675</Id>
@@ -13287,7 +13272,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>676</Id>
@@ -13306,7 +13291,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>677</Id>
@@ -13325,7 +13310,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>678</Id>
@@ -13344,7 +13329,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>679</Id>
@@ -13363,7 +13348,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>680</Id>
@@ -13382,7 +13367,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>681</Id>
@@ -13404,7 +13389,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>682</Id>
@@ -13423,7 +13408,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>683</Id>
@@ -13442,7 +13427,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>684</Id>
@@ -13464,7 +13449,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>685</Id>
@@ -13483,7 +13468,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>686</Id>
@@ -13502,7 +13487,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>687</Id>
@@ -13521,7 +13506,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>688</Id>
@@ -13540,7 +13525,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>689</Id>
@@ -13559,7 +13544,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>690</Id>
@@ -13578,7 +13563,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>691</Id>
@@ -13600,7 +13585,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>692</Id>
@@ -13619,7 +13604,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>693</Id>
@@ -13638,7 +13623,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>694</Id>
@@ -13657,7 +13642,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>695</Id>
@@ -13679,7 +13664,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>696</Id>
@@ -13698,7 +13683,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>697</Id>
@@ -13717,7 +13702,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>698</Id>
@@ -13736,7 +13721,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>699</Id>
@@ -13755,7 +13740,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>700</Id>
@@ -13774,7 +13759,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>701</Id>
@@ -13793,7 +13778,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>702</Id>
@@ -13812,7 +13797,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>703</Id>
@@ -13831,7 +13816,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>704</Id>
@@ -13850,7 +13835,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>705</Id>
@@ -13869,7 +13854,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>706</Id>
@@ -13891,7 +13876,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>707</Id>
@@ -13910,7 +13895,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>708</Id>
@@ -13929,7 +13914,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>709</Id>
@@ -13948,7 +13933,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>710</Id>
@@ -13973,7 +13958,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>711</Id>
@@ -13995,7 +13980,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>712</Id>
@@ -14014,7 +13999,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>713</Id>
@@ -14039,7 +14024,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>714</Id>
@@ -14058,7 +14043,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>715</Id>
@@ -14077,7 +14062,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>716</Id>
@@ -14096,7 +14081,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>717</Id>
@@ -14115,7 +14100,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>718</Id>
@@ -14134,7 +14119,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>719</Id>
@@ -14153,7 +14138,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>720</Id>
@@ -14172,7 +14157,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>721</Id>
@@ -14191,7 +14176,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>722</Id>
@@ -14210,7 +14195,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>723</Id>
@@ -14229,7 +14214,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>724</Id>
@@ -14248,7 +14233,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>725</Id>
@@ -14267,7 +14252,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>726</Id>
@@ -14305,7 +14290,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>728</Id>
@@ -14324,7 +14309,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>729</Id>
@@ -14343,7 +14328,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>730</Id>
@@ -14362,7 +14347,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>731</Id>
@@ -14381,7 +14366,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>732</Id>
@@ -14400,7 +14385,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>733</Id>
@@ -14419,7 +14404,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>734</Id>
@@ -14438,7 +14423,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>735</Id>
@@ -14457,7 +14442,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>736</Id>
@@ -14476,7 +14461,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>737</Id>
@@ -14497,8 +14482,8 @@
           <FileName>TR3_Amercan_Hoy_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>738</Id>
@@ -14523,7 +14508,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>739</Id>
@@ -14542,7 +14527,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>740</Id>
@@ -14561,7 +14546,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>741</Id>
@@ -14583,7 +14568,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>742</Id>
@@ -14602,7 +14587,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>743</Id>
@@ -14624,7 +14609,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>744</Id>
@@ -14643,7 +14628,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>745</Id>
@@ -14662,7 +14647,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>746</Id>
@@ -14684,7 +14669,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>747</Id>
@@ -14703,7 +14688,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>748</Id>
@@ -14725,7 +14710,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>749</Id>
@@ -14744,7 +14729,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>750</Id>
@@ -14763,7 +14748,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>751</Id>
@@ -14785,7 +14770,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>752</Id>
@@ -14804,7 +14789,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>753</Id>
@@ -14823,7 +14808,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>754</Id>
@@ -14842,7 +14827,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>755</Id>
@@ -14870,7 +14855,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>756</Id>
@@ -14889,7 +14874,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>757</Id>
@@ -14908,7 +14893,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>758</Id>
@@ -14927,7 +14912,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>759</Id>
@@ -14946,7 +14931,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>760</Id>
@@ -14965,7 +14950,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>761</Id>
@@ -14984,7 +14969,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>762</Id>
@@ -15006,7 +14991,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>763</Id>
@@ -15025,7 +15010,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>764</Id>
@@ -15047,7 +15032,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>765</Id>
@@ -15066,7 +15051,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>766</Id>
@@ -15088,7 +15073,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>767</Id>
@@ -15110,7 +15095,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>768</Id>
@@ -15129,7 +15114,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>769</Id>
@@ -15148,7 +15133,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>770</Id>
@@ -15167,7 +15152,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>771</Id>
@@ -15186,7 +15171,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>772</Id>
@@ -15205,7 +15190,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>773</Id>
@@ -15224,7 +15209,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>774</Id>
@@ -15243,7 +15228,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>775</Id>
@@ -15262,7 +15247,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>776</Id>
@@ -15281,7 +15266,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>777</Id>
@@ -15300,7 +15285,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>778</Id>
@@ -15319,7 +15304,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>779</Id>
@@ -15338,7 +15323,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>780</Id>
@@ -15357,7 +15342,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>781</Id>
@@ -15376,7 +15361,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>782</Id>
@@ -15395,7 +15380,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>783</Id>
@@ -15414,7 +15399,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>784</Id>
@@ -15433,7 +15418,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>785</Id>
@@ -15452,7 +15437,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>786</Id>
@@ -15471,7 +15456,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>787</Id>
@@ -15490,7 +15475,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>788</Id>
@@ -15515,7 +15500,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>789</Id>
@@ -15534,7 +15519,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>790</Id>
@@ -15553,7 +15538,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>791</Id>
@@ -15572,7 +15557,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>792</Id>
@@ -15591,7 +15576,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>793</Id>
@@ -15610,7 +15595,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>794</Id>
@@ -15629,7 +15614,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>795</Id>
@@ -15648,7 +15633,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>796</Id>
@@ -15667,7 +15652,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>797</Id>
@@ -15686,7 +15671,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>798</Id>
@@ -15705,7 +15690,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>799</Id>
@@ -15724,7 +15709,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>800</Id>
@@ -15743,7 +15728,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>801</Id>
@@ -15768,7 +15753,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>802</Id>
@@ -15787,7 +15772,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>803</Id>
@@ -15806,7 +15791,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>804</Id>
@@ -15825,7 +15810,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>805</Id>
@@ -15844,7 +15829,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>806</Id>
@@ -15882,7 +15867,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>808</Id>
@@ -15904,7 +15889,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>809</Id>
@@ -15923,7 +15908,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>810</Id>
@@ -15942,7 +15927,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>811</Id>
@@ -15961,7 +15946,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>812</Id>
@@ -15980,7 +15965,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>813</Id>
@@ -15999,7 +15984,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>814</Id>
@@ -16018,7 +16003,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>815</Id>
@@ -16037,7 +16022,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>816</Id>
@@ -16059,7 +16044,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>817</Id>
@@ -16078,7 +16063,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>818</Id>
@@ -16097,7 +16082,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>819</Id>
@@ -16116,7 +16101,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>820</Id>
@@ -16135,11 +16120,11 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>821</Id>
-      <Name>TR3_Raptor_Death_1</Name>
+      <Name>TR3_Raptor_Die_1</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -16150,15 +16135,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_Raptor_Death_1_01.wav</FileName>
+          <FileName>TR3_Raptor_Die_1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>822</Id>
-      <Name>TR3_Raptor_Death_2</Name>
+      <Name>TR3_Raptor_Die_2</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -16169,11 +16154,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR3_Raptor_Death_2_01.wav</FileName>
+          <FileName>TR3_Raptor_Die_2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>823</Id>
@@ -16195,7 +16180,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>824</Id>
@@ -16214,7 +16199,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>825</Id>
@@ -16236,7 +16221,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>826</Id>
@@ -16255,7 +16240,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>827</Id>
@@ -16274,7 +16259,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>828</Id>
@@ -16293,7 +16278,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>829</Id>
@@ -16312,7 +16297,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>830</Id>
@@ -16331,7 +16316,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>831</Id>
@@ -16350,7 +16335,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>832</Id>
@@ -16369,7 +16354,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>833</Id>
@@ -16407,7 +16392,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>835</Id>
@@ -16426,7 +16411,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>836</Id>
@@ -16445,7 +16430,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>837</Id>
@@ -16464,7 +16449,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>838</Id>
@@ -16517,7 +16502,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>841</Id>
@@ -16536,7 +16521,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>842</Id>
@@ -16555,7 +16540,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>843</Id>
@@ -16574,7 +16559,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>844</Id>
@@ -16596,7 +16581,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>845</Id>
@@ -16615,7 +16600,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>846</Id>
@@ -16634,7 +16619,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>847</Id>
@@ -16653,7 +16638,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>848</Id>
@@ -16672,7 +16657,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>849</Id>
@@ -16691,7 +16676,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>850</Id>
@@ -16710,7 +16695,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>851</Id>
@@ -16729,7 +16714,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>852</Id>
@@ -16748,7 +16733,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>853</Id>
@@ -16767,7 +16752,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>854</Id>
@@ -16805,7 +16790,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>856</Id>
@@ -16824,7 +16809,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>857</Id>
@@ -16843,7 +16828,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>858</Id>
@@ -16862,7 +16847,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>859</Id>
@@ -16900,7 +16885,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>861</Id>
@@ -16919,7 +16904,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>862</Id>
@@ -16938,7 +16923,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>863</Id>
@@ -16957,7 +16942,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>864</Id>
@@ -17014,7 +16999,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>867</Id>
@@ -17033,7 +17018,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>868</Id>
@@ -17082,7 +17067,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>871</Id>
@@ -17101,7 +17086,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>872</Id>
@@ -17120,7 +17105,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>873</Id>
@@ -17154,7 +17139,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>875</Id>
@@ -17173,7 +17158,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>876</Id>
@@ -17191,8 +17176,8 @@
           <FileName>TR3_Spanner_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>877</Id>
@@ -17211,7 +17196,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>878</Id>
@@ -17233,7 +17218,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>879</Id>
@@ -17252,7 +17237,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>880</Id>
@@ -17271,7 +17256,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>881</Id>
@@ -17290,7 +17275,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>882</Id>
@@ -17324,7 +17309,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>884</Id>
@@ -17343,7 +17328,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>885</Id>
@@ -17365,7 +17350,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>886</Id>
@@ -17384,7 +17369,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>887</Id>
@@ -17403,7 +17388,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>888</Id>
@@ -17422,7 +17407,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>889</Id>
@@ -17441,7 +17426,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>890</Id>
@@ -17459,8 +17444,8 @@
           <FileName>TR3_Tube_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>891</Id>
@@ -17479,7 +17464,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>892</Id>
@@ -17513,7 +17498,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>894</Id>
@@ -17532,7 +17517,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>895</Id>
@@ -17551,7 +17536,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>896</Id>
@@ -17570,7 +17555,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>897</Id>
@@ -17589,7 +17574,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>898</Id>
@@ -17608,7 +17593,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>899</Id>
@@ -17646,7 +17631,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>901</Id>
@@ -17668,7 +17653,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>902</Id>
@@ -17687,7 +17672,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>903</Id>
@@ -17706,7 +17691,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>904</Id>
@@ -17725,11 +17710,11 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>905</Id>
-      <Name>TR5_VCI_Blueman_Guns</Name>
+      <Name>TR5_Vci_Blueman_Guns</Name>
       <Volume>58</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
@@ -17740,15 +17725,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Guns_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Guns_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>906</Id>
-      <Name>TR5_VCI_Blueman_Chair_Hit</Name>
+      <Name>TR5_Vci_Blueman_Chair_Hit</Name>
       <Volume>90</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -17759,15 +17744,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Chair_Hit_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Chair_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>907</Id>
-      <Name>TR5_VCI_Blueman_Getup</Name>
+      <Name>TR5_Vci_Blueman_Getup</Name>
       <Volume>80</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -17778,15 +17763,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Getup_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Getup_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>908</Id>
-      <Name>TR5_VCI_Blueman_Hit_Or_Death</Name>
+      <Name>TR5_Vci_Blueman_Hit_Or_Die</Name>
       <Volume>82</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -17797,15 +17782,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Hit_Or_Death_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Hit_Or_Die_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>909</Id>
-      <Name>TR5_VCI_Blueman_Jump</Name>
+      <Name>TR5_Vci_Blueman_Jump</Name>
       <Volume>60</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>88</Chance>
@@ -17816,15 +17801,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Jump_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Jump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>910</Id>
-      <Name>TR5_VCI_Blueman_Chair</Name>
+      <Name>TR5_Vci_Blueman_Chair</Name>
       <Volume>85</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -17835,15 +17820,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Chair_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Chair_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>911</Id>
-      <Name>TR5_VCI_Blueman_Console</Name>
+      <Name>TR5_Vci_Blueman_Console</Name>
       <Volume>45</Volume>
       <RangeInSectors>5</RangeInSectors>
       <Chance>31</Chance>
@@ -17854,23 +17839,23 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Console_01.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Console_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Console_02.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Console_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Console_03.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Console_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Console_04.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Console_04.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR5_VCI_Blueman_Console_05.wav</FileName>
+          <FileName>TR5_Vci_Blueman_Console_05.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>912</Id>
@@ -17889,7 +17874,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>913</Id>
@@ -17908,7 +17893,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>914</Id>
@@ -17927,7 +17912,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>915</Id>
@@ -17946,7 +17931,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>916</Id>
@@ -17965,7 +17950,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>917</Id>
@@ -17984,7 +17969,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>918</Id>
@@ -18003,7 +17988,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>919</Id>
@@ -18025,7 +18010,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>920</Id>
@@ -18044,7 +18029,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>921</Id>
@@ -18063,7 +18048,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>922</Id>
@@ -18082,7 +18067,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>923</Id>
@@ -18100,8 +18085,8 @@
           <FileName>TR5_God_Head_Blast_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>924</Id>
@@ -18119,8 +18104,8 @@
           <FileName>TR5_God_Head_Charge_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>925</Id>
@@ -18138,8 +18123,8 @@
           <FileName>TR5_God_Head_Laser_Loops_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>926</Id>
@@ -18158,7 +18143,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>927</Id>
@@ -18177,7 +18162,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>928</Id>
@@ -18196,7 +18181,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>929</Id>
@@ -18215,7 +18200,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>930</Id>
@@ -18234,7 +18219,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>931</Id>
@@ -18253,7 +18238,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>932</Id>
@@ -18272,7 +18257,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>933</Id>
@@ -18297,7 +18282,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>934</Id>
@@ -18316,7 +18301,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>935</Id>
@@ -18335,7 +18320,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>936</Id>
@@ -18354,7 +18339,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>937</Id>
@@ -18373,7 +18358,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>938</Id>
@@ -18392,7 +18377,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>939</Id>
@@ -18426,7 +18411,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>941</Id>
@@ -18448,7 +18433,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>942</Id>
@@ -18467,7 +18452,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>943</Id>
@@ -18486,7 +18471,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>944</Id>
@@ -18504,8 +18489,8 @@
           <FileName>TR5_Imp_Stone_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>945</Id>
@@ -18524,7 +18509,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>946</Id>
@@ -18543,7 +18528,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>947</Id>
@@ -18562,7 +18547,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>948</Id>
@@ -18581,7 +18566,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>949</Id>
@@ -18600,7 +18585,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>950</Id>
@@ -18619,7 +18604,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>951</Id>
@@ -18638,7 +18623,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>952</Id>
@@ -18657,7 +18642,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>953</Id>
@@ -18676,7 +18661,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>954</Id>
@@ -18695,7 +18680,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>955</Id>
@@ -18720,7 +18705,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>956</Id>
@@ -18745,7 +18730,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>957</Id>
@@ -18770,7 +18755,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>958</Id>
@@ -18791,8 +18776,8 @@
           <FileName>TR5_Sword_God_Hit_Metal_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>959</Id>
@@ -18811,7 +18796,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>960</Id>
@@ -18830,7 +18815,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>961</Id>
@@ -18849,7 +18834,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>962</Id>
@@ -18868,7 +18853,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>963</Id>
@@ -18887,7 +18872,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>964</Id>
@@ -18909,7 +18894,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>965</Id>
@@ -18928,7 +18913,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>966</Id>
@@ -18947,7 +18932,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>967</Id>
@@ -18966,7 +18951,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>968</Id>
@@ -19023,7 +19008,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>971</Id>
@@ -19042,7 +19027,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>972</Id>
@@ -19061,7 +19046,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>973</Id>
@@ -19080,7 +19065,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>974</Id>
@@ -19099,7 +19084,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>975</Id>
@@ -19121,7 +19106,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>976</Id>
@@ -19140,7 +19125,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>977</Id>
@@ -19159,7 +19144,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>978</Id>
@@ -19178,7 +19163,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>979</Id>
@@ -19197,7 +19182,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>980</Id>
@@ -19216,7 +19201,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>981</Id>
@@ -19235,7 +19220,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>982</Id>
@@ -19259,8 +19244,8 @@
           <FileName>TR5_Insects_03.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>983</Id>
@@ -19279,7 +19264,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>984</Id>
@@ -19298,7 +19283,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>985</Id>
@@ -19317,7 +19302,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>986</Id>
@@ -19336,7 +19321,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>987</Id>
@@ -19355,7 +19340,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>988</Id>
@@ -19374,7 +19359,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>989</Id>
@@ -19393,7 +19378,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>990</Id>
@@ -19412,7 +19397,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>991</Id>
@@ -19431,7 +19416,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>992</Id>
@@ -19450,7 +19435,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>993</Id>
@@ -19469,7 +19454,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>994</Id>
@@ -19488,7 +19473,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>995</Id>
@@ -19507,7 +19492,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>996</Id>
@@ -19526,7 +19511,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>997</Id>
@@ -19545,7 +19530,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>998</Id>
@@ -19564,7 +19549,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>999</Id>
@@ -19583,7 +19568,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1000</Id>
@@ -19602,7 +19587,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1001</Id>
@@ -19623,8 +19608,8 @@
           <FileName>TR5_Electric_Light_Crackles_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1002</Id>
@@ -19642,8 +19627,8 @@
           <FileName>TR5_Electric_Wires_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1003</Id>
@@ -19662,7 +19647,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1004</Id>
@@ -19681,7 +19666,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1005</Id>
@@ -19700,7 +19685,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1006</Id>
@@ -19719,7 +19704,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1007</Id>
@@ -19738,7 +19723,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1008</Id>
@@ -19757,7 +19742,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1009</Id>
@@ -19776,7 +19761,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1010</Id>
@@ -19797,8 +19782,8 @@
           <FileName>TR5_Bio_Breathe_Out_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1011</Id>
@@ -19817,7 +19802,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1012</Id>
@@ -19836,7 +19821,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1013</Id>
@@ -19855,7 +19840,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1014</Id>
@@ -19874,7 +19859,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1015</Id>
@@ -19893,7 +19878,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1016</Id>
@@ -19912,7 +19897,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1017</Id>
@@ -19931,7 +19916,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1018</Id>
@@ -19950,7 +19935,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1019</Id>
@@ -19969,7 +19954,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1020</Id>
@@ -19988,7 +19973,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1021</Id>
@@ -20007,7 +19992,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1022</Id>
@@ -20026,7 +20011,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1023</Id>
@@ -20045,7 +20030,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1024</Id>
@@ -20064,7 +20049,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1025</Id>
@@ -20083,7 +20068,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1026</Id>
@@ -20102,7 +20087,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1027</Id>
@@ -20121,7 +20106,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1028</Id>
@@ -20140,7 +20125,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1029</Id>
@@ -20159,7 +20144,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1030</Id>
@@ -20178,7 +20163,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1031</Id>
@@ -20197,7 +20182,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1032</Id>
@@ -20216,7 +20201,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1033</Id>
@@ -20235,7 +20220,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1034</Id>
@@ -20254,7 +20239,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1035</Id>
@@ -20273,7 +20258,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1036</Id>
@@ -20292,7 +20277,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1037</Id>
@@ -20311,7 +20296,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1038</Id>
@@ -20336,7 +20321,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1039</Id>
@@ -20355,7 +20340,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1040</Id>
@@ -20377,7 +20362,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1041</Id>
@@ -20399,7 +20384,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1042</Id>
@@ -20418,7 +20403,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1043</Id>
@@ -20437,7 +20422,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1044</Id>
@@ -20455,8 +20440,8 @@
           <FileName>TR5_Base_Claw_Motor_A_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1045</Id>
@@ -20474,8 +20459,8 @@
           <FileName>TR5_Base_Claw_Motor_B_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1046</Id>
@@ -20493,8 +20478,8 @@
           <FileName>TR5_Base_Claw_Motor_C_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1047</Id>
@@ -20512,8 +20497,8 @@
           <FileName>TR5_Base_Claw_Crash_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1048</Id>
@@ -20531,8 +20516,8 @@
           <FileName>TR5_Base_Claw_Winch_Up_Loop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1049</Id>
@@ -20550,8 +20535,8 @@
           <FileName>TR5_Base_Claw_Hangar_Door_Open_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1050</Id>
@@ -20570,7 +20555,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1051</Id>
@@ -20589,7 +20574,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1052</Id>
@@ -20608,7 +20593,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1053</Id>
@@ -20627,7 +20612,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1054</Id>
@@ -20646,7 +20631,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1055</Id>
@@ -20665,7 +20650,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1056</Id>
@@ -20683,8 +20668,8 @@
           <FileName>TR5_Klaxon_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1057</Id>
@@ -20703,7 +20688,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1058</Id>
@@ -20722,7 +20707,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1059</Id>
@@ -20740,8 +20725,8 @@
           <FileName>TR5_Lift_Doors_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1060</Id>
@@ -20759,8 +20744,8 @@
           <FileName>TR5_Lift_Hit_Floor1_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1061</Id>
@@ -20778,8 +20763,8 @@
           <FileName>TR5_Grill_3_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1062</Id>
@@ -20798,7 +20783,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1063</Id>
@@ -20817,7 +20802,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1064</Id>
@@ -20836,7 +20821,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1065</Id>
@@ -20855,7 +20840,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1066</Id>
@@ -20874,7 +20859,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1067</Id>
@@ -20893,7 +20878,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1068</Id>
@@ -20912,7 +20897,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1069</Id>
@@ -20931,7 +20916,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1070</Id>
@@ -20950,7 +20935,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1071</Id>
@@ -20969,7 +20954,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1072</Id>
@@ -20988,7 +20973,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1073</Id>
@@ -21007,7 +20992,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1074</Id>
@@ -21026,7 +21011,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1075</Id>
@@ -21045,7 +21030,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1076</Id>
@@ -21064,7 +21049,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1077</Id>
@@ -21083,7 +21068,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1078</Id>
@@ -21102,7 +21087,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1079</Id>
@@ -21139,7 +21124,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1080</Id>
@@ -21158,7 +21143,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1081</Id>
@@ -21176,8 +21161,8 @@
           <FileName>TR5_Ravenswitch_Explode_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1082</Id>
@@ -21196,7 +21181,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1083</Id>
@@ -21234,7 +21219,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1085</Id>
@@ -21253,7 +21238,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1086</Id>
@@ -21272,7 +21257,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1087</Id>
@@ -21291,7 +21276,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1088</Id>
@@ -21310,7 +21295,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1089</Id>
@@ -21329,7 +21314,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1090</Id>
@@ -21348,7 +21333,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1091</Id>
@@ -21367,7 +21352,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1092</Id>
@@ -21385,8 +21370,8 @@
           <FileName>TR5_Smash_Glass_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1093</Id>
@@ -21404,8 +21389,8 @@
           <FileName>TR5_Smash_Metal_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1094</Id>
@@ -21420,7 +21405,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1095</Id>
@@ -21438,8 +21423,8 @@
           <FileName>TR5_Smash_Wood_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1096</Id>
@@ -21458,7 +21443,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1097</Id>
@@ -21477,7 +21462,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1098</Id>
@@ -21496,7 +21481,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1099</Id>
@@ -21515,7 +21500,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1100</Id>
@@ -21534,7 +21519,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1101</Id>
@@ -21552,8 +21537,8 @@
           <FileName>TR5_Teleport_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1102</Id>
@@ -21575,7 +21560,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1103</Id>
@@ -21593,8 +21578,8 @@
           <FileName>TR5_Teleport_Flash_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1104</Id>
@@ -21613,7 +21598,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1105</Id>
@@ -21632,7 +21617,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1106</Id>
@@ -21651,7 +21636,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1107</Id>
@@ -21670,7 +21655,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1108</Id>
@@ -21689,7 +21674,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1109</Id>
@@ -21708,7 +21693,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1110</Id>
@@ -21726,12 +21711,12 @@
           <FileName>TR5_Underwater_Torpedo_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1111</Id>
-      <Name>TR5_VCI_Door_Close</Name>
+      <Name>TR5_Vci_Door_Close</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -21742,15 +21727,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Door_Close_01.wav</FileName>
+          <FileName>TR5_Vci_Door_Close_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1112</Id>
-      <Name>TR5_VCI_Door_Open</Name>
+      <Name>TR5_Vci_Door_Open</Name>
       <Volume>30</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -21761,11 +21746,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_VCI_Door_Open_01.wav</FileName>
+          <FileName>TR5_Vci_Door_Open_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1113</Id>
@@ -21784,7 +21769,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1114</Id>
@@ -21803,7 +21788,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1115</Id>
@@ -21822,7 +21807,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1116</Id>
@@ -21841,7 +21826,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1117</Id>
@@ -21860,7 +21845,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1118</Id>
@@ -21879,7 +21864,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1119</Id>
@@ -21898,7 +21883,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1120</Id>
@@ -21917,7 +21902,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1121</Id>
@@ -21936,7 +21921,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1122</Id>
@@ -21955,7 +21940,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1123</Id>
@@ -21980,7 +21965,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1124</Id>
@@ -22005,7 +21990,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1125</Id>
@@ -22024,7 +22009,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1126</Id>
@@ -22043,7 +22028,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1127</Id>
@@ -22062,7 +22047,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1128</Id>
@@ -22081,7 +22066,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1129</Id>
@@ -22095,7 +22080,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22110,7 +22095,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22125,7 +22110,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22140,7 +22125,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22155,7 +22140,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22170,7 +22155,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22185,7 +22170,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -22200,7 +22185,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
