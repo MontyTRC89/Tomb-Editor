@@ -3,7 +3,7 @@
   <SoundInfos>
     <WadSoundInfo>
       <Id>474</Id>
-      <Name>TR2_LARA_M16_FIRE</Name>
+      <Name>TR2_Lara_M16_Fire</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -14,15 +14,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LARA_M16_FIRE_01.wav</FileName>
+          <FileName>TR2_Lara_M16_Fire_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>475</Id>
-      <Name>TR2_LARA_M16_STOP</Name>
+      <Name>TR2_Lara_M16_Stop</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -33,15 +33,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LARA_M16_STOP_01.wav</FileName>
+          <FileName>TR2_Lara_M16_Stop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>476</Id>
-      <Name>TR2_HENCHMAN_BELT_JINGLE</Name>
+      <Name>TR2_Henchman_Belt_Jingle</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -52,15 +52,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_BELT_JINGLE_01.wav</FileName>
+          <FileName>TR2_Henchman_Belt_Jingle_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>477</Id>
-      <Name>TR2_HENCHMAN_CHUCKLE</Name>
+      <Name>TR2_Henchman_Chuckle</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>40</Chance>
@@ -71,15 +71,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_CHUCKLE_01.wav</FileName>
+          <FileName>TR2_Henchman_Chuckle_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>478</Id>
-      <Name>TR2_HENCHMAN_CLIMBDOWN</Name>
+      <Name>TR2_Henchman_Climbdown</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -90,15 +90,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_CLIMBDOWN_01.wav</FileName>
+          <FileName>TR2_Henchman_Climbdown_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>479</Id>
-      <Name>TR2_HENCHMAN_AH_DYING</Name>
+      <Name>TR2_Henchman_Ah_Dying</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -109,15 +109,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_AH_DYING_01.wav</FileName>
+          <FileName>TR2_Henchman_Ah_Dying_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>480</Id>
-      <Name>TR2_HENCHMAN_CLIMBUP</Name>
+      <Name>TR2_Henchman_Climbup</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -128,15 +128,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_CLIMBUP_01.wav</FileName>
+          <FileName>TR2_Henchman_Climbup_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>481</Id>
-      <Name>TR2_HENCHMAN_LOADING_SHOTGUN</Name>
+      <Name>TR2_Henchman_Loading_Shotgun</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -147,15 +147,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_LOADING_SHOTGUN_01.wav</FileName>
+          <FileName>TR2_Henchman_Loading_Shotgun_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>482</Id>
-      <Name>TR2_HENCHMAN_DEATH1</Name>
+      <Name>TR2_Henchman_Death1</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -166,15 +166,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_DEATH1_01.wav</FileName>
+          <FileName>TR2_Henchman_Death1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>483</Id>
-      <Name>TR2_HENCHMAN_DEATH2</Name>
+      <Name>TR2_Henchman_Death2</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -185,15 +185,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_DEATH2_01.wav</FileName>
+          <FileName>TR2_Henchman_Death2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>484</Id>
-      <Name>TR2_HENCHMAN_DEATH3</Name>
+      <Name>TR2_Henchman_Death3</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -204,15 +204,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_DEATH3_01.wav</FileName>
+          <FileName>TR2_Henchman_Death3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>485</Id>
-      <Name>TR2_HENCHMAN_FEET</Name>
+      <Name>TR2_Henchman_Feet</Name>
       <Volume>65</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -223,21 +223,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_01.wav</FileName>
+          <FileName>TR2_Henchman_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_02.wav</FileName>
+          <FileName>TR2_Henchman_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_03.wav</FileName>
+          <FileName>TR2_Henchman_Feet_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>486</Id>
-      <Name>TR2_HENCHMAN_FEET_SNOW</Name>
+      <Name>TR2_Henchman_Feet_Snow</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -248,21 +248,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_SNOW_01.wav</FileName>
+          <FileName>TR2_Henchman_Feet_Snow_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_SNOW_02.wav</FileName>
+          <FileName>TR2_Henchman_Feet_Snow_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FEET_SNOW_03.wav</FileName>
+          <FileName>TR2_Henchman_Feet_Snow_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>487</Id>
-      <Name>TR2_HENCHMAN_FIRE_SEMIAUTO</Name>
+      <Name>TR2_Henchman_Fire_Semiauto</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -273,15 +273,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE_SEMIAUTO_01.wav</FileName>
+          <FileName>TR2_Henchman_Fire_Semiauto_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>488</Id>
-      <Name>TR2_HENCHMAN_FIRE_SILENCER</Name>
+      <Name>TR2_Henchman_Fire_Silencer</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -292,18 +292,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE_SILENCER_01.wav</FileName>
+          <FileName>TR2_Henchman_Fire_Silencer_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE_SILENCER_02.wav</FileName>
+          <FileName>TR2_Henchman_Fire_Silencer_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>489</Id>
-      <Name>TR2_HENCHMAN_FIRE_TWIRL</Name>
+      <Name>TR2_Henchman_Fire_Twirl</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -314,15 +314,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE_TWIRL_01.wav</FileName>
+          <FileName>TR2_Henchman_Fire_Twirl_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>490</Id>
-      <Name>TR2_HENCHMAN_FIRE1</Name>
+      <Name>TR2_Henchman_Fire1</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -333,15 +333,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE1_01.wav</FileName>
+          <FileName>TR2_Henchman_Fire1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>491</Id>
-      <Name>TR2_HENCHMAN_FIRE2</Name>
+      <Name>TR2_Henchman_Fire2</Name>
       <Volume>85</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -352,15 +352,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FIRE2_01.wav</FileName>
+          <FileName>TR2_Henchman_Fire2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>492</Id>
-      <Name>TR2_HENCHMAN_FLAMETHROWER_CLICK</Name>
+      <Name>TR2_Henchman_Flamethrower_Click</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -371,15 +371,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FLAMETHROWER_CLICK_01.wav</FileName>
+          <FileName>TR2_Henchman_Flamethrower_Click_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>493</Id>
-      <Name>TR2_HENCHMAN_FLAMETHROWER_DEATH</Name>
+      <Name>TR2_Henchman_Flamethrower_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -390,15 +390,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FLAMETHROWER_DEATH_01.wav</FileName>
+          <FileName>TR2_Henchman_Flamethrower_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>494</Id>
-      <Name>TR2_HENCHMAN_FLAMETHROWER_FIRE</Name>
+      <Name>TR2_Henchman_Flamethrower_Fire</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -409,15 +409,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FLAMETHROWER_FIRE_01.wav</FileName>
+          <FileName>TR2_Henchman_Flamethrower_Fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>495</Id>
-      <Name>TR2_HENCHMAN_FLAMETHROWER_SCRAPE</Name>
+      <Name>TR2_Henchman_Flamethrower_Scrape</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -428,15 +428,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_FLAMETHROWER_SCRAPE_01.wav</FileName>
+          <FileName>TR2_Henchman_Flamethrower_Scrape_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>496</Id>
-      <Name>TR2_HENCHMAN_GRUNT</Name>
+      <Name>TR2_Henchman_Grunt</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>40</Chance>
@@ -447,15 +447,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_GRUNT_01.wav</FileName>
+          <FileName>TR2_Henchman_Grunt_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>497</Id>
-      <Name>TR2_HENCHMAN_GUN_COCKING</Name>
+      <Name>TR2_Henchman_Gun_Cocking</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -466,15 +466,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_GUN_COCKING_01.wav</FileName>
+          <FileName>TR2_Henchman_Gun_Cocking_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>498</Id>
-      <Name>TR2_HENCHMAN_HEAVY_BREATH</Name>
+      <Name>TR2_Henchman_Heavy_Breath</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -485,15 +485,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEAVY_BREATH_01.wav</FileName>
+          <FileName>TR2_Henchman_Heavy_Breath_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>499</Id>
-      <Name>TR2_HENCHMAN_HEELS</Name>
+      <Name>TR2_Henchman_Heels</Name>
       <Volume>60</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -504,24 +504,24 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEELS_01.wav</FileName>
+          <FileName>TR2_Henchman_Heels_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEELS_02.wav</FileName>
+          <FileName>TR2_Henchman_Heels_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEELS_03.wav</FileName>
+          <FileName>TR2_Henchman_Heels_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEELS_04.wav</FileName>
+          <FileName>TR2_Henchman_Heels_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>500</Id>
-      <Name>TR2_HENCHMAN_HIT1</Name>
+      <Name>TR2_Henchman_Hit1</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -532,15 +532,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HIT1_01.wav</FileName>
+          <FileName>TR2_Henchman_Hit1_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>501</Id>
-      <Name>TR2_HENCHMAN_HIT2</Name>
+      <Name>TR2_Henchman_Hit2</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -551,15 +551,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HIT2_01.wav</FileName>
+          <FileName>TR2_Henchman_Hit2_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>502</Id>
-      <Name>TR2_HENCHMAN_HOLSTER</Name>
+      <Name>TR2_Henchman_Holster</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -570,15 +570,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HOLSTER_01.wav</FileName>
+          <FileName>TR2_Henchman_Holster_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>503</Id>
-      <Name>TR2_HENCHMAN_JUMP</Name>
+      <Name>TR2_Henchman_Jump</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -589,15 +589,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_JUMP_01.wav</FileName>
+          <FileName>TR2_Henchman_Jump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>504</Id>
-      <Name>TR2_HENCHMAN_OOH_DYING</Name>
+      <Name>TR2_Henchman_Ooh_Dying</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -608,15 +608,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_OOH_DYING_01.wav</FileName>
+          <FileName>TR2_Henchman_Ooh_Dying_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>505</Id>
-      <Name>TR2_HENCHMAN_THUMP</Name>
+      <Name>TR2_Henchman_Thump</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -627,15 +627,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_THUMP_01.wav</FileName>
+          <FileName>TR2_Henchman_Thump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>506</Id>
-      <Name>TR2_HENCHMAN_WRENCH</Name>
+      <Name>TR2_Henchman_Wrench</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -646,15 +646,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_WRENCH_01.wav</FileName>
+          <FileName>TR2_Henchman_Wrench_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>507</Id>
-      <Name>TR2_BIG_SPIDER_FEET</Name>
+      <Name>TR2_Big_Spider_Feet</Name>
       <Volume>60</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -665,24 +665,24 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_FEET_01.wav</FileName>
+          <FileName>TR2_Big_Spider_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_FEET_02.wav</FileName>
+          <FileName>TR2_Big_Spider_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_FEET_03.wav</FileName>
+          <FileName>TR2_Big_Spider_Feet_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_FEET_04.wav</FileName>
+          <FileName>TR2_Big_Spider_Feet_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>508</Id>
-      <Name>TR2_BIG_SPIDER_SNARL</Name>
+      <Name>TR2_Big_Spider_Snarl</Name>
       <Volume>85</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -693,15 +693,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_SNARL_01.wav</FileName>
+          <FileName>TR2_Big_Spider_Snarl_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>509</Id>
-      <Name>TR2_BIG_SPIDER_DEATH</Name>
+      <Name>TR2_Big_Spider_Death</Name>
       <Volume>85</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -712,15 +712,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIG_SPIDER_DEATH_01.wav</FileName>
+          <FileName>TR2_Big_Spider_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>510</Id>
-      <Name>TR2_SPIDER_JUMP</Name>
+      <Name>TR2_Spider_Jump</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -731,15 +731,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPIDER_JUMP_01.wav</FileName>
+          <FileName>TR2_Spider_Jump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>511</Id>
-      <Name>TR2_SPIDER_MOVING</Name>
+      <Name>TR2_Spider_Moving</Name>
       <Volume>60</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -750,15 +750,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPIDER_MOVING_01.wav</FileName>
+          <FileName>TR2_Spider_Moving_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>512</Id>
-      <Name>TR2_SPIDER_BITE</Name>
+      <Name>TR2_Spider_Bite</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -769,15 +769,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPIDER_BITE_01.wav</FileName>
+          <FileName>TR2_Spider_Bite_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>513</Id>
-      <Name>TR2_SPIDER_EXPLODE</Name>
+      <Name>TR2_Spider_Explode</Name>
       <Volume>70</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -788,15 +788,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SPIDER_EXPLODE_01.wav</FileName>
+          <FileName>TR2_Spider_Explode_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>514</Id>
-      <Name>TR2_LEOPARD+TIGER_FEET</Name>
+      <Name>TR2_Leopard+Tiger_Feet</Name>
       <Volume>60</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -807,13 +807,13 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LEOPARD+TIGER_FEET_01.wav</FileName>
+          <FileName>TR2_Leopard+Tiger_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_LEOPARD+TIGER_FEET_02.wav</FileName>
+          <FileName>TR2_Leopard+Tiger_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_LEOPARD+TIGER_FEET_03.wav</FileName>
+          <FileName>TR2_Leopard+Tiger_Feet_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -821,7 +821,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>515</Id>
-      <Name>TR2_LEOPARD_ROAR</Name>
+      <Name>TR2_Leopard_Roar</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -832,15 +832,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LEOPARD_ROAR_01.wav</FileName>
+          <FileName>TR2_Leopard_Roar_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>516</Id>
-      <Name>TR2_LEOPARD_BITE</Name>
+      <Name>TR2_Leopard_Bite</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -851,15 +851,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LEOPARD_BITE_01.wav</FileName>
+          <FileName>TR2_Leopard_Bite_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>517</Id>
-      <Name>TR2_LEOPARD_STRIKE</Name>
+      <Name>TR2_Leopard_Strike</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -870,18 +870,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn094_s0.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR2_LEOPARD_STRIKE_01.wav</FileName>
+          <FileName>TR2_Leopard_Strike_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>518</Id>
-      <Name>TR2_LEOPARD_DEATH</Name>
+      <Name>TR2_Leopard_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -892,18 +889,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn095_s0.wav</FileName>
+          <FileName>Sn095_S0.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_LEOPARD_DEATH_01.wav</FileName>
+          <FileName>TR2_Leopard_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>519</Id>
-      <Name>TR2_LEOPARD_GROWL</Name>
+      <Name>TR2_Leopard_Growl</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -914,15 +911,15 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_LEOPARD_GROWL_01.wav</FileName>
+          <FileName>TR2_Leopard_Growl_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>520</Id>
-      <Name>TR2_TIGER_ROAR</Name>
+      <Name>TR2_Tiger_Roar</Name>
       <Volume>90</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -933,15 +930,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_TIGER_ROAR_01.wav</FileName>
+          <FileName>TR2_Tiger_Roar_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>521</Id>
-      <Name>TR2_TIGER_BITE</Name>
+      <Name>TR2_Tiger_Bite</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -952,15 +949,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_TIGER_BITE_01.wav</FileName>
+          <FileName>TR2_Tiger_Bite_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>522</Id>
-      <Name>TR2_TIGER_STRIKE</Name>
+      <Name>TR2_Tiger_Strike</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -971,15 +968,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_TIGER_STRIKE_01.wav</FileName>
+          <FileName>TR2_Tiger_Strike_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>523</Id>
-      <Name>TR2_TIGER_DEATH</Name>
+      <Name>TR2_Tiger_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -990,15 +987,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_TIGER_DEATH_01.wav</FileName>
+          <FileName>TR2_Tiger_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>524</Id>
-      <Name>TR2_TIGER_GROWL</Name>
+      <Name>TR2_Tiger_Growl</Name>
       <Volume>80</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
@@ -1009,15 +1006,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_TIGER_GROWL_01.wav</FileName>
+          <FileName>TR2_Tiger_Growl_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>525</Id>
-      <Name>TR2_DOG_FEET</Name>
+      <Name>TR2_Dog_Feet</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1028,21 +1025,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_FEET_01.wav</FileName>
+          <FileName>TR2_Dog_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DOG_FEET_02.wav</FileName>
+          <FileName>TR2_Dog_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DOG_FEET_03.wav</FileName>
+          <FileName>TR2_Dog_Feet_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>526</Id>
-      <Name>TR2_DOG_BARK1</Name>
+      <Name>TR2_Dog_Bark1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1053,15 +1050,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_BARK1_01.wav</FileName>
+          <FileName>TR2_Dog_Bark1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>527</Id>
-      <Name>TR2_DOG_BARK2</Name>
+      <Name>TR2_Dog_Bark2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1072,15 +1069,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_BARK2_01.wav</FileName>
+          <FileName>TR2_Dog_Bark2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>528</Id>
-      <Name>TR2_DOG_PANT</Name>
+      <Name>TR2_Dog_Pant</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1091,15 +1088,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_PANT_01.wav</FileName>
+          <FileName>TR2_Dog_Pant_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>529</Id>
-      <Name>TR2_DOG_DEATH</Name>
+      <Name>TR2_Dog_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1110,21 +1107,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_DEATH_01.wav</FileName>
+          <FileName>TR2_Dog_Death_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DOG_DEATH_02.wav</FileName>
+          <FileName>TR2_Dog_Death_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DOG_DEATH_03.wav</FileName>
+          <FileName>TR2_Dog_Death_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>530</Id>
-      <Name>TR2_DOG_GROWL</Name>
+      <Name>TR2_Dog_Growl</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1135,15 +1132,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOG_GROWL_01.wav</FileName>
+          <FileName>TR2_Dog_Growl_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>531</Id>
-      <Name>TR2_RAT_ATTACK</Name>
+      <Name>TR2_Rat_Attack</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -1154,18 +1151,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_RAT_ATTACK_01.wav</FileName>
+          <FileName>TR2_Rat_Attack_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_RAT_ATTACK_02.wav</FileName>
+          <FileName>TR2_Rat_Attack_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>532</Id>
-      <Name>TR2_RAT_DEATH</Name>
+      <Name>TR2_Rat_Death</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1176,15 +1173,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_RAT_DEATH_01.wav</FileName>
+          <FileName>TR2_Rat_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>533</Id>
-      <Name>TR2_EAGLE_SQUAWK</Name>
+      <Name>TR2_Eagle_Squawk</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1195,15 +1192,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_EAGLE_SQUAWK_01.wav</FileName>
+          <FileName>TR2_Eagle_Squawk_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>534</Id>
-      <Name>TR2_EAGLE_WING_FLAP</Name>
+      <Name>TR2_Eagle_Wing_Flap</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1214,15 +1211,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_EAGLE_WING_FLAP_01.wav</FileName>
+          <FileName>TR2_Eagle_Wing_Flap_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>535</Id>
-      <Name>TR2_EAGLE_DEATH</Name>
+      <Name>TR2_Eagle_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1233,91 +1230,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_EAGLE_DEATH_01.wav</FileName>
+          <FileName>TR2_Eagle_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>536</Id>
-      <Name>TR3_CROW_CAW</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_CROW_CAW_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>537</Id>
-      <Name>TR3_CROW_WING_FLAP</Name>
-      <Volume>80</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_CROW_WING_FLAP_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>538</Id>
-      <Name>TR3_CROW_DEATH</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_CROW_DEATH_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>539</Id>
-      <Name>TR3_CROW_ATTACK</Name>
-      <Volume>80</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_CROW_ATTACK_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>540</Id>
-      <Name>TR2_YETI_CHEST_BEAT</Name>
+      <Name>TR2_Yeti_Chest_Beat</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1328,15 +1249,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_CHEST_BEAT_01.wav</FileName>
+          <FileName>TR2_Yeti_Chest_Beat_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>541</Id>
-      <Name>TR2_YETI_FEET</Name>
+      <Name>TR2_Yeti_Feet</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1347,18 +1268,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_FEET_01.wav</FileName>
+          <FileName>TR2_Yeti_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_YETI_FEET_02.wav</FileName>
+          <FileName>TR2_Yeti_Feet_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>542</Id>
-      <Name>TR2_YETI_GROWL</Name>
+      <Name>TR2_Yeti_Growl</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1369,18 +1290,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GROWL1_01.wav</FileName>
+          <FileName>TR2_Yeti_Growl1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_YETI_GROWL1_02.wav</FileName>
+          <FileName>TR2_Yeti_Growl1_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>543</Id>
-      <Name>TR2_YETI_GROWL1</Name>
+      <Name>TR2_Yeti_Growl1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1391,15 +1312,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GROWL1_01.wav</FileName>
+          <FileName>TR2_Yeti_Growl1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>544</Id>
-      <Name>TR2_YETI_GROWL2</Name>
+      <Name>TR2_Yeti_Growl2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1410,15 +1331,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GROWL2_01.wav</FileName>
+          <FileName>TR2_Yeti_Growl2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>545</Id>
-      <Name>TR2_YETI_GROWL3</Name>
+      <Name>TR2_Yeti_Growl3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1429,15 +1350,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GROWL3_01.wav</FileName>
+          <FileName>TR2_Yeti_Growl3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>546</Id>
-      <Name>TR2_YETI_GRUNT1</Name>
+      <Name>TR2_Yeti_Grunt1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1448,15 +1369,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GRUNT1_01.wav</FileName>
+          <FileName>TR2_Yeti_Grunt1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>547</Id>
-      <Name>TR2_YETI_GRUNT2</Name>
+      <Name>TR2_Yeti_Grunt2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1467,15 +1388,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_GRUNT2_01.wav</FileName>
+          <FileName>TR2_Yeti_Grunt2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>548</Id>
-      <Name>TR2_YETI_SCREAM</Name>
+      <Name>TR2_Yeti_Scream</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1486,15 +1407,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_SCREAM_01.wav</FileName>
+          <FileName>TR2_Yeti_Scream_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>549</Id>
-      <Name>TR2_YETI_THUMP</Name>
+      <Name>TR2_Yeti_Thump</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1505,15 +1426,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_THUMP_01.wav</FileName>
+          <FileName>TR2_Yeti_Thump_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>550</Id>
-      <Name>TR2_YETI_DEATH</Name>
+      <Name>TR2_Yeti_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1524,15 +1445,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_YETI_DEATH_01.wav</FileName>
+          <FileName>TR2_Yeti_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>551</Id>
-      <Name>TR2_BIRD_MONSTER_SCREAM</Name>
+      <Name>TR2_Bird_Monster_Scream</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1543,15 +1464,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_SCREAM_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Scream_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>552</Id>
-      <Name>TR2_BIRD_MONSTER_GASP</Name>
+      <Name>TR2_Bird_Monster_Gasp</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1562,21 +1483,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_GASP_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Gasp_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_GASP_02.wav</FileName>
+          <FileName>TR2_Bird_Monster_Gasp_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_GASP_03.wav</FileName>
+          <FileName>TR2_Bird_Monster_Gasp_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>553</Id>
-      <Name>TR2_BIRD_MONSTER_BREATH</Name>
+      <Name>TR2_Bird_Monster_Breath</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1587,15 +1508,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_BREATH_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Breath_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>554</Id>
-      <Name>TR2_BIRD_MONSTER_FEET</Name>
+      <Name>TR2_Bird_Monster_Feet</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1606,15 +1527,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_FEET_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Feet_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>555</Id>
-      <Name>TR2_BIRD_MONSTER_DEATH</Name>
+      <Name>TR2_Bird_Monster_Death</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1625,15 +1546,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_DEATH_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>556</Id>
-      <Name>TR2_BIRD_MONSTER_SCRAPE</Name>
+      <Name>TR2_Bird_Monster_Scrape</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1644,15 +1565,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRD_MONSTER_SCRAPE_01.wav</FileName>
+          <FileName>TR2_Bird_Monster_Scrape_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>557</Id>
-      <Name>TR2_DRAGON_FEET</Name>
+      <Name>TR2_Dragon_Feet</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1663,15 +1584,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_FEET_01.wav</FileName>
+          <FileName>TR2_Dragon_Feet_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>558</Id>
-      <Name>TR2_DRAGON_GROWL1</Name>
+      <Name>TR2_Dragon_Growl1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1682,15 +1603,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_GROWL1_01.wav</FileName>
+          <FileName>TR2_Dragon_Growl1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>559</Id>
-      <Name>TR2_DRAGON_GROWL2</Name>
+      <Name>TR2_Dragon_Growl2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1701,15 +1622,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_GROWL2_01.wav</FileName>
+          <FileName>TR2_Dragon_Growl2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>560</Id>
-      <Name>TR2_DRAGON_GROWL3</Name>
+      <Name>TR2_Dragon_Growl3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1720,15 +1641,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_GROWL3_01.wav</FileName>
+          <FileName>TR2_Dragon_Growl3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>561</Id>
-      <Name>TR2_DRAGON_BREATH</Name>
+      <Name>TR2_Dragon_Breath</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1739,15 +1660,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_BREATH_01.wav</FileName>
+          <FileName>TR2_Dragon_Breath_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>562</Id>
-      <Name>TR2_DRAGON_GRUNT</Name>
+      <Name>TR2_Dragon_Grunt</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1758,15 +1679,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_GRUNT_01.wav</FileName>
+          <FileName>TR2_Dragon_Grunt_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>563</Id>
-      <Name>TR2_DRAGON_FIRE</Name>
+      <Name>TR2_Dragon_Fire</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1777,15 +1698,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_FIRE_01.wav</FileName>
+          <FileName>TR2_Dragon_Fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>564</Id>
-      <Name>TR2_DRAGON_LEG_LIFT</Name>
+      <Name>TR2_Dragon_Leg_Lift</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1796,15 +1717,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_LEG_LIFT_01.wav</FileName>
+          <FileName>TR2_Dragon_Leg_Lift_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>565</Id>
-      <Name>TR2_DRAGON_LEG_HIT</Name>
+      <Name>TR2_Dragon_Leg_Hit</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1815,15 +1736,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRAGON_LEG_HIT_01.wav</FileName>
+          <FileName>TR2_Dragon_Leg_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>566</Id>
-      <Name>TR2_MONK_BREATH</Name>
+      <Name>TR2_Monk_Breath</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1834,15 +1755,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HENCHMAN_HEAVY_BREATH_01.wav</FileName>
+          <FileName>TR2_Henchman_Heavy_Breath_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>567</Id>
-      <Name>TR2_MONK_TAKEHIT</Name>
+      <Name>TR2_Monk_Takehit</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1853,21 +1774,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_TAKEHIT_01.wav</FileName>
+          <FileName>TR2_Monk_Takehit_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_TAKEHIT_02.wav</FileName>
+          <FileName>TR2_Monk_Takehit_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_TAKEHIT_03.wav</FileName>
+          <FileName>TR2_Monk_Takehit_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>568</Id>
-      <Name>TR2_MONK_DEATH</Name>
+      <Name>TR2_Monk_Death</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1878,15 +1799,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_DEATH_01.wav</FileName>
+          <FileName>TR2_Monk_Death_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>569</Id>
-      <Name>TR2_MONK_FEET</Name>
+      <Name>TR2_Monk_Feet</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1897,24 +1818,24 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_FEET_01.wav</FileName>
+          <FileName>TR2_Monk_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_FEET_02.wav</FileName>
+          <FileName>TR2_Monk_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_FEET_03.wav</FileName>
+          <FileName>TR2_Monk_Feet_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_FEET_04.wav</FileName>
+          <FileName>TR2_Monk_Feet_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>570</Id>
-      <Name>TR2_MONK_OYE</Name>
+      <Name>TR2_Monk_Oye</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1925,15 +1846,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_OYE_01.wav</FileName>
+          <FileName>TR2_Monk_Oye_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>571</Id>
-      <Name>TR2_MONK_POY</Name>
+      <Name>TR2_Monk_Poy</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1944,15 +1865,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_POY_01.wav</FileName>
+          <FileName>TR2_Monk_Poy_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>572</Id>
-      <Name>TR2_MONK_SHOUT1</Name>
+      <Name>TR2_Monk_Shout1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1963,21 +1884,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT1_01.wav</FileName>
+          <FileName>TR2_Monk_Shout1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT1_02.wav</FileName>
+          <FileName>TR2_Monk_Shout1_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT1_03.wav</FileName>
+          <FileName>TR2_Monk_Shout1_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>573</Id>
-      <Name>TR2_MONK_SHOUT2</Name>
+      <Name>TR2_Monk_Shout2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1988,21 +1909,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT2_01.wav</FileName>
+          <FileName>TR2_Monk_Shout2_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT2_02.wav</FileName>
+          <FileName>TR2_Monk_Shout2_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT2_03.wav</FileName>
+          <FileName>TR2_Monk_Shout2_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>574</Id>
-      <Name>TR2_MONK_SHOUT3</Name>
+      <Name>TR2_Monk_Shout3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2013,21 +1934,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT3_01.wav</FileName>
+          <FileName>TR2_Monk_Shout3_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT3_02.wav</FileName>
+          <FileName>TR2_Monk_Shout3_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT3_03.wav</FileName>
+          <FileName>TR2_Monk_Shout3_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>575</Id>
-      <Name>TR2_MONK_SHOUT4</Name>
+      <Name>TR2_Monk_Shout4</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2038,21 +1959,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT4_01.wav</FileName>
+          <FileName>TR2_Monk_Shout4_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT4_02.wav</FileName>
+          <FileName>TR2_Monk_Shout4_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_MONK_SHOUT4_03.wav</FileName>
+          <FileName>TR2_Monk_Shout4_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>576</Id>
-      <Name>TR2_MONK_SINGLE_SWORD_SWING</Name>
+      <Name>TR2_Monk_Single_Sword_Swing</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2063,15 +1984,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_SINGLE_SWORD_SWING_01.wav</FileName>
+          <FileName>TR2_Monk_Single_Sword_Swing_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>577</Id>
-      <Name>TR2_MONK_MULTI_SWORD_SWING</Name>
+      <Name>TR2_Monk_Multi_Sword_Swing</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2082,15 +2003,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MONK_MULTI_SWORD_SWING_01.wav</FileName>
+          <FileName>TR2_Monk_Multi_Sword_Swing_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>578</Id>
-      <Name>TR2_WARRIOR_BLADE_SWING_FAST</Name>
+      <Name>TR2_Warrior_Blade_Swing_Fast</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2101,15 +2022,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_BLADE_SWING_FAST_01.wav</FileName>
+          <FileName>TR2_Warrior_Blade_Swing_Fast_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>579</Id>
-      <Name>TR2_WARRIOR_BLADE_SWING1</Name>
+      <Name>TR2_Warrior_Blade_Swing1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2120,21 +2041,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_BLADE_SWING1_01.wav</FileName>
+          <FileName>TR2_Warrior_Blade_Swing1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_WARRIOR_BLADE_SWING1_02.wav</FileName>
+          <FileName>TR2_Warrior_Blade_Swing1_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_WARRIOR_BLADE_SWING1_03.wav</FileName>
+          <FileName>TR2_Warrior_Blade_Swing1_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>580</Id>
-      <Name>TR2_WARRIOR_BLADE_SWING2</Name>
+      <Name>TR2_Warrior_Blade_Swing2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2145,15 +2066,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_BLADE_SWING2_01.wav</FileName>
+          <FileName>TR2_Warrior_Blade_Swing2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>581</Id>
-      <Name>TR2_WARRIOR_BREATH_ACTIVE</Name>
+      <Name>TR2_Warrior_Breath_Active</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2164,15 +2085,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_BREATH_ACTIVE_01.wav</FileName>
+          <FileName>TR2_Warrior_Breath_Active_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>582</Id>
-      <Name>TR2_WARRIOR_GROWL1</Name>
+      <Name>TR2_Warrior_Growl1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2183,15 +2104,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_GROWL1_01.wav</FileName>
+          <FileName>TR2_Warrior_Growl1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>583</Id>
-      <Name>TR2_WARRIOR_GROWL2</Name>
+      <Name>TR2_Warrior_Growl2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2202,15 +2123,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_GROWL2_01.wav</FileName>
+          <FileName>TR2_Warrior_Growl2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>584</Id>
-      <Name>TR2_WARRIOR_GROWL3</Name>
+      <Name>TR2_Warrior_Growl3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2221,15 +2142,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_GROWL3_01.wav</FileName>
+          <FileName>TR2_Warrior_Growl3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>585</Id>
-      <Name>TR2_WARRIOR_HOVER</Name>
+      <Name>TR2_Warrior_Hover</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2240,15 +2161,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_HOVER_01.wav</FileName>
+          <FileName>TR2_Warrior_Hover_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>586</Id>
-      <Name>TR2_WARRIOR_LANDING</Name>
+      <Name>TR2_Warrior_Landing</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2259,15 +2180,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_LANDING_01.wav</FileName>
+          <FileName>TR2_Warrior_Landing_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>587</Id>
-      <Name>TR2_WARRIOR_SWORD_SLICE</Name>
+      <Name>TR2_Warrior_Sword_Slice</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2278,18 +2199,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_SWORD_SLICE_01.wav</FileName>
+          <FileName>TR2_Warrior_Sword_Slice_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_WARRIOR_SWORD_SLICE_02.wav</FileName>
+          <FileName>TR2_Warrior_Sword_Slice_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>588</Id>
-      <Name>TR2_WARRIOR_WAKE</Name>
+      <Name>TR2_Warrior_Wake</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2300,15 +2221,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_WAKE_01.wav</FileName>
+          <FileName>TR2_Warrior_Wake_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>589</Id>
-      <Name>TR2_WARRIOR_BURP</Name>
+      <Name>TR2_Warrior_Burp</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2319,135 +2240,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_WARRIOR_BURP_01.wav</FileName>
+          <FileName>TR2_Warrior_Burp_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_WARRIOR_BURP_02.wav</FileName>
+          <FileName>TR2_Warrior_Burp_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_WARRIOR_BURP_03.wav</FileName>
+          <FileName>TR2_Warrior_Burp_03.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>590</Id>
-      <Name>TR3_SCUBA_DIVER_ARM</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_ARM_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>591</Id>
-      <Name>TR3_SCUBA_DIVER_BREATH_LAND</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_BREATH_LAND_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>592</Id>
-      <Name>TR3_SCUBA_DIVER_BREATH_WATER</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_BREATH_WATER_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>593</Id>
-      <Name>TR3_SCUBA_DIVER_DEATH</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_DEATH_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>594</Id>
-      <Name>TR3_SCUBA_DIVER_DIVING</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_DIVING_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>595</Id>
-      <Name>TR3_SCUBA_DIVER_FLIPPER</Name>
-      <Volume>60</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-40</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_SCUBA_DIVER_FLIPPER_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>596</Id>
-      <Name>TR2_SHARK_BITE</Name>
+      <Name>TR2_Shark_Bite</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2458,297 +2265,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SHARK_BITE_01.wav</FileName>
+          <FileName>TR2_Shark_Bite_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>597</Id>
-      <Name>TR3_WINSTON_BRUSH_OFF</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_BRUSH_OFF_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_BRUSH_OFF_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>598</Id>
-      <Name>TR3_WINSTON_BULLET_TRAY</Name>
-      <Volume>99</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_BULLET_TRAY_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>599</Id>
-      <Name>TR3_WINSTON_CUPS</Name>
-      <Volume>25</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>90</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_CUPS_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_CUPS_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>600</Id>
-      <Name>TR3_WINSTON_FLATULENCE</Name>
-      <Volume>30</Volume>
-      <RangeInSectors>20</RangeInSectors>
-      <Chance>4</Chance>
-      <PitchFactor>-10</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_FLATULENCE_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_FLATULENCE_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>601</Id>
-      <Name>TR3_WINSTON_FOOTSTEPS</Name>
-      <Volume>30</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-30</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_FOOTSTEPS_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_FOOTSTEPS_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>602</Id>
-      <Name>TR3_WINSTON_GET_UP</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-30</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_GET_UP_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GET_UP_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GET_UP_03.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>603</Id>
-      <Name>TR3_WINSTON_SURPRISED</Name>
-      <Volume>40</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>10</Chance>
-      <PitchFactor>-20</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_SURPRISED_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_SURPRISED_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_SURPRISED_03.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>604</Id>
-      <Name>TR3_WINSTON_TAKE_HIT</Name>
-      <Volume>70</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_TAKE_HIT_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_TAKE_HIT_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_TAKE_HIT_03.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>605</Id>
-      <Name>TR3_WINSTON_GRUNT1</Name>
-      <Volume>90</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>60</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT1_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT1_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT1_03.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT1_04.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT1_05.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>606</Id>
-      <Name>TR3_WINSTON_GRUNT2</Name>
-      <Volume>70</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>50</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT2_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT2_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT2_03.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT2_04.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>607</Id>
-      <Name>TR3_WINSTON_GRUNT3</Name>
-      <Volume>90</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT3_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR3_WINSTON_GRUNT3_02.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>608</Id>
-      <Name>TR3_WINSTON_SHUFFLE</Name>
-      <Volume>15</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_WINSTON_SHUFFLE_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>609</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_ACCELERATE</Name>
+      <Name>TR2_Vehicle_Speedboat_Accelerate</Name>
       <Volume>93</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2759,15 +2284,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_ACCELERATE_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Accelerate_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>610</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_ENGINE</Name>
+      <Name>TR2_Vehicle_Speedboat_Engine</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2778,15 +2303,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_ENGINE_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Engine_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>611</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_HIT</Name>
+      <Name>TR2_Vehicle_Speedboat_Hit</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2797,15 +2322,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_HIT_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>612</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_INTO_WATER</Name>
+      <Name>TR2_Vehicle_Speedboat_Into_Water</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2816,15 +2341,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_INTO_WATER_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Into_Water_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>613</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_IDLE</Name>
+      <Name>TR2_Vehicle_Speedboat_Idle</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2835,15 +2360,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_IDLE_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Idle_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>614</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_MOVING</Name>
+      <Name>TR2_Vehicle_Speedboat_Moving</Name>
       <Volume>83</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2854,15 +2379,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_MOVING_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Moving_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>615</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_SLOWDOWN</Name>
+      <Name>TR2_Vehicle_Speedboat_Slowdown</Name>
       <Volume>83</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2873,15 +2398,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_MOVING_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Moving_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>616</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_START</Name>
+      <Name>TR2_Vehicle_Speedboat_Start</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2892,15 +2417,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_START_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Start_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>617</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_STOP</Name>
+      <Name>TR2_Vehicle_Speedboat_Stop</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2911,15 +2436,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_STOP_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>618</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_ENGINE_HIT</Name>
+      <Name>TR2_Vehicle_Speedboat_Engine_Hit</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2930,110 +2455,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_ENGINE_HIT_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Engine_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>619</Id>
-      <Name>TR4_VEHICLE_SNOWMOBILE_ACCELERATE</Name>
-      <Volume>95</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR4_VEHICLE_SNOWMOBILE_ACCELERATE_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>620</Id>
-      <Name>TR4_VEHICLE_SNOWMOBILE_IDLE</Name>
-      <Volume>95</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR4_VEHICLE_SNOWMOBILE_IDLE_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>621</Id>
-      <Name>TR4_VEHICLE_SNOWMOBILE_MOVING</Name>
-      <Volume>90</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR4_VEHICLE_SNOWMOBILE_MOVING_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>622</Id>
-      <Name>TR4_VEHICLE_SNOWMOBILE_START</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR4_VEHICLE_SNOWMOBILE_START_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>623</Id>
-      <Name>TR4_VEHICLE_SNOWMOBILE_STOP</Name>
-      <Volume>88</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR4_VEHICLE_SNOWMOBILE_STOP_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>624</Id>
-      <Name>TR2_ZIPLINE_GO</Name>
+      <Name>TR2_Zipline_Go</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3044,15 +2474,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ZIPLINE_GO_01.wav</FileName>
+          <FileName>TR2_Zipline_Go_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>625</Id>
-      <Name>TR2_ZIPLINE_GRAB</Name>
+      <Name>TR2_Zipline_Grab</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3063,15 +2493,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ZIPLINE_GRAB_01.wav</FileName>
+          <FileName>TR2_Zipline_Grab_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>626</Id>
-      <Name>TR2_ZIPLINE_STOP</Name>
+      <Name>TR2_Zipline_Stop</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3082,15 +2512,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ZIPLINE_STOP_01.wav</FileName>
+          <FileName>TR2_Zipline_Stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>627</Id>
-      <Name>TR2_JUMP_PAD_UP</Name>
+      <Name>TR2_Jump_Pad_Up</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3101,15 +2531,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_JUMP_PAD_UP_01.wav</FileName>
+          <FileName>TR2_Jump_Pad_Up_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>628</Id>
-      <Name>TR2_JUMP_PAD_DOWN</Name>
+      <Name>TR2_Jump_Pad_Down</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3120,15 +2550,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_JUMP_PAD_DOWN_01.wav</FileName>
+          <FileName>TR2_Jump_Pad_Down_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>629</Id>
-      <Name>TR2_KNIFETHROWER_FEET</Name>
+      <Name>TR2_Knifethrower_Feet</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3139,24 +2569,24 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_FEET_01.wav</FileName>
+          <FileName>TR2_Knifethrower_Feet_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_FEET_02.wav</FileName>
+          <FileName>TR2_Knifethrower_Feet_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_FEET_03.wav</FileName>
+          <FileName>TR2_Knifethrower_Feet_03.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_FEET_04.wav</FileName>
+          <FileName>TR2_Knifethrower_Feet_04.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>630</Id>
-      <Name>TR2_KNIFETHROWER_HICCUP</Name>
+      <Name>TR2_Knifethrower_Hiccup</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3167,15 +2597,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_HICCUP_01.wav</FileName>
+          <FileName>TR2_Knifethrower_Hiccup_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>631</Id>
-      <Name>TR2_KNIFETHROWER_WARRIOR_FEET</Name>
+      <Name>TR2_Knifethrower_Warrior_Feet</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3186,15 +2616,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_KNIFETHROWER_WARRIOR_FEET_01.wav</FileName>
+          <FileName>TR2_Knifethrower_Warrior_Feet_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>632</Id>
-      <Name>TR2_MINISUB_CLATTER1</Name>
+      <Name>TR2_Minisub_Clatter1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3205,15 +2635,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MINISUB_CLATTER1_01.wav</FileName>
+          <FileName>TR2_Minisub_Clatter1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>633</Id>
-      <Name>TR2_MINISUB_CLATTER2</Name>
+      <Name>TR2_Minisub_Clatter2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3224,15 +2654,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MINISUB_CLATTER2_01.wav</FileName>
+          <FileName>TR2_Minisub_Clatter2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>634</Id>
-      <Name>TR2_MINISUB_CLATTER3</Name>
+      <Name>TR2_Minisub_Clatter3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3243,15 +2673,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MINISUB_CLATTER3_01.wav</FileName>
+          <FileName>TR2_Minisub_Clatter3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>635</Id>
-      <Name>TR2_HAND_WHEEL_LOOSE</Name>
+      <Name>TR2_Hand_Wheel_Loose</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3262,15 +2692,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HAND_WHEEL_LOOSE_01.wav</FileName>
+          <FileName>TR2_Hand_Wheel_Loose_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>636</Id>
-      <Name>TR2_HAND_WHEEL_TURN</Name>
+      <Name>TR2_Hand_Wheel_Turn</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3281,15 +2711,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HAND_WHEEL_TURN_01.wav</FileName>
+          <FileName>TR2_Hand_Wheel_Turn_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>637</Id>
-      <Name>TR2_HAND_WHEEL_OPEN</Name>
+      <Name>TR2_Hand_Wheel_Open</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3300,15 +2730,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HAND_WHEEL_OPEN_01.wav</FileName>
+          <FileName>TR2_Hand_Wheel_Open_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>638</Id>
-      <Name>TR2_HAND_WHEEL_CREAK</Name>
+      <Name>TR2_Hand_Wheel_Creak</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3319,15 +2749,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_HAND_WHEEL_CREAK_01.wav</FileName>
+          <FileName>TR2_Hand_Wheel_Creak_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>639</Id>
-      <Name>TR4_VEHICLE_IMPACT_1</Name>
+      <Name>TR2_Vehicle_Impact1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3338,15 +2768,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_IMPACT_1_01.wav</FileName>
+          <FileName>TR2_Vehicle_Impact1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>640</Id>
-      <Name>TR4_VEHICLE_IMPACT_2</Name>
+      <Name>TR2_Vehicle_Impact2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3357,15 +2787,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_IMPACT_2_01.wav</FileName>
+          <FileName>TR2_Vehicle_Impact_2_01.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>TR2_Vehicle_Impact2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>641</Id>
-      <Name>TR4_VEHICLE_IMPACT_3</Name>
+      <Name>TR2_Vehicle_Impact3</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3376,15 +2809,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_IMPACT_3_01.wav</FileName>
+          <FileName>TR2_Vehicle_Impact3_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>642</Id>
-      <Name>TR2_CRUNCH1</Name>
+      <Name>TR2_Crunch1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3395,15 +2828,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CRUNCH1_01.wav</FileName>
+          <FileName>TR2_Crunch1_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>643</Id>
-      <Name>TR2_CRUNCH2</Name>
+      <Name>TR2_Crunch2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3414,18 +2847,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CRUNCH2_01.wav</FileName>
+          <FileName>TR2_Crunch2_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_CRUNCH2_02.wav</FileName>
+          <FileName>TR2_Crunch2_02.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>644</Id>
-      <Name>TR2_CLICK</Name>
+      <Name>TR2_Click</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3436,15 +2869,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CLICK_01.wav</FileName>
+          <FileName>TR2_Click_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>645</Id>
-      <Name>TR2_GLASS_BREAK</Name>
+      <Name>TR2_Glass_Break</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3455,15 +2888,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_GLASS_BREAK_01.wav</FileName>
+          <FileName>TR2_Glass_Break_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>646</Id>
-      <Name>TR2_SWORD_STATUE_DROP</Name>
+      <Name>TR2_Sword_Statue_Drop</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3474,15 +2907,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SWORD_STATUE_DROP_01.wav</FileName>
+          <FileName>TR2_Sword_Statue_Drop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>647</Id>
-      <Name>TR2_SWORD_STATUE_LIFT</Name>
+      <Name>TR2_Sword_Statue_Lift</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3493,15 +2926,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SWORD_STATUE_LIFT_01.wav</FileName>
+          <FileName>TR2_Sword_Statue_Lift_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>648</Id>
-      <Name>TR2_SANDBAG_SNAP</Name>
+      <Name>TR2_Sandbag_Snap</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3512,15 +2945,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SANDBAG_SNAP_01.wav</FileName>
+          <FileName>TR2_Sandbag_Snap_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>649</Id>
-      <Name>TR2_SANDBAG_HIT</Name>
+      <Name>TR2_Sandbag_Hit</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3531,15 +2964,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SANDBAG_HIT_01.wav</FileName>
+          <FileName>TR2_Sandbag_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>650</Id>
-      <Name>TR2_AIRPLANE_IDLE</Name>
+      <Name>TR2_Airplane_Idle</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3550,15 +2983,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_AIRPLANE_IDLE_01.wav</FileName>
+          <FileName>TR2_Airplane_Idle_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>651</Id>
-      <Name>TR2_BIRDS_CHIRP</Name>
+      <Name>TR2_Birds_Chirp</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3569,18 +3002,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BIRDS_CHIRP_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR2_BIRDS_CHIRP_02.wav</FileName>
+          <FileName>TR2_Birds_Chirp_02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>652</Id>
-      <Name>TR2_BOWL_POUR</Name>
+      <Name>TR2_Bowl_Pour</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3591,15 +3021,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BOWL_POUR_01.wav</FileName>
+          <FileName>TR2_Bowl_Pour_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>653</Id>
-      <Name>TR2_BOWL_TIPPING</Name>
+      <Name>TR2_Bowl_Tipping</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3610,15 +3040,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BOWL_TIPPING_01.wav</FileName>
+          <FileName>TR2_Bowl_Tipping_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>654</Id>
-      <Name>TR2_BURGLAR_ALARM</Name>
+      <Name>TR2_Burglar_Alarm</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3629,15 +3059,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BURGLAR_ALARM_01.wav</FileName>
+          <FileName>TR2_Burglar_Alarm_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>655</Id>
-      <Name>TR2_BURGLARS</Name>
+      <Name>TR2_Burglars</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3648,15 +3078,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_BURGLARS_01.wav</FileName>
+          <FileName>TR2_Burglars_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>656</Id>
-      <Name>TR2_CHAIN_PULLEY</Name>
+      <Name>TR2_Chain_Pulley</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3667,15 +3097,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CHAIN_PULLEY_01.wav</FileName>
+          <FileName>TR2_Chain_Pulley_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>657</Id>
-      <Name>TR2_CIRCLE_BLADE</Name>
+      <Name>TR2_Circle_Blade</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3686,15 +3116,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CIRCLE_BLADE_01.wav</FileName>
+          <FileName>TR2_Circle_Blade_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>658</Id>
-      <Name>TR2_CIRCLE_BLADE_HIT</Name>
+      <Name>TR2_Circle_Blade_Hit</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3705,15 +3135,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CIRCLE_BLADE_HIT_01.wav</FileName>
+          <FileName>TR2_Circle_Blade_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>659</Id>
-      <Name>TR2_DOORBELL</Name>
+      <Name>TR2_Doorbell</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3724,15 +3154,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DOORBELL_01.wav</FileName>
+          <FileName>TR2_Doorbell_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>660</Id>
-      <Name>TR2_ELEVATOR_OPEN</Name>
+      <Name>TR2_Elevator_Open</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3743,15 +3173,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ELEVATOR_OPEN_01.wav</FileName>
+          <FileName>TR2_Elevator_Open_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>661</Id>
-      <Name>TR2_ELEVATOR_CLOSE</Name>
+      <Name>TR2_Elevator_Close</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3762,15 +3192,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ELEVATOR_CLOSE_01.wav</FileName>
+          <FileName>TR2_Elevator_Close_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>662</Id>
-      <Name>TR4_VEHICLE_SPEEDBOAT_BODY_SLUMP</Name>
+      <Name>TR2_Vehicle_Speedboat_Body_Slump</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3781,15 +3211,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR4_VEHICLE_SPEEDBOAT_BODY_SLUMP_01.wav</FileName>
+          <FileName>TR2_Vehicle_Speedboat_Body_Slump_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>663</Id>
-      <Name>TR2_CURTAIN</Name>
+      <Name>TR2_Curtain</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3800,15 +3230,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_CURTAIN_01.wav</FileName>
+          <FileName>TR2_Curtain_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>664</Id>
-      <Name>TR2_DRIPS_REVERB</Name>
+      <Name>TR2_Drips_Reverb</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3819,40 +3249,21 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_DRIPS_REVERB_01.wav</FileName>
+          <FileName>TR2_Drips_Reverb_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DRIPS_REVERB_02.wav</FileName>
+          <FileName>TR2_Drips_Reverb_02.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_DRIPS_REVERB_03.wav</FileName>
+          <FileName>TR2_Drips_Reverb_03.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>665</Id>
-      <Name>TR3_HELICOPTER_LOOP</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR3_HELICOPTER_LOOP.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>666</Id>
-      <Name>TR2_ICILE_DETACH</Name>
+      <Name>TR2_Icile_Detach</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3863,15 +3274,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ICILE_DETACH_01.wav</FileName>
+          <FileName>TR2_Icile_Detach_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>667</Id>
-      <Name>TR2_ICICLE_HIT</Name>
+      <Name>TR2_Icicle_Hit</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3882,15 +3293,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ICICLE_HIT_01.wav</FileName>
+          <FileName>TR2_Icicle_Hit_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>668</Id>
-      <Name>TR2_MASSIVE_CRASH</Name>
+      <Name>TR2_Massive_Crash</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3901,15 +3312,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_MASSIVE_CRASH_01.wav</FileName>
+          <FileName>TR2_Massive_Crash_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>669</Id>
-      <Name>TR2_PLATFORM_ALARM</Name>
+      <Name>TR2_Platform_Alarm</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3920,15 +3331,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_PLATFORM_ALARM_01.wav</FileName>
+          <FileName>TR2_Platform_Alarm_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>670</Id>
-      <Name>TR2_PULLEY_CRANE</Name>
+      <Name>TR2_Pulley_Crane</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3939,15 +3350,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_PULLEY_CRANE_01.wav</FileName>
+          <FileName>TR2_Pulley_Crane_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>671</Id>
-      <Name>TR2_ROLLING_BLADE</Name>
+      <Name>TR2_Rolling_Blade</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3958,15 +3369,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ROLLING_BLADE_01.wav</FileName>
+          <FileName>TR2_Rolling_Blade_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>672</Id>
-      <Name>TR2_SAW_STOP</Name>
+      <Name>TR2_Saw_Stop</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3977,15 +3388,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SAW_STOP_01.wav</FileName>
+          <FileName>TR2_Saw_Stop_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>673</Id>
-      <Name>TR2_SMALL_FAN_ON</Name>
+      <Name>TR2_Small_Fan_On</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3996,15 +3407,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SMALL_FAN_ON_01.wav</FileName>
+          <FileName>TR2_Small_Fan_On_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>674</Id>
-      <Name>TR2_SNOWBALL_ROLL</Name>
+      <Name>TR2_Snowball_Roll</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4015,15 +3426,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWBALL_ROLL_01.wav</FileName>
+          <FileName>TR2_Snowball_Roll_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>675</Id>
-      <Name>TR2_SNOWBALL_STOP</Name>
+      <Name>TR2_Snowball_Stop</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4034,15 +3445,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SNOWBALL_STOP_01.wav</FileName>
+          <FileName>TR2_Snowball_Stop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>676</Id>
-      <Name>TR2_STAGE_BACKDROP</Name>
+      <Name>TR2_Stage_Backdrop</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4053,15 +3464,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_STAGE_BACKDROP_01.wav</FileName>
+          <FileName>TR2_Stage_Backdrop_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>677</Id>
-      <Name>TR2_ZIPPER</Name>
+      <Name>TR2_Zipper</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4072,15 +3483,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_ZIPPER_01.wav</FileName>
+          <FileName>TR2_Zipper_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>678</Id>
-      <Name>TR2_SAW_REVVING</Name>
+      <Name>TR2_Saw_Revving</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4091,15 +3502,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SAW_REVVING_01.wav</FileName>
+          <FileName>TR2_Saw_Revving_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>679</Id>
-      <Name>TR2_SWING</Name>
+      <Name>TR2_Swing</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4110,15 +3521,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SWING_01.wav</FileName>
+          <FileName>TR2_Swing_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>680</Id>
-      <Name>TR2_SLAM_DOOR_SLIDE</Name>
+      <Name>TR2_Slam_Door_Slide</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4129,15 +3540,15 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SLAM_DOOR_SLIDE_01.wav</FileName>
+          <FileName>TR2_Slam_Door_Slide_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>681</Id>
-      <Name>TR2_SLAM_DOOR_CLOSE</Name>
+      <Name>TR2_Slam_Door_Close</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4148,18 +3559,18 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>sn128_s0.wav</FileName>
+          <FileName>Sn128_S0.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_SLAM_DOOR_CLOSE_01.wav</FileName>
+          <FileName>TR2_Slam_Door_Close_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>682</Id>
-      <Name>TR2_SWINGING</Name>
+      <Name>TR2_Swinging</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4170,15 +3581,15 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SWINGING_01.wav</FileName>
+          <FileName>TR2_Swinging_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>683</Id>
-      <Name>TR2_SWINGING_TRAP</Name>
+      <Name>TR2_Swinging_Trap</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4189,11 +3600,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR2_SWINGING_TRAP_01.wav</FileName>
+          <FileName>TR2_Swinging_Trap_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
   </SoundInfos>
 </WadSounds>
