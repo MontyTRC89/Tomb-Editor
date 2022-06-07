@@ -6722,17 +6722,17 @@
 		<sounds max="8192">
 			<sound id="0" name="TR4_LARA_FOOTSTEPS" t5m="0" />
 			<sound id="1" name="TR4_LARA_CLIMB2" t5m="1" />
-			<sound id="2" name="TR4_LARA_NO" t5m="2" />
+			<sound id="2" name="TR4_LARA_NO_ENGLISH" t5m="2" />
 			<sound id="3" name="TR4_LARA_SLIPPING" t5m="3" />
 			<sound id="4" name="TR4_LARA_LAND" t5m="4" />
 			<sound id="5" name="TR4_LARA_CLIMB1" t5m="5" />
 			<sound id="6" name="TR4_LARA_DRAW" t5m="6" />
 			<sound id="7" name="TR4_LARA_HOLSTER" t5m="7" />
-			<sound id="8" name="TR4_LARA_PISTOL_FIRE" t5m="8" />
+			<sound id="8" name="TR4_PISTOL_FIRE" t5m="8" />
 			<sound id="9" name="TR4_LARA_RELOAD" t5m="9" />
-			<sound id="10" name="TR4_LARA_RICOCHET" t5m="10" />
+			<sound id="10" name="TR4_WEAPON_RICOCHET" t5m="10" />
 			<sound id="11" name="TR4_PUSH_BLOCK_END" t5m="11" />
-			<sound id="12" name="TR4_METAL_SCRAPE_LOOP" t5m="12" />
+			<sound id="12" name="TR4_METAL_SCRAPE_LOOP1" t5m="12" />
 			<sound id="13" name="TR4_SMALL_SCARAB_FEET" t5m="13" />
 			<sound id="14" name="TR4_BIG_SCARAB_ATTACK" t5m="14" />
 			<sound id="15" name="TR4_BIG_SCARAB_DEATH" t5m="15" />
@@ -6740,46 +6740,46 @@
 			<sound id="17" name="TR4_LARA_WET_FEET" t5m="17" />
 			<sound id="18" name="TR4_LARA_WADE" t5m="18" />
 			<sound id="19" name="TR4_RUMBLE_LOOP" t5m="19" />
-			<sound id="20" name="TR4_METAL_SCRAPE_LOOP" t5m="20" />
+			<sound id="20" name="TR4_METAL_SCRAPE_LOOP2" t5m="20" />
 			<sound id="21" name="TR4_CRICKET_LOOP" t5m="21" />
 			<sound id="22" name="TR4_WOOD_BRIDGE_FALL" t5m="22" />
 			<sound id="23" name="TR4_STARGATE_SWIRL" t5m="23" />
 			<sound id="24" name="TR4_LARA_KNEES_SHUFFLE" t5m="24" />
-			<sound id="25" name="TR4_PUSH_SPX_SWITCH" t5m="25" />
+			<sound id="25" name="TR4_PUSH_BIG_SWITCH" t5m="25" />
 			<sound id="26" name="TR4_LARA_CLIMB3" t5m="26" />
-			<sound id="27" name="TR4_LARA_BODYSLAM" t5m="27" />
+			<sound id="27" name="TR4_BODY_SLAM(UNUSED)" t5m="27" />
 			<sound id="28" name="TR4_LARA_SHIMMY2" t5m="28" />
 			<sound id="29" name="TR4_LARA_JUMP" t5m="29" />
 			<sound id="30" name="TR4_LARA_FALL" t5m="30" />
 			<sound id="31" name="TR4_LARA_INJURY" t5m="31" />
-			<sound id="32" name="TR4_LARA_ROLL" t5m="32" />
+			<sound id="32" name="TR4_LARA_ROLLING" t5m="32" />
 			<sound id="33" name="TR4_LARA_SPLASH" t5m="33" />
 			<sound id="34" name="TR4_LARA_GETOUT" t5m="34" />
 			<sound id="35" name="TR4_LARA_SWIM" t5m="35" />
 			<sound id="36" name="TR4_LARA_BREATH" t5m="36" />
 			<sound id="37" name="TR4_LARA_BUBBLES" t5m="37" />
-			<sound id="38" name="TR4_SPINNING_PUZZLE" t5m="38" />
+			<sound id="38" name="TR4_SENET_PUZZLE_SPIN" t5m="38" />
 			<sound id="39" name="TR4_LARA_KEY" t5m="39" />
 			<sound id="40" name="TR4_COG_RESAW_LIBRARY" t5m="40" />
 			<sound id="41" name="TR4_LARA_GENERAL_DEATH" t5m="41" />
 			<sound id="42" name="TR4_LARA_KNEES_DEATH" t5m="42" />
-			<sound id="43" name="TR4_LARA_UZI_FIRE" t5m="43" />
-			<sound id="44" name="TR4_LARA_UZI_STOP" t5m="44" />
-			<sound id="45" name="TR4_LARA_SHOTGUN_FIRE" t5m="45" />
+			<sound id="43" name="TR4_UZI_FIRE" t5m="43" />
+			<sound id="44" name="TR4_UZI_STOP" t5m="44" />
+			<sound id="45" name="TR4_SHOTGUN_FIRE" t5m="45" />
 			<sound id="46" name="TR4_LARA_BLOCK_PUSH1" t5m="46" />
 			<sound id="47" name="TR4_LARA_BLOCK_PUSH2" t5m="47" />
 			<sound id="48" name="TR4_SARLID_PALACES" t5m="48" />
-			<sound id="49" name="TR4_LARA_SHOTGUN_SHELL" t5m="49" />
-			<sound id="50" name="TR4_UNDERWATER_DOOR" t5m="50" />
-			<sound id="51" name="TR4_LARA_BLKPULL" t5m="51" />
+			<sound id="49" name="TR4_SHOTGUN_SHELL" t5m="49" />
+			<sound id="50" name="TR4_UNDERWATER_DOOR_OPEN" t5m="50" />
+			<sound id="51" name="TR4_LARA_PULL" t5m="51" />
 			<sound id="52" name="TR4_LARA_FLOATING" t5m="52" />
 			<sound id="53" name="TR4_LARA_HIGH_FALL_DEATH" t5m="53" />
 			<sound id="54" name="TR4_LARA_GRABHAND" t5m="54" />
 			<sound id="55" name="TR4_LARA_GRABBODY" t5m="55" />
 			<sound id="56" name="TR4_LARA_GRABFEET" t5m="56" />
-			<sound id="57" name="TR4_RATCHET_3SHOT" t5m="57" />
-			<sound id="58" name="TR4_RATCHET_1SHOT" t5m="58" />
-			<sound id="59" name="TR4_WATER_LOOP_NOTINUSE" t5m="59" />
+			<sound id="57" name="TR4_RATCHET1" t5m="57" />
+			<sound id="58" name="TR4_RATCHET2" t5m="58" />
+			<sound id="59" name="TR4_WATER_LOOP" t5m="59" />
 			<sound id="60" name="TR4_UNDERWATER" t5m="60" />
 			<sound id="61" name="TR4_UNDERWATER_SWITCH" t5m="61" />
 			<sound id="62" name="TR4_LARA_PICKUP" t5m="62" />
@@ -6793,22 +6793,22 @@
 			<sound id="70" name="TR4_LARA_THUD" t5m="70" />
 			<sound id="71" name="TR4_GENERIC_SWOOSH" t5m="71" />
 			<sound id="72" name="TR4_GENERIC_HEAVY_THUD" t5m="72" />
-			<sound id="73" name="TR4_CROC_FEET" t5m="73" />
+			<sound id="73" name="TR4_CROCODILE_FEET" t5m="73" />
 			<sound id="74" name="TR4_SWINGING_FLAMES" t5m="74" />
 			<sound id="75" name="TR4_STONE_SCRAPE" t5m="75" />
 			<sound id="76" name="TR4_BLAST_CIRCLE" t5m="76" />
-			<sound id="77" name="TR4_LARA_BAZOOKA_FIRE" t5m="77" />
-			<sound id="78" name="TR4_LARA_HK_FIRE" t5m="78" />
+			<sound id="77" name="TR4_BAZOOKA_FIRE" t5m="77" />
+			<sound id="78" name="TR4_HK_FIRE" t5m="78" />
 			<sound id="79" name="TR4_WATERFALL_LOOP" t5m="79" />
-			<sound id="80" name="TR4_CROC_ATTACK" t5m="80" />
-			<sound id="81" name="TR4_CROC_DEATH" t5m="81" />
+			<sound id="80" name="TR4_CROCODILE_ATTACK" t5m="80" />
+			<sound id="81" name="TR4_CROCODILE_DEATH" t5m="81" />
 			<sound id="82" name="TR4_PORTCULLIS_UP" t5m="82" />
 			<sound id="83" name="TR4_PORTCULLIS_DOWN" t5m="83" />
 			<sound id="84" name="TR4_DOUBLE_DOORS_BANG" t5m="84" />
 			<sound id="85" name="TR4_DOUBLE_DOORS_CREAK" t5m="85" />
-			<sound id="86" name="TR4_PETES_PYRA_STONE" t5m="86" />
-			<sound id="87" name="TR4_PETES_PYRA_PNEU" t5m="87" />
-			<sound id="88" name="TR4_AHMET_DIE" t5m="88" />
+			<sound id="86" name="TR4_PYRAMID_STONE" t5m="86" />
+			<sound id="87" name="TR4_PYRAMID_PNEU" t5m="87" />
+			<sound id="88" name="TR4_AHMET_DEATH" t5m="88" />
 			<sound id="89" name="TR4_AHMET_ATTACK" t5m="89" />
 			<sound id="90" name="TR4_AHMET_HANDS" t5m="90" />
 			<sound id="91" name="TR4_AHMET_FEET" t5m="91" />
@@ -6816,219 +6816,219 @@
 			<sound id="93" name="TR4_AHMET_WAIT" t5m="93" />
 			<sound id="94" name="TR4_GUIDE_JUMP" t5m="94" />
 			<sound id="95" name="TR4_GENERAL_FOOTSTEPS1" t5m="95" />
-			<sound id="96" name="TR4_GUIDE_LAND_USENOT" t5m="96" />
-			<sound id="97" name="TR4_POUR" t5m="97" />
+			<sound id="96" name="TR4_GUIDE_LAND" t5m="96" />
+			<sound id="97" name="TR4_POUR_WATER" t5m="97" />
 			<sound id="98" name="TR4_SCALE1" t5m="98" />
 			<sound id="99" name="TR4_SCALE2" t5m="99" />
-			<sound id="100" name="TR4_BEETLARA_WINDUP" t5m="100" />
-			<sound id="101" name="TR4_BEETLE_CLK_WHIRR" t5m="101" />
-			<sound id="102" name="TR4_BEETLE_CLK_EXP" t5m="102" />
-			<sound id="103" name="TR4_MINE_EXP_OVERLAY" t5m="103" />
-			<sound id="104" name="TR4_LARA_HK_STOP" t5m="104" />
+			<sound id="100" name="TR4_CLOCKWORK_BEETLE_WINDUP" t5m="100" />
+			<sound id="101" name="TR4_CLOCKWORK_BEETLE_CLK_WHIRR" t5m="101" />
+			<sound id="102" name="TR4_CLOCKWORK_BEETLE_CLK_EXP" t5m="102" />
+			<sound id="103" name="TR4_MINE_EXPLOSION_OVERLAY" t5m="103" />
+			<sound id="104" name="TR4_EMPTY1" t5m="104" />
 			<sound id="105" name="TR4_EXPLOSION1" t5m="105" />
-			<sound id="106" name="TR4_EXPLOSION2_VOLWAS80" t5m="106" />
+			<sound id="106" name="TR4_EXPLOSION2" t5m="106" />
 			<sound id="107" name="TR4_EARTHQUAKE_LOOP" t5m="107" />
-			<sound id="108" name="TR4_UI_ROTATE" t5m="108" />
-			<sound id="109" name="TR4_UI_SELECT" t5m="109" />
-			<sound id="110" name="TR4_Menu_Empty" t5m="110" />
-			<sound id="111" name="TR4_UI_CHOOSE" t5m="111" />
+			<sound id="108" name="TR4_MENU_ROTATE" t5m="108" />
+			<sound id="109" name="TR4_MENU_SELECT" t5m="109" />
+			<sound id="110" name="TR4_EMPTY2" t5m="110" />
+			<sound id="111" name="TR4_MENU_CHOOSE" t5m="111" />
 			<sound id="112" name="TR4_TICK_TOCK" t5m="112" />
-			<sound id="113" name="TR4_Menu_Empty" t5m="113" />
-			<sound id="114" name="TR4_UI_COMBINE" t5m="114" />
-			<sound id="115" name="TR4_Menu_Empty" t5m="115" />
-			<sound id="116" name="TR4_UI_MEDI" t5m="116" />
+			<sound id="113" name="TR4_EMPTY3" t5m="113" />
+			<sound id="114" name="TR4_MENU_COMBINE" t5m="114" />
+			<sound id="115" name="TR4_EMPTY4" t5m="115" />
+			<sound id="116" name="TR4_MENU_MEDI" t5m="116" />
 			<sound id="117" name="TR4_LARA_CLIMB_WALLS_NOISE" t5m="117" />
 			<sound id="118" name="TR4_WATER_LOOP" t5m="118" />
 			<sound id="119" name="TR4_VONCROY_JUMP" t5m="119" />
 			<sound id="120" name="TR4_LOCUSTS_LOOP" t5m="120" />
-			<sound id="121" name="TR4_LARA_REVOLVER_FIRE" t5m="121" />
+			<sound id="121" name="TR4_REVOLVER_FIRE" t5m="121" />
 			<sound id="122" name="TR4_BOULDER_FALL" t5m="122" />
-			<sound id="123" name="TR4_LARA_MINI_LOAD" t5m="123" />
-			<sound id="124" name="TR4_LARA_MINI_LOCK" t5m="124" />
-			<sound id="125" name="TR4_LARA_MINI_FIRE" t5m="125" />
+			<sound id="123" name="TR4_GRENADEGUN_LOAD" t5m="123" />
+			<sound id="124" name="TR4_GRENADEGUN_LOCK" t5m="124" />
+			<sound id="125" name="TR4_GRENADEGUN_FIRE" t5m="125" />
 			<sound id="126" name="TR4_GATE_OPENING" t5m="126" />
 			<sound id="127" name="TR4_LARA_ELECTRIC_LOOP" t5m="127" />
 			<sound id="128" name="TR4_LARA_ELECTRIC_CRACKLES" t5m="128" />
 			<sound id="129" name="TR4_BLOOD_LOOP" t5m="129" />
-			<sound id="130" name="TR4_BIKE_START" t5m="130" />
-			<sound id="131" name="TR4_BIKE_IDLE" t5m="131" />
-			<sound id="132" name="TR4_BIKE_ACCELERATE" t5m="132" />
-			<sound id="133" name="TR4_BIKE_MOVING" t5m="133" />
-			<sound id="134" name="TR4_BIKE_SIDE_IMPACT" t5m="134" />
-			<sound id="135" name="TR4_BIKE_FRONT_IMPACT" t5m="135" />
+			<sound id="130" name="TR4_VEHICLE_MOTORBIKE_START" t5m="130" />
+			<sound id="131" name="TR4_VEHICLE_MOTORBIKE_IDLE" t5m="131" />
+			<sound id="132" name="TR4_VEHICLE_MOTORBIKE_ACCELERATE" t5m="132" />
+			<sound id="133" name="TR4_VEHICLE_MOTORBIKE_MOVING" t5m="133" />
+			<sound id="134" name="TR4_VEHICLE_MOTORBIKE_SIDE_IMPACT" t5m="134" />
+			<sound id="135" name="TR4_VEHICLE_MOTORBIKE_FRONT_IMPACT" t5m="135" />
 			<sound id="136" name="TR4_SOFT_WIND_LOOP" t5m="136" />
-			<sound id="137" name="TR4_BIKE_LAND" t5m="137" />
+			<sound id="137" name="TR4_VEHICLE_MOTORBIKE_LAND" t5m="137" />
 			<sound id="138" name="TR4_CROCGOD_ROAR" t5m="138" />
 			<sound id="139" name="TR4_CROCGOD_WINGS" t5m="139" />
 			<sound id="140" name="TR4_CROCGOD_LAND" t5m="140" />
 			<sound id="141" name="TR4_CROCGOD_FIRE_ROAR" t5m="141" />
-			<sound id="142" name="TR4_BIKE_STOP" t5m="142" />
+			<sound id="142" name="TR4_VEHICLE_MOTORBIKE_STOP" t5m="142" />
 			<sound id="143" name="TR4_GENERIC_BODY_SLAM" t5m="143" />
-			<sound id="144" name="TR4_HECKER_AND_KOCH_OVERLAY" t5m="144" />
+			<sound id="144" name="TR4_WEAPON_ADD_ON_SFX" t5m="144" />
 			<sound id="145" name="TR4_LARA_SPIKE_DEATH" t5m="145" />
 			<sound id="146" name="TR4_LARA_DEATH3" t5m="146" />
 			<sound id="147" name="TR4_ROLLING_BALL" t5m="147" />
-			<sound id="148" name="TR4_BLK_PLAT_RAISE_AND_LOW" t5m="148" />
+			<sound id="148" name="TR4_RAISING_BLOCK" t5m="148" />
 			<sound id="149" name="TR4_RUMBLE_NEXTDOOR" t5m="149" />
 			<sound id="150" name="TR4_LOOP_FOR_SMALL_FIRES" t5m="150" />
 			<sound id="151" name="TR4_CHAINS_LIBRARY" t5m="151" />
-			<sound id="152" name="TR4_JEEP_START" t5m="152" />
-			<sound id="153" name="TR4_JEEP_IDLE" t5m="153" />
-			<sound id="154" name="TR4_JEEP_ACCELERATE" t5m="154" />
-			<sound id="155" name="TR4_JEEP_MOVE" t5m="155" />
-			<sound id="156" name="TR4_JEEP_STOP" t5m="156" />
-			<sound id="157" name="TR4_BATS_1" t5m="157" />
+			<sound id="152" name="TR4_VEHICLE_JEEP_START" t5m="152" />
+			<sound id="153" name="TR4_VEHICLE_JEEP_IDLE" t5m="153" />
+			<sound id="154" name="TR4_VEHICLE_JEEP_ACCELERATE" t5m="154" />
+			<sound id="155" name="TR4_VEHICLE_JEEP_MOVING" t5m="155" />
+			<sound id="156" name="TR4_VEHICLE_JEEP_STOP" t5m="156" />
+			<sound id="157" name="TR4_BATS" t5m="157" />
 			<sound id="158" name="TR4_ROLLING_DOOR" t5m="158" />
-			<sound id="159" name="TR4_LAUNCHER_1" t5m="159" />
-			<sound id="160" name="TR4_LAUNCHER_2" t5m="160" />
+			<sound id="159" name="TR4_LAUNCHER1" t5m="159" />
+			<sound id="160" name="TR4_LAUNCHER2" t5m="160" />
 			<sound id="161" name="TR4_TRAPDOOR_OPEN" t5m="161" />
 			<sound id="162" name="TR4_TRAPDOOR_CLOSE" t5m="162" />
-			<sound id="163" name="TR4_LARA_HK_STOP" t5m="163" />
+			<sound id="163" name="TR4_HK_STOP" t5m="163" />
 			<sound id="164" name="TR4_BABOON_STAND_WAIT" t5m="164" />
 			<sound id="165" name="TR4_BABOON_ATTACK_LOW" t5m="165" />
 			<sound id="166" name="TR4_BABOON_ATTACK_JUMP" t5m="166" />
 			<sound id="167" name="TR4_BABOON_JUMP" t5m="167" />
 			<sound id="168" name="TR4_BABOON_DEATH" t5m="168" />
-			<sound id="169" name="TR4_BAT_SQUEAL_FULL" t5m="169" />
-			<sound id="170" name="TR4_BAT_SQK" t5m="170" />
+			<sound id="169" name="TR4_BAT_SQUEAL" t5m="169" />
+			<sound id="170" name="TR4_BAT_SQUEAK" t5m="170" />
 			<sound id="171" name="TR4_BAT_FLAP" t5m="171" />
 			<sound id="172" name="TR4_SPHINX_NOSE_RASP" t5m="172" />
 			<sound id="173" name="TR4_SPHINX_WALK" t5m="173" />
-			<sound id="174" name="TR4_SPHINX_NOISE" t5m="174" />
+			<sound id="174" name="TR4_SPHINX_SCREAM" t5m="174" />
 			<sound id="175" name="TR4_DOG_HOWL" t5m="175" />
 			<sound id="176" name="TR4_DOG_HIT_GROUND" t5m="176" />
 			<sound id="177" name="TR4_FOUNTAIN_LOOP" t5m="177" />
-			<sound id="178" name="TR4_DOG_FOOT_1" t5m="178" />
+			<sound id="178" name="TR4_DOG_FOOT" t5m="178" />
 			<sound id="179" name="TR4_DOG_JUMP" t5m="179" />
 			<sound id="180" name="TR4_DOG_BITE" t5m="180" />
 			<sound id="181" name="TR4_DOG_DEATH" t5m="181" />
 			<sound id="182" name="TR4_THUNDER_RUMBLE" t5m="182" />
 			<sound id="183" name="TR4_THUNDER_CRACK" t5m="183" />
 			<sound id="184" name="TR4_WRAITH_WHISPERS" t5m="184" />
-			<sound id="185" name="TR4_LARA_FOOTSTEPS_SAND" t5m="185" />
-			<sound id="186" name="TR4_Empty" t5m="186" />
-			<sound id="187" name="TR4_SKEL_FOOTSTEPS" t5m="187" />
-			<sound id="188" name="TR4_SKEL_ATTACK" t5m="188" />
+			<sound id="185" name="TR4_LARA_FOOSTEPS_SAND" t5m="185" />
+			<sound id="186" name="TR4_EMPTY5" t5m="186" />
+			<sound id="187" name="TR4_SKELETON_FOOTSTEPS" t5m="187" />
+			<sound id="188" name="TR4_SKELETON_ATTACK" t5m="188" />
 			<sound id="189" name="TR4_GENERIC_SWORD_SWOOSH" t5m="189" />
-			<sound id="190" name="TR4_SKEL_SWORD_CLANG" t5m="190" />
-			<sound id="191" name="TR4_SKEL_STICK_GROUND" t5m="191" />
-			<sound id="192" name="TR4_GEN_PULL_SWORD" t5m="192" />
-			<sound id="193" name="TR4_SKEL_LAND_HEAVY" t5m="193" />
+			<sound id="190" name="TR4_SKELETON_SWORD_CLANG" t5m="190" />
+			<sound id="191" name="TR4_SKELETON_STICK_GROUND" t5m="191" />
+			<sound id="192" name="TR4_GENERIC_PULL_SWORD" t5m="192" />
+			<sound id="193" name="TR4_SKELETON_LAND_HEAVY" t5m="193" />
 			<sound id="194" name="TR4_GUIDE_SCARE" t5m="194" />
-			<sound id="195" name="TR4_JEEP_DOOR_OPEN" t5m="195" />
-			<sound id="196" name="TR4_JEEP_DOOR_CLOSE" t5m="196" />
-			<sound id="197" name="TR4_ELEC_ARCING_LOOP" t5m="197" />
-			<sound id="198" name="TR4_ELEC_ONE_SHOT" t5m="198" />
-			<sound id="199" name="TR4_Empty" t5m="199" />
+			<sound id="195" name="TR4_VEHICLE_JEEP_DOOR_OPEN" t5m="195" />
+			<sound id="196" name="TR4_VEHICLE_JEEP_DOOR_CLOSE" t5m="196" />
+			<sound id="197" name="TR4_ELECTRIC_ARCING_LOOP" t5m="197" />
+			<sound id="198" name="TR4_ELECTRIC_ONE_SHOT" t5m="198" />
+			<sound id="199" name="TR4_EMPTY6" t5m="199" />
 			<sound id="200" name="TR4_LIBRARY_COG_LOOP" t5m="200" />
-			<sound id="201" name="TR4_JEEP_SIDE_IMPACT" t5m="201" />
-			<sound id="202" name="TR4_JEEP_FRONT_IMPACT" t5m="202" />
-			<sound id="203" name="TR4_JEEP_LAND" t5m="203" />
+			<sound id="201" name="TR4_VEHICLE_JEEP_SIDE_IMPACT" t5m="201" />
+			<sound id="202" name="TR4_VEHICLE_JEEP_FRONT_IMPACT" t5m="202" />
+			<sound id="203" name="TR4_VEHICLE_JEEP_LAND" t5m="203" />
 			<sound id="204" name="TR4_SPINNING_GEM_SLOTS" t5m="204" />
-			<sound id="205" name="TR4_RUMMBLE" t5m="205" />
+			<sound id="205" name="TR4_RUMBLE" t5m="205" />
 			<sound id="206" name="TR4_WARTHOG_HEADBUTT" t5m="206" />
 			<sound id="207" name="TR4_WARTHOG_DEATH" t5m="207" />
-			<sound id="208" name="TR4_SET_SPIKE_TIMER" t5m="208" />
+			<sound id="208" name="TR4_SPIKE_TIMER" t5m="208" />
 			<sound id="209" name="TR4_WARTHOG_SQUEAL" t5m="209" />
 			<sound id="210" name="TR4_WARTHOG_FEET" t5m="210" />
 			<sound id="211" name="TR4_WARTHOG_GRUNT" t5m="211" />
 			<sound id="212" name="TR4_SAVE_CRYSTAL" t5m="212" />
-			<sound id="213" name="TR4_HORSE_RICOCHETS" t5m="213" />
+			<sound id="213" name="TR4_HORSE_RICOCHET" t5m="213" />
 			<sound id="214" name="TR4_METAL_SHUTTERS_SMASH" t5m="214" />
 			<sound id="215" name="TR4_GEM_DROP_ON_FLOOR" t5m="215" />
-			<sound id="216" name="TR4_SCORPION_SCREAM" t5m="216" />
-			<sound id="217" name="TR4_SCORPION_FEET" t5m="217" />
-			<sound id="218" name="TR4_SCORPION_CLAWS" t5m="218" />
-			<sound id="219" name="TR4_SCORPION_TAIL_WHIP" t5m="219" />
-			<sound id="220" name="TR4_SCORPION_SMALL_FEET" t5m="220" />
+			<sound id="216" name="TR4_BIG_SCORPION_SCREAM" t5m="216" />
+			<sound id="217" name="TR4_BIG_SCORPION_FEET" t5m="217" />
+			<sound id="218" name="TR4_BIG_SCORPION_CLAWS" t5m="218" />
+			<sound id="219" name="TR4_BIG_SCORPION_TAIL_WHIP" t5m="219" />
+			<sound id="220" name="TR4_SMALL_SCORPION_FEET" t5m="220" />
 			<sound id="221" name="TR4_METAL_GATE_OPEN" t5m="221" />
 			<sound id="222" name="TR4_HORSE_TROTTING" t5m="222" />
-			<sound id="223" name="TR4_KN_TEMPLAR_WALK" t5m="223" />
-			<sound id="224" name="TR4_KN_TEMPLAR_GURGLES" t5m="224" />
-			<sound id="225" name="TR4_KN_SWORD_SCRAPE" t5m="225" />
-			<sound id="226" name="TR4_KN_TEMPLAR_ATTACK" t5m="226" />
-			<sound id="227" name="TR4_KN_SWORD_CLANG" t5m="227" />
-			<sound id="228" name="TR4_KN_SWORD_SWOOSH" t5m="228" />
+			<sound id="223" name="TR4_KNIGHTS_TEMPLAR_WALK" t5m="223" />
+			<sound id="224" name="TR4_KNIGHTS_TEMPLAR_GURGLES" t5m="224" />
+			<sound id="225" name="TR4_KNIGHTS_SWORD_SCRAPE" t5m="225" />
+			<sound id="226" name="TR4_KNIGHTS_TEMPLAR_ATTACK" t5m="226" />
+			<sound id="227" name="TR4_KNIGHTS_SWORD_CLANG" t5m="227" />
+			<sound id="228" name="TR4_KNIGHTS_SWORD_SWOOSH" t5m="228" />
 			<sound id="229" name="TR4_MUMMY_ATTACK" t5m="229" />
 			<sound id="230" name="TR4_MUMMY_WALK" t5m="230" />
 			<sound id="231" name="TR4_MUMMY_GURGLES" t5m="231" />
 			<sound id="232" name="TR4_MUMMY_TAKE_HIT" t5m="232" />
 			<sound id="233" name="TR4_SMALL_FAN" t5m="233" />
 			<sound id="234" name="TR4_LARGE_FAN" t5m="234" />
-			<sound id="235" name="TR4_LARA_CROSSBOW_FIRE" t5m="235" />
+			<sound id="235" name="TR4_CROSSBOW_FIRE" t5m="235" />
 			<sound id="236" name="TR4_SMALL_CREATURE_FEET" t5m="236" />
-			<sound id="237" name="TR4_SAS_GADGIE_DIE" t5m="237" />
+			<sound id="237" name="TR4_SAS_DEATH" t5m="237" />
 			<sound id="238" name="TR4_WATER_FLUSHES" t5m="238" />
-			<sound id="239" name="TR4_GUID_ZIPPO" t5m="239" />
+			<sound id="239" name="TR4_GUIDE_ZIPPO" t5m="239" />
 			<sound id="240" name="TR4_LEAP_SWITCH" t5m="240" />
 			<sound id="241" name="TR4_OLD_SWITCH" t5m="241" />
-			<sound id="242" name="TR4_DEMIGODS_FEET" t5m="242" />
+			<sound id="242" name="TR4_DEMIGODS_FOOT" t5m="242" />
 			<sound id="243" name="TR4_DEMIGODS_BULL_SNORT" t5m="243" />
 			<sound id="244" name="TR4_DEMIGODS_BULL_HAMMER" t5m="244" />
-			<sound id="245" name="TR4_DEMIGODS_S_WAVE_RUMB" t5m="245" />
-			<sound id="246" name="TR4_DEMIGOD_WEAP_SWOOSH" t5m="246" />
+			<sound id="245" name="TR4_DEMIGODS_WAVE_RUMBLE" t5m="245" />
+			<sound id="246" name="TR4_DEMIGOD_WEAPON_SWOOSH" t5m="246" />
 			<sound id="247" name="TR4_DEMIGOD_FALCON_SQUEAL" t5m="247" />
-			<sound id="248" name="TR4_DEMIGOD_FALCON_PLAS" t5m="248" />
+			<sound id="248" name="TR4_DEMIGOD_FALCON_PLASMA" t5m="248" />
 			<sound id="249" name="TR4_DEMIGOD_RISE" t5m="249" />
-			<sound id="250" name="TR4_DEMI_TUT_PLASMA_SPRAY" t5m="250" />
-			<sound id="251" name="TR4_DEMI_SIREN_SWAVE" t5m="251" />
-			<sound id="252" name="TR4_DEMIGODS_TUT_GROWL" t5m="252" />
-			<sound id="253" name="TR4_JOBY_ELECTRIC_INSERT" t5m="253" />
-			<sound id="254" name="TR4_BAD_LAND" t5m="254" />
-			<sound id="255" name="TR4_DOOR_GEN_THUD" t5m="255" />
-			<sound id="256" name="TR4_BAD_GRUNTS" t5m="256" />
-			<sound id="257" name="TR4_BAD_DIE" t5m="257" />
-			<sound id="258" name="TR4_BAD_JUMP" t5m="258" />
-			<sound id="259" name="TR4_BAD_TROOP_STUN" t5m="259" />
-			<sound id="260" name="TR4_BAD_SWORDAWAY" t5m="260" />
-			<sound id="261" name="TR4_BAD_TROOP_UZI" t5m="261" />
-			<sound id="262" name="TR4_BAD_SWORD_RICO" t5m="262" />
-			<sound id="263" name="TR4_BAD_TROOP_UZI_END" t5m="263" />
-			<sound id="264" name="TR4_TROOP_SCORP_CRIES" t5m="264" />
-			<sound id="265" name="TR4_SAS_TROOP_FEET" t5m="265" />
-			<sound id="266" name="TR4_GENERIC_NRG_CHARGE" t5m="266" />
-			<sound id="267" name="TR4_SAS_MG_FIRE" t5m="267" />
-			<sound id="268" name="TR4_HAMMER_HEAD_WADE" t5m="268" />
+			<sound id="250" name="TR4_DEMIGOD_PLASMA_SPRAY" t5m="250" />
+			<sound id="251" name="TR4_DEMIGOD_SIREN_SWAVE" t5m="251" />
+			<sound id="252" name="TR4_DEMIGODS_GROWL" t5m="252" />
+			<sound id="253" name="TR4_ELECTRIC_INSERT" t5m="253" />
+			<sound id="254" name="TR4_BADDY_LAND" t5m="254" />
+			<sound id="255" name="TR4_DOOR_GENERIC_THUD" t5m="255" />
+			<sound id="256" name="TR4_BADDY_GRUNTS" t5m="256" />
+			<sound id="257" name="TR4_BADDY_DEATH" t5m="257" />
+			<sound id="258" name="TR4_BADDY_JUMP" t5m="258" />
+			<sound id="259" name="TR4_BADDY_STUN" t5m="259" />
+			<sound id="260" name="TR4_BADDY_SWORDAWAY" t5m="260" />
+			<sound id="261" name="TR4_BADDY_UZI.WAV" t5m="261" />
+			<sound id="262" name="TR4_BADDY_SWORD_RICO" t5m="262" />
+			<sound id="263" name="TR4_BADDY_UZI_END" t5m="263" />
+			<sound id="264" name="TR4_TROOP_SCORPION_CRIES" t5m="264" />
+			<sound id="265" name="TR4_SOLDIER_BOOTS" t5m="265" />
+			<sound id="266" name="TR4_GENERIC_ENERGY_CHARGE" t5m="266" />
+			<sound id="267" name="TR4_SAS_MACHINE_GUN_FIRE" t5m="267" />
+			<sound id="268" name="TR4_HAMMERHEAD_WADE" t5m="268" />
 			<sound id="269" name="TR4_SMALL_SWITCH" t5m="269" />
-			<sound id="270" name="TR4_Empty" t5m="270" />
+			<sound id="270" name="TR4_EMPTY7" t5m="270" />
 			<sound id="271" name="TR4_SIREN_WING_FLAP" t5m="271" />
-			<sound id="272" name="TR4_SIREN_NOIZES" t5m="272" />
+			<sound id="272" name="TR4_SIREN_NOISES" t5m="272" />
 			<sound id="273" name="TR4_SIREN_ATTACK" t5m="273" />
 			<sound id="274" name="TR4_SIREN_DEATH" t5m="274" />
-			<sound id="275" name="TR4_SIREN_GEN_NOISES" t5m="275" />
-			<sound id="276" name="TR4_SETT_SIREN_PLASMA" t5m="276" />
-			<sound id="277" name="TR4_HAMMER_HEAD_ATK" t5m="277" />
-			<sound id="278" name="TR4_SMALL_DOOR_SUBWAY" t5m="278" />
+			<sound id="275" name="TR4_SIREN_GENERIC_NOISES" t5m="275" />
+			<sound id="276" name="TR4_GENERIC_PLASMA_FIRE" t5m="276" />
+			<sound id="277" name="TR4_HAMMERHEAD_ATTACK" t5m="277" />
+			<sound id="278" name="TR4_SMALL_DOOR" t5m="278" />
 			<sound id="279" name="TR4_TRAIN_DOOR_OPEN" t5m="279" />
 			<sound id="280" name="TR4_TRAIN_DOOR_CLOSE" t5m="280" />
 			<sound id="281" name="TR4_VONCROY_KNIFE_SWISH" t5m="281" />
-			<sound id="282" name="TR4_TRAIN_UNLINK_BREAK" t5m="282" />
-			<sound id="283" name="TR4_OBJ_BOX_HIT" t5m="283" />
-			<sound id="284" name="TR4_OBJ_BOX_HIT_CHANCE" t5m="284" />
-			<sound id="285" name="TR4_OBJ_GEM_SMASH" t5m="285" />
+			<sound id="282" name="TR4_TRAIN_DECOUPLE" t5m="282" />
+			<sound id="283" name="TR4_OBJECT_BOX_HIT" t5m="283" />
+			<sound id="284" name="TR4_OBJECT_BOX_HIT_CHANCE" t5m="284" />
+			<sound id="285" name="TR4_GEM_SMASH" t5m="285" />
 			<sound id="286" name="TR4_CATBLADES_DRAW" t5m="286" />
-			<sound id="287" name="TR4_SWIRLY_LONG_MOVE_SFX" t5m="287" />
+			<sound id="287" name="TR4_SWIRL_BLADES_MOVE" t5m="287" />
 			<sound id="288" name="TR4_LARA_FOOTSTEPS_MUD" t5m="288" />
-			<sound id="289" name="TR4_HORSEMAN_HORSE_NEIGH" t5m="289" />
+			<sound id="289" name="TR4_HORSE_NEIGH" t5m="289" />
 			<sound id="290" name="TR4_LARA_FOOTSTEPS_GRAVEL" t5m="290" />
 			<sound id="291" name="TR4_LARA_FOOTSTEPS_GRASS" t5m="291" />
 			<sound id="292" name="TR4_LARA_FOOTSTEPS_WOOD" t5m="292" />
 			<sound id="293" name="TR4_LARA_FOOTSTEPS_MARBLE" t5m="293" />
 			<sound id="294" name="TR4_LARA_FOOTSTEPS_METAL" t5m="294" />
-			<sound id="295" name="TR4_GEN_SPHINX_DOORTHD" t5m="295" />
-			<sound id="296" name="TR4_SETT_PLASMA_1" t5m="296" />
-			<sound id="297" name="TR4_SETT_BOLT_1" t5m="297" />
+			<sound id="295" name="TR4_SPHINX_DOOR_THUD" t5m="295" />
+			<sound id="296" name="TR4_SETT_PLASMA1" t5m="296" />
+			<sound id="297" name="TR4_SETT_BOLT1" t5m="297" />
 			<sound id="298" name="TR4_SETT_FEET" t5m="298" />
-			<sound id="299" name="TR4_SETT_NRG_CHARGE" t5m="299" />
-			<sound id="300" name="TR4_SETT_NRG_CHARGE2" t5m="300" />
+			<sound id="299" name="TR4_SETT_ENERGY_CHARGE1" t5m="299" />
+			<sound id="300" name="TR4_SETT_ENERGY_CHARGE2" t5m="300" />
 			<sound id="301" name="TR4_HORSEMAN_TAKEHIT" t5m="301" />
 			<sound id="302" name="TR4_HORSEMAN_WALK" t5m="302" />
 			<sound id="303" name="TR4_HORSEMAN_GRUNT" t5m="303" />
 			<sound id="304" name="TR4_HORSEMAN_FALL" t5m="304" />
-			<sound id="305" name="TR4_HORSEMAN_DIE" t5m="305" />
-			<sound id="306" name="TR4_MAPPER_SWITCH_ON" t5m="306" />
+			<sound id="305" name="TR4_HORSEMAN_DEATH" t5m="305" />
+			<sound id="306" name="TR4_MAPPER_ON" t5m="306" />
 			<sound id="307" name="TR4_MAPPER_OPEN" t5m="307" />
-			<sound id="308" name="TR4_MAPPER_LAZER" t5m="308" />
+			<sound id="308" name="TR4_MAPPER_LASER" t5m="308" />
 			<sound id="309" name="TR4_MAPPER_MOVE" t5m="309" />
 			<sound id="310" name="TR4_MAPPER_CLUNK" t5m="310" />
 			<sound id="311" name="TR4_BLADES_DRAW" t5m="311" />
@@ -7039,69 +7039,69 @@
 			<sound id="316" name="TR4_SETT_BIG_ROAR" t5m="316" />
 			<sound id="317" name="TR4_BABOON_CHATTER" t5m="317" />
 			<sound id="318" name="TR4_BABOON_ROLL" t5m="318" />
-			<sound id="319" name="TR4_SWOOSH_SWIRLY_DOUBLE" t5m="319" />
-			<sound id="320" name="TR4_DOOR_SETTDOOR_SQK" t5m="320" />
+			<sound id="319" name="TR4_SWOOSH_SWIRL_DOUBLE" t5m="319" />
+			<sound id="320" name="TR4_DOOR_SETTDOOR_SQUEAK" t5m="320" />
 			<sound id="321" name="TR4_DOOR_SETTDOOR_CLANK" t5m="321" />
 			<sound id="322" name="TR4_SETT_JUMP_ATTACK" t5m="322" />
-			<sound id="323" name="TR4_JOBY_BLOCK" t5m="323" />
+			<sound id="323" name="TR4_BLOCK" t5m="323" />
 			<sound id="324" name="TR4_SETT_TAKE_HIT" t5m="324" />
-			<sound id="325" name="TR4_DART_SPITT" t5m="325" />
+			<sound id="325" name="TR4_DART_SPIT" t5m="325" />
 			<sound id="326" name="TR4_LARA_CROWBAR_GEM" t5m="326" />
 			<sound id="327" name="TR4_CROWBAR_DOOR_OPEN" t5m="327" />
-			<sound id="328" name="TR4_LARA_LEVER_GEN_SQKS" t5m="328" />
+			<sound id="328" name="TR4_LEVER_SQUEAK" t5m="328" />
 			<sound id="329" name="TR4_HORSEMAN_GETUP" t5m="329" />
-			<sound id="330" name="TR4_EXH_BASKET_OPEN" t5m="330" />
-			<sound id="331" name="TR4_EXH_MUMCOFF_OPE1" t5m="331" />
-			<sound id="332" name="TR4_EXH_MUMCOFF_OPE2" t5m="332" />
-			<sound id="333" name="TR4_EXH_MUM_JOLT" t5m="333" />
-			<sound id="334" name="TR4_EXH_MUMHEAD_SPIN" t5m="334" />
-			<sound id="335" name="TR4_EXH_MUMMY_RAHHH" t5m="335" />
-			<sound id="336" name="TR4_EXH_ROLLER_BLINDS" t5m="336" />
+			<sound id="330" name="TR4_EXHIBIT_BASKET_OPEN" t5m="330" />
+			<sound id="331" name="TR4_MUMMY_COFFIN_OPEN1" t5m="331" />
+			<sound id="332" name="TR4_MUMMY_COFFIN_OPEN2" t5m="332" />
+			<sound id="333" name="TR4_EXHIBIT_MUMMY_JOLT" t5m="333" />
+			<sound id="334" name="TR4_EXHIBIT_MUMMY_HEADSPIN" t5m="334" />
+			<sound id="335" name="TR4_EXHIBIT_MUMMY_RAHHH" t5m="335" />
+			<sound id="336" name="TR4_EXHIBIT_ROLLER_BLINDS" t5m="336" />
 			<sound id="337" name="TR4_LARA_LEVER_PART1" t5m="337" />
 			<sound id="338" name="TR4_LARA_LEVER_PART2" t5m="338" />
 			<sound id="339" name="TR4_LARA_POLE_CLIMB" t5m="339" />
-			<sound id="340" name="TR4_LARA_POLE_LOOP" t5m="340" />
-			<sound id="341" name="TR4_TRAP_SPIKEBALL_SPK" t5m="341" />
+			<sound id="340" name="TR4_LARA_POLE_SLIDE_LOOP" t5m="340" />
+			<sound id="341" name="TR4_TRAP_SPIKEBALL_SPOKES" t5m="341" />
 			<sound id="342" name="TR4_LARA_PULLEY" t5m="342" />
 			<sound id="343" name="TR4_TEETH_SPIKES" t5m="343" />
 			<sound id="344" name="TR4_SAND_LOOP" t5m="344" />
 			<sound id="345" name="TR4_LARA_USE_OBJECT" t5m="345" />
-			<sound id="346" name="TR4_LIBRARY_COG_SQKS" t5m="346" />
-			<sound id="347" name="TR4_HIT_ROCK" t5m="347" />
+			<sound id="346" name="TR4_LIBRARY_COG_SQUEAKS" t5m="346" />
+			<sound id="347" name="TR4_SMASH_ROCK" t5m="347" />
 			<sound id="348" name="TR4_LARA_NO_FRENCH" t5m="348" />
-			<sound id="349" name="TR4_LARA_NO_JAPAN" t5m="349" />
-			<sound id="350" name="TR4_LARA_CROW_WRENCH" t5m="350" />
+			<sound id="349" name="TR4_LARA_NO_JAPANESE" t5m="349" />
+			<sound id="350" name="TR4_LARA_CROWBAR_WRENCH" t5m="350" />
 			<sound id="351" name="TR4_LARA_ROPE_CREAK" t5m="351" />
-			<sound id="352" name="TR4_BOWLANIM" t5m="352" />
-			<sound id="353" name="TR4_SPHINX_DOOR_WOODCRACK" t5m="353" />
-			<sound id="354" name="TR4_BEETLE_CLK_WHIRR" t5m="354" />
+			<sound id="352" name="TR4_BOWL_ANIM" t5m="352" />
+			<sound id="353" name="TR4_SPHINX_DOOR_WOOD_CRACK" t5m="353" />
+			<sound id="354" name="TR4_CLOCKWORK_BEETLE_CLK_WHIRR" t5m="354" />
 			<sound id="355" name="TR4_MAPPER_PYRAMID_OPEN" t5m="355" />
-			<sound id="356" name="TR4_LIGHT_BEAM_JOBY" t5m="356" />
+			<sound id="356" name="TR4_LIGHT_BEAM_LOOP" t5m="356" />
 			<sound id="357" name="TR4_GUIDE_FIRE_LIGHT" t5m="357" />
 			<sound id="358" name="TR4_AUTOGUNS" t5m="358" />
-			<sound id="359" name="TR4_PULLEY_ANDY" t5m="359" />
+			<sound id="359" name="TR4_EMPTY8" t5m="359" />
 			<sound id="360" name="TR4_STEAM" t5m="360" />
-			<sound id="361" name="TR4_JOBY_GARAGE_DOOR" t5m="361" />
-			<sound id="362" name="TR4_JOBY_WIND" t5m="362" />
-			<sound id="363" name="TR4_SANDHAM_IN_THE_HOUSE" t5m="363" />
-			<sound id="364" name="TR4_SANDHAM_CONVEYS" t5m="364" />
+			<sound id="361" name="TR4_GARAGE_DOOR" t5m="361" />
+			<sound id="362" name="TR4_WIND" t5m="362" />
+			<sound id="363" name="TR4_SPRING" t5m="363" />
+			<sound id="364" name="TR4_CONVEYOR_BELT" t5m="364" />
 			<sound id="365" name="TR4_CRANKY_GRAPE_CRUSH" t5m="365" />
-			<sound id="366" name="TR4_BIKE_HIT_OBJECTS" t5m="366" />
-			<sound id="367" name="TR4_BIKE_HIT_ENEMIES" t5m="367" />
+			<sound id="366" name="TR4_VEHICLE_MOTORBIKE_HIT_OBJECTS" t5m="366" />
+			<sound id="367" name="TR4_VEHICLE_MOTORBIKE_HIT_ENEMIES" t5m="367" />
 			<sound id="368" name="TR4_FLAME_EMITTER" t5m="368" />
 			<sound id="369" name="TR4_LARA_CLICK_SWITCH" t5m="369" />
 			<sound id="370" name="TR4_LARA_FOOTSTEPS_ICE" t5m="370" />
 			<sound id="371" name="TR4_LARA_FOOTSTEPS_SNOW" t5m="371" />
-			<sound id="372" name="TR4_LARA_HK_SILENCED" t5m="372" />
-			<sound id="373" name="TR4_LARA_HARPOON_LOAD_LAND" t5m="373" />
-			<sound id="374" name="TR4_LARA_HARPOON_FIRE_LAND" t5m="374" />
-			<sound id="375" name="TR4_LARA_HARPOON_LOAD_WATER" t5m="375" />
-			<sound id="376" name="TR4_LARA_HARPOON_FIRE_WATER" t5m="376" />
+			<sound id="372" name="TR4_HK_SILENCED" t5m="372" />
+			<sound id="373" name="TR4_HARPOON_LOAD_DRY" t5m="373" />
+			<sound id="374" name="TR4_HARPOON_FIRE_DRY" t5m="374" />
+			<sound id="375" name="TR4_HARPOON_LOAD_UNDERWATER" t5m="375" />
+			<sound id="376" name="TR4_HARPOON_FIRE_UNDERWATER" t5m="376" />
 			<sound id="377" name="TR4_BINOCULARS_ZOOM" t5m="377" />
-			<sound id="378" name="TR4_FLARE_BURN_LAND" t5m="378" />
-			<sound id="379" name="TR4_FLARE_IGNITE_LAND" t5m="379" />
-			<sound id="380" name="TR4_FLARE_IGNITE_WATER" t5m="380" />
-			<sound id="381" name="TR4_FLARE_BURN_WATER" t5m="381" />
+			<sound id="378" name="TR4_FLARE_BURN_DRY" t5m="378" />
+			<sound id="379" name="TR4_FLARE_IGNITE_DRY" t5m="379" />
+			<sound id="380" name="TR4_FLARE_IGNITE_UNDERWATER" t5m="380" />
+			<sound id="381" name="TR4_FLARE_BURN_UNDERWATER" t5m="381" />
 			<sound id="382" name="TR1_BEAR_GROWL" t5m="382" />
 			<sound id="383" name="TR1_BEAR_FEET" t5m="383" />
 			<sound id="384" name="TR1_BEAR_ATTACK" t5m="384" />
@@ -7112,10 +7112,10 @@
 			<sound id="389" name="TR1_BAT_FLAP" t5m="389" />
 			<sound id="390" name="TR1_STONE_DOOR" t5m="390" />
 			<sound id="391" name="TR1_PENDULUM_BLADES" t5m="391" />
-			<sound id="392" name="TR1_TREX_DEATH" t5m="392" />
-			<sound id="393" name="TR1_TREX_FOOTSTOMPS" t5m="393" />
-			<sound id="394" name="TR1_TREX_ROAR" t5m="394" />
-			<sound id="395" name="TR1_TREX_ATTACK" t5m="395" />
+			<sound id="392" name="TR1_T-REX_DEATH" t5m="392" />
+			<sound id="393" name="TR1_T-REX_FOOTSTOMPS" t5m="393" />
+			<sound id="394" name="TR1_T-REX_ROAR" t5m="394" />
+			<sound id="395" name="TR1_T-REX_ATTACK" t5m="395" />
 			<sound id="396" name="TR1_WOLF_JUMP" t5m="396" />
 			<sound id="397" name="TR1_WOLF_HURT" t5m="397" />
 			<sound id="398" name="TR1_WOLF_DEATH" t5m="398" />
@@ -7188,7 +7188,7 @@
 			<sound id="465" name="TR1_NM_CONVEYOR_BELT" t5m="465" />
 			<sound id="466" name="TR1_NM_HUT_LOWERED" t5m="466" />
 			<sound id="467" name="TR1_NM_HUT_HIT_GROUND" t5m="467" />
-			<sound id="468" name="TR1_CHAINDOOR_UP" t5m="468" />
+			<sound id="468" name="TR1_EMPTY" t5m="468" />
 			<sound id="469" name="TR1_METAL_DOOR_OPEN" t5m="469" />
 			<sound id="470" name="TR1_METAL_DOOR_CLOSE" t5m="470" />
 			<sound id="471" name="TR1_PIERRE_DEATH" t5m="471" />
@@ -7256,13 +7256,13 @@
 			<sound id="533" name="TR2_EAGLE_SQUAWK" t5m="533" />
 			<sound id="534" name="TR2_EAGLE_WING_FLAP" t5m="534" />
 			<sound id="535" name="TR2_EAGLE_DEATH" t5m="535" />
-			<sound id="536" name="TR2+3_CROW_CAW" t5m="536" />
-			<sound id="537" name="TR2+3_CROW_WING_FLAP" t5m="537" />
-			<sound id="538" name="TR2+3_CROW_DEATH" t5m="538" />
-			<sound id="539" name="TR2+3_CROW_ATTACK" t5m="539" />
+			<sound id="536" name="TR3_CROW_CAW" t5m="536" />
+			<sound id="537" name="TR3_CROW_WING_FLAP" t5m="537" />
+			<sound id="538" name="TR3_CROW_DEATH" t5m="538" />
+			<sound id="539" name="TR3_CROW_ATTACK" t5m="539" />
 			<sound id="540" name="TR2_YETI_CHEST_BEAT" t5m="540" />
-			<sound id="541" name="TR2_YETI_GROWL" t5m="541" />
-			<sound id="542" name="TR2_YETI_FEET" t5m="542" />
+			<sound id="541" name="TR2_YETI_FEET" t5m="541" />
+			<sound id="542" name="TR2_YETI_GROWL" t5m="542" />
 			<sound id="543" name="TR2_YETI_GROWL1" t5m="543" />
 			<sound id="544" name="TR2_YETI_GROWL2" t5m="544" />
 			<sound id="545" name="TR2_YETI_GROWL3" t5m="545" />
@@ -7310,40 +7310,40 @@
 			<sound id="587" name="TR2_WARRIOR_SWORD_SLICE" t5m="587" />
 			<sound id="588" name="TR2_WARRIOR_WAKE" t5m="588" />
 			<sound id="589" name="TR2_WARRIOR_BURP" t5m="589" />
-			<sound id="590" name="TR2+3_SCUBA_DIVER_ARM" t5m="590" />
-			<sound id="591" name="TR2+3_SCUBA_DIVER_BREATH_LAND" t5m="591" />
-			<sound id="592" name="TR2+3_SCUBA_DIVER_BREATH_WATER" t5m="592" />
-			<sound id="593" name="TR2+3_SCUBA_DIVER_DEATH" t5m="593" />
-			<sound id="594" name="TR2+3_SCUBA_DIVER_DIVING" t5m="594" />
-			<sound id="595" name="TR2+3_SCUBA_DIVER_FLIPPER" t5m="595" />
+			<sound id="590" name="TR3_SCUBA_DIVER_ARM" t5m="590" />
+			<sound id="591" name="TR3_SCUBA_DIVER_BREATH_LAND" t5m="591" />
+			<sound id="592" name="TR3_SCUBA_DIVER_BREATH_WATER" t5m="592" />
+			<sound id="593" name="TR3_SCUBA_DIVER_DEATH" t5m="593" />
+			<sound id="594" name="TR3_SCUBA_DIVER_DIVING" t5m="594" />
+			<sound id="595" name="TR3_SCUBA_DIVER_FLIPPER" t5m="595" />
 			<sound id="596" name="TR2_SHARK_BITE" t5m="596" />
-			<sound id="597" name="TR2+3_WINSTON_BRUSH_OFF" t5m="597" />
-			<sound id="598" name="TR2+3_WINSTON_BULLET_TRAY" t5m="598" />
-			<sound id="599" name="TR2+3_WINSTON_CUPS" t5m="599" />
-			<sound id="600" name="TR2+3_WINSTON_FLATULENCE" t5m="600" />
-			<sound id="601" name="TR2+3_WINSTON_FOOTSTEPS" t5m="601" />
-			<sound id="602" name="TR2+3_WINSTON_GET_UP" t5m="602" />
-			<sound id="603" name="TR2+3_WINSTON_SURPRISED" t5m="603" />
-			<sound id="604" name="TR2+3_WINSTON_TAKE_HIT" t5m="604" />
-			<sound id="605" name="TR2+3_WINSTON_GRUNT1" t5m="605" />
-			<sound id="606" name="TR2+3_WINSTON_GRUNT2" t5m="606" />
-			<sound id="607" name="TR2+3_WINSTON_GRUNT3" t5m="607" />
-			<sound id="608" name="TR2+3_WINSTON_SHUFFLE" t5m="608" />
-			<sound id="609" name="TR2_SPEEDBOAT_ACCELERATE" t5m="609" />
-			<sound id="610" name="TR2_SPEEDBOAT_ENGINE" t5m="610" />
-			<sound id="611" name="TR2_SPEEDBOAT_HIT" t5m="611" />
-			<sound id="612" name="TR2_SPEEDBOAT_INTO_WATER" t5m="612" />
-			<sound id="613" name="TR2_SPEEDBOAT_IDLE" t5m="613" />
-			<sound id="614" name="TR2_SPEEDBOAT_MOVING" t5m="614" />
-			<sound id="615" name="TR2_SPEEDBOAT_SLOWDOWN" t5m="615" />
-			<sound id="616" name="TR2_SPEEDBOAT_START" t5m="616" />
-			<sound id="617" name="TR2_SPEEDBOAT_STOP" t5m="617" />
-			<sound id="618" name="TR2_SPEEDBOAT_ENGINE_HIT" t5m="618" />
-			<sound id="619" name="TR2_SNOWMOBILE_ACCELERATE" t5m="619" />
-			<sound id="620" name="TR2_SNOWMOBILE_IDLE" t5m="620" />
-			<sound id="621" name="TR2_SNOWMOBILE_MOVING" t5m="621" />
-			<sound id="622" name="TR2_SNOWMOBILE_START" t5m="622" />
-			<sound id="623" name="TR2_SNOWMOBILE_STOP" t5m="623" />
+			<sound id="597" name="TR3_WINSTON_BRUSH_OFF" t5m="597" />
+			<sound id="598" name="TR3_WINSTON_BULLET_TRAY" t5m="598" />
+			<sound id="599" name="TR3_WINSTON_CUPS" t5m="599" />
+			<sound id="600" name="TR3_WINSTON_FLATULENCE" t5m="600" />
+			<sound id="601" name="TR3_WINSTON_FOOTSTEPS" t5m="601" />
+			<sound id="602" name="TR3_WINSTON_GET_UP" t5m="602" />
+			<sound id="603" name="TR3_WINSTON_SURPRISED" t5m="603" />
+			<sound id="604" name="TR3_WINSTON_TAKE_HIT" t5m="604" />
+			<sound id="605" name="TR3_WINSTON_GRUNT1" t5m="605" />
+			<sound id="606" name="TR3_WINSTON_GRUNT2" t5m="606" />
+			<sound id="607" name="TR3_WINSTON_GRUNT3" t5m="607" />
+			<sound id="608" name="TR3_WINSTON_SHUFFLE" t5m="608" />
+			<sound id="609" name="TR2_VEHICLE_SPEEDBOAT_ACCELERATE" t5m="609" />
+			<sound id="610" name="TR2_VEHICLE_SPEEDBOAT_ENGINE" t5m="610" />
+			<sound id="611" name="TR2_VEHICLE_SPEEDBOAT_HIT" t5m="611" />
+			<sound id="612" name="TR2_VEHICLE_SPEEDBOAT_INTO_WATER" t5m="612" />
+			<sound id="613" name="TR2_VEHICLE_SPEEDBOAT_IDLE" t5m="613" />
+			<sound id="614" name="TR2_VEHICLE_SPEEDBOAT_MOVING" t5m="614" />
+			<sound id="615" name="TR2_VEHICLE_SPEEDBOAT_SLOWDOWN" t5m="615" />
+			<sound id="616" name="TR2_VEHICLE_SPEEDBOAT_START" t5m="616" />
+			<sound id="617" name="TR2_VEHICLE_SPEEDBOAT_STOP" t5m="617" />
+			<sound id="618" name="TR2_VEHICLE_SPEEDBOAT_ENGINE_HIT" t5m="618" />
+			<sound id="619" name="TR2_VEHICLE_SNOWMOBILE_ACCELERATE" t5m="619" />
+			<sound id="620" name="TR2_VEHICLE_SNOWMOBILE_IDLE" t5m="620" />
+			<sound id="621" name="TR2_VEHICLE_SNOWMOBILE_MOVING" t5m="621" />
+			<sound id="622" name="TR2_VEHICLE_SNOWMOBILE_START" t5m="622" />
+			<sound id="623" name="TR2_VEHICLE_SNOWMOBILE_STOP" t5m="623" />
 			<sound id="624" name="TR2_ZIPLINE_GO" t5m="624" />
 			<sound id="625" name="TR2_ZIPLINE_GRAB" t5m="625" />
 			<sound id="626" name="TR2_ZIPLINE_STOP" t5m="626" />
@@ -7359,11 +7359,11 @@
 			<sound id="636" name="TR2_HAND_WHEEL_TURN" t5m="636" />
 			<sound id="637" name="TR2_HAND_WHEEL_OPEN" t5m="637" />
 			<sound id="638" name="TR2_HAND_WHEEL_CREAK" t5m="638" />
-			<sound id="639" name="TR2_VEHICLE_IMPACT_1" t5m="639" />
+			<sound id="639" name="TR2_VEHICLE_IMPACT1" t5m="639" />
 			<sound id="640" name="TR2_VEHICLE_IMPACT_2" t5m="640" />
-			<sound id="641" name="TR2_VEHICLE_IMPACT_3" t5m="641" />
-			<sound id="642" name="TR2_CRUNCH_1" t5m="642" />
-			<sound id="643" name="TR2_CRUNCH_2" t5m="643" />
+			<sound id="641" name="TR2_VEHICLE_IMPACT3" t5m="641" />
+			<sound id="642" name="TR2_CRUNCH1" t5m="642" />
+			<sound id="643" name="TR2_CRUNCH2" t5m="643" />
 			<sound id="644" name="TR2_CLICK" t5m="644" />
 			<sound id="645" name="TR2_GLASS_BREAK" t5m="645" />
 			<sound id="646" name="TR2_SWORD_STATUE_DROP" t5m="646" />
@@ -7382,10 +7382,10 @@
 			<sound id="659" name="TR2_DOORBELL" t5m="659" />
 			<sound id="660" name="TR2_ELEVATOR_OPEN" t5m="660" />
 			<sound id="661" name="TR2_ELEVATOR_CLOSE" t5m="661" />
-			<sound id="662" name="TR2_SPEEDBOAT_BODY_SLUMP" t5m="662" />
+			<sound id="662" name="TR2_VEHICLE_SPEEDBOAT_BODY_SLUMP" t5m="662" />
 			<sound id="663" name="TR2_CURTAIN" t5m="663" />
 			<sound id="664" name="TR2_DRIPS_REVERB" t5m="664" />
-			<sound id="665" name="TR2+3_HELICOPTER_LOOP" t5m="665" />
+			<sound id="665" name="TR3_HELICOPTER_LOOP" t5m="665" />
 			<sound id="666" name="TR2_ICILE_DETACH" t5m="666" />
 			<sound id="667" name="TR2_ICICLE_HIT" t5m="667" />
 			<sound id="668" name="TR2_MASSIVE_CRASH" t5m="668" />
@@ -7404,7 +7404,7 @@
 			<sound id="681" name="TR2_SLAM_DOOR_CLOSE" t5m="681" />
 			<sound id="682" name="TR2_SWINGING" t5m="682" />
 			<sound id="683" name="TR2_SWINGING_TRAP" t5m="683" />
-			<sound id="684" name="TR3_TR3_TONY_ATTACK" t5m="684" />
+			<sound id="684" name="TR3_TONY_ATTACK" t5m="684" />
 			<sound id="685" name="TR3_TONY_LAUGH" t5m="685" />
 			<sound id="686" name="TR3_TONY_NORMAL_DEATH" t5m="686" />
 			<sound id="687" name="TR3_TONY_SHOOT_1" t5m="687" />
@@ -7435,28 +7435,28 @@
 			<sound id="712" name="TR3_WILLARD_STAB" t5m="712" />
 			<sound id="713" name="TR3_WILLARD_TAKE_HIT" t5m="713" />
 			<sound id="714" name="TR3_BLAST_CIRCLE" t5m="714" />
-			<sound id="715" name="TR3_QUADBIKE_ACCELERATE" t5m="715" />
-			<sound id="716" name="TR3_QUADBIKE_FRONT_IMPACT" t5m="716" />
-			<sound id="717" name="TR3_QUADBIKE_IDLE" t5m="717" />
-			<sound id="718" name="TR3_QUADBIKE_LAND" t5m="718" />
-			<sound id="719" name="TR3_QUADBIKE_MOVE" t5m="719" />
-			<sound id="720" name="TR3_QUADBIKE_SIDE_IMPACT" t5m="720" />
-			<sound id="721" name="TR3_QUADBIKE_START" t5m="721" />
-			<sound id="722" name="TR3_QUADBIKE_STOP" t5m="722" />
-			<sound id="723" name="TR3_RUBBERBOAT_ACCELERATE" t5m="723" />
-			<sound id="724" name="TR3_RUBBERBOAT_IDLE" t5m="724" />
-			<sound id="725" name="TR3_RUBBERBOAT_MOVING" t5m="725" />
-			<sound id="726" name="TR3_RUBBERBOAT_SCRAPE" t5m="726" />
-			<sound id="727" name="TR3_RUBBERBOAT_SLOW_DOWN" t5m="727" />
-			<sound id="728" name="TR3_RUBBERBOAT_START" t5m="728" />
-			<sound id="729" name="TR3_RUBBERBOAT_STOP" t5m="729" />
-			<sound id="730" name="TR3_UPV_LOOP" t5m="730" />
-			<sound id="731" name="TR3_UPV_START" t5m="731" />
-			<sound id="732" name="TR3_UPV_STOP" t5m="732" />
-			<sound id="733" name="TR3_MINE_CART_START" t5m="733" />
-			<sound id="734" name="TR3_MINE_CART_PULLY_LOOP" t5m="734" />
-			<sound id="735" name="TR3_MINE_CART_BRAKE" t5m="735" />
-			<sound id="736" name="TR3_MINE_CART_TRACK_LOOP" t5m="736" />
+			<sound id="715" name="TR3_VEHICLE_QUADBIKE_ACCELERATE" t5m="715" />
+			<sound id="716" name="TR3_VEHICLE_QUADBIKE_FRONT_IMPACT" t5m="716" />
+			<sound id="717" name="TR3_VEHICLE_QUADBIKE_IDLE" t5m="717" />
+			<sound id="718" name="TR3_VEHICLE_QUADBIKE_LAND" t5m="718" />
+			<sound id="719" name="TR3_VEHICLE_QUADBIKE_MOVE" t5m="719" />
+			<sound id="720" name="TR3_VEHICLE_QUADBIKE_SIDE_IMPACT" t5m="720" />
+			<sound id="721" name="TR3_VEHICLE_QUADBIKE_START" t5m="721" />
+			<sound id="722" name="TR3_VEHICLE_QUADBIKE_STOP" t5m="722" />
+			<sound id="723" name="TR3_VEHICLE_RUBBERBOAT_ACCELERATE" t5m="723" />
+			<sound id="724" name="TR3_VEHICLE_RUBBERBOAT_IDLE" t5m="724" />
+			<sound id="725" name="TR3_VEHICLE_RUBBERBOAT_MOVING" t5m="725" />
+			<sound id="726" name="TR3_VEHICLE_RUBBERBOAT_SCRAPE" t5m="726" />
+			<sound id="727" name="TR3_VEHICLE_RUBBERBOAT_SLOW_DOWN" t5m="727" />
+			<sound id="728" name="TR3_VEHICLE_RUBBERBOAT_START" t5m="728" />
+			<sound id="729" name="TR3_VEHICLE_RUBBERBOAT_STOP" t5m="729" />
+			<sound id="730" name="TR3_VEHICLE_UPV_LOOP" t5m="730" />
+			<sound id="731" name="TR3_VEHICLE_UPV_START" t5m="731" />
+			<sound id="732" name="TR3_VEHICLE_UPV_STOP" t5m="732" />
+			<sound id="733" name="TR3_VEHICLE_MINECART_START" t5m="733" />
+			<sound id="734" name="TR3_VEHICLE_MINECART_PULLY_LOOP" t5m="734" />
+			<sound id="735" name="TR3_VEHICLE_MINECART_BRAKE" t5m="735" />
+			<sound id="736" name="TR3_VEHICLE_MINECART_TRACK_LOOP" t5m="736" />
 			<sound id="737" name="TR3_AMERCAN_HOY" t5m="737" />
 			<sound id="738" name="TR3_ARMY_SMG_FOOTSTEPS" t5m="738" />
 			<sound id="739" name="TR3_ARMY_SMG_FIRE" t5m="739" />
@@ -7487,7 +7487,7 @@
 			<sound id="764" name="TR3_HYBRID_ATTACK" t5m="764" />
 			<sound id="765" name="TR3_HYBRID_DEATH" t5m="765" />
 			<sound id="766" name="TR3_HYBRID_FOOT" t5m="766" />
-			<sound id="767" name="TR3_HYBRID_HOOF" t5m="767"	/>
+			<sound id="767" name="TR3_HYBRID_HOOF" t5m="767" />
 			<sound id="768" name="TR3_HYBRID_SWOOSH" t5m="768" />
 			<sound id="769" name="TR3_METEOR" t5m="769" />
 			<sound id="770" name="TR3_SEAL_MUTANT_BREATH_IN" t5m="770" />
@@ -7541,8 +7541,8 @@
 			<sound id="818" name="TR3_RAPTOR_ATTACK_1" t5m="818" />
 			<sound id="819" name="TR3_RAPTOR_ATTACK_2" t5m="819" />
 			<sound id="820" name="TR3_RAPTOR_ATTACK_3" t5m="820" />
-			<sound id="821" name="TR3_RAPTOR_DIE_1" t5m="821" />
-			<sound id="822" name="TR3_RAPTOR_DIE_2" t5m="822" />
+			<sound id="821" name="TR3_RAPTOR_DEATH_1" t5m="821" />
+			<sound id="822" name="TR3_RAPTOR_DEATH_2" t5m="822" />
 			<sound id="823" name="TR3_RAPTOR_FEET" t5m="823" />
 			<sound id="824" name="TR3_RAPTOR_ROAR" t5m="824" />
 			<sound id="825" name="TR3_VULTURE_ATTACK" t5m="825" />
@@ -7558,7 +7558,7 @@
 			<sound id="835" name="TR3_CLEANER_FUSEBOX" t5m="835" />
 			<sound id="836" name="TR3_CLEANER_LOOP" t5m="836" />
 			<sound id="837" name="TR3_CRICKET_LOOP" t5m="837" />
-			<sound id="838" name="TR3_USER_838" t5m="838" />
+			<sound id="838" name="TR3_EMPTY1" t5m="838" />
 			<sound id="839" name="TR3_DOORBELL" t5m="839" />
 			<sound id="840" name="TR3_DRILL_BIT_1" t5m="840" />
 			<sound id="841" name="TR3_GASMETER" t5m="841" />
@@ -7579,7 +7579,7 @@
 			<sound id="856" name="TR3_PORTCULLIS_DOWN" t5m="856" />
 			<sound id="857" name="TR3_PORTCULLIS_UP" t5m="857" />
 			<sound id="858" name="TR3_POWER_HUM_LOOP" t5m="858" />
-			<sound id="859" name="TEN_VEHICLE_MINECART_WRENCH" t5m="859" />
+			<sound id="859" name="TR3_VEHICLE_MINECART_WRENCH" t5m="859" />
 			<sound id="860" name="TR3_RADAR_BLIP" t5m="860" />
 			<sound id="861" name="TR3_RADIO_LOOP" t5m="861" />
 			<sound id="862" name="TR3_RESERVOIR_FLUSH" t5m="862" />
@@ -7588,12 +7588,12 @@
 			<sound id="865" name="TR3_SIDE_BLADE_SWING" t5m="865" />
 			<sound id="866" name="TR3_SKEL_TRAP_PART_1" t5m="866" />
 			<sound id="867" name="TR3_SKEL_TRAP_PART_2" t5m="867" />
-			<sound id="868" name="TR3_USER_868" t5m="868" />
-			<sound id="869" name="TR3_USER_869" t5m="869" />
+			<sound id="868" name="TR3_EMPTY2" t5m="868" />
+			<sound id="869" name="TR3_EMPTY3" t5m="869" />
 			<sound id="870" name="TR3_SMALL_DOOR_SUBWAY" t5m="870" />
 			<sound id="871" name="TR3_SMALL_DOOR_SUBWAY_CLOSE" t5m="871" />
 			<sound id="872" name="TR3_SMALL_FAN" t5m="872" />
-			<sound id="873" name="TR3_USER_873" t5m="873" />
+			<sound id="873" name="TR3_EMPTY4" t5m="873" />
 			<sound id="874" name="TR3_SMALL_METAL_SHUTTERS" t5m="874" />
 			<sound id="875" name="TR3_SMALL_SWITCH" t5m="875" />
 			<sound id="876" name="TR3_SPANNER" t5m="876" />
@@ -7602,8 +7602,8 @@
 			<sound id="879" name="TR3_STALEGTITE" t5m="879" />
 			<sound id="880" name="TR3_SWAT_SMG_FIRE" t5m="880" />
 			<sound id="881" name="TR3_SWING_PUMP" t5m="881" />
-			<sound id="882" name="TR3_SWINGING_FLAMES" t5m="882" />
-			<sound id="883" name="TR3_USER_883" t5m="883" />
+			<sound id="882" name="TR3_EMPTY5" t5m="882" />
+			<sound id="883" name="TR3_SWINGING_FLAMES" t5m="883" />
 			<sound id="884" name="TR3_SWITCH_COVER" t5m="884" />
 			<sound id="885" name="TR3_TARGET_HITS" t5m="885" />
 			<sound id="886" name="TR3_TARGET_SMASH" t5m="886" />
@@ -7612,7 +7612,7 @@
 			<sound id="889" name="TR3_TONK" t5m="889" />
 			<sound id="890" name="TR3_TUBE_LOOP" t5m="890" />
 			<sound id="891" name="TR3_UNDERWATER_FAN_ON" t5m="891" />
-			<sound id="892" name="TR3_USER_892" t5m="892" />
+			<sound id="892" name="TR3_EMPTY6" t5m="892" />
 			<sound id="893" name="TR3_VENDING_MACHINE_LOOP" t5m="893" />
 			<sound id="894" name="TR3_VENDING_SPIT" t5m="894" />
 			<sound id="895" name="TR3_VERY_SMALL_WINCH" t5m="895" />
@@ -7628,7 +7628,7 @@
 			<sound id="905" name="TR5_VCI_BLUEMAN_GUNS" t5m="905" />
 			<sound id="906" name="TR5_VCI_BLUEMAN_CHAIR_HIT" t5m="906" />
 			<sound id="907" name="TR5_VCI_BLUEMAN_GETUP" t5m="907" />
-			<sound id="908" name="TR5_VCI_BLUEMAN_HIT_OR_DIE" t5m="908" />
+			<sound id="908" name="TR5_VCI_BLUEMAN_HIT_OR_DEATH" t5m="908" />
 			<sound id="909" name="TR5_VCI_BLUEMAN_JUMP" t5m="909" />
 			<sound id="910" name="TR5_VCI_BLUEMAN_CHAIR" t5m="910" />
 			<sound id="911" name="TR5_VCI_BLUEMAN_CONSOLE" t5m="911" />
@@ -7653,22 +7653,22 @@
 			<sound id="930" name="TR5_HAMMER_GOD_PULSE" t5m="930" />
 			<sound id="931" name="TR5_HANGMAN_LAUGH_OFFCAM" t5m="931" />
 			<sound id="932" name="TR5_HITMAN_CHOKE" t5m="932" />
-			<sound id="933" name="TR5_HITMAN_ELEC_SHORT" t5m="933" />
+			<sound id="933" name="TR5_HITMAN_ELECTRIC_SHORT" t5m="933" />
 			<sound id="934" name="TR5_HITMAN_GUNS_END" t5m="934" />
 			<sound id="935" name="TR5_HITMAN_GUNS_FIRE" t5m="935" />
 			<sound id="936" name="TR5_IMP_ATTACK" t5m="936" />
 			<sound id="937" name="TR5_IMP_BARREL_DROP" t5m="937" />
 			<sound id="938" name="TR5_IMP_BARREL_ROLL" t5m="938" />
-			<sound id="939" name="TR5_IMP_DEATH" t5m="939" />
+			<sound id="939" name="TR5_EMPTY" t5m="939" />
 			<sound id="940" name="TR5_IMP_FALL" t5m="940" />
 			<sound id="941" name="TR5_IMP_FEET" t5m="941" />
 			<sound id="942" name="TR5_IMP_LAUGH" t5m="942" />
 			<sound id="943" name="TR5_IMP_RUNAWAY" t5m="943" />
 			<sound id="944" name="TR5_IMP_STONE_HIT" t5m="944" />
-			<sound id="945" name="TR5_DIVESUIT_ENGINE" t5m="945" />
-			<sound id="946" name="TR5_DIVESUIT_HIT" t5m="946" />
-			<sound id="947" name="TR5_DIVESUIT_BREATHE" t5m="947" />
-			<sound id="948" name="TR5_DIVESUIT_LOOP" t5m="948" />
+			<sound id="945" name="TR5_VEHICLE_DIVESUIT_ENGINE" t5m="945" />
+			<sound id="946" name="TR5_VEHICLE_DIVESUIT_HIT" t5m="946" />
+			<sound id="947" name="TR5_VEHICLE_DIVESUIT_BREATHE" t5m="947" />
+			<sound id="948" name="TR5_VEHICLE_DIVESUIT_LOOP" t5m="948" />
 			<sound id="949" name="TR5_MAFIA_DEATH" t5m="949" />
 			<sound id="950" name="TR5_MAFIA_GETDOWN" t5m="950" />
 			<sound id="951" name="TR5_MAFIA_HIT" t5m="951" />
@@ -7717,11 +7717,11 @@
 			<sound id="994" name="TR5_KEYPAD_9" t5m="994" />
 			<sound id="995" name="TR5_KEYPAD_ENTRY_NO" t5m="995" />
 			<sound id="996" name="TR5_KEYPAD_ENTRY_YES" t5m="996" />
-			<sound id="997" name="TR5_GRILL_1" t5m="997" />
-			<sound id="998" name="TR5_GRILL_2" t5m="998" />
-			<sound id="999" name="TR5_GRILL_3" t5m="999" />
+			<sound id="997" name="TR5_GRILL1" t5m="997" />
+			<sound id="998" name="TR5_GRILL2" t5m="998" />
+			<sound id="999" name="TR5_GRILL3" t5m="999" />
 			<sound id="1000" name="TR5_COMPUTER_BEEPIES" t5m="1000" />
-			<sound id="1001" name="TR5_ELEC_LIGHT_CRACKLES" t5m="1001" />
+			<sound id="1001" name="TR5_ELECTRIC_LIGHT_CRACKLES" t5m="1001" />
 			<sound id="1002" name="TR5_ELECTRIC_WIRES" t5m="1002" />
 			<sound id="1003" name="TR5_WATERWHEEL" t5m="1003" />
 			<sound id="1004" name="TR5_AUTOGUN_DOOR" t5m="1004" />
@@ -7755,8 +7755,8 @@
 			<sound id="1032" name="TR5_FISHTANK_WATER" t5m="1032" />
 			<sound id="1033" name="TR5_FLOOR_DOOR_A" t5m="1033" />
 			<sound id="1034" name="TR5_FLOOR_DOOR_B" t5m="1034" />
-			<sound id="1035" name="TR5_GEN_STONE_DOOR_LOW" t5m="1035" />
-			<sound id="1036" name="TR5_GEN_SWORD_SWOOSH_LOW" t5m="1036" />
+			<sound id="1035" name="TR5_GENERIC_STONE_DOOR_LOW" t5m="1035" />
+			<sound id="1036" name="TR5_GENERIC_SWORD_SWOOSH_LOW" t5m="1036" />
 			<sound id="1037" name="TR5_GENERATOR_HUM_LOOP" t5m="1037" />
 			<sound id="1038" name="TR5_GENERIC_BOOT_STEPS" t5m="1038" />
 			<sound id="1039" name="TR5_GENERIC_KNEES_FALL" t5m="1039" />
@@ -7773,7 +7773,7 @@
 			<sound id="1050" name="TR5_HISS_LOOP_SMALL" t5m="1050" />
 			<sound id="1051" name="TR5_HOLOGRAM" t5m="1051" />
 			<sound id="1052" name="TR5_INDUSTRY_AMBIENCE_LOOP" t5m="1052" />
-			<sound id="1053" name="TR5_IRIS_ELEC" t5m="1053" />
+			<sound id="1053" name="TR5_IRIS_ELECTRIC" t5m="1053" />
 			<sound id="1054" name="TR5_CRANE_END" t5m="1054" />
 			<sound id="1055" name="TR5_KITCHEN_HOB_LOOP" t5m="1055" />
 			<sound id="1056" name="TR5_KLAXON" t5m="1056" />
@@ -7814,13 +7814,13 @@
 			<sound id="1091" name="TR5_SMALL_METAL_VENT_HINGE" t5m="1091" />
 			<sound id="1092" name="TR5_SMASH_GLASS" t5m="1092" />
 			<sound id="1093" name="TR5_SMASH_METAL" t5m="1093" />
-			<sound id="1094" name="TR5_SMASH_ROCK" t5m="1094" />
+			<sound id="1094" name="TR5_EMPTY" t5m="1094" />
 			<sound id="1095" name="TR5_SMASH_WOOD" t5m="1095" />
 			<sound id="1096" name="TR5_PHILOSPHER_STONE" t5m="1096" />
 			<sound id="1097" name="TR5_STAIR_BANISTER_BEND" t5m="1097" />
 			<sound id="1098" name="TR5_STAIR_SNAP_01" t5m="1098" />
 			<sound id="1099" name="TR5_SUB_CONTROLROOM_LOOP" t5m="1099" />
-			<sound id="1100" name="TR5_SWITCH_ELEC_SWAP" t5m="1100" />
+			<sound id="1100" name="TR5_SWITCH_ELECTRIC_SWAP" t5m="1100" />
 			<sound id="1101" name="TR5_TELEPORT" t5m="1101" />
 			<sound id="1102" name="TR5_TELEPORT_CRACKLES" t5m="1102" />
 			<sound id="1103" name="TR5_TELEPORT_FLASH" t5m="1103" />
@@ -7848,64 +7848,25 @@
 			<sound id="1125" name="TR5_2GUNTEX_HIT_GUNS" t5m="1125" />
 			<sound id="1126" name="TR5_2GUNTEX_LASER_FIRE" t5m="1126" />
 			<sound id="1127" name="TR5_2GUNTEX_DOUBLE_LASER_FIRE" t5m="1127" />
-			<sound id="1129" name="CUSTOM_FOOTSTEP_SOUNDS_1" t5m="1129" />
-			<sound id="1130" name="CUSTOM_FOOTSTEP_SOUNDS_2" t5m="1130" />
-			<sound id="1131" name="CUSTOM_FOOTSTEP_SOUNDS_3" t5m="1131" />
-			<sound id="1132" name="CUSTOM_FOOTSTEP_SOUNDS_4" t5m="1132" />
-			<sound id="1133" name="CUSTOM_FOOTSTEP_SOUNDS_5" t5m="1133" />
-			<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" t5m="1134" />
-			<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" t5m="1135" />
-			<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" t5m="1136" />
-			<sound id="1137" name="LEVELBUILDER_CUSTOM_01" t5m="1137" />
-			<sound id="1138" name="LEVELBUILDER_CUSTOM_02" t5m="1138" />
-			<sound id="1139" name="LEVELBUILDER_CUSTOM_03" t5m="1139" />
-			<sound id="1140" name="LEVELBUILDER_CUSTOM_04" t5m="1140" />
-			<sound id="1141" name="LEVELBUILDER_CUSTOM_05" t5m="1141" />
-			<sound id="1142" name="LEVELBUILDER_CUSTOM_06" t5m="1142" />
-			<sound id="1143" name="LEVELBUILDER_CUSTOM_07" t5m="1143" />
-			<sound id="1144" name="LEVELBUILDER_CUSTOM_08" t5m="1144" />
-			<sound id="1145" name="LEVELBUILDER_CUSTOM_09" t5m="1145" />
-			<sound id="1146" name="LEVELBUILDER_CUSTOM_10" t5m="1146" />
-			<sound id="1147" name="LEVELBUILDER_CUSTOM_11" t5m="1147" />
-			<sound id="1148" name="LEVELBUILDER_CUSTOM_12" t5m="1148" />
-			<sound id="1149" name="LEVELBUILDER_CUSTOM_13" t5m="1149" />
-			<sound id="1150" name="LEVELBUILDER_CUSTOM_14" t5m="1150" />
-			<sound id="1151" name="LEVELBUILDER_CUSTOM_15" t5m="1151" />
-			<sound id="1152" name="LEVELBUILDER_CUSTOM_16" t5m="1152" />
-			<sound id="1153" name="LEVELBUILDER_CUSTOM_17" t5m="1153" />
-			<sound id="1154" name="LEVELBUILDER_CUSTOM_18" t5m="1154" />
-			<sound id="1155" name="LEVELBUILDER_CUSTOM_19" t5m="1155" />
-			<sound id="1156" name="LEVELBUILDER_CUSTOM_20" t5m="1156" />
-			<sound id="1157" name="LEVELBUILDER_CUSTOM_21" t5m="1157" />
-			<sound id="1158" name="LEVELBUILDER_CUSTOM_22" t5m="1158" />
-			<sound id="1159" name="LEVELBUILDER_CUSTOM_23" t5m="1159" />
-			<sound id="1160" name="LEVELBUILDER_CUSTOM_24" t5m="1160" />
-			<sound id="1161" name="LEVELBUILDER_CUSTOM_25" t5m="1161" />
-			<sound id="1162" name="LEVELBUILDER_CUSTOM_26" t5m="1162" />
-			<sound id="1163" name="LEVELBUILDER_CUSTOM_27" t5m="1163" />
-			<sound id="1164" name="LEVELBUILDER_CUSTOM_28" t5m="1164" />
-			<sound id="1165" name="LEVELBUILDER_CUSTOM_29" t5m="1165" />
-			<sound id="1166" name="LEVELBUILDER_CUSTOM_30" t5m="1166" />
-			<sound id="1167" name="LEVELBUILDER_CUSTOM_31" t5m="1167" />
-			<sound id="1168" name="LEVELBUILDER_CUSTOM_32" t5m="1168" />
-			<sound id="1169" name="LEVELBUILDER_CUSTOM_33" t5m="1169" />
-			<sound id="1170" name="LEVELBUILDER_CUSTOM_34" t5m="1170" />
-			<sound id="1171" name="LEVELBUILDER_CUSTOM_35" t5m="1171" />
-			<sound id="1172" name="LEVELBUILDER_CUSTOM_36" t5m="1172" />
-			<sound id="1173" name="LEVELBUILDER_CUSTOM_37" t5m="1173" />
-			<sound id="1174" name="LEVELBUILDER_CUSTOM_38" t5m="1174" />
-			<sound id="1175" name="LEVELBUILDER_CUSTOM_39" t5m="1175" />
-			<sound id="1176" name="LEVELBUILDER_CUSTOM_40" t5m="1176" />
-			<sound id="1177" name="LEVELBUILDER_CUSTOM_41" t5m="1177" />
-			<sound id="1178" name="LEVELBUILDER_CUSTOM_42" t5m="1178" />
-			<sound id="1179" name="LEVELBUILDER_CUSTOM_43" t5m="1179" />
-			<sound id="1180" name="LEVELBUILDER_CUSTOM_44" t5m="1180" />
-			<sound id="1181" name="LEVELBUILDER_CUSTOM_45" t5m="1181" />
-			<sound id="1182" name="LEVELBUILDER_CUSTOM_46" t5m="1182" />
-			<sound id="1183" name="LEVELBUILDER_CUSTOM_47" t5m="1183" />
-			<sound id="1184" name="LEVELBUILDER_CUSTOM_48" t5m="1184" />
-			<sound id="1185" name="LEVELBUILDER_CUSTOM_49" t5m="1185" />
-			<sound id="1186" name="LEVELBUILDER_CUSTOM_50" t5m="1186" />
+			<sound id="1128" name="TR5_2GUNTEX_LASER_MISFIRE" t5m="1128" />
+			<sound id="1129" name="CUSTOM_FOOTSTEP_soundS_1" t5m="1129" />
+			<sound id="1130" name="CUSTOM_FOOTSTEP_soundS_2" t5m="1130" />
+			<sound id="1131" name="CUSTOM_FOOTSTEP_soundS_3" t5m="1131" />
+			<sound id="1132" name="CUSTOM_FOOTSTEP_soundS_4" t5m="1132" />
+			<sound id="1133" name="CUSTOM_FOOTSTEP_soundS_5" t5m="1133" />
+			<sound id="1134" name="CUSTOM_FOOTSTEP_soundS_6" t5m="1134" />
+			<sound id="1135" name="CUSTOM_FOOTSTEP_soundS_7" t5m="1135" />
+			<sound id="1136" name="CUSTOM_FOOTSTEP_soundS_8" t5m="1136" />
+			<sound id="1137" name="CUSTOM_1" t5m="1137" />
+			<sound id="1138" name="CUSTOM_2" t5m="1138" />
+			<sound id="1139" name="CUSTOM_3" t5m="1139" />
+			<sound id="1140" name="CUSTOM_4" t5m="1140" />
+			<sound id="1141" name="CUSTOM_5" t5m="1141" />
+			<sound id="1142" name="CUSTOM_6" t5m="1142" />
+			<sound id="1143" name="CUSTOM_7" t5m="1143" />
+			<sound id="1144" name="CUSTOM_8" t5m="1144" />
+			<sound id="1145" name="CUSTOM_9" t5m="1145" />
+			<sound id="1146" name="CUSTOM_10" t5m="1146" />
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
