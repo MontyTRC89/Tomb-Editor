@@ -427,19 +427,13 @@
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_ALL_SOUNDS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR1.xml">
+    <Content Include="Catalogs\TEN Sound Catalogs\TR1_Override.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR2.xml">
+    <Content Include="Catalogs\TEN Sound Catalogs\TR2_Override.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR4_DEFAULT.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR5.xml">
+    <Content Include="Catalogs\TEN Sound Catalogs\TR5_Override.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
