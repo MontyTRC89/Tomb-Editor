@@ -419,7 +419,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(new byte[] { (byte)version.Major, (byte)version.Minor, (byte)version.Build, 0x00 });
 
                         // Hashed system name (reserved for quick start feature)
-                        writer.Write(Environment.MachineName.GetHashCode());
+                        writer.Write(Math.Abs(Environment.MachineName.GetHashCode()));
 
                         // Geometry data
                         writer.Write((int)inStream.Length);

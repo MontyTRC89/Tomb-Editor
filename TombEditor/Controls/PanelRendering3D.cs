@@ -2921,9 +2921,30 @@ namespace TombEditor.Controls
         {
             if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
             {
-                var newSprite = ServiceObjectTextures.GetSprite(instance, Camera.GetPosition(), _viewProjection, ClientSize, color, _highlightedObjects.Contains((ObjectInstance)instance));
-                if (newSprite != null)
+                foreach (bool shadow in new[] { true, false })
+                {
+                    if (shadow)
+                    {
+                        if (_editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
+                            continue;
+
+                        if (!(instance is LightInstance) || !(instance as LightInstance).CanCastDynamicShadows)
+                            continue;
+                    }
+
+                    var newSprite = ServiceObjectTextures.GetSprite(instance,
+                                                                    Camera.GetPosition(),
+                                                                    _viewProjection,
+                                                                    ClientSize,
+                                                                    shadow ? new Vector4(Vector3.Zero, 1.0f) : color,
+                                                                    shadow ? new Vector2(8.0f, -8.0f) : Vector2.Zero,
+                                                                    _highlightedObjects.Contains((ObjectInstance)instance));
+                    if (newSprite == null)
+                        return;
+
                     sprites.Add(newSprite);
+                }
+
                 return;
             }
 

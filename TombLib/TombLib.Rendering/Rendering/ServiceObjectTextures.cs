@@ -154,7 +154,7 @@ namespace TombLib.Rendering
         // Gets sprite for specified instance type, if such sprite exists.
         // If no specific sprite for this type exists, returns default image with [?] mark.
 
-        public static Sprite GetSprite(ISpatial instance, Vector3 camPos, Matrix4x4 camViewProjection, Size viewportSize, Vector4 color, bool noZ = false)
+        public static Sprite GetSprite(ISpatial instance, Vector3 camPos, Matrix4x4 camViewProjection, Size viewportSize, Vector4 color, Vector2 offset, bool noZ = false)
         {
             Vector3 absPos;
             Matrix4x4 posMatrix;
@@ -192,6 +192,10 @@ namespace TombLib.Rendering
             var scale = (Level.BlockSizeUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
             var pos = (posMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
+
+            // Add offset, if exists
+            if (offset != Vector2.Zero)
+                screenPos += offset / new Vector2(width, height) * scale;
 
             // Do fadeout if sprite is too near
             if (distance < _fadeDistance)

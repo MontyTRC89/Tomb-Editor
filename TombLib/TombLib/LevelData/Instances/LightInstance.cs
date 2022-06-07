@@ -29,6 +29,8 @@ namespace TombLib.LevelData
         public bool IsUsedForImportedGeometry { get; set; } = true;
         public bool CastDynamicShadows { get; set; } = false;
 
+        public bool CanCastDynamicShadows => CastDynamicShadows && (Type == LightType.Spot || Type == LightType.Point);
+
         private float _rotationX;
         private float _rotationY;
         /// <summary> Degrees in the range [-90, 90] </summary>
@@ -83,7 +85,6 @@ namespace TombLib.LevelData
         {
             base.RemoveFromRoom(level, room);
         }
-
 
         public string PrimaryAttribDesc => "Colour";
         public string SecondaryAttribDesc => "Light type";

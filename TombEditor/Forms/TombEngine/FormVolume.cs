@@ -29,11 +29,14 @@ namespace TombEditor.Forms.TombEngine
             comboboxOnEnter.Text = _instance.Scripts.OnEnter;
             comboboxOnInside.Text = _instance.Scripts.OnInside;
             comboboxOnLeave.Text = _instance.Scripts.OnLeave;
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
         }
 
         private void ReloadFunctions()
         {
-            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile.Trim()))
+            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
                 return;
 
             string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
