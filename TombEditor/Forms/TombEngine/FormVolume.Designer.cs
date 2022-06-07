@@ -52,7 +52,7 @@ namespace TombEditor.Forms.TombEngine
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(419, 159);
+            this.butCancel.Location = new System.Drawing.Point(416, 159);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -64,7 +64,7 @@ namespace TombEditor.Forms.TombEngine
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(333, 159);
+            this.butOk.Location = new System.Drawing.Point(330, 159);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -149,26 +149,6 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel4.TabIndex = 16;
             this.darkLabel4.Text = "OnEnter:";
             // 
-            // comboboxOnEnter
-            // 
-            this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnEnter.FormattingEnabled = true;
-            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
-            this.comboboxOnEnter.Name = "comboboxOnEnter";
-            this.comboboxOnEnter.Size = new System.Drawing.Size(261, 23);
-            this.comboboxOnEnter.TabIndex = 17;
-            // 
-            // comboboxOnInside
-            // 
-            this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnInside.FormattingEnabled = true;
-            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
-            this.comboboxOnInside.Name = "comboboxOnInside";
-            this.comboboxOnInside.Size = new System.Drawing.Size(261, 23);
-            this.comboboxOnInside.TabIndex = 19;
-            // 
             // darkLabel1
             // 
             this.darkLabel1.AutoSize = true;
@@ -179,14 +159,31 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel1.TabIndex = 18;
             this.darkLabel1.Text = "OnInside:";
             // 
+            // comboboxOnEnter
+            // 
+            this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
+            this.comboboxOnEnter.Name = "comboboxOnEnter";
+            this.comboboxOnEnter.Size = new System.Drawing.Size(258, 23);
+            this.comboboxOnEnter.TabIndex = 17;
+            // 
+            // comboboxOnInside
+            // 
+            this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
+            this.comboboxOnInside.Name = "comboboxOnInside";
+            this.comboboxOnInside.Size = new System.Drawing.Size(258, 23);
+            this.comboboxOnInside.TabIndex = 19;
+            // 
             // comboboxOnLeave
             // 
             this.comboboxOnLeave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnLeave.FormattingEnabled = true;
             this.comboboxOnLeave.Location = new System.Drawing.Point(238, 90);
             this.comboboxOnLeave.Name = "comboboxOnLeave";
-            this.comboboxOnLeave.Size = new System.Drawing.Size(261, 23);
+            this.comboboxOnLeave.Size = new System.Drawing.Size(258, 23);
             this.comboboxOnLeave.TabIndex = 21;
             // 
             // darkLabel5
@@ -205,7 +202,7 @@ namespace TombEditor.Forms.TombEngine
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(507, 190);
+            this.ClientSize = new System.Drawing.Size(504, 190);
             this.Controls.Add(this.comboboxOnLeave);
             this.Controls.Add(this.darkLabel5);
             this.Controls.Add(this.comboboxOnInside);

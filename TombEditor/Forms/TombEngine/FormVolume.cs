@@ -29,6 +29,9 @@ namespace TombEditor.Forms.TombEngine
             comboboxOnEnter.Text = _instance.Scripts.OnEnter;
             comboboxOnInside.Text = _instance.Scripts.OnInside;
             comboboxOnLeave.Text = _instance.Scripts.OnLeave;
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
         }
 
         private void ReloadFunctions()
