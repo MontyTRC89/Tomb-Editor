@@ -33,7 +33,7 @@ namespace TombEditor.Forms.TombEngine
 
         private void ReloadFunctions()
         {
-            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile.Trim()))
+            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
                 return;
 
             string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
