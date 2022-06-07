@@ -6747,7 +6747,7 @@
 			<sound id="24" name="TR4_LARA_KNEES_SHUFFLE" t5m="24" />
 			<sound id="25" name="TR4_PUSH_BIG_SWITCH" t5m="25" />
 			<sound id="26" name="TR4_LARA_CLIMB3" t5m="26" />
-			<sound id="27" name="TR4_BODY_SLAM(UNUSED)" t5m="27" />
+			<sound id="27" name="TR4_BODY_SLAM" t5m="27" />
 			<sound id="28" name="TR4_LARA_SHIMMY2" t5m="28" />
 			<sound id="29" name="TR4_LARA_JUMP" t5m="29" />
 			<sound id="30" name="TR4_LARA_FALL" t5m="30" />

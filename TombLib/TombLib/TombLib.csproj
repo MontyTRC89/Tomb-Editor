@@ -427,6 +427,24 @@
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_ALL_SOUNDS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_DEFAULT_GLOBAL_HARDCODED.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR3.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR4.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR5.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Catalogs\TEN Sound Catalogs\TR1_Override.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
