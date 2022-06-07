@@ -1,4 +1,6 @@
-﻿namespace TombEditor.Forms.TombEngine
+﻿using System.Windows.Forms;
+using DarkUI.Controls;
+namespace TombEditor.Forms.TombEngine
 {
     partial class FormVolume
     {
@@ -38,10 +40,10 @@
             this.cbActivatorFlyBy = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.comboboxOnEnter = new DarkUI.Controls.DarkComboBox();
-            this.comboboxOnInside = new DarkUI.Controls.DarkComboBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.comboboxOnLeave = new DarkUI.Controls.DarkComboBox();
+            this.comboboxOnEnter = new TombLib.Controls.DarkSearchableComboBox();
+            this.comboboxOnInside = new TombLib.Controls.DarkSearchableComboBox();
+            this.comboboxOnLeave = new TombLib.Controls.DarkSearchableComboBox();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
             // 
@@ -141,7 +143,7 @@
             // 
             this.darkLabel4.AutoSize = true;
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(179, 34);
+            this.darkLabel4.Location = new System.Drawing.Point(179, 38);
             this.darkLabel4.Name = "darkLabel4";
             this.darkLabel4.Size = new System.Drawing.Size(53, 13);
             this.darkLabel4.TabIndex = 16;
@@ -152,7 +154,7 @@
             this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboboxOnEnter.FormattingEnabled = true;
-            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 28);
+            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
             this.comboboxOnEnter.Name = "comboboxOnEnter";
             this.comboboxOnEnter.Size = new System.Drawing.Size(261, 23);
             this.comboboxOnEnter.TabIndex = 17;
@@ -162,7 +164,7 @@
             this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboboxOnInside.FormattingEnabled = true;
-            this.comboboxOnInside.Location = new System.Drawing.Point(238, 57);
+            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
             this.comboboxOnInside.Name = "comboboxOnInside";
             this.comboboxOnInside.Size = new System.Drawing.Size(261, 23);
             this.comboboxOnInside.TabIndex = 19;
@@ -171,7 +173,7 @@
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(179, 63);
+            this.darkLabel1.Location = new System.Drawing.Point(179, 67);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(57, 13);
             this.darkLabel1.TabIndex = 18;
@@ -182,7 +184,7 @@
             this.comboboxOnLeave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboboxOnLeave.FormattingEnabled = true;
-            this.comboboxOnLeave.Location = new System.Drawing.Point(238, 86);
+            this.comboboxOnLeave.Location = new System.Drawing.Point(238, 90);
             this.comboboxOnLeave.Name = "comboboxOnLeave";
             this.comboboxOnLeave.Size = new System.Drawing.Size(261, 23);
             this.comboboxOnLeave.TabIndex = 21;
@@ -191,13 +193,13 @@
             // 
             this.darkLabel5.AutoSize = true;
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(179, 92);
+            this.darkLabel5.Location = new System.Drawing.Point(179, 96);
             this.darkLabel5.Name = "darkLabel5";
             this.darkLabel5.Size = new System.Drawing.Size(54, 13);
             this.darkLabel5.TabIndex = 20;
             this.darkLabel5.Text = "OnLeave:";
             // 
-            // FormTriggerVolume
+            // FormVolume
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -222,7 +224,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormTriggerVolume";
+            this.Name = "FormVolume";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -243,10 +245,10 @@
         private DarkUI.Controls.DarkCheckBox cbActivatorFlyBy;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkComboBox comboboxOnEnter;
-        private DarkUI.Controls.DarkComboBox comboboxOnInside;
         private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkComboBox comboboxOnLeave;
+        private TombLib.Controls.DarkSearchableComboBox comboboxOnEnter;
+        private TombLib.Controls.DarkSearchableComboBox comboboxOnInside;
+        private TombLib.Controls.DarkSearchableComboBox comboboxOnLeave;
         private DarkUI.Controls.DarkLabel darkLabel5;
     }
 }
