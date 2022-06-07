@@ -7857,16 +7857,6 @@
 			<sound id="1134" name="CUSTOM_FOOTSTEP_soundS_6" t5m="1134" />
 			<sound id="1135" name="CUSTOM_FOOTSTEP_soundS_7" t5m="1135" />
 			<sound id="1136" name="CUSTOM_FOOTSTEP_soundS_8" t5m="1136" />
-			<sound id="1137" name="CUSTOM_1" t5m="1137" />
-			<sound id="1138" name="CUSTOM_2" t5m="1138" />
-			<sound id="1139" name="CUSTOM_3" t5m="1139" />
-			<sound id="1140" name="CUSTOM_4" t5m="1140" />
-			<sound id="1141" name="CUSTOM_5" t5m="1141" />
-			<sound id="1142" name="CUSTOM_6" t5m="1142" />
-			<sound id="1143" name="CUSTOM_7" t5m="1143" />
-			<sound id="1144" name="CUSTOM_8" t5m="1144" />
-			<sound id="1145" name="CUSTOM_9" t5m="1145" />
-			<sound id="1146" name="CUSTOM_10" t5m="1146" />
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
