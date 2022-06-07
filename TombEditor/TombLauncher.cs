@@ -26,10 +26,18 @@ namespace TombEditor
             // Try to launch the game
             try
             {
+                var arguments = string.Empty;
+                if (settings.GameVersion == TRVersion.Game.TombEngine)
+                {
+                    string lastDir = new DirectoryInfo(settings.GameLevelFilePath).Parent.Name;
+                    arguments = "/level " + lastDir + "\\" + Path.GetFileName(settings.GameLevelFilePath) + " " + Math.Abs(Environment.MachineName.GetHashCode()).ToString();
+                }
+
                 var info = new ProcessStartInfo
                 {
                     WorkingDirectory = Path.GetDirectoryName(executablePath),
-                    FileName = executablePath
+                    FileName = executablePath,
+                    Arguments = arguments
                 };
 
                 // Start the game (i.e. "tomb4.exe")
