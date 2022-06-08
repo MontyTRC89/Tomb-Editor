@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace TombLib.Utils
 {
     // Thanks to: https://stackoverflow.com/questions/1295890/windows-7-progress-bar-in-taskbar-in-c
+    // And to: https://stackoverflow.com/questions/7162834/determine-if-current-application-is-activated-has-focus
 
     public static class TaskbarProgress
     {
-        [DllImport("user32.dll")]
-        public static extern int FlashWindow(IntPtr windowHandle, bool revert);
-
         public enum TaskbarStates
         {
             NoProgress = 0,
@@ -18,6 +18,15 @@ namespace TombLib.Utils
             Error = 0x4,
             Paused = 0x8
         }
+
+        [DllImport("user32.dll")]
+        private static extern int FlashWindow(IntPtr windowHandle, bool revert);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
 
         [ComImport()]
         [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
@@ -65,6 +74,19 @@ namespace TombLib.Utils
         public static void SetValue(IntPtr windowHandle, double progressValue, double progressMax)
         {
             if (taskbarSupported) taskbarInstance.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
+        }
+
+        public static void FlashWindow()
+        {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle != IntPtr.Zero)
+            {
+                for (int i = 0; i < Application.OpenForms.Count; i++)
+                    if (activatedHandle == Application.OpenForms[i].Handle)
+                        return;
+            }
+
+            FlashWindow(Application.OpenForms[0].Handle, true);
         }
     }
 

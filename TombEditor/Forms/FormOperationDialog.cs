@@ -71,10 +71,10 @@ namespace TombEditor.Forms
             BeginInvoke((Action)delegate
                     {
                         TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
-                        if (!Application.OpenForms[0].Focused)
-                            TaskbarProgress.FlashWindow(Application.OpenForms[0].Handle, false);
-
+                        TaskbarProgress.FlashWindow();
+                        
                         pbStato.Value = 100;
+						
                         butOk.Enabled = true;
                         butCancel.Enabled = false;
                         butOk.Focus();
