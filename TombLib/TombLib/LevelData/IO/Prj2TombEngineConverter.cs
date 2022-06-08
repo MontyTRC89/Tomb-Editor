@@ -343,6 +343,24 @@ namespace TombLib.LevelData.IO
                             addedTimex = true;
                         }
 
+                        if (newSlotName == "MOTORBIKE")
+                        {
+                            progressReporter.ReportInfo("    Adding motorbike animations for motorbike");
+
+                            uint animsIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "MOTORBIKE_LARA_ANIMS", out isMoveable).Value;
+                            newWad.Add(new WadMoveableId(animsIndex), referenceWad.Moveables[new WadMoveableId(animsIndex)]);
+                            addedTimex = true;
+                        }
+
+                        if (newSlotName == "JEEP")
+                        {
+                            progressReporter.ReportInfo("    Adding jeep animations for motorbike");
+
+                            uint animsIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "JEEP_LARA_ANIMS", out isMoveable).Value;
+                            newWad.Add(new WadMoveableId(animsIndex), referenceWad.Moveables[new WadMoveableId(animsIndex)]);
+                            addedTimex = true;
+                        }
+
                         if (newSlotName == "LARA")
                         {
                             newWad.Add(new WadMoveableId(0), referenceWad.Moveables[new WadMoveableId(0)]);
