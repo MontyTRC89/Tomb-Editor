@@ -7849,14 +7849,14 @@
 			<sound id="1126" name="TR5_2GUNTEX_LASER_FIRE" t5m="1126" />
 			<sound id="1127" name="TR5_2GUNTEX_DOUBLE_LASER_FIRE" t5m="1127" />
 			<sound id="1128" name="TR5_2GUNTEX_LASER_MISFIRE" t5m="1128" />
-			<sound id="1129" name="CUSTOM_FOOTSTEP_soundS_1" t5m="1129" />
-			<sound id="1130" name="CUSTOM_FOOTSTEP_soundS_2" t5m="1130" />
-			<sound id="1131" name="CUSTOM_FOOTSTEP_soundS_3" t5m="1131" />
-			<sound id="1132" name="CUSTOM_FOOTSTEP_soundS_4" t5m="1132" />
-			<sound id="1133" name="CUSTOM_FOOTSTEP_soundS_5" t5m="1133" />
-			<sound id="1134" name="CUSTOM_FOOTSTEP_soundS_6" t5m="1134" />
-			<sound id="1135" name="CUSTOM_FOOTSTEP_soundS_7" t5m="1135" />
-			<sound id="1136" name="CUSTOM_FOOTSTEP_soundS_8" t5m="1136" />
+			<sound id="1129" name="CUSTOM_FOOTSTEP_SOUNDS_1" t5m="1129" />
+			<sound id="1130" name="CUSTOM_FOOTSTEP_SOUNDS_2" t5m="1130" />
+			<sound id="1131" name="CUSTOM_FOOTSTEP_SOUNDS_3" t5m="1131" />
+			<sound id="1132" name="CUSTOM_FOOTSTEP_SOUNDS_4" t5m="1132" />
+			<sound id="1133" name="CUSTOM_FOOTSTEP_SOUNDS_5" t5m="1133" />
+			<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" t5m="1134" />
+			<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" t5m="1135" />
+			<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" t5m="1136" />
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
