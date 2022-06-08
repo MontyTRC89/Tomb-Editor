@@ -1374,15 +1374,15 @@
 			<moveable id="28" name="Tiger" essential="false" t5m="TIGER"/>
 			<moveable id="29" name="Vulture" essential="false" t5m="EAGLE"/>
 			<moveable id="30" name="Assault-course target" essential="false" t5m="SHOOT_SWITCH1" />
-			<moveable id="31" name="Crawler mutant in closet" essential="false" t5m="ANIMATING"/>
+			<moveable id="31" name="Crawler mutant in closet" essential="false" t5m="ANIMATING108"/>
 			<moveable id="32" name="Crocodile (in water)" essential="false" />
 			<moveable id="34" name="Compsognathus" essential="false" t5m="SMALL_DINOSAUR"/>
 			<moveable id="35" name="Lizard thing" essential="false" t5m="LIZARD"/>
 			<moveable id="36" name="Puna guy" essential="false" t5m="PUNA_BOSS"/>
 			<moveable id="37" name="Mercenary" essential="false" />
 			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" t5m="SHOOT_SWITCH2" />
-			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" /> <!--ID_GUARD? -->
-			<moveable id="40" name="RX-Tech guy with gun" essential="false" /> <!--ID_GUARD? -->
+			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" t5m="MP_WITH_GUN" /> 
+			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS" /> 
 			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
 			<moveable id="42" name="Crawler mutant" essential="false" /> <!--MUTANT2? -->
 			<moveable id="44" name="Tinnos wasp" essential="false" /> <!--ID_HARPY ? -->
@@ -1392,17 +1392,17 @@
 			<moveable id="48" name="Raptor respawn point" />
 			<moveable id="49" name="Willardspider" essential="false"/> <!--NO SLOT AVALIABLE YET -->
 			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" t5m="FLAMETHROWER_BADDY" /> 
-			<moveable id="51" name="London goon" essential="false" t5m="MP_WITH_GUN" /> <!-- Possible match?-->
-			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> <!-- Possible match?-->
-			<moveable id="56" name="London guard" essential="false" /> <!--ID_GUARD? -->
+			<moveable id="51" name="London goon" essential="false" t5m="SAS"/> 
+			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> <!-- Possible match? Some states different but same anims-->
+			<moveable id="56" name="London guard" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="57" name="Sophia Lee" essential="false" t5m="SOPHIA_LEE_BOSS"/>
 			<moveable id="58" name="Thames Wharf machine" essential="false" /> <!--NO SLOT AVALIABLE YET -->
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
-			<moveable id="62" name="Prisoner" essential="false" /> <!--Possibly ID_CIVVIE?-->
-			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="MP_WITH_GUN" /> <!--Possible Match?-->
+			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
+			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS" /> 
 			<moveable id="64" name="Gun turret" essential="false" t5m="AUTOGUN"/>
-			<moveable id="65" name="Dam guard" essential="false" />
+			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> <!-- Possible match? Some states different but same anims-->
 			<moveable id="66" name="Tripwire" essential="false" />
 			<moveable id="67" name="Electrified wire" essential="false" t5m="ELECTRIC_FENCE" /> <!--Possible Match?-->
 			<moveable id="68" name="Killer tripwire" essential="false" t5m="TRIPWIRE"/> <!--Possible Match? Testing needed!-->
@@ -1421,14 +1421,14 @@
 			<moveable id="82" name="Unknown Id #82" essential="false" />
 			<moveable id="83" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" t5m="WALL_MOUNTED_BLADE" />  <!--Possible Match? Testing needed!--> 
-			<moveable id="87" name="Spikes / Barbed wire" essential="false" />
-			<moveable id="88" name="Boulder / Barrel" essential="false" />
+			<moveable id="87" name="Spikes / Barbed wire" essential="false" t5m="TEETH_SPIKES" />
+			<moveable id="88" name="Boulder / Barrel" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" /> <!--NO SLOT AVALIABLE YET -->
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="MOVING_BLADE" />
-			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMABLE1" />
-			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMABLE2"/>
+			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2"/>
 			<moveable id="101" name="Destroyable boarded-up window" essential="false" t5m="SMASH_OBJECT1" />
 			<moveable id="102" name="Destroyable boarded-up window / wall" essential="false" t5m="SMASH_OBJECT2" />
 			<moveable id="106" name="Overhead pulley hook" essential="false" t5m="MOVING_BLADE" />
@@ -1448,8 +1448,8 @@
 			<moveable id="123" name="Monkey with medipack" use_body_from="71" /> <!--Could this be a new MESHSWAP? -->
 			<moveable id="124" name="Monkey with key" use_body_from="71" /> <!--Could this be a new MESHSWAP? -->
 			<moveable id="127" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
-			<moveable id="128" name="Above-water switch" essential="false" 	t5m="SWICH_TYPE3" />
-			<moveable id="129" name="Above-water switch" essential="false" t5m="SWICH_TYPE4" />
+			<moveable id="128" name="Above-water switch" essential="false" 	t5m="SWITCH_TYPE3" />
+			<moveable id="129" name="Above-water switch" essential="false" t5m="SWITCH_TYPE4" />
 			<moveable id="130" name="Underwater switch" essential="false" t5m="UNDERWATER_SWITCH1"/>
 			<moveable id="131" name="Door" essential="false" t5m="DOOR_TYPE1" />
 			<moveable id="132" name="Door" essential="false" t5m="DOOR_TYPE2" />
@@ -1479,7 +1479,7 @@
 			<moveable id="166" name="Rocket launcher (pickup)" essential="false" t5m="ROCKET_LAUNCHER_ITEM" />
 			<moveable id="167" name="Grenade launcher (pickup)" essential="false" t5m="GRENADE_GUN_ITEM"/>
 			<moveable id="168" name="Pistol ammo (pickup)" essential="false" t5m="PISTOL_AMMO_ITEM"/>
-			<moveable id="169" name="Shotgun ammo (pickup)" essential="false" t5m="SHOTGUN_AMMO_ITEM"/>
+			<moveable id="169" name="Shotgun ammo (pickup)" essential="false" t5m="SHOTGUN_AMMO1_ITEM"/>
 			<moveable id="170" name="Desert Eagle ammo (pickup)" essential="false" t5m="REVOLVER_AMMO_ITEM"/>
 			<moveable id="171" name="Uzi ammo (pickup)" essential="false" t5m="UZI_AMMO_ITEM"/>
 			<moveable id="172" name="Harpoons (pickup)" essential="false" t5m="HARPOON_AMMO_ITEM"/>
@@ -1565,9 +1565,9 @@
 			<moveable id="285" name="Unknown visible #285" />
 			<moveable id="287" name="Tyrannosaur" essential="false" t5m="TYRANNOSAUR"/>
 			<moveable id="288" name="Raptor" essential="false" t5m="RAPTOR"/>
-			<moveable id="291" name="Laser sweeper" essential="false" />
+			<moveable id="291" name="Laser sweeper" essential="false" t5m="GEN_SLOT1" />
 			<moveable id="292" name="Electrified Field" essential="false" /> <!--Deprecated- future scriptable object-->
-			<moveable id="295" name="Detonator switch box" essential="false"  t5m="SHOOT_SWITCH2"/> <!--Possible Match? Testing needed. Was hardcoded in TR3 -->
+			<moveable id="295" name="Detonator switch box" essential="false"  />
 			<moveable id="300" name="Gunflare / Gunflare (spiky)" hidden="true" t5m="GUN_FLASH" />
 			<moveable id="301" name="Spiky gunflare for MP5" hidden="true" t5m="GUN_FLASH2" />
 			<moveable id="304" name="Camera target" essential="false" t5m="CAMERA_TARGET" />
@@ -1616,7 +1616,7 @@
 			<moveable id="366" name="Yellow shell casing" hidden="true" />
 			<moveable id="367" name="Red shell casing" hidden="true" />
 			<moveable id="370" name="Tinnos light shaft" essential="false" t5m="WATERFALL1" />
-			<moveable id="373" name="Electrical switch box" essential="false" />
+			<moveable id="373" name="Electrical switch box" essential="false" t5m="SHOOT_SWITCH2" /> <!--Possible Match? Testing needed. Was hardcoded in TR3 -->
 		</moveables>
 		<sprite_sequences>
 			<sprite_sequence id="125" name="Frame (for indicator bars) " zoom="1.714" />
