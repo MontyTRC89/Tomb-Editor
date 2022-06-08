@@ -1,6 +1,6 @@
 thumbs.db
-/Build
-/BuildRelease
+/Build*
+/~Publish
 *.user
 *.cache
 *.VC.db
@@ -10,8 +10,6 @@ bin/
 .vs/
 packages/
 *.vspx
-/BuildNgXmlBuilder
-/BuildNgXmlBuilderRelease
 
 # JetBrains IDEs
 .idea/
