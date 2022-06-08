@@ -7,6 +7,9 @@ namespace TombLib.Utils
 
     public static class TaskbarProgress
     {
+        [DllImport("user32.dll")]
+        public static extern int FlashWindow(IntPtr windowHandle, bool revert);
+
         public enum TaskbarStates
         {
             NoProgress = 0,
