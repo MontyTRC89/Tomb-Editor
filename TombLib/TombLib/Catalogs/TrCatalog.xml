@@ -5478,7 +5478,7 @@
 			<sound id="336" name="BAT_RAM_CREAK1" description="Bat ram creak1" t5m="1008" />
 			<sound id="337" name="LARA_LEVER_PART1" description="Lara lever part1" t5m="337" />
 			<sound id="338" name="LARA_LEVER_PART2" description="Lara lever part2" t5m="338" />
-			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" t5m="912" />
+			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" t5m="186" />
 			<sound id="340" name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" t5m="940"  />
 			<sound id="341" name="D_METAL_OPEN" description="D metal open" t5m="1069" />
 			<sound id="342" name="LARA_PULLEY" description="Lara pulley" t5m="912" />
@@ -5521,7 +5521,7 @@
 			<sound id="379" name="BARN_DOOR_NORMAL" description="Barn door normal" t5m="1006" />
 			<sound id="380" name="BARN_DOOR_SLAM" description="Barn door slam" t5m="1007" />
 			<sound id="381" name="RATCHET_3SHOT" description="Ratchet 3shot" />
-			<sound id="382" name="ANDY_WATERWHEEL" description="Andy waterwheel" t5m="1003" t5m="1003"  />
+			<sound id="382" name="ANDY_WATERWHEEL" description="Andy waterwheel" t5m="1003" />
 			<sound id="383" name="ANDY_INSIDEMILL" description="Andy insidemill" t5m="898" />
 			<sound id="384" name="ANDREA_COIN_PUZZ" description="Andrea coin puzz" />
 			<sound id="385" name="MINI-SUB_LOOP" hardcoded="true" description="Mini-sub loop" t5m="948" />
@@ -6906,7 +6906,7 @@
 			<sound id="183" name="TR4_THUNDER_CRACK" t5m="183" />
 			<sound id="184" name="TR4_WRAITH_WHISPERS" t5m="184" />
 			<sound id="185" name="TR4_LARA_FOOSTEPS_SAND" t5m="185" />
-			<sound id="186" name="TR4_EMPTY5" t5m="186" />
+			<sound id="186" name="TR4_LARA_POLE_SQUEAK" t5m="186" />
 			<sound id="187" name="TR4_SKELETON_FOOTSTEPS" t5m="187" />
 			<sound id="188" name="TR4_SKELETON_ATTACK" t5m="188" />
 			<sound id="189" name="TR4_GENERIC_SWORD_SWOOSH" t5m="189" />
