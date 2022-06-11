@@ -5228,7 +5228,7 @@
 			<sound id="86" name="BLUEG_CHAIR_HIT" description="Blueg chair hit" t5m="906" />
 			<sound id="87" name="RICH_IRIS_ELEC" hardcoded="true" description="Rich iris elec" t5m="1053" />
 			<sound id="88" name="BIO_BREATHE_OUT" hardcoded="true" description="Bio breathe out" t5m="1010" />
-			<sound id="89" name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="1038" />
+			<sound id="89" name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="265" />
 			<sound id="90" name="PIERRE_GUNS" description="Pierre guns" t5m="473" />
 			<sound id="91" name="PIERRE_FINAL_BREATH" description="Pierre final breath" />
 			<sound id="92" name="PIERRE_HIT" description="Pierre hit" />
@@ -7758,7 +7758,7 @@
 			<sound id="1035" name="TR5_GENERIC_STONE_DOOR_LOW" t5m="1035" />
 			<sound id="1036" name="TR5_GENERIC_SWORD_SWOOSH_LOW" t5m="1036" />
 			<sound id="1037" name="TR5_GENERATOR_HUM_LOOP" t5m="1037" />
-			<sound id="1038" name="TR5_GENERIC_BOOT_STEPS" t5m="1038" />
+			<sound id="1038" name="TR5_EMPTY" t5m="1038" />
 			<sound id="1039" name="TR5_GENERIC_KNEES_FALL" t5m="1039" />
 			<sound id="1040" name="TR5_GENERIC_SQKS_LOW" t5m="1040" />
 			<sound id="1041" name="TR5_GENERIC_SQKS_NONRND" t5m="1041" />
