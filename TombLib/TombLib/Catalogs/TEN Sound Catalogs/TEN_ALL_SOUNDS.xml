@@ -2018,8 +2018,8 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>104</Id>
-      <Name>TR4_Empty1</Name>
-      <Volume>100</Volume>
+      <Name>TR4_HK_Stop</Name>
+      <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2027,8 +2027,12 @@
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
+      <Samples>
+        <WadSample>
+          <FileName>TR4_HK_Stop_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -18406,7 +18410,7 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -20315,7 +20319,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1038</Id>
-      <Name>TR5_Generic_Boot_Steps</Name>
+      <Name>TR5_EMPTY</Name>
       <Volume>65</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -20324,17 +20328,7 @@
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_Generic_Boot_Steps_01.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR5_Generic_Boot_Steps_02.wav</FileName>
-        </WadSample>
-        <WadSample>
-          <FileName>TR5_Generic_Boot_Steps_03.wav</FileName>
-        </WadSample>
-      </Samples>
+      <Samples />
       <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
@@ -22201,156 +22195,6 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples />
       <Global>true</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1137</Id>
-      <Name>Custom_1</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1138</Id>
-      <Name>Custom_2</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1139</Id>
-      <Name>Custom_3</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1140</Id>
-      <Name>Custom_4</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1141</Id>
-      <Name>Custom_5</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1142</Id>
-      <Name>Custom_6</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1143</Id>
-      <Name>Custom_7</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1144</Id>
-      <Name>Custom_8</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1145</Id>
-      <Name>Custom_9</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1146</Id>
-      <Name>Custom_10</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
   </SoundInfos>
