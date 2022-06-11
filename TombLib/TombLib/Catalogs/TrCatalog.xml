@@ -6824,7 +6824,7 @@
 			<sound id="101" name="TR4_CLOCKWORK_BEETLE_CLK_WHIRR" t5m="101" />
 			<sound id="102" name="TR4_CLOCKWORK_BEETLE_CLK_EXP" t5m="102" />
 			<sound id="103" name="TR4_MINE_EXPLOSION_OVERLAY" t5m="103" />
-			<sound id="104" name="TR4_EMPTY1" t5m="104" />
+			<sound id="104" name="TR4_HK_STOP" t5m="104" />
 			<sound id="105" name="TR4_EXPLOSION1" t5m="105" />
 			<sound id="106" name="TR4_EXPLOSION2" t5m="106" />
 			<sound id="107" name="TR4_EARTHQUAKE_LOOP" t5m="107" />
