@@ -18400,16 +18400,20 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>939</Id>
-      <Name>TR5_Empty</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Lara_Tightrope_Fall</Name>
+      <Volume>55</Volume>
+      <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>60</PitchFactor>
+      <PitchFactor>10</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Lara_Tightrope_Fall_01.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>

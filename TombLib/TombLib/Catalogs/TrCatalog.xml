@@ -5491,7 +5491,7 @@
 			<sound id="349" name="LARA_NO_JAPANESE" hardcoded="true" description="Lara no japanese" />
 			<sound id="350" name="LARA_CROW_WRENCH" description="Lara crow wrench" />
 			<sound id="351" name="LARA_ROPE_CREAK" hardcoded="true" description="Lara rope creak" t5m="351" />
-			<sound id="352" name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" t5m="104" /> 
+			<sound id="352" name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" t5m="939" /> 
 			<sound id="353" name="D_METAL_CAGE_CLS2" description="D metal cage cls2" t5m="1020" />
 			<sound id="354" name="D_METAL_CAGE_CLS1" description="D metal cage cls1" t5m="1020" />
 			<sound id="355" name="GENERIC_STONE_GRIND" description="Generic stone grind" />
@@ -7659,7 +7659,7 @@
 			<sound id="936" name="TR5_IMP_ATTACK" t5m="936" />
 			<sound id="937" name="TR5_IMP_BARREL_DROP" t5m="937" />
 			<sound id="938" name="TR5_IMP_BARREL_ROLL" t5m="938" />
-			<sound id="939" name="TR5_EMPTY" t5m="939" />
+			<sound id="939" name="TR5_LARA_TIGHTROPE_FALL" t5m="939" />
 			<sound id="940" name="TR5_IMP_FALL" t5m="940" />
 			<sound id="941" name="TR5_IMP_FEET" t5m="941" />
 			<sound id="942" name="TR5_IMP_LAUGH" t5m="942" />
