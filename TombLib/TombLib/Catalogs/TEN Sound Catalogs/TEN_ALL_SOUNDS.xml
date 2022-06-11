@@ -20323,18 +20323,25 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1038</Id>
-      <Name>TR5_EMPTY</Name>
-      <Volume>65</Volume>
-      <RangeInSectors>13</RangeInSectors>
+      <Name>TR5_LARA_POLE_SQUEAK</Name>
+      <Volume>35</Volume>
+      <RangeInSectors>5</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>10</PitchFactor>
+      <PitchFactor>37</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>tr5_lara_pole_squeak_01.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>tr5_lara_pole_squeak_02.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1039</Id>

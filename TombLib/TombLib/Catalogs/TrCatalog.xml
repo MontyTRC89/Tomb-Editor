@@ -5478,7 +5478,7 @@
 			<sound id="336" name="BAT_RAM_CREAK1" description="Bat ram creak1" t5m="1008" />
 			<sound id="337" name="LARA_LEVER_PART1" description="Lara lever part1" t5m="337" />
 			<sound id="338" name="LARA_LEVER_PART2" description="Lara lever part2" t5m="338" />
-			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" t5m="186" />
+			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" t5m="1038" />
 			<sound id="340" name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" t5m="940"  />
 			<sound id="341" name="D_METAL_OPEN" description="D metal open" t5m="1069" />
 			<sound id="342" name="LARA_PULLEY" description="Lara pulley" t5m="912" />
@@ -7758,7 +7758,7 @@
 			<sound id="1035" name="TR5_GENERIC_STONE_DOOR_LOW" t5m="1035" />
 			<sound id="1036" name="TR5_GENERIC_SWORD_SWOOSH_LOW" t5m="1036" />
 			<sound id="1037" name="TR5_GENERATOR_HUM_LOOP" t5m="1037" />
-			<sound id="1038" name="TR5_EMPTY" t5m="1038" />
+			<sound id="1038" name="TR5_LARA_POLE_SQUEAK" t5m="1038" />
 			<sound id="1039" name="TR5_GENERIC_KNEES_FALL" t5m="1039" />
 			<sound id="1040" name="TR5_GENERIC_SQKS_LOW" t5m="1040" />
 			<sound id="1041" name="TR5_GENERIC_SQKS_NONRND" t5m="1041" />
