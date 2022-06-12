@@ -1,3 +1,17 @@
+Version 1.5.1
+=============
+
+Tomb Editor:
+ * Fix serious memory leak when switching between objects in item browser.
+ * Hide selection highlight when editing colorable objects from palette.
+ * Delete room with hotkey if no object is selected.
+ * Avoid texturing inaccessible floors and ceilings with fill tool.
+ * Flash taskbar button when level compile is finished.
+ * Visually indicate lights which can cast TEN shadows in 3D window.
+ * Allow to quick-start TEN levels.
+ * Fix some TR2 objects not appearing properly in 3D window.
+ * Fix exception in animated texture window when clicking on text fields in frame list.
+
 Version 1.5
 ===========
 
