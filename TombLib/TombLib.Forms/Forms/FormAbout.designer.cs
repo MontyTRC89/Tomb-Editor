@@ -473,7 +473,7 @@
             this.linkLabel3.Size = new System.Drawing.Size(279, 13);
             this.linkLabel3.TabIndex = 35;
             this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "github.com/dlemstra/Magick.NET";
+            this.linkLabel3.Text = "github.com/sklose/NCalc2";
             this.linkLabel3.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
             this.linkLabel3.Click += new System.EventHandler(this.btnLink_Click);
             // 
@@ -486,7 +486,7 @@
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(267, 13);
             this.darkLabel7.TabIndex = 34;
-            this.darkLabel7.Text = "ImageMagick is used under Apache 2.0 license.";
+            this.darkLabel7.Text = "NCalc is used under MIT license.";
             // 
             // linkLabel2
             // 
@@ -548,7 +548,7 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(8, 315);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(377, 24);
+            this.darkLabel16.Size = new System.Drawing.Size(379, 24);
             this.darkLabel16.TabIndex = 28;
             this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Embrace" +
     "r Group AB.\r\nThis software is a freeware and intended only for personal and non-" +
@@ -577,7 +577,7 @@
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel14.Location = new System.Drawing.Point(7, 299);
             this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(361, 13);
+            this.darkLabel14.Size = new System.Drawing.Size(355, 13);
             this.darkLabel14.TabIndex = 20;
             this.darkLabel14.Text = "Additional icons and graphics used under CC-BY ND 3.0 license, from";
             // 
