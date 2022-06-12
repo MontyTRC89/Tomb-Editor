@@ -138,8 +138,13 @@ namespace TombLib.Wad
                 _skinnedModel.Bones.Add(bone);
             }
 
-            foreach (var animation in Animations)
-                _skinnedModel.Animations.Add(animation.Clone());
+            // Copy only first animation of the model to skin because it's the only one
+            // which is used by preview windows utilizing skinned model.
+
+            if (Animations.Count > 0)
+                _skinnedModel.Animations.Add(Animations[0].Clone());
+            else
+                _skinnedModel.Animations.Add(new WadAnimation());
 
             return _skinnedModel;
         }

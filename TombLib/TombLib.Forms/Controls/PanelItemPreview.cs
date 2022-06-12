@@ -33,12 +33,9 @@ namespace TombLib.Controls
                 Invalidate();
             }
         }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int AnimationIndex { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int KeyFrameIndex { get; set; }
 
         public bool DrawTransparency { get; set; } = false;
 
@@ -166,11 +163,12 @@ namespace TombLib.Controls
                 if (CurrentObject is WadMoveable)
                 {
                     AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
-                    model.UpdateAnimation(AnimationIndex, KeyFrameIndex);
 
-                    if (model.Animations.Count > AnimationIndex && model.Animations[AnimationIndex].KeyFrames.Count > KeyFrameIndex)
+                    if (model.Animations.Count > 0 && model.Animations[0].KeyFrames.Count > 0)
                     {
-                        var bb = model.Animations[AnimationIndex].KeyFrames[KeyFrameIndex].CalculateBoundingBox(model, model);
+                        // Use first animation and first frame as preview
+                        model.UpdateAnimation(0, 0);
+                        var bb = model.Animations[0].KeyFrames[0].CalculateBoundingBox(model, model);
                         bs = BoundingSphere.FromBoundingBox(bb);
                     }
                 }
@@ -239,9 +237,10 @@ namespace TombLib.Controls
                     return;
 
                 AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
+
                 // We don't need to rebuilt it everytime necessarily, but it's cheap to so and
                 // simpler than trying to figure out when it may be necessary.
-                model.UpdateAnimation(AnimationIndex, KeyFrameIndex);
+                model.UpdateAnimation(0, 0);
 
                 var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
@@ -458,21 +457,6 @@ namespace TombLib.Controls
                     Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * NavigationSpeedMouseTranslate);
 
                 Invalidate();
-            }
-        }
-
-        public void UpdateAnimationScrollbar()
-        {
-            // Figure out scroll bar maximum
-            int stateCount = -1;
-            if (CurrentObject is WadMoveable)
-            {
-                if (AnimationIndex < ((WadMoveable)CurrentObject).Animations.Count)
-                    stateCount = ((WadMoveable)CurrentObject).Animations[AnimationIndex].KeyFrames.Count;
-            }
-            else if (CurrentObject is WadSpriteSequence)
-            {
-                stateCount = ((WadSpriteSequence)CurrentObject).Sprites.Count;
             }
         }
 

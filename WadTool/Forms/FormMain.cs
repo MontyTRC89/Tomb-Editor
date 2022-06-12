@@ -83,7 +83,6 @@ namespace WadTool
                 treeDestWad.Wad = _tool.DestinationWad;
                 treeDestWad.UpdateContent();
 
-                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
 
                 if (_tool.DestinationWad != null)
@@ -112,7 +111,6 @@ namespace WadTool
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
 
-                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
 
@@ -147,9 +145,6 @@ namespace WadTool
                     else
                         panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
 
-                    panel3D.AnimationIndex = 0;
-                    panel3D.KeyFrameIndex = 0;
-
                     // Update the toolbar below the rendering area
                     butEditAnimations.Visible = (mainSelection.Value.Id is WadMoveableId);
                     butEditSkeleton.Visible = (mainSelection.Value.Id is WadMoveableId);
@@ -160,7 +155,6 @@ namespace WadTool
                     panel3D.Invalidate();
                 }
 
-                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
 
