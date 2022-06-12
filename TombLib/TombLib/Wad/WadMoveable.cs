@@ -96,6 +96,12 @@ namespace TombLib.Wad
             return mov;
         }
 
+        // Keep a reference to model's skin and skinned model to prevent memory leaks
+        // which happen for unclear reason if new moveable is always returned.
+
+        private WadMoveable _skin = null;
+        private WadMoveable _skinnedModel = null;
+
         public WadMoveable ReplaceDummyMeshes(WadMoveable skin)
         {
             if (skin.Meshes.Count != Meshes.Count) return this;
@@ -103,27 +109,39 @@ namespace TombLib.Wad
 
             // Identify mesh ID which occurs several times in a model which possibly indicates
             // that used mesh is a dummy mesh. If there is no such mesh, return original model.
+
             var dummyHash = Meshes.GroupBy(m => m.Hash).Where(g => g.Count() > 1).FirstOrDefault()?.Key ?? Hash.Zero;
             if (dummyHash == Hash.Zero)
                 return this;
 
-            var mov = new WadMoveable(Id);
+            // If skin is the same as in previous call, immediately return same skinned model.
+            // Otherwise construct skinned model again.
+
+            if (_skin != null && _skin == skin)
+                return _skinnedModel;
+
+            _skin = skin;
+            _skinnedModel = new WadMoveable(Id);
+
             for (int i = 0; i < Meshes.Count; i++)
             {
                 WadMesh msh = Meshes[i].Clone();
                 WadMesh msh2 = skin.Meshes[i].Clone();
                 WadBone bone = Bones[i].Clone();
+
                 if (msh.Hash != dummyHash)
                 {
-                    mov.Bones.Add(bone);
+                    _skinnedModel.Bones.Add(bone);
                     continue;
                 }
                 bone.Mesh = msh2;
-                mov.Bones.Add(bone);
+                _skinnedModel.Bones.Add(bone);
             }
+
             foreach (var animation in Animations)
-                mov.Animations.Add(animation.Clone());
-            return mov;
+                _skinnedModel.Animations.Add(animation.Clone());
+
+            return _skinnedModel;
         }
     }
 }

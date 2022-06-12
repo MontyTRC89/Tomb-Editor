@@ -665,6 +665,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewColumnTexCoord0.DataPropertyName = "TexCoord0";
             this.texturesDataGridViewColumnTexCoord0.HeaderText = "Edge 0";
             this.texturesDataGridViewColumnTexCoord0.Name = "texturesDataGridViewColumnTexCoord0";
+            this.texturesDataGridViewColumnTexCoord0.ReadOnly = true;
             this.texturesDataGridViewColumnTexCoord0.Width = 70;
             // 
             // texturesDataGridViewColumnTexCoord1
@@ -672,6 +673,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewColumnTexCoord1.DataPropertyName = "TexCoord1";
             this.texturesDataGridViewColumnTexCoord1.HeaderText = "Edge 1";
             this.texturesDataGridViewColumnTexCoord1.Name = "texturesDataGridViewColumnTexCoord1";
+            this.texturesDataGridViewColumnTexCoord1.ReadOnly = true;
             this.texturesDataGridViewColumnTexCoord1.Width = 70;
             // 
             // texturesDataGridViewColumnTexCoord2
@@ -679,6 +681,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewColumnTexCoord2.DataPropertyName = "TexCoord2";
             this.texturesDataGridViewColumnTexCoord2.HeaderText = "Edge 2";
             this.texturesDataGridViewColumnTexCoord2.Name = "texturesDataGridViewColumnTexCoord2";
+            this.texturesDataGridViewColumnTexCoord2.ReadOnly = true;
             this.texturesDataGridViewColumnTexCoord2.Width = 70;
             // 
             // texturesDataGridViewColumnTexCoord3
@@ -686,6 +689,7 @@ namespace TombEditor.Forms
             this.texturesDataGridViewColumnTexCoord3.DataPropertyName = "TexCoord3";
             this.texturesDataGridViewColumnTexCoord3.HeaderText = "Edge 3";
             this.texturesDataGridViewColumnTexCoord3.Name = "texturesDataGridViewColumnTexCoord3";
+            this.texturesDataGridViewColumnTexCoord3.ReadOnly = true;
             this.texturesDataGridViewColumnTexCoord3.Width = 70;
             // 
             // lblHeaderNgSettings
