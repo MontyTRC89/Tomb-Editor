@@ -117,6 +117,9 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject.CanBeColored())
                 {
+                    // Temporarily hide selection
+                    _editor.ToggleHiddenSelection(true);
+
                     var instance = _editor.SelectedObject as IColorable;
                     instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
 
