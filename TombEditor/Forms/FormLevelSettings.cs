@@ -1474,6 +1474,9 @@ namespace TombEditor.Forms
         // Select all sounds from desired sound info list.
         private void AssignAllSounds(WadSounds sounds, bool updateUI = true)
         {
+            if (sounds == null || sounds.SoundInfos.Count == 0)
+                return;
+
             foreach (var sound in sounds.SoundInfos)
                 if (!_levelSettings.SelectedSounds.Contains(sound.Id))
                     _levelSettings.SelectedSounds.Add(sound.Id);
