@@ -8032,7 +8032,7 @@
 			<sound id="1138" name="TR5_GENERIC_HEAVY_THUD" t5m="1138" />
 			<sound id="1139" name="TR5_STONE_SCRAPE_FAST" t5m="1139" />
 			<sound id="1140" name="TR5_LOW_RUMBLE" t5m="1140" />
-			<sound id="1141" name="TR5_FLOOR_METAL_OPEN" t5m="1141"
+			<sound id="1141" name="TR5_FLOOR_METAL_OPEN" t5m="1141"	/>
 			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142"/>
 		</sounds>
 		<animations>
