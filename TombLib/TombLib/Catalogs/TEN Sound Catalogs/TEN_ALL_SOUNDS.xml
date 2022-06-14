@@ -17828,7 +17828,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>910</Id>
-      <Name>TR5_VCI_Blueman_Chair</Name>
+      <Name>TR5_VCI_Blueman_Chair_Move</Name>
       <Volume>85</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
@@ -18827,9 +18827,9 @@
       <Volume>65</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-72</PitchFactor>
+      <PitchFactor>-70</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -19678,9 +19678,9 @@
       <Volume>55</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>10</PitchFactor>
+      <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -19697,9 +19697,9 @@
       <Volume>80</Volume>
       <RangeInSectors>15</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-20</PitchFactor>
+      <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -20883,45 +20883,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1067</Id>
-      <Name>TR5_Metal_Cabinet_Close_1</Name>
-      <Volume>55</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>-23</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_Metal_Cabinet_Close_1_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1068</Id>
-      <Name>TR5_Metal_Cabinet_Close_2</Name>
-      <Volume>70</Volume>
-      <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>20</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>TR5_Metal_Cabinet_Close_2_01.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>1069</Id>
-      <Name>TR5_Metal_Door_Open_1</Name>
+      <Name>TR5_Door_Metal_Close_Part1</Name>
       <Volume>60</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -20932,7 +20894,45 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>TR5_Metal_Cabinet_Close_1_01.wav</FileName>
+          <FileName>TR5_Door_Metal_Close_Part1_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1068</Id>
+      <Name>TR5_Door_Metal_Close_Part2</Name>
+      <Volume>95</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>13</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Door_Metal_Close_Part2_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1069</Id>
+      <Name>TR5_Metal_Door_Open1</Name>
+      <Volume>60</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-22</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Metal_Door_Open1_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -20940,7 +20940,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1070</Id>
-      <Name>TR5_Metal_Door_Open_2</Name>
+      <Name>TR5_Metal_Door_Open2</Name>
       <Volume>95</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
@@ -21414,18 +21414,22 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1094</Id>
-      <Name>TR5_EMPTY</Name>
-      <Volume>95</Volume>
-      <RangeInSectors>13</RangeInSectors>
+      <Name>TR5_Padlock_Break</Name>
+      <Volume>75</Volume>
+      <RangeInSectors>6</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>35</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>dr_chain.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1095</Id>
@@ -21622,7 +21626,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1105</Id>
-      <Name>TR5_Tv_Whitenoise_Loop</Name>
+      <Name>TR5_TV_Whitenoise_Loop</Name>
       <Volume>10</Volume>
       <RangeInSectors>7</RangeInSectors>
       <Chance>100</Chance>
@@ -21816,9 +21820,9 @@
       <Volume>52</Volume>
       <RangeInSectors>20</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-25</PitchFactor>
+      <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -21892,9 +21896,9 @@
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-32</PitchFactor>
+      <PitchFactor>-20</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -22090,123 +22094,269 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1129</Id>
-      <Name>Custom_Footstep_Sounds_1</Name>
-      <Volume>100</Volume>
+      <Name>TR5_Wooden_Gate_Creak</Name>
+      <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>-40</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>dr_wdgt2.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1130</Id>
-      <Name>Custom_Footstep_Sounds_2</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Metal_Gate_Open</Name>
+      <Volume>55</Volume>
+      <RangeInSectors>9</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>-15</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>dr_gate1.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1131</Id>
-      <Name>Custom_Footstep_Sounds_3</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Lara_Use_Object_Metal</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>4</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>50</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Lara_Use_Object_Metal_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1132</Id>
-      <Name>Custom_Footstep_Sounds_4</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Larson_Gunfire</Name>
+      <Volume>35</Volume>
+      <RangeInSectors>18</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>12</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Larson_Gunfire_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1133</Id>
-      <Name>Custom_Footstep_Sounds_5</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Metal_Portcullis_Up</Name>
+      <Volume>40</Volume>
+      <RangeInSectors>40</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Metal_Portcullis_Up_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1134</Id>
-      <Name>Custom_Footstep_Sounds_6</Name>
-      <Volume>100</Volume>
+      <Name>TR5_Metal_Portcullis_Down</Name>
+      <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>5</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Metal_Portcullis_Down_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1135</Id>
-      <Name>Custom_Footstep_Sounds_7</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Smash_Rock2</Name>
+      <Volume>95</Volume>
+      <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
-      <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Smash_Rock2_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1136</Id>
-      <Name>Custom_Footstep_Sounds_8</Name>
-      <Volume>100</Volume>
-      <RangeInSectors>10</RangeInSectors>
+      <Name>TR5_Wall_Suit_Door</Name>
+      <Volume>95</Volume>
+      <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
+      <PitchFactor>-10</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
-      <Samples />
+      <Samples>
+        <WadSample>
+          <FileName>dr_alien.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1137</Id>
+      <Name>TR5_Lara_Wall_Climb_Grunt</Name>
+      <Volume>55</Volume>
+      <RangeInSectors>13</RangeInSectors>
+      <Chance>40</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Lara_Wall_Climb_Grunt_01.wav</FileName>
+        </WadSample>
+      </Samples>
       <Global>true</Global>
-      <Indexed>false</Indexed>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1138</Id>
+      <Name>TR5_Generic_Heavy_Thud</Name>
+      <Volume>80</Volume>
+      <RangeInSectors>18</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-55</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Generic_Heavy_Thud_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1139</Id>
+      <Name>TR5_Stone_Scrape_Fast</Name>
+      <Volume>75</Volume>
+      <RangeInSectors>20</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>15</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Stone_Scrape_Fast_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1140</Id>
+      <Name>TR5_Low_Rumble</Name>
+      <Volume>85</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-42</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Low_Rumble_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1141</Id>
+      <Name>TR5_Floor_Metal_Open</Name>
+      <Volume>65</Volume>
+      <RangeInSectors>15</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>20</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Floor_Metal_Open_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1142</Id>
+      <Name>TR5_Aircon_Loop</Name>
+      <Volume>30</Volume>
+      <RangeInSectors>5</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>-6</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR5_Aircon_Loop_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
   </SoundInfos>
 </WadSounds>
