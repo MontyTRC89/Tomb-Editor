@@ -20341,7 +20341,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1039</Id>
@@ -20898,7 +20898,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1068</Id>
@@ -20917,7 +20917,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1069</Id>
@@ -21429,7 +21429,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1095</Id>
@@ -22109,7 +22109,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1130</Id>
@@ -22124,11 +22124,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_gate1.wav</FileName>
+          <FileName>TR5_Metal_Gate_Open_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1131</Id>
@@ -22146,8 +22146,8 @@
           <FileName>TR5_Lara_Use_Object_Metal_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1132</Id>
@@ -22166,7 +22166,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1133</Id>
@@ -22185,7 +22185,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1134</Id>
@@ -22204,7 +22204,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1135</Id>
@@ -22222,8 +22222,8 @@
           <FileName>TR5_Smash_Rock2_01.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1136</Id>
@@ -22238,11 +22238,11 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_alien.wav</FileName>
+          <FileName>TR5_Wall_Suit_Door_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1137</Id>
@@ -22261,7 +22261,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1138</Id>
@@ -22280,7 +22280,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1139</Id>
@@ -22299,7 +22299,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1140</Id>
@@ -22318,7 +22318,7 @@
         </WadSample>
       </Samples>
       <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1141</Id>
@@ -22337,7 +22337,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1142</Id>
@@ -22356,7 +22356,127 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1150</Id>
+      <Name>Custom_Footstep_Sound1</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1151</Id>
+      <Name>Custom_Footstep_Sound2</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1152</Id>
+      <Name>Custom_Footstep_Sound3</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1153</Id>
+      <Name>Custom_Footstep_Sound4</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1154</Id>
+      <Name>Custom_Footstep_Sound5</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1155</Id>
+      <Name>Custom_Footstep_Sound6</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1156</Id>
+      <Name>Custom_Footstep_Sound7</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>1157</Id>
+      <Name>Custom_Footstep_Sound8</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples />
+      <Global>true</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
   </SoundInfos>
 </WadSounds>
