@@ -783,10 +783,16 @@ namespace TombEditor
 
             AddCommand("Delete", "Delete", CommandType.Edit, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedObject == null)
-                    EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
-                else if (args.Editor.Mode != EditorMode.Map2D || (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
-                    EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
+                if (args.Editor.SelectedObject != null)
+                {
+                    if (args.Editor.Mode != EditorMode.Map2D || (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
+                    {
+                        EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
+                        return;
+                    }
+                }
+
+                EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
             });
 
             AddCommand("DeleteMissingObjects", "Delete missing objects", CommandType.Edit, delegate (CommandArgs args)
