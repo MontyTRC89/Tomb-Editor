@@ -1298,7 +1298,7 @@ namespace TombEditor
         public static List<KeyValuePair<Room, VectorInt2>> FindTextures(TextureSearchType type, TextureArea texture, bool onlySelectedRooms, uint maxEntries, out bool tooManyEntries)
         {
             var result = new ConcurrentBag<KeyValuePair<Room, VectorInt2>>();
-            var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms.Where(item => item != null);
+            var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.ExistingRooms;
             var _tooManyEntries = false;
 
             Parallel.ForEach(roomList, (room, state) =>
@@ -1908,7 +1908,7 @@ namespace TombEditor
 
         public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, BlockFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
         {
-            if(!disableUndo)
+            if (!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
             
             if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
@@ -2814,7 +2814,7 @@ namespace TombEditor
                             if (!room.Blocks[x, z].IsAnyWall)
                                 couldBeFloorCeilingPortal = true;
 
-                foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
+                foreach (var neighborRoom in _editor.Level.ExistingRooms)
                 {
                     // Don't make a portal to the room itself
                     // Don't list alternate rooms as seperate candidates
@@ -3773,60 +3773,6 @@ namespace TombEditor
             return true;
         }
 
-        public static bool ApplyAmbientLightToSelectedRooms(IWin32Window owner)
-        {
-            var oldColours = new List<Vector3>();
-            foreach (var room in _editor.SelectedRooms)
-                oldColours.Add(room.Properties.AmbientLight);
-
-            var applied = false;
-
-            using (var colorDialog = new RealtimeColorDialog(
-                _editor.Configuration.ColorDialog_Position.X,
-                _editor.Configuration.ColorDialog_Position.Y,
-                c =>
-                {
-                    foreach (Room room in _editor.SelectedRooms)
-                    {
-                        room.Properties.AmbientLight = c.ToFloat3Color() * 2.0f;
-                        room.BuildGeometry();
-                        room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                        _editor.RoomPropertiesChange(room);
-                    }
-                }, _editor.Configuration.UI_ColorScheme))
-            {
-                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                {
-                    foreach (Room room in _editor.SelectedRooms)
-                        room.Properties.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
-                    applied = true;
-                }
-                else
-                    foreach (var pair in _editor.SelectedRooms.Zip(oldColours, Tuple.Create))
-                        pair.Item1.Properties.AmbientLight = pair.Item2;
-
-                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-            }
-
-            foreach (Room room in _editor.SelectedRooms)
-            {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                _editor.RoomPropertiesChange(room);
-            }
-
-            return applied;
-        }
-
-        public static void ApplyCurrentAmbientLightToAllRooms()
-        {
-            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
-                room.Properties.AmbientLight = _editor.SelectedRoom.Properties.AmbientLight;
-            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview); });
-            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
-                Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
-        }
-
         public static void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
         {
             var light = _editor.SelectedObject as LightInstance;
@@ -4054,9 +4000,8 @@ namespace TombEditor
         public static bool IsLaraInLevel()
         {
             return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
-                   _editor.Level.Rooms.Where(room => room != null)
-                                      .SelectMany(room => room.Objects)
-                                      .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
+                   _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
+                                              .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
         }
 
         public static bool AddAndPlaceImportedGeometry(IWin32Window owner, VectorInt2 position, string file)
@@ -4587,7 +4532,7 @@ namespace TombEditor
 		public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
-            foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
+            foreach (Room room in _editor.Level.ExistingRooms)
                 foreach (var instance in room.Objects)
                 {
                     var lara = instance as MoveableInstance;
@@ -5017,7 +4962,7 @@ namespace TombEditor
 
                     if (!silent)
                     {
-                        foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                        foreach (Room r in newLevel.ExistingRooms)
                             r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         AddProjectToRecent(fileName);
                     }
@@ -5098,7 +5043,7 @@ namespace TombEditor
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
 
-                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                    foreach (Room r in newLevel.ExistingRooms)
                         r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
                     _editor.Level = newLevel;
@@ -5320,28 +5265,24 @@ namespace TombEditor
 
         public static void SelectWaterRooms()
         {
-            IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> waterRooms = allRooms.Where((r, b) => { return r != null && r.Properties.Type == RoomType.Water; });
+            var waterRooms = _editor.Level.ExistingRooms.Where(r => r.Properties.Type == RoomType.Water);
             TrySelectRooms(waterRooms);
         }
 
         public static void SelectSkyRooms()
         {
-            IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> skyRooms = allRooms.Where((r, b) => { return r != null && r.Properties.FlagHorizon; });
+            var skyRooms = _editor.Level.ExistingRooms.Where(r => r.Properties.FlagHorizon);
             TrySelectRooms(skyRooms);
         }
 
         public static void SelectQuicksandRooms()
         {
-            IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> quicksandRooms = allRooms.Where((r, b) => { return r != null && r.Properties.Type == RoomType.Quicksand; });
+            var quicksandRooms = _editor.Level.ExistingRooms.Where(r => r.Properties.Type == RoomType.Quicksand);
             TrySelectRooms(quicksandRooms);
         }
         public static void SelectOutsideRooms()
         {
-            IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> outsideRooms = allRooms.Where((r, b) => { return r != null && r.Properties.FlagOutside; });
+            var outsideRooms = _editor.Level.ExistingRooms.Where(r => r.Properties.FlagOutside);
             TrySelectRooms(outsideRooms);
         }
 
@@ -5357,12 +5298,11 @@ namespace TombEditor
                     return;
 
                 bool findAllTags = formTags.findAllTags;
-                IEnumerable<Room> allRooms = _editor.Level.Rooms;
-                IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
+                var matchingRooms = _editor.Level.ExistingRooms.Where(r => {
                     if (findAllTags)
-                        return r != null && r.Properties.Tags.Intersect(tags).Count() == tags.Count();
+                        return r.Properties.Tags.Intersect(tags).Count() == tags.Count();
                     else
-                        return r != null && r.Properties.Tags.Intersect(tags).Any();
+                        return r.Properties.Tags.Intersect(tags).Any();
                 });
                 TrySelectRooms(matchingRooms);
             }

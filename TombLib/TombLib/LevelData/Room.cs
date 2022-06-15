@@ -1475,9 +1475,9 @@ namespace TombLib.LevelData
 
             // Update the collected stuff now
             Parallel.For(0, roomsToProcess.Count, index =>
-                {
-                    roomsToProcess[index].BuildGeometry();
-                });
+            {
+                roomsToProcess[index].BuildGeometry();
+            });
         }
 
         public class CopyDependentLevelSettingsArgs

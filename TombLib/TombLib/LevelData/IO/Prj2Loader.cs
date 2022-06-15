@@ -912,7 +912,7 @@ namespace TombLib.LevelData.IO
 
             // Now build the real geometry and update geometry buffers
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, room => room.BuildGeometry());
             return true;
         }
 

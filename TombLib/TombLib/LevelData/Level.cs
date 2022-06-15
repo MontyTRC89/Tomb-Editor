@@ -102,7 +102,7 @@ namespace TombLib.LevelData
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)
         {
             var triggers = new List<TriggerInstance>();
-            foreach (var room in Rooms.Where(room => room != null))
+            foreach (var room in ExistingRooms)
                 foreach (var trigger in room.Triggers)
                     if (trigger.IsPointingTo(instance))
                         triggers.Add(trigger);
@@ -203,8 +203,8 @@ namespace TombLib.LevelData
 
         public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
         {
-            IReadOnlyList<ObjectInstance> oldObjects = Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).ToList();
-            IReadOnlyList<Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
+            IReadOnlyList<ObjectInstance> oldObjects = ExistingRooms.SelectMany(room => room.AnyObjects).ToList();
+            IReadOnlyList<Room> otherRooms = otherLevel.ExistingRooms;
 
             // Merge rooms
             for (int i = 0; i < otherRooms.Count; ++i)
@@ -349,7 +349,7 @@ namespace TombLib.LevelData
 
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
         {
-            Parallel.ForEach(Rooms.Where(room => room != null), room =>
+            Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Block sector in room.Blocks)
                     for (BlockFace face = 0; face < BlockFace.Count; ++face)
@@ -361,7 +361,7 @@ namespace TombLib.LevelData
                             sector.SetFaceTexture(face, TextureArea.None);
                         }
                     }
-                room.RoomGeometry = new RoomGeometry(room);
+                room.BuildGeometry();
             });
 
             foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
@@ -396,7 +396,7 @@ namespace TombLib.LevelData
 
                 // Reset imported geometry objects if any objects are now missing
                 if (oldLookup.Count != 0)
-                    foreach (Room room in Rooms.Where(room => room != null))
+                    foreach (var room in ExistingRooms)
                         foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                             if (instance.Model != null && oldLookup.ContainsKey(instance.Model.UniqueID))
                             {

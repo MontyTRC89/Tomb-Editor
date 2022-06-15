@@ -130,7 +130,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _soundSourcesTable = new Dictionary<SoundSourceInstance, int>(new ReferenceEqualityComparer<SoundSourceInstance>());
 
-            foreach (var room in _level.Rooms.Where(room => room != null))
+            foreach (var room in _level.ExistingRooms)
                 foreach (var obj in room.Objects.OfType<SoundSourceInstance>())
                     _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
 
@@ -193,7 +193,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _sinkTable = new Dictionary<SinkInstance, int>(new ReferenceEqualityComparer<SinkInstance>());
                 _flybyTable = new Dictionary<FlybyCameraInstance, int>(new ReferenceEqualityComparer<FlybyCameraInstance>());
 
-                foreach (var room in _level.Rooms.Where(room => room != null))
+                foreach (var room in _level.ExistingRooms)
                 {
                     foreach (var obj in room.Objects.OfType<CameraInstance>())
                         _cameraTable.Add(obj, camID++);
@@ -300,10 +300,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void GetAllReachableRooms()
         {
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            foreach (var room in _level.ExistingRooms)
                 _tempRooms[room].ReachableRooms = new List<Room>();
 
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            foreach (var room in _level.ExistingRooms)
             {
                 GetAllReachableRoomsUp(room, room);
                 GetAllReachableRoomsDown(room, room);
@@ -395,7 +395,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
-            foreach (Room room in _level.Rooms.Where(room => room != null))
+            foreach (Room room in _level.ExistingRooms)
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
                     WadMoveable wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);

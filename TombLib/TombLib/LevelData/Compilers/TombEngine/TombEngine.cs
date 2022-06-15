@@ -22,7 +22,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var numRooms = (uint)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                foreach (var r in _level.Rooms.Where(r => r != null))
+                foreach (var r in _level.ExistingRooms)
                 {
                     _tempRooms[r].Write(writer);
                 }

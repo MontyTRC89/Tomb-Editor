@@ -18,7 +18,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Collect all LUA functions
             _luaFunctions = new List<string>();
-            foreach (var room in _level.Rooms.Where(r => r != null).ToList())
+            foreach (var room in _level.ExistingRooms)
                 foreach (var volume in room.Volumes)
                 {
                     if (volume.Scripts.OnEnter != null && !_luaFunctions.Contains(volume.Scripts.OnEnter))

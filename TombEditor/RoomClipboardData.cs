@@ -99,14 +99,16 @@ namespace TombEditor
 
         public void MergeInto(Editor editor, VectorInt2 offset)
         {
-            Level level = CreateLevel();
-            List<Room> newRooms = level.Rooms.Where(room => room != null).ToList();
+            var level = CreateLevel();
+            var newRooms = level.ExistingRooms;
+
             foreach (Room room in newRooms)
             {
                 room.Name += " (Copy)";
                 room.Position += new VectorInt3(offset.X, 0, offset.Y);
             }
-            LevelSettings newLevelSettings = editor.Level.Settings.Clone();
+
+            var newLevelSettings = editor.Level.Settings.Clone();
             editor.Level.MergeFrom(level, true, newSettings => editor.UpdateLevelSettings(newSettings));
             editor.RoomListChange();
             editor.SelectRoomsAndResetCamera(newRooms);

@@ -26,7 +26,7 @@ namespace TombLib.LevelData
 
                 // Push next cameras in sequence forward
                 var level = selectedObject.Room.Level;
-                foreach (var room in level.Rooms.Where(room => room != null))
+                foreach (var room in level.ExistingRooms)
                     foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                         if (instance.Sequence == currSeq && instance.Number >= currNum)
                             instance.Number++;
