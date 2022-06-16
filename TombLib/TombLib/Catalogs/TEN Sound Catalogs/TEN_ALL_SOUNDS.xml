@@ -7311,9 +7311,6 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Harpoon_Fire_Dry_01.wav</FileName>
-        </WadSample>
-        <WadSample>
           <FileName>TR4_Harpoon_Fire_Dry_01.wav</FileName>
         </WadSample>
       </Samples>
