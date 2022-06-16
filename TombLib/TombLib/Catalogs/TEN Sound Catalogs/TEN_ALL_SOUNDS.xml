@@ -7440,7 +7440,7 @@
       <Volume>20</Volume>
       <RangeInSectors>13</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>80</PitchFactor>
+      <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
