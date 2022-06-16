@@ -96,16 +96,16 @@
 			<moveable id="71" name="Passport (opening up)" hidden="true" t5m="INVENTORY_PASSPORT" />
 			<moveable id="72" name="Compass" hidden="true" t5m="COMPASS_ITEM" />
 			<moveable id="73" name="Lara's home polaroid" hidden="true" t5m="INVENTORY_POLAROID" />
-			<moveable id="74" name="Cogs (animated)" essential="false" t5m="ANIMATING_101" />
-			<moveable id="75" name="Cogs (animated)" essential="false" t5m="ANIMATING_102" />
-			<moveable id="76" name="Cogs (animated)" essential="false" t5m="ANIMATING_103" />
+			<moveable id="74" name="Cogs (animated)" essential="false" t5m="ANIMATING101" />
+			<moveable id="75" name="Cogs (animated)" essential="false" t5m="ANIMATING102" />
+			<moveable id="76" name="Cogs (animated)" essential="false" t5m="ANIMATING103" />
 			<moveable id="81" name="Passport (closed)" hidden="true" t5m="PC_SAVE_INV_ITEM" />
-			<moveable id="82" name="Natla's logo" essential="false" hidden="true" t5m="ANIMATING_80" />
-			<moveable id="83" name="Save crystal" t5m="ANIMATING_81" />
+			<moveable id="82" name="Natla's logo" essential="false" hidden="true" t5m="ANIMATING80" />
+			<moveable id="83" name="Save crystal" t5m="ANIMATING81" />
 			<moveable id="95" name="Sunglasses" hidden="true" t5m="INVENTORY_SUNGLASSES" />
 			<moveable id="96" name="Cassette player and headphones" hidden="true" t5m="INVENTORY_HEADPHONES" />
-			<moveable id="97" name="Direction keys" hidden="true" t5m="ANIMATING_83" />
-			<moveable id="98" name="Flashlight" hidden="true" t5m="ANIMATING_84" />
+			<moveable id="97" name="Direction keys" hidden="true" t5m="ANIMATING83" />
+			<moveable id="98" name="Flashlight" hidden="true" t5m="ANIMATING84" />
 			<moveable id="99" name="Pistol" id2="84" t5m="PISTOL_ITEM" />
 			<moveable id="100" name="Shotgun" id2="85" t5m="SHOTGUN_ITEM" />
 			<moveable id="101" name="Magnum" id2="86" />
@@ -142,9 +142,9 @@
 			<moveable id="146" name="Complete Scion" id2="142" t5m="KEY_ITEM2" />
 			<moveable id="147" name="Scion Holder" essential="false" t5m="ANIMATING103" />
 			<moveable id="150" name="Scion Piece" id2="143" id3="144" t5m="KEY_ITEM_COMBO1" />
-			<moveable id="161" name="Centaur statue" essential="false" t5m="ANIMATING_106" />
-			<moveable id="162" name="Shack suspended from wire rope" essential="false" t5m="ANIMATING_104" />
-			<moveable id="163" name="Mutant egg and holder (normal size)" essential="false" t5m="ANIMATING_105" />
+			<moveable id="161" name="Centaur statue" essential="false" t5m="ANIMATING106" />
+			<moveable id="162" name="Shack suspended from wire rope" essential="false" t5m="ANIMATING104" />
+			<moveable id="163" name="Mutant egg and holder (normal size)" essential="false" t5m="ANIMATING105" />
 			<moveable id="166" name="Gunflare" hidden="true" t5m="GUN_FLASH" />
 			<moveable id="169" name="Camera target" t5m="CAMERA_TARGET" />
 			<moveable id="170" name="Waterfall mist" essential="false" t5m="WATERFALLMIST" />
@@ -656,102 +656,102 @@
 			<limit name="WorldDimensions" value="100" />
 		</limits>
 		<moveables>
-			<moveable id="0" name="Lara" />
-			<moveable id="1" name="Lara pistol animation" use_body_from="0" hidden="true" />
-			<moveable id="2" name="Lara's ponytail" hidden="true" />
-			<moveable id="3" name="Lara shotgun animation" use_body_from="0" hidden="true" />
-			<moveable id="4" name="Lara auto-pistol animation" use_body_from="0" hidden="true" />
-			<moveable id="5" name="Lara Uzi animation" use_body_from="0" hidden="true" />
-			<moveable id="6" name="Lara M16 animation" use_body_from="0" hidden="true" />
-			<moveable id="7" name="Lara grenade-launcher animation" use_body_from="0" hidden="true" />
-			<moveable id="8" name="Lara harpoon-gun animation" use_body_from="0" hidden="true" />
-			<moveable id="9" name="Lara flare animation" use_body_from="0" hidden="true" />
-			<moveable id="10" name="Lara and the snowmobile" use_body_from="0" show_with="13" hidden="true" />
-			<moveable id="11" name="Lara and the boat" use_body_from="0" show_with="14" hidden="true" />
+			<moveable id="0" name="Lara" t5m="LARA_SKIN" />
+			<moveable id="1" name="Lara pistol animation" use_body_from="0" hidden="true" t5m="PISTOLS_ANIM" />
+			<moveable id="2" name="Lara's ponytail" hidden="true" t5m="HAIR" />
+			<moveable id="3" name="Lara shotgun animation" use_body_from="0" hidden="true" t5m="SHOTGUN_ANIM" />
+			<moveable id="4" name="Lara auto-pistol animation" use_body_from="0" hidden="true" t5m="PISTOLS_ANIM" />
+			<moveable id="5" name="Lara Uzi animation" use_body_from="0" hidden="true" t5m="UZI_ANIM" />
+			<moveable id="6" name="Lara M16 animation" use_body_from="0" hidden="true" t5m="HK_ANIM" />
+			<moveable id="7" name="Lara grenade-launcher animation" use_body_from="0" hidden="true" t5m="GRENADE_ANIM" />
+			<moveable id="8" name="Lara harpoon-gun animation" use_body_from="0" hidden="true" t5m="HARPOON_ANIM" />
+			<moveable id="9" name="Lara flare animation" use_body_from="0" hidden="true" t5m="FLARE_ANIM" />
+			<moveable id="10" name="Lara and the snowmobile" use_body_from="0" show_with="13" hidden="true" t5m="SNOWMOBILE_LARA_ANIMS" />
+			<moveable id="11" name="Lara and the boat" use_body_from="0" show_with="14" hidden="true" t5m="SPEEDBOAT_LARA_ANIMS" />
 			<moveable id="12" name="Lara misc animations" use_body_from="0" hidden="true" />
-			<moveable id="13" name="Red snowmobile (can go fast)" show_with="10" essential="false" />
+			<moveable id="13" name="Red snowmobile (can go fast)" show_with="10" essential="false" t5m="SNOWMOBILE" />
 			<moveable id="14" name="Boat" show_with="11" essential="false" t5m="SPEEDBOAT" />
 			<moveable id="15" name="Doberman" essential="false" t5m="DOBERMAN" />
-			<moveable id="16" name="Masked goon (white mask, jacket)" essential="false" t5m="GOOD_SILENCER1" />
-			<moveable id="17" name="Masked goon (white mask, vest)" essential="false"	t5m="GOOD_SILENCER2" />
-			<moveable id="18" name="Masked goon (black mask)" essential="false"			t5m="GOOD_SILENCER3" />
+			<moveable id="16" name="Masked goon (white mask, jacket)" essential="false" t5m="GOON_SILENCER1" />
+			<moveable id="17" name="Masked goon (white mask, vest)" essential="false" t5m="GOON_SILENCER2" />
+			<moveable id="18" name="Masked goon (black mask)" essential="false" t5m="GOON_SILENCER3" />
 			<moveable id="19" name="Knifethrower" essential="false" t5m="KNIFETHROWER" />
 			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_SHOTGUN" />
 			<moveable id="21" name="Rat" essential="false" t5m="BIG_RAT" />
 			<moveable id="22" name="Dragon (front)" show_with="23" essential="false" t5m="DRAGON_FRONT" />
 			<moveable id="23" name="Dragon (back)" show_with="22" essential="false" t5m="DRAGON_BACK" />
 			<moveable id="24" name="Gondola (Venetian boat)" essential="false" t5m="ANIMATING100" />
-			<moveable id="25" name="Shark" essential="false" />
-			<moveable id="26" name="Yellow moray eel" essential="false" />
-			<moveable id="27" name="Black moray eel" essential="false" />
-			<moveable id="28" name="Barracuda / Whiskered Fish" essential="false" />
-			<moveable id="29" name="Scuba diver" essential="false" />
-			<moveable id="30" name="Gun-wielding rig worker (khaki pants)" essential="false" />
-			<moveable id="31" name="Gun-wielding rig worker (blue jeans)" essential="false" />
-			<moveable id="32" name="Stick-wielding goon" essential="false" />
-			<moveable id="33" name="Stick-wielding goon (can't climb)" essential="false" />
-			<moveable id="34" name="Flamethrower-wielding goon" essential="false" />
-			<moveable id="36" name="Spider" essential="false" />
-			<moveable id="37" name="Giant spider" essential="false" />
-			<moveable id="38" name="Crow" essential="false" />
-			<moveable id="39" name="Tiger / Snow leopard / White tiger" essential="false" />
+			<moveable id="25" name="Shark" essential="false" t5m="SHARK" />
+			<moveable id="26" name="Yellow moray eel" essential="false" t5m="BARRACUDA" />
+			<moveable id="27" name="Black moray eel" essential="false" t5m="BARRACUDA" />
+			<moveable id="28" name="Barracuda / Whiskered Fish" essential="false" t5m="BARRACUDA" />
+			<moveable id="29" name="Scuba diver" essential="false" t5m="SCUBA_DIVER" />
+			<moveable id="30" name="Gun-wielding rig worker (khaki pants)" essential="false" t5m="WORKER_SHOTGUN" />
+			<moveable id="31" name="Gun-wielding rig worker (blue jeans)" essential="false" t5m="WORKER_MACHINEGUN" />
+			<moveable id="32" name="Stick-wielding goon" essential="false" t5m="MP_WITH_STICK" />
+			<moveable id="33" name="Stick-wielding goon (can't climb)" essential="false" t5m="MP_WITH_STICK" />
+			<moveable id="34" name="Flamethrower-wielding goon" essential="false" t5m="WORKER_FLAMETHROWER" />
+			<moveable id="36" name="Spider" essential="false" t5m="SMALL_SPIDER" />
+			<moveable id="37" name="Giant spider" essential="false" t5m="BIG_SPIDER" />
+			<moveable id="38" name="Crow" essential="false" t5m="CROW" />
+			<moveable id="39" name="Tiger / Snow leopard / White tiger" essential="false" t5m="TIGER" />
 			<moveable id="40" name="Marco Bartoli" essential="false" t5m="MARCO_BARTOLI" />
 			<moveable id="41" name="Spear-wielding Xian Guard" essential="false" t5m="SPEAR_GUARDIAN" />
 			<moveable id="42" name="Spear-wielding Xian Guard statue" essential="false" t5m="SPEAR_GUARDIAN_STATUE" />
 			<moveable id="43" name="Sword-wielding Xian Guard" essential="false" t5m="SWORD_GUARDIAN" />/>
 			<moveable id="44" name="Sword-wielding Xian Guard statue" essential="false" t5m="SWORD_GUARDIAN_STATUE" />/>
-			<moveable id="45" name="Yeti" essential="false" />
-			<moveable id="46" name="Bird monster (guards Talion)" essential="false" />
-			<moveable id="47" name="Eagle" essential="false" />
-			<moveable id="48" name="Mercenary" essential="false" />
-			<moveable id="49" name="Mercenary (black ski mask, gray jacket)" essential="false" />
-			<moveable id="50" name="Mercenary (black ski mask, brown jacket)" essential="false" />
-			<moveable id="51" name="Black snowmobile (with guns)" show_with="52" essential="false" />
-			<moveable id="52" name="Mercenary snowmobile driver" show_with="51" essential="false" />
-			<moveable id="53" name="Monk with long stick" essential="false" />
-			<moveable id="54" name="Monk with knife-end stick" essential="false" />
-			<moveable id="55" name="Collapsible floor" essential="false" />
-			<moveable id="57" name="Loose boards" essential="false" />
-			<moveable id="58" name="Swinging sandbag / spiky ball" essential="false" />
-			<moveable id="59" name="Spikes / Glass shards" essential="false" />
-			<moveable id="60" name="Boulder" essential="false" />
+			<moveable id="45" name="Yeti" essential="false" t5m="YETI" />
+			<moveable id="46" name="Bird monster (guards Talion)" essential="false" t5m="BIRDMONSTER" />
+			<moveable id="47" name="Eagle" essential="false" t5m="EAGLE" />
+			<moveable id="48" name="Mercenary" essential="false" t5m="MERCENARY_UZI" />
+			<moveable id="49" name="Mercenary (black ski mask, gray jacket)" essential="false" t5m="MERCENARY_AUTOPISTOLS1" />
+			<moveable id="50" name="Mercenary (black ski mask, brown jacket)" essential="false" t5m="MERCENARY_AUTOPISTOLS2" />
+			<moveable id="51" name="Black snowmobile (with guns)" show_with="52" essential="false" t5m="SNOWMOBILE_GUN" />
+			<moveable id="52" name="Mercenary snowmobile driver" show_with="51" essential="false" t5m="SNOWMOBILE_DRIVER" />
+			<moveable id="53" name="Monk with long stick" essential="false" t5m="MONK1" />
+			<moveable id="54" name="Monk with knife-end stick" essential="false" t5m="MONK2" />
+			<moveable id="55" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
+			<moveable id="57" name="Loose boards" essential="false" t5m="CRUMBLING_FLOOR" />
+			<moveable id="58" name="Swinging sandbag / spiky ball" essential="false" t5m="SPIKEBALL" />
+			<moveable id="59" name="Spikes / Glass shards" essential="false" t5m="TEETH_SPIKES" />
+			<moveable id="60" name="Boulder" essential="false" t5m="ROLLINGBALL" />
 			<moveable id="61" name="Disk (like dart)" hidden="true" />
 			<moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" />
 			<moveable id="63" name="Drawbridge" essential="false" />
 			<moveable id="64" name="Slamming door" essential="false" />
 			<moveable id="65" name="Elevator" essential="false" />
 			<moveable id="66" name="Minisub" essential="false" />
-			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" />
-			<moveable id="68" name="Movable cubical block (pushable)" essential="false" />
-			<moveable id="69" name="Movable cubical block (pushable)" essential="false" />
-			<moveable id="70" name="Movable cubical block (pushable)" essential="false" />
-			<moveable id="71" name="Big bowl (Ice Palace)" essential="false" />
-			<moveable id="72" name="Breakable window (can shoot out)" essential="false" />
-			<moveable id="73" name="Breakable window (must jump through)" essential="false" />
-			<moveable id="76" name="Airplane propeller" essential="false" />
-			<moveable id="77" name="Power saw" essential="false" />
-			<moveable id="78" name="Overhead pulley hook" essential="false" />
-			<moveable id="79" name="Sandbag / Ceiling fragments" essential="false" />
-			<moveable id="80" name="Rolling spindle" essential="false" />
-			<moveable id="81" name="Wall-mounted knife blade" essential="false" />
-			<moveable id="82" name="Statue with knife blade" essential="false" />
-			<moveable id="83" name="Multiple boulders / snowballs" essential="false" />
-			<moveable id="84" name="Detachable icicles" essential="false" />
-			<moveable id="85" name="Spiky moveable wall" essential="false" />
-			<moveable id="86" name="Bounce pad" essential="false" />
-			<moveable id="87" name="Spiky ceiling segment" essential="false" />
-			<moveable id="88" name="Tibetan bell" essential="false" />
-			<moveable id="91" name="Lara and a snowmobile" />
-			<moveable id="92" name="Wheel knob" essential="false" />
-			<moveable id="93" name="Above-water switch" essential="false" />
-			<moveable id="94" name="Underwater propeller" essential="false" />
-			<moveable id="95" name="Air fan" essential="false" />
-			<moveable id="96" name="Swinging box / spiky ball" essential="false" />
-			<moveable id="101" name="Rolling storage drums" essential="false" />
-			<moveable id="102" name="Zipline handle" essential="false" />
-			<moveable id="103" name="Above-water switch" essential="false" />
-			<moveable id="104" name="Above-water/underwater switch" essential="false" />
-			<moveable id="105" name="Underwater switch" essential="false" />
+			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
+			<moveable id="69" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE3" />
+			<moveable id="70" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE4" />
+			<moveable id="71" name="Big bowl (Ice Palace)" essential="false" t5m="ANIMATING1" />
+			<moveable id="72" name="Breakable window (can shoot out)" essential="false" t5m="SMASH_OBJECT1" />
+			<moveable id="73" name="Breakable window (must jump through)" essential="false" t5m="SMASH_OBJECT2" />
+			<moveable id="76" name="Airplane propeller" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="77" name="Power saw" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="78" name="Overhead pulley hook" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="79" name="Sandbag / Ceiling fragments" essential="false" t5m="FALLING_CEILING" />
+			<moveable id="80" name="Rolling spindle" essential="false" t5m="ROLLING_SPINDLE" />
+			<moveable id="81" name="Wall-mounted knife blade" essential="false" t5m="WALL_MOUNTED_BLADE" />
+			<moveable id="82" name="Statue with knife blade" essential="false" t5m="STATUE_WITH_BLADE" />
+			<moveable id="83" name="Multiple boulders / snowballs" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="84" name="Detachable icicles" essential="false" t5m="FALLING_CEILING" />
+			<moveable id="85" name="Spiky moveable wall" essential="false" t5m="SPIKY_WALL" />
+			<moveable id="86" name="Bounce pad" essential="false" t5m="SPRINGBOARD" />
+			<moveable id="87" name="Spiky ceiling segment" essential="false" t5m="SPIKY_CEILING" />
+			<moveable id="88" name="Tibetan bell" essential="false" t5m="BELL" />
+			<moveable id="91" name="Lara and a snowmobile" t5m="SNOWMOBILE_LARA_ANIMS" />
+			<moveable id="92" name="Wheel knob" essential="false" t5m="SWITCH_TYPE1" />
+			<moveable id="93" name="Above-water switch" essential="false" t5m="SWITCH_TYPE2" />
+			<moveable id="94" name="Underwater propeller" essential="false" t5m="PROPELLER_H" />
+			<moveable id="95" name="Air fan" essential="false" t5m="ANIMATING1" />
+			<moveable id="96" name="Swinging box / spiky ball" essential="false" t5m="SPIKEBALL" />
+			<moveable id="101" name="Rolling storage drums" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="102" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
+			<moveable id="103" name="Above-water switch" essential="false" t5m="SWITCH_TYPE3" />
+			<moveable id="104" name="Above-water/underwater switch" essential="false" t5m="SWITCH_TYPE4" />
+			<moveable id="105" name="Underwater switch" essential="false" t5m="UNDERWATER_SWITCH1" />
 			<moveable id="106" name="Door" essential="false" t5m="DOOR_TYPE1" />
 			<moveable id="107" name="Door" essential="false" t5m="DOOR_TYPE2" />
 			<moveable id="108" name="Door" essential="false" t5m="DOOR_TYPE3" />
@@ -768,30 +768,30 @@
 			<moveable id="119" name="Bridge (tilt = 2)" essential="false" t5m="BRIDGE_TILT2" />
 			<moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
 			<moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
-			<moveable id="122" name="Lara and butler picture" hidden="true" />
+			<moveable id="122" name="Lara and butler picture" hidden="true" t5m="INVENTORY_POLAROID" />
 			<moveable id="133" name="Secret #3" id2="192" use_body_from="248" />
 			<moveable id="134" name="Natla's logo" hidden="true" />
-			<moveable id="152" name="Flare" />
-			<moveable id="153" name="Sunglasses" hidden="true" />
-			<moveable id="154" name="Portable CD player" hidden="true" />
+			<moveable id="152" name="Flare" t5m="FLARE_ITEM" />
+			<moveable id="153" name="Sunglasses" hidden="true" t5m="INVENTORY_SUNGLASSES" />
+			<moveable id="154" name="Portable CD player" hidden="true" t5m="INVENTORY_HEADPHONES" />
 			<moveable id="155" name="Direction keys" hidden="true" />
-			<moveable id="157" name="Pistol" id2="135" />
-			<moveable id="158" name="Shotgun" id2="136" />
-			<moveable id="159" name="Auto-pistol" id2="137" />
-			<moveable id="160" name="Uzi" id2="138" />
-			<moveable id="161" name="Harpoon gun" id2="139" />
-			<moveable id="162" name="M16" id2="140" />
-			<moveable id="163" name="Grenade launcher" id2="141" />
-			<moveable id="164" name="Pistol ammo" />
-			<moveable id="165" name="Shotgun ammo" id2="143" />
-			<moveable id="166" name="Auto-pistol ammo" id2="144" />
-			<moveable id="167" name="Uzi ammo" id2="145" />
-			<moveable id="168" name="Harpoons" id2="146" />
-			<moveable id="169" name="M16 ammo" id2="147" />
-			<moveable id="170" name="Grenades" id2="148" />
-			<moveable id="171" name="Small medipack" id2="149" />
-			<moveable id="172" name="Large medipack" id2="150" />
-			<moveable id="173" name="Flares (opening box)" id2="151" />
+			<moveable id="157" name="Pistol" id2="135" t5m="PISTOLS_ITEM" />
+			<moveable id="158" name="Shotgun" id2="136" t5m="SHOTGUN_ITEM"/>
+			<moveable id="159" name="Auto-pistol" id2="137" t5m="PISTOLS_ITEM"/>
+			<moveable id="160" name="Uzi" id2="138" t5m="UZI_ITEM"/>
+			<moveable id="161" name="Harpoon gun" id2="139" t5m="HARPOON_ITEM"/>
+			<moveable id="162" name="M16" id2="140" t5m="HK_ITEM"/>
+			<moveable id="163" name="Grenade launcher" id2="141" t5m="GRENADE_GUN_ITEM"/>
+			<moveable id="164" name="Pistol ammo"  t5m="PISTOL_AMMO_ITEM"/>
+			<moveable id="165" name="Shotgun ammo" id2="143" t5m="SHOTGUN_AMMO1_ITEM"/>
+			<moveable id="166" name="Auto-pistol ammo" id2="144" t5m="PISTOLS_AMMO_ITEM"/>
+			<moveable id="167" name="Uzi ammo" id2="145" t5m="UZI_AMMO_ITEM"/>
+			<moveable id="168" name="Harpoons" id2="146" t5m="HARPOON_AMMO_ITEM"/>
+			<moveable id="169" name="M16 ammo" id2="147" t5m="HK_AMMO_ITEM"/>
+			<moveable id="170" name="Grenades" id2="148" t5m="GRENADE_GUN_AMMO1_ITEM"/>
+			<moveable id="171" name="Small medipack" id2="149" t5m="SMALLMEDI_ITEM"/>
+			<moveable id="172" name="Large medipack" id2="150" t5m="BIGMEDI_ITEM"/>
+			<moveable id="173" name="Flares (opening box)" id2="151" t5m="FLARE_INV_ITEM" />
 			<moveable id="178" name="Puzzle 1" essential="false" id2="174" y_adjust="0.1" t5m="PUZZLE_ITEM1" />
 			<moveable id="179" name="Puzzle 2" essential="false" id2="175" t5m="PUZZLE_ITEM2" />
 			<moveable id="180" name="Puzzle 3" essential="false" id2="176" t5m="PUZZLE_ITEM3" />
@@ -801,9 +801,9 @@
 			<moveable id="184" name="Slot 3 empty ?" t5m="PUZZLE_HOLE3" />
 			<moveable id="185" name="Slot 4 empty" t5m="PUZZLE_HOLE4" />
 			<moveable id="186" name="Slot 1 full" t5m="PUZZLE_DONE3" />
-			<moveable id="187" name="Slot 2 full" t5m="PUZZLE_DONE3" />
+			<moveable id="187" name="Slot 2 full" t5m="PUZZLE_DONE2" />
 			<moveable id="188" name="Slot 3 full ?" t5m="PUZZLE_DONE3" />
-			<moveable id="189" name="Slot 4 full" t5m="PUZZLE_DONE3" />
+			<moveable id="189" name="Slot 4 full" t5m="PUZZLE_DONE4" />
 			<moveable id="197" name="Key 1" id2="193" essential="false" t5m="KEY_ITEM1" />
 			<moveable id="198" name="Key 2" id2="194" essential="false" t5m="KEY_ITEM2" />
 			<moveable id="199" name="Key 3" id2="195" essential="false" t5m="KEY_ITEM3" />
@@ -820,38 +820,38 @@
 			<moveable id="210" name="Dragon explosion effect (expanding netted bubble)" hidden="true" t5m="SPHERE_OF_DOOM2" />
 			<moveable id="211" name="Dragon explosion effect (expanding solid bubble)" hidden="true"  t5m="SPHERE_OF_DOOM3" />
 			<moveable id="212" name="Alarm" essential="false" />
-			<moveable id="213" name="Dripping water" essential="false" />
-			<moveable id="214" name="Tyrannosaur" essential="false" t5m="Tyrannosaur" />
-			<moveable id="215" name="Singing birds" essential="false" t5m="ANIMATING_1" />
+			<moveable id="213" name="Dripping water" essential="false"  />
+			<moveable id="214" name="Tyrannosaur" essential="false" t5m="TYRANNOSAUR" />
+			<moveable id="215" name="Singing birds" essential="false" t5m="ANIMATING1" />
 			<moveable id="216" name="Bartoli's Hideout clock" essential="false" t5m="ANIMATING2" />
 			<moveable id="217" name="Placeholder" essential="false" />
 			<moveable id="218" name="Dragon bones (front)" show_with="219" t5m="DRAGON_BONE_FRONT" />
 			<moveable id="219" name="Dragon bones (back)" show_with="218" t5m="DRAGON_BONE_BACK" />
-			<moveable id="222" name="Aquatic Mine (Venice)" essential="false" />
+			<moveable id="222" name="Aquatic Mine (Venice)" essential="false" t5m="ANIMATING10" />
 			<moveable id="223" name="Menu background" hidden="true" />
-			<moveable id="225" name="Gong-hammering animation" use_body_from="0" hidden="true" t5m="LARA_EXTRA_ANIMS" />
-			<moveable id="226" name="Gong (Ice Palace)" essential="false" />
-			<moveable id="227" name="Detonator box" essential="false" />
-			<moveable id="228" name="Helicopter (Diving Area)" essential="false" />
+			<moveable id="225" name="Gong-hammering animation" use_body_from="0" hidden="true" />
+			<moveable id="226" name="Gong (Ice Palace)" essential="false" t5m="ANIMATING1" />
+			<moveable id="227" name="Detonator box" essential="false" t5m="ANIMATING1" />
+			<moveable id="228" name="Helicopter (Diving Area)" essential="false" t5m="ANIMATING1" />
 			<moveable id="235" name="Flare burning?" hidden="true" />
 			<moveable id="240" name="Gunflare" hidden="true" />
 			<moveable id="241" name="Gunflare (spiky)" hidden="true" />
-			<moveable id="243" name="Camera target" essential="false" />
-			<moveable id="244" name="Waterfall mist" essential="false" />
-			<moveable id="245" name="Harpoon (single)" hidden="true" t5m="Harpoon" />
+			<moveable id="243" name="Camera target" essential="false" t5m="CAMERA_TARGET" />
+			<moveable id="244" name="Waterfall mist" essential="false" t5m="WATERFALLMIST" />
+			<moveable id="245" name="Harpoon (single)" hidden="true" t5m="HARPOON" />
 			<moveable id="247" name="Pointer (nullmesh)?" />
-			<moveable id="248" name="Grenade (single)" hidden="true" t5m="Grenade" />
+			<moveable id="248" name="Grenade (single)" hidden="true" t5m="GRENADE" />
 			<moveable id="249" name="Harpoon (flying)" hidden="true" t5m="HARPOON" />
 			<moveable id="251" name="Spark emitter" essential="false" />
 			<moveable id="253" name="Flame emitter" essential="false" />
-			<moveable id="254" name="Skybox" hidden="true" />
+			<moveable id="254" name="Skybox" hidden="true" t5m="HORIZON" />
 			<moveable id="256" name="Monk" essential="false" />
 			<moveable id="257" name="Door bell" essential="false" />
-			<moveable id="258" name="Alarm bell" essential="false" />
-			<moveable id="259" name="Helicopter" essential="false" />
+			<moveable id="258" name="Alarm bell" essential="false"  />
+			<moveable id="259" name="Helicopter" essential="false"  />
 			<moveable id="260" name="The butler" essential="false" />
-			<moveable id="262" name="Lara cutscene placement" />
-			<moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" />
+			<moveable id="262" name="Lara cutscene placement" t5m="LARA_START_POS" />
+			<moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" t5m="ANIMATING1" />
 			<moveable id="264" name="Dragon explosion emitter" />
 		</moveables>
 		<sprite_sequences>
@@ -1350,9 +1350,9 @@
 			<moveable id="4" name="Lara Desert-Eagle animation" use_body_from="315" hidden="true" t5m="REVOLVER_ANIM" />
 			<moveable id="5" name="Lara Uzi animation" use_body_from="315" hidden="true" t5m="UZI_ANIM"/>
 			<moveable id="6" name="Lara MP5 animation" use_body_from="315" hidden="true" />
-			<moveable id="7" name="Lara rocket-launcher animation" use_body_from="315" t5m="ROCKET_ANIM" hidden="true" />
+			<moveable id="7" name="Lara rocket-launcher animation" use_body_from="315" hidden="true" t5m="ROCKET_ANIM" />
 			<moveable id="8" name="Lara grenade-launcher animation" use_body_from="315" hidden="true" t5m="GRENADE_ANIM"/>
-			<moveable id="9" name="Lara harpoon-gun animation" use_body_from="315" t5m="HARPOON_ANIM" hidden="true" />
+			<moveable id="9" name="Lara harpoon-gun animation" use_body_from="315" hidden="true" t5m="HARPOON_ANIM"  />
 			<moveable id="10" name="Lara flare animation" use_body_from="315" hidden="true" t5m="FLARE_ANIM"/>
 			<moveable id="11" name="Lara UPV animation" use_body_from="315" hidden="true" t5m="UPV_LARA_ANIMS"/>
 			<moveable id="12" name="UPV" show_with="11" essential="false" t5m="UPV"/>
@@ -1374,122 +1374,122 @@
 			<moveable id="28" name="Tiger" essential="false" t5m="TIGER"/>
 			<moveable id="29" name="Vulture" essential="false" t5m="EAGLE"/>
 			<moveable id="30" name="Assault-course target" essential="false" t5m="SHOOT_SWITCH1" />
-			<moveable id="31" name="Crawler mutant in closet" essential="false"/>
+			<moveable id="31" name="Crawler mutant in closet" essential="false" t5m="ANIMATING108"/>
 			<moveable id="32" name="Crocodile (in water)" essential="false" />
 			<moveable id="34" name="Compsognathus" essential="false" t5m="SMALL_DINOSAUR"/>
 			<moveable id="35" name="Lizard thing" essential="false" t5m="LIZARD"/>
 			<moveable id="36" name="Puna guy" essential="false" t5m="PUNA_BOSS"/>
 			<moveable id="37" name="Mercenary" essential="false" />
-			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" />
-			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" />
-			<moveable id="40" name="RX-Tech guy with gun" essential="false" />
+			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" t5m="SHOOT_SWITCH2" />
+			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" t5m="MP_WITH_GUN" /> 
+			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS_CAIRO" /> 
 			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
-			<moveable id="42" name="Crawler mutant" essential="false" />
-			<moveable id="44" name="Tinnos wasp" essential="false" />
+			<moveable id="42" name="Crawler mutant" essential="false" /> 
+			<moveable id="44" name="Tinnos wasp" essential="false" /> 
 			<moveable id="45" name="Tinnos monster" essential="false" />
-			<moveable id="46" name="Brute mutant (with claw)" essential="false" />
+			<moveable id="46" name="Brute mutant (with claw)" essential="false" /> 
 			<moveable id="47" name="Tinnos wasp respawn point" essential="false" />
 			<moveable id="48" name="Raptor respawn point" />
-			<moveable id="49" name="Willardspider" essential="false"/>
-			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" />
-			<moveable id="51" name="London goon" essential="false" />
-			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" />
-			<moveable id="56" name="London guard" essential="false" />
+			<moveable id="49" name="Willardspider" essential="false"/> 
+			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" t5m="FLAMETHROWER_BADDY" /> 
+			<moveable id="51" name="London goon" essential="false" t5m="SAS_CAIRO"/> 
+			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
+			<moveable id="56" name="London guard" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="57" name="Sophia Lee" essential="false" t5m="SOPHIA_LEE_BOSS"/>
-			<moveable id="58" name="Thames Wharf machine" essential="false" />
-			<moveable id="60" name="MP with stick" essential="false" />
-			<moveable id="61" name="MP with gun" essential="false" />
-			<moveable id="62" name="Prisoner" essential="false" />
-			<moveable id="63" name="MP with sighted gun and night sight" essential="false" />
-			<moveable id="64" name="Gun turret" essential="false" />
-			<moveable id="65" name="Dam guard" essential="false" />
+			<moveable id="58" name="Thames Wharf machine" essential="false" /> 
+			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
+			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
+			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
+			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
+			<moveable id="64" name="Gun turret" essential="false" t5m="SENTRY_GUN"/>
+			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="66" name="Tripwire" essential="false" />
-			<moveable id="67" name="Electrified wire" essential="false" />
-			<moveable id="68" name="Killer tripwire" essential="false" />
-			<moveable id="69" name="Cobra / Rattlesnake" essential="false" />
+			<moveable id="67" name="Electrified wire" essential="false" t5m="ELECTRIC_FENCE" /> 
+			<moveable id="68" name="Killer tripwire" essential="false" t5m="TRIPWIRE"/> 
+			<moveable id="69" name="Cobra / Rattlesnake" essential="false" t5m="COBRA" />
 			<moveable id="70" name="Temple statue" essential="false" t5m="SHIVA"/>
-			<moveable id="71" name="Monkey" essential="false" />
+			<moveable id="71" name="Monkey" essential="false" t5m="BABOON_NORMAL"/> 
 			<moveable id="73" name="Tony Firehands" essential="false" t5m="TONY_BOSS"/>
-			<moveable id="74" ai="true" name="AI Guard" essential="false" />
-			<moveable id="75" ai="true" name="AI Ambush" essential="false" />
-			<moveable id="76" ai="true" name="AI Patrol 1" essential="false" />
-			<moveable id="77" ai="true" name="AI Modify" essential="false" />
-			<moveable id="78" ai="true" name="AI Follow" essential="false" />
-			<moveable id="79" ai="true" name="AI Patrol 2" essential="false" />
-			<moveable id="80" ai="true" name="AI Path" essential="false" />
-			<moveable id="81" ai="true" name="AI Check" essential="false" />
+			<moveable id="74" ai="true" name="AI Guard" essential="false" t5m="AI_GUARD" />
+			<moveable id="75" ai="true" name="AI Ambush" essential="false" t5m="AI_AMBUSH"/>
+			<moveable id="76" ai="true" name="AI Patrol 1" essential="false" t5m="AI_PATROL1"/>
+			<moveable id="77" ai="true" name="AI Modify" essential="false" t5m="AI_MODIFY"/>
+			<moveable id="78" ai="true" name="AI Follow" essential="false" t5m="AI_FOLLOW"/>
+			<moveable id="79" ai="true" name="AI Patrol 2" essential="false" t5m="AI_PATROL2"/>
+			<moveable id="80" ai="true" name="AI Path" essential="false" t5m="AI_X1"/> 
+			<moveable id="81" ai="true" name="AI Check" essential="false" t5m="AI_X2"/>
 			<moveable id="82" name="Unknown Id #82" essential="false" />
-			<moveable id="83" name="Collapsible floor" essential="false" />
-			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" />
-			<moveable id="87" name="Spikes / Barbed wire" essential="false" />
-			<moveable id="88" name="Boulder / Barrel" essential="false" />
-			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" />
-			<moveable id="90" name="Disk (like dart)" hidden="true" />
-			<moveable id="91" name="Dart emitter" essential="false" />
-			<moveable id="94" name="Spiked frame / Slamming door" essential="false" />
-			<moveable id="97" name="Movable cubical block (pushable)" essential="false" />
-			<moveable id="98" name="Movable cubical block (pushable)" essential="false" />
-			<moveable id="101" name="Destroyable boarded-up window" essential="false" />
-			<moveable id="102" name="Destroyable boarded-up window / wall" essential="false" />
-			<moveable id="106" name="Overhead pulley hook" essential="false" />
-			<moveable id="107" name="Falling fragments" essential="false" />
-			<moveable id="108" name="Rolling spindle" essential="false" />
-			<moveable id="110" name="Subway train" essential="false" />
-			<moveable id="111" name="Wall-mounted knife blade / Knife disk" essential="false" />
-			<moveable id="113" name="Detachable stalacites" essential="false" />
+			<moveable id="83" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
+			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" t5m="WALL_MOUNTED_BLADE" />  
+			<moveable id="87" name="Spikes / Barbed wire" essential="false" t5m="TEETH_SPIKES" />
+			<moveable id="88" name="Boulder / Barrel" essential="false" t5m="CLASSIC_ROLLINGBALL" />
+			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" /> 
+			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
+			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
+			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2"/>
+			<moveable id="101" name="Destroyable boarded-up window" essential="false" t5m="SMASH_OBJECT1" />
+			<moveable id="102" name="Destroyable boarded-up window / wall" essential="false" t5m="SMASH_OBJECT2" />
+			<moveable id="106" name="Overhead pulley hook" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="107" name="Falling fragments" essential="false" t5m="FALLING_CEILING" />
+			<moveable id="108" name="Rolling spindle" essential="false" t5m="ROLLING_SPINDLE" />
+			<moveable id="110" name="Subway train" essential="false" t5m="TRAIN" />
+			<moveable id="111" name="Wall-mounted knife blade / Knife disk" essential="false" t5m="WALL_MOUNTED_BLADE" />
+			<moveable id="113" name="Detachable stalacites" essential="false" t5m="FALLING_BLOCK" />
 			<moveable id="114" name="Spiky moveable wall" essential="false" />
-			<moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" />
-			<moveable id="117" name="Valve wheel / Pulley" essential="false" />
-			<moveable id="118" name="Switch / Pullable book" essential="false" />
-			<moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" essential="false" />
+			<moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" t5m="SPIKY_WALL" />
+			<moveable id="117" name="Valve wheel / Pulley" essential="false" t5m="SWITCH_TYPE1"/>
+			<moveable id="118" name="Switch / Pullable book" essential="false" t5m="SWITCH_TYPE2"/>
+			<moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" essential="false" /> 
 			<moveable id="120" name="Fan" essential="false" />
 			<moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" essential="false" />
 			<moveable id="122" name="Temple statue (original petrified state)" essential="false" t5m="SHIVA_STATUE"/>
-			<moveable id="123" name="Monkey with medipack" use_body_from="71" />
-			<moveable id="124" name="Monkey with key" use_body_from="71" />
-			<moveable id="127" name="Zipline handle" essential="false"/>
-			<moveable id="128" name="Above-water switch" essential="false" />
-			<moveable id="129" name="Above-water switch" essential="false" />
-			<moveable id="130" name="Underwater switch" essential="false" />
-			<moveable id="131" name="Door" essential="false" />
-			<moveable id="132" name="Door" essential="false" />
-			<moveable id="133" name="Door" essential="false" />
-			<moveable id="134" name="Door" essential="false" />
-			<moveable id="135" name="Door" essential="false" />
-			<moveable id="136" name="Door" essential="false" />
-			<moveable id="137" name="Door" essential="false" />
-			<moveable id="138" name="Door" essential="false" />
-			<moveable id="139" name="Trapdoor" essential="false" />
-			<moveable id="140" name="Trapdoor" essential="false" />
-			<moveable id="141" name="Trapdoor" essential="false" />
-			<moveable id="142" name="Bridge (flat)" essential="false" />
-			<moveable id="143" name="Bridge (tilt = 1)" essential="false" />
-			<moveable id="144" name="Bridge (tilt = 2)" essential="false" />
+			<moveable id="123" name="Monkey with medipack" use_body_from="71" /> 
+			<moveable id="124" name="Monkey with key" use_body_from="71" /> 
+			<moveable id="127" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
+			<moveable id="128" name="Above-water switch" essential="false" 	t5m="SWITCH_TYPE3" />
+			<moveable id="129" name="Above-water switch" essential="false" t5m="SWITCH_TYPE4" />
+			<moveable id="130" name="Underwater switch" essential="false" t5m="UNDERWATER_SWITCH1"/>
+			<moveable id="131" name="Door" essential="false" t5m="DOOR_TYPE1" />
+			<moveable id="132" name="Door" essential="false" t5m="DOOR_TYPE2" />
+			<moveable id="133" name="Door" essential="false" t5m="DOOR_TYPE3" />
+			<moveable id="134" name="Door" essential="false" t5m="DOOR_TYPE4" />
+			<moveable id="135" name="Door" essential="false" t5m="DOOR_TYPE5" />
+			<moveable id="136" name="Door" essential="false" t5m="DOOR_TYPE6" />
+			<moveable id="137" name="Door" essential="false" t5m="DOOR_TYPE7" />
+			<moveable id="138" name="Door" essential="false" t5m="DOOR_TYPE8" />
+			<moveable id="139" name="Trapdoor" essential="false" t5m="TRAPDOOR1"/>
+			<moveable id="140" name="Trapdoor" essential="false" t5m="TRAPDOOR2"/>
+			<moveable id="141" name="Trapdoor" essential="false" t5m="TRAPDOOR3"/>
+			<moveable id="142" name="Bridge (flat)" essential="false" t5m="BRIDGE_FLAT" />
+			<moveable id="143" name="Bridge (tilt = 1)" essential="false" t5m="BRIDGE_TILT1" />
+			<moveable id="144" name="Bridge (tilt = 2)" essential="false" t5m="BRIDGE_TILT2" />
 			<moveable id="145" name="Passport (opening up)" t5m="INVENTORY_PASSPORT" hidden="true" />
 			<moveable id="146" name="Stopwatch" hidden="true" />
 			<moveable id="147" name="Lara and butler picture" t5m="INVENTORY_POLAROID" hidden="true" />
 			<moveable id="158" name="Passport (closed)" hidden="true" />
 			<moveable id="159" name="Bar with 'N' logo" hidden="true" />
-			<moveable id="160" name="Pistols (pickup)" essential="false" />
-			<moveable id="161" name="Shotgun (pickup)" essential="false" />
-			<moveable id="162" name="Desert Eagle (pickup)" essential="false" />
-			<moveable id="163" name="Uzis (pickup)" essential="false" />
-			<moveable id="164" name="Harpoon gun (pickup)" essential="false" />
+			<moveable id="160" name="Pistols (pickup)" essential="false" t5m="PISTOL_ITEM"  />
+			<moveable id="161" name="Shotgun (pickup)" essential="false" t5m="SHOTGUN_ITEM" />
+			<moveable id="162" name="Desert Eagle (pickup)" essential="false" t5m="REVOLVER_ITEM" />
+			<moveable id="163" name="Uzis (pickup)" essential="false" t5m="UZI_ITEM" />
+			<moveable id="164" name="Harpoon gun (pickup)" essential="false" t5m="HARPOON_ITEM"/>
 			<moveable id="165" name="MP5 (pickup)" essential="false" />
-			<moveable id="166" name="Rocket launcher (pickup)" essential="false" />
-			<moveable id="167" name="Grenade launcher (pickup)" essential="false" />
-			<moveable id="168" name="Pistol ammo (pickup)" essential="false" />
-			<moveable id="169" name="Shotgun ammo (pickup)" essential="false" />
-			<moveable id="170" name="Desert Eagle ammo (pickup)" essential="false" />
-			<moveable id="171" name="Uzi ammo (pickup)" essential="false" />
-			<moveable id="172" name="Harpoons (pickup)" essential="false" />
+			<moveable id="166" name="Rocket launcher (pickup)" essential="false" t5m="ROCKET_LAUNCHER_ITEM" />
+			<moveable id="167" name="Grenade launcher (pickup)" essential="false" t5m="GRENADE_GUN_ITEM"/>
+			<moveable id="168" name="Pistol ammo (pickup)" essential="false" t5m="PISTOL_AMMO_ITEM"/>
+			<moveable id="169" name="Shotgun ammo (pickup)" essential="false" t5m="SHOTGUN_AMMO1_ITEM"/>
+			<moveable id="170" name="Desert Eagle ammo (pickup)" essential="false" t5m="REVOLVER_AMMO_ITEM"/>
+			<moveable id="171" name="Uzi ammo (pickup)" essential="false" t5m="UZI_AMMO_ITEM"/>
+			<moveable id="172" name="Harpoons (pickup)" essential="false" t5m="HARPOON_AMMO_ITEM"/>
 			<moveable id="173" name="MP5 ammo (pickup)" essential="false" />
-			<moveable id="174" name="Rockets (pickup)" essential="false" />
-			<moveable id="175" name="Grenades (pickup)" essential="false" />
-			<moveable id="176" name="Small medipack (pickup)" essential="false" />
-			<moveable id="177" name="Large medipack (pickup)" essential="false" />
-			<moveable id="178" name="Flares (pickup)" essential="false" />
-			<moveable id="179" name="Flare (pickup)" />
+			<moveable id="174" name="Rockets (pickup)" essential="false"  t5m="ROCKET_LAUNCHER_AMMO_ITEM" />
+			<moveable id="175" name="Grenades (pickup)" essential="false" t5m="GRENADE_GUN_AMMO1_ITEM"/>
+			<moveable id="176" name="Small medipack (pickup)" essential="false" t5m="SMALLMEDI_ITEM"/>
+			<moveable id="177" name="Large medipack (pickup)" essential="false" t5m="BIGMEDI_ITEM"/>
+			<moveable id="178" name="Flares (pickup)" essential="false" t5m="FLARE_ITEM"/>
+			<moveable id="179" name="Flare (pickup)" t5m="FLARE" />
 			<moveable id="180" name="Savegame crystal (pickup)" essential="false" />
 			<moveable id="181" name="Sunglasses" t5m="INVENTORY_SUNGLASSES" hidden="true" />
 			<moveable id="182" name="Portable CD Player" t5m="INVENTORY_HEADPHONES" hidden="true" />
@@ -1515,42 +1515,42 @@
 			<moveable id="202" name="Large medipack (menu item)" hidden="true" />
 			<moveable id="203" name="Flares (menu item)" hidden="true" />
 			<moveable id="204" name="Savegame crystal" hidden="true" />
-			<moveable id="205" name="Puzzle 1 (pickup)" essential="false" />
-			<moveable id="206" name="Puzzle 2 (pickup)" essential="false" />
-			<moveable id="207" name="Puzzle 3 (pickup)" essential="false" />
-			<moveable id="208" name="Puzzle 4 (pickup)" essential="false" />
+			<moveable id="205" name="Puzzle 1 (pickup)" essential="false" t5m="PUZZLE_ITEM1" />
+			<moveable id="206" name="Puzzle 2 (pickup)" essential="false" t5m="PUZZLE_ITEM2" />
+			<moveable id="207" name="Puzzle 3 (pickup)" essential="false" t5m="PUZZLE_ITEM3" />
+			<moveable id="208" name="Puzzle 4 (pickup)" essential="false" t5m="PUZZLE_ITEM4" />
 			<moveable id="209" name="Puzzle 1 (menu item)" hidden="true" />
 			<moveable id="210" name="Puzzle 2 (menu item)" hidden="true" />
 			<moveable id="211" name="Puzzle 3 (menu item)" hidden="true" />
 			<moveable id="212" name="Puzzle 4 (menu item)" hidden="true" />
-			<moveable id="213" name="Slot 1 empty" essential="false" />
-			<moveable id="214" name="Slot 2 empty" essential="false" />
-			<moveable id="215" name="Slot 3 empty" essential="false" />
-			<moveable id="216" name="Slot 4 empty" essential="false" />
-			<moveable id="217" name="Slot 1 full" />
-			<moveable id="218" name="Slot 2 full" />
-			<moveable id="219" name="Slot 3 full" />
-			<moveable id="220" name="Slot 4 full" />
-			<moveable id="224" name="Key 1 (pickup)" essential="false" />
-			<moveable id="225" name="Key 2 (pickup)" essential="false" />
-			<moveable id="226" name="Key 3 (pickup)" essential="false" />
-			<moveable id="227" name="Key 4 (pickup)" essential="false" />
+			<moveable id="213" name="Slot 1 empty" essential="false" /> 
+			<moveable id="214" name="Slot 2 empty" essential="false" /> 
+			<moveable id="215" name="Slot 3 empty" essential="false" /> 
+			<moveable id="216" name="Slot 4 empty" essential="false" /> 
+			<moveable id="217" name="Slot 1 full" /> 
+			<moveable id="218" name="Slot 2 full" /> 
+			<moveable id="219" name="Slot 3 full" /> 
+			<moveable id="220" name="Slot 4 full" /> 
+			<moveable id="224" name="Key 1 (pickup)" essential="false" t5m="KEY_ITEM1" />
+			<moveable id="225" name="Key 2 (pickup)" essential="false" t5m="KEY_ITEM2" />
+			<moveable id="226" name="Key 3 (pickup)" essential="false" t5m="KEY_ITEM3" />
+			<moveable id="227" name="Key 4 (pickup)" essential="false" t5m="KEY_ITEM4" />
 			<moveable id="228" name="Key 1 (menu item)" hidden="true" />
 			<moveable id="229" name="Key 2 (menu item)" hidden="true" />
 			<moveable id="230" name="Key 3 (menu item)" hidden="true" />
 			<moveable id="231" name="Key 4 (menu item)" hidden="true" />
-			<moveable id="232" name="Lock 1" essential="false" />
-			<moveable id="233" name="Lock 2" essential="false" />
-			<moveable id="234" name="Lock 3" essential="false" />
-			<moveable id="235" name="Lock 4" essential="false" />
-			<moveable id="236" name="Pickup 1 (pickup)" essential="false" />
-			<moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" />
+			<moveable id="232" name="Lock 1" essential="false" t5m="KEY_HOLE1" />
+			<moveable id="233" name="Lock 2" essential="false" t5m="KEY_HOLE2" />
+			<moveable id="234" name="Lock 3" essential="false" t5m="KEY_HOLE3" />
+			<moveable id="235" name="Lock 4" essential="false" t5m="KEY_HOLE4" />
+			<moveable id="236" name="Pickup 1 (pickup)" essential="false" t5m="PICKUP_ITEM1" />
+			<moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" t5m="PICKUP_ITEM2"/>
 			<moveable id="238" name="Pickup 1 (menu item)" hidden="true" />
 			<moveable id="239" name="Pickup 2? [unused] (menu item)" hidden="true" />
-			<moveable id="240" name="Infada stone (pickup)" essential="false" />
-			<moveable id="241" name="Element 115 (pickup)" essential="false" />
-			<moveable id="242" name="Eye of Isis (pickup)" essential="false" />
-			<moveable id="243" name="Ora dagger (pickup)" essential="false" />
+			<moveable id="240" name="Infada stone (pickup)" essential="false" t5m="PICKUP_ITEM3" />
+			<moveable id="241" name="Element 115 (pickup)" essential="false" t5m="PICKUP_ITEM4" />
+			<moveable id="242" name="Eye of Isis (pickup)" essential="false" t5m="PICKUP_ITEM5" />
+			<moveable id="243" name="Ora dagger (pickup)" essential="false"  t5m="PICKUP_ITEM6" />
 			<moveable id="244" name="Infada stone (menu item)" hidden="true" />
 			<moveable id="245" name="Element 115 (menu item)" hidden="true" />
 			<moveable id="246" name="Eye of Isis (menu item)" hidden="true" />
@@ -1561,38 +1561,38 @@
 			<moveable id="277" name="Element 115" />
 			<moveable id="278" name="Eye of Isis" />
 			<moveable id="279" name="Ora dagger" />
-			<moveable id="282" name="Fire-breathing dragon statue" essential="false" />
+			<moveable id="282" name="Fire-breathing dragon statue" essential="false" t5m="ANIMATING2" /> 
 			<moveable id="285" name="Unknown visible #285" />
-			<moveable id="287" name="Tyrannosaur" essential="false" />
-			<moveable id="288" name="Raptor" essential="false" />
-			<moveable id="291" name="Laser sweeper" essential="false" />
-			<moveable id="292" name="Electrified Field" essential="false" />
-			<moveable id="295" name="Detonator switch box" essential="false" />
-			<moveable id="300" name="Gunflare / Gunflare (spiky)" hidden="true" />
-			<moveable id="301" name="Spiky gunflare for MP5" hidden="true" />
-			<moveable id="304" name="Camera target" essential="false" />
-			<moveable id="305" name="Waterfall mist" essential="false" />
-			<moveable id="306" name="Harpoon (single)" hidden="true" />
-			<moveable id="309" name="Rocket (single)" hidden="true" />
-			<moveable id="310" name="Harpoon (single)" hidden="true" />
-			<moveable id="311" name="Grenade (single)" hidden="true" />
+			<moveable id="287" name="Tyrannosaur" essential="false" t5m="TYRANNOSAUR"/>
+			<moveable id="288" name="Raptor" essential="false" t5m="RAPTOR"/>
+			<moveable id="291" name="Laser sweeper" essential="false" t5m="GEN_SLOT1" />
+			<moveable id="292" name="Electrified Field" essential="false" /> 
+			<moveable id="295" name="Detonator switch box" essential="false"  />
+			<moveable id="300" name="Gunflare / Gunflare (spiky)" hidden="true" t5m="GUN_FLASH" />
+			<moveable id="301" name="Spiky gunflare for MP5" hidden="true" t5m="GUN_FLASH2" />
+			<moveable id="304" name="Camera target" essential="false" t5m="CAMERA_TARGET" />
+			<moveable id="305" name="Waterfall mist" essential="false" t5m="WATERFALLMIST" />
+			<moveable id="306" name="Harpoon (single)" hidden="true" t5m="HARPOON"/>
+			<moveable id="309" name="Rocket (single)" hidden="true"  t5m="ROCKET"/>
+			<moveable id="310" name="Harpoon (single)" hidden="true" t5m="HARPOON"/>
+			<moveable id="311" name="Grenade (single)" hidden="true"  t5m="GRENADE"/>
 			<moveable id="312" name="Big missile" essential="false" />
 			<moveable id="313" name="Smoke" essential="false" />
 			<moveable id="314" name="Movable Boom" essential="false" />
 			<moveable id="315" name="Lara true appearance" hidden="true" t5m="LARA_SKIN"/>
 			<moveable id="317" name="Unknown visible #317" />
-			<moveable id="318" name="Alarm light" essential="false" />
-			<moveable id="319" name="Light" essential="false" />
-			<moveable id="321" name="Light #2" essential="false" />
-			<moveable id="322" name="Pulsating Light" essential="false" />
-			<moveable id="324" name="Red Light" essential="false" />
-			<moveable id="325" name="Green Light" essential="false" />
-			<moveable id="326" name="Blue Light" essential="false" />
-			<moveable id="327" name="Light #3" essential="false" />
-			<moveable id="328" name="Light #4" essential="false" />
-			<moveable id="330" name="Flame emitter" essential="false" />
-			<moveable id="331" name="Flame emitter 2" essential="false" />
-			<moveable id="332" name="Flame emitter 3" essential="false" />
+			<moveable id="318" name="Alarm light" essential="false" t5m="COLOR_LIGHT" /> 
+			<moveable id="319" name="Light" essential="false" /> 
+			<moveable id="321" name="Light #2" essential="false" /> 
+			<moveable id="322" name="Pulsating Light" essential="false" t5m="PULSE_LIGHT" />
+			<moveable id="324" name="Red Light" essential="false" t5m="COLOR_LIGHT" /> 
+			<moveable id="325" name="Green Light" essential="false" t5m="COLOR_LIGHT" />
+			<moveable id="326" name="Blue Light" essential="false" t5m="COLOR_LIGHT" /> 
+			<moveable id="327" name="Light #3" essential="false" t5m="COLOR_LIGHT" /> 
+			<moveable id="328" name="Light #4" essential="false" t5m="COLOR_LIGHT" /> 
+			<moveable id="330" name="Flame emitter" essential="false"   t5m="FLAME_EMIITER1"  />
+			<moveable id="331" name="Flame emitter 2" essential="false" t5m="FLAME_EMIITER2" />
+			<moveable id="332" name="Flame emitter 3" essential="false" t5m="FLAME_EMIITER3" />
 			<moveable id="333" name="Flame emitter 4" essential="false" />
 			<moveable id="334" name="Smoke #2" essential="false" />
 			<moveable id="335" name="Smoke #3" essential="false" />
@@ -1601,22 +1601,22 @@
 			<moveable id="338" name="Pirahnas" essential="false" />
 			<moveable id="339" name="Fish" essential="false" />
 			<moveable id="347" name="Bat swarm" essential="false" />
-			<moveable id="349" name="Animating 1" essential="false" />
-			<moveable id="350" name="Animating 2" essential="false" />
-			<moveable id="351" name="Animating 3" essential="false" />
-			<moveable id="352" name="Animating 4" essential="false" />
-			<moveable id="353" name="Animating 5" essential="false" />
-			<moveable id="354" name="Animating 6" essential="false" />
-			<moveable id="355" name="Skybox" hidden="true" />
+			<moveable id="349" name="Animating 1" essential="false" t5m="ANIMATING5" />
+			<moveable id="350" name="Animating 2" essential="false" t5m="ANIMATING6" />
+			<moveable id="351" name="Animating 3" essential="false" t5m="ANIMATING7" />
+			<moveable id="352" name="Animating 4" essential="false" t5m="ANIMATING8" />
+			<moveable id="353" name="Animating 5" essential="false" t5m="ANIMATING9" />
+			<moveable id="354" name="Animating 6" essential="false" t5m="ANIMATING10" />
+			<moveable id="355" name="Skybox" hidden="true" t5m="HORIZON" />
 			<moveable id="357" name="Unknown id #357" />
 			<moveable id="358" name="Unknown id #358" />
 			<moveable id="360" name="The butler" essential="false" />
 			<moveable id="361" name="The butler in military outfit and target" essential="false" />
-			<moveable id="365" name="Earthquake" essential="false" />
+			<moveable id="365" name="Earthquake" essential="false" t5m="EARTHQUAKE" />
 			<moveable id="366" name="Yellow shell casing" hidden="true" />
 			<moveable id="367" name="Red shell casing" hidden="true" />
-			<moveable id="370" name="Tinnos light shaft" essential="false" />
-			<moveable id="373" name="Electrical switch box" essential="false" />
+			<moveable id="370" name="Tinnos light shaft" essential="false" t5m="WATERFALL1" />
+			<moveable id="373" name="Electrical switch box" essential="false" t5m="SHOOT_SWITCH2" /> 
 		</moveables>
 		<sprite_sequences>
 			<sprite_sequence id="125" name="Frame (for indicator bars) " zoom="1.714" />
@@ -5139,86 +5139,86 @@
 			<sprite_sequence id="459" name="Misc sprites" t5m="MISC_SPRITES" />
 		</sprite_sequences>
 		<sounds max="450">
-			<sound id="0" name="LARA_FEET" description="Lara feet" />
-			<sound id="1" name="LARA_CLIMB2" description="Lara climb2" />
-			<sound id="2" name="LARA_NO" hardcoded="true" description="Lara no" />
-			<sound id="3" name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" />
-			<sound id="4" name="LARA_LAND" hardcoded="true" description="Lara land" />
-			<sound id="5" name="LARA_CLIMB1" description="Lara climb1" />
-			<sound id="6" name="LARA_HOLSTER_DRAW" hardcoded="true" description="Lara holster draw" />
-			<sound id="7" name="LARA_HOLSTER_AWAY" hardcoded="true" description="Lara holster away" />
-			<sound id="8" name="LARA_FIRE" hardcoded="true" description="Lara fire" />
-			<sound id="9" name="LARA_RELOAD" hardcoded="true" description="Lara reload" />
-			<sound id="10" name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" />
-			<sound id="11" name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" />
+			<sound id="0" name="LARA_FEET" description="Lara feet" t5m="0" /> 
+			<sound id="1" name="LARA_CLIMB2" description="Lara climb2" t5m="1" />
+			<sound id="2" name="LARA_NO" hardcoded="true" description="Lara no" t5m="2" />
+			<sound id="3" name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" t5m="3" />
+			<sound id="4" name="LARA_LAND" hardcoded="true" description="Lara land" t5m="4" />
+			<sound id="5" name="LARA_CLIMB1" description="Lara climb1" t5m="5" />
+			<sound id="6" name="LARA_HOLSTER_DRAW" hardcoded="true" description="Lara holster draw" t5m="6" />
+			<sound id="7" name="LARA_HOLSTER_AWAY" hardcoded="true" description="Lara holster away" t5m="7" />
+			<sound id="8" name="LARA_FIRE" hardcoded="true" description="Lara fire" t5m="8" />
+			<sound id="9" name="LARA_RELOAD" hardcoded="true" description="Lara reload" t5m="9" />
+			<sound id="10" name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" t5m="10" />
+			<sound id="11" name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" t5m="11" />
 			<sound id="12" name="SMASH_GLASS" hardcoded="true" description="Smash glass" t5m="1092" />
-			<sound id="13" name="LARA_CLIMB_WALL_GRUNT" description="Lara climb wall grunt" />
+			<sound id="13" name="LARA_CLIMB_WALL_GRUNT" description="Lara climb wall grunt" t5m="26" />
 			<sound id="14" name="HK_SILENCED" hardcoded="true" description="Hk silenced" t5m="372" />
 			<sound id="15" name="OFFICE_DOOR_OPEN" description="Office door open" t5m="1073" />
 			<sound id="16" name="OFFICE_DOOR_CLSE" description="Office door clse" t5m="1072" />
-			<sound id="17" name="LARA_WET_FEET" hardcoded="true" description="Lara wet feet" />
-			<sound id="18" name="LARA_WADE" hardcoded="true" description="Lara wade" />
+			<sound id="17" name="LARA_WET_FEET" hardcoded="true" description="Lara wet feet" t5m="17" />
+			<sound id="18" name="LARA_WADE" hardcoded="true" description="Lara wade" t5m="18" />
 			<sound id="19" name="SMASH_WOOD" description="Smash wood" t5m="1095" />
-			<sound id="20" name="LARA_INJURY_NONRND" hardcoded="true" description="Lara injury nonrnd" />
-			<sound id="21" name="CRICKET_LOOP" description="Cricket loop" />
+			<sound id="20" name="LARA_INJURY_NONRND" hardcoded="true" description="Lara injury nonrnd" t5m="31" />
+			<sound id="21" name="CRICKET_LOOP" description="Cricket loop" t5m="21" />
 			<sound id="22" name="PHILOSPHER_STONE" description="Philospher stone" t5m="1096" />
-			<sound id="23" name="LARA_JUMP_NONRND" description="Lara jump nonrnd" />
-			<sound id="24" name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" />
-			<sound id="25" name="LARA_HIDDEN_SWITCH" description="Lara hidden switch" />
-			<sound id="26" name="LARA_CLIMB3" description="Lara climb3" />
-			<sound id="27" name="LARA_BODYSL" description="Lara bodysl" />
-			<sound id="28" name="LARA_SHIMMY2" description="Lara shimmy2" />
-			<sound id="29" name="LARA_JUMP_RND" description="Lara jump rnd" />
-			<sound id="30" name="LARA_FALL" hardcoded="true" description="Lara fall" />
-			<sound id="31" name="LARA_INJURY_RND" hardcoded="true" description="Lara injury rnd" />
-			<sound id="32" name="LARA_ROLL" description="Lara roll" />
-			<sound id="33" name="LARA_SPLASH" hardcoded="true" description="Lara splash" />
-			<sound id="34" name="LARA_GETOUT" description="Lara getout" />
-			<sound id="35" name="LARA_SWIM" description="Lara swim" />
-			<sound id="36" name="LARA_BREATH" hardcoded="true" description="Lara breath" />
-			<sound id="37" name="LARA_BUBBLES" hardcoded="true" description="Lara bubbles" />
-			<sound id="38" name="CREATURE_SWIM" description="Creature swim" />
-			<sound id="39" name="LARA_USE_KEY" description="Lara use key" />
-			<sound id="40" name="LARA_PUSH2_NONRND" description="Lara push2 nonrnd" />
-			<sound id="41" name="LARA_GENERAL_DEATH" description="Lara general death" />
-			<sound id="42" name="LARA_KNEES_DEATH" description="Lara knees death" />
-			<sound id="43" name="LARA_UZI_FIRE" hardcoded="true" description="Lara uzi fire" />
-			<sound id="44" name="LARA_UZI_STOP" hardcoded="true" description="Lara uzi stop" />
-			<sound id="45" name="LARA_SHOTGUN" hardcoded="true" description="Lara shotgun" />
-			<sound id="46" name="LARA_PUSH1" description="Lara push1" />
-			<sound id="47" name="LARA_PUSH2_RND" description="Lara push2 rnd" />
-			<sound id="48" name="LARA_RANDOM_PUSHFX" description="Lara random pushfx" />
-			<sound id="49" name="LARA_SHOTGUN_SHELL" hardcoded="true" description="Lara shotgun shell" />
-			<sound id="50" name="UNDERWATER_DOOR" description="Underwater door" />
-			<sound id="51" name="LARA_PULL" description="Lara pull" />
-			<sound id="52" name="LARA_FLOATING" description="Lara floating" />
-			<sound id="53" name="LARA_FALLDETH" description="Lara falldeth" />
-			<sound id="54" name="LARA_GRABHAND" description="Lara grabhand" />
-			<sound id="55" name="LARA_GRABBODY" description="Lara grabbody" />
-			<sound id="56" name="LARA_GRABFEET" description="Lara grabfeet" />
+			<sound id="23" name="LARA_JUMP_NONRND" description="Lara jump nonrnd" t5m="29" />
+			<sound id="24" name="LARA_KNEES_SHUFFLE" description="Lara knees shuffle" t5m="24" />
+			<sound id="25" name="LARA_HIDDEN_SWITCH" description="Lara hidden switch" t5m="25" />
+			<sound id="26" name="LARA_CLIMB3" description="Lara climb3" t5m="26" />
+			<sound id="27" name="LARA_BODYSL" description="Lara bodyslam" t5m="27" />
+			<sound id="28" name="LARA_SHIMMY2" description="Lara shimmy2" t5m="28" />
+			<sound id="29" name="LARA_JUMP_RND" description="Lara jump rnd" t5m="29" />
+			<sound id="30" name="LARA_FALL" hardcoded="true" description="Lara fall" t5m="30" />
+			<sound id="31" name="LARA_INJURY_RND" hardcoded="true" description="Lara injury rnd" t5m="31" />
+			<sound id="32" name="LARA_ROLL" description="Lara roll" t5m="32" />
+			<sound id="33" name="LARA_SPLASH" hardcoded="true" description="Lara splash" t5m="33" />
+			<sound id="34" name="LARA_GETOUT" description="Lara getout" t5m="34" />
+			<sound id="35" name="LARA_SWIM" description="Lara swim" t5m="35" />
+			<sound id="36" name="LARA_BREATH" hardcoded="true" description="Lara breath" t5m="36" />
+			<sound id="37" name="LARA_BUBBLES" hardcoded="true" description="Lara bubbles" t5m="37" />
+			<sound id="38" name="CREATURE_SWIM" description="Creature swim" t5m="35" />
+			<sound id="39" name="LARA_USE_KEY" description="Lara use key" t5m="39" />
+			<sound id="40" name="LARA_PUSH2_NONRND" description="Lara push2 nonrnd" t5m="46" />
+			<sound id="41" name="LARA_GENERAL_DEATH" description="Lara general death" t5m="41" />
+			<sound id="42" name="LARA_KNEES_DEATH" description="Lara knees death" t5m="42" />
+			<sound id="43" name="LARA_UZI_FIRE" hardcoded="true" description="Lara uzi fire" t5m="43" />
+			<sound id="44" name="LARA_UZI_STOP" hardcoded="true" description="Lara uzi stop" t5m="44" />
+			<sound id="45" name="LARA_SHOTGUN" hardcoded="true" description="Lara shotgun" t5m="45" />
+			<sound id="46" name="LARA_PUSH1" description="Lara push1" t5m="46" />
+			<sound id="47" name="LARA_PUSH2_RND" description="Lara push2 rnd" t5m="47" />
+			<sound id="48" name="LARA_RANDOM_PUSHFX" description="Lara random pushfx" t5m="46" />
+			<sound id="49" name="LARA_SHOTGUN_SHELL" hardcoded="true" description="Lara shotgun shell" t5m="49" />
+			<sound id="50" name="UNDERWATER_DOOR" description="Underwater door" t5m="50" />
+			<sound id="51" name="LARA_PULL" description="Lara pull" t5m="51" />
+			<sound id="52" name="LARA_FLOATING" description="Lara floating" t5m="52" />
+			<sound id="53" name="LARA_FALLDETH" description="Lara falldeth" t5m="53" />
+			<sound id="54" name="LARA_GRABHAND" description="Lara grabhand" t5m="54" />
+			<sound id="55" name="LARA_GRABBODY" description="Lara grabbody" t5m="55" />
+			<sound id="56" name="LARA_GRABFEET" description="Lara grabfeet" t5m="56" />
 			<sound id="57" name="OFFICE_DOOR_SQUEAK" description="Office door squeak" t5m="1074" />
 			<sound id="58" name="WATER_LAPS_LOOP" description="Water laps loop" t5m="1116" />
-			<sound id="59" name="WATER_SPOUT_LOOP" description="Water spout loop" />
-			<sound id="60" name="UNDERWATER" hardcoded="true" description="Underwater" />
-			<sound id="61" name="UNDERWATER_SWITCH" description="Underwater switch" />
-			<sound id="62" name="LARA_PICKUP" description="Lara pickup" />
-			<sound id="63" name="PUSHABLE_SOUND" hardcoded="true" description="Pushable sound" />
+			<sound id="59" name="WATER_SPOUT_LOOP" description="Water spout loop" t5m="59" />
+			<sound id="60" name="UNDERWATER" hardcoded="true" description="Underwater" t5m="60" />
+			<sound id="61" name="UNDERWATER_SWITCH" description="Underwater switch" t5m="61" />
+			<sound id="62" name="LARA_PICKUP" description="Lara pickup" t5m="62" />
+			<sound id="63" name="PUSHABLE_SOUND" hardcoded="true" description="Pushable sound" t5m="63" />
 			<sound id="64" name="SNIPER_RIFLE" description="Sniper rifle" t5m="965" />
 			<sound id="65" name="HELICOPTER_LOOP" hardcoded="true" description="Helicopter loop" t5m="65" />
-			<sound id="66" name="ROCK_FALL_CRUMBLE" hardcoded="true" description="Rock fall crumble" />
-			<sound id="67" name="ROCK_FALL_LAND" hardcoded="true" description="Rock fall land" />
+			<sound id="66" name="ROCK_FALL_CRUMBLE" hardcoded="true" description="Rock fall crumble" t5m="66" />
+			<sound id="67" name="ROCK_FALL_LAND" hardcoded="true" description="Rock fall land" t5m="67" />
 			<sound id="68" name="HK_FIRE" hardcoded="true" description="Hk fire" t5m="78" />
 			<sound id="69" name="HK_STOP" hardcoded="true" description="Hk stop" t5m="163" />
-			<sound id="70" name="LARA_THUD" hardcoded="true" description="Lara thud" />
-			<sound id="71" name="GENERIC_SWOOSH" description="Generic swoosh" />
+			<sound id="70" name="LARA_THUD" hardcoded="true" description="Lara thud" t5m="70" />
+			<sound id="71" name="GENERIC_SWOOSH" description="Generic swoosh" t5m="71" />
 			<sound id="72" name="BLUEGUARD_CHAIR" description="Blueguard chair" t5m="910" />
-			<sound id="73" name="NEWBOX_SHUT" description="Newbox shut" />
+			<sound id="73" name="NEWBOX_SHUT" description="Newbox shut" t5m="1020" />
 			<sound id="74" name="BLUE/SCIEN_DONT_SHOOT" description="Blue/scien dont shoot" t5m="904" />
 			<sound id="75" name="BLUEGUARD_CONSOLE" description="Blueguard console" t5m="911" />
 			<sound id="76" name="SHOWER_LOOP" description="Shower loop" t5m="1089" />
 			<sound id="77" name="WATER_LOOP" description="Water loop" t5m="118" />
-			<sound id="78" name="FOUNTAIN_LOOP" description="Fountain loop" />
-			<sound id="79" name="WATERFALL_LOOP" hardcoded="true" description="Waterfall loop" />
+			<sound id="78" name="FOUNTAIN_LOOP" description="Fountain loop" t5m="177" />
+			<sound id="79" name="WATERFALL_LOOP" hardcoded="true" description="Waterfall loop" t5m="79" />
 			<sound id="80" name="SERVO_02" description="Servo 02" t5m="1088" />
 			<sound id="81" name="SERVO_01" description="Servo 01" t5m="1087" />
 			<sound id="82" name="BLUEG_GETUP_HOY" description="Blueg getup hoy" t5m="907" />
@@ -5228,108 +5228,108 @@
 			<sound id="86" name="BLUEG_CHAIR_HIT" description="Blueg chair hit" t5m="906" />
 			<sound id="87" name="RICH_IRIS_ELEC" hardcoded="true" description="Rich iris elec" t5m="1053" />
 			<sound id="88" name="BIO_BREATHE_OUT" hardcoded="true" description="Bio breathe out" t5m="1010" />
-			<sound id="89" name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="1038" />
+			<sound id="89" name="GENERIC_BOOT_STEPS" description="Generic boot steps" t5m="265" />
 			<sound id="90" name="PIERRE_GUNS" description="Pierre guns" t5m="473" />
 			<sound id="91" name="PIERRE_FINAL_BREATH" description="Pierre final breath" />
 			<sound id="92" name="PIERRE_HIT" description="Pierre hit" />
-			<sound id="93" name="GENERIC_KNEES_FALL" description="Generic knees fall" />
+			<sound id="93" name="GENERIC_KNEES_FALL" description="Generic knees fall" t5m="1039" />
 			<sound id="94" name="LION_HIT_FLOOR" description="Lion hit floor" t5m="979" />
-			<sound id="95" name="AGENT/HITMAN_FEET" description="Agent/hitman feet" />
+			<sound id="95" name="AGENT/HITMAN_FEET" description="Agent/hitman feet" t5m="901" />
 			<sound id="96" name="*LARSON_ARGGHH*" description="*larson argghh*" />
-			<sound id="97" name="LARSON_GUNS" description="Larson guns" />
+			<sound id="97" name="LARSON_GUNS" description="Larson guns" t5m="1132" />
 			<sound id="98" name="*LARSON_GROAN*" description="*larson groan*" />
-			<sound id="99" name="AGENT/HITMAN_LAND" description="Agent/hitman land" />
+			<sound id="99" name="AGENT/HITMAN_LAND" description="Agent/hitman land" t5m="903" />
 			<sound id="100" name="LION_FEET" description="Lion feet" t5m="977" />
 			<sound id="101" name="LION_GROWL" description="Lion growl" t5m="978" />
 			<sound id="102" name="LION_ATTACK" description="Lion attack" t5m="975" />
 			<sound id="103" name="LION_DIE" description="Lion die" t5m="976" />
 			<sound id="104" name="RAVENSWITCH_EXP" hardcoded="true" description="Ravenswitch exp" t5m="1081" />
-			<sound id="105" name="EXPLOSION1" hardcoded="true" description="Explosion1" />
-			<sound id="106" name="EXPLOSION2" hardcoded="true" description="Explosion2" />
-			<sound id="107" name="EARTHQUAKE_LOOP" hardcoded="true" description="Earthquake loop" />
-			<sound id="108" name="MENU_ROTATE" hardcoded="true" description="Menu rotate" />
-			<sound id="109" name="MENU_SELECT" hardcoded="true" description="Menu select" />
-			<sound id="110" name="Menu_Empty" hardcoded="true" description="Menu empty" />
-			<sound id="111" name="MENU_CHOOSE" hardcoded="true" description="Menu choose" />
-			<sound id="112" name="TICK_TOCK" hardcoded="true" description="Tick tock" />
-			<sound id="113" name="Menu_Empty" hardcoded="true" description="Menu empty" />
-			<sound id="114" name="MENU_COMBINE" hardcoded="true" description="Menu combine" />
-			<sound id="115" name="Menu_Empty" hardcoded="true" description="Menu empty" />
-			<sound id="116" name="MENU_MEDI" hardcoded="true" description="Menu medi" />
-			<sound id="117" name="LARA_CLIMB_WALLS_NOISE" description="Lara climb walls noise" />
+			<sound id="105" name="EXPLOSION1" hardcoded="true" description="Explosion1" t5m="105" />
+			<sound id="106" name="EXPLOSION2" hardcoded="true" description="Explosion2" t5m="106" />
+			<sound id="107" name="EARTHQUAKE_LOOP" hardcoded="true" description="Earthquake loop"  t5m="107" />
+			<sound id="108" name="MENU_ROTATE" hardcoded="true" description="Menu rotate" t5m="108" />
+			<sound id="109" name="MENU_SELECT" hardcoded="true" description="Menu select" t5m="109" />
+			<sound id="110" name="Menu_Empty" hardcoded="true" description="Menu empty" t5m="110" />
+			<sound id="111" name="MENU_CHOOSE" hardcoded="true" description="Menu choose" t5m="111" />
+			<sound id="112" name="TICK_TOCK" hardcoded="true" description="Tick tock" t5m="112" />
+			<sound id="113" name="Menu_Empty" hardcoded="true" description="Menu empty" t5m="113" />
+			<sound id="114" name="MENU_COMBINE" hardcoded="true" description="Menu combine" t5m="114" />
+			<sound id="115" name="Menu_Empty" hardcoded="true" description="Menu empty" t5m="115" />
+			<sound id="116" name="MENU_MEDI" hardcoded="true" description="Menu medi" t5m="116" />
+			<sound id="117" name="LARA_CLIMB_WALLS_NOISE" description="Lara climb walls noise" t5m="117" />
 			<sound id="118" name="2GUNTEX_FALL_END" description="2guntex fall end" t5m="1122" />
 			<sound id="119" name="AGENT/HITMAN_JUMP" description="Agent/hitman jump" t5m="902" />
-			<sound id="120" name="MAFIA_HOLSTER_DRAW" description="Mafia holster draw" />
-			<sound id="121" name="REVOLVER" hardcoded="true" description="Revolver" />
+			<sound id="120" name="MAFIA_HOLSTER_DRAW" description="Mafia holster draw" t5m="6" />
+			<sound id="121" name="REVOLVER" hardcoded="true" description="Revolver" t5m="121" />
 			<sound id="122" name="HITMAN_CHOKE" description="Hitman choke" t5m="932" />
 			<sound id="123" name="MAFIA2_DIE" description="Mafia2 die" t5m="949" />
 			<sound id="124" name="MAFIA2_JUMP_UP" description="Mafia2 jump up" t5m="952" />
 			<sound id="125" name="MAFIA2_GETDOWN" description="Mafia2 getdown" t5m="950" />
 			<sound id="126" name="MAFIA2_HIT" description="Mafia2 hit" t5m="951" />
-			<sound id="127" name="LARA_ELECTRIC_LOOP" description="Lara electric loop" />
-			<sound id="128" name="LARA_ELECTRIC_CRACKLES" hardcoded="true" description="Lara electric crackles" />
+			<sound id="127" name="LARA_ELECTRIC_LOOP" description="Lara electric loop" t5m="127" />
+			<sound id="128" name="LARA_ELECTRIC_CRACKLES" hardcoded="true" description="Lara electric crackles" t5m="128" />
 			<sound id="129" name="HANGMAN_LAUGH_OFFCAM" hardcoded="true" description="Hangman laugh offcam" t5m="931" />
-			<sound id="130" name="ELEC_LIGHT_CRACKLES" description="Elec light crackles" />
-			<sound id="131" name="LOUD_WIND_LOOP" description="Loud wind loop" />
+			<sound id="130" name="ELEC_LIGHT_CRACKLES" description="Elec light crackles" t5m="1001" />
+			<sound id="131" name="LOUD_WIND_LOOP" description="Loud wind loop" t5m="362" />
 			<sound id="132" name="KEYPAD_ENTRY_NO" description="Keypad entry no" t5m="995" />
 			<sound id="133" name="KEYPAD_ENTRY_YES" description="Keypad entry yes" t5m="996" />
 			<sound id="134" name="RICH_TELEPORT" hardcoded="true" description="Rich teleport" t5m="1101" />
-			<sound id="135" name="JOBY_PUZZLE_HATCH" description="Joby puzzle hatch" />
-			<sound id="136" name="SOFT_WIND_LOOP" description="Soft wind loop" />
-			<sound id="137" name="GLADIATOR_FEET" description="Gladiator feet" />
+			<sound id="135" name="JOBY_PUZZLE_HATCH" description="Joby puzzle hatch" /> 
+			<sound id="136" name="SOFT_WIND_LOOP" description="Soft wind loop" t5m="136" />
+			<sound id="137" name="GLADIATOR_FEET" description="Gladiator feet" t5m="919" />
 			<sound id="138" name="GLADIATOR_ATTACK" description="Gladiator attack" t5m="917" />
 			<sound id="139" name="GLADIATOR_DIE" description="Gladiator die" t5m="918" />
 			<sound id="140" name="GLADIATOR_SWORD" description="Gladiator sword" t5m="922" />
 			<sound id="141" name="GLADIATOR_SHIELD1" description="Gladiator shield1" t5m="920" />
 			<sound id="142" name="GLADIATOR_SHIELD2" description="Gladiator shield2" t5m="921" />
-			<sound id="143" name="GENERIC_BODY_FALL" description="Generic body fall" />
+			<sound id="143" name="GENERIC_BODY_FALL" description="Generic body fall" t5m="143" />
 			<sound id="144" name="2GUNTEX_DIE" description="2guntex die" t5m="1120" />
-			<sound id="145" name="LARA_SPIKE_DEATH" description="Lara spike death" />
-			<sound id="146" name="LARA_DEATH3" description="Lara death3" />
-			<sound id="147" name="ROLLING_BALL" description="Rolling ball" />
-			<sound id="148" name="BLK_PLAT_RAISE&amp;LOW" hardcoded="true" description="Blk plat raiseandlow" />
+			<sound id="145" name="LARA_SPIKE_DEATH" description="Lara spike death" t5m="145" />
+			<sound id="146" name="LARA_DEATH3" description="Lara death3" t5m="146" />
+			<sound id="147" name="ROLLING_BALL" description="Rolling ball" t5m="47" />
+			<sound id="148" name="BLK_PLAT_RAISE&amp;LOW" hardcoded="true" description="Blk plat raiseandlow" t5m="148" />
 			<sound id="149" name="2GUNTEX_FALL_BIG" hardcoded="true" description="2guntex fall big" t5m="1121" />
-			<sound id="150" name="LOOP_FOR_SMALL_FIRES" hardcoded="true" description="Loop for small fires" />
+			<sound id="150" name="LOOP_FOR_SMALL_FIRES" hardcoded="true" description="Loop for small fires" t5m="150" />
 			<sound id="151" name="XRAY_SCAN" description="Xray scan" t5m="1118" />
 			<sound id="152" name="R_XRAY_ROOM_LP" description="R xray room lp" t5m="1078" />
 			<sound id="153" name="R_HITECH_ROOM_LP" description="R hitech room lp" t5m="1077" />
-			<sound id="154" name="JOBY_WATERFALL_SMALL" description="Joby waterfall small" />
-			<sound id="155" name="JOBY_WATERFALL_BIG" description="Joby waterfall big" />
+			<sound id="154" name="JOBY_WATERFALL_SMALL" description="Joby waterfall small" t5m="79" />
+			<sound id="155" name="JOBY_WATERFALL_BIG" description="Joby waterfall big" t5m="79" />
 			<sound id="156" name="RATS_1" hardcoded="true" description="Rats 1" t5m="1079" />
-			<sound id="157" name="BATS_1" hardcoded="true" description="Bats 1" />
+			<sound id="157" name="BATS_1" hardcoded="true" description="Bats 1" t5m="157" />
 			<sound id="158" name="H_GOD_HAMMER_QT" description="H god hammer qt" t5m="927" />
 			<sound id="159" name="H_GOD_HAMMER_MED" description="H god hammer med" t5m="928" />
 			<sound id="160" name="H_GOD_HAMMER_LD" description="H god hammer ld" t5m="927" />
-			<sound id="161" name="TRAPDOOR_OPEN" description="Trapdoor open" />
-			<sound id="162" name="TRAPDOOR_CLOSE" description="Trapdoor close" />
+			<sound id="161" name="TRAPDOOR_OPEN" description="Trapdoor open" t5m="161" />
+			<sound id="162" name="TRAPDOOR_CLOSE" description="Trapdoor close" t5m="162" />
 			<sound id="163" name="RICH_DOOR_BEAM" hardcoded="true" description="Rich door beam" t5m="1082" />
 			<sound id="164" name="WALLSUIT_OUT" description="Wallsuit out" t5m="1115" />
 			<sound id="165" name="AUTOGUN_UNFOLD" description="Autogun unfold" t5m="1005" />
 			<sound id="166" name="AUTOGUN_DOOR" description="Autogun door" t5m="1004" />
-			<sound id="167" name="SMASH_ROCK" hardcoded="true" description="Smash rock" t5m="1094" />
+			<sound id="167" name="SMASH_ROCK" hardcoded="true" description="Smash rock" t5m="1135" />
 			<sound id="168" name="SMASH_METAL" hardcoded="true" description="Smash metal" t5m="1093" />
-			<sound id="169" name="D_ALIEN" description="D alien" />
+			<sound id="169" name="D_ALIEN" description="D alien" t5m="1136" />
 			<sound id="170" name="RICH_VENT_IMPACT" hardcoded="true" description="Rich vent impact" t5m="1113" />
-			<sound id="171" name="SWITCH_ELEC_SWAP" description="Switch elec swap" />
+			<sound id="171" name="SWITCH_ELEC_SWAP" description="Switch elec swap" t5m="1110" />
 			<sound id="172" name="ELECTRIC_WIRES" hardcoded="true" description="Electric wires" t5m="1002" />
-			<sound id="173" name="LAVA_LOOP" description="Lava loop" />
+			<sound id="173" name="LAVA_LOOP" description="Lava loop" t5m="173"/>
 			<sound id="174" name="DOG_DOBER_GROWL" description="Dog dober growl" t5m="530" />
-			<sound id="175" name="DOG_HOWL" description="Dog howl" />
-			<sound id="176" name="DOG_ATTACK_1" description="Dog attack 1" />
-			<sound id="177" name="DOG_AWARE" description="Dog aware" />
-			<sound id="178" name="DOG_FOOT_1" description="Dog foot 1" />
-			<sound id="179" name="*DOG_JUMP*" description="*dog jump*" />
-			<sound id="180" name="*DOG_LONG_GROWL*" description="*dog long growl*" />
-			<sound id="181" name="DOG_DEATH" description="Dog death" />
-			<sound id="182" name="THUNDER_RUMBLE" hardcoded="true" description="Thunder rumble" />
+			<sound id="175" name="DOG_HOWL" description="Dog howl" t5m="175"/>
+			<sound id="176" name="DOG_ATTACK_1" description="Dog attack 1" t5m="180"/>
+			<sound id="177" name="DOG_AWARE" description="Dog aware" /> <!--todo-->
+			<sound id="178" name="DOG_FOOT_1" description="Dog foot 1" t5m="178"/>
+			<sound id="179" name="*DOG_JUMP*" description="*dog jump*" t5m="179"/>
+			<sound id="180" name="*DOG_LONG_GROWL*" description="*dog long growl*" t5m="180"/>
+			<sound id="181" name="DOG_DEATH" description="Dog death" t5m="181"/>
+			<sound id="182" name="THUNDER_RUMBLE" hardcoded="true" description="Thunder rumble" t5m="182"/>
 			<sound id="183" name="HAMMER_GOD_PULSE" description="Hammer god pulse" t5m="930" />
 			<sound id="184" name="SWORD_GOD_CHARGE" description="Sword god charge" t5m="924" />
 			<sound id="185" name="SWORD_GOD_LASER" description="Sword god laser" t5m="959" />
 			<sound id="186" name="SKELETON_APPEAR" hardcoded="true" description="Skeleton appear" t5m="963" />
 			<sound id="187" name="CHEF_KNIFE_SWOOSH" description="Chef knife swoosh" t5m="912" />
 			<sound id="188" name="SKELETON_ATTACK" description="Skeleton attack" t5m="964" />
-			<sound id="189" name="GEN_SWORD_SWOOSH_NORM" description="Gen sword swoosh norm" />
-			<sound id="190" name="CHEF_ATTACK_ARGHH" description="Chef attack arghh" />
+			<sound id="189" name="GEN_SWORD_SWOOSH_NORM" description="Gen sword swoosh norm" t5m="1036"/>
+			<sound id="190" name="CHEF_ATTACK_ARGHH" description="Chef attack arghh" t5m="912" />
 			<sound id="191" name="2GUNTEX_FEET_LD" description="2guntex feet ld" t5m="1123" />
 			<sound id="192" name="2GUNTEX_FEET_QT" description="2guntex feet qt" t5m="1124" />
 			<sound id="193" name="2GUNTEX_LASER_FIRE" hardcoded="true" description="2guntex laser fire" t5m="1126" />
@@ -5343,14 +5343,14 @@
 			<sound id="201" name="IMP_ATTACK" description="Imp attack" t5m="936" />
 			<sound id="202" name="IMP_LAUGH" description="Imp laugh" t5m="942" />
 			<sound id="203" name="IMP_RUNAWAY" description="Imp runaway" t5m="943" />
-			<sound id="204" name="SGOD_SWD_DIE1_Q" description="Sgod swd die1 q" />
-			<sound id="205" name="SGOD_SWD_DIE2_VQ" description="Sgod swd die2 vq" />
-			<sound id="206" name="HITMAN_GUNS_FIRE" description="Hitman guns fire" />
-			<sound id="207" name="HITMAN_GUNS_END" description="Hitman guns end" />
-			<sound id="208" name="FIRE_EXTING_RICO" description="Fire exting rico" />
-			<sound id="209" name="LARA_UNDERWATER_ENGINE" hardcoded="true" description="Lara underwater engine" />
-			<sound id="210" name="CABINET_CLOSE_WOOD" description="Cabinet close wood" />
-			<sound id="211" name="CABINET_OPEN_WOOD" description="Cabinet open wood" />
+			<sound id="204" name="SGOD_SWD_DIE1_Q" description="Sgod swd die1 q" t5m="953" />
+			<sound id="205" name="SGOD_SWD_DIE2_VQ" description="Sgod swd die2 vq" t5m="953" />
+			<sound id="206" name="HITMAN_GUNS_FIRE" description="Hitman guns fire" t5m="935" />
+			<sound id="207" name="HITMAN_GUNS_END" description="Hitman guns end" t5m="934" />
+			<sound id="208" name="FIRE_EXTING_RICO" description="Fire exting rico" t5m="1030" />
+			<sound id="209" name="LARA_UNDERWATER_ENGINE" hardcoded="true" description="Lara underwater engine" t5m="945" />
+			<sound id="210" name="CABINET_CLOSE_WOOD" description="Cabinet close wood" t5m="1013" />
+			<sound id="211" name="CABINET_OPEN_WOOD" description="Cabinet open wood" t5m="1014" />
 			<sound id="212" name="SWORD_GOD_FEET_LD" description="Sword god feet ld" t5m="955" />
 			<sound id="213" name="SWORD_GOD_FEET_QT" description="Sword god feet qt" t5m="956" />
 			<sound id="214" name="SWORD_GOD_FEET_VQT" description="Sword god feet vqt" t5m="957" />
@@ -5372,28 +5372,28 @@
 			<sound id="230" name="KEYPAD_7" hardcoded="true" description="Keypad 7" t5m="992" />
 			<sound id="231" name="KEYPAD_8" hardcoded="true" description="Keypad 8" t5m="993" />
 			<sound id="232" name="KEYPAD_9" hardcoded="true" description="Keypad 9" t5m="994" />
-			<sound id="233" name="SMALL_FAN" description="Small fan" />
+			<sound id="233" name="SMALL_FAN" description="Small fan" t5m="233" />
 			<sound id="234" name="KLAXON" hardcoded="true" description="Klaxon" t5m="1056" />
-			<sound id="235" name="LARA_CROSSBOW" hardcoded="true" description="Lara crossbow" />
+			<sound id="235" name="LARA_CROSSBOW" hardcoded="true" description="Lara crossbow" t5m="235" />
 			<sound id="236" name="ANDY_FLOOR_DOOR_B" description="Andy floor door b" t5m="1034" />
 			<sound id="237" name="ANDY_FLOOR_DOOR_A" description="Andy floor door a" t5m="1033" />
 			<sound id="238" name="J_GRAB_OPEN" hardcoded="true" description="J grab open" t5m="1049" />
-			<sound id="239" name="WILLOWISP_LOOP" hardcoded="true" description="Willowisp loop" />
-			<sound id="240" name="LEAP_SWITCH" description="Leap switch" />
-			<sound id="241" name="LARGE_SWITCH" description="Large switch" />
-			<sound id="242" name="GENERIC_HEAVY_THUD" description="Generic heavy thud" />
-			<sound id="243" name="GENERIC_HEAVY_FEET" description="Generic heavy feet" />
-			<sound id="244" name="SWIMSUIT_METAL_CLASH" hardcoded="true" description="Swimsuit metal clash" />
+			<sound id="239" name="WILLOWISP_LOOP" hardcoded="true" description="Willowisp loop" t5m="973" />
+			<sound id="240" name="LEAP_SWITCH" description="Leap switch" t5m="240" />
+			<sound id="241" name="LARGE_SWITCH" description="Large switch" t5m="241" />
+			<sound id="242" name="GENERIC_HEAVY_THUD" description="Generic heavy thud" t5m="1138" />
+			<sound id="243" name="GENERIC_HEAVY_FEET" description="Generic heavy feet" t5m="243" />
+			<sound id="244" name="SWIMSUIT_METAL_CLASH" hardcoded="true" description="Swimsuit metal clash" t5m="946" />
 			<sound id="245" name="CROW_WALL_ITEM_DROP" description="Crow wall item drop" />
-			<sound id="246" name="LARA_SUB_BREATHE" hardcoded="true" description="Lara sub breathe" />
-			<sound id="247" name="HITMAN_ELEC_SHORT" hardcoded="true" description="Hitman elec short" />
-			<sound id="248" name="WELD_THRU_DOOR_LOOP" hardcoded="true" description="Weld thru door loop" />
-			<sound id="249" name="IMP_BARREL_DROP" description="Imp barrel drop" />
-			<sound id="250" name="IMP_BARREL_ROLL" hardcoded="true" description="Imp barrel roll" />
-			<sound id="251" name="IMP_STONE_HIT" hardcoded="true" description="Imp stone hit" />
-			<sound id="252" name="POUR_DUST_INSERTANIM" description="Pour dust insertanim" />
-			<sound id="253" name="J_GRAB_TOP_IMPACT" description="J grab top impact" />
-			<sound id="254" name="COG_ANDY2" description="Cog andy2" />
+			<sound id="246" name="LARA_SUB_BREATHE" hardcoded="true" description="Lara sub breathe" t5m="946" />
+			<sound id="247" name="HITMAN_ELEC_SHORT" hardcoded="true" description="Hitman elec short" t5m="933" />
+			<sound id="248" name="WELD_THRU_DOOR_LOOP" hardcoded="true" description="Weld thru door loop" t5m="1117" />
+			<sound id="249" name="IMP_BARREL_DROP" description="Imp barrel drop" t5m="937" />
+			<sound id="250" name="IMP_BARREL_ROLL" hardcoded="true" description="Imp barrel roll" t5m="938" />
+			<sound id="251" name="IMP_STONE_HIT" hardcoded="true" description="Imp stone hit" t5m="944" />
+			<sound id="252" name="POUR_DUST_INSERTANIM" description="Pour dust insertanim" t5m="1076" />
+			<sound id="253" name="J_GRAB_TOP_IMPACT" description="J grab top impact" t5m="1047" />
+			<sound id="254" name="COG_ANDY2" description="Cog andy2" t5m="1016" />
 			<sound id="255" name="J_GRAB_IMPACT" hardcoded="true" description="J grab impact" t5m="1047" />
 			<sound id="256" name="J_GRAB_MOTOR_C" hardcoded="true" description="J grab motor c" t5m="1046" />
 			<sound id="257" name="J_GRAB_MOTOR_B_LP" hardcoded="true" description="J grab motor b lp" t5m="1045" />
@@ -5402,7 +5402,7 @@
 			<sound id="260" name="J_GRAB_WINCH_UP_LP" hardcoded="true" description="J grab winch up lp" t5m="1048" />
 			<sound id="261" name="FOOTSTEPS_WOOD_CAB" description="Footsteps wood cab" t5m="292" />
 			<sound id="262" name="FOOTSTEPS_METAL_CAB" description="Footsteps metal cab" t5m="294" />
-			<sound id="263" name="D_FLOOR_METAL" description="D floor metal" />
+			<sound id="263" name="D_FLOOR_METAL" description="D floor metal" t5m="1141" />
 			<sound id="264" name="DRAWERS_METAL_OPEN" description="Drawers metal open" t5m="1027" />
 			<sound id="265" name="DRAWERS_METAL_CLOSE" description="Drawers metal close" t5m="1026" />
 			<sound id="266" name="SHOCKWAVE_RUMB" description="Shockwave rumb" t5m="962" />
@@ -5427,13 +5427,13 @@
 			<sound id="285" name="UNDERWATER_FAN_ON" description="Underwater fan on" t5m="1109" />
 			<sound id="286" name="SUB_CONTROLROOM_LOOP" description="Sub controlroom loop" t5m="1099" />
 			<sound id="287" name="D_MANHOLE_METAL" description="D manhole metal" t5m="1119" />
-			<sound id="288" name="FOOTSTEPS_MUD" hardcoded="true" description="Footsteps mud" />
-			<sound id="289" name="FOOTSTEPS_ICE" hardcoded="true" description="Footsteps ice" />
-			<sound id="290" name="FOOTSTEPS_GRAVEL" hardcoded="true" description="Footsteps gravel" />
-			<sound id="291" name="FOOTSTEPS_SAND_&amp;_GRASS" hardcoded="true" description="Footsteps sand and grass" />
-			<sound id="292" name="FOOTSTEPS_WOOD" hardcoded="true" description="Footsteps wood" />
-			<sound id="293" name="FOOTSTEPS_SNOW" hardcoded="true" description="Footsteps snow" />
-			<sound id="294" name="FOOTSTEPS_METAL" hardcoded="true" description="Footsteps metal" />
+			<sound id="288" name="FOOTSTEPS_MUD" hardcoded="true" description="Footsteps mud" t5m="288" />
+			<sound id="289" name="FOOTSTEPS_ICE" hardcoded="true" description="Footsteps ice" t5m="289" />
+			<sound id="290" name="FOOTSTEPS_GRAVEL" hardcoded="true" description="Footsteps gravel" t5m="290" />
+			<sound id="291" name="FOOTSTEPS_SAND_&amp;_GRASS" hardcoded="true" description="Footsteps sand and grass" t5m="291" />
+			<sound id="292" name="FOOTSTEPS_WOOD" hardcoded="true" description="Footsteps wood" t5m="292" />
+			<sound id="293" name="FOOTSTEPS_SNOW" hardcoded="true" description="Footsteps snow" t5m="293" />
+			<sound id="294" name="FOOTSTEPS_METAL" hardcoded="true" description="Footsteps metal" t5m="294" />
 			<sound id="295" name="TIGHTROPE_CREAK" description="Tightrope creak" t5m="351" />
 			<sound id="296" name="TIGHTROPE_WALK" description="Tightrope walk" t5m="351" />
 			<sound id="297" name="DRAWERS_WOOD_CLSE" description="Drawers wood clse" t5m="1028" />
@@ -5441,17 +5441,17 @@
 			<sound id="299" name="SWAMPY_ATTACK" description="Swampy attack" t5m="974" />
 			<sound id="300" name="BELL" description="Bell" t5m="1009" />
 			<sound id="301" name="JOBY2_GRILL_2a" description="Joby2 grill 2a" t5m="998" />
-			<sound id="302" name="HISS_LOOP_SMALL" description="Hiss loop small" />
+			<sound id="302" name="HISS_LOOP_SMALL" description="Hiss loop small" t5m="1050" />
 			<sound id="303" name="JOBY2_CRANE_END" description="Joby2 crane end" t5m="1018" />
 			<sound id="304" name="GENERATOR_HUM_LOOP" description="Generator hum loop" t5m="1037" />
 			<sound id="305" name="COMPUTER_BEEPIES" description="Computer beepies" t5m="1000" />
 			<sound id="306" name="MODEM_LOOP" description="Modem loop" t5m="1071" />
-			<sound id="307" name="AIRCON_LOOP" description="Aircon loop" />
+			<sound id="307" name="AIRCON_LOOP" description="Aircon loop" t5m="1142" />
 			<sound id="308" name="GEN_STONE_DOOR" description="Gen stone door" />
-			<sound id="309" name="LOW_RUMBLE" description="Low rumble" />
+			<sound id="309" name="LOW_RUMBLE" description="Low rumble"  t5m="1140" />
 			<sound id="310" name="SEARCHER" description="Searcher" t5m="1086" />
 			<sound id="311" name="STAIR_SNAP_01" description="Stair snap 01" t5m="1098" />
-			<sound id="312" name="RICH_GEN_LOOP" description="Rich gen loop" />
+			<sound id="312" name="RICH_GEN_LOOP" description="Rich gen loop" t5m="1037" />
 			<sound id="313" name="ZOOM_VIEW_WHIRR" hardcoded="true" description="Zoom view whirr" t5m="377" />
 			<sound id="314" name="RICH_VENT_STRESS" description="Rich vent stress" t5m="1114" />
 			<sound id="315" name="INDUSTRY_AMBIENCE_LOOP" description="Industry ambience loop" t5m="1052" />
@@ -5462,53 +5462,53 @@
 			<sound id="320" name="JOBY2_GRILL_3" description="Joby2 grill 3" t5m="999" />
 			<sound id="321" name="D_LARA_LOCKER_C" description="D lara locker c" t5m="1064" />
 			<sound id="322" name="D_LARA_LOCKER_O" description="D lara locker o" t5m="1065" />
-			<sound id="323" name="STONE_SCRAPE_FAST" hardcoded="true" description="Stone scrape fast" />
+			<sound id="323" name="STONE_SCRAPE_FAST" hardcoded="true" description="Stone scrape fast" t5m="1139" />
 			<sound id="324" name="JOBY2_GRILL_2" description="Joby2 grill 2" t5m="1063" />
 			<sound id="325" name="LIFT_DOORS" hardcoded="true" description="Lift doors" t5m="1059" />
-			<sound id="326" name="LARA_CROWBAR_ITEM" description="Lara crowbar item" />
+			<sound id="326" name="LARA_CROWBAR_ITEM" description="Lara crowbar item" t5m="326" />
 			<sound id="327" name="JOBY2_CRANE" description="Joby2 crane" t5m="1018" />
-			<sound id="328" name="GENERIC_SQKS_RND" description="Generic sqks rnd" />
+			<sound id="328" name="GENERIC_SQKS_RND" description="Generic sqks rnd" t5m="1041" />
 			<sound id="329" name="D_SLIDEDOOR_JOBY" description="D slidedoor joby" t5m="1090" />
 			<sound id="330" name="D_FIREDOOR_JOBY" description="D firedoor joby" t5m="1031" />
-			<sound id="331" name="D_METAL_CLS_P1" description="D metal cls p1" />
-			<sound id="332" name="D_METAL_CLS_P2" description="D metal cls p2" />
+			<sound id="331" name="D_METAL_CLS_P1" description="D metal cls p1" t5m="1067" />
+			<sound id="332" name="D_METAL_CLS_P2" description="D metal cls p2" t5m="1068" />
 			<sound id="333" name="D_SCIFI_CLOSE" description="D scifi close" t5m="1111" />
 			<sound id="334" name="D_SCIFI_OPEN" description="D scifi open" t5m="1112" />
-			<sound id="335" name="TEETH_SPIKES" hardcoded="true" description="Teeth spikes" />
+			<sound id="335" name="TEETH_SPIKES" hardcoded="true" description="Teeth spikes" t5m="355" />
 			<sound id="336" name="BAT_RAM_CREAK1" description="Bat ram creak1" t5m="1008" />
-			<sound id="337" name="LARA_LEVER_PART1" description="Lara lever part1" />
-			<sound id="338" name="LARA_LEVER_PART2" description="Lara lever part2" />
-			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" />
-			<sound id="340" name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" />
+			<sound id="337" name="LARA_LEVER_PART1" description="Lara lever part1" t5m="337" />
+			<sound id="338" name="LARA_LEVER_PART2" description="Lara lever part2" t5m="338" />
+			<sound id="339" name="LARA_POLE_SQUEAKS" description="Lara pole squeaks" t5m="1038" />
+			<sound id="340" name="LARA_ROPEDOWN_LOOP" hardcoded="true" description="Lara ropedown loop" t5m="940"  />
 			<sound id="341" name="D_METAL_OPEN" description="D metal open" t5m="1069" />
-			<sound id="342" name="LARA_PULLEY" description="Lara pulley" />
+			<sound id="342" name="LARA_PULLEY" description="Lara pulley" t5m="912" />
 			<sound id="343" name="D_METAL_OPEN_PUSH" description="D metal open push" />
 			<sound id="344" name="D_METAL_KICKOPEN" hardcoded="true" description="D metal kickopen" />
-			<sound id="345" name="LARA_USE_OBJECT" description="Lara use object" />
-			<sound id="346" name="D_GATE_BIG_METAL" description="D gate big metal" />
+			<sound id="345" name="LARA_USE_OBJECT" description="Lara use object"  t5m="1131" />
+			<sound id="346" name="D_GATE_BIG_METAL" description="D gate big metal" t5m="1130" />
 			<sound id="347" name="D_MOTOR_WHIRR" description="D motor whirr" />
 			<sound id="348" name="LARA_NO_FRENCH" hardcoded="true" description="Lara no french" />
 			<sound id="349" name="LARA_NO_JAPANESE" hardcoded="true" description="Lara no japanese" />
-			<sound id="350" name="LARA_CROW_WRENCH" description="Lara crow wrench" />
-			<sound id="351" name="LARA_ROPE_CREAK" hardcoded="true" description="Lara rope creak" />
-			<sound id="352" name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" />
-			<sound id="353" name="D_METAL_CAGE_CLS2" description="D metal cage cls2" />
-			<sound id="354" name="D_METAL_CAGE_CLS1" description="D metal cage cls1" />
+			<sound id="350" name="LARA_CROW_WRENCH" description="Lara crow wrench" t5m="1022"/>
+			<sound id="351" name="LARA_ROPE_CREAK" hardcoded="true" description="Lara rope creak" t5m="351" />
+			<sound id="352" name="LARA_TROPE_FALL" hardcoded="true" description="Lara trope fall" t5m="939" /> 
+			<sound id="353" name="D_METAL_CAGE_CLS2" description="D metal cage cls2" t5m="1020" />
+			<sound id="354" name="D_METAL_CAGE_CLS1" description="D metal cage cls1" t5m="1020" />
 			<sound id="355" name="GENERIC_STONE_GRIND" description="Generic stone grind" />
 			<sound id="356" name="D_STONEMETAL_MAIN" description="D stonemetal main" />
-			<sound id="357" name="D_PORTCULLIS_UP" description="D portcullis up" />
-			<sound id="358" name="D_PORTCULLIS_DOWN" description="D portcullis down" />
-			<sound id="359" name="D_WOODEN_GATE_CREAK" description="D wooden gate creak" />
-			<sound id="360" name="D_PADLOCK_BREAK" description="D padlock break" />
+			<sound id="357" name="D_PORTCULLIS_UP" description="D portcullis up" t5m="1133" />
+			<sound id="358" name="D_PORTCULLIS_DOWN" description="D portcullis down" t5m="1134" />
+			<sound id="359" name="D_WOODEN_GATE_CREAK" description="D wooden gate creak" t5m="1129" />
+			<sound id="360" name="D_PADLOCK_BREAK" description="D padlock break" t5m="1094" />
 			<sound id="361" name="D_BIG_THUD_GEN_2" hardcoded="true" description="D big thud gen 2" />
 			<sound id="362" name="D_BIG_THUD_GEN_1" description="D big thud gen 1" />
-			<sound id="363" name="D_DOUBLE_BANG" description="D double bang" />
-			<sound id="364" name="D_DOUBLE_CREAK" description="D double creak" />
-			<sound id="365" name="D_CROWBAR_WOOD" description="D crowbar wood" />
-			<sound id="366" name="D_METAL_LOCKUP_CROW" description="D metal lockup crow" />
-			<sound id="367" name="D_METAL_LOCKUP_OPEN" description="D metal lockup open" />
-			<sound id="368" name="D_METAL_CAGE_OPEN" hardcoded="true" description="D metal cage open" />
-			<sound id="369" name="SMALL_CLICK_SWITCH" description="Small click switch" />
+			<sound id="363" name="D_DOUBLE_BANG" description="D double bang" t5m="85" />
+			<sound id="364" name="D_DOUBLE_CREAK" description="D double creak" t5m="86" /> 
+			<sound id="365" name="D_CROWBAR_WOOD" description="D crowbar wood" /> 
+			<sound id="366" name="D_METAL_LOCKUP_CROW" description="D metal lockup crow" t5m="1022" />
+			<sound id="367" name="D_METAL_LOCKUP_OPEN" description="D metal lockup open" t5m="1064" />
+			<sound id="368" name="D_METAL_CAGE_OPEN" hardcoded="true" description="D metal cage open" t5m="1020" />
+			<sound id="369" name="SMALL_CLICK_SWITCH" description="Small click switch" t5m="369" />
 			<sound id="370" name="WEREWOLF_FEET_F" description="Werewolf feet f" t5m="971" />
 			<sound id="371" name="WEREWOLF_FEET_B" description="Werewolf feet b" t5m="970" />
 			<sound id="372" name="WEREWOLF_ATTACK1" description="Werewolf attack1" t5m="966" />
@@ -5531,7 +5531,7 @@
 			<sound id="389" name="SNORE_OUT" description="Snore out" t5m="981" />
 			<sound id="390" name="D_SMALL_VENT_O/C" description="D small vent o/c" t5m="1091" />
 			<sound id="391" name="RICH_HOLOGRAM" description="Rich hologram" t5m="1051" />
-			<sound id="392" name="HISS_LOOP_BIG" hardcoded="true" description="Hiss loop big" />
+			<sound id="392" name="HISS_LOOP_BIG" hardcoded="true" description="Hiss loop big" t5m="1050" />
 			<sound id="393" name="LIFT_MOVE_KNACKED" hardcoded="true" description="Lift move knacked" t5m="1063" />
 			<sound id="394" name="LIFT_HIT_FLOOR1" hardcoded="true" description="Lift hit floor1" t5m="1060" />
 			<sound id="395" name="LIFT_HIT_FLOOR2" hardcoded="true" description="Lift hit floor2" t5m="1061" />
@@ -5541,7 +5541,7 @@
 			<sound id="399" name="TELEPORT_CRACKLES" hardcoded="true" description="Teleport crackles" t5m="1102" />
 			<sound id="400" name="TELEPORT_FLASH" hardcoded="true" description="Teleport flash" t5m="1103" />
 			<sound id="401" name="LARA_UNDERWATER_HIT" hardcoded="true" description="Lara underwater hit" t5m="946" />
-			<sound id="402" name="RAVESTICK" hardcoded="true" description="Ravestick" />
+			<sound id="402" name="RAVESTICK" hardcoded="true" description="Ravestick" t5m="379" />
 			<sound id="403" name="UNDERWATER_CHAFF" hardcoded="true" description="Underwater chaff" t5m="1106" />
 			<sound id="404" name="FISHTANK_WATER" description="Fishtank water" t5m="1032" />
 			<sound id="405" name="2GUNTEX_STAIR_FALL" description="2guntex stair fall" t5m="900" />
@@ -6693,8 +6693,169 @@
 			<moveable id="1405" name="PANEL_HALF_BORDER1" />
 			<moveable id="1406" name="PANEL_HALF_BORDER2" />
 			<moveable id="1407" name="PANEL_MIDDLE_CORNER" />
-				
 		</moveables>
+		<statics>
+			<static id="0" name="PLANT0" />
+			<static id="1" name="PLANT1" />
+			<static id="2" name="PLANT2" />
+			<static id="3" name="PLANT3" />
+			<static id="4" name="PLANT4" />
+			<static id="5" name="PLANT5" />
+			<static id="6" name="PLANT6" />
+			<static id="7" name="PLANT7" />
+			<static id="8" name="PLANT8" />
+			<static id="9" name="PLANT9" />
+			<static id="10" name="FURNITURE0" />
+			<static id="11" name="FURNITURE1" />
+			<static id="12" name="FURNITURE2" />
+			<static id="13" name="FURNITURE3" />
+			<static id="14" name="FURNITURE4" />
+			<static id="15" name="FURNITURE5" />
+			<static id="16" name="FURNITURE6" />
+			<static id="17" name="FURNITURE7" />
+			<static id="18" name="FURNITURE8" />
+			<static id="19" name="FURNITURE9" />
+			<static id="20" name="ROCK0" />
+			<static id="21" name="ROCK1" />
+			<static id="22" name="ROCK2" />
+			<static id="23" name="ROCK3" />
+			<static id="24" name="ROCK4" />
+			<static id="25" name="ROCK5" />
+			<static id="26" name="ROCK6" />
+			<static id="27" name="ROCK7" />
+			<static id="28" name="ROCK8" />
+			<static id="29" name="ROCK9" />
+			<static id="30" name="ARCHITECTURE0" />
+			<static id="31" name="ARCHITECTURE1" />
+			<static id="32" name="ARCHITECTURE2" />
+			<static id="33" name="ARCHITECTURE3" />
+			<static id="34" name="ARCHITECTURE4" />
+			<static id="35" name="ARCHITECTURE5" />
+			<static id="36" name="ARCHITECTURE6" />
+			<static id="37" name="ARCHITECTURE7" />
+			<static id="38" name="ARCHITECTURE8" />
+			<static id="39" name="ARCHITECTURE9" />
+			<static id="40" name="DEBRIS0" />
+			<static id="41" name="DEBRIS1" />
+			<static id="42" name="DEBRIS2" />
+			<static id="43" name="DEBRIS3" />
+			<static id="44" name="DEBRIS4" />
+			<static id="45" name="DEBRIS5" />
+			<static id="46" name="DEBRIS6" />
+			<static id="47" name="DEBRIS7" />
+			<static id="48" name="DEBRIS8" />
+			<static id="49" name="DEBRIS9" />
+			<static id="50" name="SHATTER0" shatter="true" />
+			<static id="51" name="SHATTER1" shatter="true" />
+			<static id="52" name="SHATTER2" shatter="true" />
+			<static id="53" name="SHATTER3" shatter="true" />
+			<static id="54" name="SHATTER4" shatter="true" />
+			<static id="55" name="SHATTER5" shatter="true" />
+			<static id="56" name="SHATTER6" shatter="true" />
+			<static id="57" name="SHATTER7" shatter="true" />
+			<static id="58" name="SHATTER8" shatter="true" />
+			<static id="59" name="SHATTER9" shatter="true" />
+			<static id="60" name="EXTRA01" />
+			<static id="61" name="EXTRA02" />
+			<static id="62" name="EXTRA03" />
+			<static id="63" name="EXTRA04" />
+			<static id="64" name="EXTRA05" />
+			<static id="65" name="EXTRA06" />
+			<static id="66" name="EXTRA07" />
+			<static id="67" name="EXTRA08" />
+			<static id="68" name="EXTRA09" />
+			<static id="69" name="EXTRA10" />
+			<static id="70" name="EXTRA11" />
+			<static id="71" name="EXTRA12" />
+			<static id="72" name="EXTRA13" />
+			<static id="73" name="EXTRA14" />
+			<static id="74" name="EXTRA15" />
+			<static id="75" name="EXTRA16" />
+			<static id="76" name="EXTRA17" />
+			<static id="77" name="EXTRA18" />
+			<static id="78" name="EXTRA19" />
+			<static id="79" name="EXTRA20" />
+			<static id="80" name="EXTRA21" />
+			<static id="81" name="EXTRA22" />
+			<static id="82" name="EXTRA23" />
+			<static id="83" name="EXTRA24" />
+			<static id="84" name="EXTRA25" />
+			<static id="85" name="EXTRA26" />
+			<static id="86" name="EXTRA27" />
+			<static id="87" name="EXTRA28" />
+			<static id="88" name="EXTRA29" />
+			<static id="89" name="EXTRA30" />
+			<static id="90" name="EXTRA31" />
+			<static id="91" name="EXTRA32" />
+			<static id="92" name="EXTRA33" />
+			<static id="93" name="EXTRA34" />
+			<static id="94" name="EXTRA35" />
+			<static id="95" name="EXTRA36" />
+			<static id="96" name="EXTRA37" />
+			<static id="97" name="EXTRA38" />
+			<static id="98" name="EXTRA39" />
+			<static id="99" name="EXTRA40" />
+			<static id="100" name="EXTRA41" />
+			<static id="101" name="EXTRA42" />
+			<static id="102" name="EXTRA43" />
+			<static id="103" name="EXTRA44" />
+			<static id="104" name="EXTRA45" />
+			<static id="105" name="EXTRA46" />
+			<static id="106" name="EXTRA47" />
+			<static id="107" name="EXTRA48" />
+			<static id="108" name="EXTRA49" />
+			<static id="109" name="EXTRA50" />
+			<static id="110" name="EXTRA51" />
+			<static id="111" name="EXTRA52" />
+			<static id="112" name="EXTRA53" />
+			<static id="113" name="EXTRA54" />
+			<static id="114" name="EXTRA55" />
+			<static id="115" name="EXTRA56" />
+			<static id="116" name="EXTRA57" />
+			<static id="117" name="EXTRA58" />
+			<static id="118" name="EXTRA59" />
+			<static id="119" name="EXTRA60" />
+			<static id="120" name="EXTRA61" />
+			<static id="121" name="EXTRA62" />
+			<static id="122" name="EXTRA63" />
+			<static id="123" name="EXTRA64" />
+			<static id="124" name="EXTRA65" />
+			<static id="125" name="EXTRA66" />
+			<static id="126" name="EXTRA67" />
+			<static id="127" name="EXTRA68" />
+			<static id="128" name="EXTRA69" />
+			<static id="129" name="EXTRA70" />
+			<static id="130" name="EXTRA71" />
+			<static id="131" name="EXTRA72" />
+			<static id="132" name="EXTRA73" />
+			<static id="133" name="EXTRA74" />
+			<static id="134" name="EXTRA75" />
+			<static id="135" name="EXTRA76" />
+			<static id="136" name="EXTRA77" />
+			<static id="137" name="EXTRA78" />
+			<static id="138" name="EXTRA79" />
+			<static id="139" name="EXTRA80" />
+			<static id="140" name="EXTRA81" />
+			<static id="141" name="EXTRA82" />
+			<static id="142" name="EXTRA83" />
+			<static id="143" name="EXTRA84" />
+			<static id="144" name="EXTRA85" />
+			<static id="145" name="EXTRA86" />
+			<static id="146" name="EXTRA87" />
+			<static id="147" name="EXTRA88" />
+			<static id="148" name="EXTRA89" />
+			<static id="149" name="EXTRA90" />
+			<static id="150" name="EXTRA91" />
+			<static id="151" name="EXTRA92" />
+			<static id="152" name="EXTRA93" />
+			<static id="153" name="EXTRA94" />
+			<static id="154" name="EXTRA95" />
+			<static id="155" name="EXTRA96" />
+			<static id="156" name="EXTRA97" />
+			<static id="157" name="EXTRA98" />
+			<static id="158" name="EXTRA99" />
+
+		</statics>
 		<sprite_sequences>
 			<sprite_sequence id="1353" name="SKY_GRAPHICS" />
 			<sprite_sequence id="1354" name="DEFAULT_SPRITES" />
@@ -6824,7 +6985,7 @@
 			<sound id="101" name="TR4_CLOCKWORK_BEETLE_CLK_WHIRR" t5m="101" />
 			<sound id="102" name="TR4_CLOCKWORK_BEETLE_CLK_EXP" t5m="102" />
 			<sound id="103" name="TR4_MINE_EXPLOSION_OVERLAY" t5m="103" />
-			<sound id="104" name="TR4_EMPTY1" t5m="104" />
+			<sound id="104" name="TR4_HK_STOP" t5m="104" />
 			<sound id="105" name="TR4_EXPLOSION1" t5m="105" />
 			<sound id="106" name="TR4_EXPLOSION2" t5m="106" />
 			<sound id="107" name="TR4_EARTHQUAKE_LOOP" t5m="107" />
@@ -6906,7 +7067,7 @@
 			<sound id="183" name="TR4_THUNDER_CRACK" t5m="183" />
 			<sound id="184" name="TR4_WRAITH_WHISPERS" t5m="184" />
 			<sound id="185" name="TR4_LARA_FOOSTEPS_SAND" t5m="185" />
-			<sound id="186" name="TR4_EMPTY5" t5m="186" />
+			<sound id="186" name="TR4_LARA_POLE_SQUEAK" t5m="186" />
 			<sound id="187" name="TR4_SKELETON_FOOTSTEPS" t5m="187" />
 			<sound id="188" name="TR4_SKELETON_ATTACK" t5m="188" />
 			<sound id="189" name="TR4_GENERIC_SWORD_SWOOSH" t5m="189" />
@@ -7659,7 +7820,7 @@
 			<sound id="936" name="TR5_IMP_ATTACK" t5m="936" />
 			<sound id="937" name="TR5_IMP_BARREL_DROP" t5m="937" />
 			<sound id="938" name="TR5_IMP_BARREL_ROLL" t5m="938" />
-			<sound id="939" name="TR5_EMPTY" t5m="939" />
+			<sound id="939" name="TR5_LARA_TIGHTROPE_FALL" t5m="939" />
 			<sound id="940" name="TR5_IMP_FALL" t5m="940" />
 			<sound id="941" name="TR5_IMP_FEET" t5m="941" />
 			<sound id="942" name="TR5_IMP_LAUGH" t5m="942" />
@@ -7758,7 +7919,7 @@
 			<sound id="1035" name="TR5_GENERIC_STONE_DOOR_LOW" t5m="1035" />
 			<sound id="1036" name="TR5_GENERIC_SWORD_SWOOSH_LOW" t5m="1036" />
 			<sound id="1037" name="TR5_GENERATOR_HUM_LOOP" t5m="1037" />
-			<sound id="1038" name="TR5_GENERIC_BOOT_STEPS" t5m="1038" />
+			<sound id="1038" name="TR5_LARA_POLE_SQUEAK" t5m="1038" />
 			<sound id="1039" name="TR5_GENERIC_KNEES_FALL" t5m="1039" />
 			<sound id="1040" name="TR5_GENERIC_SQKS_LOW" t5m="1040" />
 			<sound id="1041" name="TR5_GENERIC_SQKS_NONRND" t5m="1041" />
@@ -7814,7 +7975,7 @@
 			<sound id="1091" name="TR5_SMALL_METAL_VENT_HINGE" t5m="1091" />
 			<sound id="1092" name="TR5_SMASH_GLASS" t5m="1092" />
 			<sound id="1093" name="TR5_SMASH_METAL" t5m="1093" />
-			<sound id="1094" name="TR5_EMPTY" t5m="1094" />
+			<sound id="1094" name="TR5_PADLOCK_BREAK" t5m="1094" />
 			<sound id="1095" name="TR5_SMASH_WOOD" t5m="1095" />
 			<sound id="1096" name="TR5_PHILOSPHER_STONE" t5m="1096" />
 			<sound id="1097" name="TR5_STAIR_BANISTER_BEND" t5m="1097" />
@@ -7849,14 +8010,20 @@
 			<sound id="1126" name="TR5_2GUNTEX_LASER_FIRE" t5m="1126" />
 			<sound id="1127" name="TR5_2GUNTEX_DOUBLE_LASER_FIRE" t5m="1127" />
 			<sound id="1128" name="TR5_2GUNTEX_LASER_MISFIRE" t5m="1128" />
-			<sound id="1129" name="CUSTOM_FOOTSTEP_SOUNDS_1" t5m="1129" />
-			<sound id="1130" name="CUSTOM_FOOTSTEP_SOUNDS_2" t5m="1130" />
-			<sound id="1131" name="CUSTOM_FOOTSTEP_SOUNDS_3" t5m="1131" />
-			<sound id="1132" name="CUSTOM_FOOTSTEP_SOUNDS_4" t5m="1132" />
-			<sound id="1133" name="CUSTOM_FOOTSTEP_SOUNDS_5" t5m="1133" />
-			<sound id="1134" name="CUSTOM_FOOTSTEP_SOUNDS_6" t5m="1134" />
-			<sound id="1135" name="CUSTOM_FOOTSTEP_SOUNDS_7" t5m="1135" />
-			<sound id="1136" name="CUSTOM_FOOTSTEP_SOUNDS_8" t5m="1136" />
+			<sound id="1129" name="TR5_WOODEN_GATE_CREAK" t5m="1129" />
+			<sound id="1130" name="TR5_METAL_GATE_OPEN" t5m="1130" />
+			<sound id="1131" name="TR5_LARA_USE_OBJECT_METAL" t5m="1131" />
+			<sound id="1132" name="TR5_LARSON_GUNFIRE" t5m="1132" />
+			<sound id="1133" name="TR5_METAL_PORTCULLIS_UP" t5m="1133" />
+			<sound id="1134" name="TR5_METAL_PORTCULLIS_DOWN" t5m="1134" />
+			<sound id="1135" name="TR5_SMASH_ROCK2" t5m="1135" />
+			<sound id="1136" name="TR5_WALL_SUIT_DOOR" t5m="1136" />
+			<sound id="1137" name="TR5_LARA_WALL_CLIMB_GRUNT" t5m="1137" />
+			<sound id="1138" name="TR5_GENERIC_HEAVY_THUD" t5m="1138" />
+			<sound id="1139" name="TR5_STONE_SCRAPE_FAST" t5m="1139" />
+			<sound id="1140" name="TR5_LOW_RUMBLE" t5m="1140" />
+			<sound id="1141" name="TR5_FLOOR_METAL_OPEN" t5m="1141"	/>
+			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142"/>
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
@@ -7868,10 +8035,10 @@
 			<anim item="1" id="5" name="UNSURE?" />
 			<anim item="1" id="6" name="GIANT MUTANT DEATH" />
 			<anim item="1" id="7" name="SHIVA IMPALE DEATH" />
-			<anim item="1" id="8" name="TNT ACTIVATION" />	
-			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />				
+			<anim item="1" id="8" name="TNT ACTIVATION" />
+			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />
 			<anim item="1" id="10" name="MIDAS GOLDEN DEATH" />
-			<anim item="1" id="11" name="GONG STRIKE" />					
+			<anim item="1" id="11" name="GONG STRIKE" />
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
