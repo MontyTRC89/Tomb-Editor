@@ -284,7 +284,7 @@
 			<sound id="74" name="RAPTOR_ATTACK" t5m="402" />
 			<sound id="75" name="RAPTOR_FEET" t5m="403" />
 			<sound id="76" name="MUMMY_GROWL" t5m="443" />
-			<sound id="77" name="LARSON_FIRE" t5m="444" />
+			<sound id="77" name="LARSON_FIRE" t5m="1132" />
 			<sound id="78" name="LARSON_RICOCHET" t5m="445" />
 			<sound id="79" name="WATERFALL_LOOP" t5m="79" />
 			<sound id="80" name="WATER_LOOP" t5m="80" />
