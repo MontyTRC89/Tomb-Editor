@@ -1641,17 +1641,17 @@
 			<sound id="9" name="LARA_RELOAD" t5m="9" />
 			<sound id="10" name="LARA_RICOCHET" t5m="10" />
 			<sound id="11" name="LARA_FLARE_IGNITE" t5m="379" />
-			<sound id="12" name="LARA_FLARE_BURN" t5m="380" />
-			<sound id="13" name="LARA_FLARE_IGNITE_W" t5m="381" />
-			<sound id="14" name="LARA_FLARE_BURN_W" t5m="382" />
-			<sound id="15" name="LARA_HARPOON_FIRE" t5m="373" />
-			<sound id="16" name="LARA_HARPOON_LOAD" t5m="374" />
+			<sound id="12" name="LARA_FLARE_BURN" t5m="378" />
+			<sound id="13" name="LARA_FLARE_IGNITE_W" t5m="380" />
+			<sound id="14" name="LARA_FLARE_BURN_W" t5m="381" />
+			<sound id="15" name="LARA_HARPOON_FIRE" t5m="374" />
+			<sound id="16" name="LARA_HARPOON_LOAD" t5m="373" />
 			<sound id="17" name="LARA_WET_FEET" t5m="17" />
 			<sound id="18" name="LARA_WADE" t5m="18" />
 			<sound id="20" name="ICKET_BARRIER" t5m="888" />
 			<sound id="21" name="CRICKET_LOOP" t5m="21" />
-			<sound id="22" name="LARA_HARPOON_LOAD_WATER" t5m="379" />
-			<sound id="23" name="LARA_HARPOON_FIRE_WATER" t5m="380" />
+			<sound id="22" name="LARA_HARPOON_LOAD_WATER" t5m="375" />
+			<sound id="23" name="LARA_HARPOON_FIRE_WATER" t5m="376" />
 			<sound id="24" name="LARA_KNEES_SHUFFLE" t5m="24" />
 			<sound id="25" name="PUSH_SWITCH" t5m="25" />
 			<sound id="26" name="LARA_CLIMB3" t5m="26" />
