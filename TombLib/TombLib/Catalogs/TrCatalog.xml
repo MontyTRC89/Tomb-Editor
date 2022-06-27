@@ -2833,7 +2833,7 @@
 			<moveable id="112" name="WHEEL_OF_FORTUNE" description="Wheel Of Fortune" t5m="WHEEL_OF_FORTUNE" essential="false" />
 			<moveable id="113" name="SCALES" description="Scales" t5m="SCALES" essential="false" />
 			<moveable id="114" name="DARTS" description="Darts" t5m="DARTS" />
-			<moveable id="115" name="DART_EMITTER" description="Dart Emitter" t5m="DARTS_EMITTER" essential="false" t5m="DART_EMITTER"/>
+			<moveable id="115" name="DART_EMITTER" description="Dart Emitter" t5m="DARTS_EMITTER" essential="false" />
 			<moveable id="116" name="HOMING_DART_EMITTER" description="Homing Dart Emitter" t5m="HOMING_DART_EMITTER" essential="false" />
 			<moveable id="117" name="FALLING_CEILING" description="Falling Ceiling" t5m="FALLING_CEILING" essential="false" />
 			<moveable id="118" name="FALLING_BLOCK" description="Falling Block" t5m="FALLING_BLOCK" essential="false" />
