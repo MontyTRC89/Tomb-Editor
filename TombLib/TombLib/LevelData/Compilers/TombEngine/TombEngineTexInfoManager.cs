@@ -1786,17 +1786,17 @@ namespace TombLib.LevelData.Compilers
 
             for (int n = 0; n < RoomsAtlas.Count; n++)
             {
-                RoomsAtlas[n].ColorMap.Save("d:\\RoomsAtlas" + n + ".png");
+                RoomsAtlas[n].ColorMap.Save("RoomsAtlas" + n + ".png");
             }
 
             for (int n = 0; n < MoveablesAtlas.Count; n++)
             {
-                MoveablesAtlas[n].ColorMap.Save("d:\\MoveablesAtlas" + n + ".png");
+                MoveablesAtlas[n].ColorMap.Save("MoveablesAtlas" + n + ".png");
             }
 
             for (int n = 0; n < StaticsAtlas.Count; n++)
             {
-                StaticsAtlas[n].ColorMap.Save("d:\\StaticsAtlas" + n + ".png");
+                StaticsAtlas[n].ColorMap.Save("StaticsAtlas" + n + ".png");
             }
 
             // Finally compile all texinfos
