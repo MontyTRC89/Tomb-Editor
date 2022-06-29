@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using TombLib.Utils;
 
 namespace TombIDE.Shared.SharedClasses
 {
@@ -16,7 +16,7 @@ namespace TombIDE.Shared.SharedClasses
 
 			try
 			{
-				List<string> projectFilePaths = ReadXmlFile<List<string>>(xmlPath);
+				List<string> projectFilePaths = XmlUtils.ReadXmlFile<List<string>>(xmlPath);
 				// TombIDEProjects.xml only stores .trproj file paths
 
 				return projectFilePaths
@@ -26,7 +26,7 @@ namespace TombIDE.Shared.SharedClasses
 			catch
 			{
 				// Create a new (empty) .xml file
-				SaveXmlFile(xmlPath, new List<string>());
+				XmlUtils.WriteXmlFile(xmlPath, new List<string>());
 				return new List<Project>();
 			}
 		}
@@ -40,25 +40,7 @@ namespace TombIDE.Shared.SharedClasses
 				.Select(project => project.GetTrprojFilePath());
 
 			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEProjects.xml");
-			SaveXmlFile(xmlPath, projectFilePaths.ToList());
-		}
-
-		public static T ReadXmlFile<T>(string path)
-		{
-			using (var reader = new StreamReader(path))
-			{
-				var serializer = new XmlSerializer(typeof(T));
-				return (T)serializer.Deserialize(reader);
-			}
-		}
-
-		public static void SaveXmlFile<T>(string path, T content)
-		{
-			using (var writer = new StreamWriter(path))
-			{
-				var serializer = new XmlSerializer(typeof(T));
-				serializer.Serialize(writer, content);
-			}
+			XmlUtils.WriteXmlFile(xmlPath, projectFilePaths.ToList());
 		}
 	}
 }

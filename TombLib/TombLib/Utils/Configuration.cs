@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using TombLib.Utils;
 
 namespace TombLib
 {   
@@ -166,24 +167,18 @@ namespace TombLib
         }
 
         public void Save(Stream stream)
-        {
-            new XmlSerializer(GetType()).Serialize(stream, this);
-        }
+            => XmlUtils.WriteXmlFile(stream, GetType(), this);
 
         public void Save(string path)
-        {
-            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                Save(stream);
-        }
+            => XmlUtils.WriteXmlFile(path, GetType(), this);
 
         public void Save()
-        {
-            Save(GetDefaultPath());
-        }
+            => Save(GetDefaultPath());
 
         public void SaveTry()
         {
             if (!string.IsNullOrEmpty(GetDefaultPath()))
+			{
                 try
                 {
                     Save();
@@ -192,23 +187,17 @@ namespace TombLib
                 {
                     logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
                 }
+            }
         }
 
         public T Load<T>(Stream stream) where T : ConfigurationBase
-        {
-            return (T)new XmlSerializer(GetType()).Deserialize(stream);
-        }
+            => XmlUtils.ReadXmlFile<T>(stream);
 
         public T Load<T>(string filePath) where T : ConfigurationBase
-        {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return Load<T>(stream);
-        }
+            => XmlUtils.ReadXmlFile<T>(filePath);
 
         public T Load<T>() where T : ConfigurationBase
-        {
-            return Load<T>(GetDefaultPath());
-        }
+            => Load<T>(GetDefaultPath());
 
         public T LoadOrUseDefault<T>(ICollection<LogEventInfo> log = null) where T : ConfigurationBase, new()
         {

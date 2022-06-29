@@ -46,13 +46,7 @@ namespace TombLib.Wad
 
         private static WadSounds ReadFromXml(string filename)
         {
-            var sounds = new WadSounds();
-
-            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                var serializer = new XmlSerializer(typeof(WadSounds));
-                sounds = (WadSounds)serializer.Deserialize(fileStream);
-            }
+            WadSounds sounds = XmlUtils.ReadXmlFile<WadSounds>(filename);
 
             foreach (var soundInfo in sounds.SoundInfos)
                 soundInfo.SoundCatalog = filename;
@@ -62,12 +56,7 @@ namespace TombLib.Wad
 
         public static bool SaveToXml(string filename, WadSounds sounds)
         {
-            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var serializer = new XmlSerializer(typeof(WadSounds));
-                serializer.Serialize(fileStream, sounds);
-            }
-
+            XmlUtils.WriteXmlFile(filename, sounds);
             return true;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombIDE.Shared
 {
@@ -70,14 +71,12 @@ namespace TombIDE.Shared
 		/// </summary>
 		public void Save()
 		{
-			using (StreamWriter writer = new StreamWriter(GetTrprojFilePath()))
-			{
-				Project projectCopy = Clone();
-				projectCopy.EncodeProjectPaths();
+			string trprojPath = GetTrprojFilePath();
 
-				XmlSerializer serializer = new XmlSerializer(typeof(Project));
-				serializer.Serialize(writer, projectCopy);
-			}
+			Project projectCopy = Clone();
+			projectCopy.EncodeProjectPaths();
+
+			XmlUtils.WriteXmlFile(trprojPath, projectCopy);
 		}
 
 		/// <summary>
@@ -85,7 +84,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public Project Clone()
 		{
-			Project projectCopy = new Project
+			var projectCopy = new Project
 			{
 				Name = Name,
 				GameVersion = GameVersion,
@@ -129,7 +128,7 @@ namespace TombIDE.Shared
 				if (LevelsPath.StartsWith(ProjectPath))
 					LevelsPath = Path.Combine(newProjectPath, LevelsPath.Remove(0, ProjectPath.Length + 1));
 
-				List<ProjectLevel> cachedLevelList = new List<ProjectLevel>();
+				var cachedLevelList = new List<ProjectLevel>();
 				cachedLevelList.AddRange(Levels);
 
 				// Remove all internal levels from the project's list to update all .prj2 files with new paths
@@ -138,7 +137,7 @@ namespace TombIDE.Shared
 				// Restore external levels, because we don't update them
 				foreach (ProjectLevel projectLevel in cachedLevelList)
 				{
-					if (Path.GetDirectoryName(projectLevel.FolderPath).ToLower() != LevelsPath.ToLower())
+					if (!Path.GetDirectoryName(projectLevel.FolderPath).Equals(LevelsPath, StringComparison.OrdinalIgnoreCase))
 						Levels.Add(projectLevel);
 				}
 
@@ -256,24 +255,14 @@ namespace TombIDE.Shared
 		/// </summary>
 		public string GetExeFileName()
 		{
-			switch (GameVersion)
+			return GameVersion switch
 			{
-				case TRVersion.Game.TR1:
-					return "Tomb1Main.exe";
-
-				case TRVersion.Game.TR2:
-					return "Tomb2.exe";
-
-				case TRVersion.Game.TR3:
-					return "tomb3.exe";
-
-				case TRVersion.Game.TR4:
-				case TRVersion.Game.TRNG:
-					return "tomb4.exe";
-
-				default:
-					return null;
-			}
+				TRVersion.Game.TR1 => "Tomb1Main.exe",
+				TRVersion.Game.TR2 => "Tomb2.exe",
+				TRVersion.Game.TR3 => "tomb3.exe",
+				TRVersion.Game.TR4 or TRVersion.Game.TRNG => "tomb4.exe",
+				_ => null,
+			};
 		}
 
 		/// <summary>
@@ -281,22 +270,13 @@ namespace TombIDE.Shared
 		/// </summary>
 		public string GetLevelFileExtension()
 		{
-			switch (GameVersion)
+			return GameVersion switch
 			{
-				case TRVersion.Game.TR1:
-					return ".phd";
-
-				case TRVersion.Game.TR2:
-				case TRVersion.Game.TR3:
-					return ".tr2";
-
-				case TRVersion.Game.TR4:
-				case TRVersion.Game.TRNG:
-					return ".tr4";
-
-				default:
-					return null;
-			}
+				TRVersion.Game.TR1 => ".phd",
+				TRVersion.Game.TR2 or TRVersion.Game.TR3 => ".tr2",
+				TRVersion.Game.TR4 or TRVersion.Game.TRNG => ".tr4",
+				_ => null,
+			};
 		}
 
 		#endregion Public methods
@@ -305,15 +285,10 @@ namespace TombIDE.Shared
 
 		public static Project FromFile(string trprojPath)
 		{
-			using (StreamReader reader = new StreamReader(trprojPath))
-			{
-				XmlSerializer serializer = new XmlSerializer(typeof(Project));
-				Project project = (Project)serializer.Deserialize(reader);
+			Project project = XmlUtils.ReadXmlFile<Project>(trprojPath);
+			project.DecodeProjectPaths(trprojPath);
 
-				project.DecodeProjectPaths(trprojPath);
-
-				return project;
-			}
+			return project;
 		}
 
 		#endregion Public static methods

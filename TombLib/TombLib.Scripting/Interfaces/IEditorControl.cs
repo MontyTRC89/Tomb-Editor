@@ -1,5 +1,4 @@
 ﻿using System;
-using TombLib.Scripting.Bases;
 using TombLib.Scripting.Enums;
 
 namespace TombLib.Scripting.Interfaces
@@ -66,7 +65,7 @@ namespace TombLib.Scripting.Interfaces
 
 		void GoToObject(string objectName, object identifyingObject = null);
 
-		void UpdateSettings(ConfigurationBase configuration);
+		void UpdateSettings(Bases.ConfigurationBase configuration);
 
 		void TryRunContentChangedWorker();
 

@@ -2,6 +2,7 @@
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Resources;
+using TombLib.Utils;
 
 namespace TombLib.Scripting.Lua
 {
@@ -25,7 +26,7 @@ namespace TombLib.Scripting.Lua
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlHandling.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
 			}
 		}
 

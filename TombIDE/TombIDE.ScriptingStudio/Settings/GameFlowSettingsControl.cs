@@ -14,6 +14,7 @@ using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Objects;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
+using TombLib.Utils;
 
 namespace TombIDE.ScriptingStudio.Settings
 {
@@ -104,7 +105,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			ToggleSaveSchemeButton();
 
 			string fullSchemePath = Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, comboBox_ColorSchemes.SelectedItem.ToString() + ".gflsch");
-			ColorScheme selectedScheme = XmlHandling.ReadXmlFile<ColorScheme>(fullSchemePath);
+			ColorScheme selectedScheme = XmlUtils.ReadXmlFile<ColorScheme>(fullSchemePath);
 
 			UpdateColorButtons(selectedScheme);
 			UpdatePreviewColors(selectedScheme);
@@ -142,7 +143,7 @@ namespace TombIDE.ScriptingStudio.Settings
 						Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
 					};
 
-					XmlHandling.SaveXmlFile(form.SchemeFilePath, currentScheme);
+					XmlUtils.WriteXmlFile(form.SchemeFilePath, currentScheme);
 
 					comboBox_ColorSchemes.Items.Add(Path.GetFileNameWithoutExtension(form.SchemeFilePath));
 					comboBox_ColorSchemes.SelectedItem = Path.GetFileNameWithoutExtension(form.SchemeFilePath);
@@ -320,7 +321,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (item == "~UNTITLED")
 					continue;
 
-				ColorScheme itemScheme = XmlHandling.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, item + ".gflsch"));
+				ColorScheme itemScheme = XmlUtils.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, item + ".gflsch"));
 
 				if (currentScheme == itemScheme)
 				{
@@ -335,7 +336,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (!comboBox_ColorSchemes.Items.Contains("~UNTITLED"))
 					comboBox_ColorSchemes.Items.Add("~UNTITLED");
 
-				XmlHandling.SaveXmlFile(Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, "~UNTITLED.gflsch"), currentScheme);
+				XmlUtils.WriteXmlFile(Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, "~UNTITLED.gflsch"), currentScheme);
 
 				comboBox_ColorSchemes.SelectedItem = "~UNTITLED";
 			}

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
+using TombLib.Utils;
 
 namespace TombIDE.Shared.Local
 {
@@ -137,22 +136,15 @@ namespace TombIDE.Shared.Local
 		{
 			string file = Path.Combine(DefaultPaths.LocalizationDirectory, "EN", "TombIDE.xml");
 
-			using (var reader = new StreamReader(file))
-			{
-				var serializer = new XmlSerializer(typeof(Localization));
-				var localization = serializer.Deserialize(reader) as Localization;
+			Localization localization = XmlUtils.ReadXmlFile<Localization>(file);
+			NormalizeFieldValues(localization);
 
-				NormalizeFieldValues(localization);
-
-				return localization;
-			}
+			return localization;
 		}
 
 		private static void NormalizeFieldValues(Localization localization)
 		{
-			var fields = localization.GetType().GetRuntimeFields();
-
-			foreach (FieldInfo field in fields)
+			foreach (FieldInfo field in localization.GetType().GetRuntimeFields())
 			{
 				string fieldValue = field.GetValue(localization)?.ToString();
 
@@ -167,7 +159,7 @@ namespace TombIDE.Shared.Local
 
 		private static string GetNormalizedValue(string fieldValue)
 		{
-			List<string> lines = fieldValue.Split('\n').ToList();
+			var lines = fieldValue.Split('\n').ToList();
 
 			if (lines.First().Trim() == string.Empty)
 				lines.RemoveAt(0);
