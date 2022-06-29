@@ -1886,8 +1886,8 @@ namespace TombLib.LevelData.Compilers
             {
                 List<ParentTextureArea> sequence = _actualAnimTextures[i].CompiledAnimation;
 
-                writer.Write(i); // Atlas index
-                                 //AnimatedAtlas[i].ColorMap.Save("F:\\ANIMATEDATLAS_" + i + ".png");
+                writer.Write(i);
+                writer.Write((int)_actualAnimTextures[i].Origin.Fps);
                 writer.Write(_animTextureIndices[i].Count); // Number of frames
                 foreach (ushort frame in _animTextureIndices[i])
                 {
