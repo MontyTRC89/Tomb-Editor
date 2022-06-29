@@ -61,15 +61,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var poly = oldMesh.Polys[j];
 
-                ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
+                int shineStrength = 0;
                 if (poly.ShineStrength > 0)
                 {
                     if (oldMesh.LightingType == WadMeshLightingType.VertexColors)
                         _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
-                        lightingEffect |= 0x02;
-                        lightingEffect |= (ushort)(Math.Min((byte)63, poly.ShineStrength) << 2);
+                        shineStrength = (int)(Math.Min((byte)63, poly.ShineStrength));
                     }
                 }
 
@@ -107,6 +106,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null);
                     else
                         newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
+
+                    newPoly.ShineStrength = shineStrength;
 
                     newMesh.Polygons.Add(newPoly);
 
