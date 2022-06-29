@@ -62,7 +62,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
 
             // Add all sprites to the texture packer
-            var spriteAllocator = new Util.SpriteAllocator();
+            var spriteAllocator = new Util.SpriteAllocator(_level.Settings.GameVersion == TRVersion.Game.TombEngine ? 2048 : 256);
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
