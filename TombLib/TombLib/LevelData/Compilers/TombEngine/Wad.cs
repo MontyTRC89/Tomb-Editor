@@ -61,17 +61,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var poly = oldMesh.Polys[j];
 
-                int shineStrength = 0;
-                if (poly.ShineStrength > 0)
-                {
-                    if (oldMesh.LightingType == WadMeshLightingType.VertexColors)
-                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
-                    else
-                    {
-                        shineStrength = (int)(Math.Min((byte)63, poly.ShineStrength));
-                    }
-                }
-
                 // Very quirky way to identify 1st face of a waterfall in TR4-TR5 wads.
                 bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
 
@@ -107,7 +96,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                         newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
 
-                    newPoly.ShineStrength = shineStrength;
+                    newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 
                     newMesh.Polygons.Add(newPoly);
 
