@@ -65,7 +65,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write((int)poly.Shape);
                             writer.Write((int)poly.AnimatedSequence);
                             writer.Write((int)poly.AnimatedFrame);
-                            writer.Write((int)poly.ShineStrength);
+                            writer.Write((float)poly.ShineStrength);
                             foreach (int index in poly.Indices)
                                 writer.Write(index);
                             foreach (var uv in poly.TextureCoordinates)

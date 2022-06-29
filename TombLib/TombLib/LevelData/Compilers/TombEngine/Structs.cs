@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Vector3 Bitangent;
         public int AnimatedSequence;
         public int AnimatedFrame;
-        public int ShineStrength;
+        public float ShineStrength;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
