@@ -80,8 +80,6 @@ namespace TombEditor.Forms
         private readonly Editor _editor;
         private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
         private readonly static ImageC transparentBackground = ImageC.FromSystemDrawingImage(TombLib.Properties.Resources.misc_TransparentBackground);
-        
-        private readonly bool _isNg;
 
         private readonly Timer _previewTimer = new Timer();
         private AnimatedTextureFrame _previewCurrentFrame;
@@ -109,8 +107,6 @@ namespace TombEditor.Forms
                     return GetPerspectivePreview(subsection._image, subsection._sourceTexCoord0, subsection._sourceTexCoord1, subsection._sourceTexCoord2,
                         subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
                 });
-
-            _isNg = _editor.Level.IsNG;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -248,10 +244,15 @@ namespace TombEditor.Forms
 
             // Add common animation types
             comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
-            comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
+
+            if (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 ||
+                _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR5)
+            {
+                comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
+            }
 
             // NG settings
-            if (_isNg)
+            if (_editor.Level.IsNG)
             {
                 // For now, add only P-Frames mode, as Half-Rotate and River-Rotate modes are faulty.
                 comboEffect.Items.Add(AnimatedTextureAnimationType.PFrames);
@@ -271,11 +272,10 @@ namespace TombEditor.Forms
             {
                 comboUvRotate.Enabled = false;
                 comboFps.Enabled = false;
-                numericUpDownFPS.Enabled = false;
             }
 
             // Legacy engine settings
-            comboEffect.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;               
+            comboEffect.Enabled = !_editor.Level.IsTombEngine && _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;               
 
             comboProcPresets.SelectedIndex = 0;
             numFrames.Value = _maxLegacyFrames;
@@ -339,7 +339,7 @@ namespace TombEditor.Forms
 
             comboEffect.SelectedItem = selectedSet.AnimationType;
 
-            if (_isNg)
+            if (_editor.Level.IsNG || _editor.Level.IsTombEngine)
             {
                 OnEffectChanged();
                 switch (selectedSet.AnimationType)
@@ -1046,7 +1046,7 @@ namespace TombEditor.Forms
 
         private void comboEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isNg)
+            if (_editor.Level.IsNG)
                 OnEffectChanged();
         }
 
