@@ -2010,7 +2010,7 @@ namespace TombEditor.Controls
         private string BuildTriggeredByMessage(ObjectInstance instance)
         {
             string message = "";
-            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
+            foreach (var room in _editor.Level.ExistingRooms)
                 foreach (var trigger in room.Triggers)
                     if (trigger.Target == instance || trigger.Timer == instance || trigger.Extra == instance)
                         message += "\nTriggered in Room " + trigger.Room + " on sectors " + trigger.Area;
@@ -3760,7 +3760,7 @@ namespace TombEditor.Controls
             // Collect all flyby cameras
             List<FlybyCameraInstance> flybyCameras = new List<FlybyCameraInstance>();
 
-            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
+            foreach (var room in _editor.Level.ExistingRooms)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
                     if (instance.Sequence == sequence)

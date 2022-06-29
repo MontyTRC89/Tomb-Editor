@@ -432,37 +432,37 @@ namespace TombEditor.Forms
             // Rooms
             if (scope == ScopeMode.Everything || scope == ScopeMode.Rooms)
             {
-                foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
+                foreach (var room in _editor.Level.ExistingRooms)
                     yield return room;
             }
 
             // Objects
             if (scope == ScopeMode.Everything || scope == ScopeMode.AllObjects)
             {
-                foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
-                    foreach (ObjectInstance instance in room.AnyObjects)
+                foreach (var room in _editor.Level.ExistingRooms)
+                    foreach (var instance in room.AnyObjects)
                         yield return instance;
             }
             else if (scope == ScopeMode.ObjectsInSelectedRooms)
             {
-                foreach (ObjectInstance instance in _editor.SelectedRooms.SelectMany(room => room.AnyObjects))
+                foreach (var instance in _editor.SelectedRooms.SelectMany(room => room.AnyObjects))
                     yield return instance;
             }
 
             // Item types
             if (scope == ScopeMode.Everything || scope == ScopeMode.ItemTypes)
             {
-                foreach (WadMoveable obj in _editor.Level.Settings.WadGetAllMoveables().Values)
+                foreach (var obj in _editor.Level.Settings.WadGetAllMoveables().Values)
                     yield return new ItemType(obj.Id, _editor.Level.Settings);
-                foreach (WadStatic obj in _editor.Level.Settings.WadGetAllStatics().Values)
+                foreach (var obj in _editor.Level.Settings.WadGetAllStatics().Values)
                     yield return new ItemType(obj.Id, _editor.Level.Settings);
             }
 
             // Triggers
             if (scope == ScopeMode.Triggers)
             {
-                foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
-                    foreach (ObjectInstance instance in room.AnyObjects.Where(o => o is TriggerInstance))
+                foreach (var room in _editor.Level.ExistingRooms)
+                    foreach (var instance in room.AnyObjects.Where(o => o is TriggerInstance))
                         yield return instance;
             }
         }

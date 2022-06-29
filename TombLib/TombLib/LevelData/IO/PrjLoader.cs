@@ -1438,13 +1438,13 @@ namespace TombLib.LevelData.IO
 
                     // Build lookup table for IDs
                     Dictionary<uint, PositionBasedObjectInstance> objectLookup =
-                        level.Rooms.Where(room => room != null)
+                        level.ExistingRooms
                         .SelectMany(room => room.Objects)
                         .Where(instance => instance is IHasScriptID)
                         .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
 
                     // Lookup objects from IDs for all triggers
-                    foreach (Room room in level.Rooms.Where(room => room != null))
+                    foreach (var room in level.ExistingRooms)
                         foreach (var instance in room.Triggers.ToList())
                         {
                             instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
@@ -1636,7 +1636,7 @@ namespace TombLib.LevelData.IO
 
                 // Build geometry
                 progressReporter?.ReportProgress(80, "Building geometry");
-                foreach (var room in level.Rooms.Where(room => room != null))
+                foreach (var room in level.ExistingRooms)
                     room.BuildGeometry();
 
                 // Build faces

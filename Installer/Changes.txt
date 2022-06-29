@@ -10,7 +10,9 @@ Tomb Editor:
  * Visually indicate lights which can cast TEN shadows in 3D window.
  * Allow to quick-start TEN levels.
  * Fix some TR2 objects not appearing properly in 3D window.
+ * Fix some hardcoded TR3 sounds not being selected on sound autodetect.
  * Fix exception in animated texture window when clicking on text fields in frame list.
+ * Fix exception when trying to select all sound infos without valid sound catalogs present.
 
 Version 1.5
 ===========

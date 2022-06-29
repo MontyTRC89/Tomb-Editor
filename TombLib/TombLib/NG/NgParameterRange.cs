@@ -272,22 +272,22 @@ namespace TombLib.NG
                         (last, newChoice) => last.Concat(newChoice.BuildList(level)));
 
                 case NgParameterKind.MoveablesInLevel:
-                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<MoveableInstance>();
+                    return level.ExistingRooms.SelectMany(room => room.Objects).OfType<MoveableInstance>();
 
                 case NgParameterKind.StaticsInLevel:
-                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<StaticInstance>();
+                    return level.ExistingRooms.SelectMany(room => room.Objects).OfType<StaticInstance>();
 
                 case NgParameterKind.CamerasInLevel:
-                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<CameraInstance>();
+                    return level.ExistingRooms.SelectMany(room => room.Objects).OfType<CameraInstance>();
 
                 case NgParameterKind.SinksInLevel:
-                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<SinkInstance>();
+                    return level.ExistingRooms.SelectMany(room => room.Objects).OfType<SinkInstance>();
 
                 case NgParameterKind.FlybyCamerasInLevel:
-                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<FlybyCameraInstance>();
+                    return level.ExistingRooms.SelectMany(room => room.Objects).OfType<FlybyCameraInstance>();
 
                 case NgParameterKind.Rooms255:
-                    return level.Rooms.Where(room => room != null);
+                    return level.ExistingRooms;
 
                 case NgParameterKind.SoundEffectsA:
                     return Enumerable.Range(0, 256).Select(formatSounds1);
@@ -330,7 +330,7 @@ namespace TombLib.NG
                             p.Value.ToString(level.Settings.GameVersion.Native())));
 
                 case NgParameterKind.LaraStartPosOcb:
-                    return level.Rooms.Where(room => room != null)
+                    return level.ExistingRooms
                         .SelectMany(room => room.Objects)
                         .OfType<MoveableInstance>().Where(obj => obj.WadObjectId.TypeId == 406) // Lara start pos
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));

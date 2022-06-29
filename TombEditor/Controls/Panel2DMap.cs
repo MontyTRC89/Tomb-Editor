@@ -66,7 +66,7 @@ namespace TombEditor.Controls
                 if (_roomSelectionCache == null && _area.Size.Length() > 0.5f)
                     _roomSelectionCache = new HashSet<Room>(
                         WinFormsUtils.BoolCombine(parent._editor.SelectedRooms,
-                        parent._editor.Level.Rooms.Where(room => room != null)
+                        parent._editor.Level.ExistingRooms
                         .Where(room => parent._depthBar.CheckRoom(room))
                         .Where(room =>
                             room.Position.X + room.NumXSectors > Math.Min(_area.Start.X, _area.End.X) &&

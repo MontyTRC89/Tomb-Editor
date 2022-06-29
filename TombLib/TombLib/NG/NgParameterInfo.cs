@@ -380,7 +380,7 @@ namespace TombLib.NG
             else if (range.IsRoom)
             {
                 // Undo room indexing
-                Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
+                Room room3 = level.ExistingRooms.ElementAtOrDefault(index);
                 if (room3 == null)
                 {
                     progressReporter?.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
@@ -395,7 +395,7 @@ namespace TombLib.NG
         public static TriggerInstance ImportFromScriptTrigger(Level level, string script)
         {
             // Build object lookup table
-            var objectLookup = level.Rooms.Where(room => room != null)
+            var objectLookup = level.ExistingRooms
                                           .SelectMany(room => room.Objects)
                                           .Where(instance => instance is IHasScriptID && ((IHasScriptID)instance).ScriptId.HasValue)
                                           .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);

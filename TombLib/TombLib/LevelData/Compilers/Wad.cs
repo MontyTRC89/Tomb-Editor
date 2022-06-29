@@ -232,7 +232,7 @@ namespace TombLib.LevelData.Compilers
 				// List all Moveables that have been placed in the level
 				ISet<WadMoveableId> placedMoveables = new HashSet<WadMoveableId>();
 				ISet<WadStaticId> placedStatics = new HashSet<WadStaticId>();
-				foreach (var room in l.Rooms.Where(r => r != null)) {
+				foreach (var room in l.ExistingRooms) {
 					foreach (var o in room.Objects) {
 						if (o is MoveableInstance) {
 							placedMoveables.Add((o as MoveableInstance).WadObjectId);

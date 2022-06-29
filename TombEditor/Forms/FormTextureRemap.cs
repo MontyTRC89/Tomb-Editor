@@ -137,7 +137,7 @@ namespace TombEditor.Forms
             if (cbRestrictToSelectedRooms.Checked)
                 relevantRooms = _editor.SelectedRooms;
             else
-                relevantRooms = _editor.Level.Rooms.Where(room => room != null);
+                relevantRooms = _editor.Level.ExistingRooms;
 
             if (sourceTexture == null || destinationTexture == null)
             {
@@ -217,7 +217,7 @@ namespace TombEditor.Forms
                 }
 
             // Send out updates
-            Parallel.ForEach(relevantRooms, room => room.RoomGeometry = new RoomGeometry(room));
+            Parallel.ForEach(relevantRooms, room => room.BuildGeometry());
             foreach (Room room in relevantRooms)
                 _editor.RoomTextureChange(room);
 

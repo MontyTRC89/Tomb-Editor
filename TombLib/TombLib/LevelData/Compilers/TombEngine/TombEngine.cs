@@ -22,7 +22,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var numRooms = (uint)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                foreach (var r in _level.Rooms.Where(r => r != null))
+                foreach (var r in _level.ExistingRooms)
                 {
                     _tempRooms[r].Write(writer);
                 }
@@ -65,6 +65,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write((int)poly.Shape);
                             writer.Write((int)poly.AnimatedSequence);
                             writer.Write((int)poly.AnimatedFrame);
+                            writer.Write((int)poly.ShineStrength);
                             foreach (int index in poly.Indices)
                                 writer.Write(index);
                             foreach (var uv in poly.TextureCoordinates)

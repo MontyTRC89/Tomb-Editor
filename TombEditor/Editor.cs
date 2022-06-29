@@ -436,7 +436,7 @@ namespace TombEditor
                 // Check that it's still part of the project
                 if (Level == null)
                     return null;
-                if (!Level.Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).Contains(_bookmarkedObject))
+                if (!Level.ExistingRooms.SelectMany(room => room.AnyObjects).Contains(_bookmarkedObject))
                     return null;
                 return _bookmarkedObject;
             }
@@ -1077,7 +1077,7 @@ namespace TombEditor
             if (obj is RoomListChangedEvent)
             {
                 if (SelectedRooms == null) return;
-                List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
+                List<Room> newSelection = SelectedRooms.Intersect(_level.ExistingRooms).ToList();
                 if (newSelection.FirstOrDefault() == null)
                     SelectLastOrDefaultRoom();
                 else if (newSelection.Contains(SelectedRoom))

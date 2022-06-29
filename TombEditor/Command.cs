@@ -783,10 +783,16 @@ namespace TombEditor
 
             AddCommand("Delete", "Delete", CommandType.Edit, delegate (CommandArgs args)
             {
-                if (args.Editor.SelectedObject == null)
-                    EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
-                else if (args.Editor.Mode != EditorMode.Map2D || (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
-                    EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
+                if (args.Editor.SelectedObject != null)
+                {
+                    if (args.Editor.Mode != EditorMode.Map2D || (args.Editor.SelectedObject is PortalInstance || args.Editor.SelectedObject is TriggerInstance))
+                    {
+                        EditorActions.DeleteObject(args.Editor.SelectedObject, args.Window);
+                        return;
+                    }
+                }
+
+                EditorActions.DeleteRooms(args.Editor.SelectedRooms, args.Window);
             });
 
             AddCommand("DeleteMissingObjects", "Delete missing objects", CommandType.Edit, delegate (CommandArgs args)
@@ -1032,7 +1038,7 @@ namespace TombEditor
                     c =>
                     {
                         room.Properties.AmbientLight = c.ToFloat3Color() * 2.0f;
-                        args.Editor.SelectedRoom.BuildGeometry();
+                        args.Editor.SelectedRoom.RebuildLighting(args.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                         args.Editor.RoomPropertiesChange(room);
                     }, args.Editor.Configuration.UI_ColorScheme))
                 {
@@ -1055,7 +1061,7 @@ namespace TombEditor
                 }
 
                 args.Editor.UndoManager.Push(undo);
-                args.Editor.SelectedRoom.BuildGeometry();
+                args.Editor.SelectedRoom.RebuildLighting(args.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 args.Editor.RoomPropertiesChange(room);
             });
 
