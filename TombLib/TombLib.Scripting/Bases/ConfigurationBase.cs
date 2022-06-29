@@ -9,18 +9,18 @@ namespace TombLib.Scripting.Bases
 
 		#region Loading
 
-		public T Load<T>(Stream stream) where T : ConfigurationBase
+		public T Load<T>(Stream stream) where T : ConfigurationBase, new()
 			=> XmlUtils.ReadXmlFile<T>(stream);
 
-		public T Load<T>(string filePath) where T : ConfigurationBase
+		public T Load<T>(string filePath) where T : ConfigurationBase, new()
 		{
 			if (!File.Exists(filePath))
-				XmlUtils.WriteXmlFile(filePath, this as T);
+				XmlUtils.WriteXmlFile(filePath, new T());
 
 			return XmlUtils.ReadXmlFile<T>(filePath);
 		}
 
-		public T Load<T>() where T : ConfigurationBase
+		public T Load<T>() where T : ConfigurationBase, new()
 			=> Load<T>(DefaultPath);
 
 		#endregion Loading
