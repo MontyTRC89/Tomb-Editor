@@ -2462,6 +2462,101 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
+      <Id>619</Id>
+      <Name>TR2_Vehicle_Snowmobile_Accelerate</Name>
+      <Volume>95</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_Vehicle_Snowmobile_Accelerate_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>620</Id>
+      <Name>TR2_Vehicle_Snowmobile_Idle</Name>
+      <Volume>95</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_Vehicle_Snowmobile_Idle_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>621</Id>
+      <Name>TR2_Vehicle_Snowmobile_Moving</Name>
+      <Volume>90</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_Vehicle_Snowmobile_Moving_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>622</Id>
+      <Name>TR2_Vehicle_Snowmobile_Start</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_Vehicle_Snowmobile_Start_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>623</Id>
+      <Name>TR2_Vehicle_Snowmobile_Stop</Name>
+      <Volume>88</Volume>
+      <RangeInSectors>10</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>TR2_Vehicle_Snowmobile_Stop_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>624</Id>
       <Name>TR2_Zipline_Go</Name>
       <Volume>75</Volume>
@@ -2776,7 +2871,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>640</Id>
-      <Name>TR2_Vehicle_Impact2</Name>
+      <Name>TR2_Vehicle_Impact_2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2786,9 +2881,6 @@
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
-        <WadSample>
-          <FileName>TR2_Vehicle_Impact_2_01.wav</FileName>
-        </WadSample>
         <WadSample>
           <FileName>TR2_Vehicle_Impact2_01.wav</FileName>
         </WadSample>
@@ -3003,6 +3095,9 @@
       <Samples>
         <WadSample>
           <FileName>TR2_Birds_Chirp_02.wav</FileName>
+        </WadSample>
+        <WadSample>
+          <FileName>TR2_Birds_Chirp_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3241,12 +3336,12 @@
       <Name>TR2_Drips_Reverb</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
-      <Chance>100</Chance>
+      <Chance>5</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>TR2_Drips_Reverb_01.wav</FileName>
