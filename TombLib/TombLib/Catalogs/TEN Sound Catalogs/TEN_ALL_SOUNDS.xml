@@ -3827,7 +3827,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Jp_Dcls.wav</FileName>
+          <FileName>tr4_vehicle_jeep_door_close_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -7207,7 +7207,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Clk_Swt.wav</FileName>
+          <FileName>tr4_lara_click_switch_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -15607,7 +15607,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Lmn_Fr.wav</FileName>
+          <FileName>tr3_lizard_man_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -16783,7 +16783,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>L_Rumb.wav</FileName>
+          <FileName>tr3_oildrum_roll_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -21422,7 +21422,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_chain.wav</FileName>
+          <FileName>tr5_padlock_break_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -22102,7 +22102,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dr_wdgt2.wav</FileName>
+          <FileName>tr5_wooden_gate_creak_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
