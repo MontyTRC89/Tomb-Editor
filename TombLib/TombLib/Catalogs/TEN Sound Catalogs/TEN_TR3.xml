@@ -1401,7 +1401,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
@@ -2654,7 +2654,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Lmn_Fr.wav</FileName>
+          <FileName>tr3_lizard_man_fire_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3830,7 +3830,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>L_Rumb.wav</FileName>
+          <FileName>tr3_oildrum_roll_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>

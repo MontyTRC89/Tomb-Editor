@@ -26,9 +26,9 @@ namespace TombEditor.Forms.TombEngine
 
             ReloadFunctions();
 
-            comboboxOnEnter.Text = _instance.Scripts.OnEnter;
-            comboboxOnInside.Text = _instance.Scripts.OnInside;
-            comboboxOnLeave.Text = _instance.Scripts.OnLeave;
+            comboboxOnEnter.SelectedItem  = _instance.Scripts.OnEnter;
+            comboboxOnInside.SelectedItem = _instance.Scripts.OnInside;
+            comboboxOnLeave.SelectedItem  = _instance.Scripts.OnLeave;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
@@ -65,9 +65,9 @@ namespace TombEditor.Forms.TombEngine
                                    (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
                                    (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
 
-            _instance.Scripts.OnEnter = comboboxOnEnter.Text;
-            _instance.Scripts.OnInside = comboboxOnInside.Text;
-            _instance.Scripts.OnLeave = comboboxOnLeave.Text;
+            _instance.Scripts.OnEnter  = comboboxOnEnter.SelectedItem?.ToString()  ?? string.Empty;
+            _instance.Scripts.OnInside = comboboxOnInside.SelectedItem?.ToString() ?? string.Empty;
+            _instance.Scripts.OnLeave  = comboboxOnLeave.SelectedItem?.ToString()  ?? string.Empty;
 
             DialogResult = DialogResult.OK;
             Close();
