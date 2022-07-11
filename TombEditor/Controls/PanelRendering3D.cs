@@ -3061,7 +3061,7 @@ namespace TombEditor.Controls
                 var model = _wadRenderer.GetMoveable(movID);
                 var skin = model;
                 var version = _editor.Level.Settings.GameVersion;
-                var colored = version <= TRVersion.Game.TR2 && group.First().CanBeColored();
+                var colored = (version <= TRVersion.Game.TR2 || _editor.Level.IsTombEngine) && group.First().CanBeColored();
 
                 if (group.Key == WadMoveableId.Lara) // Show Lara
                 {

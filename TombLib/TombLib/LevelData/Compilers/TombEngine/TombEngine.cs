@@ -221,7 +221,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.Y);
                     writer.Write(item.Z);
                     writer.Write(item.Angle);
-                    writer.Write(item.Intensity1);
+                    writer.Write(item.Color);
                     writer.Write(item.Ocb);
                     writer.Write(item.Flags);
                     writer.Write(item.LuaName);

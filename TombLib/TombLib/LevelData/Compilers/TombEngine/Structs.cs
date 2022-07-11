@@ -632,7 +632,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Y;
         public int Z;
         public ushort Angle;
-        public ushort Intensity1;
+        public Vector4 Color;
         public short Ocb;
         public ushort Flags;
         public string LuaName;

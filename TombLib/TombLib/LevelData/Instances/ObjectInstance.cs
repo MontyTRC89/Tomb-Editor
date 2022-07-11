@@ -496,7 +496,6 @@ namespace TombLib.LevelData
                 return (Room.Level.IsNG ? (ScriptId.HasValue ? ", Script ID = " + ScriptId.Value : "") : "") +
                        (Room.Level.IsTombEngine ? (!string.IsNullOrEmpty(LuaName) ? ", Lua name = " + LuaName : "") : "");
         }
-
     }
 
     public static class ColorableExtensions
@@ -512,6 +511,10 @@ namespace TombLib.LevelData
 
                 if (obj is MoveableInstance)
                 {
+                    // TEN moveables can be always colored
+                    if (obj.Room.Level.IsTombEngine)
+                        return true;
+
                     var model = obj.Room.Level.Settings.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
                     if (model == null || !model.Meshes.Any(m => m.LightingType != Wad.WadMeshLightingType.Normals))
                         changeColor = false;
@@ -529,6 +532,10 @@ namespace TombLib.LevelData
                 }
                 else if (obj is StaticInstance)
                 {
+                    // TEN statics can be always colored
+                    if (obj.Room.Level.IsTombEngine)
+                        return true;
+
                     var mesh = obj.Room.Level.Settings.WadTryGetStatic((obj as StaticInstance).WadObjectId);
                     if (mesh == null || mesh.Mesh.LightingType == Wad.WadMeshLightingType.Normals)
                         changeColor = false;

@@ -429,7 +429,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                     {
                         int flags = (instance.CodeBits << 9) | (instance.ClearBody ? 0x80 : 0) | (instance.Invisible ? 0x100 : 0);
-                        ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackColorTo16Bit(instance.Color);
 
                         _items.Add(new TombEngineItem
                         {
@@ -439,7 +438,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
-                            Intensity1 = color,
+                            Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
                             Ocb = instance.Ocb,
                             Flags = unchecked((ushort)flags),
                             LuaName = instance.LuaName ?? ""
