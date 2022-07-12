@@ -290,20 +290,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var offset = animationDictionary[oldAnimation];
 
                     // Calculate accelerations from velocities
-                    int acceleration = 0;
-                    int lateralAcceleration = 0;
-                    int speed = 0;
-                    int lateralSpeed = 0;
+                    float acceleration = 0;
+                    float lateralAcceleration = 0;
+                    float speed = 0;
+                    float lateralSpeed = 0;
 
                     if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
                     {
-                        acceleration = (int)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
-                                                       ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
-                        lateralAcceleration = (int)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
-                                                              ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
+                        acceleration = (float)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
+                                                        ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
+                        lateralAcceleration = (float)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
+                                                               ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
                     }
-                    speed = (int)Math.Round(oldAnimation.StartVelocity * 65536.0f);
-                    lateralSpeed = (int)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
+
+                    speed = (float)Math.Round(oldAnimation.StartVelocity * 65536.0f);
+                    lateralSpeed = (float)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
 
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 

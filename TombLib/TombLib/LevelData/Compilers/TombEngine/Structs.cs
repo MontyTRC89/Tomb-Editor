@@ -575,10 +575,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameOffset;
         public int FrameRate;
         public int StateID;
-        public int Speed;
-        public int Accel;
-        public int SpeedLateral;
-        public int AccelLateral;
+        public float Speed;
+        public float Accel;
+        public float SpeedLateral;
+        public float AccelLateral;
         public int FrameStart;
         public int FrameEnd;
         public int NextAnimation;
