@@ -246,13 +246,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEnginePortal
+    {
+        public ushort AdjoiningRoom;
+        public VectorInt3 Normal;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public VectorInt3[] Vertices;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineRoom
     {
         public tr_room_info Info;
         public int NumDataWords;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets;
-        public List<tr_room_portal> Portals;
+        public List<TombEnginePortal> Portals;
         public int NumZSectors;
         public int NumXSectors;
         public TombEngineRoomSector[] Sectors;
@@ -316,7 +324,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Write portals
             writer.WriteBlock(Portals.Count);
             if (Portals.Count != 0)
-                writer.WriteBlockArray(Portals);
+            {
+                foreach (var p in Portals)
+                {
+                    writer.Write(p.AdjoiningRoom);
+                    writer.Write(p.Normal.X);
+                    writer.Write(p.Normal.Y);
+                    writer.Write(p.Normal.Z);
+                    foreach(var v in p.Vertices)
+                    {
+                        writer.Write(v.X);
+                        writer.Write(v.Y);
+                        writer.Write(v.Z);
+                    }
+                }
+            }
 
             // Write sectors
             writer.Write(NumZSectors);
