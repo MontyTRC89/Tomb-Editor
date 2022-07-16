@@ -132,7 +132,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 OriginalRoom = room,
                 Lights = new List<TombEngineRoomLight>(),
                 StaticMeshes = new List<TombEngineRoomStaticMesh>(),
-                Portals = new List<tr_room_portal>(),
+                Portals = new List<TombEnginePortal>(),
                 Info = new tr_room_info
                 {
                     X = room.WorldPos.X,
@@ -1106,7 +1106,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, BlockEdge[] relevantEdges, BlockEdge[] oppositeRelevantEdges)
+        private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, BlockEdge[] relevantEdges, BlockEdge[] oppositeRelevantEdges)
         {
             // Calculate dimensions of portal
             var yMin = float.MaxValue;
@@ -1220,44 +1220,44 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var zMax = (portal.Area.Y1 + 1) * Level.BlockSizeUnit;
 
             // Determine normal and portal vertices
-            tr_vertex[] portalVertices = new tr_vertex[4];
-            tr_vertex normal;
+            VectorInt3[] portalVertices = new VectorInt3[4];
+            VectorInt3 normal;
             switch (portal.Direction)
             {
                 case PortalDirection.WallPositiveZ:
-                    normal = new tr_vertex(0, 0, -1);
-                    portalVertices[0] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMax - Level.BlockSizeUnit));
-                    portalVertices[1] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMax - Level.BlockSizeUnit));
-                    portalVertices[2] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMax - Level.BlockSizeUnit));
-                    portalVertices[3] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMax - Level.BlockSizeUnit));
+                    normal = new VectorInt3(0, 0, -1);
+                    portalVertices[0] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMax - Level.BlockSizeUnit));
+                    portalVertices[1] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMax - Level.BlockSizeUnit));
+                    portalVertices[2] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMax - Level.BlockSizeUnit));
+                    portalVertices[3] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMax - Level.BlockSizeUnit));
                     break;
                 case PortalDirection.WallPositiveX:
-                    normal = new tr_vertex(-1, 0, 0);
-                    portalVertices[0] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMin, (short)zMax);
-                    portalVertices[1] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMax, (short)zMax);
-                    portalVertices[2] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMax, (short)zMin);
-                    portalVertices[3] = new tr_vertex((short)(xMax - Level.BlockSizeUnit), (short)-yMin, (short)zMin);
+                    normal = new VectorInt3(-1, 0, 0);
+                    portalVertices[0] = new VectorInt3((int)(xMax - Level.BlockSizeUnit), (int)-yMin, (int)zMax);
+                    portalVertices[1] = new VectorInt3((int)(xMax - Level.BlockSizeUnit), (int)-yMax, (int)zMax);
+                    portalVertices[2] = new VectorInt3((int)(xMax - Level.BlockSizeUnit), (int)-yMax, (int)zMin);
+                    portalVertices[3] = new VectorInt3((int)(xMax - Level.BlockSizeUnit), (int)-yMin, (int)zMin);
                     break;
                 case PortalDirection.WallNegativeZ:
-                    normal = new tr_vertex(0, 0, 1);
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + Level.BlockSizeUnit - 1));
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + Level.BlockSizeUnit - 1));
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + Level.BlockSizeUnit - 1));
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + Level.BlockSizeUnit - 1));
+                    normal = new VectorInt3(0, 0, 1);
+                    portalVertices[0] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[1] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[2] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMin + Level.BlockSizeUnit - 1));
+                    portalVertices[3] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMin + Level.BlockSizeUnit - 1));
                     break;
                 case PortalDirection.WallNegativeX:
-                    normal = new tr_vertex(1, 0, 0);
-                    portalVertices[0] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMin, (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMax, (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMax, (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)(xMin + Level.BlockSizeUnit - 1), (short)-yMin, (short)zMax);
+                    normal = new VectorInt3(1, 0, 0);
+                    portalVertices[0] = new VectorInt3((int)(xMin + Level.BlockSizeUnit - 1), (int)-yMin, (int)zMin);
+                    portalVertices[1] = new VectorInt3((int)(xMin + Level.BlockSizeUnit - 1), (int)-yMax, (int)zMin);
+                    portalVertices[2] = new VectorInt3((int)(xMin + Level.BlockSizeUnit - 1), (int)-yMax, (int)zMax);
+                    portalVertices[3] = new VectorInt3((int)(xMin + Level.BlockSizeUnit - 1), (int)-yMin, (int)zMax);
                     break;
                 default:
                     throw new ApplicationException("Unknown PortalDirection");
             }
 
             // Create portal
-            outPortals.Add(new tr_room_portal
+            outPortals.Add(new TombEnginePortal
             {
                 AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                 Vertices = portalVertices,
@@ -1310,7 +1310,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             portalAreas.Add(new RectangleInt2(x, z, x, z));
         }
 
-        private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, bool isCeiling)
+        private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, bool isCeiling)
         {
             // Construct planes that contain all portal sectors
             List<PortalPlane> portalPlanes = new List<PortalPlane>();
@@ -1387,34 +1387,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.HeightUnit;
 
                 // Choose portal coordinates
-                tr_vertex[] portalVertices = new tr_vertex[4];
-                tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
+                VectorInt3[] portalVertices = new VectorInt3[4];
+                VectorInt3 normal = new VectorInt3((int)-portalPlane.SlopeX, 4, (int)-portalPlane.SlopeZ);
                 if (isCeiling)
                 {
                     // TEST: this should solve flickering rooms when camera is on portal
                     Vector3 n = Vector3.UnitY;
 
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMin - 1), (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)(-yAtXMinZMin - 1), (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)(-yAtXMinZMax - 1), (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMax - 1), (short)zMax);
+                    portalVertices[0] = new VectorInt3((int)xMax, (int)(-yAtXMaxZMin - 1), (int)zMin);
+                    portalVertices[1] = new VectorInt3((int)xMin, (int)(-yAtXMinZMin - 1), (int)zMin);
+                    portalVertices[2] = new VectorInt3((int)xMin, (int)(-yAtXMinZMax - 1), (int)zMax);
+                    portalVertices[3] = new VectorInt3((int)xMax, (int)(-yAtXMaxZMax - 1), (int)zMax);
                 }
                 else
                 {
-                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
+                    normal = new VectorInt3((int)-portalPlane.SlopeX, -4, (int)-portalPlane.SlopeZ);
 
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMax), (short)zMax);
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)(-yAtXMinZMax), (short)zMax);
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)(-yAtXMinZMin), (short)zMin);
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMin), (short)zMin);
+                    portalVertices[0] = new VectorInt3((int)xMax, (int)(-yAtXMaxZMax), (int)zMax);
+                    portalVertices[1] = new VectorInt3((int)xMin, (int)(-yAtXMinZMax), (int)zMax);
+                    portalVertices[2] = new VectorInt3((int)xMin, (int)(-yAtXMinZMin), (int)zMin);
+                    portalVertices[3] = new VectorInt3((int)xMax, (int)(-yAtXMaxZMin), (int)zMin);
                 }
 
                 // Make the normal vector as short as possible
                 while (normal.X % 2 == 0 && normal.Y % 2 == 0 && normal.Z % 2 == 0)
-                    normal = new tr_vertex((short)(normal.X / 2), (short)(normal.Y / 2), (short)(normal.Z / 2));
+                    normal = new VectorInt3((int)(normal.X / 2), (int)(normal.Y / 2), (int)(normal.Z / 2));
 
                 // Add portal
-                outPortals.Add(new tr_room_portal
+                outPortals.Add(new TombEnginePortal
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
