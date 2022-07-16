@@ -412,6 +412,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Split AI objects and normal objects
                     if (TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, wadMoveable.Id.TypeId))
                     {
+                        // Box index data gets overwritten in runtime, but we write it for consistency
+                        int xSector  = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
+                        int zSector  = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
+                        var tempRoom = _tempRooms[instance.Room];
+                        int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
+
                         _aiItems.Add(new TombEngineAiItem
                         {
                             X = (int)Math.Round(position.X),
@@ -421,6 +427,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
+                            BoxIndex = boxIndex,
                             Flags = (ushort)(instance.CodeBits << 1),
                             LuaName = instance.LuaName ?? ""
                         });

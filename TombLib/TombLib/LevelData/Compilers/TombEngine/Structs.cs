@@ -641,7 +641,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public short OCB;
         public ushort Flags;
         public ushort Angle;
-        public ushort BoxIndex;
+        public int BoxIndex;
         public string LuaName;
     }
 
