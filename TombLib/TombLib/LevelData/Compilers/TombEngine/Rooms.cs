@@ -938,8 +938,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         break;
                     case LightType.Spot:
                         newLight.LightType = 2;
-                        newLight.In = (float)Math.Cos(light.InnerAngle * (Math.PI / 180));
-                        newLight.Out = (float)Math.Cos(light.OuterAngle * (Math.PI / 180));
+                        newLight.In = light.InnerAngle;
+                        newLight.Out = light.OuterAngle;
                         newLight.Length = light.InnerRange * Level.BlockSizeUnit;
                         newLight.CutOff = light.OuterRange * Level.BlockSizeUnit;
                         Vector3 spotDirection = light.GetDirection();

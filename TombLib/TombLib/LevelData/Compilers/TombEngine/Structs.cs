@@ -391,8 +391,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(light.Color.Y);
                 writer.Write(light.Color.Z);
                 writer.Write(light.Intensity);
-                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : light.In));
-                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : light.Out));
+                writer.Write(light.In);
+                writer.Write(light.Out);
                 writer.Write(light.Length);
                 writer.Write(light.CutOff);
                 writer.Write(light.LightType);
