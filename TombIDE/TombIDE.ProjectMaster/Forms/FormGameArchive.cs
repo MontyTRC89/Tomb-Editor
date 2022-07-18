@@ -61,6 +61,10 @@ namespace TombIDE.ProjectMaster.Forms
 				case TRVersion.Game.TRNG:
 					GenerateTR4Archive(filePath, readmeText);
 					break;
+
+				case TRVersion.Game.TombEngine:
+					GenerateTENArchive(filePath, readmeText);
+					break;
 			}
 		}
 
@@ -152,6 +156,11 @@ namespace TombIDE.ProjectMaster.Forms
 			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dat", SearchOption.TopDirectoryOnly));
 
 			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
+		}
+
+		public void GenerateTENArchive(string filePath, string readmeText)
+		{
+			// TODO
 		}
 
 		private void CreateArchive(IEnumerable<string> importantFolders, IEnumerable<string> importantFiles,

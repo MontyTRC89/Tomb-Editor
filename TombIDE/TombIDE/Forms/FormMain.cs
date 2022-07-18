@@ -56,6 +56,8 @@ namespace TombIDE
 				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
 			else if (_ide.Project.GameVersion == TRVersion.Game.TR1)
 				scriptingStudio = new ScriptingStudio.Tomb1MainStudio { Parent = this };
+			else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
+				scriptingStudio = new ScriptingStudio.LuaStudio { Parent = this };
 
 			scriptingStudio.Dock = DockStyle.Fill;
 			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);
