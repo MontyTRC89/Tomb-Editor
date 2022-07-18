@@ -261,7 +261,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public string GetExeFileName()
 		{
-			return GameVersion switch
+			switch (GameVersion)
 			{
 				case TRVersion.Game.TR1:
 					return "Tomb1Main.exe";
@@ -289,7 +289,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public string GetLevelFileExtension()
 		{
-			return GameVersion switch
+			switch (GameVersion)
 			{
 				case TRVersion.Game.TR1:
 					return ".phd";
