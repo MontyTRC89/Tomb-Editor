@@ -177,7 +177,10 @@ namespace TombIDE.Shared
 					bool isValidTR4 = (GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG)
 						&& Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase);
 
-					if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4)
+					bool isValidTEN = GameVersion == TRVersion.Game.TombEngine
+						&& Path.GetFileName(file).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase);
+
+					if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4 || isValidTEN)
 					{
 						EnginePath = engineDirectory;
 						break;
@@ -244,7 +247,10 @@ namespace TombIDE.Shared
 				bool isValidTR4 = (GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG)
 					&& Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase);
 
-				if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4)
+				bool isValidTEN = GameVersion == TRVersion.Game.TombEngine
+					&& Path.GetFileName(file).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase);
+
+				if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4 || isValidTEN)
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
@@ -271,6 +277,9 @@ namespace TombIDE.Shared
 				case TRVersion.Game.TRNG:
 					return "tomb4.exe";
 
+				case TRVersion.Game.TombEngine:
+					return "TombEngine.exe";
+
 				default:
 					return null;
 			}
@@ -293,6 +302,9 @@ namespace TombIDE.Shared
 				case TRVersion.Game.TR4:
 				case TRVersion.Game.TRNG:
 					return ".tr4";
+
+				case TRVersion.Game.TombEngine:
+					return ".ten";
 
 				default:
 					return null;

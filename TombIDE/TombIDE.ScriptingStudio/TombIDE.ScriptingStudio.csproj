@@ -62,6 +62,9 @@
     <Compile Include="Settings\Tomb1MainSettingsControl.Designer.cs">
       <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="LuaStudio.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Tomb1MainStudio.cs">
       <SubType>Component</SubType>
     </Compile>
