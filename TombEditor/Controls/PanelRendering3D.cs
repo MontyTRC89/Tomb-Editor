@@ -3061,7 +3061,7 @@ namespace TombEditor.Controls
                 var model = _wadRenderer.GetMoveable(movID);
                 var skin = model;
                 var version = _editor.Level.Settings.GameVersion;
-                var colored = (version <= TRVersion.Game.TR2 || _editor.Level.IsTombEngine) && group.First().CanBeColored();
+                var colored = version <= TRVersion.Game.TR2 && group.First().CanBeColored();
 
                 if (group.Key == WadMoveableId.Lara) // Show Lara
                 {
@@ -3094,14 +3094,14 @@ namespace TombEditor.Controls
                             {
                                 if (colored || movID.Meshes[i].LightingType != WadMeshLightingType.Normals)
                                 {
-                                    var color = _editor.Level.IsTombEngine ? MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color) : instance.Color;
                                     skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
-                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(color));
+                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 }
                                 else
                                 {
-                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
-                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
+                                    var color = _editor.Level.IsTombEngine ? MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color / 2.0f) : instance.Room.Properties.AmbientLight;
+                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine ? true : false);
+                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(color));
                                 }
                             }
                             else
@@ -3299,25 +3299,19 @@ namespace TombEditor.Controls
                         {
                             if (_editor.Mode == EditorMode.Lighting)
                             {
-                                if (_editor.Level.IsTombEngine)
-                                {
-                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color)));
-                                }
+                                var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
+
+                                if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
+                                else if (_editor.Level.IsTombEngine)
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color / 2.0f)));
                                 else
-                                {
-                                    var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
 
-                                    if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
-                                        staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
-                                    else
-                                        staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
-
-                                    if (entry != null && entry.Merge)
-                                        staticMeshEffect.Parameters["StaticLighting"].SetValue(!entry.ClearShades);
-                                    else
-                                        staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
-                                }
+                                if (entry != null && entry.Merge)
+                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(!entry.ClearShades);
+                                else
+                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine ? true : statID.Mesh.LightingType == WadMeshLightingType.VertexColors);
                             }
                             else
                             {
