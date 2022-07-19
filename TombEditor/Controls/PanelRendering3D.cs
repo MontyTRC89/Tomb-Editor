@@ -3099,7 +3099,7 @@ namespace TombEditor.Controls
                                 }
                                 else
                                 {
-                                    var color = _editor.Level.IsTombEngine ? MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color / 2.0f) : instance.Room.Properties.AmbientLight;
+                                    var color = _editor.Level.IsTombEngine ? instance.Room.Properties.AmbientLight * instance.Color : instance.Room.Properties.AmbientLight;
                                     skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine ? true : false);
                                     skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(color));
                                 }
@@ -3304,9 +3304,9 @@ namespace TombEditor.Controls
                                 if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else if (_editor.Level.IsTombEngine)
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color / 2.0f)));
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
                                 else
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
 
                                 if (entry != null && entry.Merge)
                                     staticMeshEffect.Parameters["StaticLighting"].SetValue(!entry.ClearShades);

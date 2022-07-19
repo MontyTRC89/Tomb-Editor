@@ -510,7 +510,7 @@ namespace TombLib
 
         public static Vector3 Screen(Vector3 ambient, Vector3 tint)
         {
-            var luma = MathC.Clamp(tint.GetLuma(), 0.0f, 1.0f);
+            var luma = Clamp(tint.GetLuma(), 0.0f, 1.0f);
 
             var multiplicative = ambient * tint;
             var additive = ambient + tint;
