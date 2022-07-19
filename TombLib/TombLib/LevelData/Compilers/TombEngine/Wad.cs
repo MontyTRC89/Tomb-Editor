@@ -821,19 +821,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             writer.Write((uint)_finalSamplesList.Count); // Write sample count
 
-            // We have to compress the samples first
-            // TR5 uses compressed MS-ADPCM samples
-            byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
-            int[] uncompressedSizes = new int[_finalSamplesList.Count];
-            Parallel.For(0, _finalSamplesList.Count, delegate (int i)
-            {
-                compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm((uint)sampleRate, out uncompressedSizes[i]);
-            });
             for (int i = 0; i < _finalSamplesList.Count; ++i)
             {
-                writer.Write((uint)uncompressedSizes[i]);
-                writer.Write((uint)compressedSamples[i].Length);
-                writer.Write(compressedSamples[i]);
+                writer.Write((uint)_finalSamplesList[i].Data.Length);
+                writer.Write((uint)_finalSamplesList[i].Data.Length);
+                writer.Write(_finalSamplesList[i].Data);
             }
         }
 
