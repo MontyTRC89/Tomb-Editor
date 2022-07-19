@@ -3094,7 +3094,7 @@ namespace TombEditor.Controls
                             {
                                 if (colored || movID.Meshes[i].LightingType != WadMeshLightingType.Normals)
                                 {
-                                    var color = _editor.Level.IsTombEngine ? instance.Room.Properties.AmbientLight * instance.Color : instance.Color;
+                                    var color = _editor.Level.IsTombEngine ? MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color) : instance.Color;
                                     skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
                                     skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(color));
                                 }
@@ -3302,7 +3302,7 @@ namespace TombEditor.Controls
                                 if (_editor.Level.IsTombEngine)
                                 {
                                     staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(MathC.Screen(instance.Room.Properties.AmbientLight, instance.Color)));
                                 }
                                 else
                                 {

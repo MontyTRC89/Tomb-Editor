@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -508,6 +506,20 @@ namespace TombLib
             }
 
             return coords;
+        }
+
+        public static Vector3 Screen(Vector3 ambient, Vector3 tint)
+        {
+            var luma = MathC.Clamp(tint.GetLuma(), 0.0f, 1.0f);
+
+            var multiplicative = ambient * tint;
+            var additive = ambient + tint;
+
+            var R = (float)Lerp(multiplicative.X, additive.X, luma);
+            var G = (float)Lerp(multiplicative.Y, additive.Y, luma);
+            var B = (float)Lerp(multiplicative.Z, additive.Z, luma);
+
+            return new Vector3(R, G, B);
         }
     }
 }
