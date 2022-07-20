@@ -355,6 +355,10 @@ namespace TombIDE
 				case 5:
 					gameVersion = TRVersion.Game.TRNG;
 					break;
+
+				case 6:
+					gameVersion = TRVersion.Game.TombEngine;
+					break;
 			}
 
 			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
@@ -396,6 +400,10 @@ namespace TombIDE
 
 				case 5:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
+					break;
+
+				case 6:
+					engineBasePath = Path.Combine(engineBasePath, "TombEngine.zip");
 					break;
 			}
 

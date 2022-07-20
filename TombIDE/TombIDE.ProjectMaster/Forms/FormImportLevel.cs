@@ -40,7 +40,7 @@ namespace TombIDE.ProjectMaster
 				panel_ScriptSettings.Visible = false;
 				panel_04.Visible = false;
 			}
-			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG && targetProject.GameVersion != TRVersion.Game.TombEngine)
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 30;

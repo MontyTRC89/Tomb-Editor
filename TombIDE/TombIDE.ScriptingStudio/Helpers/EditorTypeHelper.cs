@@ -24,6 +24,13 @@ namespace TombIDE.ScriptingStudio.Helpers
 				else
 					return typeof(TextEditorBase);
 			}
+			else if (IDE.Global.Project.GameVersion == TRVersion.Game.TombEngine)
+			{
+				if (FileHelper.IsLuaFile(filePath))
+					return typeof(LuaEditor);
+				else
+					return typeof(TextEditorBase);
+			}
 			else if (FileHelper.IsTextFile(filePath))
 			{
 				if (IDE.Global.Project.GameVersion == TRVersion.Game.TR2 || IDE.Global.Project.GameVersion == TRVersion.Game.TR3)

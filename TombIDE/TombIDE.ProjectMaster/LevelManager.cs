@@ -40,6 +40,7 @@ namespace TombIDE.ProjectMaster
 
 			switch (_ide.Project.GameVersion)
 			{
+				case TRVersion.Game.TombEngine: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break; // TODO
 				case TRVersion.Game.TRNG: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break;
 				case TRVersion.Game.TR4: panel_GameLabel.BackgroundImage = Properties.Resources.TR4_LVL; break;
 				case TRVersion.Game.TR3: panel_GameLabel.BackgroundImage = Properties.Resources.TR3_LVL; break;

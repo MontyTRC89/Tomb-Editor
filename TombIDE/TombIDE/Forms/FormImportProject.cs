@@ -371,6 +371,10 @@ namespace TombIDE
 				case "tomb4.exe":
 					gameVersion = TRVersion.Game.TR4;
 					break;
+
+				case "tombengine.exe":
+					gameVersion = TRVersion.Game.TombEngine;
+					break;
 			}
 
 			if (gameVersion == TRVersion.Game.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))

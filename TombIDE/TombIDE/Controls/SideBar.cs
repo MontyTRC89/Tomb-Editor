@@ -372,7 +372,7 @@ namespace TombIDE.Controls
 				return;
 			}
 
-			if (_ide.Project.GameVersion != TRVersion.Game.TR1)
+			if (_ide.Project.GameVersion != TRVersion.Game.TR1 && _ide.Project.GameVersion != TRVersion.Game.TombEngine)
 			{
 				string scriptDatFilePath = string.Empty;
 
