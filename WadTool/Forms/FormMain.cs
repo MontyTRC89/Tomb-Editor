@@ -94,11 +94,13 @@ namespace WadTool
                                            "Texture infos: " + _tool.DestinationWad.MeshTexInfosUnique.Count;
 
                     meshEditorToolStripMenuItem.Enabled = true;
+                    convertDestinationWadToTombEngineToolStripMenuItem.Enabled = true;
                 }
                 else
                 {
                     labelStatistics.Text = "";
                     meshEditorToolStripMenuItem.Enabled = false;
+                    convertDestinationWadToTombEngineToolStripMenuItem.Enabled = false;
                 }
             }
 
@@ -315,6 +317,10 @@ namespace WadTool
                 treeDestWad.ContextMenuStrip = cmStatics;
             else
                 treeDestWad.ContextMenuStrip = null;
+
+            // Update menus
+            convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Enabled =
+            convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Enabled = treeDestWad.SelectedWadObjectIds.Count() > 0;
         }
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
