@@ -1262,8 +1262,7 @@ namespace WadTool
         private void butReplaceTexture_Click(object sender, EventArgs e)
         {
             if (panelTextureMap.VisibleTexture == null ||
-                panelTextureMap.VisibleTexture.IsUnavailable ||
-                panelTextureMap.VisibleTexture.Image == null)
+                panelTextureMap.VisibleTexture.IsUnavailable)
             {
                 popup.ShowError(panelMesh, "Unable to replace texture.\nSelected texture is invalid.");
                 return;
@@ -1398,8 +1397,7 @@ namespace WadTool
         private void butExportTexture_Click(object sender, EventArgs e)
         {
             if (panelTextureMap.VisibleTexture == null ||
-                panelTextureMap.VisibleTexture.IsUnavailable ||
-                panelTextureMap.VisibleTexture.Image == null)
+                panelTextureMap.VisibleTexture.IsUnavailable)
             {
                 popup.ShowError(panelMesh, "Unable to save texture.\nSelected texture is invalid.");
                 return;

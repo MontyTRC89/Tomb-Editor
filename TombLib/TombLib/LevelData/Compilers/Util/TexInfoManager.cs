@@ -1162,7 +1162,7 @@ namespace TombLib.LevelData.Compilers.Util
                     var bumpY = destY + (numPages * 256);
 
                     // Try to copy custom bumpmaps
-                    if (!String.IsNullOrEmpty(tex.BumpPath))
+                    if (!string.IsNullOrEmpty(tex.BumpPath))
                     {
                         if (!customBumpmaps.ContainsKey(tex.BumpPath))
                         {
