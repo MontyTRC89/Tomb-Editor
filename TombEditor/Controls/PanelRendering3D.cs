@@ -1997,7 +1997,9 @@ namespace TombEditor.Controls
         {
             if (objectList.Count == 0)
                 return;
-            
+
+            _legacyDevice.SetRasterizerState(_rasterizerWireframe); 
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
             _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(_linesCube.InputLayout);
             _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
@@ -2008,7 +2010,7 @@ namespace TombEditor.Controls
                 {
                     var mov = obj as MoveableInstance;
                     var model = _editor?.Level?.Settings?.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
-                    if (model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
+                    if (model == null || model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
                         continue;
 
                     var frame = model.Animations[0].KeyFrames[0];
@@ -2024,7 +2026,7 @@ namespace TombEditor.Controls
                 {
                     var stat = obj as StaticInstance;
                     var mesh = _editor?.Level?.Settings?.WadTryGetStatic((obj as StaticInstance).WadObjectId);
-                    if (mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
+                    if (mesh == null || mesh.Mesh == null || mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
                         continue;
 
                     var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size / _littleCubeRadius / 2.0f) *
@@ -2037,7 +2039,7 @@ namespace TombEditor.Controls
                 if (_highlightedObjects.Contains(obj)) // Selection
                     solidEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                 else
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);

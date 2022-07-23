@@ -94,8 +94,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-            if (_textureInfoManager.TexInfoCount > 32767)
-                _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
             
             GetAllReachableRooms();
             BuildPathFindingData();
