@@ -110,12 +110,12 @@ namespace WadTool
             }
         }
 
-        public static void SaveWad(WadToolClass tool, IWin32Window owner, Wad2 wadToSave, bool ask)
+        public static bool SaveWad(WadToolClass tool, IWin32Window owner, Wad2 wadToSave, bool ask)
         {
             if (wadToSave == null)
             {
                 tool.SendMessage("You have no wad opened. Nothing to save.", PopupType.Warning);
-                return;
+                return false;
             }
 
             // Figure out the output path
@@ -148,7 +148,7 @@ namespace WadTool
                     dialog.AddExtension = true;
                     if (dialog.ShowDialog(owner) != DialogResult.OK)
                     {
-                        return;
+                        return false;
                     }
 
                     outPath = dialog.FileName;
@@ -181,7 +181,10 @@ namespace WadTool
             {
                 logger.Warn(exc, "Unable to save to '" + outPath + "'");
                 tool.SendMessage("Unable to save to '" + outPath + "'.   " + exc, PopupType.Error);
+                return false;
             }
+
+            return true;
         }
 
         public static void CreateNewWad(WadToolClass tool, IWin32Window owner)
@@ -584,7 +587,7 @@ namespace WadTool
             foreach (var moveable in src.Moveables)
             {
                 string compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
-                if (compatibleSlot == "")
+                if (compatibleSlot == String.Empty)
                     continue;
 
                 uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
@@ -593,28 +596,10 @@ namespace WadTool
 
                 var newId = new WadMoveableId(destId.Value);
 
-                foreach (var animation in moveable.Value.Animations)
-                {
-                    foreach (var command in animation.AnimCommands)
-                    {
-                        if (command.Type == WadAnimCommandType.PlaySound)
-                        {
-                            try
-                            {
-                                uint soundId = (uint)(command.Parameter2 & 0x3FFF);
-                                uint newSoundId = TrCatalog.GetTombEngineSound(src.GameVersion, soundId);
-                                command.Parameter2 = (short)((command.Parameter2 & 0xC000) | newSoundId);
-                            }
-                            catch (Exception)
-                            {
-                                // No sound found, just continue
-                                continue;
-                            }
-                        }
-                    }
-                }
+                var mov = moveable.Value.Clone();
+                mov.ConvertMoveable(src.GameVersion, src);
 
-                dest.Add(newId, moveable.Value);
+                dest.Add(newId, mov);
             }
 
             foreach (var sequence in src.SpriteSequences)
@@ -636,6 +621,52 @@ namespace WadTool
                 dest.Add(staticObject.Key, staticObject.Value);
 
             return dest;
+        }
+
+        public static void ConvertSelectedObjectLighting(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects, WadMeshLightingType type)
+        {
+            if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
+            int counter = 0;
+
+            foreach (var o in objects)
+            {
+                var obj = tool.DestinationWad.TryGet(o);
+                if (obj == null)
+                    continue;
+
+                if (obj is WadMoveable)
+                {
+                    foreach (var mesh in (obj as WadMoveable).Meshes)
+                    {
+                        if (mesh.LightingType != type)
+                        {
+                            mesh.LightingType = type;
+                            counter++;
+                        }
+                    }
+                }
+                else if (obj is WadStatic)
+                {
+                    var mesh = (obj as WadStatic).Mesh;
+
+                    if (mesh.LightingType != type)
+                    {
+                        mesh.LightingType = type;
+                        counter++;
+                    }
+                }
+            }
+
+            if (counter == 0)
+            {
+                tool.SendMessage("All selected objects already have specified lighting type.\nNothing was done.", PopupType.Info);
+                return;
+            }
+
+            tool.WadChanged(WadArea.Destination);
+            tool.SendMessage(counter + " mesh" + (counter > 1 ? "es were" : " was") + " converted to specified light model.", PopupType.Info);
         }
 
         public static List<IWadObjectId> CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)

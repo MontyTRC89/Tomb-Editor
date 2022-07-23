@@ -598,10 +598,6 @@ namespace WadTool
             WadActions.UnloadReferenceLevel(_tool);
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if(e.CloseReason == CloseReason.UserClosing ||
@@ -627,14 +623,17 @@ namespace WadTool
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
-        private void ConvertSourceToTombEngineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void convertDestinationToTombEngineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Wad2 dest = WadActions.ConvertWad2ToTombEngine(_tool, this, _tool.SourceWad);
-            Wad2Writer.SaveToFile(dest, "F:\\temp.wad2");
-            WadActions.LoadWad(_tool, this, true, "F:\\temp.wad2");
+            Wad2 dest = WadActions.ConvertWad2ToTombEngine(_tool, this, _tool.DestinationWad);
+            if (WadActions.SaveWad(_tool, this, dest, true))
+            {
+                WadActions.LoadWad(_tool, this, true, dest.FileName);
+                PopUpInfo.Show(popup, this, panel3D, "Destination wad was converted and saved to " + dest.FileName + ".", PopupType.Info);
+            }
         }
 
-        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FormOptions form = new FormOptions(_tool))
                 form.ShowDialog(this);
@@ -659,6 +658,16 @@ namespace WadTool
         private void treeDestWad_MetadataChanged(object sender, EventArgs e)
         {
             _tool.ToggleUnsavedChanges(true);
+        }
+
+        private void convertSelectedObjectsLightTypeToDynamicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ConvertSelectedObjectLighting(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), WadMeshLightingType.Normals);
+        }
+
+        private void convertSelectedObjectsLightTypeToStaticToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ConvertSelectedObjectLighting(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), WadMeshLightingType.VertexColors);
         }
     }
 }
