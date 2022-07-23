@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -1299,18 +1300,28 @@ namespace TombLib.LevelData.Compilers
                         {
                             if (!customBumpmaps.ContainsKey(tex.BumpPath))
                             {
-                                ImageC potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
+                                var path = _level.Settings.MakeAbsolute(tex.BumpPath);
 
-                                // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
-
-                                if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                if (!File.Exists(path))
                                 {
-                                    customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
+                                    _progressReporter.ReportWarn("External bumpmap file " + path + " was not found!");
+                                    customBumpmaps.Add(tex.BumpPath, ImageC.Black);
                                 }
                                 else
                                 {
-                                    _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
-                                    customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                                    ImageC potentialBumpImage = ImageC.FromFile(path);
+
+                                    // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
+
+                                    if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                    {
+                                        customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
+                                    }
+                                    else
+                                    {
+                                        _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
+                                        customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                                    }
                                 }
                             }
 
