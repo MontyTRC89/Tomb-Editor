@@ -2,6 +2,7 @@ Version 1.5.1
 =============
 
 Tomb Editor:
+ * Fix ghost blocks causing room geometry clipping when placed on floor portals.
  * Fix serious memory leak when switching between objects in item browser.
  * Hide selection highlight when editing colorable objects from palette.
  * Delete room with hotkey if no object is selected.
