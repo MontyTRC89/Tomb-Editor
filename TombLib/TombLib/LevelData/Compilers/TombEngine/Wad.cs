@@ -143,7 +143,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     for (int n = 0; n < 4; n++)
                     {
-                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.TextureCoordinates.Add(texture.TexCoord[n]);
                         poly.Tangents.Add(Vector3.Zero);
                         poly.Bitangents.Add(Vector3.Zero);
                     }
@@ -154,7 +154,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     for (int n = 0; n < 3; n++)
                     {
-                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.TextureCoordinates.Add(texture.TexCoord[n]);
                         poly.Tangents.Add(poly.Tangent);
                         poly.Bitangents.Add(poly.Bitangent);
                     }
