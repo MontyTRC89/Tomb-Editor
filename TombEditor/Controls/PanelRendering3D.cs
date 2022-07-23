@@ -2010,7 +2010,7 @@ namespace TombEditor.Controls
                 {
                     var mov = obj as MoveableInstance;
                     var model = _editor?.Level?.Settings?.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
-                    if (model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
+                    if (model == null || model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
                         continue;
 
                     var frame = model.Animations[0].KeyFrames[0];
@@ -2026,7 +2026,7 @@ namespace TombEditor.Controls
                 {
                     var stat = obj as StaticInstance;
                     var mesh = _editor?.Level?.Settings?.WadTryGetStatic((obj as StaticInstance).WadObjectId);
-                    if (mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
+                    if (mesh == null || mesh.Mesh == null || mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
                         continue;
 
                     var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size / _littleCubeRadius / 2.0f) *
