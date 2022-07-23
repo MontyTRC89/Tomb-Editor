@@ -2037,7 +2037,7 @@ namespace TombEditor.Controls
                 if (_highlightedObjects.Contains(obj)) // Selection
                     solidEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                 else
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
