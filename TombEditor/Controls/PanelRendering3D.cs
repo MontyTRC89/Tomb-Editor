@@ -52,6 +52,8 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLightMeshes { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowBoundingBoxes { get; set; } = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowOtherObjects { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePickingForImportedGeometry { get; set; }
@@ -1991,6 +1993,59 @@ namespace TombEditor.Controls
             _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
         }
 
+        private void DrawBoundingBoxes(Effect solidEffect, List<ObjectInstance> objectList)
+        {
+            if (objectList.Count == 0)
+                return;
+
+            _legacyDevice.SetRasterizerState(_rasterizerWireframe); 
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+            _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
+            _legacyDevice.SetVertexInputLayout(_linesCube.InputLayout);
+            _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
+
+            foreach (var obj in objectList)
+            {
+                if (obj is MoveableInstance)
+                {
+                    var mov = obj as MoveableInstance;
+                    var model = _editor?.Level?.Settings?.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
+                    if (model == null || model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
+                        continue;
+
+                    var frame = model.Animations[0].KeyFrames[0];
+
+                    var rotPosMatrix = Matrix4x4.CreateScale(frame.BoundingBox.Size / _littleCubeRadius / 2.0f) * 
+                                       Matrix4x4.CreateTranslation(frame.BoundingBox.Center) *
+                                       mov.RotationPositionMatrix;
+
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((rotPosMatrix * _viewProjection).ToSharpDX());
+                }
+
+                if (obj is StaticInstance)
+                {
+                    var stat = obj as StaticInstance;
+                    var mesh = _editor?.Level?.Settings?.WadTryGetStatic((obj as StaticInstance).WadObjectId);
+                    if (mesh == null || mesh.Mesh == null || mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
+                        continue;
+
+                    var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size / _littleCubeRadius / 2.0f) *
+                                       Matrix4x4.CreateTranslation(mesh.CollisionBox.Center) *
+                                       stat.RotationPositionMatrix;
+
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((rotPosMatrix * _viewProjection).ToSharpDX());
+                }
+
+                if (_highlightedObjects.Contains(obj)) // Selection
+                    solidEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                else
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
+            }
+        }
+
         private void DrawFlybyPath(Effect effect)
         {
             // Add the path of the flyby
@@ -2134,6 +2189,7 @@ namespace TombEditor.Controls
 
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
+
         private void DrawGhostBlocks(Effect effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             if (ghostBlocksToDraw.Count == 0)
@@ -3583,7 +3639,7 @@ namespace TombEditor.Controls
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
-                LightMode =  _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 ?
+                LightMode = _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 ?
                             (_editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5 ? 1 : 0) : 2
             });
 
@@ -3614,7 +3670,7 @@ namespace TombEditor.Controls
             var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);
             var volumesToDraw = CollectVolumesToDraw(roomsToDraw);
             var ghostBlocksToDraw = CollectGhostBlocksToDraw(roomsToDraw);
-            
+
             // Draw skybox
             if (ShowHorizon)
                 DrawSkybox();
@@ -3649,6 +3705,14 @@ namespace TombEditor.Controls
             // Draw volumes
             if (ShowVolumes)
                 DrawVolumes(effect, volumesToDraw, textToDraw, spritesToDraw);
+
+            // Draw moveables and statics bounding boxes
+            if (ShowBoundingBoxes)
+            {
+                var list = moveablesToDraw.Select(m => m as ObjectInstance)
+                                          .Concat(staticsToDraw.Select(s => s as ObjectInstance)).ToList();
+                DrawBoundingBoxes(effect, list);
+            }
 
             if (ShowOtherObjects)
             {

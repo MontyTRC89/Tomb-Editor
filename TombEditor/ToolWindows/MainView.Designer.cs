@@ -48,6 +48,7 @@
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawGhostBlocks = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawVolumes = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawBoundingBoxes = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
@@ -442,6 +443,7 @@
             this.butDrawImportedGeometry,
             this.butDrawGhostBlocks,
             this.butDrawVolumes,
+            this.butDrawBoundingBoxes,
             this.butDrawOther,
             this.butDrawLightRadius});
             this.butDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -497,6 +499,17 @@
             this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
+            // 
+            // butBoundingBoxes
+            // 
+            this.butDrawBoundingBoxes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawBoundingBoxes.Checked = true;
+            this.butDrawBoundingBoxes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawBoundingBoxes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawBoundingBoxes.Name = "butDrawBoundingBoxes";
+            this.butDrawBoundingBoxes.Size = new System.Drawing.Size(176, 22);
+            this.butDrawBoundingBoxes.Tag = "DrawBoundingBoxes";
+            this.butDrawBoundingBoxes.Text = "DrawBoundingBoxes";
             // 
             // butDrawVolumes
             // 
@@ -922,6 +935,7 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
         private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
         private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
+        private System.Windows.Forms.ToolStripMenuItem butDrawBoundingBoxes;
         private System.Windows.Forms.ToolStripButton butAddBoxVolume;
         private System.Windows.Forms.ToolStripButton butAddSphereVolume;
         private System.Windows.Forms.ToolStripButton butDrawStaticTint;

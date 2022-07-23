@@ -280,7 +280,7 @@ namespace WadTool.Controls
                         _device.SetIndexBuffer(null, false);
 
                         solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
                         solidEffect.CurrentTechnique.Passes[0].Apply();
 
                         _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
@@ -296,7 +296,7 @@ namespace WadTool.Controls
                         _device.SetIndexBuffer(null, false);
 
                         solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
                         solidEffect.CurrentTechnique.Passes[0].Apply();
 
                         _device.Draw(PrimitiveType.LineList, _vertexBufferCollision.ElementCount);

@@ -1659,6 +1659,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("DrawBoundingBoxes", "Draw bounding boxes", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowBoundingBoxes = !args.Editor.Configuration.Rendering3D_ShowBoundingBoxes;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DrawOtherObjects", "Draw other objects", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowOtherObjects = !args.Editor.Configuration.Rendering3D_ShowOtherObjects;
