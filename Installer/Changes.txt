@@ -2,7 +2,9 @@ Version 1.5.1
 =============
 
 Tomb Editor:
+ * Fix ghost blocks causing room geometry clipping when placed on floor portals.
  * Fix serious memory leak when switching between objects in item browser.
+ * Add option to display moveable and static mesh bounding boxes.
  * Hide selection highlight when editing colorable objects from palette.
  * Delete room with hotkey if no object is selected.
  * Avoid texturing inaccessible floors and ceilings with fill tool.
@@ -13,6 +15,10 @@ Tomb Editor:
  * Fix some hardcoded TR3 sounds not being selected on sound autodetect.
  * Fix exception in animated texture window when clicking on text fields in frame list.
  * Fix exception when trying to select all sound infos without valid sound catalogs present.
+ 
+WadTool:
+ * Add options to convert selected objects from/to dynamic light model.
+ * Add option to convert loaded destination wad to TombEngine format.
 
 Version 1.5
 ===========

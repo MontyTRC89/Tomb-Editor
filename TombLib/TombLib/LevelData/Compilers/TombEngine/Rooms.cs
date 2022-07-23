@@ -1320,8 +1320,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     Block block = room.Blocks[x, z];
                     Room.RoomConnectionInfo roomConnectionInfo = isCeiling ?
-                        room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true) :
-                        room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true);
+                        room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), false) :
+                        room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), false);
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
