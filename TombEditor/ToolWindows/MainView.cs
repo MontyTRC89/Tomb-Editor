@@ -243,6 +243,7 @@ namespace TombEditor.ToolWindows
             panel3D.ShowGhostBlocks = butDrawGhostBlocks.Checked = settings.Rendering3D_ShowGhostBlocks;
             panel3D.ShowOtherObjects = butDrawOther.Checked = settings.Rendering3D_ShowOtherObjects;
             panel3D.ShowVolumes = butDrawVolumes.Checked = settings.Rendering3D_ShowVolumes;
+            panel3D.ShowBoundingBoxes = butDrawBoundingBoxes.Checked = settings.Rendering3D_ShowBoundingBoxes;
             panel3D.ShowSlideDirections = butDrawSlideDirections.Checked = settings.Rendering3D_ShowSlideDirections;
             panel3D.ShowExtraBlendingModes = butDrawExtraBlendingModes.Checked = settings.Rendering3D_ShowExtraBlendingModes;
             panel3D.HideTransparentFaces = butHideTransparentFaces.Checked = settings.Rendering3D_HideTransparentFaces;
