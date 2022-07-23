@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -125,7 +123,7 @@ namespace TombLib.LevelData.Compilers
         {
             get
             {
-                List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>> result = new List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>>();
+                var result = new List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>>();
                 for (int i = 0; i < _animTextureIndices.Count; i++)
                 {
                     result.Add(new KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>
@@ -153,7 +151,7 @@ namespace TombLib.LevelData.Compilers
         public class ChildTextureArea
         {
             public int TexInfoIndex;
-            public Vector2[] RelCoord;  // Relative to parent!
+            public Vector2[] RelCoord; // Relative to parent!
             public Vector2[] AbsCoord; // Absolute
 
             public BlendMode BlendMode;
@@ -185,7 +183,6 @@ namespace TombLib.LevelData.Compilers
             public int AtlasIndex { get; set; }
             public VectorInt2 AtlasDimensions { get; set; }
             public int[] Padding { get; set; } = new int[4]; // LTRB
-            public bool SqueezeAndDuplicate { get; set; } // Needed for UVRotate
             public Texture Texture { get; private set; }
             public TextureDestination Destination { get; set; }
 
@@ -257,7 +254,6 @@ namespace TombLib.LevelData.Compilers
 
                 Texture = texture;
                 Destination = destination;
-                SqueezeAndDuplicate = false;
             }
 
             // Compare parent's properties with incoming texture properties.
@@ -512,12 +508,7 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (ParentTextureArea parent in CompiledAnimation)
                 {
-                    ParentTextureArea newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.Destination)
-                    {
-
-                        // Squeeze and duplicate bitmap data for UVRotate texture sets
-                        SqueezeAndDuplicate = Origin.IsUvRotate
-                    };
+                    var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.Destination);
 
                     foreach (ChildTextureArea child in parent.Children)
                     {
@@ -571,7 +562,7 @@ namespace TombLib.LevelData.Compilers
         public class ObjectTexture
         {
             public int Tile;
-            public VectorInt2[] TexCoord = new VectorInt2[4];
+            public Vector2[] TexCoord = new Vector2[4];
             public ushort UVAdjustmentFlag;
 
             public bool IsForTriangle;
@@ -582,7 +573,6 @@ namespace TombLib.LevelData.Compilers
             public int AtlasIndex;
             public VectorInt2 AtlasDimensions;
             public VectorInt2 PositionInAtlas;
-            public Vector2[] TexCoordFloat = new Vector2[4];
 
             public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, float maxTextureSize)
             {
@@ -596,7 +586,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
                     Vector2 coord = new Vector2(child.RelCoord[i].X + (parent.PositionInPage.X + parent.Padding[0]),
-                                            child.RelCoord[i].Y + (parent.PositionInPage.Y + parent.Padding[1]));
+                                                child.RelCoord[i].Y + (parent.PositionInPage.Y + parent.Padding[1]));
 
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = MathC.Clamp(coord.X, 0, maxTextureSize);
@@ -610,13 +600,9 @@ namespace TombLib.LevelData.Compilers
                     int atlasY = PositionInAtlas.Y;
 
                     // Float coordinates must be in 0.0f ... 1.0f range
-                    TexCoordFloat[i] = (coord + new Vector2(atlasX * AtlasSize, atlasY * AtlasSize));
-                    TexCoordFloat[i].X /= AtlasDimensions.X;
-                    TexCoordFloat[i].Y /= AtlasDimensions.Y;
-
-                    // Pack coordinates into 2-byte set (whole and frac parts)
-                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * (AtlasSize - 1))),
-                                                 (((int)Math.Truncate(coord.Y)) << 8) + (int)(Math.Floor(coord.Y % 1.0f * (AtlasSize - 1))));
+                    TexCoord[i] = coord + new Vector2(atlasX * AtlasSize, atlasY * AtlasSize);
+                    TexCoord[i].X /= (float)AtlasDimensions.X;
+                    TexCoord[i].Y /= (float)AtlasDimensions.Y;
                 }
 
                 if (child.IsForTriangle)
@@ -1265,15 +1251,15 @@ namespace TombLib.LevelData.Compilers
 
         private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex)
         {
-            Dictionary<string, ImageC> customBumpmaps = new Dictionary<string, ImageC>();
-            List<TexturePage> texturePages = new List<TexturePage>();
+            var customBumpmaps = new Dictionary<string, ImageC>();
+            var texturePages = new List<TexturePage>();
+
             for (int i = 0; i < numPages; i++)
             {
                 texturePages.Add(new TexturePage { ColorMap = ImageC.CreateNew(AtlasSize, AtlasSize) });
             }
 
             int actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
-            int x, y;
 
             for (int b = 0; b < (bump ? 2 : 1); b++)
             {
@@ -1281,14 +1267,14 @@ namespace TombLib.LevelData.Compilers
                 {
                     ParentTextureArea p = textures[i];
 
-                    if (p.Texture == null || p.Texture.Image == null)
+                    if (p.Texture == null || p.Texture.IsUnavailable)
                     {
                         _progressReporter.ReportWarn("Texture null: " + i);
                         continue;
                     }
 
-                    x = (int)p.Area.Start.X;
-                    y = (int)p.Area.Start.Y;
+                    int x = (int)p.Area.Start.X;
+                    int y = (int)p.Area.Start.Y;
                     int width = (int)p.Area.Width;
                     int height = (int)p.Area.Height;
 
@@ -1297,38 +1283,8 @@ namespace TombLib.LevelData.Compilers
                     int destX = p.PositionInPage.X + p.Padding[0];
                     int destY = p.PositionInPage.Y + p.Padding[1];
 
-                    if (p.SqueezeAndDuplicate)
-                    {
-                        // If squeeze-and-duplicate approach is needed (UVRotate), use system drawing routines
-                        // to do high-quality bicubic resampling.
-
-                        // Copy original region to new image
-                        ImageC originalImage = ImageC.CreateNew(width, height);
-                        originalImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
-
-                        // Make squeezed bitmap and put original one into it using bicubic resampling
-                        Bitmap destBitmap = new Bitmap(width, height / 2);
-                        using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(destBitmap))
-                        {
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
-                        }
-
-                        // Twice copy squeezed image to original image
-                        ImageC squeezedImage = ImageC.FromSystemDrawingImage(destBitmap);
-                        originalImage.CopyFrom(0, 0, squeezedImage, 0, 0, width, height / 2);
-
-                        originalImage.CopyFrom(0, height / 2, squeezedImage, 0, 0, width, height / 2);
-
-                        // Copy squeezed-and-duplicated image to texture map and add padding
-                        image.ColorMap.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
-                        AddPadding(p, originalImage, image.ColorMap, 0, actualPadding, 0, 0);
-                    }
-                    else
-                    {
-                        image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
-                        AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
-                    }
+                    image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
+                    AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
 
                     // Do the bump map if needed
 
@@ -1370,7 +1326,6 @@ namespace TombLib.LevelData.Compilers
                         else
                         {
                             BumpMappingLevel? level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
-
 
                             ImageC bumpImage = ImageC.CreateNew(width, height);
                             bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
@@ -1432,8 +1387,8 @@ namespace TombLib.LevelData.Compilers
             List<TexturePage> pages = texturePages;
 
             TombEngineAtlas currentAtlas = new TombEngineAtlas();
-            x = 0;
-            y = 0;
+            int atlasX = 0;
+            int atlasY = 0;
             int pagesProcessed = 0;
             VectorInt2 pagesPerAtlas = VectorInt2.Zero;
 
@@ -1453,17 +1408,17 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Time to go to the next row? 
-                if (x == pagesPerAtlas.X)
+                if (atlasX == pagesPerAtlas.X)
                 {
-                    x = 0;
-                    y++;
+                    atlasX = 0;
+                    atlasY++;
                 }
 
                 // Is atlas full and we need a new one?
-                if (y == pagesPerAtlas.Y)
+                if (atlasY == pagesPerAtlas.Y)
                 {
-                    x = 0;
-                    y = 0;
+                    atlasX = 0;
+                    atlasY = 0;
                     pagesPerAtlas = new VectorInt2(PagesPerAtlas, PagesPerAtlas); // GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
                     currentAtlas = new TombEngineAtlas
                     {
@@ -1479,17 +1434,17 @@ namespace TombLib.LevelData.Compilers
 
                 // Store the atlas index and position
                 page.Atlas = baseIndex + atlasList.Count - 1;
-                page.Position = new VectorInt2(x, y);
+                page.Position = new VectorInt2(atlasX, atlasY);
 
                 // Copy the texture into the atlas
-                currentAtlas.ColorMap.CopyFrom(x * PageSize, y * PageSize, page.ColorMap, 0, 0, PageSize, PageSize);
+                currentAtlas.ColorMap.CopyFrom(atlasX * PageSize, atlasY * PageSize, page.ColorMap, 0, 0, PageSize, PageSize);
                 if (page.HasNormalMap)
                 {
-                    currentAtlas.NormalMap.CopyFrom(x * PageSize, y * PageSize, page.NormalMap, 0, 0, PageSize, PageSize);
+                    currentAtlas.NormalMap.CopyFrom(atlasX * PageSize, atlasY * PageSize, page.NormalMap, 0, 0, PageSize, PageSize);
                 }
 
                 // Increment atlas position
-                x++;
+                atlasX++;
 
                 pagesProcessed++;
             }
@@ -1803,14 +1758,14 @@ namespace TombLib.LevelData.Compilers
                     ObjectTexture texture = _objectTextures[frame];
 
                     // Coordinates of each frame
-                    writer.Write(texture.TexCoordFloat[0].X);
-                    writer.Write(texture.TexCoordFloat[0].Y);
-                    writer.Write(texture.TexCoordFloat[1].X);
-                    writer.Write(texture.TexCoordFloat[1].Y);
-                    writer.Write(texture.TexCoordFloat[2].X);
-                    writer.Write(texture.TexCoordFloat[2].Y);
-                    writer.Write(texture.TexCoordFloat[3].X);
-                    writer.Write(texture.TexCoordFloat[3].Y);
+                    writer.Write(texture.TexCoord[0].X);
+                    writer.Write(texture.TexCoord[0].Y);
+                    writer.Write(texture.TexCoord[1].X);
+                    writer.Write(texture.TexCoord[1].Y);
+                    writer.Write(texture.TexCoord[2].X);
+                    writer.Write(texture.TexCoord[2].Y);
+                    writer.Write(texture.TexCoord[3].X);
+                    writer.Write(texture.TexCoord[3].Y);
                 }
             }
         }
@@ -1869,8 +1824,8 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                     {
-                        writer.Write(texture.TexCoordFloat[j].X);
-                        writer.Write(texture.TexCoordFloat[j].Y);
+                        writer.Write(texture.TexCoord[j].X);
+                        writer.Write(texture.TexCoord[j].Y);
                     }
                 }
 
