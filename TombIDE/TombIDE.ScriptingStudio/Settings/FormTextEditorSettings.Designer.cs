@@ -31,12 +31,15 @@
 			this.tabPage_Tomb1Main = new System.Windows.Forms.TabPage();
 			this.settingsTomb1Main = new TombIDE.ScriptingStudio.Settings.Tomb1MainSettingsControl();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
+			this.tabPage_Lua = new System.Windows.Forms.TabPage();
+			this.settingsLua = new TombIDE.ScriptingStudio.Settings.LuaSettingsControl();
 			this.panel_Buttons.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
 			this.tabPage_ClassicScript.SuspendLayout();
 			this.tabPage_GameFlow.SuspendLayout();
 			this.tabPage_Tomb1Main.SuspendLayout();
+			this.tabPage_Lua.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_Apply
@@ -105,6 +108,7 @@
 			this.tablessTabControl.Controls.Add(this.tabPage_ClassicScript);
 			this.tablessTabControl.Controls.Add(this.tabPage_GameFlow);
 			this.tablessTabControl.Controls.Add(this.tabPage_Tomb1Main);
+			this.tablessTabControl.Controls.Add(this.tabPage_Lua);
 			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tablessTabControl.Location = new System.Drawing.Point(168, 0);
 			this.tablessTabControl.Name = "tablessTabControl";
@@ -202,6 +206,30 @@
 			this.treeView.TabIndex = 3;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
 			// 
+			// tabPage_Lua
+			// 
+			this.tabPage_Lua.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_Lua.Controls.Add(this.settingsLua);
+			this.tabPage_Lua.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_Lua.Margin = new System.Windows.Forms.Padding(0);
+			this.tabPage_Lua.Name = "tabPage_Lua";
+			this.tabPage_Lua.Size = new System.Drawing.Size(712, 386);
+			this.tabPage_Lua.TabIndex = 4;
+			this.tabPage_Lua.Text = "Lua";
+			// 
+			// settingsLua
+			// 
+			this.settingsLua.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
+			this.settingsLua.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsLua.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.settingsLua.Location = new System.Drawing.Point(0, 0);
+			this.settingsLua.Margin = new System.Windows.Forms.Padding(0);
+			this.settingsLua.MaximumSize = new System.Drawing.Size(720, 412);
+			this.settingsLua.MinimumSize = new System.Drawing.Size(720, 412);
+			this.settingsLua.Name = "settingsLua";
+			this.settingsLua.Size = new System.Drawing.Size(720, 412);
+			this.settingsLua.TabIndex = 1;
+			// 
 			// FormTextEditorSettings
 			// 
 			this.AcceptButton = this.button_Apply;
@@ -226,6 +254,7 @@
 			this.tabPage_ClassicScript.ResumeLayout(false);
 			this.tabPage_GameFlow.ResumeLayout(false);
 			this.tabPage_Tomb1Main.ResumeLayout(false);
+			this.tabPage_Lua.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -246,5 +275,7 @@
 		private GameFlowSettingsControl settingsGameFlow;
 		private System.Windows.Forms.TabPage tabPage_Tomb1Main;
 		private Tomb1MainSettingsControl settingsTomb1Main;
+		private System.Windows.Forms.TabPage tabPage_Lua;
+		private LuaSettingsControl settingsLua;
 	}
 }
