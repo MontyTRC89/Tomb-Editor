@@ -56,6 +56,12 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Compile Include="Settings\LuaSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\LuaSettingsControl.Designer.cs">
+      <DependentUpon>LuaSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings\Tomb1MainSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -212,6 +218,9 @@
     <Compile Include="UI\UIKeys.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Settings\LuaSettingsControl.resx">
+      <DependentUpon>LuaSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\Tomb1MainSettingsControl.resx">
       <DependentUpon>Tomb1MainSettingsControl.cs</DependentUpon>
     </EmbeddedResource>

@@ -136,6 +136,9 @@ Vanilla (unmodified) TR4 engine, which shipped with the original TRLE editor.
 Tomb Raider 4 with the Next-Generation addon made by Paolone which adds tons of new features for builders.
 This is the most commonly used engine for builders.
 
+- "Tomb Engine"
+A brand new engine based on the TR5 engine. It is the most advanced and most flexible engine with the most amount of features for both players and builders.
+
 - "FLEP"
 A tool which helps modifying some hardcoded values in TR4-based engines. It is highly recommended to use this with the "Tomb Raider Next-Generation" preset.</value>
   </data>

@@ -161,6 +161,9 @@
     <Content Include="TIDE\NGC\VGE\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TIDE\Templates\TEN\Defaults\TEN.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TIDE\Templates\TOMB1\Defaults\TR1.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -208,6 +211,9 @@
     <None Include="TIDE\NGC\VGE\tools\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TIDE\Templates\Engines\TEN.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TIDE\Templates\Engines\TR1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -221,6 +227,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\Templates\Engines\TRNG.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TIDE\Templates\TEN\Shared.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\Templates\TOMB1\Shared.zip">
