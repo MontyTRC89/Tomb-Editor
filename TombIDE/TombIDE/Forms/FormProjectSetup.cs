@@ -131,7 +131,7 @@ namespace TombIDE
 
 				tableLayoutPanel_Content02.Controls.Clear();
 
-				if (comboBox_EngineType.SelectedIndex == 1)
+				if (comboBox_EngineType.SelectedIndex == 1 || comboBox_EngineType.SelectedIndex == 6)
 				{
 					tableLayoutPanel_Content02.Controls.Add(panel_LevelsRadioChoice, 0, 0);
 					tableLayoutPanel_Content02.Controls.Add(progressBar, 0, 4);
@@ -195,6 +195,8 @@ namespace TombIDE
 
 				if (comboBox_EngineType.SelectedIndex == 1)
 					scriptPath = Path.Combine(enginePath, "cfg");
+				else if (comboBox_EngineType.SelectedIndex == 6)
+					scriptPath = Path.Combine(enginePath, "Scripts");
 
 				string levelsPath = radio_Levels_01.Checked ? Path.Combine(projectPath, "Levels") : textBox_LevelsPath.Text.Trim();
 
@@ -403,7 +405,7 @@ namespace TombIDE
 					break;
 
 				case 6:
-					engineBasePath = Path.Combine(engineBasePath, "TombEngine.zip");
+					engineBasePath = Path.Combine(engineBasePath, "TEN.zip");
 					break;
 			}
 

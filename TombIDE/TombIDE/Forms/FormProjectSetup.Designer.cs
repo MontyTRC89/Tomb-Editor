@@ -437,7 +437,8 @@
             "Tomb Raider 2 (TR2Main)",
             "Tomb Raider 3",
             "Tomb Raider 4 (TRLE)",
-            "Tomb Raider Next-Generation"});
+            "Tomb Raider Next-Generation",
+            "(Preview) Tomb Engine"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";
