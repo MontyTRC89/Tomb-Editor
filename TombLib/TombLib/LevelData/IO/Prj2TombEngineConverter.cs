@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Utils;
@@ -464,17 +465,38 @@ namespace TombLib.LevelData.IO
                 {
                     if (room != null)
                     {
-                        foreach (PositionBasedObjectInstance instance in room.Objects)
+                        foreach (var instance in room.Objects)
                         {
                             if (instance is MoveableInstance)
                             {
-                                if (!remappedSlots.ContainsKey(((MoveableInstance)instance).WadObjectId.TypeId))
+                                var mov = instance as MoveableInstance;
+
+                                if (!remappedSlots.ContainsKey(mov.WadObjectId.TypeId))
                                 {
-                                    progressReporter.ReportWarn("Slot not found! " + ((MoveableInstance)instance).WadObjectId.TypeId);
+                                    progressReporter.ReportWarn("Slot not found! " + mov.WadObjectId.TypeId);
                                 }
                                 else
                                 {
-                                    ((MoveableInstance)instance).WadObjectId = new WadMoveableId(remappedSlots[((MoveableInstance)instance).WadObjectId.TypeId]);
+                                    mov.WadObjectId = new WadMoveableId(remappedSlots[mov.WadObjectId.TypeId]);
+                                }
+
+                                // Untint dynamically lit moveables
+                                var model = level.Settings.WadTryGetMoveable(mov.WadObjectId);
+                                if (model != null && model.Meshes.Any(m => m.LightingType == WadMeshLightingType.Normals))
+                                {
+                                    mov.Color = Vector3.One;
+                                }
+                            }
+
+                            if (instance is StaticInstance)
+                            {
+                                var st = instance as StaticInstance;
+
+                                // Untint dynamically lit statics
+                                var model = level.Settings.WadTryGetStatic(st.WadObjectId);
+                                if (model != null && model.Mesh.LightingType == WadMeshLightingType.Normals)
+                                {
+                                    st.Color = Vector3.One;
                                 }
                             }
                         }
