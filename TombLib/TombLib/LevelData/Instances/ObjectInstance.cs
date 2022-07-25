@@ -403,6 +403,7 @@ namespace TombLib.LevelData
         {
             ObjectInstance result = base.Clone();
             ((PositionAndScriptBasedObjectInstance)result)._scriptId = null;
+            ((PositionAndScriptBasedObjectInstance)result).LuaName = string.Empty;
             return result;
         }
 
