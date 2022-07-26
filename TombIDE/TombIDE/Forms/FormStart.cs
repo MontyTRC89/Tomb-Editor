@@ -383,7 +383,7 @@ namespace TombIDE
 
 			switch (project.GameVersion)
 			{
-				case TRVersion.Game.TombEngine: node.ExtraIcon = Properties.Resources.TRNG_LVL; break; // TODO
+				case TRVersion.Game.TombEngine: node.ExtraIcon = Properties.Resources.TEN_LVL; break;
 				case TRVersion.Game.TRNG: node.ExtraIcon = Properties.Resources.TRNG_LVL; break;
 				case TRVersion.Game.TR4: node.ExtraIcon = Properties.Resources.TR4_LVL; break;
 				case TRVersion.Game.TR3: node.ExtraIcon = Properties.Resources.TR3_LVL; break;

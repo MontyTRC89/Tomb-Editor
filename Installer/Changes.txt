@@ -5,6 +5,7 @@ Tomb Editor:
  * Fix ghost blocks causing room geometry clipping when placed on floor portals.
  * Fix serious memory leak when switching between objects in item browser.
  * Add option to display moveable and static mesh bounding boxes.
+ * Add roll pointer for selected flyby camera.
  * Hide selection highlight when editing colorable objects from palette.
  * Delete room with hotkey if no object is selected.
  * Avoid texturing inaccessible floors and ceilings with fill tool.
