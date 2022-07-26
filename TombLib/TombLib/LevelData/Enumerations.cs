@@ -35,15 +35,6 @@ namespace TombLib.LevelData
 
         /// <summary> Helper legacy (aka TRVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> LegacyVersions => NativeVersions.Where(item => item != Game.TombEngine).ToList();
-
-        /// <summary> Helper compilable version enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> CompilableVersions(bool experimental)
-        {
-            if (experimental)
-                return AllVersions.ToList();
-            else
-                return AllVersions.Where(item => item.Legacy() != Game.TR5).ToList();
-        }
     }
 
     /// Only for TR5+

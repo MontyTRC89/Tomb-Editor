@@ -400,8 +400,8 @@ namespace TombEditor.Forms
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
                 pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
-            // Populate versions and remove experimental compilable versions if necessary
-            comboGameVersion.Items.AddRange(CompilableVersions(_editor.Configuration.Editor_AllowExperimentalFeatures).Cast<object>().ToArray());
+            // Populate versions
+            comboGameVersion.Items.AddRange(AllVersions.Cast<object>().ToArray());
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());

@@ -46,6 +46,9 @@
     <None Update="Configs\TextEditors\ColorSchemes\Lua\Monokai.luasch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Configs\TextEditors\ColorSchemes\Lua\NG_Center.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Configs\TextEditors\ColorSchemes\Lua\Obsidian.luasch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

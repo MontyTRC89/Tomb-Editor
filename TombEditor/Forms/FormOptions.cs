@@ -42,8 +42,8 @@ namespace TombEditor.Forms
                       cmbRendering3DFont.Items.Add(font.Name); }
                 catch { throw; }
 
-            // Populate versions and remove experimental compilable versions if necessary
-            cmbGameVersion.Items.AddRange(CompilableVersions(_editor.Configuration.Editor_AllowExperimentalFeatures).Cast<object>().ToArray());
+            // Populate versions
+            cmbGameVersion.Items.AddRange(AllVersions.Cast<object>().ToArray());
 
             // Populate color scheme presets
             typeof(ColorScheme)

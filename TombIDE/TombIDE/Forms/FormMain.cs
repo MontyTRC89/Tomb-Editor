@@ -183,9 +183,9 @@ namespace TombIDE
 					// User pressed "Cancel"
 
 					DarkMessageBox.Show(this,
-						"Operation cancelled.\n" +
+						"Operation canceled.\n" +
 						"No paths have been affected.",
-						"Operation cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						"Operation canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 					return;
 				}
@@ -212,9 +212,9 @@ namespace TombIDE
 			else if (result == DialogResult.No)
 			{
 				DarkMessageBox.Show(this,
-					"Operation cancelled.\n" +
+					"Operation canceled.\n" +
 					"No paths have been affected.",
-					"Operation cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					"Operation canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 

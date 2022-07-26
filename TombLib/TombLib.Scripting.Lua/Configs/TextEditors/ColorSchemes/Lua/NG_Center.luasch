@@ -1,30 +1,30 @@
 <?xml version="1.0"?>
 <ColorScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Comments>
-    <HtmlColor>#66747B</HtmlColor>
+    <HtmlColor>Gray</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </Comments>
   <Values>
-    <HtmlColor>#D97640</HtmlColor>
+    <HtmlColor>Black</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </Values>
   <Statements>
-    <HtmlColor>#FFCD22</HtmlColor>
-    <IsBold>false</IsBold>
+    <HtmlColor>Black</HtmlColor>
+    <IsBold>true</IsBold>
     <IsItalic>false</IsItalic>
   </Statements>
   <Operators>
-    <HtmlColor>#93C763</HtmlColor>
+    <HtmlColor>Black</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </Operators>
   <SpecialOperators>
-    <HtmlColor>#668BB0</HtmlColor>
-    <IsBold>false</IsBold>
+    <HtmlColor>Black</HtmlColor>
+    <IsBold>true</IsBold>
     <IsItalic>false</IsItalic>
   </SpecialOperators>
-  <Background>#283033</Background>
-  <Foreground>GainsBoro</Foreground>
+  <Background>White</Background>
+  <Foreground>Black</Foreground>
 </ColorScheme>

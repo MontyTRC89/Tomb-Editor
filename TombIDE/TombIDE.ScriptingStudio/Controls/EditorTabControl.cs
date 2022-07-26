@@ -275,7 +275,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 				FileSavingResult result = TryAskSaveFile(mostRecentTabOfFile);
 
-				if (result == FileSavingResult.Cancelled || result == FileSavingResult.Failed)
+				if (result == FileSavingResult.Canceled || result == FileSavingResult.Failed)
 					return false;
 			}
 
@@ -312,7 +312,7 @@ namespace TombIDE.ScriptingStudio.Controls
 				else if (result == DialogResult.No)
 					return FileSavingResult.Rejected;
 				else if (result == DialogResult.Cancel)
-					return FileSavingResult.Cancelled;
+					return FileSavingResult.Canceled;
 			}
 
 			return FileSavingResult.AlreadySaved;
@@ -368,7 +368,7 @@ namespace TombIDE.ScriptingStudio.Controls
 					return SaveFile(tab);
 				}
 				else
-					return FileSavingResult.Cancelled;
+					return FileSavingResult.Canceled;
 		}
 
 		private void SaveOtherTabPagesOfFile(IEditorControl excludedEditor)
@@ -521,7 +521,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			{
 				FileSavingResult result = TryAskSaveFile(e.TabPage);
 
-				if (result == FileSavingResult.Cancelled || result == FileSavingResult.Failed)
+				if (result == FileSavingResult.Canceled || result == FileSavingResult.Failed)
 					e.Cancel = true;
 			}
 			else if (IsMostRecentlyModifiedTabPageOfFile(e.TabPage))
