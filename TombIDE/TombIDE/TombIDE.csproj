@@ -151,6 +151,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\TEN_LVL.png" />
     <Content Include="Resources\add-48.png" />
     <Content Include="Resources\forward-arrow-16.png" />
     <Content Include="Resources\general_ArrowDown-16.png" />

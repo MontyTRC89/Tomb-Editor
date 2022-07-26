@@ -21,6 +21,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		#region Properties
 
 		private DocumentMode _documentMode;
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DocumentMode DocumentMode
@@ -34,6 +35,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		}
 
 		private IEditorControl _editorControl;
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEditorControl EditorControl

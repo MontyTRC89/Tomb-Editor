@@ -14,6 +14,7 @@ namespace TombIDE.ProjectMaster
 		private bool _isPendingLevelListReload = false;
 
 		private bool _isMainWindowFocused;
+
 		public bool IsMainWindowFocued
 		{
 			get => _isMainWindowFocused;
@@ -40,7 +41,7 @@ namespace TombIDE.ProjectMaster
 
 			switch (_ide.Project.GameVersion)
 			{
-				case TRVersion.Game.TombEngine: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break; // TODO
+				case TRVersion.Game.TombEngine: panel_GameLabel.BackgroundImage = Properties.Resources.TEN_LVL; break;
 				case TRVersion.Game.TRNG: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break;
 				case TRVersion.Game.TR4: panel_GameLabel.BackgroundImage = Properties.Resources.TR4_LVL; break;
 				case TRVersion.Game.TR3: panel_GameLabel.BackgroundImage = Properties.Resources.TR3_LVL; break;

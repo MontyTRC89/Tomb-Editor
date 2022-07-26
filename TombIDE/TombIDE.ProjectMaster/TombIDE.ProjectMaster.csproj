@@ -277,6 +277,7 @@
     <Content Include="Resources\image_file.ico" />
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\obj_file.ico" />
+    <Content Include="Resources\TEN_LVL.png" />
     <Content Include="Resources\TE_icon.png" />
     <Content Include="Resources\TR1_LVL.png" />
     <Content Include="Resources\TR2_LVL.png" />
