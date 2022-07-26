@@ -2958,7 +2958,6 @@ namespace TombEditor.Controls
                                 model = Matrix4x4.CreateScale(step * pScale, step * pScale, step * scale) * 
                                         Matrix4x4.CreateTranslation(new Vector3(0, hOffset, vOffset)) *
                                         Matrix4x4.CreateRotationX((float)(Math.PI / 2)) * 
-                                        Matrix4x4.CreateRotationZ((float)instance.GetRotationRollRadians()) *
                                         instance.ObjectMatrix;
                             }
 
