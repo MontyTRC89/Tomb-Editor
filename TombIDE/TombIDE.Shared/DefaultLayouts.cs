@@ -153,11 +153,6 @@ namespace TombIDE.Shared
 						{
 							Contents = new List<string> { "FileExplorer" },
 							VisibleContent = "FileExplorer"
-						},
-						new DockGroupState
-						{
-							Contents = new List<string> { "ContentExplorer" },
-							VisibleContent = "ContentExplorer"
 						}
 					}
 				}

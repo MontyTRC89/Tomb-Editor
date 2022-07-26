@@ -29,7 +29,8 @@ namespace TombIDE.ProjectMaster
 
 			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1
 				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR2
-				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3)
+				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
+				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
 			{
 				checkBox_RenameScriptEntry.Text = "Rename script entry as well (Recommended)";
 

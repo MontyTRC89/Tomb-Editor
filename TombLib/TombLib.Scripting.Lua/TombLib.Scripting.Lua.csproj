@@ -81,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="Configs\TextEditors\ColorSchemes\Lua\NG_Center.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Configs\TextEditors\ColorSchemes\Lua\Monokai.luasch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

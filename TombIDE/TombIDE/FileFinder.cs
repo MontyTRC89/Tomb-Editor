@@ -47,7 +47,8 @@ namespace TombIDE
 			else if (Path.GetFileName(selectedFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(selectedFilePath).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(selectedFilePath).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
-				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
+				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
 			{
 				string selectedFileDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedFilePath));
 
@@ -98,7 +99,8 @@ namespace TombIDE
 			else if (Path.GetFileName(selectedFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(selectedFilePath).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(selectedFilePath).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
-				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
+				|| Path.GetFileName(selectedFilePath).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(selectedFilePath).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
 				return selectedFilePath;
 			else
 				throw new FileNotFoundException("Invalid game .exe file.");
@@ -127,7 +129,8 @@ namespace TombIDE
 				if (Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(file).Equals("Tomb2.exe", StringComparison.OrdinalIgnoreCase)
 				|| Path.GetFileName(file).Equals("tomb3.exe", StringComparison.OrdinalIgnoreCase)
-				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase))
+				|| Path.GetFileName(file).Equals("tomb4.exe", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(file).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
 					validGameExeFiles.Add(file);
 			}
 

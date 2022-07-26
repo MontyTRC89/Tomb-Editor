@@ -17,7 +17,7 @@ namespace TombIDE.ScriptingStudio
 
 		public LuaStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.T1M_DockPanelState;
+			DockPanelState = IDE.Global.IDEConfiguration.Lua_DockPanelState;
 
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
@@ -52,7 +52,7 @@ namespace TombIDE.ScriptingStudio
 
 		protected override void RestoreDefaultLayout()
 		{
-			DockPanelState = DefaultLayouts.Tomb1MainLayout;
+			DockPanelState = DefaultLayouts.LuaLayout;
 
 			DockPanel.RemoveContent();
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);

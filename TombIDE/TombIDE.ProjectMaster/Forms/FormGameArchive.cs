@@ -160,7 +160,27 @@ namespace TombIDE.ProjectMaster.Forms
 
 		public void GenerateTENArchive(string filePath, string readmeText)
 		{
-			// TODO
+			string[] importantFolders = new string[]
+			{
+				Path.Combine(_ide.Project.EnginePath, "audio"),
+				Path.Combine(_ide.Project.EnginePath, "Data"),
+				Path.Combine(_ide.Project.EnginePath, "Screens"),
+				Path.Combine(_ide.Project.EnginePath, "Scripts"),
+				Path.Combine(_ide.Project.EnginePath, "Shaders"),
+				Path.Combine(_ide.Project.EnginePath, "Textures")
+			};
+
+			string[] importantFiles = new string[]
+			{
+				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
+				Path.Combine(_ide.Project.EnginePath, "TombEngine.exe")
+			};
+
+			var allImportantFiles = new List<string>();
+			allImportantFiles.AddRange(importantFiles);
+			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dll", SearchOption.TopDirectoryOnly));
+
+			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
 		}
 
 		private void CreateArchive(IEnumerable<string> importantFolders, IEnumerable<string> importantFiles,

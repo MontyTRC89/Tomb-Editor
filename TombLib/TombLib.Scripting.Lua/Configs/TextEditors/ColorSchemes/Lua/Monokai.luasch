@@ -16,12 +16,12 @@
     <IsItalic>false</IsItalic>
   </Statements>
   <Operators>
-    <HtmlColor>#F92672</HtmlColor>
+    <HtmlColor>#93C763</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </Operators>
   <SpecialOperators>
-    <HtmlColor>#F92672</HtmlColor>
+    <HtmlColor>#66D9EF</HtmlColor>
     <IsBold>false</IsBold>
     <IsItalic>false</IsItalic>
   </SpecialOperators>
