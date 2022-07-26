@@ -11,7 +11,7 @@ namespace TombLib.Scripting.Lua
 			CommentPrefix = "--";
 		}
 
-		public override void UpdateSettings(ConfigurationBase configuration)
+		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
 			var config = configuration as LuaEditorConfiguration;
 
