@@ -417,33 +417,55 @@ namespace TombLib.Scripting.Bases
 
 		private void HandleAutoClosing(TextCompositionEventArgs e)
 		{
-			if (AutoCloseParentheses && e.Text == "(")
-				PerformAutoClosing(e, ParenthesesClosingString);
-
-			if (AutoCloseBraces && e.Text == "{")
-				PerformAutoClosing(e, BracesClosingString);
-
-			if (AutoCloseBrackets && e.Text == "[")
-				PerformAutoClosing(e, BracketsClosingString);
-
-			if (AutoCloseQuotes && e.Text == "\"")
-				PerformAutoClosing(e, QuotesClosingString);
-		}
-
-		private void PerformAutoClosing(TextCompositionEventArgs e, string closingElement)
-		{
-			if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == closingElement[0])
+			if (AutoCloseParentheses)
 			{
-				CaretOffset++;
-				e.Handled = true;
-				return;
+				if (e.Text == "(")
+					PerformAutoClosing(ParenthesesClosingString);
+				else if (e.Text == ParenthesesClosingString)
+					TryPerformElementSkip(e, ParenthesesClosingString);
 			}
 
+			if (AutoCloseBraces)
+			{
+				if (e.Text == "{")
+					PerformAutoClosing(BracesClosingString);
+				else if (e.Text == BracesClosingString)
+					TryPerformElementSkip(e, BracesClosingString);
+			}
+
+			if (AutoCloseBrackets)
+			{
+				if (e.Text == "[")
+					PerformAutoClosing(BracketsClosingString);
+				else if (e.Text == BracketsClosingString)
+					TryPerformElementSkip(e, BracketsClosingString);
+			}
+
+			if (AutoCloseQuotes)
+			{
+				if (e.Text == "\"" && !(CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == QuotesClosingString[0]))
+					PerformAutoClosing(QuotesClosingString);
+				else if (e.Text == QuotesClosingString)
+					TryPerformElementSkip(e, QuotesClosingString);
+			}
+		}
+
+		private void PerformAutoClosing(string closingElement)
+		{
 			SelectedText += closingElement;
 			CaretOffset -= closingElement.Length;
 
 			SelectionStart = CaretOffset;
 			SelectionLength = 0;
+		}
+
+		private void TryPerformElementSkip(TextCompositionEventArgs e, string element)
+		{
+			if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == element[0])
+			{
+				CaretOffset++;
+				e.Handled = true;
+			}
 		}
 
 		#endregion Auto bracket closing
@@ -613,6 +635,7 @@ namespace TombLib.Scripting.Bases
 		#region Zoom
 
 		private int _zoom = 100;
+
 		public int Zoom
 		{
 			get => _zoom;

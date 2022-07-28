@@ -1,6 +1,9 @@
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.IO;
 using System.Windows.Media;
+using System.Xml;
 using TombLib.Scripting.Bases;
-using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.Scripting.Lua
 {
@@ -15,10 +18,14 @@ namespace TombLib.Scripting.Lua
 		{
 			var config = configuration as LuaEditorConfiguration;
 
-			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
+			string xmlFile = Path.Combine(DefaultPaths.LuaColorConfigsDirectory, "Default.xml");
 
-			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
-			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
+			using (var stream = new FileStream(xmlFile, FileMode.Open, FileAccess.Read))
+			using (var reader = new XmlTextReader(stream))
+				SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+
+			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#202020"));
+			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
 
 			base.UpdateSettings(configuration);
 		}

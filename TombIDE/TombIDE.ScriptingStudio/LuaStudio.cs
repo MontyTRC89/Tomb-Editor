@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.ToolWindows;
@@ -39,15 +41,61 @@ namespace TombIDE.ScriptingStudio
 			base.OnIDEEventRaised(obj);
 
 			IDEEvent_HandleSilentActions(obj);
-		}
 
-		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
-		{
 			if (obj is IDE.ProgramClosingEvent)
 			{
 				IDE.Global.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
 				IDE.Global.IDEConfiguration.Save();
 			}
+		}
+
+		private bool IsSilentAction(IIDEEvent obj)
+			=> obj is IDE.ScriptEditor_AppendScriptLinesEvent
+			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
+			|| obj is IDE.ScriptEditor_RenameLevelEvent;
+
+		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
+		{
+			if (IsSilentAction(obj))
+			{
+				TabPage cachedTab = EditorTabControl.SelectedTab;
+
+				TabPage scriptFileTab = EditorTabControl.FindTabPage(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
+				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
+
+				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
+				{
+					AppendScriptLines(asle.Lines);
+					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
+				{
+					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
+					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
+				{
+					string oldName = rle.OldName;
+					string newName = rle.NewName;
+
+					RenameRequestedLevelScript(oldName, newName);
+					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
+				}
+			}
+		}
+
+		private void AppendScriptLines(List<string> inputLines)
+		{
+		}
+
+		private void RenameRequestedLevelScript(string oldName, string newName)
+		{
+		}
+
+		private bool IsLevelScriptDefined(string levelName)
+		{
+			return false;
 		}
 
 		protected override void RestoreDefaultLayout()
@@ -56,6 +104,26 @@ namespace TombIDE.ScriptingStudio
 
 			DockPanel.RemoveContent();
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+		}
+
+		private void EndSilentScriptAction(TabPage previousTab, bool indicateChange, bool saveAffectedFile, bool closeAffectedTab)
+		{
+			if (indicateChange)
+			{
+				CurrentEditor.LastModified = DateTime.Now;
+				IDE.Global.ScriptEditor_IndicateExternalChange();
+			}
+
+			if (saveAffectedFile)
+				EditorTabControl.SaveFile(EditorTabControl.SelectedTab);
+
+			if (closeAffectedTab)
+				EditorTabControl.TabPages.Remove(EditorTabControl.SelectedTab);
+
+			EditorTabControl.EnsureTabFileSynchronization();
+
+			if (previousTab != null)
+				EditorTabControl.SelectTab(previousTab);
 		}
 
 		#endregion IDE Events
