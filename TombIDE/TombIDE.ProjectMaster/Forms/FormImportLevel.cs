@@ -34,7 +34,7 @@ namespace TombIDE.ProjectMaster
 
 			textBox_LevelName.Text = Path.GetFileNameWithoutExtension(prj2FilePath);
 
-			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			if (targetProject.GameVersion == TRVersion.Game.TR1 || targetProject.GameVersion == TRVersion.Game.TombEngine)
 			{
 				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
 				panel_ScriptSettings.Visible = false;

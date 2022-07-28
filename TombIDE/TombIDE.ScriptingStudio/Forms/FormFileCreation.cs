@@ -122,6 +122,7 @@ namespace TombIDE.ScriptingStudio.Forms
 			{
 				case 0: return ".txt";
 				case 1: return ".json5";
+				case 2: return ".lua";
 			}
 
 			return null;

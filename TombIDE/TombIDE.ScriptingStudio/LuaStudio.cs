@@ -87,10 +87,12 @@ namespace TombIDE.ScriptingStudio
 
 		private void AppendScriptLines(List<string> inputLines)
 		{
+			// TODO
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
+			// TODO
 		}
 
 		private bool IsLevelScriptDefined(string levelName)
