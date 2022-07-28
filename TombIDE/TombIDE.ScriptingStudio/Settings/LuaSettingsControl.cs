@@ -245,7 +245,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 			ApplySettingsFromCheckBoxes(config);
 
-			config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
+			//config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
 
 			config.Save();
 		}

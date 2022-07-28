@@ -34,13 +34,13 @@ namespace TombIDE.ProjectMaster
 
 			textBox_LevelName.Text = Path.GetFileNameWithoutExtension(prj2FilePath);
 
-			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			if (targetProject.GameVersion == TRVersion.Game.TR1 || targetProject.GameVersion == TRVersion.Game.TombEngine)
 			{
 				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
 				panel_ScriptSettings.Visible = false;
 				panel_04.Visible = false;
 			}
-			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG && targetProject.GameVersion != TRVersion.Game.TombEngine)
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 30;

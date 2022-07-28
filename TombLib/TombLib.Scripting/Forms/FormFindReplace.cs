@@ -114,14 +114,14 @@ namespace TombLib.Scripting.Forms
 			if (targetTextEditor != null && Regex.Matches(targetTextEditor.Text, pattern, options).Count == 0) // If no matches were found in the current document
 			{
 				if (radioButton_Current.Checked)
-					ShowError("No matches found in the current document."); // Search cancelled
+					ShowError("No matches found in the current document."); // Search canceled
 				else if (radioButton_AllTabs.Checked)
 					FindMatchInAnotherTab(order, pattern, options);
 			}
 			else if (targetTextEditor == null)
 			{
 				if (radioButton_Current.Checked)
-					ShowError("Unsupported document."); // Search cancelled
+					ShowError("Unsupported document."); // Search canceled
 				else if (radioButton_AllTabs.Checked)
 					FindMatchInAnotherTab(order, pattern, options);
 			}
@@ -156,7 +156,7 @@ namespace TombLib.Scripting.Forms
 		private void FindMatchInAnotherTab(FindingOrder order, string pattern, RegexOptions options)
 		{
 			if (GetAllTabsMatchCount(pattern, options) == 0) // If no matches were found in any tab
-				ShowError("No matches found."); // Search cancelled
+				ShowError("No matches found."); // Search canceled
 			else
 				switch (order)
 				{
@@ -343,7 +343,7 @@ namespace TombLib.Scripting.Forms
 
 			if (targetTextEditor == null)
 			{
-				ShowError("Unsupported document."); // Search cancelled
+				ShowError("Unsupported document."); // Search canceled
 				return;
 			}
 

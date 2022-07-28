@@ -60,7 +60,8 @@
 			this.comboBox_FileFormat.FormattingEnabled = true;
 			this.comboBox_FileFormat.Items.AddRange(new object[] {
             ".TXT (Text file)",
-            ".JSON5 (Tomb1Main File)"});
+            ".JSON5 (Tomb1Main File)",
+            ".LUA (Lua file)"});
 			this.comboBox_FileFormat.Location = new System.Drawing.Point(71, 370);
 			this.comboBox_FileFormat.Margin = new System.Windows.Forms.Padding(0, 3, 3, 6);
 			this.comboBox_FileFormat.Name = "comboBox_FileFormat";

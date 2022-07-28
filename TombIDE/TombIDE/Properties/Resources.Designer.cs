@@ -263,6 +263,16 @@ namespace TombIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap TEN_LVL {
+            get {
+                object obj = ResourceManager.GetObject("TEN_LVL", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TIDE_Logo {
             get {
                 object obj = ResourceManager.GetObject("TIDE_Logo", resourceCulture);

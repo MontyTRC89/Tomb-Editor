@@ -73,7 +73,7 @@ namespace TombIDE
 			return false;
 		}
 
-		public static bool IsScriptFileValid(Project project)
+		public static bool IsScriptFileValid(Project project) // TODO: T1M and TEN also have to have their script files checked !!!
 		{
 			foreach (string file in Directory.GetFiles(project.ScriptPath, "*.txt", SearchOption.TopDirectoryOnly))
 			{

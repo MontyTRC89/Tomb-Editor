@@ -29,10 +29,16 @@ namespace TombIDE
 
 			textBox_ProjectName.Text = Path.GetFileName(GetProjectDirectory(gameExeFilePath));
 
-			FillScriptPathTextBoxIfPossible(gameExeFilePath);
+			FillScriptPathTextBoxIfPossible(gameExeFilePath, out bool isHardcodedScriptPath);
 			FillLevelsPathTextBoxIfPossible(gameExeFilePath);
 
 			button_Import.Text = "Import " + GetGameVersion(gameExeFilePath) + " Project";
+
+			if (isHardcodedScriptPath)
+			{
+				textBox_ScriptPath.ReadOnly = true;
+				button_BrowseScript.Enabled = false;
+			}
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -52,7 +58,7 @@ namespace TombIDE
 			textBox_ProjectName.Focus();
 		}
 
-		private void FillScriptPathTextBoxIfPossible(string exeFilePath)
+		private void FillScriptPathTextBoxIfPossible(string exeFilePath, out bool isHardcoded)
 		{
 			/* Find the /Script/ directory */
 
@@ -61,6 +67,13 @@ namespace TombIDE
 			if (Path.GetFileName(exeFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase))
 			{
 				textBox_ScriptPath.Text = Path.Combine(gameExeDirectory, "cfg");
+				isHardcoded = true;
+				return;
+			}
+			else if (Path.GetFileName(exeFilePath).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
+			{
+				textBox_ScriptPath.Text = Path.Combine(gameExeDirectory, "Scripts");
+				isHardcoded = true;
 				return;
 			}
 
@@ -98,6 +111,8 @@ namespace TombIDE
 					}
 				}
 			}
+
+			isHardcoded = false;
 		}
 
 		private void FillLevelsPathTextBoxIfPossible(string exeFilePath)
@@ -227,7 +242,7 @@ namespace TombIDE
 				string levelsPath = textBox_LevelsPath.Text.Trim();
 
 				// Check if a script.txt file exists in the specified /Script/ folder
-				if (gameVersion != TRVersion.Game.TR1 && !File.Exists(Path.Combine(scriptPath, "script.txt")))
+				if (gameVersion != TRVersion.Game.TR1 && gameVersion != TRVersion.Game.TombEngine && !File.Exists(Path.Combine(scriptPath, "script.txt"))) // TODO: T1M and TEN need script files too !!!
 					throw new FileNotFoundException("Selected /Script/ folder does not contain a Script.txt file.");
 
 				// Check if the levelsPath directory exists, if so, check if it contains any valid .prj2 files

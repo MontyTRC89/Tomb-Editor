@@ -114,12 +114,13 @@
 			// checkBox_Autocomplete
 			// 
 			this.checkBox_Autocomplete.AutoSize = true;
+			this.checkBox_Autocomplete.Enabled = false;
 			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 166);
 			this.checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			this.checkBox_Autocomplete.Name = "checkBox_Autocomplete";
-			this.checkBox_Autocomplete.Size = new System.Drawing.Size(135, 17);
+			this.checkBox_Autocomplete.Size = new System.Drawing.Size(30, 17);
 			this.checkBox_Autocomplete.TabIndex = 6;
-			this.checkBox_Autocomplete.Text = "Enable autocomplete";
+			this.checkBox_Autocomplete.Text = "-";
 			// 
 			// checkBox_HighlightCurrentLine
 			// 
@@ -426,13 +427,14 @@
 			this.groupBox_Colors.Controls.Add(this.colorButton_Values);
 			this.groupBox_Colors.Controls.Add(this.colorButton_Operators);
 			this.groupBox_Colors.Controls.Add(this.colorButton_SpecialOperators);
+			this.groupBox_Colors.Enabled = false;
 			this.groupBox_Colors.Location = new System.Drawing.Point(162, 28);
 			this.groupBox_Colors.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.groupBox_Colors.Name = "groupBox_Colors";
 			this.groupBox_Colors.Size = new System.Drawing.Size(551, 177);
 			this.groupBox_Colors.TabIndex = 17;
 			this.groupBox_Colors.TabStop = false;
-			this.groupBox_Colors.Text = "Color schemes";
+			this.groupBox_Colors.Text = "Color schemes (Not implemented yet)";
 			// 
 			// button_SaveScheme
 			// 

@@ -32,7 +32,7 @@
 		AlreadySaved,
 		Success,
 		Rejected,
-		Cancelled,
+		Canceled,
 		Failed
 	}
 }
