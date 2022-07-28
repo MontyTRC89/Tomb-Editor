@@ -27,10 +27,13 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameDirectory.Enabled = false;
 			}
 
-			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1
+			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
+			{
+				checkBox_RenameScriptEntry.Visible = checkBox_RenameScriptEntry.Checked = false;
+			}
+			else if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1
 				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR2
-				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
-				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
+				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3)
 			{
 				checkBox_RenameScriptEntry.Text = "Rename script entry as well (Recommended)";
 
