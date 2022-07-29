@@ -747,6 +747,10 @@
 			<moveable id="94" name="Underwater propeller" essential="false" t5m="PROPELLER_H" />
 			<moveable id="95" name="Air fan" essential="false" t5m="ANIMATING1" />
 			<moveable id="96" name="Swinging box / spiky ball" essential="false" t5m="SPIKEBALL" />
+			<moveable id="97" name="Tr2_Cutscene_Object1" t5m="ANIMATING101" />
+			<moveable id="98" name="Tr2_Cutscene_Object2" t5m="ANIMATING102" />
+			<moveable id="99" name="Tr2_Cutscene_Object3" t5m="ANIMATING103" />
+			<moveable id="100" name="Tr2_Cutscene_Object4" t5m="ANIMATING104" />
 			<moveable id="101" name="Rolling storage drums" essential="false" t5m="ROLLINGBARREL" />
 			<moveable id="102" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="103" name="Above-water switch" essential="false" t5m="SWITCH_TYPE3" />
@@ -769,6 +773,16 @@
 			<moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
 			<moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
 			<moveable id="122" name="Lara and butler picture" hidden="true" t5m="INVENTORY_POLAROID" />
+			<moveable id="123" name="Tr2_Cutscene_Object5" t5m="ANIMATING105" />
+			<moveable id="124" name="Tr2_Cutscene_Object6" t5m="ANIMATING106" />
+			<moveable id="125" name="Tr2_Cutscene_Object7" t5m="ANIMATING107" />
+			<moveable id="126" name="Tr2_Cutscene_Object8" t5m="ANIMATING108" />
+			<moveable id="127" name="Tr2_Cutscene_Object9" t5m="ANIMATING109" />
+			<moveable id="128" name="Tr2_Cutscene_Object10" t5m="ANIMATING110" />
+			<moveable id="129" name="Tr2_Cutscene_Object11" t5m="ANIMATING111" />
+			<moveable id="130" name="Tr2_Cutscene_Object12" t5m="ANIMATING112" />
+			<moveable id="131" name="Tr2_Cutscene_Object13" t5m="ANIMATING113" />
+			<moveable id="132" name="Tr2_Cutscene_Object14" t5m="ANIMATING114" />
 			<moveable id="133" name="Secret #3" id2="192" use_body_from="248" />
 			<moveable id="134" name="Natla's logo" hidden="true" />
 			<moveable id="152" name="Flare" t5m="FLARE_ITEM" />
