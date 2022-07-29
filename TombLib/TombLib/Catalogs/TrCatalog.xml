@@ -5237,7 +5237,7 @@
 			<sound id="95" name="AGENT/HITMAN_FEET" description="Agent/hitman feet" t5m="901" />
 			<sound id="96" name="*LARSON_ARGGHH*" description="*larson argghh*" />
 			<sound id="97" name="LARSON_GUNS" description="Larson guns" t5m="1132" />
-			<sound id="98" name="*LARSON_GROAN*" description="*larson groan*" />
+			<sound id="98" name="*LARSON_GROAN*" description="*larson groan*" t5m="237"/>
 			<sound id="99" name="AGENT/HITMAN_LAND" description="Agent/hitman land" t5m="903" />
 			<sound id="100" name="LION_FEET" description="Lion feet" t5m="977" />
 			<sound id="101" name="LION_GROWL" description="Lion growl" t5m="978" />
