@@ -989,7 +989,7 @@
 			<sound id="82" name="PORTCULLIS_UP" t5m="82" />
 			<sound id="83" name="PORTCULLIS_DOWN" t5m="83" />
 			<sound id="84" name="DOG_FEET1" t5m="525" />
-			<sound id="85" name="BODY_SLAM" t5m="85" />
+			<sound id="85" name="BODY_SLAM" t5m="143" />
 			<sound id="86" name="DOG_BARK1" t5m="526" />
 			<sound id="87" name="DOG_FEET2" t5m="525" />
 			<sound id="88" name="DOG_BARK2" t5m="527" />
