@@ -7201,9 +7201,9 @@
 			<sound id="479" name="TR2_HENCHMAN_AH_DYING" t5m="479" />
 			<sound id="480" name="TR2_HENCHMAN_CLIMBUP" t5m="480" />
 			<sound id="481" name="TR2_HENCHMAN_LOADING_SHOTGUN" t5m="481" />
-			<sound id="482" name="TR2_HENCHMAN_DEATH1" t5m="482" />
+			<sound id="482" name="TR2_HENCHMAN_DEATH1" t5m="484" />
 			<sound id="483" name="TR2_HENCHMAN_DEATH2" t5m="483" />
-			<sound id="484" name="TR2_HENCHMAN_DEATH3" t5m="484" />
+			<sound id="484" name="TR2_HENCHMAN_DEATH3" t5m="482" />
 			<sound id="485" name="TR2_HENCHMAN_FEET" t5m="485" />
 			<sound id="486" name="TR2_HENCHMAN_FEET_SNOW" t5m="486" />
 			<sound id="487" name="TR2_HENCHMAN_FIRE_SEMIAUTO" t5m="487" />
