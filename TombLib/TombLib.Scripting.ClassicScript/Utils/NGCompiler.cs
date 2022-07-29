@@ -33,6 +33,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 		public static async Task<bool> Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = true)
 		{
+			await Task.Delay(1); // Allow UI to refresh
+
 			if (!AreLibrariesRegistered())
 				return false;
 
@@ -58,7 +60,10 @@ namespace TombLib.Scripting.ClassicScript.Utils
 					return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
 
 				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
+				{
 					Keyboard.Press(VirtualKeyShort.ESCAPE);
+					Keyboard.Release(VirtualKeyShort.ESCAPE);
+				}
 
 				Button buildButton = window.FindFirstDescendant(cf => cf.ByText("Build"))?.AsButton();
 
@@ -70,6 +75,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
 				{
 					Keyboard.Press(VirtualKeyShort.ESCAPE);
+					Keyboard.Release(VirtualKeyShort.ESCAPE);
+
 					buildButton.Click();
 
 					if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
