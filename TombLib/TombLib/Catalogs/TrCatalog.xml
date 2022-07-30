@@ -1482,6 +1482,15 @@
 			<moveable id="145" name="Passport (opening up)" t5m="INVENTORY_PASSPORT" hidden="true" />
 			<moveable id="146" name="Stopwatch" hidden="true" />
 			<moveable id="147" name="Lara and butler picture" t5m="INVENTORY_POLAROID" hidden="true" />
+			<moveable id="148" name="TR3_Cutscene_Object1" t5m="ANIMATING101" />
+			<moveable id="149" name="TR3_Cutscene_Object2" t5m="ANIMATING102" />
+			<moveable id="150" name="TR3_Cutscene_Object3" t5m="ANIMATING103" />
+			<moveable id="151" name="TR3_Cutscene_Object4" t5m="ANIMATING104" />
+			<moveable id="152" name="TR3_Cutscene_Object5" t5m="ANIMATING105" />
+			<moveable id="153" name="TR3_Cutscene_Object6" t5m="ANIMATING106" />
+			<moveable id="154" name="TR3_Cutscene_Object7" t5m="ANIMATING107" />
+			<moveable id="155" name="TR3_Cutscene_Object8" t5m="ANIMATING108" />
+			<moveable id="156" name="TR3_Cutscene_Object9" t5m="ANIMATING109" />
 			<moveable id="158" name="Passport (closed)" hidden="true" />
 			<moveable id="159" name="Bar with 'N' logo" hidden="true" />
 			<moveable id="160" name="Pistols (pickup)" essential="false" t5m="PISTOL_ITEM"  />
