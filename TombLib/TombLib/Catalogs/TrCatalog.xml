@@ -723,7 +723,7 @@
 			<moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" />
 			<moveable id="63" name="Drawbridge" essential="false" />
 			<moveable id="64" name="Slamming door" essential="false" />
-			<moveable id="65" name="Elevator" essential="false"t5m="LIFT" />
+			<moveable id="65" name="Elevator" essential="false" t5m="LIFT" />
 			<moveable id="66" name="Minisub" essential="false" />
 			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
 			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
