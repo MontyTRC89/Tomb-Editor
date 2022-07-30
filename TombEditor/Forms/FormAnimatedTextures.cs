@@ -359,6 +359,9 @@ namespace TombEditor.Forms
 
         private void NgSelectComboboxValue(float value, DarkComboBox cb)
         {
+            if (cb.Items.Count == 0)
+                return;
+
             var bestItem = cb.Items.Cast<NgAnimatedTextureSettingPair>().First();
             foreach (NgAnimatedTextureSettingPair item in cb.Items)
                 if (Math.Abs(item.Key - value) < Math.Abs(bestItem.Key - value)) // Chose the entry closest to the float we are looking for.

@@ -222,10 +222,10 @@ namespace TombIDE
 					case 2:
 					case 3:
 						DialogResult result = DarkMessageBox.Show(this,
-							"In order to install the game, you will have to select an /audio/ folder from an original\n" +
-							"copy of the game (Steam and GOG versions are also valid).\n" +
-							"Do you want to continue?",
-							"Continue?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+							"In order to correctly install the game, you will have to select an /audio/ folder\n" +
+							"from an original copy of the game (Steam and GOG versions are also valid).\n" +
+							"Do you want to do it now?",
+							"Select /audio/ folder?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 						if (result == DialogResult.Yes)
 						{
@@ -274,7 +274,7 @@ namespace TombIDE
 								}
 							}
 						}
-						else if (result == DialogResult.No)
+						else if (result == DialogResult.Cancel)
 						{
 							button_Create.Enabled = true;
 							DialogResult = DialogResult.None;
@@ -484,7 +484,9 @@ namespace TombIDE
 					}
 				}
 			}
-			else if (project.GameVersion == TRVersion.Game.TR2 || project.GameVersion == TRVersion.Game.TR3)
+			else if (
+				(project.GameVersion == TRVersion.Game.TR2 || project.GameVersion == TRVersion.Game.TR3)
+				&& (_cdaudioDatFile != null || _cdaudioMp3File != null || _cdaudioWadFile != null))
 			{
 				string audioDir = Path.Combine(project.EnginePath, "audio");
 
