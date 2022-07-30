@@ -99,6 +99,10 @@
 			<moveable id="74" name="Cogs (animated)" essential="false" t5m="ANIMATING101" />
 			<moveable id="75" name="Cogs (animated)" essential="false" t5m="ANIMATING102" />
 			<moveable id="76" name="Cogs (animated)" essential="false" t5m="ANIMATING103" />
+			<moveable id="77" name="TR1_Cutscene_Object1" essential="false" t5m="ANIMATING_104" />
+			<moveable id="78" name="TR1_Cutscene_Object2" essential="false" t5m="ANIMATING_105" />
+			<moveable id="79" name="TR1_Cutscene_Object3" essential="false" t5m="ANIMATING_106" />
+			<moveable id="80" name="TR1_Cutscene_Object4" essential="false" t5m="ANIMATING_107" />
 			<moveable id="81" name="Passport (closed)" hidden="true" t5m="PC_SAVE_INV_ITEM" />
 			<moveable id="82" name="Natla's logo" essential="false" hidden="true" t5m="ANIMATING80" />
 			<moveable id="83" name="Save crystal" t5m="ANIMATING81" />
