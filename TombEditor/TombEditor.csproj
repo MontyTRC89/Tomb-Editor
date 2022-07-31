@@ -69,7 +69,13 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomTabControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\CustomTabControl.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -123,6 +129,16 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="TombIDE.ScriptingStudio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\TombIDE.ScriptingStudio.dll</HintPath>
+    </Reference>
+    <Reference Include="TombIDE.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TombLib.Scripting, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TombLib.Scripting.ClassicScript, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TombLib.Scripting.GameFlowScript, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TombLib.Scripting.Lua, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TombLib.Scripting.Tomb1Main, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
@@ -154,6 +170,12 @@
     </Compile>
     <Compile Include="Controls\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TriggerManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TriggerManager.Designer.cs">
+      <DependentUpon>TriggerManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormBumpMaps.cs">
       <SubType>Form</SubType>
@@ -525,6 +547,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ToolBox.resx">
       <DependentUpon>ToolBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TriggerManager.resx">
+      <DependentUpon>TriggerManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>

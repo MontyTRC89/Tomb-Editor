@@ -41,10 +41,29 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.comboboxOnEnter = new TombLib.Controls.DarkSearchableComboBox();
-            this.comboboxOnInside = new TombLib.Controls.DarkSearchableComboBox();
-            this.comboboxOnLeave = new TombLib.Controls.DarkSearchableComboBox();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.listEvents = new DarkUI.Controls.DarkListView();
+            this.darkPanel1 = new DarkUI.Controls.DarkPanel();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
+            this.butNewRoom = new DarkUI.Controls.DarkButton();
+            this.butEditRoomName = new DarkUI.Controls.DarkButton();
+            this.tcEvents = new System.Windows.Forms.CustomTabControl();
+            this.tabPage_OnEnter = new System.Windows.Forms.TabPage();
+            this.tmEnter = new TombEditor.Controls.TriggerManager();
+            this.tabPage_OnInside = new System.Windows.Forms.TabPage();
+            this.tmInside = new TombEditor.Controls.TriggerManager();
+            this.tabPage_OnLeave = new System.Windows.Forms.TabPage();
+            this.tmLeave = new TombEditor.Controls.TriggerManager();
+            this.comboboxOnLeave = new TombLib.Controls.DarkSearchableComboBox();
+            this.comboboxOnInside = new TombLib.Controls.DarkSearchableComboBox();
+            this.comboboxOnEnter = new TombLib.Controls.DarkSearchableComboBox();
+            this.darkSectionPanel1.SuspendLayout();
+            this.darkPanel1.SuspendLayout();
+            this.tcEvents.SuspendLayout();
+            this.tabPage_OnEnter.SuspendLayout();
+            this.tabPage_OnInside.SuspendLayout();
+            this.tabPage_OnLeave.SuspendLayout();
             this.SuspendLayout();
             // 
             // butCancel
@@ -52,7 +71,7 @@ namespace TombEditor.Forms.TombEngine
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(416, 159);
+            this.butCancel.Location = new System.Drawing.Point(1261, 585);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -64,7 +83,7 @@ namespace TombEditor.Forms.TombEngine
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(330, 159);
+            this.butOk.Location = new System.Drawing.Point(1175, 585);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -159,33 +178,6 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel1.TabIndex = 18;
             this.darkLabel1.Text = "OnInside:";
             // 
-            // comboboxOnEnter
-            // 
-            this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
-            this.comboboxOnEnter.Name = "comboboxOnEnter";
-            this.comboboxOnEnter.Size = new System.Drawing.Size(258, 23);
-            this.comboboxOnEnter.TabIndex = 17;
-            // 
-            // comboboxOnInside
-            // 
-            this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
-            this.comboboxOnInside.Name = "comboboxOnInside";
-            this.comboboxOnInside.Size = new System.Drawing.Size(258, 23);
-            this.comboboxOnInside.TabIndex = 19;
-            // 
-            // comboboxOnLeave
-            // 
-            this.comboboxOnLeave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnLeave.Location = new System.Drawing.Point(238, 90);
-            this.comboboxOnLeave.Name = "comboboxOnLeave";
-            this.comboboxOnLeave.Size = new System.Drawing.Size(258, 23);
-            this.comboboxOnLeave.TabIndex = 21;
-            // 
             // darkLabel5
             // 
             this.darkLabel5.AutoSize = true;
@@ -196,13 +188,194 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel5.TabIndex = 20;
             this.darkLabel5.Text = "OnLeave:";
             // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.listEvents);
+            this.darkSectionPanel1.Controls.Add(this.darkPanel1);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(238, 127);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = "Events";
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 451);
+            this.darkSectionPanel1.TabIndex = 22;
+            // 
+            // listEvents
+            // 
+            this.listEvents.Location = new System.Drawing.Point(5, 29);
+            this.listEvents.Name = "listEvents";
+            this.listEvents.Size = new System.Drawing.Size(190, 391);
+            this.listEvents.TabIndex = 0;
+            // 
+            // darkPanel1
+            // 
+            this.darkPanel1.Controls.Add(this.darkButton1);
+            this.darkPanel1.Controls.Add(this.butNewRoom);
+            this.darkPanel1.Controls.Add(this.butEditRoomName);
+            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.darkPanel1.Location = new System.Drawing.Point(1, 420);
+            this.darkPanel1.Name = "darkPanel1";
+            this.darkPanel1.Size = new System.Drawing.Size(198, 30);
+            this.darkPanel1.TabIndex = 1;
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton1.Checked = false;
+            this.darkButton1.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.darkButton1.Location = new System.Drawing.Point(62, 3);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Size = new System.Drawing.Size(23, 23);
+            this.darkButton1.TabIndex = 20;
+            this.darkButton1.Tag = "AddNewRoom";
+            // 
+            // butNewRoom
+            // 
+            this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butNewRoom.Checked = false;
+            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butNewRoom.Location = new System.Drawing.Point(33, 3);
+            this.butNewRoom.Name = "butNewRoom";
+            this.butNewRoom.Size = new System.Drawing.Size(23, 23);
+            this.butNewRoom.TabIndex = 19;
+            this.butNewRoom.Tag = "AddNewRoom";
+            // 
+            // butEditRoomName
+            // 
+            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditRoomName.Checked = false;
+            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butEditRoomName.Location = new System.Drawing.Point(4, 3);
+            this.butEditRoomName.Name = "butEditRoomName";
+            this.butEditRoomName.Size = new System.Drawing.Size(23, 23);
+            this.butEditRoomName.TabIndex = 18;
+            this.butEditRoomName.Tag = "EditRoomName";
+            // 
+            // tcEvents
+            // 
+            this.tcEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcEvents.Controls.Add(this.tabPage_OnEnter);
+            this.tcEvents.Controls.Add(this.tabPage_OnInside);
+            this.tcEvents.Controls.Add(this.tabPage_OnLeave);
+            this.tcEvents.DisplayStyle = System.Windows.Forms.TabStyle.Dark;
+            this.tcEvents.DisplayStyleProvider.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
+            this.tcEvents.DisplayStyleProvider.BorderColorHot = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
+            this.tcEvents.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
+            this.tcEvents.DisplayStyleProvider.CloserColor = System.Drawing.Color.White;
+            this.tcEvents.DisplayStyleProvider.CloserColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(152)))), ((int)(((byte)(196)))), ((int)(((byte)(232)))));
+            this.tcEvents.DisplayStyleProvider.FocusTrack = false;
+            this.tcEvents.DisplayStyleProvider.HotTrack = false;
+            this.tcEvents.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tcEvents.DisplayStyleProvider.Opacity = 1F;
+            this.tcEvents.DisplayStyleProvider.Overlap = 0;
+            this.tcEvents.DisplayStyleProvider.Padding = new System.Drawing.Point(6, 3);
+            this.tcEvents.DisplayStyleProvider.Radius = 10;
+            this.tcEvents.DisplayStyleProvider.ShowTabCloser = false;
+            this.tcEvents.DisplayStyleProvider.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.tcEvents.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
+            this.tcEvents.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(152)))), ((int)(((byte)(196)))), ((int)(((byte)(232)))));
+            this.tcEvents.Location = new System.Drawing.Point(444, 125);
+            this.tcEvents.Name = "tcEvents";
+            this.tcEvents.SelectedIndex = 0;
+            this.tcEvents.Size = new System.Drawing.Size(900, 456);
+            this.tcEvents.TabIndex = 1;
+            // 
+            // tabPage_OnEnter
+            // 
+            this.tabPage_OnEnter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage_OnEnter.Controls.Add(this.tmEnter);
+            this.tabPage_OnEnter.Location = new System.Drawing.Point(4, 23);
+            this.tabPage_OnEnter.Name = "tabPage_OnEnter";
+            this.tabPage_OnEnter.Size = new System.Drawing.Size(892, 429);
+            this.tabPage_OnEnter.TabIndex = 0;
+            this.tabPage_OnEnter.Text = "When entering";
+            // 
+            // tmEnter
+            // 
+            this.tmEnter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmEnter.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmEnter.Location = new System.Drawing.Point(0, 0);
+            this.tmEnter.Name = "tmEnter";
+            this.tmEnter.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmEnter.Size = new System.Drawing.Size(892, 429);
+            this.tmEnter.TabIndex = 0;
+            // 
+            // tabPage_OnInside
+            // 
+            this.tabPage_OnInside.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage_OnInside.Controls.Add(this.tmInside);
+            this.tabPage_OnInside.Location = new System.Drawing.Point(4, 23);
+            this.tabPage_OnInside.Name = "tabPage_OnInside";
+            this.tabPage_OnInside.Size = new System.Drawing.Size(892, 429);
+            this.tabPage_OnInside.TabIndex = 1;
+            this.tabPage_OnInside.Text = "When inside";
+            // 
+            // tmInside
+            // 
+            this.tmInside.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmInside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmInside.Location = new System.Drawing.Point(0, 0);
+            this.tmInside.Name = "tmInside";
+            this.tmInside.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmInside.Size = new System.Drawing.Size(892, 429);
+            this.tmInside.TabIndex = 1;
+            // 
+            // tabPage_OnLeave
+            // 
+            this.tabPage_OnLeave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage_OnLeave.Controls.Add(this.tmLeave);
+            this.tabPage_OnLeave.Location = new System.Drawing.Point(4, 23);
+            this.tabPage_OnLeave.Name = "tabPage_OnLeave";
+            this.tabPage_OnLeave.Size = new System.Drawing.Size(892, 429);
+            this.tabPage_OnLeave.TabIndex = 2;
+            this.tabPage_OnLeave.Text = "When leaving";
+            // 
+            // tmLeave
+            // 
+            this.tmLeave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmLeave.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmLeave.Location = new System.Drawing.Point(0, 0);
+            this.tmLeave.Name = "tmLeave";
+            this.tmLeave.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmLeave.Size = new System.Drawing.Size(892, 429);
+            this.tmLeave.TabIndex = 1;
+            // 
+            // comboboxOnLeave
+            // 
+            this.comboboxOnLeave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxOnLeave.Location = new System.Drawing.Point(238, 90);
+            this.comboboxOnLeave.Name = "comboboxOnLeave";
+            this.comboboxOnLeave.Size = new System.Drawing.Size(1103, 23);
+            this.comboboxOnLeave.TabIndex = 21;
+            // 
+            // comboboxOnInside
+            // 
+            this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
+            this.comboboxOnInside.Name = "comboboxOnInside";
+            this.comboboxOnInside.Size = new System.Drawing.Size(1103, 23);
+            this.comboboxOnInside.TabIndex = 19;
+            // 
+            // comboboxOnEnter
+            // 
+            this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
+            this.comboboxOnEnter.Name = "comboboxOnEnter";
+            this.comboboxOnEnter.Size = new System.Drawing.Size(1103, 23);
+            this.comboboxOnEnter.TabIndex = 17;
+            // 
             // FormVolume
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(504, 190);
+            this.ClientSize = new System.Drawing.Size(1349, 616);
+            this.Controls.Add(this.tcEvents);
+            this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.comboboxOnLeave);
             this.Controls.Add(this.darkLabel5);
             this.Controls.Add(this.comboboxOnInside);
@@ -226,6 +399,12 @@ namespace TombEditor.Forms.TombEngine
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit trigger volume";
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.darkPanel1.ResumeLayout(false);
+            this.tcEvents.ResumeLayout(false);
+            this.tabPage_OnEnter.ResumeLayout(false);
+            this.tabPage_OnInside.ResumeLayout(false);
+            this.tabPage_OnLeave.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -247,5 +426,18 @@ namespace TombEditor.Forms.TombEngine
         private TombLib.Controls.DarkSearchableComboBox comboboxOnInside;
         private TombLib.Controls.DarkSearchableComboBox comboboxOnLeave;
         private DarkUI.Controls.DarkLabel darkLabel5;
+        private DarkSectionPanel darkSectionPanel1;
+        private DarkListView listEvents;
+        private CustomTabControl tcEvents;
+        private TabPage tabPage_OnEnter;
+        private TabPage tabPage_OnInside;
+        private TabPage tabPage_OnLeave;
+        private Controls.TriggerManager tmEnter;
+        private Controls.TriggerManager tmInside;
+        private Controls.TriggerManager tmLeave;
+        private DarkPanel darkPanel1;
+        private DarkButton darkButton1;
+        private DarkButton butNewRoom;
+        private DarkButton butEditRoomName;
     }
 }
