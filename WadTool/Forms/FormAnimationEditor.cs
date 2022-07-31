@@ -1898,7 +1898,7 @@ namespace WadTool
             foreach (var file in files)
             {
                 int number = -1;
-                int.TryParse(Regex.Match(file, @"\d+").Value, out number);
+                int.TryParse(Regex.Match(Path.GetFileName(file), @"\d+").Value, out number);
 
                 if (number == -1)
                     continue; // No number in the beginning of the file
