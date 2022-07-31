@@ -1527,7 +1527,7 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.Script.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16(); 
                     
-                    var script = new VolumeScriptInstance();
+                    var script = new VolumeScriptEntry();
                     script.Name = chunkIO.Raw.ReadStringUTF8();
                     script.Environment = chunkIO.Raw.ReadStringUTF8();
                     script.OnEnter.Function = chunkIO.Raw.ReadStringUTF8();
