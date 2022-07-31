@@ -440,11 +440,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
-                writer.Write((int)volume.Activators);
-                writer.Write(volume.Scripts.OnEnter);
-                writer.Write(volume.Scripts.OnInside);
-                writer.Write(volume.Scripts.OnLeave);
-                writer.Write(volume.OneShot);
+                // TODO: REWRITE COMPLETELY! -- Lwmte 31.07.22
+
+                writer.Write((int)volume.Script.Activators);
+                writer.Write(volume.Script.OnEnter.Function);
+                writer.Write(volume.Script.OnInside.Function);
+                writer.Write(volume.Script.OnLeave.Function);
+                writer.Write(false); 
             }
 
             // Write final data

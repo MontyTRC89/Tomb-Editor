@@ -1499,8 +1499,7 @@ namespace TombLib.LevelData.IO
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
-                    var scripts = new VolumeScriptInstance();
-
+                    
                     VolumeInstance instance;
 
                     switch (instanceType)
@@ -1526,14 +1525,16 @@ namespace TombLib.LevelData.IO
                     }
 
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
-                    scripts.Name = chunkIO.Raw.ReadStringUTF8();
-                    scripts.Environment = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnInside = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnLeave = chunkIO.Raw.ReadStringUTF8();
+                    instance.Script.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16(); 
+                    
+                    var script = new VolumeScriptInstance();
+                    script.Name = chunkIO.Raw.ReadStringUTF8();
+                    script.Environment = chunkIO.Raw.ReadStringUTF8();
+                    script.OnEnter.Function = chunkIO.Raw.ReadStringUTF8();
+                    script.OnInside.Function = chunkIO.Raw.ReadStringUTF8();
+                    script.OnLeave.Function = chunkIO.Raw.ReadStringUTF8();
 
-                    instance.Scripts = scripts;
+                    instance.Script = script;
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);

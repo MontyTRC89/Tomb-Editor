@@ -11,6 +11,11 @@ namespace TombLib.LevelData
         Box, Sphere, Undefined
     }
 
+    public enum VolumeEventMode
+    {
+        LevelScript, Constructor
+    }
+
     // Possible activator flags. If none is set, volume is disabled.
     [Flags]
     public enum VolumeActivators : ushort
@@ -23,14 +28,27 @@ namespace TombLib.LevelData
         PhysicalObjects = 32 // Future-proofness for Bullet
     }
 
+    public class VolumeEvent
+    {
+        public VolumeEventMode Mode = VolumeEventMode.LevelScript;
+        public string Function { get; set; } = string.Empty;
+        public string Argument { get; set; } = string.Empty;
+
+        // public VolumeEventConstructor Constructor { get; set; } // TODO
+
+        public int CallCounter { get; set; } = 0;
+    }
+
     // Every volume's events can be reduced to these three.
     // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
 
     public class VolumeScriptInstance : ScriptInstance, ICloneable
     {
-        public string OnEnter  { get; set; } = string.Empty;
-        public string OnLeave  { get; set; } = string.Empty;
-        public string OnInside { get; set; } = string.Empty;
+        public VolumeEvent OnEnter;
+        public VolumeEvent OnLeave;
+        public VolumeEvent OnInside;
+
+        public VolumeActivators Activators;
 
         object ICloneable.Clone()
         {
@@ -66,7 +84,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sphere Volume '" + Scripts.Name + "' (d = " + Math.Round(Size) + ")" + 
+            return "Sphere Volume '" + Script.Name + "' (d = " + Math.Round(Size) + ")" + 
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
         }
@@ -107,19 +125,19 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string message = "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
+            string message = "Box Volume '" + Script.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n";
             message += "Activated by: " +
-                     ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
-                     ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
-                     ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other moveables, " : "") +
-                     ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
-                     ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+                     ((Script.Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
+                     ((Script.Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
+                     ((Script.Activators & VolumeActivators.OtherMoveables) != 0 ? "Other moveables, " : "") +
+                     ((Script.Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
+                     ((Script.Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
             message = message.Substring(0, message.Length - 2) + "\n";
-            message += (Scripts.OnEnter != "" ? "OnEnter: " + Scripts.OnEnter + "\n" : "") +
-                (Scripts.OnInside != "" ? "OnInside: " + Scripts.OnInside + "\n" : "") +
-               (Scripts.OnLeave != "" ? "OnLeave: " + Scripts.OnLeave : "");
+            message += (Script.OnEnter.Function != "" ? "OnEnter: " + Script.OnEnter.Function + "\n" : "") +
+                       (Script.OnInside.Function != "" ? "OnInside: " + Script.OnInside.Function + "\n" : "") +
+                       (Script.OnLeave.Function != "" ? "OnLeave: " + Script.OnLeave.Function : "");
 
             return message;
         }
@@ -134,8 +152,6 @@ namespace TombLib.LevelData
             return VolumeShape.Undefined;
         }
 
-        public bool OneShot { get; set; } = false;
-        public VolumeActivators Activators { get; set; } = VolumeActivators.Player;
-        public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
+        public VolumeScriptInstance Script { get; set; }
     }
 }

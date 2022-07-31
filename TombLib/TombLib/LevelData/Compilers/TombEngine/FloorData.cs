@@ -21,12 +21,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var room in _level.ExistingRooms)
                 foreach (var volume in room.Volumes)
                 {
-                    if (volume.Scripts.OnEnter != null && !_luaFunctions.Contains(volume.Scripts.OnEnter))
-                        _luaFunctions.Add(volume.Scripts.OnEnter);
-                    if (volume.Scripts.OnInside != null && !_luaFunctions.Contains(volume.Scripts.OnInside))
-                        _luaFunctions.Add(volume.Scripts.OnInside);
-                    if (volume.Scripts.OnLeave != null && !_luaFunctions.Contains(volume.Scripts.OnLeave))
-                        _luaFunctions.Add(volume.Scripts.OnLeave);
+                    // TODO: REWRITE COMPLETELY!!! -- Lwmte 31.07.22
+
+                    if (volume.Script.OnEnter.Function != null && !_luaFunctions.Contains(volume.Script.OnEnter.Function))
+                        _luaFunctions.Add(volume.Script.OnEnter.Function);
+                    if (volume.Script.OnInside.Function != null && !_luaFunctions.Contains(volume.Script.OnInside.Function))
+                        _luaFunctions.Add(volume.Script.OnInside.Function);
+                    if (volume.Script.OnLeave.Function != null && !_luaFunctions.Contains(volume.Script.OnLeave.Function))
+                        _luaFunctions.Add(volume.Script.OnLeave.Function);
                 }
 
             for (var i = 0; i < _level.Rooms.Length; i++)

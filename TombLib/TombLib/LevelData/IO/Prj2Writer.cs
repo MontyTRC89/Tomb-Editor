@@ -722,12 +722,12 @@ namespace TombLib.LevelData.IO
                             }
 
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write((ushort)instance.Activators);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnEnter);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnInside);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnLeave);
+                            chunkIO.Raw.Write((ushort)instance.Script.Activators);
+                            chunkIO.Raw.WriteStringUTF8(instance.Script.Name);
+                            chunkIO.Raw.WriteStringUTF8(instance.Script.Environment);
+                            chunkIO.Raw.WriteStringUTF8(instance.Script.OnEnter.Function);
+                            chunkIO.Raw.WriteStringUTF8(instance.Script.OnInside.Function);
+                            chunkIO.Raw.WriteStringUTF8(instance.Script.OnLeave.Function);
                         }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))

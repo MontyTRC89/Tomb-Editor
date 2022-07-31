@@ -18,17 +18,17 @@ namespace TombEditor.Forms.TombEngine
             _instance = instance;
             _editor = Editor.Instance;
 
-            cbActivatorLara.Checked = (_instance.Activators & VolumeActivators.Player) != 0;
-            cbActivatorNPC.Checked = (_instance.Activators & VolumeActivators.NPCs) != 0;
-            cbActivatorOtherMoveables.Checked = (_instance.Activators & VolumeActivators.OtherMoveables) != 0;
-            cbActivatorStatics.Checked = (_instance.Activators & VolumeActivators.Statics) != 0;
-            cbActivatorFlyBy.Checked = (_instance.Activators & VolumeActivators.Flybys) != 0;
+            cbActivatorLara.Checked = (_instance.Script.Activators & VolumeActivators.Player) != 0;
+            cbActivatorNPC.Checked = (_instance.Script.Activators & VolumeActivators.NPCs) != 0;
+            cbActivatorOtherMoveables.Checked = (_instance.Script.Activators & VolumeActivators.OtherMoveables) != 0;
+            cbActivatorStatics.Checked = (_instance.Script.Activators & VolumeActivators.Statics) != 0;
+            cbActivatorFlyBy.Checked = (_instance.Script.Activators & VolumeActivators.Flybys) != 0;
 
             ReloadFunctions();
 
-            comboboxOnEnter.SelectedItem  = _instance.Scripts.OnEnter;
-            comboboxOnInside.SelectedItem = _instance.Scripts.OnInside;
-            comboboxOnLeave.SelectedItem  = _instance.Scripts.OnLeave;
+            comboboxOnEnter.SelectedItem  = _instance.Script.OnEnter;
+            comboboxOnInside.SelectedItem = _instance.Script.OnInside;
+            comboboxOnLeave.SelectedItem  = _instance.Script.OnLeave;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
@@ -58,16 +58,16 @@ namespace TombEditor.Forms.TombEngine
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _instance.Activators = 0 | 
-                                   (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
-                                   (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
-                                   (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
-                                   (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
-                                   (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
+            _instance.Script.Activators = 0 | 
+                                            (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
+                                            (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
+                                            (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
+                                            (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
+                                            (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
 
-            _instance.Scripts.OnEnter  = comboboxOnEnter.SelectedItem?.ToString()  ?? string.Empty;
-            _instance.Scripts.OnInside = comboboxOnInside.SelectedItem?.ToString() ?? string.Empty;
-            _instance.Scripts.OnLeave  = comboboxOnLeave.SelectedItem?.ToString()  ?? string.Empty;
+            _instance.Script.OnEnter.Function  = comboboxOnEnter.SelectedItem?.ToString()  ?? string.Empty;
+            _instance.Script.OnInside.Function = comboboxOnInside.SelectedItem?.ToString() ?? string.Empty;
+            _instance.Script.OnLeave.Function = comboboxOnLeave.SelectedItem?.ToString()  ?? string.Empty;
 
             DialogResult = DialogResult.OK;
             Close();
