@@ -154,7 +154,6 @@ namespace TombEditor.Controls
             this.tbArgument.Name = "tbArgument";
             this.tbArgument.Size = new System.Drawing.Size(542, 22);
             this.tbArgument.TabIndex = 0;
-            this.tbArgument.Text = "                                             ";
             this.toolTip.SetToolTip(this.tbArgument, "Determine function argument, if it supports it");
             this.tbArgument.Validated += new System.EventHandler(this.tbArgument_Validated);
             // 

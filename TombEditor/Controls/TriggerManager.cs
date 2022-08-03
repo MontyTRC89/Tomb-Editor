@@ -33,6 +33,7 @@ namespace TombEditor.Controls
         private VolumeEvent _event = null;
 
         private Editor _editor;
+        private bool _lockUI = false;
 
         public void Initialize(Editor editor)
         {
@@ -47,7 +48,7 @@ namespace TombEditor.Controls
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
         }
-        private bool _lockUI = false;
+
 
         public void UpdateUI()
         {
@@ -62,7 +63,11 @@ namespace TombEditor.Controls
                 return;
 
             _lockUI = true;
+
             rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
+            tbArgument.Text = _event.Argument;
+            nudCallCount.Value = _event.CallCounter;
+
             _lockUI = false;
         }
 
@@ -132,7 +137,7 @@ namespace TombEditor.Controls
 
         private void nudCallCount_Validated(object sender, EventArgs e)
         {
-            if (_event == null)
+            if (_event == null || _lockUI)
                 return;
 
             _event.CallCounter = (int)nudCallCount.Value;
@@ -140,7 +145,7 @@ namespace TombEditor.Controls
 
         private void tbArgument_Validated(object sender, EventArgs e)
         {
-            if (_event == null)
+            if (_event == null || _lockUI)
                 return;
 
             _event.Argument = tbArgument.Text;
