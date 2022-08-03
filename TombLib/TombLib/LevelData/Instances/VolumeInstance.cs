@@ -35,7 +35,7 @@ namespace TombLib.LevelData
         PhysicalObjects = 32 // Future-proofness for Bullet
     }
 
-    public class VolumeEvent : IEquatable<VolumeEvent>
+    public class VolumeEvent : ICloneable, IEquatable<VolumeEvent>
     {
         public VolumeEventMode Mode = VolumeEventMode.LevelScript;
         public string Function { get; set; } = string.Empty;
@@ -44,6 +44,22 @@ namespace TombLib.LevelData
         // public VolumeEventConstructor Constructor { get; set; } // TODO
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        public VolumeEvent Clone()
+        {
+            var evt = (VolumeEvent)MemberwiseClone();
+
+            evt.Argument = Argument;
+            evt.Function = Function;
+            evt.CallCounter = CallCounter;
+
+            return evt;
+        }
 
         public bool Equals(VolumeEvent other)
         {
@@ -93,9 +109,14 @@ namespace TombLib.LevelData
         public VolumeEventSet Clone()
         {
             var set = (VolumeEventSet)MemberwiseClone();
-            set.Name = Name + " (copy)";
+
+            set.OnEnter = OnEnter.Clone();
+            set.OnInside = OnInside.Clone();
+            set.OnLeave = OnLeave.Clone();
+
             return set;
         }
+
         public string GetDescription()
         {
             string result = string.Empty;

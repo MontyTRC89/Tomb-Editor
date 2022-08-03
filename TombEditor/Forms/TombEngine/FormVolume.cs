@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Forms.TombEngine
 {
@@ -12,6 +13,9 @@ namespace TombEditor.Forms.TombEngine
         private readonly Editor _editor;
 
         private bool _lockUI = false;
+
+        private List<VolumeEventSet> _backupEventSetList;
+        private List<int> _backupEventSetIndices;
 
         public FormVolume(VolumeInstance instance)
         {
@@ -23,6 +27,9 @@ namespace TombEditor.Forms.TombEngine
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
+            // Backup event set list
+            BackupEventSets();
+
             // Populate function lists
             tmEnter.Initialize(_editor);
             tmInside.Initialize(_editor);
@@ -31,6 +38,29 @@ namespace TombEditor.Forms.TombEngine
             // Populate and select event set list
             PopulateEventSetList();
             FindAndSelectEventSet();
+        }
+
+        private void BackupEventSets()
+        {
+            if (_instance == null)
+                return;
+
+            _backupEventSetIndices = new List<int>();
+            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+                _backupEventSetIndices.Add(_editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
+
+            _backupEventSetList = new List<VolumeEventSet>();
+            foreach (var evt in _editor.Level.Settings.EventSets)
+                _backupEventSetList.Add(evt.Clone());
+        }
+
+        private void RestoreEventSets()
+        {
+            _editor.Level.Settings.EventSets = _backupEventSetList;
+
+            var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
+            for (int i = 0; i < volumes.Count; i++)
+                volumes[i].EventSet = _editor.Level.Settings.EventSets[_backupEventSetIndices[i]];
         }
 
         private void PopulateEventSetList()
@@ -110,6 +140,7 @@ namespace TombEditor.Forms.TombEngine
 
         private void butCancel_Click(object sender, EventArgs e)
         {
+            RestoreEventSets();
             DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -143,6 +174,7 @@ namespace TombEditor.Forms.TombEngine
                 return;
 
             var clonedSet = _instance.EventSet.Clone();
+            clonedSet.Name = _instance.EventSet.Name + " (copy)";
             _editor.Level.Settings.EventSets.Add(clonedSet);
             _instance.EventSet = clonedSet;
 
