@@ -84,7 +84,6 @@ namespace TombLib.LevelData.IO
 
                 if (level != null)
                 {
-
                     // Link objects
                     foreach (var objectLinkAction in objectLinkActions)
                         try

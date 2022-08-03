@@ -35,7 +35,7 @@ namespace TombLib.LevelData
         PhysicalObjects = 32 // Future-proofness for Bullet
     }
 
-    public class VolumeEvent
+    public class VolumeEvent : IEquatable<VolumeEvent>
     {
         public VolumeEventMode Mode = VolumeEventMode.LevelScript;
         public string Function { get; set; } = string.Empty;
@@ -44,6 +44,17 @@ namespace TombLib.LevelData
         // public VolumeEventConstructor Constructor { get; set; } // TODO
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
+
+        public bool Equals(VolumeEvent other)
+        {
+            return
+                Mode == other.Mode &&
+                Function == other.Function &&
+                Argument == other.Argument &&
+                CallCounter == other.CallCounter;
+
+            //  VolumeEventConstructor.Equals(other.VolumeEventConstructor);
+        }
 
         public void Write(BinaryWriterEx writer)
         {
@@ -54,7 +65,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public class VolumeEventSet : ICloneable
+    public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
         public VolumeActivators Activators;
@@ -81,9 +92,9 @@ namespace TombLib.LevelData
 
         public VolumeEventSet Clone()
         {
-            var script = (VolumeEventSet)MemberwiseClone();
-            script.Name = Name + " (copy)";
-            return script;
+            var set = (VolumeEventSet)MemberwiseClone();
+            set.Name = Name + " (copy)";
+            return set;
         }
         public string GetDescription()
         {
@@ -115,6 +126,16 @@ namespace TombLib.LevelData
             OnEnter.Write(writer);
             OnInside.Write(writer);
             OnLeave.Write(writer);
+        }
+
+        public bool Equals(VolumeEventSet other)
+        {
+            return
+                Name == other.Name &&
+                Activators == other.Activators &&
+                OnEnter.Equals(other.OnEnter) &&
+                OnInside.Equals(other.OnInside) &&
+                OnLeave.Equals(other.OnLeave);
         }
     }
 
@@ -200,5 +221,18 @@ namespace TombLib.LevelData
         }
 
         public VolumeEventSet EventSet { get; set; }
+
+        public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
+        {
+            base.CopyDependentLevelSettings(args);
+
+            if (EventSet == null)
+                return;
+
+            if (args.DestinationLevelSettings.EventSets.Contains(EventSet))
+                return;
+
+            args.DestinationLevelSettings.EventSets.Add(EventSet);
+        }
     }
 }

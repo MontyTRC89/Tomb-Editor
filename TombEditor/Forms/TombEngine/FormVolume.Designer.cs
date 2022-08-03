@@ -154,7 +154,7 @@ namespace TombEditor.Forms.TombEngine
             this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Event sets";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 378);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(204, 378);
             this.darkSectionPanel1.TabIndex = 22;
             // 
             // lstEvents
@@ -164,7 +164,7 @@ namespace TombEditor.Forms.TombEngine
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstEvents.Location = new System.Drawing.Point(5, 29);
             this.lstEvents.Name = "lstEvents";
-            this.lstEvents.Size = new System.Drawing.Size(190, 316);
+            this.lstEvents.Size = new System.Drawing.Size(194, 316);
             this.lstEvents.TabIndex = 0;
             this.lstEvents.SelectedIndicesChanged += new System.EventHandler(this.lstEvents_SelectedIndicesChanged);
             // 
@@ -177,7 +177,7 @@ namespace TombEditor.Forms.TombEngine
             this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.darkPanel1.Location = new System.Drawing.Point(1, 347);
             this.darkPanel1.Name = "darkPanel1";
-            this.darkPanel1.Size = new System.Drawing.Size(198, 30);
+            this.darkPanel1.Size = new System.Drawing.Size(202, 30);
             this.darkPanel1.TabIndex = 1;
             // 
             // butUnassignEventSet
@@ -185,7 +185,7 @@ namespace TombEditor.Forms.TombEngine
             this.butUnassignEventSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butUnassignEventSet.Checked = false;
             this.butUnassignEventSet.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butUnassignEventSet.Location = new System.Drawing.Point(171, 3);
+            this.butUnassignEventSet.Location = new System.Drawing.Point(175, 3);
             this.butUnassignEventSet.Name = "butUnassignEventSet";
             this.butUnassignEventSet.Size = new System.Drawing.Size(23, 23);
             this.butUnassignEventSet.TabIndex = 25;
@@ -351,18 +351,18 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(212, 8);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(39, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(87, 13);
             this.darkLabel1.TabIndex = 27;
-            this.darkLabel1.Text = "Name:";
+            this.darkLabel1.Text = "Event set name:";
             // 
             // tbName
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(257, 6);
+            this.tbName.Location = new System.Drawing.Point(303, 6);
             this.tbName.Name = "tbName";
             this.tbName.SelectOnClick = true;
-            this.tbName.Size = new System.Drawing.Size(391, 22);
+            this.tbName.Size = new System.Drawing.Size(345, 22);
             this.tbName.TabIndex = 28;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             // 
