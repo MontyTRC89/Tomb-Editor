@@ -91,7 +91,7 @@ namespace TombEditor.Controls
             this.butUnassign.Name = "butUnassign";
             this.butUnassign.Size = new System.Drawing.Size(23, 23);
             this.butUnassign.TabIndex = 3;
-            this.toolTip.SetToolTip(this.butUnassign, "Unassign");
+            this.toolTip.SetToolTip(this.butUnassign, "Unassign function from event");
             this.butUnassign.Click += new System.EventHandler(this.butUnassign_Click);
             // 
             // butSearch
@@ -103,7 +103,7 @@ namespace TombEditor.Controls
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(23, 23);
             this.butSearch.TabIndex = 2;
-            this.toolTip.SetToolTip(this.butSearch, "Search");
+            this.toolTip.SetToolTip(this.butSearch, "Search for function");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // rbConstructor
@@ -143,7 +143,8 @@ namespace TombEditor.Controls
             this.nudCallCount.Name = "nudCallCount";
             this.nudCallCount.Size = new System.Drawing.Size(63, 22);
             this.nudCallCount.TabIndex = 3;
-            this.toolTip.SetToolTip(this.nudCallCount, "Determines how many times trigger will be called");
+            this.toolTip.SetToolTip(this.nudCallCount, "Determines how many times trigger will be called.\r\nIf 0, it means trigger will be" +
+        " called infinitely.");
             this.nudCallCount.Validated += new System.EventHandler(this.nudCallCount_Validated);
             // 
             // tbArgument
@@ -154,7 +155,8 @@ namespace TombEditor.Controls
             this.tbArgument.Name = "tbArgument";
             this.tbArgument.Size = new System.Drawing.Size(542, 22);
             this.tbArgument.TabIndex = 0;
-            this.toolTip.SetToolTip(this.tbArgument, "Determine function argument, if it supports it");
+            this.toolTip.SetToolTip(this.tbArgument, "Determine function argument, if function supports it.\r\nMust be formatted accordin" +
+        "g to lua syntax.");
             this.tbArgument.Validated += new System.EventHandler(this.tbArgument_Validated);
             // 
             // tabbedContainer
