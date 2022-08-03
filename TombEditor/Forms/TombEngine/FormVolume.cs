@@ -152,7 +152,7 @@ namespace TombEditor.Forms.TombEngine
 
         private void butDeleteEventSet_Click(object sender, EventArgs e)
         {
-            _editor.Level.Settings.EventSets.Remove(_instance.EventSet);
+            EditorActions.DeleteEventSet(_instance.EventSet);
             _instance.EventSet = null;
 
             PopulateEventSetList();

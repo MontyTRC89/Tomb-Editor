@@ -1229,6 +1229,25 @@ namespace TombEditor
             }
         }
 
+        public static void DeleteEventSet(VolumeEventSet eventSet)
+        {
+            var changedVolumeList = new List<VolumeInstance>();
+
+            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+            {
+                if (vol.EventSet == eventSet)
+                {
+                    vol.EventSet = null;
+                    changedVolumeList.Add(vol);
+                }
+            }
+
+            _editor.Level.Settings.EventSets.Remove(eventSet);
+
+            foreach (var vol in changedVolumeList)
+                _editor.ObjectChange(vol, ObjectChangeType.Change);
+        }
+
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);

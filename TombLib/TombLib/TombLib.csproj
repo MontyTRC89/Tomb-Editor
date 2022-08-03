@@ -158,7 +158,7 @@
     <Compile Include="LevelData\Instances\ObjectGroup.cs" />
     <Compile Include="LevelData\Instances\MemoInstance.cs" />
     <Compile Include="LevelData\Instances\SpriteInstance.cs" />
-    <Compile Include="LevelData\ScriptEntry.cs" />
+    <Compile Include="LevelData\Instances\VolumeInstance.cs" />
     <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
     <Compile Include="LevelData\LuaScriptID.cs" />
     <Compile Include="LevelData\ReloadableResource.cs" />

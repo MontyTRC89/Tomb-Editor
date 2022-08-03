@@ -7,10 +7,14 @@ namespace TombLib.LevelData
     // All possible shapes are reduced to these three basics.
     // If we need a plane volume, it will be a box with one axis scale set to minimum.
     // If we need legacy "trigger" volume, it will be a box with one axis scale set to maximum.
+
     public enum VolumeShape : byte
     {
         Box, Sphere, Undefined
     }
+
+    // In future, we will allow not just to assign manually written Lua scripts from script file,
+    // but also automatically construct visual scripts from predefined Lua templates.
 
     public enum VolumeEventMode
     {
@@ -18,6 +22,7 @@ namespace TombLib.LevelData
     }
 
     // Possible activator flags. If none is set, volume is disabled.
+
     [Flags]
     public enum VolumeActivators : int
     {
@@ -38,7 +43,7 @@ namespace TombLib.LevelData
 
         // public VolumeEventConstructor Constructor { get; set; } // TODO
 
-        public int CallCounter { get; set; } = 0;
+        public int CallCounter { get; set; } = 0; // How many times event can be called
 
         public void Write(BinaryWriterEx writer)
         {
