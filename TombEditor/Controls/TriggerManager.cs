@@ -44,6 +44,7 @@ namespace TombEditor.Controls
         private void SelectTriggerMode()
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
+            butSearch.Visible = butUnassign.Visible = rbLevelScript.Checked;
 
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
