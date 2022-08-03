@@ -132,7 +132,7 @@ namespace TombEditor.Controls
             lblNotify.Visible = false;
         }
 
-        private void nudCallCount_Validated(object sender, EventArgs e)
+        private void nudCallCount_ValueChanged(object sender, EventArgs e)
         {
             if (_event == null || _lockUI)
                 return;

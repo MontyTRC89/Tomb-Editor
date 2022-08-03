@@ -145,7 +145,7 @@ namespace TombEditor.Controls
             this.nudCallCount.TabIndex = 3;
             this.toolTip.SetToolTip(this.nudCallCount, "Determines how many times trigger will be called.\r\nIf 0, it means trigger will be" +
         " called infinitely.");
-            this.nudCallCount.Validated += new System.EventHandler(this.nudCallCount_Validated);
+            this.nudCallCount.ValueChanged += new System.EventHandler(this.nudCallCount_ValueChanged);
             // 
             // tbArgument
             // 
