@@ -32,7 +32,6 @@ namespace TombEditor.Forms.TombEngine
         {
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.cbActivatorLara = new DarkUI.Controls.DarkCheckBox();
             this.cbActivatorNPC = new DarkUI.Controls.DarkCheckBox();
             this.cbActivatorOtherMoveables = new DarkUI.Controls.DarkCheckBox();
@@ -50,13 +49,13 @@ namespace TombEditor.Forms.TombEngine
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.tcEvents = new System.Windows.Forms.CustomTabControl();
             this.tabPage_OnEnter = new System.Windows.Forms.TabPage();
+            this.tmEnter = new TombEditor.Controls.TriggerManager();
             this.tabPage_OnInside = new System.Windows.Forms.TabPage();
+            this.tmInside = new TombEditor.Controls.TriggerManager();
             this.tabPage_OnLeave = new System.Windows.Forms.TabPage();
+            this.tmLeave = new TombEditor.Controls.TriggerManager();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.tmEnter = new TombEditor.Controls.TriggerManager();
-            this.tmInside = new TombEditor.Controls.TriggerManager();
-            this.tmLeave = new TombEditor.Controls.TriggerManager();
             this.comboboxOnLeave = new TombLib.Controls.DarkSearchableComboBox();
             this.comboboxOnInside = new TombLib.Controls.DarkSearchableComboBox();
             this.comboboxOnEnter = new TombLib.Controls.DarkSearchableComboBox();
@@ -93,17 +92,6 @@ namespace TombEditor.Forms.TombEngine
             this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(12, 9);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(62, 13);
-            this.darkLabel2.TabIndex = 9;
-            this.darkLabel2.Text = "Activators:";
             // 
             // cbActivatorLara
             // 
@@ -298,6 +286,16 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnEnter.TabIndex = 0;
             this.tabPage_OnEnter.Text = "When entering";
             // 
+            // tmEnter
+            // 
+            this.tmEnter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmEnter.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmEnter.Location = new System.Drawing.Point(0, 0);
+            this.tmEnter.Name = "tmEnter";
+            this.tmEnter.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmEnter.Size = new System.Drawing.Size(447, 327);
+            this.tmEnter.TabIndex = 0;
+            // 
             // tabPage_OnInside
             // 
             this.tabPage_OnInside.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -308,6 +306,16 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnInside.TabIndex = 1;
             this.tabPage_OnInside.Text = "When inside";
             // 
+            // tmInside
+            // 
+            this.tmInside.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmInside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmInside.Location = new System.Drawing.Point(0, 0);
+            this.tmInside.Name = "tmInside";
+            this.tmInside.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmInside.Size = new System.Drawing.Size(447, 327);
+            this.tmInside.TabIndex = 1;
+            // 
             // tabPage_OnLeave
             // 
             this.tabPage_OnLeave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -317,6 +325,16 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnLeave.Size = new System.Drawing.Size(447, 327);
             this.tabPage_OnLeave.TabIndex = 2;
             this.tabPage_OnLeave.Text = "When leaving";
+            // 
+            // tmLeave
+            // 
+            this.tmLeave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tmLeave.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tmLeave.Location = new System.Drawing.Point(0, 0);
+            this.tmLeave.Name = "tmLeave";
+            this.tmLeave.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
+            this.tmLeave.Size = new System.Drawing.Size(447, 327);
+            this.tmLeave.TabIndex = 1;
             // 
             // darkGroupBox1
             // 
@@ -341,36 +359,6 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel6.Size = new System.Drawing.Size(60, 13);
             this.darkLabel6.TabIndex = 26;
             this.darkLabel6.Text = "Activators:";
-            // 
-            // tmEnter
-            // 
-            this.tmEnter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tmEnter.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tmEnter.Location = new System.Drawing.Point(0, 0);
-            this.tmEnter.Name = "tmEnter";
-            this.tmEnter.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmEnter.Size = new System.Drawing.Size(447, 327);
-            this.tmEnter.TabIndex = 0;
-            // 
-            // tmInside
-            // 
-            this.tmInside.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tmInside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tmInside.Location = new System.Drawing.Point(0, 0);
-            this.tmInside.Name = "tmInside";
-            this.tmInside.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmInside.Size = new System.Drawing.Size(447, 327);
-            this.tmInside.TabIndex = 1;
-            // 
-            // tmLeave
-            // 
-            this.tmLeave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tmLeave.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tmLeave.Location = new System.Drawing.Point(0, 0);
-            this.tmLeave.Name = "tmLeave";
-            this.tmLeave.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmLeave.Size = new System.Drawing.Size(447, 327);
-            this.tmLeave.TabIndex = 1;
             // 
             // comboboxOnLeave
             // 
@@ -416,7 +404,6 @@ namespace TombEditor.Forms.TombEngine
             this.Controls.Add(this.comboboxOnEnter);
             this.Controls.Add(this.darkLabel4);
             this.Controls.Add(this.darkLabel3);
-            this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -443,7 +430,6 @@ namespace TombEditor.Forms.TombEngine
         #endregion
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butOk;
-        private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkCheckBox cbActivatorLara;
         private DarkUI.Controls.DarkCheckBox cbActivatorNPC;
         private DarkUI.Controls.DarkCheckBox cbActivatorOtherMoveables;
