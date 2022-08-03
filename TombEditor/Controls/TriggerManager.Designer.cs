@@ -72,14 +72,15 @@ namespace TombEditor.Controls
             // 
             // lblNotify
             // 
-            this.lblNotify.AutoSize = true;
+            this.lblNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNotify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblNotify.Location = new System.Drawing.Point(629, 7);
+            this.lblNotify.Location = new System.Drawing.Point(236, 7);
             this.lblNotify.Name = "lblNotify";
-            this.lblNotify.Size = new System.Drawing.Size(68, 13);
+            this.lblNotify.Size = new System.Drawing.Size(461, 13);
             this.lblNotify.TabIndex = 4;
             this.lblNotify.Text = "Event notify";
-            this.lblNotify.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblNotify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblNotify.Visible = false;
             // 
             // butUnassign
