@@ -203,12 +203,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
-                // Write object textures
-                writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
-                writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
-
-                _textureInfoManager.WriteTextureInfosTombEngine(writer, _level);
-
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 foreach (var item in _items)
