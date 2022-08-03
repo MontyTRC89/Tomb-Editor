@@ -113,10 +113,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 writer.Write((uint)_moveables.Count);
                 for (var k = 0; k < _moveables.Count; k++)
-                {
                     writer.WriteBlock(_moveables[k]);
-                    writer.Write((ushort)0xFEFF);
-                }
 
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);

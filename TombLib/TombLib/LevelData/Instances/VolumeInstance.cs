@@ -77,7 +77,7 @@ namespace TombLib.LevelData
             writer.Write((int)Mode);
             writer.Write(Function);
             writer.Write(Argument);
-            writer.Write(CallCounter);
+            writer.Write(CallCounter != 0 ? CallCounter : -1);
         }
     }
 
