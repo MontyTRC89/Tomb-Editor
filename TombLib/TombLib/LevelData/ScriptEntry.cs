@@ -92,7 +92,7 @@ namespace TombLib.LevelData
                          ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
                          ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
                          ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
-                result = result.Substring(0, result.Length - 2) + "\n";
+                result = result.Substring(0, result.Length - 2) + " \n";
             }
 
             result += (string.IsNullOrEmpty(OnEnter?.Function  ?? string.Empty) ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n") +
