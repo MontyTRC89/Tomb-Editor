@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using TombLib.IO;
 
 namespace TombLib.LevelData
 {
@@ -18,7 +19,7 @@ namespace TombLib.LevelData
 
     // Possible activator flags. If none is set, volume is disabled.
     [Flags]
-    public enum VolumeActivators : ushort
+    public enum VolumeActivators : int
     {
         Player = 1,
         NPCs = 2,
@@ -37,6 +38,14 @@ namespace TombLib.LevelData
         // public VolumeEventConstructor Constructor { get; set; } // TODO
 
         public int CallCounter { get; set; } = 0;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write((int)Mode);
+            writer.Write(Function);
+            writer.Write(Argument);
+            writer.Write(CallCounter);
+        }
     }
 
     public class VolumeEventSet : ICloneable
@@ -52,6 +61,13 @@ namespace TombLib.LevelData
 
         public VolumeActivators Activators;
 
+        public VolumeEventSet()
+        {
+            OnEnter = new VolumeEvent();
+            OnInside = new VolumeEvent();
+            OnLeave = new VolumeEvent();
+        }
+
         object ICloneable.Clone()
         {
             return Clone();
@@ -63,23 +79,34 @@ namespace TombLib.LevelData
             script.Name = Name + " (copy)";
             return script;
         }
-
         public string GetDescription()
         {
             string result;
 
-            result = "Activated by: " +
+            result = "Event set '" + Name + "', Activated by: " +
                      ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
                      ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
                      ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
                      ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
                      ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+
             result = result.Substring(0, result.Length - 2) + "\n";
-            result += (OnEnter.Function != "" ? "OnEnter: " + OnEnter.Function + "\n" : "") +
-                      (OnInside.Function != "" ? "OnInside: " + OnInside.Function + "\n" : "") +
-                      (OnLeave.Function != "" ? "OnLeave: " + OnLeave.Function : "");
+
+            result += (OnEnter?.Function  ?? string.Empty) == string.Empty ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n" +
+                      (OnInside?.Function ?? string.Empty) == string.Empty ? string.Empty : "OnInside: " + OnInside.Function + "\n" +
+                      (OnLeave?.Function  ?? string.Empty) == string.Empty ? string.Empty : "OnLeave: "  + OnLeave.Function;
 
             return result;
+        }
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write(Name);
+            writer.Write((int)Activators);
+
+            OnEnter.Write(writer);
+            OnInside.Write(writer);
+            OnLeave.Write(writer);
         }
     }
 
@@ -104,10 +131,10 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sphere Volume '" + EventSet.Name + "' (d = " + Math.Round(Size) + ")" +
+            return "Sphere Volume (d = " + Math.Round(Size) + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
-                   EventSet.GetDescription();
+                   EventSet?.GetDescription() ?? string.Empty;
         }
     }
 
@@ -146,10 +173,10 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string message = "Box Volume '" + EventSet.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
+            string message = "Box Volume (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
-                   EventSet.GetDescription();
+                   EventSet?.GetDescription() ?? string.Empty;
 
             return message;
         }

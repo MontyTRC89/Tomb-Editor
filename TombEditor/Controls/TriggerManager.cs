@@ -58,6 +58,9 @@ namespace TombEditor.Controls
             FindAndSelectFunction();
             ConstructVisualTrigger();
 
+            if (_event == null)
+                return;
+
             _lockUI = true;
             rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
             _lockUI = false;

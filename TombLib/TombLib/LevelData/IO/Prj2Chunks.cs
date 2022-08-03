@@ -81,6 +81,18 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId AnimatedTextureSetExtraInfo = ChunkId.FromString("TeAnimatedTextureSetExtra");
         /**************/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("TeFrames");
         /******************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("TeFrame");
+        /**/public static readonly ChunkId EventSets = ChunkId.FromString("TeEventSets");
+        /******/public static readonly ChunkId EventSet = ChunkId.FromString("TeEventSet");
+        /********/public static readonly ChunkId EventSetIndex = ChunkId.FromString("TeEventSetIndex");
+        /********/public static readonly ChunkId EventSetName = ChunkId.FromString("TeEventSetName");
+        /********/public static readonly ChunkId EventSetActivators = ChunkId.FromString("TeEventSetActivators");
+        /********/public static readonly ChunkId EventSetOnEnter = ChunkId.FromString("TeEventSetOnEnter");
+        /********/public static readonly ChunkId EventSetOnLeave = ChunkId.FromString("TeEventSetOnLeave");
+        /********/public static readonly ChunkId EventSetOnInside = ChunkId.FromString("TeEventSetOnInside");
+        /**********/public static readonly ChunkId EventMode = ChunkId.FromString("TeEventMode");
+        /**********/public static readonly ChunkId EventFunction = ChunkId.FromString("TeEventFunction");
+        /**********/public static readonly ChunkId EventArgument = ChunkId.FromString("TeEventArgument");
+        /**********/public static readonly ChunkId EventCallCounter = ChunkId.FromString("TeEventCallCounter");
         public static readonly ChunkId Rooms = ChunkId.FromString("TeRooms");
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");
@@ -172,6 +184,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
         /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost");
         /**********/public static readonly ChunkId ObjectTriggerVolumeTest = ChunkId.FromString("TeVolumeTest");
+        /**********/public static readonly ChunkId ObjectTriggerVolume1 = ChunkId.FromString("TeVolume1");
         /************/public static readonly ChunkId ObjectTrigger2Type = ChunkId.FromString("TeTy");
         /************/public static readonly ChunkId ObjectTrigger2TargetType = ChunkId.FromString("TeTaTy");
         /************/public static readonly ChunkId ObjectTrigger2Target = ChunkId.FromString("TeTa");

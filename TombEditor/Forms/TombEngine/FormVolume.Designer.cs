@@ -98,6 +98,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorLara.TabIndex = 10;
             this.cbActivatorLara.Text = "Lara";
             this.toolTip.SetToolTip(this.cbActivatorLara, "Can be activated by Lara");
+            this.cbActivatorLara.CheckedChanged += new System.EventHandler(this.cbActivators_CheckedChanged);
             // 
             // cbActivatorNPC
             // 
@@ -108,6 +109,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorNPC.TabIndex = 11;
             this.cbActivatorNPC.Text = "NPC";
             this.toolTip.SetToolTip(this.cbActivatorNPC, "Can be activated by creatures");
+            this.cbActivatorNPC.CheckedChanged += new System.EventHandler(this.cbActivators_CheckedChanged);
             // 
             // cbActivatorOtherMoveables
             // 
@@ -118,6 +120,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorOtherMoveables.TabIndex = 12;
             this.cbActivatorOtherMoveables.Text = "Other objects";
             this.toolTip.SetToolTip(this.cbActivatorOtherMoveables, "Can be activated by other moveables, such as rolling balls");
+            this.cbActivatorOtherMoveables.CheckedChanged += new System.EventHandler(this.cbActivators_CheckedChanged);
             // 
             // cbActivatorStatics
             // 
@@ -128,6 +131,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorStatics.TabIndex = 13;
             this.cbActivatorStatics.Text = "Statics";
             this.toolTip.SetToolTip(this.cbActivatorStatics, "Can be activated by shattering statics");
+            this.cbActivatorStatics.CheckedChanged += new System.EventHandler(this.cbActivators_CheckedChanged);
             // 
             // cbActivatorFlyBy
             // 
@@ -138,6 +142,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorFlyBy.TabIndex = 14;
             this.cbActivatorFlyBy.Text = "Flyby cameras";
             this.toolTip.SetToolTip(this.cbActivatorFlyBy, "Can be activated by flyby cameras");
+            this.cbActivatorFlyBy.CheckedChanged += new System.EventHandler(this.cbActivators_CheckedChanged);
             // 
             // darkSectionPanel1
             // 
@@ -184,6 +189,7 @@ namespace TombEditor.Forms.TombEngine
             this.butUnassignEventSet.Size = new System.Drawing.Size(23, 23);
             this.butUnassignEventSet.TabIndex = 25;
             this.toolTip.SetToolTip(this.butUnassignEventSet, "Unassign event set from volume");
+            this.butUnassignEventSet.Click += new System.EventHandler(this.butUnassignEventSet_Click);
             // 
             // butDeleteEventSet
             // 
@@ -195,6 +201,7 @@ namespace TombEditor.Forms.TombEngine
             this.butDeleteEventSet.TabIndex = 20;
             this.butDeleteEventSet.Tag = "AddNewRoom";
             this.toolTip.SetToolTip(this.butDeleteEventSet, "Delete selected event set");
+            this.butDeleteEventSet.Click += new System.EventHandler(this.butDeleteEventSet_Click);
             // 
             // butCloneEventSet
             // 
@@ -206,6 +213,7 @@ namespace TombEditor.Forms.TombEngine
             this.butCloneEventSet.TabIndex = 19;
             this.butCloneEventSet.Tag = "AddNewRoom";
             this.toolTip.SetToolTip(this.butCloneEventSet, "Copy selected event set");
+            this.butCloneEventSet.Click += new System.EventHandler(this.butCloneEventSet_Click);
             // 
             // butNewEventSet
             // 
@@ -217,6 +225,7 @@ namespace TombEditor.Forms.TombEngine
             this.butNewEventSet.TabIndex = 18;
             this.butNewEventSet.Tag = "EditRoomName";
             this.toolTip.SetToolTip(this.butNewEventSet, "Add new event set");
+            this.butNewEventSet.Click += new System.EventHandler(this.butNewEventSet_Click);
             // 
             // tcEvents
             // 
