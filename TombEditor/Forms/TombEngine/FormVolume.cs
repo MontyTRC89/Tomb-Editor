@@ -11,6 +11,8 @@ namespace TombEditor.Forms.TombEngine
         private readonly VolumeInstance _instance;
         private readonly Editor _editor;
 
+        private bool _lockUI = false;
+
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
@@ -59,6 +61,8 @@ namespace TombEditor.Forms.TombEngine
 
             UpdateUI();
 
+            _lockUI = true;
+
             cbActivatorLara.Checked = (_instance.EventSet.Activators & VolumeActivators.Player) != 0;
             cbActivatorNPC.Checked = (_instance.EventSet.Activators & VolumeActivators.NPCs) != 0;
             cbActivatorOtherMoveables.Checked = (_instance.EventSet.Activators & VolumeActivators.OtherMoveables) != 0;
@@ -68,11 +72,13 @@ namespace TombEditor.Forms.TombEngine
             tmEnter.Event = _instance.EventSet.OnEnter;
             tmInside.Event = _instance.EventSet.OnInside;
             tmLeave.Event = _instance.EventSet.OnLeave;
+
+            _lockUI = false;
         }
 
         private void ModifyActivators()
         {
-            if (_instance.EventSet == null)
+            if (_instance.EventSet == null || _lockUI)
                 return;
 
             _instance.EventSet.Activators = 0 |

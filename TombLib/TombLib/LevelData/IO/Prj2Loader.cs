@@ -503,10 +503,20 @@ namespace TombLib.LevelData.IO
                             {
                                 var evt = new VolumeEvent();
 
-                                evt.Mode = (VolumeEventMode)chunkIO.ReadChunkInt(chunkSize3);
-                                evt.Function = chunkIO.ReadChunkString(chunkSize3);
-                                evt.Argument = chunkIO.ReadChunkString(chunkSize3);
-                                evt.CallCounter = chunkIO.ReadChunkInt(chunkSize3);
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 == Prj2Chunks.EventMode)
+                                        evt.Mode = (VolumeEventMode)chunkIO.ReadChunkInt(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventFunction)
+                                        evt.Function = chunkIO.ReadChunkString(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventArgument)
+                                        evt.Argument = chunkIO.ReadChunkString(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventCallCounter)
+                                        evt.CallCounter = chunkIO.ReadChunkInt(chunkSize4);
+                                    else
+                                        return false;
+                                    return true;
+                                });
 
                                 if (id3 == Prj2Chunks.EventSetOnEnter)
                                     eventSet.OnEnter = evt;
