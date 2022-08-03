@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms.TombEngine
 {
@@ -84,8 +85,8 @@ namespace TombEditor.Forms.TombEngine
 
         private void UpdateUI()
         {
-            bool eventAvailable = _instance.EventSet != null;
-            grpActivators.Enabled = tcEvents.Enabled = eventAvailable;
+            grpActivators.Enabled = tcEvents.Enabled = butUnassignEventSet.Enabled = _instance.EventSet != null;
+            butCloneEventSet.Enabled = butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
         }
 
         private void butOk_Click(object sender, EventArgs e)
