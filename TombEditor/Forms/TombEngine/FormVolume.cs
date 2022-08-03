@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Forms.TombEngine
 {
@@ -47,15 +46,23 @@ namespace TombEditor.Forms.TombEngine
                 }
         }
 
-        private void UpdateUI()
+        private void LoadEventSetIntoUI()
         {
+            bool eventAvailable = _instance.EventSet != null;
+            grpActivators.Enabled = tcEvents.Enabled = eventAvailable;
+
+            if (!eventAvailable)
+                return;
+
             cbActivatorLara.Checked = (_instance.EventSet.Activators & VolumeActivators.Player) != 0;
             cbActivatorNPC.Checked = (_instance.EventSet.Activators & VolumeActivators.NPCs) != 0;
             cbActivatorOtherMoveables.Checked = (_instance.EventSet.Activators & VolumeActivators.OtherMoveables) != 0;
             cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
             cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
 
-            tmEnter.
+            tmEnter.Event = _instance.EventSet.OnEnter;
+            tmInside.Event = _instance.EventSet.OnInside;
+            tmLeave.Event = _instance.EventSet.OnLeave;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -79,7 +86,8 @@ namespace TombEditor.Forms.TombEngine
 
         private void lstEvents_SelectedIndicesChanged(object sender, EventArgs e)
         {
-
+            _instance.EventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            LoadEventSetIntoUI();
         }
     }
 }

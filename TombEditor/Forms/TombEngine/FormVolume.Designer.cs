@@ -41,10 +41,10 @@ namespace TombEditor.Forms.TombEngine
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.lstEvents = new DarkUI.Controls.DarkListView();
             this.darkPanel1 = new DarkUI.Controls.DarkPanel();
-            this.butUnassign = new DarkUI.Controls.DarkButton();
-            this.darkButton1 = new DarkUI.Controls.DarkButton();
-            this.butNewRoom = new DarkUI.Controls.DarkButton();
-            this.butEditRoomName = new DarkUI.Controls.DarkButton();
+            this.butUnassignEventSet = new DarkUI.Controls.DarkButton();
+            this.butDeleteEventSet = new DarkUI.Controls.DarkButton();
+            this.butCloneEventSet = new DarkUI.Controls.DarkButton();
+            this.butNewEventSet = new DarkUI.Controls.DarkButton();
             this.tcEvents = new System.Windows.Forms.CustomTabControl();
             this.tabPage_OnEnter = new System.Windows.Forms.TabPage();
             this.tmEnter = new TombEditor.Controls.TriggerManager();
@@ -52,7 +52,7 @@ namespace TombEditor.Forms.TombEngine
             this.tmInside = new TombEditor.Controls.TriggerManager();
             this.tabPage_OnLeave = new System.Windows.Forms.TabPage();
             this.tmLeave = new TombEditor.Controls.TriggerManager();
-            this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.grpActivators = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.darkSectionPanel1.SuspendLayout();
@@ -61,7 +61,7 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnEnter.SuspendLayout();
             this.tabPage_OnInside.SuspendLayout();
             this.tabPage_OnLeave.SuspendLayout();
-            this.darkGroupBox1.SuspendLayout();
+            this.grpActivators.SuspendLayout();
             this.SuspendLayout();
             // 
             // butCancel
@@ -164,59 +164,59 @@ namespace TombEditor.Forms.TombEngine
             // 
             // darkPanel1
             // 
-            this.darkPanel1.Controls.Add(this.butUnassign);
-            this.darkPanel1.Controls.Add(this.darkButton1);
-            this.darkPanel1.Controls.Add(this.butNewRoom);
-            this.darkPanel1.Controls.Add(this.butEditRoomName);
+            this.darkPanel1.Controls.Add(this.butUnassignEventSet);
+            this.darkPanel1.Controls.Add(this.butDeleteEventSet);
+            this.darkPanel1.Controls.Add(this.butCloneEventSet);
+            this.darkPanel1.Controls.Add(this.butNewEventSet);
             this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.darkPanel1.Location = new System.Drawing.Point(1, 354);
             this.darkPanel1.Name = "darkPanel1";
             this.darkPanel1.Size = new System.Drawing.Size(198, 30);
             this.darkPanel1.TabIndex = 1;
             // 
-            // butUnassign
+            // butUnassignEventSet
             // 
-            this.butUnassign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butUnassign.Checked = false;
-            this.butUnassign.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butUnassign.Location = new System.Drawing.Point(171, 3);
-            this.butUnassign.Name = "butUnassign";
-            this.butUnassign.Size = new System.Drawing.Size(23, 23);
-            this.butUnassign.TabIndex = 25;
-            this.toolTip.SetToolTip(this.butUnassign, "Unassign event set from volume");
+            this.butUnassignEventSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUnassignEventSet.Checked = false;
+            this.butUnassignEventSet.Image = global::TombEditor.Properties.Resources.actions_delete_16;
+            this.butUnassignEventSet.Location = new System.Drawing.Point(171, 3);
+            this.butUnassignEventSet.Name = "butUnassignEventSet";
+            this.butUnassignEventSet.Size = new System.Drawing.Size(23, 23);
+            this.butUnassignEventSet.TabIndex = 25;
+            this.toolTip.SetToolTip(this.butUnassignEventSet, "Unassign event set from volume");
             // 
-            // darkButton1
+            // butDeleteEventSet
             // 
-            this.darkButton1.Checked = false;
-            this.darkButton1.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.darkButton1.Location = new System.Drawing.Point(62, 3);
-            this.darkButton1.Name = "darkButton1";
-            this.darkButton1.Size = new System.Drawing.Size(23, 23);
-            this.darkButton1.TabIndex = 20;
-            this.darkButton1.Tag = "AddNewRoom";
-            this.toolTip.SetToolTip(this.darkButton1, "Delete selected event set");
+            this.butDeleteEventSet.Checked = false;
+            this.butDeleteEventSet.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDeleteEventSet.Location = new System.Drawing.Point(62, 3);
+            this.butDeleteEventSet.Name = "butDeleteEventSet";
+            this.butDeleteEventSet.Size = new System.Drawing.Size(23, 23);
+            this.butDeleteEventSet.TabIndex = 20;
+            this.butDeleteEventSet.Tag = "AddNewRoom";
+            this.toolTip.SetToolTip(this.butDeleteEventSet, "Delete selected event set");
             // 
-            // butNewRoom
+            // butCloneEventSet
             // 
-            this.butNewRoom.Checked = false;
-            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butNewRoom.Location = new System.Drawing.Point(33, 3);
-            this.butNewRoom.Name = "butNewRoom";
-            this.butNewRoom.Size = new System.Drawing.Size(23, 23);
-            this.butNewRoom.TabIndex = 19;
-            this.butNewRoom.Tag = "AddNewRoom";
-            this.toolTip.SetToolTip(this.butNewRoom, "Copy selected event set");
+            this.butCloneEventSet.Checked = false;
+            this.butCloneEventSet.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butCloneEventSet.Location = new System.Drawing.Point(33, 3);
+            this.butCloneEventSet.Name = "butCloneEventSet";
+            this.butCloneEventSet.Size = new System.Drawing.Size(23, 23);
+            this.butCloneEventSet.TabIndex = 19;
+            this.butCloneEventSet.Tag = "AddNewRoom";
+            this.toolTip.SetToolTip(this.butCloneEventSet, "Copy selected event set");
             // 
-            // butEditRoomName
+            // butNewEventSet
             // 
-            this.butEditRoomName.Checked = false;
-            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(4, 3);
-            this.butEditRoomName.Name = "butEditRoomName";
-            this.butEditRoomName.Size = new System.Drawing.Size(23, 23);
-            this.butEditRoomName.TabIndex = 18;
-            this.butEditRoomName.Tag = "EditRoomName";
-            this.toolTip.SetToolTip(this.butEditRoomName, "Add new event set");
+            this.butNewEventSet.Checked = false;
+            this.butNewEventSet.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butNewEventSet.Location = new System.Drawing.Point(4, 3);
+            this.butNewEventSet.Name = "butNewEventSet";
+            this.butNewEventSet.Size = new System.Drawing.Size(23, 23);
+            this.butNewEventSet.TabIndex = 18;
+            this.butNewEventSet.Tag = "EditRoomName";
+            this.toolTip.SetToolTip(this.butNewEventSet, "Add new event set");
             // 
             // tcEvents
             // 
@@ -309,21 +309,21 @@ namespace TombEditor.Forms.TombEngine
             this.tmLeave.Size = new System.Drawing.Size(447, 327);
             this.tmLeave.TabIndex = 1;
             // 
-            // darkGroupBox1
+            // grpActivators
             // 
-            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpActivators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkGroupBox1.Controls.Add(this.darkLabel6);
-            this.darkGroupBox1.Controls.Add(this.cbActivatorLara);
-            this.darkGroupBox1.Controls.Add(this.cbActivatorNPC);
-            this.darkGroupBox1.Controls.Add(this.cbActivatorOtherMoveables);
-            this.darkGroupBox1.Controls.Add(this.cbActivatorStatics);
-            this.darkGroupBox1.Controls.Add(this.cbActivatorFlyBy);
-            this.darkGroupBox1.Location = new System.Drawing.Point(215, 360);
-            this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(449, 31);
-            this.darkGroupBox1.TabIndex = 24;
-            this.darkGroupBox1.TabStop = false;
+            this.grpActivators.Controls.Add(this.darkLabel6);
+            this.grpActivators.Controls.Add(this.cbActivatorLara);
+            this.grpActivators.Controls.Add(this.cbActivatorNPC);
+            this.grpActivators.Controls.Add(this.cbActivatorOtherMoveables);
+            this.grpActivators.Controls.Add(this.cbActivatorStatics);
+            this.grpActivators.Controls.Add(this.cbActivatorFlyBy);
+            this.grpActivators.Location = new System.Drawing.Point(215, 360);
+            this.grpActivators.Name = "grpActivators";
+            this.grpActivators.Size = new System.Drawing.Size(449, 31);
+            this.grpActivators.TabIndex = 24;
+            this.grpActivators.TabStop = false;
             // 
             // darkLabel6
             // 
@@ -342,7 +342,7 @@ namespace TombEditor.Forms.TombEngine
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(670, 428);
-            this.Controls.Add(this.darkGroupBox1);
+            this.Controls.Add(this.grpActivators);
             this.Controls.Add(this.tcEvents);
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.butCancel);
@@ -361,8 +361,8 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnEnter.ResumeLayout(false);
             this.tabPage_OnInside.ResumeLayout(false);
             this.tabPage_OnLeave.ResumeLayout(false);
-            this.darkGroupBox1.ResumeLayout(false);
-            this.darkGroupBox1.PerformLayout();
+            this.grpActivators.ResumeLayout(false);
+            this.grpActivators.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -385,12 +385,12 @@ namespace TombEditor.Forms.TombEngine
         private Controls.TriggerManager tmInside;
         private Controls.TriggerManager tmLeave;
         private DarkPanel darkPanel1;
-        private DarkButton darkButton1;
-        private DarkButton butNewRoom;
-        private DarkButton butEditRoomName;
-        private DarkGroupBox darkGroupBox1;
+        private DarkButton butDeleteEventSet;
+        private DarkButton butCloneEventSet;
+        private DarkButton butNewEventSet;
+        private DarkGroupBox grpActivators;
         private DarkLabel darkLabel6;
-        private DarkButton butUnassign;
+        private DarkButton butUnassignEventSet;
         private ToolTip toolTip;
     }
 }
