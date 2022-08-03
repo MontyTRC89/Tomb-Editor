@@ -23,9 +23,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(numRooms);
 
                 foreach (var r in _level.ExistingRooms)
-                {
                     _tempRooms[r].Write(writer);
-                }
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -117,7 +115,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 for (var k = 0; k < _moveables.Count; k++)
                 {
                     writer.WriteBlock(_moveables[k]);
-                    writer.Write((ushort)0xfeff);
+                    writer.Write((ushort)0xFEFF);
                 }
 
                 writer.Write((uint)_staticMeshes.Count);

@@ -39,23 +39,10 @@ namespace TombLib.LevelData
         public int CallCounter { get; set; } = 0;
     }
 
-    // This class should be always used as a base class for any script entries
-    // used for any kinds of objects in TE or WT. Eventually we may collect all
-    // script types in proposed script IDE and sort them in tree based on their
-    // child class.
-
-    public abstract class ScriptEntry
+    public class VolumeEventSet : ICloneable
     {
         public string Name = string.Empty;
 
-        // Global script assembly, e.g. activation mask, additional temp values etc must be put here.
-        // If subclassed script instance doesn't require any particular events, this should be main and only script code snippet.
-
-        public string Environment = string.Empty;
-    }
-
-    public class VolumeScriptEntry : ScriptEntry, ICloneable
-    {
         // Every volume's events can be reduced to these three.
         // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
 
@@ -70,11 +57,29 @@ namespace TombLib.LevelData
             return Clone();
         }
 
-        public VolumeScriptEntry Clone()
+        public VolumeEventSet Clone()
         {
-            var script = (VolumeScriptEntry)MemberwiseClone();
-            script.Name = Name;
+            var script = (VolumeEventSet)MemberwiseClone();
+            script.Name = Name + " (copy)";
             return script;
+        }
+
+        public string GetDescription()
+        {
+            string result;
+
+            result = "Activated by: " +
+                     ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
+                     ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
+                     ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
+                     ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
+                     ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+            result = result.Substring(0, result.Length - 2) + "\n";
+            result += (OnEnter.Function != "" ? "OnEnter: " + OnEnter.Function + "\n" : "") +
+                      (OnInside.Function != "" ? "OnInside: " + OnInside.Function + "\n" : "") +
+                      (OnLeave.Function != "" ? "OnLeave: " + OnLeave.Function : "");
+
+            return result;
         }
     }
 
@@ -99,9 +104,10 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sphere Volume '" + Script.Name + "' (d = " + Math.Round(Size) + ")" +
+            return "Sphere Volume '" + EventSet.Name + "' (d = " + Math.Round(Size) + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
+                   EventSet.GetDescription();
         }
     }
 
@@ -140,19 +146,10 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string message = "Box Volume '" + Script.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
+            string message = "Box Volume '" + EventSet.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n";
-            message += "Activated by: " +
-                     ((Script.Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
-                     ((Script.Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
-                     ((Script.Activators & VolumeActivators.OtherMoveables) != 0 ? "Other moveables, " : "") +
-                     ((Script.Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
-                     ((Script.Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
-            message = message.Substring(0, message.Length - 2) + "\n";
-            message += (Script.OnEnter.Function != "" ? "OnEnter: " + Script.OnEnter.Function + "\n" : "") +
-                       (Script.OnInside.Function != "" ? "OnInside: " + Script.OnInside.Function + "\n" : "") +
-                       (Script.OnLeave.Function != "" ? "OnLeave: " + Script.OnLeave.Function : "");
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
+                   EventSet.GetDescription();
 
             return message;
         }
@@ -167,6 +164,6 @@ namespace TombLib.LevelData
             return VolumeShape.Undefined;
         }
 
-        public VolumeScriptEntry Script { get; set; }
+        public VolumeEventSet EventSet { get; set; }
     }
 }

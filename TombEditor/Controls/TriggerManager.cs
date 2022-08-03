@@ -27,14 +27,12 @@ namespace TombEditor.Controls
             set
             {
                 _event = value;
-                FindAndSelectFunction();
+                UpdateUI();
             }
         }
         private VolumeEvent _event = null;
 
         private Editor _editor;
-
-        private void SelectTriggerMode() => tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
 
         public void Initialize(Editor editor)
         {
@@ -42,11 +40,27 @@ namespace TombEditor.Controls
             ReloadFunctions();
         }
 
+        private void SelectTriggerMode()
+        {
+            tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
+
+            if (!_lockUI)
+                _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
+        }
+        private bool _lockUI = false;
+
         public void UpdateUI()
         {
             tbArgument.Enabled   =
             nudCallCount.Enabled = 
             lstFunctions.Enabled = _event != null;
+
+            FindAndSelectFunction();
+            ConstructVisualTrigger();
+
+            _lockUI = true;
+            rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
+            _lockUI = false;
         }
 
         private void ReloadFunctions()
@@ -80,6 +94,11 @@ namespace TombEditor.Controls
 
             lblNotify.Text = "Referenced function '" + _event.Function + "' was not found!";
             lblNotify.Visible = true;
+        }
+
+        private void ConstructVisualTrigger()
+        {
+            // TODO
         }
 
         private void rbLevelScript_CheckedChanged(object sender, EventArgs e) => SelectTriggerMode();

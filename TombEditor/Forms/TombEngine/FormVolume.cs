@@ -18,23 +18,49 @@ namespace TombEditor.Forms.TombEngine
             _instance = instance;
             _editor = Editor.Instance;
 
-            cbActivatorLara.Checked = (_instance.Script.Activators & VolumeActivators.Player) != 0;
-            cbActivatorNPC.Checked = (_instance.Script.Activators & VolumeActivators.NPCs) != 0;
-            cbActivatorOtherMoveables.Checked = (_instance.Script.Activators & VolumeActivators.OtherMoveables) != 0;
-            cbActivatorStatics.Checked = (_instance.Script.Activators & VolumeActivators.Statics) != 0;
-            cbActivatorFlyBy.Checked = (_instance.Script.Activators & VolumeActivators.Flybys) != 0;
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, _editor.Configuration);
 
+            // Populate function lists
             tmEnter.Initialize(_editor);
             tmInside.Initialize(_editor);
             tmLeave.Initialize(_editor);
 
-            // Set window property handlers
-            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
+            // Populate and select event set list
+            PopulateEventSetList();
+            FindAndSelectEventSet();
+        }
+
+        private void PopulateEventSetList()
+        {
+            foreach (var evtSet in _editor.Level.Settings.EventSets)
+                lstEvents.Items.Add(new DarkUI.Controls.DarkListItem(evtSet.Name) { Tag = evtSet });
+        }
+
+        private void FindAndSelectEventSet()
+        {
+            for (int i = 0; i < lstEvents.Items.Count; i++)
+                if (lstEvents.Items[i].Tag == _instance.EventSet)
+                {
+                    lstEvents.ClearSelection();
+                    lstEvents.SelectItem(i);
+                }
+        }
+
+        private void UpdateUI()
+        {
+            cbActivatorLara.Checked = (_instance.EventSet.Activators & VolumeActivators.Player) != 0;
+            cbActivatorNPC.Checked = (_instance.EventSet.Activators & VolumeActivators.NPCs) != 0;
+            cbActivatorOtherMoveables.Checked = (_instance.EventSet.Activators & VolumeActivators.OtherMoveables) != 0;
+            cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
+            cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
+
+            tmEnter.
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _instance.Script.Activators = 0 | 
+            _instance.EventSet.Activators = 0 | 
                                             (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
                                             (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
                                             (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
@@ -49,6 +75,11 @@ namespace TombEditor.Forms.TombEngine
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void lstEvents_SelectedIndicesChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
