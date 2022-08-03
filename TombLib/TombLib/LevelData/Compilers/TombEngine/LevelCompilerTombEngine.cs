@@ -12,20 +12,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         private readonly Dictionary<Room, TombEngineRoom> _tempRooms = new Dictionary<Room, TombEngineRoom>(new ReferenceEqualityComparer<Room>());
 
-        private class ComparerFlyBy : IComparer<tr4_flyby_camera>
-        {
-            public int Compare(tr4_flyby_camera x, tr4_flyby_camera y)
-            {
-                if (x.Sequence != y.Sequence)
-                    return x.Sequence > y.Sequence ? 1 : -1;
-
-                if (x.Index == y.Index)
-                    return 0;
-
-                return x.Index > y.Index ? 1 : -1;
-            }
-        }
-
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private readonly List<ushort> _floorData = new List<ushort>();
         private readonly List<TombEngineMesh> _meshes = new List<TombEngineMesh>();
@@ -262,7 +248,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     DirectionZ = (int) Math.Round(position.Z + Level.BlockSizeUnit * direction.Z),
                 });
             }
-            _flyByCameras.Sort(new ComparerFlyBy());
+            _flyByCameras.Sort(new tr4_flyby_camera.ComparerFlyBy());
 
             // Check camera duplicates
             int lastSeq   = -1;
