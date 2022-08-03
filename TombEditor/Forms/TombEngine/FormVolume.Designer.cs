@@ -37,10 +37,6 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorOtherMoveables = new DarkUI.Controls.DarkCheckBox();
             this.cbActivatorStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbActivatorFlyBy = new DarkUI.Controls.DarkCheckBox();
-            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.listEvents = new DarkUI.Controls.DarkListView();
             this.darkPanel1 = new DarkUI.Controls.DarkPanel();
@@ -56,9 +52,6 @@ namespace TombEditor.Forms.TombEngine
             this.tmLeave = new TombEditor.Controls.TriggerManager();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.comboboxOnLeave = new TombLib.Controls.DarkSearchableComboBox();
-            this.comboboxOnInside = new TombLib.Controls.DarkSearchableComboBox();
-            this.comboboxOnEnter = new TombLib.Controls.DarkSearchableComboBox();
             this.darkSectionPanel1.SuspendLayout();
             this.darkPanel1.SuspendLayout();
             this.tcEvents.SuspendLayout();
@@ -73,7 +66,7 @@ namespace TombEditor.Forms.TombEngine
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(816, 519);
+            this.butCancel.Location = new System.Drawing.Point(584, 398);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -85,7 +78,7 @@ namespace TombEditor.Forms.TombEngine
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(730, 519);
+            this.butOk.Location = new System.Drawing.Point(498, 398);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -138,54 +131,13 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorFlyBy.TabIndex = 14;
             this.cbActivatorFlyBy.Text = "Flyby camera";
             // 
-            // darkLabel3
-            // 
-            this.darkLabel3.AutoSize = true;
-            this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(176, 9);
-            this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(49, 13);
-            this.darkLabel3.TabIndex = 15;
-            this.darkLabel3.Text = "Actions:";
-            // 
-            // darkLabel4
-            // 
-            this.darkLabel4.AutoSize = true;
-            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(179, 38);
-            this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(53, 13);
-            this.darkLabel4.TabIndex = 16;
-            this.darkLabel4.Text = "OnEnter:";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(179, 67);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(57, 13);
-            this.darkLabel1.TabIndex = 18;
-            this.darkLabel1.Text = "OnInside:";
-            // 
-            // darkLabel5
-            // 
-            this.darkLabel5.AutoSize = true;
-            this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(179, 96);
-            this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(54, 13);
-            this.darkLabel5.TabIndex = 20;
-            this.darkLabel5.Text = "OnLeave:";
-            // 
             // darkSectionPanel1
             // 
             this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.darkSectionPanel1.Controls.Add(this.listEvents);
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(238, 127);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Events";
             this.darkSectionPanel1.Size = new System.Drawing.Size(200, 385);
@@ -270,7 +222,7 @@ namespace TombEditor.Forms.TombEngine
             this.tcEvents.DisplayStyleProvider.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tcEvents.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
             this.tcEvents.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.FromArgb(((int)(((byte)(152)))), ((int)(((byte)(196)))), ((int)(((byte)(232)))));
-            this.tcEvents.Location = new System.Drawing.Point(444, 125);
+            this.tcEvents.Location = new System.Drawing.Point(212, 4);
             this.tcEvents.Name = "tcEvents";
             this.tcEvents.SelectedIndex = 0;
             this.tcEvents.Size = new System.Drawing.Size(455, 354);
@@ -338,13 +290,15 @@ namespace TombEditor.Forms.TombEngine
             // 
             // darkGroupBox1
             // 
+            this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.darkGroupBox1.Controls.Add(this.darkLabel6);
             this.darkGroupBox1.Controls.Add(this.cbActivatorLara);
             this.darkGroupBox1.Controls.Add(this.cbActivatorNPC);
             this.darkGroupBox1.Controls.Add(this.cbActivatorOtherMoveables);
             this.darkGroupBox1.Controls.Add(this.cbActivatorStatics);
             this.darkGroupBox1.Controls.Add(this.cbActivatorFlyBy);
-            this.darkGroupBox1.Location = new System.Drawing.Point(447, 481);
+            this.darkGroupBox1.Location = new System.Drawing.Point(215, 360);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(449, 31);
             this.darkGroupBox1.TabIndex = 24;
@@ -360,50 +314,16 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel6.TabIndex = 26;
             this.darkLabel6.Text = "Activators:";
             // 
-            // comboboxOnLeave
-            // 
-            this.comboboxOnLeave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnLeave.Location = new System.Drawing.Point(238, 90);
-            this.comboboxOnLeave.Name = "comboboxOnLeave";
-            this.comboboxOnLeave.Size = new System.Drawing.Size(658, 23);
-            this.comboboxOnLeave.TabIndex = 21;
-            // 
-            // comboboxOnInside
-            // 
-            this.comboboxOnInside.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnInside.Location = new System.Drawing.Point(238, 61);
-            this.comboboxOnInside.Name = "comboboxOnInside";
-            this.comboboxOnInside.Size = new System.Drawing.Size(658, 23);
-            this.comboboxOnInside.TabIndex = 19;
-            // 
-            // comboboxOnEnter
-            // 
-            this.comboboxOnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboboxOnEnter.Location = new System.Drawing.Point(238, 32);
-            this.comboboxOnEnter.Name = "comboboxOnEnter";
-            this.comboboxOnEnter.Size = new System.Drawing.Size(658, 23);
-            this.comboboxOnEnter.TabIndex = 17;
-            // 
             // FormVolume
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(904, 550);
+            this.ClientSize = new System.Drawing.Size(670, 428);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.tcEvents);
             this.Controls.Add(this.darkSectionPanel1);
-            this.Controls.Add(this.comboboxOnLeave);
-            this.Controls.Add(this.darkLabel5);
-            this.Controls.Add(this.comboboxOnInside);
-            this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.comboboxOnEnter);
-            this.Controls.Add(this.darkLabel4);
-            this.Controls.Add(this.darkLabel3);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -423,7 +343,6 @@ namespace TombEditor.Forms.TombEngine
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -435,13 +354,6 @@ namespace TombEditor.Forms.TombEngine
         private DarkUI.Controls.DarkCheckBox cbActivatorOtherMoveables;
         private DarkUI.Controls.DarkCheckBox cbActivatorStatics;
         private DarkUI.Controls.DarkCheckBox cbActivatorFlyBy;
-        private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private TombLib.Controls.DarkSearchableComboBox comboboxOnEnter;
-        private TombLib.Controls.DarkSearchableComboBox comboboxOnInside;
-        private TombLib.Controls.DarkSearchableComboBox comboboxOnLeave;
-        private DarkUI.Controls.DarkLabel darkLabel5;
         private DarkSectionPanel darkSectionPanel1;
         private DarkListView listEvents;
         private CustomTabControl tcEvents;
