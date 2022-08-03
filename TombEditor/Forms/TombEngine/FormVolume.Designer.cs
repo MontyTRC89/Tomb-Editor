@@ -137,10 +137,9 @@ namespace TombEditor.Forms.TombEngine
             // 
             // cbActivatorFlyBy
             // 
-            this.cbActivatorFlyBy.AutoSize = true;
             this.cbActivatorFlyBy.Location = new System.Drawing.Point(337, 8);
             this.cbActivatorFlyBy.Name = "cbActivatorFlyBy";
-            this.cbActivatorFlyBy.Size = new System.Drawing.Size(96, 17);
+            this.cbActivatorFlyBy.Size = new System.Drawing.Size(93, 17);
             this.cbActivatorFlyBy.TabIndex = 14;
             this.cbActivatorFlyBy.Text = "Flyby cameras";
             this.toolTip.SetToolTip(this.cbActivatorFlyBy, "Can be activated by flyby cameras");
@@ -286,7 +285,7 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnInside.Controls.Add(this.tmInside);
             this.tabPage_OnInside.Location = new System.Drawing.Point(4, 23);
             this.tabPage_OnInside.Name = "tabPage_OnInside";
-            this.tabPage_OnInside.Size = new System.Drawing.Size(447, 298);
+            this.tabPage_OnInside.Size = new System.Drawing.Size(431, 291);
             this.tabPage_OnInside.TabIndex = 1;
             this.tabPage_OnInside.Text = "When inside";
             // 
@@ -297,7 +296,7 @@ namespace TombEditor.Forms.TombEngine
             this.tmInside.Location = new System.Drawing.Point(0, 0);
             this.tmInside.Name = "tmInside";
             this.tmInside.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmInside.Size = new System.Drawing.Size(447, 298);
+            this.tmInside.Size = new System.Drawing.Size(431, 291);
             this.tmInside.TabIndex = 1;
             // 
             // tabPage_OnLeave
@@ -306,7 +305,7 @@ namespace TombEditor.Forms.TombEngine
             this.tabPage_OnLeave.Controls.Add(this.tmLeave);
             this.tabPage_OnLeave.Location = new System.Drawing.Point(4, 23);
             this.tabPage_OnLeave.Name = "tabPage_OnLeave";
-            this.tabPage_OnLeave.Size = new System.Drawing.Size(447, 298);
+            this.tabPage_OnLeave.Size = new System.Drawing.Size(431, 291);
             this.tabPage_OnLeave.TabIndex = 2;
             this.tabPage_OnLeave.Text = "When leaving";
             // 
@@ -317,7 +316,7 @@ namespace TombEditor.Forms.TombEngine
             this.tmLeave.Location = new System.Drawing.Point(0, 0);
             this.tmLeave.Name = "tmLeave";
             this.tmLeave.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmLeave.Size = new System.Drawing.Size(447, 298);
+            this.tmLeave.Size = new System.Drawing.Size(431, 291);
             this.tmLeave.TabIndex = 1;
             // 
             // grpActivators
@@ -362,6 +361,7 @@ namespace TombEditor.Forms.TombEngine
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbName.Location = new System.Drawing.Point(257, 6);
             this.tbName.Name = "tbName";
+            this.tbName.SelectOnClick = true;
             this.tbName.Size = new System.Drawing.Size(391, 22);
             this.tbName.TabIndex = 28;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);

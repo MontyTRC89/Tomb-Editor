@@ -135,7 +135,6 @@ namespace TombEditor.Forms.TombEngine
             FindAndSelectEventSet();
 
             tbName.Focus();
-            tbName.SelectAll();
         }
 
         private void butCloneEventSet_Click(object sender, EventArgs e)
