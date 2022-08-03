@@ -60,7 +60,12 @@ namespace TombEditor.Forms.TombEngine
 
             var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
             for (int i = 0; i < volumes.Count; i++)
-                volumes[i].EventSet = _editor.Level.Settings.EventSets[_backupEventSetIndices[i]];
+            {
+                if (_backupEventSetIndices[i] >= 0)
+                    volumes[i].EventSet = _editor.Level.Settings.EventSets[_backupEventSetIndices[i]];
+                else
+                    volumes[i].EventSet = null; // Paranoia
+            }
         }
 
         private void PopulateEventSetList()
