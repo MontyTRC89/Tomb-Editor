@@ -380,7 +380,6 @@ namespace TombEditor.Forms.TombEngine
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(670, 460);
             this.Name = "FormVolume";
