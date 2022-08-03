@@ -356,7 +356,6 @@ namespace TombEditor.Forms.TombEngine
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormVolume";

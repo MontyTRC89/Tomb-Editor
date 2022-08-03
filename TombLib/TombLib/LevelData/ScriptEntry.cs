@@ -95,9 +95,9 @@ namespace TombLib.LevelData
                 result = result.Substring(0, result.Length - 2) + "\n";
             }
 
-            result += (OnEnter?.Function  ?? string.Empty) == string.Empty ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n" +
-                      (OnInside?.Function ?? string.Empty) == string.Empty ? string.Empty : "OnInside: " + OnInside.Function + "\n" +
-                      (OnLeave?.Function  ?? string.Empty) == string.Empty ? string.Empty : "OnLeave: "  + OnLeave.Function;
+            result += (string.IsNullOrEmpty(OnEnter?.Function  ?? string.Empty) ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n") +
+                      (string.IsNullOrEmpty(OnInside?.Function ?? string.Empty) ? string.Empty : "OnInside: " + OnInside.Function + "\n") +
+                      (string.IsNullOrEmpty(OnLeave?.Function  ?? string.Empty) ? string.Empty : "OnLeave: "  + OnLeave.Function);
 
             return result;
         }

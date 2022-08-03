@@ -125,13 +125,10 @@ namespace TombEditor.Controls
 
         private void lstFunctions_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (lstFunctions.SelectedItems.Count == 0)
-                return; 
-            
             if (_event == null)
                 return;
 
-            _event.Function = lstFunctions.SelectedItem.Text;
+            _event.Function = lstFunctions.SelectedItem?.Text ?? string.Empty;
             lblNotify.Visible = false;
         }
 
