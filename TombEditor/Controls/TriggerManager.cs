@@ -44,7 +44,7 @@ namespace TombEditor.Controls
         private void SelectTriggerMode()
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
-            butSearch.Visible = butUnassign.Visible = rbLevelScript.Checked;
+            butSearch.Visible = butUnassign.Visible = lblNotify.Visible = rbLevelScript.Checked;
 
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
@@ -101,7 +101,7 @@ namespace TombEditor.Controls
                     return;
                 }
 
-            lblNotify.Text = "Referenced function '" + _event.Function + "' was not found!";
+            lblNotify.Text = "Not found: '" + _event.Function + "'";
             lblNotify.Visible = true;
         }
 

@@ -74,13 +74,15 @@ namespace TombEditor.Controls
             // 
             this.lblNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblNotify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblNotify.Location = new System.Drawing.Point(236, 7);
+            this.lblNotify.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblNotify.Location = new System.Drawing.Point(236, 6);
             this.lblNotify.Name = "lblNotify";
             this.lblNotify.Size = new System.Drawing.Size(461, 13);
             this.lblNotify.TabIndex = 4;
             this.lblNotify.Text = "Event notify";
             this.lblNotify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.toolTip.SetToolTip(this.lblNotify, "A function which was linked to current event was not found in script file.\r\nPleas" +
+        "e select another one or restore linked function in script.");
             this.lblNotify.Visible = false;
             // 
             // butUnassign
