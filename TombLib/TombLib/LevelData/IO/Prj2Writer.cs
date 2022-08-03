@@ -776,7 +776,8 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Position);
 
                             int eventSetID = -1;
-                            levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
+                            if (instance.EventSet != null)
+                                levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
                             chunkIO.Raw.Write(eventSetID);
                         }
                     else if (o is TriggerInstance)
