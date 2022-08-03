@@ -123,7 +123,8 @@ namespace TombLib.LevelData.IO
             {
                 _settings = settings;
                 ImportedGeometries = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer(_settings));
-                LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>()); 
+                LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
+                EventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
