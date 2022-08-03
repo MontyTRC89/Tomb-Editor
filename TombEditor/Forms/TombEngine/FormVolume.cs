@@ -73,6 +73,8 @@ namespace TombEditor.Forms.TombEngine
             tmInside.Event = _instance.EventSet.OnInside;
             tmLeave.Event = _instance.EventSet.OnLeave;
 
+            tbName.Text = _instance.EventSet.Name;
+
             _lockUI = false;
         }
 
@@ -91,8 +93,13 @@ namespace TombEditor.Forms.TombEngine
 
         private void UpdateUI()
         {
-            grpActivators.Enabled = tcEvents.Enabled = butUnassignEventSet.Enabled = _instance.EventSet != null;
-            butCloneEventSet.Enabled = butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
+            tbName.Enabled = 
+            grpActivators.Enabled = 
+            tcEvents.Enabled = 
+            butUnassignEventSet.Enabled = _instance.EventSet != null;
+
+            butCloneEventSet.Enabled = 
+            butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -126,10 +133,16 @@ namespace TombEditor.Forms.TombEngine
 
             PopulateEventSetList();
             FindAndSelectEventSet();
+
+            tbName.Focus();
+            tbName.SelectAll();
         }
 
         private void butCloneEventSet_Click(object sender, EventArgs e)
         {
+            if (_instance.EventSet == null)
+                return;
+
             var clonedSet = _instance.EventSet.Clone();
             _editor.Level.Settings.EventSets.Add(clonedSet);
             _instance.EventSet = clonedSet;
@@ -155,6 +168,14 @@ namespace TombEditor.Forms.TombEngine
         private void cbActivators_CheckedChanged(object sender, EventArgs e)
         {
             ModifyActivators();
+        }
+
+        private void tbName_TextChanged(object sender, EventArgs e)
+        {
+            if (_instance.EventSet == null || _lockUI)
+                return;
+
+            _instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
         }
     }
 }
