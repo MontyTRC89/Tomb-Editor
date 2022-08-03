@@ -45,6 +45,7 @@ namespace TombEditor.Forms.TombEngine
                 {
                     lstEvents.ClearSelection();
                     lstEvents.SelectItem(i);
+                    return;
                 }
 
             lstEvents.ClearSelection();

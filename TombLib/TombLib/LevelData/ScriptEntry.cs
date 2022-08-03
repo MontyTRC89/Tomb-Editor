@@ -21,6 +21,7 @@ namespace TombLib.LevelData
     [Flags]
     public enum VolumeActivators : int
     {
+        None = 0,
         Player = 1,
         NPCs = 2,
         OtherMoveables = 4,
@@ -81,16 +82,18 @@ namespace TombLib.LevelData
         }
         public string GetDescription()
         {
-            string result;
+            string result = string.Empty;
 
-            result = "Event set '" + Name + "', Activated by: " +
-                     ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
-                     ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
-                     ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
-                     ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
-                     ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
-
-            result = result.Substring(0, result.Length - 2) + "\n";
+            if (Activators != VolumeActivators.None)
+            {
+                result = "Event set '" + Name + "', Activated by: " +
+                         ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
+                         ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
+                         ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
+                         ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
+                         ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+                result = result.Substring(0, result.Length - 2) + "\n";
+            }
 
             result += (OnEnter?.Function  ?? string.Empty) == string.Empty ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n" +
                       (OnInside?.Function ?? string.Empty) == string.Empty ? string.Empty : "OnInside: " + OnInside.Function + "\n" +
