@@ -30,6 +30,7 @@ namespace TombEditor.Forms.TombEngine
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.cbActivatorLara = new DarkUI.Controls.DarkCheckBox();
@@ -52,6 +53,8 @@ namespace TombEditor.Forms.TombEngine
             this.tmLeave = new TombEditor.Controls.TriggerManager();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
+            this.butUnassign = new DarkUI.Controls.DarkButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.darkSectionPanel1.SuspendLayout();
             this.darkPanel1.SuspendLayout();
             this.tcEvents.SuspendLayout();
@@ -94,6 +97,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorLara.Size = new System.Drawing.Size(47, 17);
             this.cbActivatorLara.TabIndex = 10;
             this.cbActivatorLara.Text = "Lara";
+            this.toolTip.SetToolTip(this.cbActivatorLara, "Can be activated by Lara");
             // 
             // cbActivatorNPC
             // 
@@ -103,33 +107,37 @@ namespace TombEditor.Forms.TombEngine
             this.cbActivatorNPC.Size = new System.Drawing.Size(47, 17);
             this.cbActivatorNPC.TabIndex = 11;
             this.cbActivatorNPC.Text = "NPC";
+            this.toolTip.SetToolTip(this.cbActivatorNPC, "Can be activated by creatures");
             // 
             // cbActivatorOtherMoveables
             // 
             this.cbActivatorOtherMoveables.AutoSize = true;
-            this.cbActivatorOtherMoveables.Location = new System.Drawing.Point(172, 8);
+            this.cbActivatorOtherMoveables.Location = new System.Drawing.Point(173, 8);
             this.cbActivatorOtherMoveables.Name = "cbActivatorOtherMoveables";
             this.cbActivatorOtherMoveables.Size = new System.Drawing.Size(96, 17);
             this.cbActivatorOtherMoveables.TabIndex = 12;
             this.cbActivatorOtherMoveables.Text = "Other objects";
+            this.toolTip.SetToolTip(this.cbActivatorOtherMoveables, "Can be activated by other moveables, such as rolling balls");
             // 
             // cbActivatorStatics
             // 
             this.cbActivatorStatics.AutoSize = true;
-            this.cbActivatorStatics.Location = new System.Drawing.Point(269, 8);
+            this.cbActivatorStatics.Location = new System.Drawing.Point(272, 8);
             this.cbActivatorStatics.Name = "cbActivatorStatics";
             this.cbActivatorStatics.Size = new System.Drawing.Size(59, 17);
             this.cbActivatorStatics.TabIndex = 13;
             this.cbActivatorStatics.Text = "Statics";
+            this.toolTip.SetToolTip(this.cbActivatorStatics, "Can be activated by shattering statics");
             // 
             // cbActivatorFlyBy
             // 
             this.cbActivatorFlyBy.AutoSize = true;
-            this.cbActivatorFlyBy.Location = new System.Drawing.Point(334, 8);
+            this.cbActivatorFlyBy.Location = new System.Drawing.Point(337, 8);
             this.cbActivatorFlyBy.Name = "cbActivatorFlyBy";
-            this.cbActivatorFlyBy.Size = new System.Drawing.Size(91, 17);
+            this.cbActivatorFlyBy.Size = new System.Drawing.Size(96, 17);
             this.cbActivatorFlyBy.TabIndex = 14;
-            this.cbActivatorFlyBy.Text = "Flyby camera";
+            this.cbActivatorFlyBy.Text = "Flyby cameras";
+            this.toolTip.SetToolTip(this.cbActivatorFlyBy, "Can be activated by flyby cameras");
             // 
             // darkSectionPanel1
             // 
@@ -139,7 +147,7 @@ namespace TombEditor.Forms.TombEngine
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
             this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = "Events";
+            this.darkSectionPanel1.SectionHeader = "Event sets";
             this.darkSectionPanel1.Size = new System.Drawing.Size(200, 385);
             this.darkSectionPanel1.TabIndex = 22;
             // 
@@ -155,6 +163,7 @@ namespace TombEditor.Forms.TombEngine
             // 
             // darkPanel1
             // 
+            this.darkPanel1.Controls.Add(this.butUnassign);
             this.darkPanel1.Controls.Add(this.darkButton1);
             this.darkPanel1.Controls.Add(this.butNewRoom);
             this.darkPanel1.Controls.Add(this.butEditRoomName);
@@ -166,7 +175,6 @@ namespace TombEditor.Forms.TombEngine
             // 
             // darkButton1
             // 
-            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkButton1.Checked = false;
             this.darkButton1.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.darkButton1.Location = new System.Drawing.Point(62, 3);
@@ -174,10 +182,10 @@ namespace TombEditor.Forms.TombEngine
             this.darkButton1.Size = new System.Drawing.Size(23, 23);
             this.darkButton1.TabIndex = 20;
             this.darkButton1.Tag = "AddNewRoom";
+            this.toolTip.SetToolTip(this.darkButton1, "Delete selected event set");
             // 
             // butNewRoom
             // 
-            this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butNewRoom.Checked = false;
             this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butNewRoom.Location = new System.Drawing.Point(33, 3);
@@ -185,10 +193,10 @@ namespace TombEditor.Forms.TombEngine
             this.butNewRoom.Size = new System.Drawing.Size(23, 23);
             this.butNewRoom.TabIndex = 19;
             this.butNewRoom.Tag = "AddNewRoom";
+            this.toolTip.SetToolTip(this.butNewRoom, "Copy selected event set");
             // 
             // butEditRoomName
             // 
-            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butEditRoomName.Checked = false;
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butEditRoomName.Location = new System.Drawing.Point(4, 3);
@@ -196,6 +204,7 @@ namespace TombEditor.Forms.TombEngine
             this.butEditRoomName.Size = new System.Drawing.Size(23, 23);
             this.butEditRoomName.TabIndex = 18;
             this.butEditRoomName.Tag = "EditRoomName";
+            this.toolTip.SetToolTip(this.butEditRoomName, "Add new event set");
             // 
             // tcEvents
             // 
@@ -314,6 +323,17 @@ namespace TombEditor.Forms.TombEngine
             this.darkLabel6.TabIndex = 26;
             this.darkLabel6.Text = "Activators:";
             // 
+            // butUnassign
+            // 
+            this.butUnassign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUnassign.Checked = false;
+            this.butUnassign.Image = global::TombEditor.Properties.Resources.actions_delete_16;
+            this.butUnassign.Location = new System.Drawing.Point(171, 3);
+            this.butUnassign.Name = "butUnassign";
+            this.butUnassign.Size = new System.Drawing.Size(23, 23);
+            this.butUnassign.TabIndex = 25;
+            this.toolTip.SetToolTip(this.butUnassign, "Unassign event set from volume");
+            // 
             // FormVolume
             // 
             this.AcceptButton = this.butOk;
@@ -369,5 +389,7 @@ namespace TombEditor.Forms.TombEngine
         private DarkButton butEditRoomName;
         private DarkGroupBox darkGroupBox1;
         private DarkLabel darkLabel6;
+        private DarkButton butUnassign;
+        private ToolTip toolTip;
     }
 }
