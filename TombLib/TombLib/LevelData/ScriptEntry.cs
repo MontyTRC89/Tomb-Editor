@@ -52,6 +52,7 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable
     {
         public string Name = string.Empty;
+        public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.
         // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
@@ -60,10 +61,9 @@ namespace TombLib.LevelData
         public VolumeEvent OnLeave;
         public VolumeEvent OnInside;
 
-        public VolumeActivators Activators;
-
         public VolumeEventSet()
         {
+            Activators = VolumeActivators.Player;
             OnEnter = new VolumeEvent();
             OnInside = new VolumeEvent();
             OnLeave = new VolumeEvent();
