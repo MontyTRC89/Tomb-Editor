@@ -4302,9 +4302,6 @@
         <WadSample>
           <FileName>TR4_Big_Scorpion_Feet_01.wav</FileName>
         </WadSample>
-        <WadSample>
-          <FileName>Sc6.wav</FileName>
-        </WadSample>
       </Samples>
       <Global>true</Global>
       <Indexed>false</Indexed>

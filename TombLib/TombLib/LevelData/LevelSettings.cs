@@ -541,6 +541,33 @@ namespace TombLib.LevelData
             }
         }
 
+        public bool LoadDefaultWad()
+        {
+            string wadName = string.Empty;
+
+            switch (GameVersion.Native())
+            {
+                case TRVersion.Game.TombEngine:
+                    wadName = DefaultPaths.ProgramDirectory + "\\Assets\\Wads\\TombEngine.wad2";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(wadName) && File.Exists(wadName))
+            {
+                try
+                {
+                    Wads.Add(new ReferencedWad(this, MakeRelative(wadName, VariableType.EditorDirectory)));
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Unable to load default wad! Exception: " + ex);
+                }
+            }
+
+            return false;
+        }
+
         public bool LoadDefaultSoundCatalog()
         {
             string catalogName = string.Empty;

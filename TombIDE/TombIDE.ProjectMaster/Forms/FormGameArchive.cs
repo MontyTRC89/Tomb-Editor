@@ -139,7 +139,8 @@ namespace TombIDE.ProjectMaster.Forms
 			{
 				Path.Combine(_ide.Project.EnginePath, "audio"),
 				Path.Combine(_ide.Project.EnginePath, "data"),
-				Path.Combine(_ide.Project.EnginePath, "pix")
+				Path.Combine(_ide.Project.EnginePath, "pix"),
+				Path.Combine(_ide.Project.EnginePath, "patches")
 			};
 
 			string[] importantFiles = new string[]
@@ -162,7 +163,7 @@ namespace TombIDE.ProjectMaster.Forms
 		{
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "audio"),
+				Path.Combine(_ide.Project.EnginePath, "Audio"),
 				Path.Combine(_ide.Project.EnginePath, "Data"),
 				Path.Combine(_ide.Project.EnginePath, "Screens"),
 				Path.Combine(_ide.Project.EnginePath, "Scripts"),
@@ -225,7 +226,7 @@ namespace TombIDE.ProjectMaster.Forms
 				File.Copy(_ide.Project.LaunchFilePath, Path.Combine(tempDirectory, Path.GetFileName(_ide.Project.LaunchFilePath)), true);
 
 			if (!string.IsNullOrWhiteSpace(readmeText))
-				File.WriteAllText(Path.Combine(tempDirectory, "readme.txt"), readmeText);
+				File.WriteAllText(Path.Combine(tempDirectory, "README.txt"), readmeText);
 
 			if (File.Exists(filePath))
 				File.Delete(filePath);

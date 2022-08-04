@@ -1,6 +1,9 @@
 Version 1.5.1
 =============
 
+General:
+ * First release with official support for Tomb Engine (TEN).
+
 Tomb Editor:
  * Fix ghost blocks causing room geometry clipping when placed on floor portals.
  * Fix serious memory leak when switching between objects in item browser.
@@ -20,6 +23,10 @@ Tomb Editor:
 WadTool:
  * Add options to convert selected objects from/to dynamic light model.
  * Add option to convert loaded destination wad to TombEngine format.
+ * Fix batch animation import not importing to correct slots.
+ 
+TombIDE:
+ * Added basic support for TEN project setup, engine and assets bundle included (except textures).
 
 Version 1.5
 ===========
