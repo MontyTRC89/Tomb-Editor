@@ -440,8 +440,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
-                int index = OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet);
-                writer.Write(index);
+                writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
             }
 
             // Write final data
