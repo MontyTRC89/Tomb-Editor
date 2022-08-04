@@ -25,4 +25,6 @@ FOR /d %%F IN (packages?) DO (
 	@IF EXIST %%F RMDIR /S /Q "%%F"
 )
 
+RMDIR /S /Q ".vs"
+
 @pause
