@@ -99,6 +99,10 @@
 			<moveable id="74" name="Cogs (animated)" essential="false" t5m="ANIMATING101" />
 			<moveable id="75" name="Cogs (animated)" essential="false" t5m="ANIMATING102" />
 			<moveable id="76" name="Cogs (animated)" essential="false" t5m="ANIMATING103" />
+			<moveable id="77" name="Cutscene Object 1" essential="false" t5m="ANIMATING_104" />
+			<moveable id="78" name="Cutscene Object 2" essential="false" t5m="ANIMATING_105" />
+			<moveable id="79" name="Cutscene Object 3" essential="false" t5m="ANIMATING_106" />
+			<moveable id="80" name="Cutscene Object 4" essential="false" t5m="ANIMATING_107" />
 			<moveable id="81" name="Passport (closed)" hidden="true" t5m="PC_SAVE_INV_ITEM" />
 			<moveable id="82" name="Natla's logo" essential="false" hidden="true" t5m="ANIMATING80" />
 			<moveable id="83" name="Save crystal" t5m="ANIMATING81" />
@@ -719,7 +723,7 @@
 			<moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" />
 			<moveable id="63" name="Drawbridge" essential="false" />
 			<moveable id="64" name="Slamming door" essential="false" />
-			<moveable id="65" name="Elevator" essential="false" />
+			<moveable id="65" name="Elevator" essential="false" t5m="LIFT" />
 			<moveable id="66" name="Minisub" essential="false" />
 			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
 			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
@@ -747,6 +751,10 @@
 			<moveable id="94" name="Underwater propeller" essential="false" t5m="PROPELLER_H" />
 			<moveable id="95" name="Air fan" essential="false" t5m="ANIMATING1" />
 			<moveable id="96" name="Swinging box / spiky ball" essential="false" t5m="SPIKEBALL" />
+			<moveable id="97" name="Cutscene Object 1" t5m="ANIMATING101" />
+			<moveable id="98" name="Cutscene Object 2" t5m="ANIMATING102" />
+			<moveable id="99" name="Cutscene Object 3" t5m="ANIMATING103" />
+			<moveable id="100" name="Cutscene Object 4" t5m="ANIMATING104" />
 			<moveable id="101" name="Rolling storage drums" essential="false" t5m="ROLLINGBARREL" />
 			<moveable id="102" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="103" name="Above-water switch" essential="false" t5m="SWITCH_TYPE3" />
@@ -769,6 +777,16 @@
 			<moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
 			<moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
 			<moveable id="122" name="Lara and butler picture" hidden="true" t5m="INVENTORY_POLAROID" />
+			<moveable id="123" name="Cutscene_Object 5" t5m="ANIMATING105" />
+			<moveable id="124" name="Cutscene Object 6" t5m="ANIMATING106" />
+			<moveable id="125" name="Cutscene Object 7" t5m="ANIMATING107" />
+			<moveable id="126" name="Cutscene Object 8" t5m="ANIMATING108" />
+			<moveable id="127" name="Cutscene Object 9" t5m="ANIMATING109" />
+			<moveable id="128" name="Cutscene Object 10" t5m="ANIMATING110" />
+			<moveable id="129" name="Cutscene Object 11" t5m="ANIMATING111" />
+			<moveable id="130" name="Cutscene Object 12" t5m="ANIMATING112" />
+			<moveable id="131" name="Cutscene Object 13" t5m="ANIMATING113" />
+			<moveable id="132" name="Cutscene Object 14" t5m="ANIMATING114" />
 			<moveable id="133" name="Secret #3" id2="192" use_body_from="248" />
 			<moveable id="134" name="Natla's logo" hidden="true" />
 			<moveable id="152" name="Flare" t5m="FLARE_ITEM" />
@@ -989,7 +1007,7 @@
 			<sound id="82" name="PORTCULLIS_UP" t5m="82" />
 			<sound id="83" name="PORTCULLIS_DOWN" t5m="83" />
 			<sound id="84" name="DOG_FEET1" t5m="525" />
-			<sound id="85" name="BODY_SLAM" t5m="85" />
+			<sound id="85" name="BODY_SLAM" t5m="143" />
 			<sound id="86" name="DOG_BARK1" t5m="526" />
 			<sound id="87" name="DOG_FEET2" t5m="525" />
 			<sound id="88" name="DOG_BARK2" t5m="527" />
@@ -1468,6 +1486,15 @@
 			<moveable id="145" name="Passport (opening up)" t5m="INVENTORY_PASSPORT" hidden="true" />
 			<moveable id="146" name="Stopwatch" hidden="true" />
 			<moveable id="147" name="Lara and butler picture" t5m="INVENTORY_POLAROID" hidden="true" />
+			<moveable id="148" name="Cutscene Object 1" t5m="ANIMATING101" />
+			<moveable id="149" name="Cutscene Object 2" t5m="ANIMATING102" />
+			<moveable id="150" name="Cutscene Object 3" t5m="ANIMATING103" />
+			<moveable id="151" name="Cutscene Object 4" t5m="ANIMATING104" />
+			<moveable id="152" name="Cutscene Object 5" t5m="ANIMATING105" />
+			<moveable id="153" name="Cutscene Object 6" t5m="ANIMATING106" />
+			<moveable id="154" name="Cutscene Object 7" t5m="ANIMATING107" />
+			<moveable id="155" name="Cutscene Object 8" t5m="ANIMATING108" />
+			<moveable id="156" name="Cutscene Object 9" t5m="ANIMATING109" />
 			<moveable id="158" name="Passport (closed)" hidden="true" />
 			<moveable id="159" name="Bar with 'N' logo" hidden="true" />
 			<moveable id="160" name="Pistols (pickup)" essential="false" t5m="PISTOL_ITEM"  />
@@ -5237,7 +5264,7 @@
 			<sound id="95" name="AGENT/HITMAN_FEET" description="Agent/hitman feet" t5m="901" />
 			<sound id="96" name="*LARSON_ARGGHH*" description="*larson argghh*" />
 			<sound id="97" name="LARSON_GUNS" description="Larson guns" t5m="1132" />
-			<sound id="98" name="*LARSON_GROAN*" description="*larson groan*" />
+			<sound id="98" name="*LARSON_GROAN*" description="*larson groan*" t5m="237"/>
 			<sound id="99" name="AGENT/HITMAN_LAND" description="Agent/hitman land" t5m="903" />
 			<sound id="100" name="LION_FEET" description="Lion feet" t5m="977" />
 			<sound id="101" name="LION_GROWL" description="Lion growl" t5m="978" />
@@ -7201,9 +7228,9 @@
 			<sound id="479" name="TR2_HENCHMAN_AH_DYING" t5m="479" />
 			<sound id="480" name="TR2_HENCHMAN_CLIMBUP" t5m="480" />
 			<sound id="481" name="TR2_HENCHMAN_LOADING_SHOTGUN" t5m="481" />
-			<sound id="482" name="TR2_HENCHMAN_DEATH1" t5m="482" />
+			<sound id="482" name="TR2_HENCHMAN_DEATH1" t5m="484" />
 			<sound id="483" name="TR2_HENCHMAN_DEATH2" t5m="483" />
-			<sound id="484" name="TR2_HENCHMAN_DEATH3" t5m="484" />
+			<sound id="484" name="TR2_HENCHMAN_DEATH3" t5m="482" />
 			<sound id="485" name="TR2_HENCHMAN_FEET" t5m="485" />
 			<sound id="486" name="TR2_HENCHMAN_FEET_SNOW" t5m="486" />
 			<sound id="487" name="TR2_HENCHMAN_FIRE_SEMIAUTO" t5m="487" />
