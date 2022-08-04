@@ -78,7 +78,7 @@ namespace TombLib.LevelData
         {
             writer.Write((int)Mode);
             writer.Write(Function);
-            writer.Write(Argument);
+            writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
             writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
         }
     }
