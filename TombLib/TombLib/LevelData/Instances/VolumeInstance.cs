@@ -37,6 +37,8 @@ namespace TombLib.LevelData
 
     public class VolumeEvent : ICloneable, IEquatable<VolumeEvent>
     {
+        private const int _noCallCounter = -1;
+
         public VolumeEventMode Mode = VolumeEventMode.LevelScript;
         public string Function { get; set; } = string.Empty;
         public string Argument { get; set; } = string.Empty;
@@ -77,7 +79,7 @@ namespace TombLib.LevelData
             writer.Write((int)Mode);
             writer.Write(Function);
             writer.Write(Argument);
-            writer.Write(CallCounter != 0 ? CallCounter : -1);
+            writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
         }
     }
 
