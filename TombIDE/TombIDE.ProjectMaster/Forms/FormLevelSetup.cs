@@ -147,6 +147,7 @@ namespace TombIDE.ProjectMaster
 				}
 
 				level.Settings.LoadDefaultSoundCatalog();
+				level.Settings.LoadDefaultWad();
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
