@@ -450,13 +450,13 @@ namespace TombIDE
 					{
 						if (entry.FullName.EndsWith("/"))
 						{
-							string dirPath = Path.Combine(project.EnginePath, entry.FullName);
+							string dirPath = Path.Combine(project.ProjectPath, entry.FullName);
 
 							if (!Directory.Exists(dirPath))
 								Directory.CreateDirectory(dirPath);
 						}
 						else
-							entry.ExtractToFile(Path.Combine(project.EnginePath, entry.FullName), true);
+							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName), true);
 
 						progressBar.Increment(1);
 					}
