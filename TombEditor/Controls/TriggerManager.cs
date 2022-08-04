@@ -144,7 +144,11 @@ namespace TombEditor.Controls
                 return;
 
             if (_event == null || string.IsNullOrEmpty(_event.Function))
+            {
+                lblNotify.Visible = false;
+                lstFunctions.ClearSelection();
                 return;
+            }
 
             for (int i = 0; i < lstFunctions.Items.Count; i++)
                 if (lstFunctions.Items[i].Text == _event.Function)
@@ -154,8 +158,11 @@ namespace TombEditor.Controls
                     return;
                 }
 
+            _lockUI = true;
+            lstFunctions.ClearSelection();
             lblNotify.Text = "Not found: '" + _event.Function + "'";
             lblNotify.Visible = true;
+            _lockUI = false;
         }
 
         private void ConstructVisualTrigger()
@@ -179,7 +186,7 @@ namespace TombEditor.Controls
 
         private void lstFunctions_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (_event == null)
+            if (_event == null || _lockUI)
                 return;
 
             _event.Function = lstFunctions.SelectedItem?.Text ?? string.Empty;

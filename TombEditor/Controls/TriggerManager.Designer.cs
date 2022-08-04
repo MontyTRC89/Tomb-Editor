@@ -8,19 +8,6 @@ namespace TombEditor.Controls
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Component Designer generated code
 
         /// <summary> 
@@ -75,6 +62,7 @@ namespace TombEditor.Controls
             // 
             this.lblNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNotify.AutoEllipsis = true;
             this.lblNotify.ForeColor = System.Drawing.Color.DarkGray;
             this.lblNotify.Location = new System.Drawing.Point(236, 6);
             this.lblNotify.Name = "lblNotify";
@@ -113,6 +101,7 @@ namespace TombEditor.Controls
             // rbConstructor
             // 
             this.rbConstructor.AutoSize = true;
+            this.rbConstructor.Enabled = false;
             this.rbConstructor.Location = new System.Drawing.Point(144, 5);
             this.rbConstructor.Name = "rbConstructor";
             this.rbConstructor.Size = new System.Drawing.Size(86, 17);
