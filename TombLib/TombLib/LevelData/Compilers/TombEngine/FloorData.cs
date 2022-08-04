@@ -9,25 +9,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        // Triggers data
-        private List<string> _luaFunctions;
-
         private void BuildFloorData()
         {
             ReportProgress(53, "Building floordata");
-
-            // Collect all LUA functions
-            _luaFunctions = new List<string>();
-            foreach (var room in _level.ExistingRooms)
-                foreach (var volume in room.Volumes)
-                {
-                    if (volume.Scripts.OnEnter != null && !_luaFunctions.Contains(volume.Scripts.OnEnter))
-                        _luaFunctions.Add(volume.Scripts.OnEnter);
-                    if (volume.Scripts.OnInside != null && !_luaFunctions.Contains(volume.Scripts.OnInside))
-                        _luaFunctions.Add(volume.Scripts.OnInside);
-                    if (volume.Scripts.OnLeave != null && !_luaFunctions.Contains(volume.Scripts.OnLeave))
-                        _luaFunctions.Add(volume.Scripts.OnLeave);
-                }
 
             for (var i = 0; i < _level.Rooms.Length; i++)
             {
@@ -173,9 +157,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Collect all valid triggers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
-
-            string path = _level.Settings.MakeAbsolute(_level.Settings.TenLuaScriptFile);
-            var validFunctionNames = ScriptingUtils.GetAllFunctionsNames(path);
            
             // Filter out singular key/switch triggers, as they are technically invalid in engine
             if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key ||
@@ -350,22 +331,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             // Trigger for LUA script
                             if (!(trigger.Target is TriggerParameterString))
                             {
-                                throw new Exception("A LUA Script trigger must reference a LUA function! ('" + trigger + "')");
+                                throw new Exception("A LUA Script trigger must reference an event set! ('" + trigger + "')");
                             }
 
-                            string functionName = (trigger.Target as TriggerParameterString).Value;
-                            if (!validFunctionNames.Contains(functionName))
+                            string setName = (trigger.Target as TriggerParameterString).Value;
+                            if (!_level.Settings.EventSets.Any(s => s.Name == setName))
                             {
-                                _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing Lua function " + functionName + "().");
+                                _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing event set '" + setName + "'.");
                                 continue;
                             }
 
-                            if (!_luaFunctions.Contains(functionName))
-                            {
-                                _luaFunctions.Add(functionName);
-                            }
-
-                            trigger2 = (ushort)((_luaFunctions.IndexOf(functionName)) & 0x3ff | (16 << 10));
+                            trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & 0x3ff | (16 << 10));
                             result.Add(trigger2);
                             
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);

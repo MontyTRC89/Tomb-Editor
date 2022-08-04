@@ -84,7 +84,6 @@ namespace TombLib.LevelData.IO
 
                 if (level != null)
                 {
-
                     // Link objects
                     foreach (var objectLinkAction in objectLinkActions)
                         try
@@ -144,6 +143,7 @@ namespace TombLib.LevelData.IO
         {
             public Dictionary<long, ImportedGeometry> ImportedGeometries { get; set; } = new Dictionary<long, ImportedGeometry>();
             public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
+            public Dictionary<long, VolumeEventSet> EventSets { get; set; } = new Dictionary<long, VolumeEventSet>();
         }
 
         private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, ref LevelSettings settingsOuter, Settings loadingSettings, IProgressReporter progressReporter = null)
@@ -161,6 +161,7 @@ namespace TombLib.LevelData.IO
             var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
+            var eventSetsToLoad = new Dictionary<VolumeEventSet, string>(new ReferenceEqualityComparer<VolumeEventSet>());
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -470,6 +471,70 @@ namespace TombLib.LevelData.IO
                     settings.ImportedGeometries = importedGeometries.Values.ToList();
                     levelSettingsIds.ImportedGeometries = importedGeometries;
                     importedGeometriesToLoad = toLoad;
+                }
+                else if (id == Prj2Chunks.EventSets)
+                {
+                    progressReporter?.ReportInfo("Reading event sets...");
+
+                    //var eventSetsToLoad = new Dictionary<VolumeEventSet, string>(new ReferenceEqualityComparer<VolumeEventSet>());
+
+                    var eventSets = new Dictionary<long, VolumeEventSet>();
+
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.EventSet)
+                            return false;
+
+                        var eventSet = new VolumeEventSet();
+                        long eventSetIndex = long.MinValue;
+
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.EventSetIndex)
+                                eventSetIndex = chunkIO.ReadChunkInt(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetName)
+                                eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetActivators)
+                                eventSet.Activators = (VolumeActivators)chunkIO.ReadChunkInt(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetOnEnter  ||
+                                     id3 == Prj2Chunks.EventSetOnInside ||
+                                     id3 == Prj2Chunks.EventSetOnLeave)
+                            {
+                                var evt = new VolumeEvent();
+
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 == Prj2Chunks.EventMode)
+                                        evt.Mode = (VolumeEventMode)chunkIO.ReadChunkInt(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventFunction)
+                                        evt.Function = chunkIO.ReadChunkString(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventArgument)
+                                        evt.Argument = chunkIO.ReadChunkString(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventCallCounter)
+                                        evt.CallCounter = chunkIO.ReadChunkInt(chunkSize4);
+                                    else
+                                        return false;
+                                    return true;
+                                });
+
+                                if (id3 == Prj2Chunks.EventSetOnEnter)
+                                    eventSet.OnEnter = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnInside)
+                                    eventSet.OnInside = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnLeave)
+                                    eventSet.OnLeave = evt;
+                            }
+                            else
+                                return false;
+                            return true;
+                        });
+
+                        eventSets.Add(eventSetIndex, eventSet);
+                        return true;
+                    });
+
+                    settings.EventSets = eventSets.Values.ToList();
+                    levelSettingsIds.EventSets = eventSets;
                 }
                 else if (id == Prj2Chunks.AnimatedTextureSets)
                 {
@@ -1496,11 +1561,11 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);                    
                 }
-                else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
+                else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest ||
+                         id3 == Prj2Chunks.ObjectTriggerVolume1)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
-                    var scripts = new VolumeScriptInstance();
-
+                    
                     VolumeInstance instance;
 
                     switch (instanceType)
@@ -1526,14 +1591,25 @@ namespace TombLib.LevelData.IO
                     }
 
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
-                    scripts.Name = chunkIO.Raw.ReadStringUTF8();
-                    scripts.Environment = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnInside = chunkIO.Raw.ReadStringUTF8();
-                    scripts.OnLeave = chunkIO.Raw.ReadStringUTF8();
 
-                    instance.Scripts = scripts;
+                    if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
+                    {
+                        // DEPRECATED
+                        chunkIO.Raw.ReadUInt16();       // EventSet.Activators
+                        chunkIO.Raw.ReadStringUTF8();   // EventSet.Name
+                        chunkIO.Raw.ReadStringUTF8();   // Environment [UNUSED]
+                        chunkIO.Raw.ReadStringUTF8();   // EventSet.OnEnter.Function
+                        chunkIO.Raw.ReadStringUTF8();   // EventSet.OnInside.Function
+                        chunkIO.Raw.ReadStringUTF8();   // EventSet.OnLeave.Function
+                    }
+                    else if (id3 == Prj2Chunks.ObjectTriggerVolume1)
+                    {
+                        int eventIndex = chunkIO.Raw.ReadInt32();
+                        if (eventIndex != -1)
+                            instance.EventSet = levelSettingsIds.EventSets.TryGetOrDefault(eventIndex);
+                        else
+                            instance.EventSet = null;
+                    }
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);

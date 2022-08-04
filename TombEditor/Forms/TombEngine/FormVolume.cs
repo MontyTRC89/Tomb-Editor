@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Forms.TombEngine
 {
@@ -11,6 +12,11 @@ namespace TombEditor.Forms.TombEngine
         private readonly VolumeInstance _instance;
         private readonly Editor _editor;
 
+        private bool _lockUI = false;
+
+        private List<VolumeEventSet> _backupEventSetList;
+        private List<int> _backupEventSetIndices;
+
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
@@ -18,65 +24,194 @@ namespace TombEditor.Forms.TombEngine
             _instance = instance;
             _editor = Editor.Instance;
 
-            cbActivatorLara.Checked = (_instance.Activators & VolumeActivators.Player) != 0;
-            cbActivatorNPC.Checked = (_instance.Activators & VolumeActivators.NPCs) != 0;
-            cbActivatorOtherMoveables.Checked = (_instance.Activators & VolumeActivators.OtherMoveables) != 0;
-            cbActivatorStatics.Checked = (_instance.Activators & VolumeActivators.Statics) != 0;
-            cbActivatorFlyBy.Checked = (_instance.Activators & VolumeActivators.Flybys) != 0;
-
-            ReloadFunctions();
-
-            comboboxOnEnter.SelectedItem  = _instance.Scripts.OnEnter;
-            comboboxOnInside.SelectedItem = _instance.Scripts.OnInside;
-            comboboxOnLeave.SelectedItem  = _instance.Scripts.OnLeave;
-
             // Set window property handlers
-            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
+            Configuration.ConfigureWindow(this, _editor.Configuration);
+
+            // Backup event set list
+            BackupEventSets();
+
+            // Populate function lists
+            tmEnter.Initialize(_editor);
+            tmInside.Initialize(_editor);
+            tmLeave.Initialize(_editor);
+
+            // Populate and select event set list
+            PopulateEventSetList();
+            FindAndSelectEventSet();
         }
 
-        private void ReloadFunctions()
+        private void BackupEventSets()
         {
-            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
+            if (_instance == null)
                 return;
 
-            string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
-            var functions = ScriptingUtils.GetAllFunctionsNames(path);
-            functions.Insert(0, string.Empty);
+            _backupEventSetIndices = new List<int>();
+            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+                _backupEventSetIndices.Add(_editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
 
-            if (functions != null)
+            _backupEventSetList = new List<VolumeEventSet>();
+            foreach (var evt in _editor.Level.Settings.EventSets)
+                _backupEventSetList.Add(evt.Clone());
+        }
+
+        private void RestoreEventSets()
+        {
+            _editor.Level.Settings.EventSets = _backupEventSetList;
+
+            var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
+            for (int i = 0; i < volumes.Count; i++)
             {
-                comboboxOnEnter.Items.Clear();
-                comboboxOnEnter.Items.AddRange(functions.ToArray());
-
-                comboboxOnInside.Items.Clear();
-                comboboxOnInside.Items.AddRange(functions.ToArray());
-
-                comboboxOnLeave.Items.Clear();
-                comboboxOnLeave.Items.AddRange(functions.ToArray());
+                if (_backupEventSetIndices[i] >= 0)
+                    volumes[i].EventSet = _editor.Level.Settings.EventSets[_backupEventSetIndices[i]];
+                else
+                    volumes[i].EventSet = null; // Paranoia
             }
+        }
+
+        private void PopulateEventSetList()
+        {
+            lstEvents.Items.Clear();
+
+            foreach (var evtSet in _editor.Level.Settings.EventSets)
+                lstEvents.Items.Add(new DarkUI.Controls.DarkListItem(evtSet.Name) { Tag = evtSet });
+        }
+
+        private void FindAndSelectEventSet()
+        {
+            for (int i = 0; i < lstEvents.Items.Count; i++)
+                if (lstEvents.Items[i].Tag == _instance.EventSet)
+                {
+                    lstEvents.ClearSelection();
+                    lstEvents.SelectItem(i);
+                    return;
+                }
+
+            lstEvents.ClearSelection();
+        }
+
+        private void LoadEventSetIntoUI()
+        {
+            if (_instance.EventSet == null)
+                return;
+
+            UpdateUI();
+
+            _lockUI = true;
+
+            cbActivatorLara.Checked = (_instance.EventSet.Activators & VolumeActivators.Player) != 0;
+            cbActivatorNPC.Checked = (_instance.EventSet.Activators & VolumeActivators.NPCs) != 0;
+            cbActivatorOtherMoveables.Checked = (_instance.EventSet.Activators & VolumeActivators.OtherMoveables) != 0;
+            cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
+            cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
+
+            tmEnter.Event = _instance.EventSet.OnEnter;
+            tmInside.Event = _instance.EventSet.OnInside;
+            tmLeave.Event = _instance.EventSet.OnLeave;
+
+            tbName.Text = _instance.EventSet.Name;
+
+            _lockUI = false;
+        }
+
+        private void ModifyActivators()
+        {
+            if (_instance.EventSet == null || _lockUI)
+                return;
+
+            _instance.EventSet.Activators = 0 |
+                                            (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
+                                            (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
+                                            (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
+                                            (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
+                                            (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
+        }
+
+        private void UpdateUI()
+        {
+            tbName.Enabled = 
+            grpActivators.Enabled = 
+            tcEvents.Enabled = 
+            butUnassignEventSet.Enabled = _instance.EventSet != null;
+
+            butCloneEventSet.Enabled = 
+            butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _instance.Activators = 0 | 
-                                   (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
-                                   (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
-                                   (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
-                                   (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
-                                   (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
-
-            _instance.Scripts.OnEnter  = comboboxOnEnter.SelectedItem?.ToString()  ?? string.Empty;
-            _instance.Scripts.OnInside = comboboxOnInside.SelectedItem?.ToString() ?? string.Empty;
-            _instance.Scripts.OnLeave  = comboboxOnLeave.SelectedItem?.ToString()  ?? string.Empty;
-
             DialogResult = DialogResult.OK;
             Close();
         }
 
         private void butCancel_Click(object sender, EventArgs e)
         {
+            RestoreEventSets();
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void lstEvents_SelectedIndicesChanged(object sender, EventArgs e)
+        {
+            UpdateUI();
+
+            if (lstEvents.SelectedItem == null)
+                return;
+
+            _instance.EventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            LoadEventSetIntoUI();
+        }
+
+        private void butNewEventSet_Click(object sender, EventArgs e)
+        {
+            var newSet = new VolumeEventSet() { Name = "New event set " + lstEvents.Items.Count };
+            _editor.Level.Settings.EventSets.Add(newSet);
+            _instance.EventSet = newSet;
+
+            PopulateEventSetList();
+            FindAndSelectEventSet();
+
+            tbName.Focus();
+        }
+
+        private void butCloneEventSet_Click(object sender, EventArgs e)
+        {
+            if (_instance.EventSet == null)
+                return;
+
+            var clonedSet = _instance.EventSet.Clone();
+            clonedSet.Name = _instance.EventSet.Name + " (copy)";
+            _editor.Level.Settings.EventSets.Add(clonedSet);
+            _instance.EventSet = clonedSet;
+
+            PopulateEventSetList();
+            FindAndSelectEventSet();
+        }
+
+        private void butDeleteEventSet_Click(object sender, EventArgs e)
+        {
+            EditorActions.DeleteEventSet(_instance.EventSet);
+            _instance.EventSet = null;
+
+            PopulateEventSetList();
+        }
+
+        private void butUnassignEventSet_Click(object sender, EventArgs e)
+        {
+            _instance.EventSet = null;
+            lstEvents.ClearSelection();
+        }
+
+        private void cbActivators_CheckedChanged(object sender, EventArgs e)
+        {
+            ModifyActivators();
+        }
+
+        private void tbName_TextChanged(object sender, EventArgs e)
+        {
+            if (_instance.EventSet == null || _lockUI)
+                return;
+
+            _instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
         }
     }
 }

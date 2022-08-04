@@ -196,6 +196,7 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+        public List<VolumeEventSet> EventSets { get; set; } = new List<VolumeEventSet>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
 
         // Light options

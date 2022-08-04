@@ -123,11 +123,13 @@ namespace TombLib.LevelData.IO
             {
                 _settings = settings;
                 ImportedGeometries = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer(_settings));
-                LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>()); 
+                LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
+                EventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
             public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
+            public Dictionary<VolumeEventSet, int> EventSets { get; private set; }
         }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
@@ -135,9 +137,9 @@ namespace TombLib.LevelData.IO
             var levelSettingIds = new LevelSettingsIds(settings);
             using (var chunkSettings = chunkIO.WriteChunk(Prj2Chunks.Settings, long.MaxValue))
             {
-                chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? string.Empty);
+                chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? string.Empty);
+                chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? string.Empty);
                 using (var chunkOldWadSoundPaths = chunkIO.WriteChunk(Prj2Chunks.OldWadSoundPaths))
                 {
                     chunkIO.WriteChunkEmpty(Prj2Chunks.OldWadSoundUpdateTag1_0_8);
@@ -170,17 +172,17 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkInt(Prj2Chunks.DefaultLightQuality, (long)settings.DefaultLightQuality);
                 chunkIO.WriteChunkBool(Prj2Chunks.OverrideLightQuality, settings.OverrideIndividualLightQualitySettings);
-                chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? string.Empty);
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
-                chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? string.Empty);
 
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)
                         using (var chunkWad = chunkIO.WriteChunk(Prj2Chunks.Wad))
                         {
-                            chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? "");
+                            chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? string.Empty);
                             chunkIO.WriteChunkEnd();
                         }
                     chunkIO.WriteChunkEnd();
@@ -190,7 +192,7 @@ namespace TombLib.LevelData.IO
                     foreach (ReferencedSoundCatalog soundRef in settings.SoundCatalogs)
                         using (var chunkSound = chunkIO.WriteChunk(Prj2Chunks.SoundsCatalog))
                         {
-                            chunkIO.WriteChunkString(Prj2Chunks.SoundsCatalogPath, soundRef.Path ?? "");
+                            chunkIO.WriteChunkString(Prj2Chunks.SoundsCatalogPath, soundRef.Path ?? string.Empty);
                             chunkIO.WriteChunkEnd();
                         }
                     chunkIO.WriteChunkEnd();
@@ -209,8 +211,8 @@ namespace TombLib.LevelData.IO
                         using (var chunkLevelTexture = chunkIO.WriteChunk(Prj2Chunks.LevelTexture))
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.LevelTextureIndex, index);
-                            chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? "");
-                            chunkIO.WriteChunkString(Prj2Chunks.LevelTextureCustomBumpmapPath, texture.BumpPath ?? "");
+                            chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? string.Empty);
+                            chunkIO.WriteChunkString(Prj2Chunks.LevelTextureCustomBumpmapPath, texture.BumpPath ?? string.Empty);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
                             using (var chunkLevelTextureFootStepSounds = chunkIO.WriteChunk(Prj2Chunks.LevelTextureFootStepSounds))
@@ -266,7 +268,7 @@ namespace TombLib.LevelData.IO
                     foreach (AnimatedTextureSet set in settings.AnimatedTextureSets)
                         using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSet))
                         {
-                            chunkIO.WriteChunkString(Prj2Chunks.AnimatedTextureSetName, set.Name ?? "");
+                            chunkIO.WriteChunkString(Prj2Chunks.AnimatedTextureSetName, set.Name ?? string.Empty);
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
                             chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetFps, set.Fps);
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
@@ -292,6 +294,57 @@ namespace TombLib.LevelData.IO
                             }
                             chunkIO.WriteChunkEnd();
                         }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkEventSets = chunkIO.WriteChunk(Prj2Chunks.EventSets, long.MaxValue))
+                {
+                    int index = 0;
+                    foreach (var set in settings.EventSets)
+                    {
+                        using (var chunkEventSet = chunkIO.WriteChunk(Prj2Chunks.EventSet))
+                        {
+                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
+                            chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
+                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)set.Activators);
+
+                            for (int i = 0; i < 3; i++)
+                            {
+                                ChunkId cid = ChunkId.Empty;
+                                VolumeEvent evt = null;
+
+                                switch (i)
+                                {
+                                    case 0:
+                                        cid = Prj2Chunks.EventSetOnEnter;
+                                        evt = set.OnEnter;
+                                        break;
+
+                                    case 1:
+                                        cid = Prj2Chunks.EventSetOnInside;
+                                        evt = set.OnInside;
+                                        break;
+
+                                    case 2:
+                                        cid = Prj2Chunks.EventSetOnLeave;
+                                        evt = set.OnLeave;
+                                        break;
+                                }
+
+                                using (var chunkEvent = chunkIO.WriteChunk(cid))
+                                {
+                                    chunkIO.WriteChunkInt(Prj2Chunks.EventMode, (int)evt.Mode);
+                                    chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Function ?? string.Empty);
+                                    chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Argument ?? string.Empty);
+                                    chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.CallCounter);
+                                    chunkIO.WriteChunkEnd();
+                                }
+                            }
+                            chunkIO.WriteChunkEnd();
+                        }
+
+                        levelSettingIds.EventSets.TryAdd(set, index++);
+                    }
+                        
                     chunkIO.WriteChunkEnd();
                 }
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
@@ -509,7 +562,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                                 chunkIO.Raw.Write(instance.Color);
                                 chunkIO.Raw.Write(instance.Ocb);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                             }
                         }
                         else
@@ -539,7 +592,7 @@ namespace TombLib.LevelData.IO
                                 LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.CameraMode == CameraInstanceMode.Locked);
                                 chunkIO.Raw.Write(instance.MoveTimer);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                             }
                         }
                         else
@@ -603,7 +656,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Position);
                                 LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.Strength);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                             }
                         }
                         else
@@ -629,7 +682,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.SoundId);
                                 chunkIO.Raw.Write((int)instance.PlayMode);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                             }
                         }
                         else
@@ -698,7 +751,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
                     else if (o is VolumeInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolumeTest, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume1, LEB128.MaximumSize2Byte))
                         {
                             var instance = (VolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -720,14 +773,12 @@ namespace TombLib.LevelData.IO
                                     chunkIO.Raw.Write((instance as SphereVolumeInstance).Scale);
                                     break;
                             }
-
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write((ushort)instance.Activators);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnEnter);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnInside);
-                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnLeave);
+
+                            int eventSetID = -1;
+                            if (instance.EventSet != null)
+                                levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
+                            chunkIO.Raw.Write(eventSetID);
                         }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))

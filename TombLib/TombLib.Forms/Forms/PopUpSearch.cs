@@ -58,6 +58,11 @@ namespace TombLib.Forms
                 var callbackTree = (DarkTreeView)_callbackControl;
                 _searchItems = callbackTree.GetAllNodes().Select(n => n.Text).ToList();
             }
+            else if (_callbackControl is DarkListView)
+            {
+                var callbackList = (DarkListView)_callbackControl;
+                _searchItems = callbackList.Items.Select(n => n.Text).ToList();
+            }
 
             // Set pop-up width to parent control width
             Size = new Size(_callbackControl.Size.Width, MinimumSize.Height);
@@ -161,13 +166,21 @@ namespace TombLib.Forms
                     if (_currentIndex != -1)
                     {
                         // TODO: Support other control types?
-                        if (_callbackControl is DarkUI.Controls.DarkComboBox)
-                            ((DarkUI.Controls.DarkComboBox)_callbackControl).SelectedIndex = _currentIndex;
-                        else if (_callbackControl is DarkUI.Controls.DarkTreeView)
+                        if (_callbackControl is DarkComboBox)
                         {
-                            var tree = (DarkUI.Controls.DarkTreeView)_callbackControl;
+                            ((DarkComboBox)_callbackControl).SelectedIndex = _currentIndex;
+                        }
+                        else if (_callbackControl is DarkTreeView)
+                        {
+                            var tree = (DarkTreeView)_callbackControl;
                             tree.SelectNode(tree.GetAllNodes()[_currentIndex]);
                             tree.EnsureVisible();
+                        }
+                        else if (_callbackControl is DarkListView)
+                        {
+                            var list = (DarkListView)_callbackControl;
+                            list.SelectItem(_currentIndex);
+                            list.EnsureVisible();
                         }
                         return;
                     }

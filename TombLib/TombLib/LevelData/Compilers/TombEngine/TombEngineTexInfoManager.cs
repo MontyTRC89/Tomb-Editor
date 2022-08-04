@@ -1830,54 +1830,6 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        public void WriteTextureInfosTombEngine(BinaryWriterEx writer, Level level)
-        {
-            writer.Write((int)_objectTextures.Count);
-            for (int i = 0; i < _objectTextures.Count; i++)
-            {
-                var texture = _objectTextures.ElementAt(i).Value;
-
-                // Tile and flags
-                int tile = texture.AtlasIndex;
-                if (texture.IsForTriangle) tile |= 0x8000;
-
-                // Blend mode
-                int attribute = (int)texture.BlendMode;
-
-                // Now write the texture
-                writer.Write(attribute);
-                writer.Write(tile);
-
-                // Built-in TR4-5 mapping correction is not used. Dummy mapping type is used
-                // together with compensation coordinate distortion.
-                int newFlags = texture.UVAdjustmentFlag;
-
-                if (texture.Destination == TextureDestination.RoomOrAggressive) newFlags |= 0x8000;
-
-                if (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
-                else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
-                else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
-
-                writer.Write(newFlags);
-
-                for (int j = 0; j < 4; j++)
-                {
-                    if (texture.IsForTriangle && j == 3)
-                    {
-                        writer.Write((float)0);
-                        writer.Write((float)0);
-                    }
-                    else
-                    {
-                        writer.Write(texture.TexCoordFloat[j].X);
-                        writer.Write(texture.TexCoordFloat[j].Y);
-                    }
-                }
-
-                writer.Write((int)texture.Destination);
-            }
-        }
-
         public void UpdateTiles(int numSpritesPages)
         {
             Parallel.For(0, _objectTextures.Count, i =>

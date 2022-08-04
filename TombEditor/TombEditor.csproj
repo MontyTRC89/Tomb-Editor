@@ -83,6 +83,10 @@
     <Compile Update="Controls\ContextMenus\SelectedRoomContextMenu.cs" />
     <Compile Update="Controls\ContextMenus\MaterialObjectContextMenu.cs" />
     <Compile Update="Controls\ImportedGeometryManager.cs">
+    <Compile Update="Controls\TriggerManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\TriggerManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\PanelPalette.cs">

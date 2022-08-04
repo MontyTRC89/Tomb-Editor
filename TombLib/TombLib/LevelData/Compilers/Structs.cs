@@ -1294,6 +1294,20 @@ namespace TombLib.LevelData.Compilers
         public ushort Flags;
 
         public int Room;
+
+        public class ComparerFlyBy : IComparer<tr4_flyby_camera>
+        {
+            public int Compare(tr4_flyby_camera x, tr4_flyby_camera y)
+            {
+                if (x.Sequence != y.Sequence)
+                    return x.Sequence > y.Sequence ? 1 : -1;
+
+                if (x.Index == y.Index)
+                    return 0;
+
+                return x.Index > y.Index ? 1 : -1;
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
