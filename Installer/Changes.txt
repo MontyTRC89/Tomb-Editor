@@ -27,6 +27,8 @@ WadTool:
  
 TombIDE:
  * Added basic support for TEN project setup, engine and assets bundle included (except textures).
+ * Updated FLEP for new projects.
+ * Updated Tomb1Main preset to 2.10.2.
 
 Version 1.5
 ===========
