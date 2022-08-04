@@ -14,9 +14,6 @@ namespace TombEditor.Controls
         public TriggerManager()
         {
             InitializeComponent();
-
-            // Link options list
-            //tabbedContainer.LinkedControl = optionsList;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -49,7 +46,12 @@ namespace TombEditor.Controls
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _editor.EditorEventRaised -= EditorEventRaised;
+
+                if (components != null)
+                    components.Dispose();
+            }
 
             base.Dispose(disposing);
         }
