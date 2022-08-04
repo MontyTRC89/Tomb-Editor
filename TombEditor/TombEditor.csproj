@@ -30,6 +30,9 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomTabControl">
+      <HintPath>..\Libs\CustomTabControl.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -83,7 +86,6 @@
     <Compile Update="Controls\ContextMenus\SelectedRoomContextMenu.cs" />
     <Compile Update="Controls\ContextMenus\MaterialObjectContextMenu.cs" />
     <Compile Update="Controls\ImportedGeometryManager.cs">
-    <Compile Update="Controls\TriggerManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\TriggerManager.cs">
