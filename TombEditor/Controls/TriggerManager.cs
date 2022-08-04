@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DarkUI.Config;
+using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -35,16 +37,39 @@ namespace TombEditor.Controls
         private Editor _editor;
         private bool _lockUI = false;
 
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                ReloadFunctions();
+                FindAndSelectFunction();
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+
+            base.Dispose(disposing);
+        }
+
         public void Initialize(Editor editor)
         {
             _editor = editor;
+            _editor.EditorEventRaised += EditorEventRaised;
+
             ReloadFunctions();
         }
 
         private void SelectTriggerMode()
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
-            butSearch.Visible = butUnassign.Visible = lblNotify.Visible = rbLevelScript.Checked;
+            butSearch.Visible = butUnassign.Visible = rbLevelScript.Checked;
+            lblNotify.Visible = false;
+
+            if (rbLevelScript.Checked)
+                FindAndSelectFunction();
 
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
@@ -74,14 +99,43 @@ namespace TombEditor.Controls
 
         private void ReloadFunctions()
         {
-            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
-                return;
-
-            string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
-            var functions = ScriptingUtils.GetAllFunctionsNames(path);
-
+            lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
-            functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+
+            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
+            {
+                lblListNotify.Tag = 1;
+                lblListNotify.Text = "Level script file is not specified." + "\n" +
+                                     "Click here to load level script file.";
+            }
+            else
+            {
+                string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
+
+                if (!File.Exists(path))
+                {
+                    lblListNotify.Tag = 1;
+                    lblListNotify.Text = "Level script file '" + Path.GetFileName(path) + "' not found." + "\n" +
+                                         "Click here to choose replacement.";
+                }
+                else
+                {
+                    var functions = ScriptingUtils.GetAllFunctionsNames(path);
+                    functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+
+                    if (lstFunctions.Items.Count == 0)
+                    {
+                        lblListNotify.Tag = 0;
+                        lblListNotify.Text = "Level script file does not have any level functions." + "\n" +
+                                             "They must have 'LevelFuncs.FuncName = function() ... end' format.";
+                    }
+                }
+            }
+
+            panelFunctionControls.Visible =
+            lstFunctions.Visible =
+            butSearch.Enabled =
+            butUnassign.Enabled = lstFunctions.Items.Count > 0;
         }
 
         private void FindAndSelectFunction()
@@ -95,7 +149,6 @@ namespace TombEditor.Controls
             for (int i = 0; i < lstFunctions.Items.Count; i++)
                 if (lstFunctions.Items[i].Text == _event.Function)
                 {
-                    lblNotify.Visible = false;
                     lstFunctions.ClearSelection();
                     lstFunctions.SelectItem(i);
                     return;
@@ -147,6 +200,27 @@ namespace TombEditor.Controls
                 return;
 
             _event.Argument = tbArgument.Text;
+        }
+
+        private void lblListNotify_Click(object sender, EventArgs e)
+        {
+            if (lblListNotify.Tag == null || (int)lblListNotify.Tag == 0)
+                return;
+
+            string result = LevelFileDialog.BrowseFile(this, _editor.Level.Settings, _editor.Level.Settings.TenLuaScriptFile,
+               "Select the LUA script file for this level", new[] { new FileFormat("LUA script file", "lua") },
+               VariableType.LevelDirectory, false);
+
+            if (result != null)
+            {
+                _editor.Level.Settings.TenLuaScriptFile = result;
+                _editor.ConfigurationChange();
+            }
+        }
+
+        private void lblListNotify_EnabledChanged(object sender, EventArgs e)
+        {
+            lblListNotify.Visible = lblListNotify.Enabled;
         }
     }
 }

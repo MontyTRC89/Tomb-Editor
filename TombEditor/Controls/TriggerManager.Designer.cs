@@ -42,9 +42,10 @@ namespace TombEditor.Controls
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabLevelScript = new System.Windows.Forms.TabPage();
             this.lstFunctions = new DarkUI.Controls.DarkListView();
-            this.darkPanel1 = new DarkUI.Controls.DarkPanel();
+            this.panelFunctionControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.lblListNotify = new DarkUI.Controls.DarkLabel();
             this.tabConstructor = new System.Windows.Forms.TabPage();
             this.darkPanel2 = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -52,7 +53,7 @@ namespace TombEditor.Controls
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             this.tabbedContainer.SuspendLayout();
             this.tabLevelScript.SuspendLayout();
-            this.darkPanel1.SuspendLayout();
+            this.panelFunctionControls.SuspendLayout();
             this.tabConstructor.SuspendLayout();
             this.darkPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -176,7 +177,8 @@ namespace TombEditor.Controls
             // tabLevelScript
             // 
             this.tabLevelScript.Controls.Add(this.lstFunctions);
-            this.tabLevelScript.Controls.Add(this.darkPanel1);
+            this.tabLevelScript.Controls.Add(this.panelFunctionControls);
+            this.tabLevelScript.Controls.Add(this.lblListNotify);
             this.tabLevelScript.Location = new System.Drawing.Point(4, 22);
             this.tabLevelScript.Name = "tabLevelScript";
             this.tabLevelScript.Padding = new System.Windows.Forms.Padding(3);
@@ -197,17 +199,17 @@ namespace TombEditor.Controls
             this.lstFunctions.Text = "darkListView1";
             this.lstFunctions.SelectedIndicesChanged += new System.EventHandler(this.lstFunctions_SelectedIndicesChanged);
             // 
-            // darkPanel1
+            // panelFunctionControls
             // 
-            this.darkPanel1.Controls.Add(this.nudCallCount);
-            this.darkPanel1.Controls.Add(this.darkLabel3);
-            this.darkPanel1.Controls.Add(this.darkLabel2);
-            this.darkPanel1.Controls.Add(this.tbArgument);
-            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkPanel1.Location = new System.Drawing.Point(3, 321);
-            this.darkPanel1.Name = "darkPanel1";
-            this.darkPanel1.Size = new System.Drawing.Size(744, 25);
-            this.darkPanel1.TabIndex = 1;
+            this.panelFunctionControls.Controls.Add(this.nudCallCount);
+            this.panelFunctionControls.Controls.Add(this.darkLabel3);
+            this.panelFunctionControls.Controls.Add(this.darkLabel2);
+            this.panelFunctionControls.Controls.Add(this.tbArgument);
+            this.panelFunctionControls.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelFunctionControls.Location = new System.Drawing.Point(3, 321);
+            this.panelFunctionControls.Name = "panelFunctionControls";
+            this.panelFunctionControls.Size = new System.Drawing.Size(744, 25);
+            this.panelFunctionControls.TabIndex = 1;
             // 
             // darkLabel3
             // 
@@ -229,6 +231,19 @@ namespace TombEditor.Controls
             this.darkLabel2.Size = new System.Drawing.Size(61, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Argument:";
+            // 
+            // lblListNotify
+            // 
+            this.lblListNotify.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblListNotify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblListNotify.Location = new System.Drawing.Point(3, 3);
+            this.lblListNotify.Name = "lblListNotify";
+            this.lblListNotify.Size = new System.Drawing.Size(744, 343);
+            this.lblListNotify.TabIndex = 2;
+            this.lblListNotify.Text = "Function list notify";
+            this.lblListNotify.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblListNotify.EnabledChanged += new System.EventHandler(this.lblListNotify_EnabledChanged);
+            this.lblListNotify.Click += new System.EventHandler(this.lblListNotify_Click);
             // 
             // tabConstructor
             // 
@@ -275,8 +290,8 @@ namespace TombEditor.Controls
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).EndInit();
             this.tabbedContainer.ResumeLayout(false);
             this.tabLevelScript.ResumeLayout(false);
-            this.darkPanel1.ResumeLayout(false);
-            this.darkPanel1.PerformLayout();
+            this.panelFunctionControls.ResumeLayout(false);
+            this.panelFunctionControls.PerformLayout();
             this.tabConstructor.ResumeLayout(false);
             this.darkPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -294,7 +309,7 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkLabel lblNotify;
         private System.Windows.Forms.TabPage tabLevelScript;
         private DarkUI.Controls.DarkListView lstFunctions;
-        private DarkUI.Controls.DarkPanel darkPanel1;
+        private DarkUI.Controls.DarkPanel panelFunctionControls;
         private DarkUI.Controls.DarkNumericUpDown nudCallCount;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkLabel darkLabel2;
@@ -302,5 +317,6 @@ namespace TombEditor.Controls
         private System.Windows.Forms.TabPage tabConstructor;
         private DarkUI.Controls.DarkPanel darkPanel2;
         private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel lblListNotify;
     }
 }

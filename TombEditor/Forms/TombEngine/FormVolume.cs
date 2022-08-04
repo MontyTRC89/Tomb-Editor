@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib.Forms;
 using TombLib.LevelData;
 
 namespace TombEditor.Forms.TombEngine
@@ -135,6 +136,8 @@ namespace TombEditor.Forms.TombEngine
 
             butCloneEventSet.Enabled = 
             butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
+
+            butSearch.Enabled = lstEvents.Items.Count > 0;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -212,6 +215,12 @@ namespace TombEditor.Forms.TombEngine
                 return;
 
             _instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
+        }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(lstEvents) { ShowAboveControl = true };
+            searchPopUp.Show(this);
         }
     }
 }

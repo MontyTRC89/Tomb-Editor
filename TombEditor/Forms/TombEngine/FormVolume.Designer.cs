@@ -57,6 +57,7 @@ namespace TombEditor.Forms.TombEngine
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
+            this.butSearch = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel1.SuspendLayout();
             this.darkPanel1.SuspendLayout();
             this.tcEvents.SuspendLayout();
@@ -162,20 +163,21 @@ namespace TombEditor.Forms.TombEngine
             this.lstEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstEvents.Location = new System.Drawing.Point(5, 29);
+            this.lstEvents.Location = new System.Drawing.Point(5, 55);
             this.lstEvents.Name = "lstEvents";
-            this.lstEvents.Size = new System.Drawing.Size(194, 316);
+            this.lstEvents.Size = new System.Drawing.Size(194, 318);
             this.lstEvents.TabIndex = 0;
             this.lstEvents.SelectedIndicesChanged += new System.EventHandler(this.lstEvents_SelectedIndicesChanged);
             // 
             // darkPanel1
             // 
+            this.darkPanel1.Controls.Add(this.butSearch);
             this.darkPanel1.Controls.Add(this.butUnassignEventSet);
             this.darkPanel1.Controls.Add(this.butDeleteEventSet);
             this.darkPanel1.Controls.Add(this.butCloneEventSet);
             this.darkPanel1.Controls.Add(this.butNewEventSet);
-            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkPanel1.Location = new System.Drawing.Point(1, 347);
+            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkPanel1.Location = new System.Drawing.Point(1, 25);
             this.darkPanel1.Name = "darkPanel1";
             this.darkPanel1.Size = new System.Drawing.Size(202, 30);
             this.darkPanel1.TabIndex = 1;
@@ -366,6 +368,18 @@ namespace TombEditor.Forms.TombEngine
             this.tbName.TabIndex = 28;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(146, 3);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(23, 23);
+            this.butSearch.TabIndex = 26;
+            this.toolTip.SetToolTip(this.butSearch, "Search for event set");
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
             // FormVolume
             // 
             this.AcceptButton = this.butOk;
@@ -428,5 +442,6 @@ namespace TombEditor.Forms.TombEngine
         private ToolTip toolTip;
         private DarkLabel darkLabel1;
         private DarkTextBox tbName;
+        private DarkButton butSearch;
     }
 }
