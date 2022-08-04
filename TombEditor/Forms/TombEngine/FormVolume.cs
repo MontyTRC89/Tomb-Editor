@@ -14,6 +14,7 @@ namespace TombEditor.Forms.TombEngine
         private readonly Editor _editor;
 
         private bool _lockUI = false;
+        private bool _genericMode = false;
 
         private List<VolumeEventSet> _backupEventSetList;
         private List<int> _backupEventSetIndices;
@@ -22,7 +23,9 @@ namespace TombEditor.Forms.TombEngine
         {
             InitializeComponent();
 
-            _instance = instance;
+            _genericMode = instance == null;
+
+            _instance = _genericMode ? new BoxVolumeInstance() : instance;
             _editor = Editor.Instance;
 
             // Set window property handlers
@@ -36,16 +39,26 @@ namespace TombEditor.Forms.TombEngine
             tmInside.Initialize(_editor);
             tmLeave.Initialize(_editor);
 
+            // Determine editing mode
+            SetupUI();
+
             // Populate and select event set list
             PopulateEventSetList();
             FindAndSelectEventSet();
         }
 
-        private void BackupEventSets()
+        private void SetupUI()
         {
-            if (_instance == null)
+            if (!_genericMode)
                 return;
 
+            butSearch.Location = butUnassignEventSet.Location;
+            butUnassignEventSet.Visible = false;
+            Text = "Event set editor";
+        }
+
+        private void BackupEventSets()
+        {
             _backupEventSetIndices = new List<int>();
             foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
                 _backupEventSetIndices.Add(_editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
@@ -79,6 +92,15 @@ namespace TombEditor.Forms.TombEngine
 
         private void FindAndSelectEventSet()
         {
+            if (_instance.EventSet == null)
+            {
+                if (_genericMode && lstEvents.Items.Count > 0)
+                    lstEvents.SelectItem(0);
+                else
+                    lstEvents.ClearSelection();
+                return;
+            }
+
             for (int i = 0; i < lstEvents.Items.Count; i++)
                 if (lstEvents.Items[i].Tag == _instance.EventSet)
                 {

@@ -887,6 +887,13 @@ namespace TombEditor
                     existingWindow.Focus();
             });
 
+            AddCommand("EditEventSets", "Edit event sets...", CommandType.Edit, delegate (CommandArgs args)
+            {
+                using (var formVolume = new Forms.TombEngine.FormVolume(null))
+                    if (formVolume.ShowDialog(args.Window) == DialogResult.OK)
+                        args.Editor.EventSetsChange();
+            });
+
             AddCommand("SearchAndReplaceObjects", "Search and replace objects...", CommandType.Edit, delegate (CommandArgs args)
             {
                 EditorActions.ReplaceObject(args.Window);
