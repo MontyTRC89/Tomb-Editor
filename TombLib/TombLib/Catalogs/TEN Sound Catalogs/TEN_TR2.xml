@@ -889,9 +889,6 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Sn095_S0.wav</FileName>
-        </WadSample>
-        <WadSample>
           <FileName>TR2_Leopard_Death_01.wav</FileName>
         </WadSample>
       </Samples>
@@ -1293,7 +1290,7 @@
           <FileName>TR2_Yeti_Growl1_01.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>TR2_Yeti_Growl1_02.wav</FileName>
+          <FileName>TR2_Yeti_Growl2_01.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3653,9 +3650,6 @@
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
-        <WadSample>
-          <FileName>Sn128_S0.wav</FileName>
-        </WadSample>
         <WadSample>
           <FileName>TR2_Slam_Door_Close_01.wav</FileName>
         </WadSample>

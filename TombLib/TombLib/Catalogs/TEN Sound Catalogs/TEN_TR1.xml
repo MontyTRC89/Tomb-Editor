@@ -472,9 +472,6 @@
       <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>Chn_Down.wav</FileName>
-        </WadSample>
-        <WadSample>
           <FileName>TR1_Chaindoor_Down_01.wav</FileName>
         </WadSample>
       </Samples>
