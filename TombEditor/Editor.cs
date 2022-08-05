@@ -505,6 +505,13 @@ namespace TombEditor
             RaiseEvent(new AnimatedTexturesChangedEvent());
         }
 
+        // This is invoked if volume triggers were changed for the level.
+        public class EventSetsChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void EventSetsChange()
+        {
+            RaiseEvent(new EventSetsChangedEvent());
+        }
+
         // This is invoked if merged static list was changed for the level.
         public class MergedStaticsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void MergedStaticsChange()

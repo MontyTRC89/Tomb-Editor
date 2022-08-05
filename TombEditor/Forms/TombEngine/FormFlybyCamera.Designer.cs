@@ -115,7 +115,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(300, 32);
             this.cbBit1.TabIndex = 9;
-            this.cbBit1.Text = "Track entity position";
+            this.cbBit1.Text = "Unused";
             // 
             // cbBit2
             // 
@@ -179,7 +179,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit11.Name = "cbBit11";
             this.cbBit11.Size = new System.Drawing.Size(300, 32);
             this.cbBit11.TabIndex = 19;
-            this.cbBit11.Text = "Override cinematic mode and let Lara move";
+            this.cbBit11.Text = "Let Lara move in cinematic mode";
             // 
             // cbBit10
             // 
@@ -203,7 +203,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit8.Name = "cbBit8";
             this.cbBit8.Size = new System.Drawing.Size(300, 32);
             this.cbBit8.TabIndex = 16;
-            this.cbBit8.Text = "Freeze camera";
+            this.cbBit8.Text = "Freeze camera (Timer field)";
             // 
             // cbBit7
             // 
@@ -211,7 +211,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit7.Name = "cbBit7";
             this.cbBit7.Size = new System.Drawing.Size(317, 32);
             this.cbBit7.TabIndex = 15;
-            this.cbBit7.Text = "Cut cam: jump to a specificed camera in the same sequence";
+            this.cbBit7.Text = "Jump to another camera in sequence (Timer field)";
             // 
             // cbBit15
             // 
@@ -219,7 +219,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit15.Name = "cbBit15";
             this.cbBit15.Size = new System.Drawing.Size(300, 32);
             this.cbBit15.TabIndex = 23;
-            this.cbBit15.Text = "One shot";
+            this.cbBit15.Text = "Disable from triggering";
             // 
             // cbBit14
             // 
@@ -275,7 +275,7 @@ namespace TombEditor.Forms.TombEngine
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label5.Location = new System.Drawing.Point(12, 74);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 26;
             this.label5.Text = "Timer:";
             // 

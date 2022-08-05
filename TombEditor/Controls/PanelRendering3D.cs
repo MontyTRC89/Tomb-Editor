@@ -432,6 +432,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent ||
                     obj is Editor.MergedStaticsChangedEvent ||
+                    obj is Editor.EventSetsChangedEvent ||
                     obj is Editor.GameVersionChangedEvent ||
                     obj is Editor.HideSelectionEvent ||
                     obj is Editor.EditorFocusedEvent)
