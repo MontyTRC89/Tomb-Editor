@@ -8,8 +8,8 @@
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-!define MUI_WELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp" 
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp" 
 !define MUI_ICON "..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
@@ -25,6 +25,8 @@ $\r$\n\
   ${U+2022} Videocard with DirectX 10 support $\r$\n\
   ${U+2022} At least 1 gigabyte of RAM $\r$\n\
 $\r$\n\
+This package includes a TIDE template to build Tomb Engine (TEN) levels. $\r$\n\
+$\r$\n\
 Enjoy! $\r$\n\
 Tomb Editor dev team."
 
@@ -35,7 +37,6 @@ Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "C:\Tomb Editor"
-Var tideInstalled
 
 ;--------------------------------
 
@@ -61,9 +62,6 @@ Section "Tomb Editor" Section1
   
   SetOutPath $INSTDIR
   File /r \
-  /x "TIDE" \
-  /x "Configs" \
-  /x "Assets" \
   /x "TombEditorLog*.txt" \
   /x "WadToolLog*.txt" \
   /x "TombIDELog*.txt" \
@@ -76,7 +74,6 @@ Section "Tomb Editor" Section1
   /x "TombEditorConfiguration.xml" \
   /x "SoundToolConfiguration.xml" \
   /x "WadToolConfiguration.xml" \
-  /x "TombIDE*.*" \
   *.* \
   
   ; Add readme from installer folder
@@ -105,26 +102,7 @@ Section "Tomb Editor" Section1
   
 SectionEnd
 
-Section "TombIDE" Section2
-
-  SectionIn 1
-  
-  SetOutPath $INSTDIR
-  File /r \
-  /x "*.pdb" \
-  /x "*.config" \
-  /x "*.vshost.*" \
-  /x "TombIDE*.xml" \
-  TombIDE*.* 
-  
-  File /r "TIDE"
-  File /r "Configs"
-  
-  StrCpy $tideInstalled "yes"
-  
-SectionEnd
-
-Section "Stock Assets" Section3
+Section "Stock Assets" Section2
 
   SectionIn 1
 
@@ -133,37 +111,31 @@ Section "Stock Assets" Section3
   
 SectionEnd
 
-Section "Start Menu Shortcuts" Section4
+Section "Start Menu Shortcuts" Section3
 
   SectionIn 1 2
 
   CreateDirectory "$SMPROGRAMS\Tomb Editor"
+  
   CreateShortcut "$SMPROGRAMS\Tomb Editor\Tomb Editor.lnk" "$INSTDIR\TombEditor.exe" "" "$INSTDIR\TombEditor.exe" 0
   CreateShortcut "$SMPROGRAMS\Tomb Editor\SoundTool.lnk" "$INSTDIR\SoundTool.exe" "" "$INSTDIR\SoundTool.exe" 0
   CreateShortcut "$SMPROGRAMS\Tomb Editor\WadTool.lnk" "$INSTDIR\WadTool.exe" "" "$INSTDIR\WadTool.exe" 0
-
-  ${If} ${SectionIsSelected} ${Section2}
-	CreateShortcut "$SMPROGRAMS\Tomb Editor\TombIDE.lnk" "$INSTDIR\TombIDE.exe" "" "$INSTDIR\TombIDE.exe" 0
-  ${EndIf}
-  
+  CreateShortcut "$SMPROGRAMS\Tomb Editor\TombIDE.lnk" "$INSTDIR\TombIDE.exe" "" "$INSTDIR\TombIDE.exe" 0  
   CreateShortcut "$SMPROGRAMS\Tomb Editor\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
   
 SectionEnd
 
-Section "Desktop Shortcuts" Section5
+Section "Desktop Shortcuts" Section4
 
   SectionIn 1 2
   CreateShortcut "$DESKTOP\Tomb Editor.lnk" "$INSTDIR\TombEditor.exe" "" "$INSTDIR\TombEditor.exe" 0
   CreateShortcut "$DESKTOP\SoundTool.lnk" "$INSTDIR\SoundTool.exe" "" "$INSTDIR\SoundTool.exe" 0
   CreateShortcut "$DESKTOP\WadTool.lnk" "$INSTDIR\WadTool.exe" "" "$INSTDIR\WadTool.exe" 0
+  CreateShortcut "$DESKTOP\TombIDE.lnk" "$INSTDIR\TombIDE.exe" "" "$INSTDIR\TombIDE.exe" 0
   
-  ${If} ${SectionIsSelected} ${Section2}
-    CreateShortcut "$DESKTOP\TombIDE.lnk" "$INSTDIR\TombIDE.exe" "" "$INSTDIR\TombIDE.exe" 0
-  ${EndIf}
-
 SectionEnd
 
-Section "Associate File Types" Section6
+Section "Associate File Types" Section5
   
   SectionIn 1 2
   
@@ -172,11 +144,10 @@ Section "Associate File Types" Section6
 SectionEnd
 
 LangString DESC_Section1 ${LANG_ENGLISH} "Basic Tomb Editor components. Includes WadTool and SoundTool."
-LangString DESC_Section2 ${LANG_ENGLISH} "TombIDE. Also makes TombEditor not dependent on TRNG installation."
-LangString DESC_Section3 ${LANG_ENGLISH} "Stock sound assets for TR1. Needed if you plan to build TR1 levels."
-LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
-LangString DESC_Section5 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
-LangString DESC_Section6 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
+LangString DESC_Section2 ${LANG_ENGLISH} "Stock sound assets for TR1. Needed if you plan to build TR1 levels."
+LangString DESC_Section3 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
+LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
+LangString DESC_Section5 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${Section1} $(DESC_Section1)
@@ -184,7 +155,6 @@ LangString DESC_Section6 ${LANG_ENGLISH} "Associate file types with Tomb Editor,
   !insertmacro MUI_DESCRIPTION_TEXT ${Section3} $(DESC_Section3)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section4} $(DESC_Section4)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section5} $(DESC_Section5)
-  !insertmacro MUI_DESCRIPTION_TEXT ${Section6} $(DESC_Section6)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
@@ -357,6 +327,8 @@ Section "Uninstall"
   Delete "$INSTDIR\NAudio.Flac.dll"
   Delete "$INSTDIR\NAudio.dll"
   Delete "$INSTDIR\MiniZ.Net.dll"
+  Delete "$INSTDIR\MiniZ32.dll"
+  Delete "$INSTDIR\MiniZ64.dll"
   Delete "$INSTDIR\MiniFileAssociation.dll"
   Delete "$INSTDIR\ICSharpCode.AvalonEdit.dll"
   Delete "$INSTDIR\IconInjector.dll"
@@ -531,12 +503,6 @@ Function un.registerExtensions
 FunctionEnd
 
 Function .registerExtensions
-  
-  ${If} tideInstalled == "yes"
     ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
-  ${Else}
-    ExecShell "runas" "$INSTDIR\File Association.exe" '-110'
-  ${EndIf}
-    
 FunctionEnd
 
