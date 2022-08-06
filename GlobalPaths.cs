@@ -49,7 +49,7 @@ internal static class DefaultPaths
 	public static string VGEScriptDirectory => Path.Combine(VGEDirectory, "Script");
 
 	public static string TemplatesDirectory => Path.Combine(TIDEDirectory, "Templates");
-	public static string EngineTemplatesDirectory => Path.Combine(TemplatesDirectory, "Engines");
+	public static string PresetsDirectory => Path.Combine(TemplatesDirectory, "Presets");
 
 	public static string TRNGPluginsDirectory => Path.Combine(TIDEDirectory, "TRNG Plugins");
 

@@ -104,7 +104,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string sourcePakPath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
+					string sourcePakPath = Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "Defaults", "TR4 Resources", "uklogo.pak");
 					string destPakPath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 
 					File.Copy(sourcePakPath, destPakPath, true);

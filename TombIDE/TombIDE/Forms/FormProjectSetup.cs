@@ -1,5 +1,6 @@
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -305,10 +306,17 @@ namespace TombIDE
 				// Create the Project instance
 				Project createdProject = CreateNewProject(projectName, projectPath, enginePath, scriptPath, levelsPath);
 
-				// Install the game files into the specified projectPath folder
-				InstallEngine(createdProject);
+				switch (createdProject.GameVersion)
+				{
+					case TRVersion.Game.TR1: InstallTR1Engine(createdProject); break;
+					case TRVersion.Game.TR2: InstallTR2Engine(createdProject); break;
+					case TRVersion.Game.TR3: InstallTR3Engine(createdProject); break;
+					case TRVersion.Game.TR4: InstallTR4Engine(createdProject); break;
+					case TRVersion.Game.TRNG: InstallTRNGEngine(createdProject, checkBox_IncludeFLEP.Checked); break;
+					case TRVersion.Game.TombEngine: InstallTENEngine(createdProject); break;
+				}
 
-				DarkMessageBox.Show(this, "Project installation finished successfully.", "Success",
+				DarkMessageBox.Show(this, "Project has been successfully installed.", "Success",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 				// // // // // // // //
@@ -338,29 +346,12 @@ namespace TombIDE
 
 			switch (comboBox_EngineType.SelectedIndex)
 			{
-				case 1:
-					gameVersion = TRVersion.Game.TR1;
-					break;
-
-				case 2:
-					gameVersion = TRVersion.Game.TR2;
-					break;
-
-				case 3:
-					gameVersion = TRVersion.Game.TR3;
-					break;
-
-				case 4:
-					gameVersion = TRVersion.Game.TR4;
-					break;
-
-				case 5:
-					gameVersion = TRVersion.Game.TRNG;
-					break;
-
-				case 6:
-					gameVersion = TRVersion.Game.TombEngine;
-					break;
+				case 1: gameVersion = TRVersion.Game.TR1; break;
+				case 2: gameVersion = TRVersion.Game.TR2; break;
+				case 3: gameVersion = TRVersion.Game.TR3; break;
+				case 4: gameVersion = TRVersion.Game.TR4; break;
+				case 5: gameVersion = TRVersion.Game.TRNG; break;
+				case 6: gameVersion = TRVersion.Game.TombEngine; break;
 			}
 
 			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
@@ -378,131 +369,177 @@ namespace TombIDE
 			};
 		}
 
-		private void InstallEngine(Project project)
+		private void InstallTR1Engine(Project targetProject)
 		{
-			string engineBasePath = DefaultPaths.EngineTemplatesDirectory;
+			progressBar.Maximum = 1;
 
-			switch (comboBox_EngineType.SelectedIndex)
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+				ExtractEntries(engineArchive.Entries.ToList(), targetProject);
+
+			string musicDir = Path.Combine(targetProject.EnginePath, "music");
+
+			if (!Directory.Exists(musicDir))
+				Directory.CreateDirectory(musicDir);
+
+			if (_musicZipFilePath != null)
 			{
-				case 1:
-					engineBasePath = Path.Combine(engineBasePath, "TR1.zip");
-					break;
-
-				case 2:
-					engineBasePath = Path.Combine(engineBasePath, "TR2.zip");
-					break;
-
-				case 3:
-					engineBasePath = Path.Combine(engineBasePath, "TR3.zip");
-					break;
-
-				case 4:
-					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
-					break;
-
-				case 5:
-					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
-					break;
-
-				case 6:
-					engineBasePath = Path.Combine(engineBasePath, "TEN.zip");
-					break;
-			}
-
-			string sharedArchivePath = Path.Combine(TemplatePaths.GetSharedTemplatesPath(project.GameVersion), "Shared.zip");
-			string flepArchivePath = Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "TOMB4", "FLEP.zip");
-
-			bool includeFLEP = checkBox_IncludeFLEP.Enabled && checkBox_IncludeFLEP.Checked;
-
-			// Extract the engine base into the ProjectPath folder
-			using (var engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
-			using (var sharedArchive = new ZipArchive(File.OpenRead(sharedArchivePath)))
-			using (var flepArchive = new ZipArchive(File.OpenRead(flepArchivePath)))
-			{
-				progressBar.Maximum = engineArchive.Entries.Count + sharedArchive.Entries.Count + 1;
-
-				if (includeFLEP)
-					progressBar.Maximum += flepArchive.Entries.Count;
-
-				foreach (ZipArchiveEntry entry in engineArchive.Entries)
+				using (var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath)))
 				{
-					if (entry.FullName.EndsWith("/"))
-						Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
-					else
-						entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
-
-					progressBar.Increment(1);
-				}
-
-				foreach (ZipArchiveEntry entry in sharedArchive.Entries)
-				{
-					if (entry.FullName.EndsWith("/"))
-						Directory.CreateDirectory(Path.Combine(project.ProjectPath, entry.FullName));
-					else
-						entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName));
-
-					progressBar.Increment(1);
-				}
-
-				if (includeFLEP)
-				{
-					foreach (ZipArchiveEntry entry in flepArchive.Entries)
+					foreach (ZipArchiveEntry entry in musicArchive.Entries)
 					{
 						if (entry.FullName.EndsWith("/"))
-						{
-							string dirPath = Path.Combine(project.ProjectPath, entry.FullName);
-
-							if (!Directory.Exists(dirPath))
-								Directory.CreateDirectory(dirPath);
-						}
+							Directory.CreateDirectory(Path.Combine(targetProject.EnginePath, entry.FullName));
 						else
-							entry.ExtractToFile(Path.Combine(project.ProjectPath, entry.FullName), true);
-
-						progressBar.Increment(1);
+							entry.ExtractToFile(Path.Combine(targetProject.EnginePath, entry.FullName));
 					}
 				}
 			}
 
-			if (project.GameVersion == TRVersion.Game.TR1)
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void InstallTR2Engine(Project targetProject)
+		{
+			progressBar.Maximum = 1;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+				ExtractEntries(engineArchive.Entries.ToList(), targetProject);
+
+			if (_cdaudioDatFile != null && _cdaudioMp3File != null)
 			{
-				string musicDir = Path.Combine(project.EnginePath, "music");
+				string audioDir = Path.Combine(targetProject.EnginePath, "audio");
 
-				if (!Directory.Exists(musicDir))
-					Directory.CreateDirectory(musicDir);
-
-				if (_musicZipFilePath != null)
-				{
-					using (var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath)))
-					{
-						foreach (ZipArchiveEntry entry in musicArchive.Entries)
-						{
-							if (entry.FullName.EndsWith("/"))
-								Directory.CreateDirectory(Path.Combine(project.EnginePath, entry.FullName));
-							else
-								entry.ExtractToFile(Path.Combine(project.EnginePath, entry.FullName));
-						}
-					}
-				}
-			}
-			else if (
-				(project.GameVersion == TRVersion.Game.TR2 || project.GameVersion == TRVersion.Game.TR3)
-				&& (_cdaudioDatFile != null || _cdaudioMp3File != null || _cdaudioWadFile != null))
-			{
-				string audioDir = Path.Combine(project.EnginePath, "audio");
-
-				if (project.GameVersion == TRVersion.Game.TR2)
-				{
-					_cdaudioDatFile.CopyTo(Path.Combine(audioDir, _cdaudioDatFile.Name));
-					_cdaudioMp3File.CopyTo(Path.Combine(audioDir, _cdaudioMp3File.Name));
-				}
-				else if (project.GameVersion == TRVersion.Game.TR3)
-					_cdaudioWadFile.CopyTo(Path.Combine(audioDir, _cdaudioWadFile.Name));
+				_cdaudioDatFile.CopyTo(Path.Combine(audioDir, _cdaudioDatFile.Name));
+				_cdaudioMp3File.CopyTo(Path.Combine(audioDir, _cdaudioMp3File.Name));
 			}
 
-			// Save the .trproj file
-			project.Save(); // .trproj = .xml but .trproj can be opened with TombIDE
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
 
-			progressBar.Increment(1); // 100%
+		private void InstallTR3Engine(Project targetProject)
+		{
+			progressBar.Maximum = 1;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR3.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+				ExtractEntries(engineArchive.Entries.ToList(), targetProject);
+
+			if (_cdaudioWadFile != null)
+			{
+				string audioDir = Path.Combine(targetProject.EnginePath, "audio");
+				_cdaudioWadFile.CopyTo(Path.Combine(audioDir, _cdaudioWadFile.Name));
+			}
+
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void InstallTR4Engine(Project targetProject)
+		{
+			progressBar.Maximum = 1;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR4.zip");
+			string sharedFilesArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TRNG Shared Files.zip");
+			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+			using (var sharedFilesArchive = new ZipArchive(File.OpenRead(sharedFilesArchivePath)))
+			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			{
+				var allFiles = new List<ZipArchiveEntry>();
+				allFiles.AddRange(engineArchive.Entries);
+				allFiles.AddRange(sharedFilesArchive.Entries);
+				allFiles.AddRange(sharedAudioArchive.Entries);
+
+				ExtractEntries(allFiles, targetProject);
+			}
+
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void InstallTRNGEngine(Project targetProject, bool includeFLEP)
+		{
+			progressBar.Maximum = 1;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TRNG.zip");
+			string sharedFilesArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TRNG Shared Files.zip");
+			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+			string flepArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Extras", "FLEP.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+			using (var sharedFilesArchive = new ZipArchive(File.OpenRead(sharedFilesArchivePath)))
+			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			using (var flepArchive = new ZipArchive(File.OpenRead(flepArchivePath)))
+			{
+				var allFiles = new List<ZipArchiveEntry>();
+				allFiles.AddRange(engineArchive.Entries);
+				allFiles.AddRange(sharedFilesArchive.Entries);
+				allFiles.AddRange(sharedAudioArchive.Entries);
+
+				if (includeFLEP)
+					allFiles.AddRange(flepArchive.Entries);
+
+				ExtractEntries(allFiles, targetProject);
+			}
+
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void InstallTENEngine(Project targetProject)
+		{
+			const int extraSteps = 2;
+			progressBar.Maximum = 1 + extraSteps;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
+			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			{
+				var allFiles = new List<ZipArchiveEntry>();
+				allFiles.AddRange(engineArchive.Entries);
+				allFiles.AddRange(sharedAudioArchive.Entries);
+
+				ExtractEntries(allFiles, targetProject);
+			}
+
+			Directory.Move(Path.Combine(targetProject.EnginePath, "audio"), Path.Combine(targetProject.EnginePath, "audio_temp"));
+			progressBar.Increment(1);
+
+			Directory.Move(Path.Combine(targetProject.EnginePath, "audio_temp"), Path.Combine(targetProject.EnginePath, "Audio"));
+			progressBar.Increment(1);
+
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void ExtractEntries(List<ZipArchiveEntry> entries, Project targetProject)
+		{
+			progressBar.Maximum += entries.Count;
+
+			foreach (ZipArchiveEntry entry in entries)
+			{
+				if (entry.FullName.EndsWith("/"))
+				{
+					string dirPath = Path.Combine(targetProject.ProjectPath, entry.FullName);
+
+					if (!Directory.Exists(dirPath))
+						Directory.CreateDirectory(dirPath);
+				}
+				else
+					entry.ExtractToFile(Path.Combine(targetProject.ProjectPath, entry.FullName), true);
+
+				progressBar.Increment(1);
+			}
 		}
 
 		#endregion Methods
