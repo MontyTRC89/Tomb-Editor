@@ -2,6 +2,7 @@ Version 1.5.1
 =============
 
 General:
+ * Upgrade framework to .NET 6, which improves performance and compatibility with modern systems.
  * First release with official support for Tomb Engine (TEN).
 
 Tomb Editor:
