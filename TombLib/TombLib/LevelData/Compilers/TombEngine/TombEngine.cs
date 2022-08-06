@@ -23,9 +23,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(numRooms);
 
                 foreach (var r in _level.ExistingRooms)
-                {
                     _tempRooms[r].Write(writer);
-                }
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -115,10 +113,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 writer.Write((uint)_moveables.Count);
                 for (var k = 0; k < _moveables.Count; k++)
-                {
                     writer.WriteBlock(_moveables[k]);
-                    writer.Write((ushort)0xfeff);
-                }
 
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
@@ -205,12 +200,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
-                // Write object textures
-                writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
-                writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
-
-                _textureInfoManager.WriteTextureInfosTombEngine(writer, _level);
-
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 foreach (var item in _items)
@@ -242,12 +231,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.LuaName);
                 }
 
-                // Write LUA function names
-                writer.Write((uint)_luaFunctions.Count);
-                foreach (string functionName in _luaFunctions)
-                {
-                    writer.Write(functionName);
-                }
+                // Write event sets
+                writer.Write((uint)_level.Settings.EventSets.Count);
+                foreach (var set in _level.Settings.EventSets)
+                    set.Write(writer);
 
                 // Write sound meta data
                 PrepareSoundsData();

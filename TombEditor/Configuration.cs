@@ -240,7 +240,7 @@ namespace TombEditor
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;
         public Point Window_FormVolume_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormVolume_Size { get; set; } = new Size(520, 229);
+        public Size Window_FormVolume_Size { get; set; } = new Size(670, 460);
         public bool Window_FormVolume_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;

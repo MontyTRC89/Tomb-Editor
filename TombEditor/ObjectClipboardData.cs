@@ -93,6 +93,14 @@ namespace TombEditor
                         flyby.Number = (ushort)(existingItems.Max(f => f.Number) + 1);
                 }
 
+                if (obj is VolumeInstance)
+                {
+                    var vol = obj as VolumeInstance;
+                    var existingEvent = editor.Level.Settings.EventSets.FirstOrDefault(e => e.Equals(vol.EventSet));
+                    if (existingEvent != null)
+                        vol.EventSet = existingEvent;
+                }
+
                 return obj;
             })
             .ToList();

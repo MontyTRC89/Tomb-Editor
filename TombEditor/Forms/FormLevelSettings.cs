@@ -1687,6 +1687,7 @@ namespace TombEditor.Forms
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.TenLuaScriptFile,
                "Select the LUA script file for this level", new[] { new FileFormat("LUA script file", "lua") }, 
                VariableType.LevelDirectory, false);
+
             if (result != null)
             {
                 _levelSettings.TenLuaScriptFile = result;

@@ -53,9 +53,20 @@ namespace DarkUI.Controls
             set { base.BorderStyle = value; }
         }
 
+        [DefaultValue(false)]
+        public bool SelectOnClick { get; set; }
+
         #endregion
 
         #region Methods Region
+
+        protected override void OnClick(System.EventArgs e)
+        {
+            base.OnClick(e);
+
+            if (SelectOnClick)
+                SelectAll();
+        }
 
         protected override void WndProc(ref Message m)
         {
