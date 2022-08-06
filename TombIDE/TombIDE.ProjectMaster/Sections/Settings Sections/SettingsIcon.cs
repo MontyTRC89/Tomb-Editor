@@ -82,7 +82,7 @@ namespace TombIDE.ProjectMaster
 
 			if (result == DialogResult.Yes)
 			{
-				string icoFilePath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
+				string icoFilePath = Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "Defaults", "Game Icons", _ide.Project.GameVersion + ".ico");
 				ApplyIconToExe(icoFilePath);
 			}
 		}

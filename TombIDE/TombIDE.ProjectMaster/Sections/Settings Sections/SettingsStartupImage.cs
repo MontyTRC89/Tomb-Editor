@@ -114,7 +114,7 @@ namespace TombIDE.ProjectMaster
 
 			if (result == DialogResult.Yes)
 			{
-				string imageFilePath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "load.bmp");
+				string imageFilePath = Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "Defaults", "TR4 Resources", "load.bmp");
 				ReplaceImage(imageFilePath);
 			}
 		}
