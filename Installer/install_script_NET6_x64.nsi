@@ -188,26 +188,23 @@ Section "Uninstall"
   ; https://nsis.sourceforge.io/mediawiki/images/9/9f/Unlist.zip
   ; PLEASE UPDATE THIS BLOCK IF BUILD FILE SET IS CHANGED!
     
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\Defaults\uklogo.pak"
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\Defaults\TRNG.ico"
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\Defaults\TR4.ico"
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\Defaults\load.bmp"
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\Shared.zip"
-  Delete "$INSTDIR\TIDE\Templates\TOMB4\FLEP.zip"
-  Delete "$INSTDIR\TIDE\Templates\TOMB3\Defaults\TR3.ico"
-  Delete "$INSTDIR\TIDE\Templates\TOMB3\Shared.zip"
-  Delete "$INSTDIR\TIDE\Templates\TOMB2\Defaults\TR2.ico"
-  Delete "$INSTDIR\TIDE\Templates\TOMB2\Shared.zip"
-  Delete "$INSTDIR\TIDE\Templates\TOMB1\Defaults\TR1.ico"
-  Delete "$INSTDIR\TIDE\Templates\TOMB1\Shared.zip"
-  Delete "$INSTDIR\TIDE\Templates\TEN\Defaults\TEN.ico"
-  Delete "$INSTDIR\TIDE\Templates\TEN\Shared.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TRNG.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TR4.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TR3.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TR2.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TR1.zip"
-  Delete "$INSTDIR\TIDE\Templates\Engines\TEN.zip"
+  Delete "$INSTDIR\TIDE\Templates\Shared\TR4-TRNG Shared Files.zip"
+  Delete "$INSTDIR\TIDE\Templates\Shared\TR4-TEN Shared Audio.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TRNG.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TR4.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TR3.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TR2.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TR1.zip"
+  Delete "$INSTDIR\TIDE\Templates\Presets\TEN.zip"
+  Delete "$INSTDIR\TIDE\Templates\Extras\FLEP.zip"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\TR4 Resources\uklogo.pak"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\TR4 Resources\load.bmp"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TRNG.ico"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TR4.ico"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TR3.ico"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TR2.ico"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TR1.ico"
+  Delete "$INSTDIR\TIDE\Templates\Defaults\Game Icons\TombEngine.ico"
   Delete "$INSTDIR\TIDE\NGC\VGE\tools\keep.me"
   Delete "$INSTDIR\TIDE\NGC\VGE\sound\samples\keep.me"
   Delete "$INSTDIR\TIDE\NGC\VGE\sound\LevelSFX Creator\sounds.txt"
@@ -406,17 +403,12 @@ Section "Uninstall"
   Delete "$INSTDIR\CH.SipHash.dll"
   Delete "$INSTDIR\bzPSD.dll"
   Delete "$INSTDIR\AssimpNet.dll"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB4\Defaults"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB3\Defaults"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB2\Defaults"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB1\Defaults"
-  RMDir "$INSTDIR\TIDE\Templates\TEN\Defaults"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB4"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB3"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB2"
-  RMDir "$INSTDIR\TIDE\Templates\TOMB1"
-  RMDir "$INSTDIR\TIDE\Templates\TEN"
-  RMDir "$INSTDIR\TIDE\Templates\Engines"
+  RMDir "$INSTDIR\TIDE\Templates\Defaults\TR4 Resources"
+  RMDir "$INSTDIR\TIDE\Templates\Defaults\Game Icons"
+  RMDir "$INSTDIR\TIDE\Templates\Shared"
+  RMDir "$INSTDIR\TIDE\Templates\Presets"
+  RMDir "$INSTDIR\TIDE\Templates\Extras"
+  RMDir "$INSTDIR\TIDE\Templates\Defaults"
   RMDir "$INSTDIR\TIDE\NGC\VGE\sound\samples"
   RMDir "$INSTDIR\TIDE\NGC\VGE\sound\LevelSFX Creator"
   RMDir "$INSTDIR\TIDE\NGC\VGE\graphics\wads"
@@ -582,6 +574,16 @@ Function un.isEmptyDir
   _end:
 FunctionEnd
 
+Function .registerExtensions
+  
+  ${If} tideInstalled == "yes"
+    ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
+  ${Else}
+    ExecShell "runas" "$INSTDIR\File Association.exe" '-110'
+  ${EndIf}
+    
+FunctionEnd
+
 Function un.registerExtensions
   
   ExecShell "runas" "$INSTDIR\File Association.exe" '-d'
@@ -694,13 +696,5 @@ Function isDotNetInstalled
   yesDotNet:
     ;Everything checks out.  Go on with the rest of the installation.
  
-FunctionEndFunction .registerExtensions
-  
-  ${If} tideInstalled == "yes"
-    ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
-  ${Else}
-    ExecShell "runas" "$INSTDIR\File Association.exe" '-110'
-  ${EndIf}
-    
 FunctionEnd
 
