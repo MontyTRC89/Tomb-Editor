@@ -26,7 +26,7 @@ $\r$\n\
   ${U+2022} Videocard with DirectX 10 support $\r$\n\
   ${U+2022} At least 2 gigabytes of RAM $\r$\n\
 $\r$\n\
-This package includes a template to build Tomb Engine (TEN) levels. You need to install TombIDE to access this template. $\r$\n\
+This package includes a TIDE template to build Tomb Engine (TEN) levels. $\r$\n\
 $\r$\n\
 Enjoy! $\r$\n\
 Tomb Editor dev team."
@@ -40,7 +40,6 @@ Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "C:\Tomb Editor"
-Var tideInstalled
   
 ;--------------------------------
 
@@ -66,9 +65,6 @@ Section "Tomb Editor" Section1
   
   SetOutPath $INSTDIR
   File /r \
-  /x "TIDE" \
-  /x "Configs" \
-  /x "Assets" \
   /x "TombEditorLog*.txt" \
   /x "WadToolLog*.txt" \
   /x "TombIDELog*.txt" \
@@ -81,8 +77,6 @@ Section "Tomb Editor" Section1
   /x "TombEditorConfiguration.xml" \
   /x "SoundToolConfiguration.xml" \
   /x "WadToolConfiguration.xml" \
-  /x "TombIDE*.*" \
-  /x "TombLib.Scripting*.*" \
   *.* \
   
   ; Add readme from installer folder
@@ -105,26 +99,7 @@ Section "Tomb Editor" Section1
   
 SectionEnd
 
-Section "TombIDE" Section2
-
-  SectionIn 1
-  
-  SetOutPath $INSTDIR
-  File /r \
-  /x "*.pdb" \
-  /x "*.config" \
-  /x "*.vshost.*" \
-  /x "TombIDE*.xml" \
-  TombIDE*.* 
-  
-  File /r "TIDE"
-  File /r "Configs"
-  
-  StrCpy $tideInstalled "yes"
-  
-SectionEnd
-
-Section "Start Menu Shortcuts" Section3
+Section "Start Menu Shortcuts" Section2
 
   SectionIn 1 2
 
@@ -141,7 +116,7 @@ Section "Start Menu Shortcuts" Section3
   
 SectionEnd
 
-Section "Desktop Shortcuts" Section4
+Section "Desktop Shortcuts" Section3
 
   SectionIn 1 2
   CreateShortcut "$DESKTOP\Tomb Editor.lnk" "$INSTDIR\TombEditor.exe" "" "$INSTDIR\TombEditor.exe" 0
@@ -154,7 +129,7 @@ Section "Desktop Shortcuts" Section4
 
 SectionEnd
 
-Section "Associate File Types" Section5
+Section "Associate File Types" Section4
   
   SectionIn 1 2
   
@@ -163,17 +138,15 @@ Section "Associate File Types" Section5
 SectionEnd
 
 LangString DESC_Section1 ${LANG_ENGLISH} "Basic Tomb Editor components. Includes WadTool and SoundTool."
-LangString DESC_Section2 ${LANG_ENGLISH} "TombIDE. Includes TEN template."
-LangString DESC_Section3 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
-LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
-LangString DESC_Section5 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
+LangString DESC_Section2 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
+LangString DESC_Section3 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
+LangString DESC_Section4 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${Section1} $(DESC_Section1)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section2} $(DESC_Section2)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section3} $(DESC_Section3)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section4} $(DESC_Section4)
-  !insertmacro MUI_DESCRIPTION_TEXT ${Section5} $(DESC_Section5)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
@@ -575,13 +548,7 @@ Function un.isEmptyDir
 FunctionEnd
 
 Function .registerExtensions
-  
-  ${If} tideInstalled == "yes"
-    ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
-  ${Else}
-    ExecShell "runas" "$INSTDIR\File Association.exe" '-110'
-  ${EndIf}
-    
+  ExecShell "runas" "$INSTDIR\File Association.exe" '-111'    
 FunctionEnd
 
 Function un.registerExtensions
