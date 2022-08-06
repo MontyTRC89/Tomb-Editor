@@ -3,7 +3,7 @@
 !include WinVer.nsh
 !include x64.nsh
 
-!cd "..\Build (x64)\net6.0-windows"
+!cd "..\BuildRelease (x64)\net6.0-windows"
 
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
@@ -13,7 +13,8 @@
 !define MUI_ICON "..\..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
-!getdllversion "TombEditor.exe" Version_
+!define DOT_MAJOR "6"
+!define DOT_MINOR "0"
 
 !define MUI_WELCOMEPAGE_TEXT \
 "You are ready to install Tomb Editor ${Version_1}.${Version_2}.${Version_3}. $\r$\n\
@@ -21,14 +22,16 @@ $\r$\n\
 Please make sure your system complies with following system requirements: $\r$\n\
 $\r$\n\
   ${U+2022} Windows 7 or later (64-bit) $\r$\n\
-  ${U+2022} Installed .NET Core 6 or later (64-bit)$\r$\n\
+  ${U+2022} Installed .NET 6 or later (64-bit)$\r$\n\
   ${U+2022} Videocard with DirectX 10 support $\r$\n\
-  ${U+2022} At least 1 gigabyte of RAM $\r$\n\
+  ${U+2022} At least 2 gigabytes of RAM $\r$\n\
 $\r$\n\
-Note: this package includes a template to build Tomb Engine (TEN) levels. You need to install TombIDE to access this template. $\r$\n\
+This package includes a template to build Tomb Engine (TEN) levels. You need to install TombIDE to access this template. $\r$\n\
 $\r$\n\
 Enjoy! $\r$\n\
 Tomb Editor dev team."
+
+!getdllversion "TombEditor.exe" Version_
 
 ;--------------------------------
 
@@ -38,7 +41,7 @@ Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "C:\Tomb Editor"
 Var tideInstalled
-
+  
 ;--------------------------------
 
 InstType "Standard"
@@ -87,6 +90,9 @@ Section "Tomb Editor" Section1
   
   ; Add resources folder if not
   File /r "Resources"
+  
+  ; Choose 32-bit or 64-bit d3dcompiler dll based on system version
+  Rename "$INSTDIR\Native\64 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
   
   ; Write the uninstall keys
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TombEditor" "DisplayName" "Tomb Editor"
@@ -236,8 +242,11 @@ Section "Uninstall"
   Delete "$INSTDIR\TIDE\DOS\SDL_net.dll"
   Delete "$INSTDIR\TIDE\DOS\SDL.dll"
   Delete "$INSTDIR\TIDE\DOS\DOSBox.exe"
+  Delete "$INSTDIR\Runtimes\win-x86\native\assimp.dll"
   Delete "$INSTDIR\Runtimes\win-x64\native\assimp.dll"
   Delete "$INSTDIR\Runtimes\win\lib\netcoreapp2.0\System.Management.dll"
+  Delete "$INSTDIR\Runtimes\osx-x64\native\libassimp.dylib"
+  Delete "$INSTDIR\Runtimes\linux-x64\native\libassimp.so"
   Delete "$INSTDIR\Resources\Localization\PL\TombIDE.xml"
   Delete "$INSTDIR\Resources\Localization\EN\TombIDE.xml"
   Delete "$INSTDIR\Resources\ClassicScript\Descriptions\OLD Commands.rdda"
@@ -308,236 +317,6 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\Sounds.tr1.xml"
   Delete "$INSTDIR\Catalogs\NgCatalog.xml"
   Delete "$INSTDIR\Assets\Wads\TombEngine.wad2"
-  Delete "$INSTDIR\Assets\Samples\TR1\uzi_fr.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\uw_swt.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\usekey.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\useitem.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\undwatr.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trx_roar.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trx_foot.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trx_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trx_atk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trapd_op.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\trapd_cl.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_move.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_hit.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_ground.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_atk2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_atk1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\torso_arm.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\thunder.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\takehit2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\takehit1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\switch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\swim.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\swch_up.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\splash.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Slipping.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\slide_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\slam_open.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\slam_close.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_stop.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_start.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_shoot.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_move.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_hit.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_ground.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\skate_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\shot_gun.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\setup.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\secret.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\sand_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rolling.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rokfall3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rokfall2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rokfall1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rico_02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rico_01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\reload.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rat_foot.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rat_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rat_chirp.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rat_atk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rapt_roar.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rapt_ft2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rapt_ft1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\rapt_atk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\push_blk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\powerup_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\pierre_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\pierre_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\pendulum.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\p&p05.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\p&p04.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\p&p03.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\p&p02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\p&p01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\natla_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\natla_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\mum_grwl.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\metald_open.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\metald_close.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\medi_fix.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\magnum.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_spinout.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_spinin.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_select.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_rotat.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_passport.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_guns.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_controls.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_compass.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\m_choose.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lion_roar.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lion_hurt.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lion_death.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lion_atk2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lion_atk1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lava_fountain.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lars_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lars_rico.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lars_fire.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lars_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lara_no.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lar_spks.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lar_jmp.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lar_die3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lar_die2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\lar_die1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\landing.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_wtfall_b.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_wtfall.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_water.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_rumb.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_lava.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_fire.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_conveyor.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\l_altar.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\hut_lower.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\hut_ground.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\hols_out.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\hols_in.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_25.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_24.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_23.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_22.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_21.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_20.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_19.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_18.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_17.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_16.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_15.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_14.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_13.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_12.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_11.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_10.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_09.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_08.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_07.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_06.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_05.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_04.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_03.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gym_01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gr_gr4.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gr_gr3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gr_gr2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gr_gr1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gorl_pant.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gorl_grnt.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gorl_foot.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gorl_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\go_watr.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\gen_door.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\foot04.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\foot03.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\foot02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\foot01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\floatswm.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\f2f_scrm.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\f2f_hitg.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\explos_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\explode.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\emp_gun.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\drill_start.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\drill.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_jat2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_jat1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_hwl.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_hit.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_d2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_d1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_at2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dog_at1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\dart.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\damocles.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\d_eagle.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\ct_ft4.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\ct_ft3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\ct_ft2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\ct_ft1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\croc_foot.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\croc_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\croc_at2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\croc_at1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\cowboy_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\cowboy_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\cogs.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\clsl_03.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\clsl_02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\clsl_01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Clim_up3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Clim_up2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Clim_up1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\chn_up.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\chn_down.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\chain_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\cent_roar.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bul_flsh.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bubbles.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\breath.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\body_sl2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\body_sl1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\block_fx.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\blanding.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\black_spch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\black_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bft04.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bft03.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bft02.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bft01.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_snrl2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_snrl1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_hit.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_grwl.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_feet.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bear_atk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bat_sqk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\bat_flp.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Back_jm3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\Back_jm2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\back_jm1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_wing.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_sneak2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_sneak1.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_needle.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_jatk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_hatch.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_expld.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_egg.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_die.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_ball.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\atlan_atk.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\at_ft4.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\at_ft3.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\at_ft2.wav"
-  Delete "$INSTDIR\Assets\Samples\TR1\at_ft1.wav"
   Delete "$INSTDIR\WadTool.runtimeconfig.json"
   Delete "$INSTDIR\WadTool.exe"
   Delete "$INSTDIR\WadTool.dll.config"
@@ -682,9 +461,7 @@ Section "Uninstall"
   RMDir "$INSTDIR\Configs\TextEditors\ColorSchemes"
   RMDir "$INSTDIR\Configs\TextEditors"
   RMDir "$INSTDIR\Catalogs\TEN Sound Catalogs"
-  RMDir "$INSTDIR\Assets\Samples\TR1"
   RMDir "$INSTDIR\Assets\Wads"
-  RMDir "$INSTDIR\Assets\Samples"
   RMDir "$INSTDIR\TIDE"
   RMDir "$INSTDIR\Runtimes"
   RMDir "$INSTDIR\Resources"
@@ -744,16 +521,16 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\Tomb Editor"
 
   ; Only remove program dir if it's empty
-   SetOutPath $TEMP
-   Push $INSTDIR
-   Call un.isEmptyDir
-   Pop $0
-   StrCmp $0 1 0 +2
-     RMDir /r $INSTDIR
-   StrCmp $0 0 0 +2
-     MessageBox MB_OK \
-     "Installation folder contains extra files. $\r$\n\
-     Check if these files are important and remove folder manually."
+  SetOutPath $TEMP
+  Push $INSTDIR
+  Call un.isEmptyDir
+  Pop $0
+  StrCmp $0 1 0 +2
+    RMDir /r $INSTDIR
+  StrCmp $0 0 0 +2
+    MessageBox MB_OK \
+    "Installation folder contains extra files. $\r$\n\
+    Check if these files are important and remove folder manually."
      
 SectionEnd
 
@@ -768,6 +545,17 @@ Function .onInit
     The installer will now quit."
     Quit
   ${EndIf}
+  
+  ${IfNot} ${RunningX64}
+    MessageBox MB_OK \
+    "This version of Tomb Editor is only compatible with 64-bit systems. $\r$\n\
+    The installer will now quit."
+    Quit
+  ${EndIf}
+FunctionEnd
+
+Function .onInstSuccess
+  Call isDotNetInstalled
 FunctionEnd
 
 Function un.isEmptyDir
@@ -801,7 +589,112 @@ Function un.registerExtensions
     
 FunctionEnd
 
-Function .registerExtensions
+Function openLinkNewWindow
+  Push $3
+  Exch
+  Push $2
+  Exch
+  Push $1
+  Exch
+  Push $0
+  Exch
+ 
+  ReadRegStr $0 HKCR "http\shell\open\command" ""
+# Get browser path
+    DetailPrint $0
+  StrCpy $2 '"'
+  StrCpy $1 $0 1
+  StrCmp $1 $2 +2 # if path is not enclosed in " look for space as final char
+    StrCpy $2 ' '
+  StrCpy $3 1
+  loop:
+    StrCpy $1 $0 1 $3
+    DetailPrint $1
+    StrCmp $1 $2 found
+    StrCmp $1 "" found
+    IntOp $3 $3 + 1
+    Goto loop
+ 
+  found:
+    StrCpy $1 $0 $3
+    StrCmp $2 " " +2
+      StrCpy $1 '$1"'
+ 
+  Pop $0
+  Exec '$1 $0'
+  Pop $0
+  Pop $1
+  Pop $2
+  Pop $3
+FunctionEnd
+
+; Usage
+; Define in your script two constants:
+;   DOT_MAJOR "(Major framework version)"
+;   DOT_MINOR "{Minor framework version)"
+; 
+; Call isDotNetInstalled
+; This function will abort the installation if the required version 
+; or higher version of the .NET Framework is not installed.  Place it in
+; either your .onInit function or your first install section before 
+; other code.
+Function isDotNetInstalled
+ 
+  StrCpy $0 "0"
+  StrCpy $1 "SOFTWARE\Microsoft\ASP.NET Core" ;registry entry to look in.
+  StrCpy $2 0
+ 
+  StartEnum:
+    ;Enumerate the versions installed.
+    EnumRegKey $3 HKLM "$1\Shared Framework" $2
+ 
+    ;If we don't find any versions installed, it's not here.
+    StrCmp $3 "" noDotNet notEmpty
+ 
+    ;We found something.
+    notEmpty:
+      ;Find out if the RegKey starts with 'v'.  
+      ;If it doesn't, goto the next key.
+      StrCpy $4 $3 1 0
+      StrCmp $4 "v" +1 goNext
+      StrCpy $4 $3 1 1
+ 
+      ;It starts with 'v'.  Now check to see how the installed major version
+      ;relates to our required major version.
+      ;If it's equal check the minor version, if it's greater, 
+      ;we found a good RegKey.
+      IntCmp $4 ${DOT_MAJOR} +1 goNext yesDotNet
+      ;Check the minor version.  If it's equal or greater to our requested 
+      ;version then we're good.
+      StrCpy $4 $3 1 3
+      IntCmp $4 ${DOT_MINOR} yesDotNet goNext yesDotNet
+ 
+    goNext:
+      ;Go to the next RegKey.
+      IntOp $2 $2 + 1
+      goto StartEnum
+	  
+  noDotNet:
+	StrCpy $0 "You need .NET "
+	StrCpy $0 "$0${DOT_MAJOR}.${DOT_MINOR}"
+	StrCpy $0 "$0 installed. Do you want to download it now? $\r$\n\
+	If you do, select $\"Run Desktop Apps > Download x64$\" version."
+	
+    ;Nope, something went wrong along the way.  Looks like the 
+    ;proper .NET Framework isn't installed. Ask user to install it.
+    MessageBox MB_YESNO $0 IDYES doInstall IDNO doNotInstall
+	doInstall:
+	  StrCpy $0 "https://dotnet.microsoft.com/en-us/download/dotnet/"
+	  StrCpy $0 "$0${DOT_MAJOR}.${DOT_MINOR}"
+	  StrCpy $0 "$0/runtime"
+	  Push $0
+	  Call openLinkNewWindow
+	doNotInstall:
+ 
+  yesDotNet:
+    ;Everything checks out.  Go on with the rest of the installation.
+ 
+FunctionEndFunction .registerExtensions
   
   ${If} tideInstalled == "yes"
     ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
