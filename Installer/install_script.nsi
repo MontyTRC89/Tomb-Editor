@@ -23,7 +23,7 @@ $\r$\n\
   ${U+2022} Windows 7 or later (preferably 64-bit) $\r$\n\
   ${U+2022} Installed .NET Framework 4.5 $\r$\n\
   ${U+2022} Videocard with DirectX 10 support $\r$\n\
-  ${U+2022} At least 2 gigabytes of RAM $\r$\n\
+  ${U+2022} At least 1 gigabyte of RAM $\r$\n\
 $\r$\n\
 Enjoy! $\r$\n\
 Tomb Editor dev team."
