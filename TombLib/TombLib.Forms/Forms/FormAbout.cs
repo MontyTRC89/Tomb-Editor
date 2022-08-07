@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Windows.Forms;
 using DarkUI.Config;
 using DarkUI.Forms;
+using TombLib.Utils;
 
 namespace TombLib.Forms
 {
@@ -23,13 +21,10 @@ namespace TombLib.Forms
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
-            var assembly = Assembly.GetExecutingAssembly()
-                           .GetCustomAttributes(false).OfType<TargetFrameworkAttribute>()
-                           .First().FrameworkDisplayName;
 
             var font = new Font(Font.FontFamily, 10.0f);
             using (var b = new SolidBrush(Colors.LightText))
-                e.Graphics.DrawString("Version " + Application.ProductVersion + " (" + assembly + ")", 
+                e.Graphics.DrawString("Version " + Application.ProductVersion + " (" + Logging.FrameworkVersion + ")", 
                 font, b, pictureBox.Width, pictureBox.Height,
                 new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
         }
