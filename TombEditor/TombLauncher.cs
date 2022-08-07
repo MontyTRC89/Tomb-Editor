@@ -30,7 +30,7 @@ namespace TombEditor
                 if (settings.GameVersion == TRVersion.Game.TombEngine)
                 {
                     string lastDir = new DirectoryInfo(settings.GameLevelFilePath).Parent.Name;
-                    arguments = "/level " + lastDir + "\\" + Path.GetFileName(settings.GameLevelFilePath) + " /hash " + Math.Abs(Environment.MachineName.GetHashCode()).ToString();
+                    arguments = "/debug /level " + lastDir + "\\" + Path.GetFileName(settings.GameLevelFilePath) + " /hash " + Math.Abs(Environment.MachineName.GetHashCode()).ToString();
                 }
 
                 var info = new ProcessStartInfo
