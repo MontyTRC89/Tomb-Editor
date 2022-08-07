@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace TombLib.Utils
 {
@@ -59,6 +61,7 @@ namespace TombLib.Utils
 
             // Give startup information about the application in the log
             logger.Info((assemblyProductAttribute?.Product ?? "TombLib") + " version " + (assemblyVersionAttribute?.Version ?? "?") + " is starting");
+            logger.Info("Framework version: " + FrameworkVersion);
             logger.Info("TombLib Git Revision: " + GitVersion);
 
             // Raise initial exceptions
@@ -103,6 +106,16 @@ namespace TombLib.Utils
                     using (StreamReader reader = new StreamReader(stream))
                         return reader.ReadToEnd();
                 }
+            }
+        }
+
+        public static string FrameworkVersion
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly()
+                               .GetCustomAttributes(false).OfType<TargetFrameworkAttribute>()
+                               .FirstOrDefault().FrameworkDisplayName;
             }
         }
     }

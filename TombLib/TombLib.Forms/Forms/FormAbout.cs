@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Config;
 using DarkUI.Forms;
+using TombLib.Utils;
 
 namespace TombLib.Forms
 {
@@ -20,9 +21,12 @@ namespace TombLib.Forms
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
+
             var font = new Font(Font.FontFamily, 10.0f);
             using (var b = new SolidBrush(Colors.LightText))
-                e.Graphics.DrawString("Version " + Application.ProductVersion, font, b, pictureBox.Width, pictureBox.Height, new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
+                e.Graphics.DrawString("Version " + Application.ProductVersion + " (" + Logging.FrameworkVersion + ")", 
+                font, b, pictureBox.Width, pictureBox.Height,
+                new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
         }
 
         private void btnLink_Click(object sender, EventArgs e)
