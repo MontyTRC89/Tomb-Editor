@@ -24,7 +24,7 @@ namespace TombLib.Forms
 
             var font = new Font(Font.FontFamily, 10.0f);
             using (var b = new SolidBrush(Colors.LightText))
-                e.Graphics.DrawString("Version " + Application.ProductVersion + " (" + Logging.FrameworkVersion + ")", 
+                e.Graphics.DrawString("Version " + Application.ProductVersion + " (.NET: " + Logging.FrameworkVersion + ")", 
                 font, b, pictureBox.Width, pictureBox.Height,
                 new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
         }
