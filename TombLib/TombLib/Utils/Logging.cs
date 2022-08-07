@@ -113,9 +113,11 @@ namespace TombLib.Utils
         {
             get
             {
-                return Assembly.GetExecutingAssembly()
+                var result = Assembly.GetExecutingAssembly()
                                .GetCustomAttributes(false).OfType<TargetFrameworkAttribute>()
-                               .FirstOrDefault().FrameworkDisplayName;
+                               .FirstOrDefault().FrameworkName;
+
+                return result.Substring(result.LastIndexOf("=v") + 2);
             }
         }
     }
