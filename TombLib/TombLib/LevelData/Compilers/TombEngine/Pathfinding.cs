@@ -269,6 +269,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 for (int i = _boxes[next].OverlapIndex; i < _overlaps.Count && !last; i++)
                 {
                     int overlapIndex = i;
+                    if (overlapIndex < 0)
+                        return boxes;
+
                     last = (_overlaps[overlapIndex].Flags & 0x8000) != 0;
 
                     bool canJump = (_overlaps[overlapIndex].Flags & 0x800) != 0;
