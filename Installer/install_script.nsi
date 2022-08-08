@@ -102,16 +102,7 @@ Section "Tomb Editor" Section1
   
 SectionEnd
 
-Section "Stock Assets" Section2
-
-  SectionIn 1
-
-  SetOutPath $INSTDIR
-  File /r "Assets"
-  
-SectionEnd
-
-Section "Start Menu Shortcuts" Section3
+Section "Start Menu Shortcuts" Section2
 
   SectionIn 1 2
 
@@ -125,7 +116,7 @@ Section "Start Menu Shortcuts" Section3
   
 SectionEnd
 
-Section "Desktop Shortcuts" Section4
+Section "Desktop Shortcuts" Section3
 
   SectionIn 1 2
   CreateShortcut "$DESKTOP\Tomb Editor.lnk" "$INSTDIR\TombEditor.exe" "" "$INSTDIR\TombEditor.exe" 0
@@ -135,7 +126,7 @@ Section "Desktop Shortcuts" Section4
   
 SectionEnd
 
-Section "Associate File Types" Section5
+Section "Associate File Types" Section4
   
   SectionIn 1 2
   
@@ -144,17 +135,15 @@ Section "Associate File Types" Section5
 SectionEnd
 
 LangString DESC_Section1 ${LANG_ENGLISH} "Basic Tomb Editor components. Includes WadTool and SoundTool."
-LangString DESC_Section2 ${LANG_ENGLISH} "Stock sound assets for TR1. Needed if you plan to build TR1 levels."
-LangString DESC_Section3 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
-LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
-LangString DESC_Section5 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
+LangString DESC_Section2 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
+LangString DESC_Section3 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
+LangString DESC_Section4 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${Section1} $(DESC_Section1)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section2} $(DESC_Section2)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section3} $(DESC_Section3)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section4} $(DESC_Section4)
-  !insertmacro MUI_DESCRIPTION_TEXT ${Section5} $(DESC_Section5)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
