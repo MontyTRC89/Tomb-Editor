@@ -6,7 +6,7 @@ using DarkUI.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor.Forms.TombEngine
+namespace TombEditor.Forms
 {
     public partial class FormVolume : DarkForm
     {

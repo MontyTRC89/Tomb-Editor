@@ -8,9 +8,9 @@ namespace TombEditor.Controls.ContextMenus
         public MaterialObjectContextMenu(Editor editor, IWin32Window owner, ObjectInstance targetObject)
             : base(editor, owner)
         {
-            if (_editor.Level.IsNG)
+            if (targetObject is IHasScriptID)
             {
-                if (targetObject == editor.SelectedObject && targetObject is IHasScriptID)
+                if (_editor.Level.IsNG && targetObject == editor.SelectedObject)
                 {
                     var obj = (targetObject as IHasScriptID);
                     var startString = obj.ScriptId.HasValue ?
@@ -21,6 +21,14 @@ namespace TombEditor.Controls.ContextMenus
                         CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
                     }));
                     Items.Add(new ToolStripSeparator());
+                }
+
+                if (_editor.Level.IsTombEngine)
+                {
+                    Items.Add(new ToolStripMenuItem("Rename object", Properties.Resources.general_edit_16, (o, e) =>
+                    {
+                        EditorActions.RenameObject(targetObject, this);
+                    }));
                 }
             }
 

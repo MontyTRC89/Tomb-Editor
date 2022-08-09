@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using DarkUI.Controls;
-namespace TombEditor.Forms.TombEngine
+
+namespace TombEditor.Forms
 {
     partial class FormVolume
     {
