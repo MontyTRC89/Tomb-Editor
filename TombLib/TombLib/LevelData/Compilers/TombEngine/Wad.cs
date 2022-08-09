@@ -294,17 +294,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     float lateralAcceleration = 0;
                     float speed = 0;
                     float lateralSpeed = 0;
-
+                    
                     if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
                     {
-                        acceleration = (float)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
-                                                        ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
-                        lateralAcceleration = (float)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
-                                                               ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
+                        acceleration = (oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
+                                       ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate);
+                        lateralAcceleration = (oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
+                                              ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate);
                     }
 
-                    speed = (float)Math.Round(oldAnimation.StartVelocity * 65536.0f);
-                    lateralSpeed = (float)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
+                    speed = oldAnimation.StartVelocity;
+                    lateralSpeed = oldAnimation.StartLateralVelocity;
 
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
