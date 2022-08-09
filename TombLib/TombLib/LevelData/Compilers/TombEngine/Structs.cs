@@ -440,6 +440,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
+                // writer.Write(volume.LuaName); // TODO: Uncomment when lua API for volumes is implemented -- Lwmte, 09.08.22
                 writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
             }
 
