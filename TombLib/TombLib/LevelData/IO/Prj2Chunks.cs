@@ -185,6 +185,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost");
         /**********/public static readonly ChunkId ObjectTriggerVolumeTest = ChunkId.FromString("TeVolumeTest");
         /**********/public static readonly ChunkId ObjectTriggerVolume1 = ChunkId.FromString("TeVolume1");
+        /**********/public static readonly ChunkId ObjectTriggerVolume2 = ChunkId.FromString("TeVolume2");
         /************/public static readonly ChunkId ObjectTrigger2Type = ChunkId.FromString("TeTy");
         /************/public static readonly ChunkId ObjectTrigger2TargetType = ChunkId.FromString("TeTaTy");
         /************/public static readonly ChunkId ObjectTrigger2Target = ChunkId.FromString("TeTa");

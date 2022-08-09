@@ -130,7 +130,7 @@ namespace TombLib.LevelData
                          ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
                          ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
                          ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
-                         ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+                         ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys, " : "");
                 result = result.Substring(0, result.Length - 2) + " \n";
             }
 
@@ -183,11 +183,12 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sphere Volume (d = " + Math.Round(Size) + ")" +
-                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
+            return "Sphere Volume" + GetScriptIDOrName(true) +
+                   ", Room = " + (Room?.ToString() ?? "NULL") + "\n" +
                    EventSet?.GetDescription() ?? string.Empty;
         }
+
+        public override string ShortName() => "Sphere volume" + GetScriptIDOrName();
     }
 
     public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
@@ -225,16 +226,15 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string message = "Box Volume (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
-                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n" + 
+            return "Box Volume" + GetScriptIDOrName(true) +
+                   ", Room = " + (Room?.ToString() ?? "NULL") + "\n" +
                    EventSet?.GetDescription() ?? string.Empty;
-
-            return message;
         }
+
+        public override string ShortName() => "Box volume" + GetScriptIDOrName();
     }
 
-    public abstract class VolumeInstance : PositionBasedObjectInstance, ISpatial
+    public abstract class VolumeInstance : PositionAndScriptBasedObjectInstance, ISpatial
     {
         public VolumeShape Shape()
         {
@@ -257,5 +257,7 @@ namespace TombLib.LevelData
 
             args.DestinationLevelSettings.EventSets.Add(EventSet);
         }
+
+        public abstract string ShortName();
     }
 }

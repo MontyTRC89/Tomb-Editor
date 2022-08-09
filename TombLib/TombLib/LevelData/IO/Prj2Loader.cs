@@ -1562,7 +1562,8 @@ namespace TombLib.LevelData.IO
                     newObjects.TryAdd(objectID, instance);                    
                 }
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest ||
-                         id3 == Prj2Chunks.ObjectTriggerVolume1)
+                         id3 == Prj2Chunks.ObjectTriggerVolume1 ||
+                         id3 == Prj2Chunks.ObjectTriggerVolume2)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
                     
@@ -1602,13 +1603,18 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.ReadStringUTF8();   // EventSet.OnInside.Function
                         chunkIO.Raw.ReadStringUTF8();   // EventSet.OnLeave.Function
                     }
-                    else if (id3 == Prj2Chunks.ObjectTriggerVolume1)
+                    else
                     {
                         int eventIndex = chunkIO.Raw.ReadInt32();
                         if (eventIndex != -1)
                             instance.EventSet = levelSettingsIds.EventSets.TryGetOrDefault(eventIndex);
                         else
                             instance.EventSet = null;
+
+                        if (id3 == Prj2Chunks.ObjectTriggerVolume2)
+                            instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                        else
+                            instance.LuaName = string.Empty;
                     }
 
                     addObject(instance);

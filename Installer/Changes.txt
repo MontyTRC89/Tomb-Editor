@@ -1,3 +1,11 @@
+Version 1.5.2
+=============
+
+Tomb Editor:
+ * Fix occasional errors when compiling pathfinding data in TEN levels.
+ * Reorganize the way objects which can have Lua name are renamed.
+ * Add ability to rename volumes.
+
 Version 1.5.1
 =============
 

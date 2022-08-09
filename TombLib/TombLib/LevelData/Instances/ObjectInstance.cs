@@ -455,6 +455,8 @@ namespace TombLib.LevelData
                     luaId = "sound_source_" + numObjects;
                 else if (this is CameraInstance)
                     luaId = "camera_" + numObjects;
+                else if (this is VolumeInstance)
+                    luaId = "volume_" + numObjects;
                 else
                     return;
 

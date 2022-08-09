@@ -969,6 +969,34 @@ namespace TombEditor
             }
         }
 
+        public static void RenameObject(ObjectInstance instance, IWin32Window owner)
+        {
+            if (instance == null)
+            {
+                _editor.SendMessage("Please select an object.", PopupType.Error);
+                return;
+            }
+
+            if (!VersionCheck(_editor.Level.IsTombEngine, "Object name"))
+                return;
+
+            if (!(instance is PositionAndScriptBasedObjectInstance))
+                return;
+
+            var luaInstance = instance as PositionAndScriptBasedObjectInstance;
+
+            using (var form = new FormInputBox("Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName))
+            {
+                if (form.ShowDialog(owner) == DialogResult.Cancel)
+                    return;
+
+                if (!luaInstance.TrySetLuaName(form.Result, owner))
+                    RenameObject(luaInstance, owner);
+                else
+                    _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
+            }
+        }
+
         public static void EditObject(ObjectInstance instance, IWin32Window owner)
         {
             if (instance is MoveableInstance)
@@ -987,10 +1015,11 @@ namespace TombEditor
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (instance.CanBeColored() &&
-                    (!_editor.Level.IsNG && !_editor.Level.IsTombEngine || Control.ModifierKeys.HasFlag(Keys.Control)))
+                if (instance.CanBeColored() && (!_editor.Level.IsNG || Control.ModifierKeys.HasFlag(Keys.Control)))
+                {
                     EditColor(owner, (StaticInstance)instance);
-                else if (_editor.Level.IsNG || _editor.Level.IsTombEngine)
+                }
+                else if (_editor.Level.IsNG)
                 {
                     using (var formStaticMesh = GetObjectSetupWindow((StaticInstance)instance))
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)

@@ -381,9 +381,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.WriteBlock(Lights.Count);
             foreach (var light in Lights)
             {
-                writer.Write((int)light.Position.X);
-                writer.Write((int)light.Position.Y);
-                writer.Write((int)light.Position.Z);
+                writer.Write(light.Position.X);
+                writer.Write(light.Position.Y);
+                writer.Write(light.Position.Z);
                 writer.Write(light.Direction.X);
                 writer.Write(light.Direction.Y);
                 writer.Write(light.Direction.Z);
@@ -396,7 +396,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(light.Length);
                 writer.Write(light.CutOff);
                 writer.Write(light.LightType);
-                writer.Write((byte)(light.CastDynamicShadows ? 1 : 0));
+                writer.Write(light.CastDynamicShadows);
             }
 
             // Write static meshes
@@ -426,7 +426,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(0);
                     var bv = volume as BoxVolumeInstance;
 
-                    writer.Write((Vector3)bvPos); // Move at the centerpoint
+                    writer.Write(bvPos);
                     writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), 0));
                     writer.Write(bv.Size / 2.0f);
                 }
@@ -435,11 +435,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(1);
                     var sv = volume as SphereVolumeInstance;
 
-                    writer.Write((Vector3)bvPos);
+                    writer.Write(bvPos);
                     writer.Write(Quaternion.Identity);
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
+                // writer.Write(volume.LuaName); // TODO: Uncomment when lua API for volumes is implemented -- Lwmte, 09.08.22
                 writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
             }
 

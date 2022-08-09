@@ -751,7 +751,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
                     else if (o is VolumeInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume1, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume2, LEB128.MaximumSize2Byte))
                         {
                             var instance = (VolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -779,6 +779,8 @@ namespace TombLib.LevelData.IO
                             if (instance.EventSet != null)
                                 levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
                             chunkIO.Raw.Write(eventSetID);
+
+                            chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                         }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
