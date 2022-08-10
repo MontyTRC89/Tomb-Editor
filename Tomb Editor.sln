@@ -54,9 +54,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "To
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAssociation", "FileAssociation\FileAssociation.csproj", "{934E79A8-2B20-4E0E-A145-08404493A7F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.GameFlowScript", "TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj", "{98E13BC4-6196-4346-AB4F-92DE33D84589}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.GameFlowScript", "TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj", "{98E13BC4-6196-4346-AB4F-92DE33D84589}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Tomb1Main", "TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj", "{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Tomb1Main", "TombLib\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj", "{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
