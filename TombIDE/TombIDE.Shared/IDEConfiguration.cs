@@ -17,7 +17,7 @@ namespace TombIDE.Shared
 
 		public string RememberedProject { get; set; }
 
-		public List<string> PinnedProgramPaths { get; set; } = new();
+		public List<string> PinnedProgramPaths { get; set; } = new List<string>();
 
 		/* ProjectMaster */
 
@@ -66,7 +66,7 @@ namespace TombIDE.Shared
 			=> XmlUtils.ReadXmlFile<IDEConfiguration>(stream);
 
 		public static IDEConfiguration Load(string filePath)
-			=> File.Exists(filePath) ? XmlUtils.ReadXmlFile<IDEConfiguration>(filePath) : new();
+			=> File.Exists(filePath) ? XmlUtils.ReadXmlFile<IDEConfiguration>(filePath) : new IDEConfiguration();
 
 		public static IDEConfiguration Load()
 			=> Load(DefaultPath);
