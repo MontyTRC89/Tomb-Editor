@@ -165,12 +165,16 @@ namespace TombLib.LevelData.IO
 
                 // Remove hardcoded TR4 collision box
 
+                case "ANIMATING12":
+                case "ANIMATING13":
+                case "ANIMATING14":
+                case "ANIMATING15":
                 case "ANIMATING16":
                     {
                         if (refWad.GameVersion.Native() != TRVersion.Game.TR4)
                             break;
 
-                        progressReporter?.ReportInfo("    Setting hardcoded collision for " + newSlotName);
+                        progressReporter?.ReportInfo("    Removing collision for " + newSlotName);
 
                         foreach (var anim in moveable.Animations)
                         {
@@ -331,7 +335,7 @@ namespace TombLib.LevelData.IO
                             continue;
                         }
 
-                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, referenceWad, progressReporter);
+                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, wad, progressReporter);
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
