@@ -21,7 +21,7 @@ namespace TombEditor
 
         [STAThread]
         public static void Main(string[] args)
-        { 
+        {
             string startFile = null;
             string batchFile = null;
             bool doBatchCompile = false;
