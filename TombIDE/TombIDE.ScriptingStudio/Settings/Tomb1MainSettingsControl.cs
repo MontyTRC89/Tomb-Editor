@@ -15,6 +15,7 @@ using TombLib.Scripting.Resources;
 using TombLib.Scripting.Tomb1Main;
 using TombLib.Scripting.Tomb1Main.Objects;
 using TombLib.Scripting.Tomb1Main.Resources;
+using TombLib.Utils;
 
 namespace TombIDE.ScriptingStudio.Settings
 {
@@ -108,7 +109,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			ToggleSaveSchemeButton();
 
 			string fullSchemePath = Path.Combine(DefaultPaths.T1MColorConfigsDirectory, comboBox_ColorSchemes.SelectedItem.ToString() + ".t1msch");
-			ColorScheme selectedScheme = XmlHandling.ReadXmlFile<ColorScheme>(fullSchemePath);
+			ColorScheme selectedScheme = XmlUtils.ReadXmlFile<ColorScheme>(fullSchemePath);
 
 			UpdateColorButtons(selectedScheme);
 			UpdatePreviewColors(selectedScheme);
@@ -146,7 +147,7 @@ namespace TombIDE.ScriptingStudio.Settings
 						Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
 					};
 
-					XmlHandling.SaveXmlFile(form.SchemeFilePath, currentScheme);
+					XmlUtils.WriteXmlFile(form.SchemeFilePath, currentScheme);
 
 					comboBox_ColorSchemes.Items.Add(Path.GetFileNameWithoutExtension(form.SchemeFilePath));
 					comboBox_ColorSchemes.SelectedItem = Path.GetFileNameWithoutExtension(form.SchemeFilePath);
@@ -342,7 +343,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (item == "~UNTITLED")
 					continue;
 
-				ColorScheme itemScheme = XmlHandling.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.T1MColorConfigsDirectory, item + ".t1msch"));
+				ColorScheme itemScheme = XmlUtils.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.T1MColorConfigsDirectory, item + ".t1msch"));
 
 				if (currentScheme == itemScheme)
 				{
@@ -357,7 +358,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (!comboBox_ColorSchemes.Items.Contains("~UNTITLED"))
 					comboBox_ColorSchemes.Items.Add("~UNTITLED");
 
-				XmlHandling.SaveXmlFile(Path.Combine(DefaultPaths.T1MColorConfigsDirectory, "~UNTITLED.t1msch"), currentScheme);
+				XmlUtils.WriteXmlFile(Path.Combine(DefaultPaths.T1MColorConfigsDirectory, "~UNTITLED.t1msch"), currentScheme);
 
 				comboBox_ColorSchemes.SelectedItem = "~UNTITLED";
 			}

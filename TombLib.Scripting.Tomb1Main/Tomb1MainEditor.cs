@@ -144,7 +144,7 @@ namespace TombLib.Scripting.Tomb1Main
 			ScrollToVerticalOffset(scrollOffset.Y);
 		}
 
-		public override void UpdateSettings(ConfigurationBase configuration)
+		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
 			var config = configuration as T1MEditorConfiguration;
 

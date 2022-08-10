@@ -79,6 +79,10 @@
       <Project>{3EAAFD71-DD96-427D-8793-643DADD2F3A3}</Project>
       <Name>TombLib.Scripting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TombLib\TombLib.csproj">
+      <Project>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</Project>
+      <Name>TombLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

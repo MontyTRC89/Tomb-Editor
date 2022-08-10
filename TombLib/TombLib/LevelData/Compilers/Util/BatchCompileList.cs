@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -20,26 +21,13 @@ namespace TombLib.LevelData
             if (!File.Exists(filename))
                 return null;
 
-            var list = new BatchCompileList();
-
-            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                var serializer = new XmlSerializer(typeof(BatchCompileList));
-                list = (BatchCompileList)serializer.Deserialize(fileStream);
-            }
-
-            return list;
+            return XmlUtils.ReadXmlFile<BatchCompileList>(filename);
         }
 
         public static bool SaveToXml(string filename, BatchCompileList list)
         {
-            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var serializer = new XmlSerializer(typeof(BatchCompileList));
-                serializer.Serialize(fileStream, list);
-            }
-
-            return true;
+            XmlUtils.WriteXmlFile(filename, list);
+            return true; // Why return true? It's not like there will ever be a different result other than an exception. -Nickelony
         }
     }
 }

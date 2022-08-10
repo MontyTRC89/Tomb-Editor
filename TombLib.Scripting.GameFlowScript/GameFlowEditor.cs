@@ -95,7 +95,7 @@ namespace TombLib.Scripting.GameFlowScript
 			ScrollToVerticalOffset(scrollOffset.Y);
 		}
 
-		public override void UpdateSettings(ConfigurationBase configuration)
+		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
 			var config = configuration as GameFlowEditorConfiguration;
 

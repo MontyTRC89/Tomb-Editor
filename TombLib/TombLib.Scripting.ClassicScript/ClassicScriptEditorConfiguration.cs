@@ -2,6 +2,7 @@
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Utils;
 
 namespace TombLib.Scripting.ClassicScript
 {
@@ -39,7 +40,7 @@ namespace TombLib.Scripting.ClassicScript
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlHandling.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
 			}
 		}
 

@@ -325,6 +325,7 @@
     <Compile Include="Utils\RectPackerTree.cs" />
     <Compile Include="Utils\Undo.cs" />
     <Compile Include="Utils\VertexNormalAverageHelper.cs" />
+    <Compile Include="Utils\XmlUtils.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Types\VectorInt2.cs" />
     <Compile Include="Types\VectorInt3.cs" />

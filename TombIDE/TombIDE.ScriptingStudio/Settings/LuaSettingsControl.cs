@@ -9,11 +9,11 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using TombLib.Scripting;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
+using TombLib.Utils;
 
 namespace TombIDE.ScriptingStudio.Settings
 {
@@ -108,7 +108,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			ToggleSaveSchemeButton();
 
 			string fullSchemePath = Path.Combine(DefaultPaths.LuaColorConfigsDirectory, comboBox_ColorSchemes.SelectedItem.ToString() + ".luasch");
-			ColorScheme selectedScheme = XmlHandling.ReadXmlFile<ColorScheme>(fullSchemePath);
+			ColorScheme selectedScheme = XmlUtils.ReadXmlFile<ColorScheme>(fullSchemePath);
 
 			UpdateColorButtons(selectedScheme);
 			UpdatePreviewColors(selectedScheme);
@@ -145,7 +145,7 @@ namespace TombIDE.ScriptingStudio.Settings
 						Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
 					};
 
-					XmlHandling.SaveXmlFile(form.SchemeFilePath, currentScheme);
+					XmlUtils.WriteXmlFile(form.SchemeFilePath, currentScheme);
 
 					comboBox_ColorSchemes.Items.Add(Path.GetFileNameWithoutExtension(form.SchemeFilePath));
 					comboBox_ColorSchemes.SelectedItem = Path.GetFileNameWithoutExtension(form.SchemeFilePath);
@@ -337,7 +337,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (item == "~UNTITLED")
 					continue;
 
-				ColorScheme itemScheme = XmlHandling.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.LuaColorConfigsDirectory, item + ".luasch"));
+				ColorScheme itemScheme = XmlUtils.ReadXmlFile<ColorScheme>(Path.Combine(DefaultPaths.LuaColorConfigsDirectory, item + ".luasch"));
 
 				if (currentScheme == itemScheme)
 				{
@@ -352,7 +352,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				if (!comboBox_ColorSchemes.Items.Contains("~UNTITLED"))
 					comboBox_ColorSchemes.Items.Add("~UNTITLED");
 
-				XmlHandling.SaveXmlFile(Path.Combine(DefaultPaths.LuaColorConfigsDirectory, "~UNTITLED.luasch"), currentScheme);
+				XmlUtils.WriteXmlFile(Path.Combine(DefaultPaths.LuaColorConfigsDirectory, "~UNTITLED.luasch"), currentScheme);
 
 				comboBox_ColorSchemes.SelectedItem = "~UNTITLED";
 			}

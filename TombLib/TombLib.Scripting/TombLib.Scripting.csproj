@@ -94,7 +94,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Helpers\StringHelper.cs" />
-    <Compile Include="XmlHandling.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\FormFindReplace.resx">
@@ -105,6 +104,10 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib\TombLib.csproj">
+      <Project>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</Project>
+      <Name>TombLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

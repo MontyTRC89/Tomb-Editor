@@ -1,6 +1,5 @@
 ﻿using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
+using TombLib.Utils;
 
 namespace TombLib.Scripting.Bases
 {
@@ -10,29 +9,18 @@ namespace TombLib.Scripting.Bases
 
 		#region Loading
 
-		public T Load<T>(Stream stream) where T : ConfigurationBase
-			=> new XmlSerializer(GetType()).Deserialize(stream) as T;
+		public T Load<T>(Stream stream) where T : ConfigurationBase, new()
+			=> XmlUtils.ReadXmlFile<T>(stream);
 
-		public T Load<T>(string filePath) where T : ConfigurationBase
+		public T Load<T>(string filePath) where T : ConfigurationBase, new()
 		{
-			try
-			{
-				using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-					return Load<T>(stream);
-			}
-			catch (IOException)
-			{
-				if (!Directory.Exists(Path.GetDirectoryName(filePath)))
-					Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+			if (!File.Exists(filePath))
+				XmlUtils.WriteXmlFile(filePath, new T());
 
-				using (var writer = XmlWriter.Create(filePath))
-					new XmlSerializer(GetType()).Serialize(writer, this);
-
-				return Load<T>(filePath);
-			}
+			return XmlUtils.ReadXmlFile<T>(filePath);
 		}
 
-		public T Load<T>() where T : ConfigurationBase
+		public T Load<T>() where T : ConfigurationBase, new()
 			=> Load<T>(DefaultPath);
 
 		#endregion Loading
@@ -40,25 +28,16 @@ namespace TombLib.Scripting.Bases
 		#region Saving
 
 		public void Save(Stream stream)
-			=> new XmlSerializer(GetType()).Serialize(stream, this);
+			=> XmlUtils.WriteXmlFile(stream, GetType(), this);
 
 		public void Save(string path)
 		{
-			try
-			{
-				using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-					Save(stream);
-			}
-			catch (IOException)
-			{
-				if (!Directory.Exists(Path.GetDirectoryName(path)))
-					Directory.CreateDirectory(Path.GetDirectoryName(path));
+			string directoryName = Path.GetDirectoryName(path);
 
-				using (var writer = XmlWriter.Create(path))
-					new XmlSerializer(GetType()).Serialize(writer, this);
+			if (!Directory.Exists(directoryName))
+				Directory.CreateDirectory(directoryName);
 
-				Save(path);
-			}
+			XmlUtils.WriteXmlFile(path, GetType(), this);
 		}
 
 		public void Save()

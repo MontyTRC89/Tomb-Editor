@@ -2,6 +2,7 @@
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.GameFlowScript.Objects;
 using TombLib.Scripting.GameFlowScript.Resources;
+using TombLib.Utils;
 
 namespace TombLib.Scripting.GameFlowScript
 {
@@ -25,7 +26,7 @@ namespace TombLib.Scripting.GameFlowScript
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlHandling.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
 			}
 		}
 

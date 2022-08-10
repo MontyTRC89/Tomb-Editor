@@ -122,7 +122,7 @@ namespace TombLib.Scripting.ClassicScript.Controls
 				AutoAdjustRowHeight(row.Index);
 			}
 
-			using (Graphics g = CreateGraphics())
+			using (System.Drawing.Graphics g = CreateGraphics())
 			{
 				int stringWidth = (int)g.MeasureString("00000000", font).Width;
 

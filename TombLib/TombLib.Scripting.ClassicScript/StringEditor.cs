@@ -525,7 +525,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Other methods
 
-		public void UpdateSettings(ConfigurationBase configuration) // TODO: Create it's own settings for the StringEditor
+		public void UpdateSettings(Bases.ConfigurationBase configuration) // TODO: Create it's own settings for the StringEditor
 		{
 			var config = configuration as ClassicScriptEditorConfiguration;
 

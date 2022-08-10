@@ -46,7 +46,7 @@ namespace TombLib.Scripting.Rendering
 
 		private static void DrawPatternLines(Bitmap bitmap, List<PointF> points, Color color)
 		{
-			using (var graphics = Graphics.FromImage(bitmap))
+			using (var graphics = System.Drawing.Graphics.FromImage(bitmap))
 			{
 				graphics.SmoothingMode = SmoothingMode.HighSpeed;
 				graphics.DrawLines(new Pen(color, 2), points.ToArray());

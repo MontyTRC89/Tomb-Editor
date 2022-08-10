@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombIDE.Shared
 {
@@ -70,14 +71,12 @@ namespace TombIDE.Shared
 		/// </summary>
 		public void Save()
 		{
-			using (StreamWriter writer = new StreamWriter(GetTrprojFilePath()))
-			{
-				Project projectCopy = Clone();
-				projectCopy.EncodeProjectPaths();
+			string trprojPath = GetTrprojFilePath();
 
-				XmlSerializer serializer = new XmlSerializer(typeof(Project));
-				serializer.Serialize(writer, projectCopy);
-			}
+			Project projectCopy = Clone();
+			projectCopy.EncodeProjectPaths();
+
+			XmlUtils.WriteXmlFile(trprojPath, projectCopy);
 		}
 
 		/// <summary>
@@ -85,7 +84,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public Project Clone()
 		{
-			Project projectCopy = new Project
+			var projectCopy = new Project
 			{
 				Name = Name,
 				GameVersion = GameVersion,
@@ -129,7 +128,7 @@ namespace TombIDE.Shared
 				if (LevelsPath.StartsWith(ProjectPath))
 					LevelsPath = Path.Combine(newProjectPath, LevelsPath.Remove(0, ProjectPath.Length + 1));
 
-				List<ProjectLevel> cachedLevelList = new List<ProjectLevel>();
+				var cachedLevelList = new List<ProjectLevel>();
 				cachedLevelList.AddRange(Levels);
 
 				// Remove all internal levels from the project's list to update all .prj2 files with new paths
@@ -138,7 +137,7 @@ namespace TombIDE.Shared
 				// Restore external levels, because we don't update them
 				foreach (ProjectLevel projectLevel in cachedLevelList)
 				{
-					if (Path.GetDirectoryName(projectLevel.FolderPath).ToLower() != LevelsPath.ToLower())
+					if (!Path.GetDirectoryName(projectLevel.FolderPath).Equals(LevelsPath, StringComparison.OrdinalIgnoreCase))
 						Levels.Add(projectLevel);
 				}
 
@@ -317,15 +316,10 @@ namespace TombIDE.Shared
 
 		public static Project FromFile(string trprojPath)
 		{
-			using (StreamReader reader = new StreamReader(trprojPath))
-			{
-				XmlSerializer serializer = new XmlSerializer(typeof(Project));
-				Project project = (Project)serializer.Deserialize(reader);
+			Project project = XmlUtils.ReadXmlFile<Project>(trprojPath);
+			project.DecodeProjectPaths(trprojPath);
 
-				project.DecodeProjectPaths(trprojPath);
-
-				return project;
-			}
+			return project;
 		}
 
 		#endregion Public static methods
