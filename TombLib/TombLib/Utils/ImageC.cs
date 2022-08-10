@@ -17,7 +17,7 @@ namespace TombLib.Utils
         Sobel,
         Scharr
     }
- 
+
     public struct ColorC
     {
         public byte B;
