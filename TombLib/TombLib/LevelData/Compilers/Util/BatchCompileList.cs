@@ -14,7 +14,7 @@ namespace TombLib.LevelData
     public class BatchCompileList
     {
         public string Location { get; set; }
-        public List<string> Files { get; init; } = new List<string>();
+        public List<string> Files { get; private set; } = new List<string>();
 
         public static BatchCompileList ReadFromXml(string filename)
         {
