@@ -11,7 +11,7 @@ namespace TombIDE.Shared.SharedClasses
 			=> Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 
 		/// <exception cref="FileNotFoundException" />
-		public static string GetScriptFilePath(string scriptRootDirectoryPath, TRVersion.Game version = TRVersion.Game.TR4)
+		public static string GetScriptFilePath(string scriptRootDirectoryPath, TRVersion.Game version)
 		{
 			string targetFile;
 			string targetExtension;
