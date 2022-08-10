@@ -33,7 +33,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TR2);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -61,7 +61,7 @@ namespace TombIDE.ScriptingStudio
 			{
 				TabPage cachedTab = EditorTabControl.SelectedTab;
 
-				TabPage scriptFileTab = EditorTabControl.FindTabPage(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+				TabPage scriptFileTab = EditorTabControl.FindTabPage(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR2));
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
@@ -93,7 +93,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void AppendScriptLines(List<string> inputLines)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR2));
 
 			if (CurrentEditor is TextEditorBase editor)
 			{
@@ -104,7 +104,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR2));
 
 			if (CurrentEditor is TextEditorBase editor)
 				ScriptReplacer.RenameLevelScript(editor, oldName, newName);
@@ -112,7 +112,7 @@ namespace TombIDE.ScriptingStudio
 
 		private bool IsLevelScriptDefined(string levelName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR2));
 
 			if (CurrentEditor is TextEditorBase editor)
 				return DocumentParser.IsLevelScriptDefined(editor.Document, levelName);

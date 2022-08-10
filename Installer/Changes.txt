@@ -5,6 +5,7 @@ Tomb Editor:
  * Fix occasional errors when compiling pathfinding data in TEN levels.
  * Reorganize the way objects which can have Lua name are renamed.
  * Add ability to rename volumes.
+ * Flip floor/ceiling splits if non-quad ghost blocks are present.
 
 Version 1.5.1
 =============

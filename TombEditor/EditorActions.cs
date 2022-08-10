@@ -529,7 +529,8 @@ namespace TombEditor
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
-                    if (room.Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None && !room.Blocks[x, z].Floor.IsQuad)
+                    if (room.Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None &&
+                        (!room.Blocks[x, z].Floor.IsQuad || !(room.Blocks[x, z].HasGhostBlock && room.Blocks[x, z].GhostBlock.Floor.IsQuad)))
                         room.Blocks[x, z].Floor.SplitDirectionToggled = !room.Blocks[x, z].Floor.SplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -541,7 +542,8 @@ namespace TombEditor
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
-                    if (room.Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None && !room.Blocks[x, z].Ceiling.IsQuad)
+                    if (room.Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None &&
+                        (!room.Blocks[x, z].Ceiling.IsQuad || !(room.Blocks[x, z].HasGhostBlock && room.Blocks[x, z].GhostBlock.Ceiling.IsQuad)))
                         room.Blocks[x, z].Ceiling.SplitDirectionToggled = !room.Blocks[x, z].Ceiling.SplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
