@@ -6,6 +6,11 @@ Tomb Editor:
  * Reorganize the way objects which can have Lua name are renamed.
  * Add ability to rename volumes.
  * Flip floor/ceiling splits if non-quad ghost blocks are present.
+ * Show debug output window when launching TEN via quick start feature.
+ * Fix TEN project converter issue which caused wrong collision for some animatings.
+ 
+TombIDE:
+ * Fix exception on renaming TEN levels.
 
 Version 1.5.1
 =============
