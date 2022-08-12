@@ -81,8 +81,16 @@ namespace TombEditor
                     }
 
                     // Load catalogs
-                    TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TrCatalog.xml");
-                    NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
+                    try
+                    {
+                        TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TrCatalog.xml");
+                        NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
+                        Environment.Exit(1);
+                    }
 
                     // Run
                     Editor editor = new Editor(SynchronizationContext.Current, configuration);
