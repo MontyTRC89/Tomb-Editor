@@ -1,4 +1,5 @@
 ﻿using DarkUI.Docking;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -63,10 +64,28 @@ namespace TombIDE.Shared
 			=> Save(DefaultPath);
 
 		public static IDEConfiguration Load(Stream stream)
-			=> XmlUtils.ReadXmlFile<IDEConfiguration>(stream);
+		{
+			try
+			{
+				return XmlUtils.ReadXmlFile<IDEConfiguration>(stream);
+			}
+			catch (Exception)
+			{
+				return new IDEConfiguration();
+			}
+		}
 
 		public static IDEConfiguration Load(string filePath)
-			=> File.Exists(filePath) ? XmlUtils.ReadXmlFile<IDEConfiguration>(filePath) : new IDEConfiguration();
+		{
+			try
+			{
+				return XmlUtils.ReadXmlFile<IDEConfiguration>(filePath);
+			}
+			catch (Exception)
+			{
+				return new IDEConfiguration();
+			}
+		}
 
 		public static IDEConfiguration Load()
 			=> Load(DefaultPath);

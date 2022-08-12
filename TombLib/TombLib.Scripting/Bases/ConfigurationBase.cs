@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.Bases
@@ -10,14 +11,27 @@ namespace TombLib.Scripting.Bases
 		#region Loading
 
 		public T Load<T>(Stream stream) where T : ConfigurationBase, new()
-			=> XmlUtils.ReadXmlFile<T>(stream);
+		{
+			try
+			{
+				return XmlUtils.ReadXmlFile<T>(stream);
+			}
+			catch (Exception)
+			{
+				return new T();
+			}
+		}
 
 		public T Load<T>(string filePath) where T : ConfigurationBase, new()
 		{
-			if (!File.Exists(filePath))
-				XmlUtils.WriteXmlFile(filePath, new T());
-
-			return XmlUtils.ReadXmlFile<T>(filePath);
+			try
+			{
+				return XmlUtils.ReadXmlFile<T>(filePath);
+			}
+			catch (Exception)
+			{
+				return new T();
+			}
 		}
 
 		public T Load<T>() where T : ConfigurationBase, new()
