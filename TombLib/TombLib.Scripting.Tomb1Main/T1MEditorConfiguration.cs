@@ -18,7 +18,7 @@ namespace TombLib.Scripting.Tomb1Main
 
 		#region Color scheme
 
-		private string _selectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+		private string _selectedColorSchemeName;
 		public string SelectedColorSchemeName
 		{
 			get => _selectedColorSchemeName;
@@ -47,6 +47,8 @@ namespace TombLib.Scripting.Tomb1Main
 			DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 
 			AutoCloseParentheses = false;
+
+			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 		}
 
 		#endregion Construction

@@ -12,7 +12,7 @@ namespace TombLib.Scripting.GameFlowScript
 
 		#region Color scheme
 
-		private string _selectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+		private string _selectedColorSchemeName;
 		public string SelectedColorSchemeName
 		{
 			get => _selectedColorSchemeName;
@@ -44,6 +44,8 @@ namespace TombLib.Scripting.GameFlowScript
 			AutoCloseBraces = false;
 			AutoCloseBrackets = false;
 			AutoCloseQuotes = false;
+
+			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 		}
 
 		#endregion Construction
