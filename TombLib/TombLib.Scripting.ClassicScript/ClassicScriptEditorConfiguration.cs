@@ -26,7 +26,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Color scheme
 
-		private string _selectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+		private string _selectedColorSchemeName;
 		public string SelectedColorSchemeName
 		{
 			get => _selectedColorSchemeName;
@@ -57,6 +57,8 @@ namespace TombLib.Scripting.ClassicScript
 			// These type of brackets aren't being used while writing in Classic Script, therefore auto closing should be disabled for them
 			AutoCloseParentheses = false;
 			AutoCloseBraces = false;
+
+			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 		}
 
 		#endregion Construction
