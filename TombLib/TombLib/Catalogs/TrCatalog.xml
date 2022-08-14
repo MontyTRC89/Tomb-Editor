@@ -310,10 +310,10 @@
 			<sound id="96" name="RAT_ATTACK" t5m="421" />
 			<sound id="97" name="RAT_DEATH" t5m="422" />
 			<sound id="98" name="THUNDER" t5m="454" />
-			<sound id="99" name="EXPLOSION_TNT" t5m="99" />
-			<sound id="100" name="GORILLA_GRUNT" t5m="100" />
-			<sound id="101" name="GORILLA_GRUNTS" t5m="101" />
-			<sound id="102" name="CROC_DEATH" t5m="102" />
+			<sound id="99" name="EXPLOSION_TNT" t5m="423" />
+			<sound id="100" name="GORILLA_GRUNT" t5m="414" />
+			<sound id="101" name="GORILLA_GRUNTS" t5m="415" />
+			<sound id="102" name="CROC_DEATH" t5m="418" />
 			<sound id="103" name="DAMOCLES_SWORD" t5m="455" />
 			<sound id="104" name="EXPLOSION" t5m="423" />
 			<sound id="108" name="MENU_ROTATE" t5m="108" />
