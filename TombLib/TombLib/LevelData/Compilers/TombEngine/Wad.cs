@@ -289,23 +289,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var newAnimation = new TombEngineAnimation();
                     var offset = animationDictionary[oldAnimation];
 
-                    // Calculate accelerations from velocities
-                    float acceleration = 0;
-                    float lateralAcceleration = 0;
-                    float speed = 0;
-                    float lateralSpeed = 0;
-
-                    if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
-                    {
-                        acceleration = (float)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
-                                                        ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
-                        lateralAcceleration = (float)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
-                                                               ((oldAnimation.KeyFrames.Count > 1 ? oldAnimation.KeyFrames.Count - 1 : 1) * oldAnimation.FrameRate) * 65536.0f);
-                    }
-
-                    speed = (float)Math.Round(oldAnimation.StartVelocity * 65536.0f);
-                    lateralSpeed = (float)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
-
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
                     var frameCount = oldAnimation.EndFrame + 1;
@@ -316,10 +299,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Setup the final animation
                     newAnimation.FrameOffset = offset;
                     newAnimation.FrameRate = oldAnimation.FrameRate;
-                    newAnimation.Speed = speed;
-                    newAnimation.Accel = acceleration;
-                    newAnimation.SpeedLateral = lateralSpeed;
-                    newAnimation.AccelLateral = lateralAcceleration;
+                    newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
+                    newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
                     newAnimation.FrameStart = realFrameBase;
                     newAnimation.FrameEnd = realFrameBase + (frameCount == 0 ? 0 : frameCount - 1);
                     newAnimation.AnimCommand = _animCommands.Count;
@@ -571,10 +552,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.WriteLine("    NextAnimation: " + anim.NextAnimation);
                         writer.WriteLine("    NextFrame: " + anim.NextFrame);
                         writer.WriteLine("    StateID: " + anim.StateID);
-                        writer.WriteLine("    Speed: " + anim.Speed.ToString("X"));
-                        writer.WriteLine("    Accel: " + anim.Accel.ToString("X"));
-                        writer.WriteLine("    SpeedLateral: " + anim.SpeedLateral.ToString("X"));
-                        writer.WriteLine("    AccelLateral: " + anim.AccelLateral.ToString("X"));
+                        writer.WriteLine("    VelStart: " + anim.VelocityStart.Z.ToString("X"));
+                        writer.WriteLine("    VelEnd: " + anim.VelocityEnd.Z.ToString("X"));
+                        writer.WriteLine("    VelLateralStart: " + anim.VelocityStart.X.ToString("X"));
+                        writer.WriteLine("    VelLateralEnd: " + anim.VelocityEnd.X.ToString("X"));
                         writer.WriteLine();
 
                         n++;
