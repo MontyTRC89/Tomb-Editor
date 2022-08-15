@@ -40,11 +40,12 @@ namespace TombLib.Wad.Catalog
         {
             public List<string> Names { get; set; }
             public string Description { get; set; }
+            public string TombEngineSlot { get; set; }
             public uint SkinId { get; set; }
             public int SubstituteId { get; set; }
             public bool AIObject { get; set; }
             public bool Shatterable { get; set; }
-            public string TombEngineSlot { get; set; }
+            public bool FreeRotation { get; set; }
             public bool IsHidden { get; set; }
             public bool IsEssential { get; set; }
         }
@@ -102,53 +103,36 @@ namespace TombLib.Wad.Catalog
             }
         }
 
-        public static string GetMoveableName(TRVersion.Game version, uint id)
+        private static Item? GetMoveable(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return "Moveable #" + id;
-            }
+                return null;
 
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return "Moveable #" + id;
-            }
+                return null;
 
-            return game.Moveables[id].Names.LastOrDefault();
+            return entry;
         }
 
-        public static string GetMoveableTombEngineSlot(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return "";
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return "";
-            }
-
-            return game.Moveables[id].TombEngineSlot;
-        }
+        public static string GetMoveableName(TRVersion.Game version, uint id) => GetMoveable(version, id)?.Names.LastOrDefault() ?? "Moveable #" + id;
+        public static string GetMoveableTombEngineSlot(TRVersion.Game version, uint id) => GetMoveable(version, id)?.TombEngineSlot ?? string.Empty;
+        public static uint GetMoveableSkin(TRVersion.Game version, uint id) => GetMoveable(version, id)?.SkinId ?? id;
+        public static bool IsMoveableAI(TRVersion.Game version, uint id) => GetMoveable(version, id)?.AIObject ?? false;
+        public static bool IsHidden(TRVersion.Game version, uint id) => GetMoveable(version, id)?.IsHidden ?? false;
+        public static bool IsEssential(TRVersion.Game version, uint id) => GetMoveable(version, id)?.IsEssential ?? false;
+        public static bool IsFreelyRotateable(TRVersion.Game version, uint id) => GetMoveable(version, id)?.FreeRotation ?? false;
 
         public static string GetSpriteSequenceTombEngineSlot(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return "";
-            }
+                return string.Empty;
 
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
-            {
-                return "";
-            }
+                return string.Empty;
 
             return game.SpriteSequences[id].TombEngineSlot;
         }
@@ -157,95 +141,38 @@ namespace TombLib.Wad.Catalog
         {
             // In the new soundmap, first 370 sound slots are the same of TR4 for compatibility
             if ((version == TRVersion.Game.TR4 || version == TRVersion.Game.TRNG) && id < 370)
-            {
                 return id;
-            }
 
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 throw new Exception("Game not found");
-            }
 
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
-            {
                 throw new Exception("Sound ID not found");
-            }
 
             var newSlot = game.Sounds[id].TombEngineSlot;
             return newSlot == -1 ? id : (uint)game.Sounds[id].TombEngineSlot;
         }
 
-        public static uint GetMoveableSkin(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return id;
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return id;
-            }
-
-            return game.Moveables[id].SkinId;
-        }
-
         public static uint GetSubstituteID(TRVersion.Game version, uint id)
         {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
+            var mov = GetMoveable(version, id);
+            if (mov == null || mov.Value.SubstituteId == -1)
                 return id;
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return id;
-            }
-
-            if (game.Moveables[id].SubstituteId == -1)
-            {
-                return id;
-            }
-
-            return (uint)game.Moveables[id].SubstituteId;
-        }
-
-        public static bool IsMoveableAI(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return false;
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return false;
-            }
-
-            return entry.AIObject;
+            else
+                return (uint)mov.Value.SubstituteId;
         }
 
         public static string GetStaticName(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 return "Static #" + id;
-            }
 
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
-            {
                 return "Static #" + id;
-            }
 
             return game.Statics[id].Names.LastOrDefault();
         }
@@ -254,51 +181,13 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 return false;
-            }
 
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
-            {
                 return false;
-            }
 
             return entry.Shatterable;
-        }
-
-        public static bool IsHidden(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return false;
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return false;
-            }
-
-            return entry.IsHidden;
-        }
-
-        public static bool IsEssential(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-            {
-                return true;
-            }
-
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-            {
-                return true;
-            }
-
-            return entry.IsEssential;
         }
 
         public static uint? GetItemIndex(TRVersion.Game version, string name, out bool isMoveable)
@@ -339,15 +228,11 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 return "UNKNOWN_SOUND_" + id;
-            }
 
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
-            {
                 return "UNKNOWN_SOUND_" + id;
-            }
 
             return game.Sounds[id].Name;
         }
@@ -370,15 +255,11 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 return "Sprite sequence #" + id;
-            }
 
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
-            {
                 return "Sprite sequence #" + id;
-            }
 
             return game.SpriteSequences[id].Names.LastOrDefault();
         }
@@ -387,15 +268,11 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-            {
                 return false;
-            }
 
             ItemSound entry;
             if (!game.Sounds.TryGetValue(id, out entry))
-            {
                 return false;
-            }
 
             return game.Sounds[id].FixedByDefault;
         }
@@ -420,20 +297,14 @@ namespace TombLib.Wad.Catalog
                 {
                     entry = otherGame.Value.Animations.FirstOrDefault(item => item.Item == objectId && item.Animation == animId);
                     if (entry.Name != null)
-                    {
                         break;
-                    }
                 }
             }
 
             if (entry.Name == null)
-            {
                 return "Animation " + animId;
-            }
             else
-            {
                 return entry.Name;
-            }
         }
 
         public static string GetStateName(TRVersion.Game version, uint objectId, uint stateId)
@@ -443,9 +314,7 @@ namespace TombLib.Wad.Catalog
             Games.TryGetValue(version.Native(), out game);
 
             if (game != null)
-            {
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
-            }
 
             if (entry.Name == null)
             {
@@ -456,20 +325,14 @@ namespace TombLib.Wad.Catalog
                 {
                     entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.State == stateId);
                     if (entry.Name != null)
-                    {
                         break;
-                    }
                 }
             }
 
             if (entry.Name == null)
-            {
                 return "Unknown state " + stateId;
-            }
             else
-            {
                 return entry.Name;
-            }
         }
 
         public static int TryToGetStateID(TRVersion.Game version, uint objectId, string stateName)
@@ -479,9 +342,7 @@ namespace TombLib.Wad.Catalog
             Games.TryGetValue(version.Native(), out game);
 
             if (game != null)
-            {
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
-            }
 
             if (entry.Name == null)
             {
@@ -489,20 +350,14 @@ namespace TombLib.Wad.Catalog
                 {
                     entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
                     if (entry.Name != null)
-                    {
                         break;
-                    }
                 }
             }
 
             if (entry.Name == null)
-            {
                 return -1;
-            }
             else
-            {
                 return (int)entry.State;
-            }
         }
 
         public static int GetLimit(TRVersion.Game version, Limit limit)
@@ -512,9 +367,7 @@ namespace TombLib.Wad.Catalog
             Games.TryGetValue(version.Native(), out game);
 
             if (game != null)
-            {
                 value = game.Limits.FirstOrDefault(item => item.Key == limit).Value;
-            }
 
             if (value == int.MinValue)
             {
@@ -525,9 +378,7 @@ namespace TombLib.Wad.Catalog
                 {
                     value = game.Limits.FirstOrDefault(item => item.Key == limit).Value;
                     if (value != int.MinValue)
-                    {
                         break;
-                    }
                 }
             }
 
@@ -593,40 +444,24 @@ namespace TombLib.Wad.Catalog
             foreach (XmlNode gameNode in document.DocumentElement.ChildNodes)
             {
                 if (gameNode.Name != "game")
-                {
                     continue;
-                }
 
                 string stringVersion = gameNode.Attributes["id"].Value;
                 TRVersion.Game version;
                 if (stringVersion == "TR1")
-                {
                     version = TRVersion.Game.TR1;
-                }
                 else if (stringVersion == "TR2")
-                {
                     version = TRVersion.Game.TR2;
-                }
                 else if (stringVersion == "TR3")
-                {
                     version = TRVersion.Game.TR3;
-                }
                 else if (stringVersion == "TR4")
-                {
                     version = TRVersion.Game.TR4;
-                }
                 else if (stringVersion == "TR5")
-                {
                     version = TRVersion.Game.TR5;
-                }
                 else if (stringVersion == "TombEngine")
-                {
                     version = TRVersion.Game.TombEngine;
-                }
                 else
-                {
                     continue;
-                }
 
                 Game game = new Game(version);
 
@@ -639,26 +474,13 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode limitNode in limits.ChildNodes)
                     {
                         if (limitNode.Name != "limit")
-                        {
                             continue;
-                        }
 
-                        string name = string.Empty;
-                        if (limitNode.Attributes["name"] != null)
-                        {
-                            name = limitNode.Attributes["name"].Value;
-                        }
-
-                        int value = int.MinValue;
-                        if (limitNode.Attributes["value"] != null)
-                        {
-                            value = int.Parse(limitNode.Attributes["value"].Value);
-                        }
+                        string name = limitNode.Attributes["name"]?.Value ?? string.Empty;
+                        int value = int.Parse(limitNode.Attributes["value"]?.Value ?? int.MinValue.ToString());
 
                         if (string.IsNullOrEmpty(name) || !names.Any(n => n == name) || value == int.MinValue)
-                        {
                             continue;
-                        }
 
                         game.Limits.Add((Limit)Enum.Parse(typeof(Limit), name), value);
                     }
@@ -671,44 +493,18 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode moveableNode in moveables.ChildNodes)
                     {
                         if (moveableNode.Name != "moveable")
-                        {
                             continue;
-                        }
 
-                        uint id = uint.Parse(moveableNode.Attributes["id"].Value);
-                        string[] names = (moveableNode.Attributes["name"]?.Value ?? "").Split('|');
+                        uint id = uint.Parse(moveableNode.Attributes["id"]?.Value ?? 0.ToString());
+                        string[] names = (moveableNode.Attributes["name"]?.Value ?? string.Empty).Split('|');
 
-                        uint skinId = id;
-                        if (moveableNode.Attributes["use_body_from"] != null)
-                        {
-                            skinId = uint.Parse(moveableNode.Attributes["use_body_from"].Value);
-                        }
-
-                        int substituteId = -1;
-                        if (moveableNode.Attributes["id2"] != null)
-                        {
-                            substituteId = int.Parse(moveableNode.Attributes["id2"].Value);
-                        }
-
+                        uint skinId = uint.Parse(moveableNode.Attributes["use_body_from"]?.Value ?? id.ToString());
+                        int substituteId = int.Parse(moveableNode.Attributes["id2"]?.Value ?? "-1");
                         bool isAI = bool.Parse(moveableNode.Attributes["ai"]?.Value ?? "false");
-
-                        string TombEngineSlot = "";
-                        if (moveableNode.Attributes["t5m"] != null)
-                        {
-                            TombEngineSlot = moveableNode.Attributes["t5m"].Value;
-                        }
-
-                        bool hidden = false;
-                        if (moveableNode.Attributes["hidden"] != null)
-                        {
-                            hidden = moveableNode.Attributes["hidden"].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
-                        }
-
-                        bool essential = true;
-                        if (moveableNode.Attributes["essential"] != null)
-                        {
-                            essential = moveableNode.Attributes["essential"].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
-                        }
+                        bool isFreeRotation = bool.Parse(moveableNode.Attributes["freeRot"]?.Value ?? "false");
+                        bool hidden = bool.Parse(moveableNode.Attributes["hidden"]?.Value ?? "false");
+                        bool essential = bool.Parse(moveableNode.Attributes["essential"]?.Value ?? "true");
+                        string tombEngineSlot = moveableNode.Attributes["t5m"]?.Value ?? string.Empty;
 
                         game.Moveables.Add(id, new Item
                         {
@@ -716,7 +512,8 @@ namespace TombLib.Wad.Catalog
                             SkinId = skinId,
                             SubstituteId = substituteId,
                             AIObject = isAI,
-                            TombEngineSlot = TombEngineSlot,
+                            TombEngineSlot = tombEngineSlot,
+                            FreeRotation = isFreeRotation,
                             IsHidden = hidden,
                             IsEssential = essential
                         });
@@ -730,9 +527,7 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode staticNode in statics.ChildNodes)
                     {
                         if (staticNode.Name != "static")
-                        {
                             continue;
-                        }
 
                         uint id = uint.Parse(staticNode.Attributes["id"].Value);
                         string[] names = (staticNode.Attributes["name"]?.Value ?? "").Split('|');
@@ -748,9 +543,7 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode soundNode in sounds.ChildNodes)
                     {
                         if (soundNode.Name != "sound")
-                        {
                             continue;
-                        }
 
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
@@ -768,19 +561,12 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode spriteSequenceNode in spriteSequences.ChildNodes)
                     {
                         if (spriteSequenceNode.Name != "sprite_sequence")
-                        {
                             continue;
-                        }
 
-                        string TombEngineSlot = "";
-                        if (spriteSequenceNode.Attributes["t5m"] != null)
-                        {
-                            TombEngineSlot = spriteSequenceNode.Attributes["t5m"].Value;
-                        }
-
+                        string tombEngineSlot = spriteSequenceNode.Attributes["t5m"]?.Value ?? string.Empty;
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         string[] names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
-                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlot = TombEngineSlot });
+                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlot = tombEngineSlot });
                     }
                 }
 
@@ -791,9 +577,7 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode originalNameNode in animations.ChildNodes)
                     {
                         if (originalNameNode.Name != "anim")
-                        {
                             continue;
-                        }
 
                         uint item = uint.Parse(originalNameNode.Attributes["item"].Value);
                         uint id = uint.Parse(originalNameNode.Attributes["id"].Value);
@@ -810,9 +594,7 @@ namespace TombLib.Wad.Catalog
                     foreach (XmlNode originalNameNode in states.ChildNodes)
                     {
                         if (originalNameNode.Name != "state")
-                        {
                             continue;
-                        }
 
                         uint item = uint.Parse(originalNameNode.Attributes["item"].Value);
                         uint id = uint.Parse(originalNameNode.Attributes["id"].Value);

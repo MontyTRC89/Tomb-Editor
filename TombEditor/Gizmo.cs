@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -54,6 +55,22 @@ namespace TombEditor
                 return 0.0f;
         }
 
+        private bool DisableCustomRotation()
+        {
+            if (_editor.SelectedObject is MoveableInstance)
+            {
+                var obj = _editor.SelectedObject as MoveableInstance;
+                return !TrCatalog.IsFreelyRotateable(_editor.Level.Settings.GameVersion, obj.WadObjectId.TypeId);
+            }
+            else
+                return false;
+        }
+
+        private bool DisableCustomScale()
+        {
+            return (_editor.SelectedObject is StaticInstance) && !_editor.Level.IsTombEngine;
+        }
+
         protected override void GizmoRotateY(float newAngle)
         {
             bool smoothRotationPreference = !(_editor.SelectedObject is ObjectGroup || 
@@ -66,12 +83,19 @@ namespace TombEditor
 
         protected override void GizmoRotateX(float newAngle)
         {
-            bool smoothRotationPreference = !(_editor.SelectedObject is VolumeInstance);
+            bool smoothRotationPreference = !(_editor.SelectedObject is ObjectGroup ||
+                                              _editor.SelectedObject is MoveableInstance ||
+                                              _editor.SelectedObject is StaticInstance ||
+                                              _editor.SelectedObject is VolumeInstance);
             EditorActions.RotateObject(_editor.SelectedObject, RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization(smoothRotationPreference), false, true);
         }
 
         protected override void GizmoRotateZ(float newAngle)
         {
+            bool smoothRotationPreference = !(_editor.SelectedObject is ObjectGroup ||
+                                              _editor.SelectedObject is MoveableInstance ||
+                                              _editor.SelectedObject is StaticInstance ||
+                                              _editor.SelectedObject is VolumeInstance);
             EditorActions.RotateObject(_editor.SelectedObject, RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization(), false, true);
         }
 
@@ -171,9 +195,10 @@ namespace TombEditor
         protected override bool SupportTranslateY => _editor.SelectedObject is PositionBasedObjectInstance || 
                                                     (_editor.SelectedObject is GhostBlockInstance && ((GhostBlockInstance)_editor.SelectedObject).SelectedCorner.HasValue);
 
-        protected override bool SupportScale => _editor.SelectedObject is IScaleable || _editor.SelectedObject is ISizeable;
+        protected override bool SupportScale => (_editor.SelectedObject is IScaleable || _editor.SelectedObject is ISizeable) && !DisableCustomScale();
+
         protected override bool SupportRotationY => _editor.SelectedObject is IRotateableY;
-        protected override bool SupportRotationX => _editor.SelectedObject is IRotateableYX;
-        protected override bool SupportRotationZ => _editor.SelectedObject is IRotateableYXRoll;
+        protected override bool SupportRotationX => _editor.SelectedObject is IRotateableYX && !DisableCustomRotation();
+        protected override bool SupportRotationZ => _editor.SelectedObject is IRotateableYXRoll && !DisableCustomRotation();
     }
 }

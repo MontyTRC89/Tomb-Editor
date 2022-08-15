@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using System;
 using TombLib.LevelData;
 
 namespace TombEditor.Controls.ContextMenus
@@ -137,15 +138,7 @@ namespace TombEditor.Controls.ContextMenus
                     EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject);
                 }));
 
-                if (targetObject is IRotateableYX)
-                {
-                    Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
-                    {
-                        EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject, RotationAxis.X);
-                    }));
-                }
-
-                if (targetObject is IRotateableY)
+                if (targetObject is IRotateableY && (targetObject as IRotateableY).RotationY != 0.0f)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Y axis)", null, (o, e) =>
                     {
@@ -153,7 +146,15 @@ namespace TombEditor.Controls.ContextMenus
                     }));
                 }
 
-                if (targetObject is IRotateableYXRoll)
+                if (targetObject is IRotateableYX && (targetObject as IRotateableYX).RotationX != 0.0f)
+                {
+                    Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
+                    {
+                        EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject, RotationAxis.X);
+                    }));
+                }
+
+                if (targetObject is IRotateableYXRoll && (targetObject as IRotateableYXRoll).Roll != 0.0f)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Roll axis)", null, (o, e) =>
                     {
@@ -162,7 +163,10 @@ namespace TombEditor.Controls.ContextMenus
                 }
             }
 
-            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable || targetObject is ISizeable))
+            var size = (targetObject as ISizeable)?.Size.Length();
+            var scale = (targetObject as IScaleable)?.Scale;
+            if (targetObject is PositionBasedObjectInstance &&
+               ((scale.HasValue && scale != 1.0f) || (size.HasValue && size != Math.Sqrt(3))))
             {
                 Items.Add(new ToolStripMenuItem("Reset scale", null, (o, e) =>
                 {

@@ -390,8 +390,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
 
                     Vector3 position = instance.Room.WorldPos + instance.Position;
-                    double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
-                    ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
 
                     // Split AI objects and normal objects
                     if (TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, wadMoveable.Id.TypeId))
@@ -409,7 +407,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
-                            Angle = angleInt,
+                            Yaw = ToTrAngle(instance.RotationY),
+                            Pitch = ToTrAngle(instance.RotationX),
+                            Roll = ToTrAngle(-instance.Roll),
                             OCB = instance.Ocb,
                             BoxIndex = boxIndex,
                             Flags = (ushort)(instance.CodeBits << 1),
@@ -428,9 +428,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
-                            Angle = angleInt,
+                            Yaw = ToTrAngle(instance.RotationY),
+                            Pitch = ToTrAngle(instance.RotationX),
+                            Roll = ToTrAngle(-instance.Roll),
                             Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
-                            Ocb = instance.Ocb,
+                            OCB = instance.Ocb,
                             Flags = unchecked((ushort)flags),
                             LuaName = instance.LuaName ?? ""
                         });

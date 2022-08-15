@@ -514,12 +514,14 @@ namespace TombLib.LevelData.IO
                     {
                         if (isTEN)
                         {
-                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine, LEB128.MaximumSize2Byte))
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine2, LEB128.MaximumSize2Byte))
                             {
                                 var instance = (MoveableInstance)o;
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.RotationY);
+                                chunkIO.Raw.Write(instance.RotationX);
+                                chunkIO.Raw.Write(instance.Roll);
                                 LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                                 chunkIO.Raw.Write(instance.Ocb);
@@ -552,12 +554,15 @@ namespace TombLib.LevelData.IO
                     {
                         if (isTEN)
                         {
-                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStaticTombEngine, LEB128.MaximumSize2Byte))
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStaticTombEngine2, LEB128.MaximumSize2Byte))
                             {
                                 var instance = (StaticInstance)o;
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.RotationY);
+                                chunkIO.Raw.Write(0.0f); // Reserved: instance.RotationX
+                                chunkIO.Raw.Write(0.0f); // Reserved: instance.Roll
+                                chunkIO.Raw.Write(instance.Scale);
                                 LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                                 chunkIO.Raw.Write(instance.Color);
