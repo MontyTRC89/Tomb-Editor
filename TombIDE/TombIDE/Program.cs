@@ -22,7 +22,7 @@ namespace TombIDE
 
 			Application.EnableVisualStyles();
 			Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
-			Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
+			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			var ideConfiguration = IDEConfiguration.Load();

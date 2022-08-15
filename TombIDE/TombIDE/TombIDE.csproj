@@ -25,6 +25,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>TIDE.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomTabControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

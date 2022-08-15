@@ -24,6 +24,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ST.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">

@@ -104,5 +104,6 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>SET ERRORLEVEL = 0</PostBuildEvent>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 </Project>

@@ -170,6 +170,7 @@
         ren "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\" "runtimes_TEMP"
         ren "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes_TEMP\" "Runtimes"
     </PostBuildEvent>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <Target Name="AfterPublishActions" AfterTargets="Publish">
     <Exec Command="xcopy /s /y /i /q &quot;$(MSBuildProjectDirectory)\..\Libs\Native\&quot; &quot;$(MSBuildProjectDirectory)\..\~Publish\Native\&quot;" />
