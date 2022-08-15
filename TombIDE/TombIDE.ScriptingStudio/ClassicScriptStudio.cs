@@ -100,7 +100,7 @@ namespace TombIDE.ScriptingStudio
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
-				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English));
+				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR4));
 				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
 				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened && EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged;
 
@@ -169,7 +169,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void AddNewLevelNameString(string levelName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR4), EditorType.Text);
 
 			if (CurrentEditor is TextEditorBase editor)
 				LanguageStringWriter.WriteNewLevelNameString(editor, levelName);
@@ -187,7 +187,7 @@ namespace TombIDE.ScriptingStudio
 
 		private bool AddNewNGString(string ngString)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TRNG), EditorType.Text);
 
 			if (CurrentEditor is TextEditorBase editor)
 				return LanguageStringWriter.WriteNewNGString(editor, ngString);
@@ -205,7 +205,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR4), EditorType.Text);
 
 			if (CurrentEditor is TextEditorBase editor)
 				ScriptReplacer.RenameLanguageString(editor, oldName, newName);
@@ -223,7 +223,7 @@ namespace TombIDE.ScriptingStudio
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TR4), EditorType.Text);
 
 			if (CurrentEditor is TextEditorBase editor)
 				return DocumentParser.IsLevelLanguageStringDefined(editor.Document, levelName);
