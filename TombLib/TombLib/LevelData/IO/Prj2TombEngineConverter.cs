@@ -277,7 +277,11 @@ namespace TombLib.LevelData.IO
                 if (level.Settings.GameVersion.Native() != TRVersion.Game.TR4 &&
                     level.Settings.GameVersion.Native() != TRVersion.Game.TRNG)
                 {
-                    progressReporter.ReportWarn("Only TR4 and TRNG projects can be converted to TEN at this time.");
+                    if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        progressReporter.ReportWarn("You are trying to convert a project which is already TEN project.");
+                    else
+                        progressReporter.ReportWarn("Only TR4 and TRNG projects can be converted to TEN at this time.");
+
                     return string.Empty;
                 }
 
@@ -489,6 +493,40 @@ namespace TombLib.LevelData.IO
                                 if (model != null && model.Meshes.Any(m => m.LightingType == WadMeshLightingType.Normals))
                                 {
                                     mov.Color = Vector3.One;
+                                }
+
+                                // Convert legacy teeth spikes OCBs to real rotations
+                                if (mov.WadObjectId.ToString(TRVersion.Game.TombEngine).Contains("TEETH_SPIKES"))
+                                {
+                                    var SPyoffs = new List<short> { -1024, 0, -512, 0, 0, 0, -512, 0 };
+                                    var SPxzoffs = new List<short> { 0, 0, 512, 0, 0, 0, -512, 0 };
+                                    var SPDETyoffs = new List<short> { 1024, 512, 512, 512, 0, 512, 512, 512 };
+                                    var rotations = new List<float> { 180.0f, 225.0f, 270.0f, 315.0f, 0.0f, 45.0f, 90.0f, 135.0f };
+                                    
+                                    int angle = mov.Ocb & 7;
+
+                                    if ((mov.Ocb & 8) != 0)
+                                    {
+                                        (mov as IRotateableYXRoll).RotationX = rotations[angle];
+                                        (mov as IRotateableYXRoll).RotationY = 90.0f;
+                                        mov.Position -= new Vector3(0.0f, 0.0f, SPxzoffs[angle]);
+                                    }
+                                    else
+                                    {
+                                        (mov as IRotateableYXRoll).Roll = rotations[angle];
+                                        (mov as IRotateableYXRoll).RotationY = -90.0f;
+                                        mov.Position += new Vector3(SPxzoffs[angle], 0.0f, 0.0f);
+                                    }
+
+                                    mov.Position -= new Vector3(0.0f, SPyoffs[angle], 0.0f);
+
+                                    if ((mov.Ocb & 16) != 0)
+                                        mov.Ocb = 1;
+                                    else if ((mov.Ocb & 32) != 0)
+                                        mov.Ocb = 2;
+                                    else
+                                        mov.Ocb = 0;
+
                                 }
                             }
 
