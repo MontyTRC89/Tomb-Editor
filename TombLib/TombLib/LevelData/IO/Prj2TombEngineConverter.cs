@@ -509,13 +509,13 @@ namespace TombLib.LevelData.IO
                                     {
                                         (mov as IRotateableYXRoll).RotationX = rotations[angle];
                                         (mov as IRotateableYXRoll).RotationY = 90.0f;
-                                        mov.Position -= new Vector3(0.0f, 0.0f, SPxzoffs[angle]);
+                                        mov.Position -= new Vector3(SPxzoffs[angle], 0.0f, 0.0f);
                                     }
                                     else
                                     {
                                         (mov as IRotateableYXRoll).Roll = rotations[angle];
                                         (mov as IRotateableYXRoll).RotationY = -90.0f;
-                                        mov.Position += new Vector3(SPxzoffs[angle], 0.0f, 0.0f);
+                                        mov.Position -= new Vector3(0.0f, 0.0f, SPxzoffs[angle]);
                                     }
 
                                     mov.Position -= new Vector3(0.0f, SPyoffs[angle], 0.0f);
