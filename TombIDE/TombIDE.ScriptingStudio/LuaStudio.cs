@@ -58,6 +58,7 @@ namespace TombIDE.ScriptingStudio
 		private bool IsSilentAction(IIDEEvent obj)
 			=> obj is IDE.ScriptEditor_AppendScriptLinesEvent
 			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
+			|| obj is IDE.ScriptEditor_StringPresenceCheckEvent
 			|| obj is IDE.ScriptEditor_RenameLevelEvent;
 
 		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
@@ -70,6 +71,10 @@ namespace TombIDE.ScriptingStudio
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
+				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
+				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
+				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened && EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged;
+
 				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
 				{
 					AppendScriptLines(asle.Lines);
@@ -77,16 +82,21 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
-					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
+					IDE.Global.ScriptDefined = true; // TEMP !!!
+				}
+				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
+				{
+					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
+					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
 				{
 					string oldName = rle.OldName;
 					string newName = rle.NewName;
 
-					RenameRequestedLevelScript(oldName, newName);
-					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
+					RenameRequestedLanguageString(oldName, newName);
+
+					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
 			}
 		}
@@ -190,14 +200,37 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private void RenameRequestedLevelScript(string oldName, string newName)
+		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			// TODO
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+			{
+				var regex = new Regex($"\"{Regex.Escape(levelName)}\"");
+				var stringLine = editor.Document.Lines.FirstOrDefault(line => regex.IsMatch(editor.Document.GetText(line)));
+
+				return stringLine != null;
+			}
+
+			return false;
 		}
 
-		private bool IsLevelScriptDefined(string levelName)
+		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			return false;
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+			{
+				var regex = new Regex($"\"{Regex.Escape(oldName)}\"");
+				var stringLine = editor.Document.Lines.FirstOrDefault(line => regex.IsMatch(editor.Document.GetText(line)));
+
+				if (stringLine != null)
+				{
+					string lineText = editor.Document.GetText(stringLine);
+					editor.ReplaceLine(stringLine, regex.Replace(lineText, $"\"{newName}\""));
+					editor.ScrollToLine(stringLine.LineNumber);
+				}
+			}
 		}
 
 		protected override void RestoreDefaultLayout()

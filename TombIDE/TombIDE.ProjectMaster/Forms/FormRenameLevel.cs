@@ -29,7 +29,14 @@ namespace TombIDE.ProjectMaster
 
 			if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
 			{
-				checkBox_RenameScriptEntry.Visible = checkBox_RenameScriptEntry.Checked = false;
+				checkBox_RenameScriptEntry.Text = "Rename language entry as well (Recommended)";
+
+				if (!_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
+				{
+					checkBox_RenameScriptEntry.Checked = false;
+					checkBox_RenameScriptEntry.Enabled = false;
+					label_LanguageError.Visible = true;
+				}
 			}
 			else if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1
 				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR2

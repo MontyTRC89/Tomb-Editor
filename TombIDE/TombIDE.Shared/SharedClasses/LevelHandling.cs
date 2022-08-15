@@ -82,7 +82,7 @@ namespace TombIDE.Shared.SharedClasses
 					"",
 					$"Flow.AddLevel({level.DataFileName})",
 					$"	{level.DataFileName} = {{",
-					$"		\"{level.Name}\"",
+					$"		\"{level.Name}\",",
 					"		\"\",",
 					"		\"\",",
 					"		\"\",",
