@@ -440,7 +440,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
-                // writer.Write(volume.LuaName); // TODO: Uncomment when lua API for volumes is implemented -- Lwmte, 09.08.22
+                writer.Write(volume.LuaName);
                 writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
             }
 
@@ -594,10 +594,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameOffset;
         public int FrameRate;
         public int StateID;
-        public float Speed;
-        public float Accel;
-        public float SpeedLateral;
-        public float AccelLateral;
+        public Vector3 VelocityStart;
+        public Vector3 VelocityEnd;
         public int FrameStart;
         public int FrameEnd;
         public int NextAnimation;
