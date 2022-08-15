@@ -1,5 +1,9 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
@@ -7,6 +11,8 @@ using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.Scripting.Bases;
+using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 
 namespace TombIDE.ScriptingStudio
@@ -87,7 +93,99 @@ namespace TombIDE.ScriptingStudio
 
 		private void AppendScriptLines(List<string> inputLines)
 		{
-			// TODO
+			try // !!! This needs some heavy refactoring !!!
+			{
+				EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
+
+				if (CurrentEditor is TextEditorBase editor)
+				{
+					editor.AppendText(string.Join(Environment.NewLine, inputLines.Take(10)) + Environment.NewLine);
+					editor.ScrollToLine(editor.LineCount);
+				}
+
+				EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+
+				if (CurrentEditor is TextEditorBase stringsEditor)
+				{
+					var regex = new Regex(@"TEN\.Flow\.SetStrings\((.*)\)", RegexOptions.IgnoreCase);
+					var collectionNameLine = stringsEditor.Document.Lines.FirstOrDefault(line => regex.IsMatch(stringsEditor.Document.GetText(line).Replace(" ", string.Empty)));
+
+					if (collectionNameLine == null)
+						return;
+
+					string stringsVariableName = regex.Match(stringsEditor.Document.GetText(collectionNameLine)).Groups[1].Value;
+
+					regex = new Regex(@"local\s+" + Regex.Escape(stringsVariableName) + @"\s*=");
+					var stringsStartLine = stringsEditor.Document.Lines.FirstOrDefault(line => regex.IsMatch(stringsEditor.Document.GetText(line)));
+
+					if (stringsStartLine == null)
+						return;
+
+					var openingBrackets = new Stack<char>();
+					DocumentLine stopLine = null;
+
+					foreach (DocumentLine line in stringsEditor.Document.Lines)
+					{
+						string lineText = stringsEditor.Document.GetText(line);
+
+						if (!lineText.Contains('{') && !lineText.Contains('}'))
+							continue;
+
+						foreach (char opener in lineText.Where(c => c == '{'))
+							openingBrackets.Push(opener);
+
+						foreach (char closer in lineText.Where(c => c == '}'))
+							openingBrackets.Pop();
+
+						if (openingBrackets.Count == 0)
+						{
+							stopLine = line;
+							break;
+						}
+					}
+
+					if (stopLine == null || !stringsEditor.Document.GetText(stopLine).Trim().Equals("}"))
+						return;
+
+					for (int i = stopLine.LineNumber - 1; i > 0; i--)
+					{
+						DocumentLine line = stringsEditor.Document.GetLineByNumber(i);
+						string lineText = stringsEditor.Document.GetText(line);
+
+						string cleanLine = Regex.Replace(lineText, "--.*$", string.Empty).TrimEnd();
+
+						if (cleanLine.EndsWith("}") || cleanLine.EndsWith("},"))
+						{
+							stringsEditor.Select(line.EndOffset, 0);
+
+							if (cleanLine.EndsWith("}"))
+								stringsEditor.SelectedText += ",";
+
+							stringsEditor.SelectedText += Environment.NewLine;
+
+							stringsEditor.SelectedText += string.Join(Environment.NewLine, inputLines.Skip(10));
+							stringsEditor.ResetSelectionAt(line.LineNumber + 1);
+							stringsEditor.ScrollToLine(line.LineNumber + 1);
+
+							break;
+						}
+					}
+				}
+
+				string dataName = inputLines[0].Split('=')[0].Trim();
+
+				File.WriteAllText(Path.Combine(ScriptRootDirectoryPath, dataName + ".lua"),
+					$"---- FILE: \\{dataName}.lua\n\n" +
+					"LevelFuncs.OnLoad = function() end\n" +
+					"LevelFuncs.OnSave = function() end\n" +
+					"LevelFuncs.OnStart = function() end\n" +
+					"LevelFuncs.OnControlPhase = function() end\n" +
+					"LevelFuncs.OnEnd = function() end\n");
+			}
+			catch
+			{
+				// Oh well...
+			}
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)

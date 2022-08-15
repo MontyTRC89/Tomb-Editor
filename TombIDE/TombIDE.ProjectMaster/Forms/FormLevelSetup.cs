@@ -26,12 +26,12 @@ namespace TombIDE.ProjectMaster
 
 			InitializeComponent();
 
-			if (targetProject.GameVersion == TRVersion.Game.TR1 || targetProject.GameVersion == TRVersion.Game.TombEngine)
+			if (targetProject.GameVersion == TRVersion.Game.TR1)
 			{
 				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
 				panel_ScriptSettings.Visible = false;
 			}
-			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG)
+			else if (targetProject.GameVersion != TRVersion.Game.TR4 && targetProject.GameVersion != TRVersion.Game.TRNG && targetProject.GameVersion != TRVersion.Game.TombEngine)
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 35;
