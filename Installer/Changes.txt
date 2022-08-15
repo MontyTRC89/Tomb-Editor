@@ -11,9 +11,12 @@ Tomb Editor:
  * Flip floor/ceiling splits if non-quad ghost blocks are present.
  * Show debug output window when launching TEN via quick start feature.
  * Fix TEN project converter issue which caused wrong collision for some animatings.
+ * Add ability to recursively include script files.
  
 TombIDE:
- * Fix exception on renaming TEN levels.
+ * Fixed exception on renaming TEN levels.
+ * Added script auto-generation for new TEN levels.
+ * Other minor bugfixes.
 
 Version 1.5.1
 =============

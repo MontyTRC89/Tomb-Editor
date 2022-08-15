@@ -6,12 +6,15 @@ namespace TombLib.Utils
 {
     public class ScriptingUtils
     {
-        public static List<string> GetAllFunctionsNames(string path)
+        public static List<string> GetAllFunctionsNames(string path, List<string> list = null)
         {
             const string tableName = "LevelFuncs";
+            const string includeStart = "require(\"";
+            const string includeEnd = "\")";
+
             string[] reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
 
-            var result = new List<string>();
+            var result = list == null ? new List<string>() : list;
 
             try
             {
@@ -32,10 +35,12 @@ namespace TombLib.Utils
                             break;
                         }
                     }
+
                     if (skip)
                     {
                         continue;
                     }
+
                     if (line.StartsWith("function " + tableName + "."))
                     {
                         if (line.Contains("--"))
@@ -63,6 +68,16 @@ namespace TombLib.Utils
                         {
                             result.Add(functionName);
                         }
+                    }
+                    else if (line.Contains("require(\""))
+                    {
+                        string subfile;
+                        int pos1 = line.IndexOf(includeStart) + includeStart.Length;
+                        int pos2 = line.IndexOf(includeEnd);
+                        subfile = line.Substring(pos1, pos2 - pos1);
+                        subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
+
+                        GetAllFunctionsNames(subfile, result);
                     }
 
                 }

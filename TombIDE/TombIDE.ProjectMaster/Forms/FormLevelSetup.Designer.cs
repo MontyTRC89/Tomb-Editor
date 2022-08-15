@@ -230,6 +230,7 @@
 			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
 			this.textBox_CustomFileName.Size = new System.Drawing.Size(520, 25);
 			this.textBox_CustomFileName.TabIndex = 5;
+			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 
 			// label_01
 			// 

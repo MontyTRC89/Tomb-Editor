@@ -64,7 +64,33 @@ namespace TombIDE.Shared.SharedClasses
 					"Name= " + level.Name,
 					"Level= DATA\\" + level.DataFileName.ToUpper() + ", " + ambientSoundID,
 					"LoadCamera= 0, 0, 0, 0, 0, 0, 0",
-					"Horizon= " + (horizon? "ENABLED" : "DISABLED")
+					"Horizon= " + (horizon ? "ENABLED" : "DISABLED")
+				};
+			}
+			else if (gameVersion == TRVersion.Game.TombEngine)
+			{
+				return new List<string>
+				{
+					$"\n{level.DataFileName} = Level.new()",
+					"",
+					$"{level.DataFileName}.nameKey = \"{level.DataFileName}\"",
+					$"{level.DataFileName}.scriptFile = \"Scripts\\\\{level.DataFileName}.lua\"",
+					$"{level.DataFileName}.ambientTrack = \"{ambientSoundID}\"",
+					$"{level.DataFileName}.horizon = " + (horizon ? "true" : "false"),
+					$"{level.DataFileName}.levelFile = \"Data\\\\{level.DataFileName}.ten\"",
+					$"{level.DataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"",
+					"",
+					$"Flow.AddLevel({level.DataFileName})",
+					$"	{level.DataFileName} = {{",
+					$"		\"{level.Name}\"",
+					"		\"\",",
+					"		\"\",",
+					"		\"\",",
+					"		\"\",",
+					"		\"\",",
+					"		\"\",",
+					"		\"\"",
+					"	}"
 				};
 			}
 

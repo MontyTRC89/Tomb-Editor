@@ -42,13 +42,24 @@ namespace TombIDE.Shared.SharedClasses
 		}
 
 		/// <exception cref="FileNotFoundException" />
-		public static string GetLanguageFilePath(string scriptRootDirectoryPath, GameLanguage language)
+		public static string GetLanguageFilePath(string scriptRootDirectoryPath, TRVersion.Game version)
 		{
-			foreach (string file in Directory.GetFiles(scriptRootDirectoryPath, "*.txt", SearchOption.TopDirectoryOnly))
-				if (Path.GetFileName(file).Equals($"{language}.txt", StringComparison.OrdinalIgnoreCase))
-					return file;
+			if (version == TRVersion.Game.TombEngine)
+			{
+				foreach (string file in Directory.GetFiles(scriptRootDirectoryPath, "*.lua", SearchOption.TopDirectoryOnly))
+					if (Path.GetFileName(file).Equals("Strings.lua", StringComparison.OrdinalIgnoreCase))
+						return file;
 
-			throw new FileNotFoundException($"{language}.txt is missing.");
+				throw new FileNotFoundException("Strings.lua is missing.");
+			}
+			else
+			{
+				foreach (string file in Directory.GetFiles(scriptRootDirectoryPath, "*.txt", SearchOption.TopDirectoryOnly))
+					if (Path.GetFileName(file).Equals("English.txt", StringComparison.OrdinalIgnoreCase))
+						return file;
+
+				throw new FileNotFoundException("English.txt is missing.");
+			}
 		}
 	}
 }
