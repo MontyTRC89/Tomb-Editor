@@ -50,7 +50,7 @@ namespace TombEditor.Forms
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(17, 191);
+            this.butOK.Location = new System.Drawing.Point(39, 191);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 8;
@@ -63,7 +63,7 @@ namespace TombEditor.Forms
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(103, 191);
+            this.butCancel.Location = new System.Drawing.Point(127, 191);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 9;
@@ -140,7 +140,7 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbOCB.Location = new System.Drawing.Point(39, 135);
             this.tbOCB.Name = "tbOCB";
-            this.tbOCB.Size = new System.Drawing.Size(144, 22);
+            this.tbOCB.Size = new System.Drawing.Size(168, 22);
             this.tbOCB.TabIndex = 0;
             this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
@@ -172,7 +172,7 @@ namespace TombEditor.Forms
             this.panelColor.BackColor = System.Drawing.Color.White;
             this.panelColor.Location = new System.Drawing.Point(39, 163);
             this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(144, 22);
+            this.panelColor.Size = new System.Drawing.Size(168, 22);
             this.panelColor.TabIndex = 16;
             this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
             // 
@@ -182,7 +182,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(212, 221);
+            this.ClientSize = new System.Drawing.Size(213, 221);
             this.Controls.Add(this.panelColor);
             this.Controls.Add(this.lblColor);
             this.Controls.Add(this.cbBit5);
