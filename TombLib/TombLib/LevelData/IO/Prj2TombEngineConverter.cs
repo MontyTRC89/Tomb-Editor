@@ -502,20 +502,19 @@ namespace TombLib.LevelData.IO
                                     var SPxzoffs = new List<short> { 0, 0, 512, 0, 0, 0, -512, 0 };
                                     var SPDETyoffs = new List<short> { 1024, 512, 512, 512, 0, 512, 512, 512 };
                                     var rotations = new List<float> { 180.0f, 225.0f, 270.0f, 315.0f, 0.0f, 45.0f, 90.0f, 135.0f };
-                                    
+
                                     int angle = mov.Ocb & 7;
+                                    (mov as IRotateableYXRoll).RotationY = 0.0f;
 
                                     if ((mov.Ocb & 8) != 0)
                                     {
                                         (mov as IRotateableYXRoll).RotationX = rotations[angle];
-                                        (mov as IRotateableYXRoll).RotationY = 90.0f;
-                                        mov.Position -= new Vector3(SPxzoffs[angle], 0.0f, 0.0f);
+                                        mov.Position -= new Vector3(0.0f, 0.0f, SPxzoffs[angle]);
                                     }
                                     else
                                     {
-                                        (mov as IRotateableYXRoll).Roll = rotations[angle];
-                                        (mov as IRotateableYXRoll).RotationY = -90.0f;
-                                        mov.Position -= new Vector3(0.0f, 0.0f, SPxzoffs[angle]);
+                                        (mov as IRotateableYXRoll).Roll = -rotations[angle];
+                                        mov.Position += new Vector3(SPxzoffs[angle], 0.0f, 0.0f);
                                     }
 
                                     mov.Position -= new Vector3(0.0f, SPyoffs[angle], 0.0f);

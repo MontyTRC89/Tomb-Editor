@@ -29,6 +29,6 @@ namespace TombLib.LevelData
             get { return (Room?.Level?.IsTombEngine ?? false) ? _roll : 0.0f; }
             set { _roll = value; }
         }
-        private float _roll = 1.0f;
+        private float _roll = 0.0f;
     }
 }
