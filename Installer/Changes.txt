@@ -2,6 +2,9 @@ Version 1.5.2
 =============
 
 Tomb Editor:
+ * Allow free axis rotation for certain objects in TEN (e. g. teeth spikes).
+ * Allow scaling static meshes for TEN.
+ * Display scaled static meshes according to TRNG OCB value.
  * Fix occasional errors when compiling pathfinding data in TEN levels.
  * Reorganize the way objects which can have Lua name are renamed.
  * Add ability to rename volumes.
