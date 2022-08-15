@@ -10,7 +10,9 @@ Tomb Editor:
  * Fix TEN project converter issue which caused wrong collision for some animatings.
  
 TombIDE:
- * Fix exception on renaming TEN levels.
+ * Fixed exception on renaming TEN levels.
+ * Added script auto-generation for new TEN levels.
+ * Other minor bugfixes.
 
 Version 1.5.1
 =============
