@@ -526,7 +526,6 @@ namespace TombLib.LevelData.IO
                                         mov.Ocb = 2;
                                     else
                                         mov.Ocb = 0;
-
                                 }
                             }
 
