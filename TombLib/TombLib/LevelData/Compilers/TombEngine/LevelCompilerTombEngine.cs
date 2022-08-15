@@ -157,7 +157,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     SoundID = (ushort)instance.SoundId,
                     Flags = flags,
-                    LuaName = instance.LuaName ?? ""
+                    LuaName = instance.LuaName ?? string.Empty
                 });
             }
 
@@ -199,7 +199,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Room = (short)_roomsRemappingDictionary[instance.Room],
                     Flags = instance.CameraMode == CameraInstanceMode.Locked ? 1 : 0,
                     Speed = instance.MoveTimer,
-                    LuaName = instance.LuaName ?? ""
+                    LuaName = instance.LuaName ?? string.Empty
                 });
             }
 
@@ -221,7 +221,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Strength = instance.Strength,
                     BoxIndex = boxIndex,
-                    LuaName = instance.LuaName ?? ""
+                    LuaName = instance.LuaName ?? string.Empty
                 });
             }
 
@@ -413,7 +413,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             OCB = instance.Ocb,
                             BoxIndex = boxIndex,
                             Flags = (ushort)(instance.CodeBits << 1),
-                            LuaName = instance.LuaName ?? ""
+                            LuaName = instance.LuaName ?? string.Empty
                         });
                         _aiObjectsTable.Add(instance, _aiObjectsTable.Count);
                     }
@@ -434,7 +434,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
                             OCB = instance.Ocb,
                             Flags = unchecked((ushort)flags),
-                            LuaName = instance.LuaName ?? ""
+                            LuaName = instance.LuaName ?? string.Empty
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
                     }
