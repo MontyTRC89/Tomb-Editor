@@ -28,7 +28,7 @@
 			this.label.Location = new System.Drawing.Point(10, 10);
 			this.label.Name = "label";
 			this.label.Padding = new System.Windows.Forms.Padding(3);
-			this.label.Size = new System.Drawing.Size(400, 400);
+			this.label.Size = new System.Drawing.Size(400, 420);
 			this.label.TabIndex = 0;
 			this.label.Text = resources.GetString("label.Text");
 			this.label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -38,7 +38,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(420, 420);
+			this.ClientSize = new System.Drawing.Size(420, 440);
 			this.Controls.Add(this.label);
 			this.FlatBorder = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
