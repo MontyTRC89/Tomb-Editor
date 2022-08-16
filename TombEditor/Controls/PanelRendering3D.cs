@@ -3211,9 +3211,9 @@ namespace TombEditor.Controls
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
                                 instance.GetScriptIDOrName() + "\n" + 
-                                GetObjectPositionString(instance.Room, instance) +
-                                "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
-                                (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
+                                GetObjectPositionString(instance.Room, instance) + "\n" +
+                                GetObjectRotationString(instance.Room, instance) +
+                                (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
                                 BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
@@ -3813,6 +3813,21 @@ namespace TombEditor.Controls
 
             // Get the base floor height
             return room.Blocks[xBlock, zBlock].Floor.Min * Level.HeightUnit;
+        }
+        private static string GetObjectRotationString(Room room, PositionBasedObjectInstance instance)
+        {
+            string message = string.Empty; 
+            
+            if (instance is IRotateableY)
+                message += "Rotation Y: " + Math.Round((instance as IRotateableY).RotationY);
+
+            if (instance is IRotateableYX && (instance as IRotateableYX).RotationX != 0.0f)
+                message += " Rotation X: " + Math.Round((instance as IRotateableYX).RotationX);
+
+            if (instance is IRotateableYXRoll && (instance as IRotateableYXRoll).Roll != 0.0f)
+                message += " Roll: " + Math.Round((instance as IRotateableYXRoll).Roll);
+
+            return message;
         }
 
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
