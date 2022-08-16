@@ -11,6 +11,7 @@
 	<Color name="GotoKeywords" foreground="#ffcc99cc" />
 	<Color name="Visibility" fontWeight="bold" foreground="#fff99157" />
 	<Color name="TrueFalse" fontWeight="bold" foreground="#ff66cccc" />
+	<Color name="Object" foreground="#ffe6c8ff" />
 
 	<RuleSet name="CommentMarkerSet">
 		<Keywords fontWeight="bold" foreground="#fff2777a">
@@ -145,6 +146,12 @@
 			|	\.[0-9]+           #or just starting with floating point
 			)
 			([eE][+-]?[0-9]+)? # optional exponent
+		</Rule>
+
+		<Rule color="Object">
+			\b
+			[\d\w_]+  # an identifier
+			(?=\s*\.) # followed by .
 		</Rule>
 
 		<Rule color="Punctuation">
