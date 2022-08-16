@@ -1039,6 +1039,24 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectMovableTombEngine2)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.RotationX = chunkIO.Raw.ReadSingle();
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectStatic ||
                          id3 == Prj2Chunks.ObjectStatic2)
                 {
@@ -1071,6 +1089,22 @@ namespace TombLib.LevelData.IO
                     newObjects.TryAdd(objectID, instance);
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
+                    ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new WadStaticId(chunkIO.Raw.ReadUInt32());
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectStaticTombEngine2)
+                {
+                    var instance = new StaticInstance();
+                    newObjects.TryAdd(objectID, instance);
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    chunkIO.Raw.ReadSingle(); // Reserved: instance.RotationX
+                    chunkIO.Raw.ReadSingle(); // Reserved: instance.Roll
+                    instance.Scale = chunkIO.Raw.ReadSingle();
                     ReadOptionalLEB128Int(chunkIO.Raw);
                     instance.WadObjectId = new WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector3();
@@ -1133,7 +1167,7 @@ namespace TombLib.LevelData.IO
                     var instance = new SpriteInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.Sequence = chunkIO.Raw.ReadInt32();
-                    instance.Frame    = chunkIO.Raw.ReadInt32();
+                    instance.Frame = chunkIO.Raw.ReadInt32();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1254,7 +1288,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (id3 == Prj2Chunks.ObjectSoundSource4)
                     {
-                        instance.SoundId = chunkIO.Raw.ReadInt32();  
+                        instance.SoundId = chunkIO.Raw.ReadInt32();
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
@@ -1273,7 +1307,7 @@ namespace TombLib.LevelData.IO
                 {
                     var instance = new SoundSourceInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.SoundId  = chunkIO.Raw.ReadInt32();
+                    instance.SoundId = chunkIO.Raw.ReadInt32();
                     instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -1412,10 +1446,10 @@ namespace TombLib.LevelData.IO
                     var instance = new GhostBlockInstance();
                     instance.SectorPosition = new VectorInt2(x, y);
 
-                    instance.Floor.XnZn   = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XnZp   = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZn   = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZp   = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
@@ -1434,7 +1468,7 @@ namespace TombLib.LevelData.IO
                     long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
 
                     ushort realTimer = unchecked((ushort)LEB128.ReadShort(chunkIO.Raw));
-                   
+
                     instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
                     instance.OneShot = chunkIO.Raw.ReadBoolean();
 
@@ -1507,7 +1541,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry || 
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry ||
                          id3 == Prj2Chunks.ObjectImportedGeometry2)
                 {
                     var instance = new ImportedGeometryInstance();
@@ -1559,14 +1593,14 @@ namespace TombLib.LevelData.IO
                     });
 
                     addObject(instance);
-                    newObjects.TryAdd(objectID, instance);                    
+                    newObjects.TryAdd(objectID, instance);
                 }
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest ||
                          id3 == Prj2Chunks.ObjectTriggerVolume1 ||
                          id3 == Prj2Chunks.ObjectTriggerVolume2)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
-                    
+
                     VolumeInstance instance;
 
                     switch (instanceType)

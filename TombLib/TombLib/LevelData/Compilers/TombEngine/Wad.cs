@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -612,6 +611,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         n++;
                     }
                 }
+        }
+
+        public static short ToTrAngle(float angle)
+        {
+            double result = Math.Round(angle * (65536.0f / 360.0f));
+            return unchecked((short)result);
         }
 
         private void BuildMeshTree(WadBone bone, List<tr_meshtree> meshTrees, List<WadMesh> usedMeshes)

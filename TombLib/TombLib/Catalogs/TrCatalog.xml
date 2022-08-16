@@ -6019,7 +6019,7 @@
 			<moveable id="338" name="SPIKY_FLOOR" />
 			<moveable id="339" name="SPIKY_WALL" />
 			<moveable id="340" name="SPIKY_CEILING" />
-			<moveable id="341" name="TEETH_SPIKES" />
+			<moveable id="341" name="TEETH_SPIKES" freeRot="true" />
 			<moveable id="342" name="JOBY_SPIKES" />
 			<moveable id="343" name="SENTRY_GUN" />
 			<moveable id="344" name="MAPPER" />

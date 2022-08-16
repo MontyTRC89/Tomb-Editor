@@ -21,7 +21,7 @@ namespace TombLib.LevelData
         All = 16380
     }
 
-    public class StaticInstance : ItemInstance, IColorable
+    public class StaticInstance : ItemInstance, IColorable, IScaleable
     {
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads
@@ -31,5 +31,27 @@ namespace TombLib.LevelData
         public Vector3 Color { get; set; } = new Vector3(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
 
         public override ItemType ItemType => new ItemType(WadObjectId, Room?.Level?.Settings);
+
+        public float DefaultScale => 1.0f;
+
+        public float Scale
+        {
+            get 
+            { 
+                if (Room?.Level?.IsTombEngine ?? false)
+                    return _scale; 
+                else if (Room?.Level?.IsNG ?? false)
+                {
+                    if ((Ocb & (ushort)StaticMeshFlags.Scalable) != 0)
+                        return (Ocb & 0x0FFF) / 4.0f / 100.0f;
+                    else
+                        return 1.0f;
+                }
+                else
+                    return 1.0f;
+            }
+            set { _scale = value; }
+        }
+        private float _scale = 1.0f;
     }
 }
