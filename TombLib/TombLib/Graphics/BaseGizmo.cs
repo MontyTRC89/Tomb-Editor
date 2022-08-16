@@ -193,10 +193,13 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
                         {
+                            var delta = _initialPosition.X - arrowShift;
+                            var offset = intersection.X - arrowShift - delta - Position.X;
+
                             if (flippedScale)
-                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * offset));
                             else
-                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * offset));
                         }
                     }
                     break;
@@ -205,7 +208,10 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
                         {
-                            GizmoScaleY(_scaleBase.Y * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
+                            var delta = _initialPosition.Y - arrowShift;
+                            var offset = intersection.Y - arrowShift - delta - Position.Y;
+
+                            GizmoScaleY(_scaleBase.Y * (float)Math.Exp(_scaleSpeed * offset));
                         }
                     }
                     break;
@@ -214,10 +220,13 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
                         {
+                            var delta = _initialPosition.Z - arrowShift;
+                            var offset = -(intersection.Z - arrowShift - delta - Position.Z);
+
                             if (flippedScale)
-                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * offset));
                             else
-                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * offset));
                         }
                     }
                     break;
