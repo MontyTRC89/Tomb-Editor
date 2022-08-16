@@ -3364,7 +3364,7 @@ namespace TombEditor
             newRoom.Name = "Room " + roomNumber;
             
             if (_editor.Configuration.UI_GenerateRoomDescriptions)
-                newRoom.Name += " (digged " + dirString + ")";
+                newRoom.Name += " (dug " + dirString + ")";
 
             if (grid && _editor.Configuration.Editor_GridNewRoom && roomArea.Size.X > 0 && roomArea.Size.Y > 0)
                 GridWallsSquares(newRoom, roomArea, false, false);
