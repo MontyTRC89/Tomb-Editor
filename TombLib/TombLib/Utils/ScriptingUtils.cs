@@ -76,6 +76,11 @@ namespace TombLib.Utils
                         if (depth <= _maxRecursionDepth)
                             GetAllFunctionsNames(subfile, result, depth);
                     }
+                    else
+                        continue;
+
+                    if (string.IsNullOrEmpty(functionName))
+                        continue;
 
                     if (functionName.StartsWith(reservedFunctionPrefix))
                         continue;
