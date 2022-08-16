@@ -2030,8 +2030,8 @@ namespace TombEditor.Controls
                     if (mesh == null || mesh.Mesh == null || mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
                         continue;
 
-                    var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size / _littleCubeRadius / 2.0f) *
-                                       Matrix4x4.CreateTranslation(mesh.CollisionBox.Center) *
+                    var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size * stat.Scale / _littleCubeRadius / 2.0f) *
+                                       Matrix4x4.CreateTranslation(mesh.CollisionBox.Center * stat.Scale) *
                                        stat.RotationPositionMatrix;
 
                     solidEffect.Parameters["ModelViewProjection"].SetValue((rotPosMatrix * _viewProjection).ToSharpDX());
