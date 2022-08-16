@@ -12,6 +12,7 @@ namespace TombLib.Utils
         {
             const string tableName = "LevelFuncs";
             const string includeStart = "require";
+            const string reservedFunctionPrefix = "__";
 
             string[] reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
 
@@ -26,8 +27,11 @@ namespace TombLib.Utils
 
                 foreach (string l in lines)
                 {
+                    string functionName = string.Empty;
+
                     string line = l.Trim();
                     bool skip = false;
+
                     foreach (string name in reservedNames)
                     {
                         if (line.Contains(name))
@@ -50,19 +54,13 @@ namespace TombLib.Utils
                     {
                         int indexStart = line.IndexOf(".") + 1;
                         int indexEnd = line.IndexOf("(") - indexStart;
-                        string functionName = line.Substring(indexStart, indexEnd).Trim();
-
-                        if (!result.Contains(functionName))
-                            result.Add(functionName);
+                        functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
                     else if (line.StartsWith(tableName + "."))
                     {
                         int indexStart = line.IndexOf(".") + 1;
                         int indexEnd = line.IndexOf("=") - indexStart;
-                        string functionName = line.Substring(indexStart, indexEnd).Trim();
-
-                        if (!result.Contains(functionName))
-                            result.Add(functionName);
+                        functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
                     else if (line.Contains(includeStart))
                     {
@@ -78,6 +76,12 @@ namespace TombLib.Utils
                         if (depth <= _maxRecursionDepth)
                             GetAllFunctionsNames(subfile, result, depth);
                     }
+
+                    if (functionName.StartsWith(reservedFunctionPrefix))
+                        continue;
+
+                    if (!result.Contains(functionName))
+                        result.Add(functionName);
                 }
 
                 return result;
