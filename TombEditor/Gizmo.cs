@@ -75,8 +75,6 @@ namespace TombEditor
 
         protected override void GizmoRotateY(float newAngle)
         {
-            
-
             EditorActions.RotateObject(_editor.SelectedObject, RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization(SmoothRotationPreference), false, true);
         }
 
