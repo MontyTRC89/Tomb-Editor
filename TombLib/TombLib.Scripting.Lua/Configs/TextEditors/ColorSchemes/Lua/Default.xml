@@ -111,6 +111,16 @@
 			<Word>nil</Word>
 		</Keywords>
 
+		<Keywords color="TrueFalse">
+			<Word>TEN</Word>
+			<Word>Logic</Word>
+			<Word>Objects</Word>
+			<Word>Strings</Word>
+			<Word>Inventory</Word>
+			<Word>Misc</Word>
+			<Word>Effects</Word>
+		</Keywords>
+
 		<!-- Mark previous rule-->
 		<Rule color="MethodCall">
 			\b
