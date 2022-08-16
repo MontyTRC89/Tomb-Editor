@@ -209,9 +209,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.X);
                     writer.Write(item.Y);
                     writer.Write(item.Z);
-                    writer.Write(item.Angle);
+                    writer.Write(item.Yaw);
+                    writer.Write(item.Pitch);
+                    writer.Write(item.Roll);
                     writer.Write(item.Color);
-                    writer.Write(item.Ocb);
+                    writer.Write(item.OCB);
                     writer.Write(item.Flags);
                     writer.Write(item.LuaName);
                 }
@@ -224,9 +226,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.X);
                     writer.Write(item.Y);
                     writer.Write(item.Z);
+                    writer.Write(item.Yaw);
+                    writer.Write(item.Pitch);
+                    writer.Write(item.Roll);
                     writer.Write(item.OCB);
                     writer.Write(item.Flags);
-                    writer.Write(item.Angle);
                     writer.Write(item.BoxIndex);
                     writer.Write(item.LuaName);
                 }

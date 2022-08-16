@@ -863,8 +863,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
-                    Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
-                        Math.Round(instance.RotationY * (65536.0 / 360.0)))),
+                    Yaw = ToTrAngle(instance.RotationY),
+                    Scale = instance.Scale,
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Flags = (ushort)(0x0003), // FIXME: later let user choose if solid (0x0003) or soft (0x0001)!
                     Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),

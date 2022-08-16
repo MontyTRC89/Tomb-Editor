@@ -48,7 +48,7 @@ namespace TombEditor.Forms
 
             // Disable mesh-specific controls
             var canBeColored = _movable.CanBeColored();
-            Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 264 : 236);
             lblColor.Visible = canBeColored;
             panelColor.Visible = canBeColored;
         }

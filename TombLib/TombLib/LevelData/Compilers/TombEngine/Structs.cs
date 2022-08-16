@@ -100,7 +100,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int X;
         public int Y;
         public int Z;
-        public ushort Rotation;
+        public short Yaw;
+        public short Pitch;
+        public short Roll;
+        public float Scale;
         public ushort Flags;
         public Vector4 Color;
         public ushort ObjectID;
@@ -257,7 +260,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public class TombEngineRoom
     {
         public tr_room_info Info;
-        public int NumDataWords;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets;
         public List<TombEnginePortal> Portals;
@@ -286,6 +288,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public void Write(BinaryWriterEx writer)
         {
+            writer.Write(OriginalRoom.Name);
+            writer.Write(OriginalRoom.Properties.Tags.Count);
+            OriginalRoom.Properties.Tags.ForEach(s => writer.Write(s));
+
             writer.WriteBlock(Info);
 
             writer.Write(Vertices.Count);
@@ -406,7 +412,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(sm.X);
                 writer.Write(sm.Y);
                 writer.Write(sm.Z);
-                writer.Write(sm.Rotation);
+                writer.Write(sm.Yaw);
+                writer.Write(sm.Pitch);
+                writer.Write(sm.Roll);
+                writer.Write(sm.Scale);
                 writer.Write(sm.Flags);
                 writer.Write(sm.Color);
                 writer.Write(sm.ObjectID);
@@ -633,9 +642,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int X;
         public int Y;
         public int Z;
+        public short Yaw;
+        public short Pitch;
+        public short Roll;
         public short OCB;
         public ushort Flags;
-        public ushort Angle;
         public int BoxIndex;
         public string LuaName;
     }
@@ -648,9 +659,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int X;
         public int Y;
         public int Z;
-        public ushort Angle;
+        public short Yaw;
+        public short Pitch;
+        public short Roll;
         public Vector4 Color;
-        public short Ocb;
+        public short OCB;
         public ushort Flags;
         public string LuaName;
     }
