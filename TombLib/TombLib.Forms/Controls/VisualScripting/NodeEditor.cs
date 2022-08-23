@@ -398,6 +398,9 @@ namespace TombLib.Controls.VisualScripting
 
                 var visibleNode = control as VisibleNodeBase;
 
+                if (!visibleNode.Visible)
+                    continue;
+
                 if (visibleNode.Node != node)
                     continue;
 
@@ -439,6 +442,9 @@ namespace TombLib.Controls.VisualScripting
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)
         {
+            if (!node.Visible)
+                return;
+
             var rect = node.ClientRectangle;
             rect.Offset(node.Location);
             rect.Inflate(16, 16);
@@ -447,6 +453,9 @@ namespace TombLib.Controls.VisualScripting
 
         private void DrawHeader(PaintEventArgs e, VisibleNodeBase node)
         {
+            if (!node.Visible)
+                return;
+
             var size = TextRenderer.MeasureText(node.Node.Name, Font);
 
             var rect = node.ClientRectangle;
@@ -566,6 +575,10 @@ namespace TombLib.Controls.VisualScripting
                 foreach (var node in SelectedNodes)
                 {
                     var rect = GetNodeRect(node);
+
+                    if (rect.Width == 0 && rect.Height == 0)
+                        continue;
+
                     rect.Inflate(_selectionThickness, _selectionThickness);
                     e.Graphics.FillRectangle(b, rect);
                 }

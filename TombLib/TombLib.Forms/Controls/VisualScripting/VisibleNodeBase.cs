@@ -16,6 +16,8 @@ namespace TombLib.Controls.VisualScripting
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
 
+        protected const int _visibilityMargin = 32;
+
         protected List<Rectangle> _grips = new List<Rectangle>();
         protected int _currentGrip = -1;
         protected int _lastSnappedGrip = -1;
@@ -37,7 +39,13 @@ namespace TombLib.Controls.VisualScripting
 
         public void RefreshPosition()
         {
-            Location = Editor.ToVisualCoord(Node.ScreenPosition);
+            if (IsInView())
+            {
+                if (!Visible) Visible = true;
+                Location = Editor.ToVisualCoord(Node.ScreenPosition);
+            }
+            else
+                Visible = false;
         }
 
         public void StorePosition()
@@ -113,6 +121,16 @@ namespace TombLib.Controls.VisualScripting
             }
 
             return result;
+        }
+
+        public bool IsInView()
+        {
+            var newLocation = Editor.ToVisualCoord(Node.ScreenPosition);
+            var newRect = ClientRectangle;
+            newRect.Offset(newLocation);
+            newRect.Inflate(_visibilityMargin, _visibilityMargin);
+
+            return newRect.IntersectsWith(Editor.ClientRectangle);
         }
 
         protected override void OnDragOver(DragEventArgs e)
@@ -270,6 +288,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (!IsInView())
+                return;
+            
             base.OnPaint(e);
 
             foreach (var grip in _grips)
