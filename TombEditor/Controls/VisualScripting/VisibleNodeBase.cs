@@ -250,6 +250,7 @@ namespace TombEditor.Controls.VisualScripting
             if (e.Button == MouseButtons.Left)
             {
                 Editor.SelectNode(Node, !(Control.ModifierKeys == Keys.Control));
+                Editor.Resizing = false;
                 BringToFront();
             }
 
