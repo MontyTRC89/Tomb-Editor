@@ -751,15 +751,5 @@ namespace TombLib.Controls.VisualScripting
             else if (e.Button == MouseButtons.Left)
                 SelectedNodes.Clear();
         }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Prevent progress bar flickering
-                return cp;
-            }
-        }
     }
 }
