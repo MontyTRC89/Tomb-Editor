@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -70,6 +71,12 @@ namespace TombEditor.Controls
             nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
 
             nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
+            nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
+        }
+
+        private void NodeEditor_SelectionChanged(object sender, EventArgs e)
+        {
+            UpdateNodeEditorControls();
         }
 
         private void NodeEditorViewPostionChanged(object sender, EventArgs e)
@@ -117,8 +124,17 @@ namespace TombEditor.Controls
                     nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
                 else
                     nodeEditor.ViewPosition = _event.NodePosition;
+
+                UpdateNodeEditorControls();
             }
             _lockUI = false;
+        }
+
+        private void UpdateNodeEditorControls()
+        {
+            butChangeNodeColor.Enabled =
+            butRenameNode.Enabled =
+            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
         }
 
         private void ReloadFunctions()
@@ -267,6 +283,42 @@ namespace TombEditor.Controls
         private void butDeleteNode_Click(object sender, EventArgs e)
         {
             nodeEditor.DeleteNodes();
+        }
+
+        private void butRenameNode_Click(object sender, EventArgs e)
+        {
+            if (nodeEditor.SelectedNode == null)
+                return;
+
+            using (var form = new FormInputBox("Edit node name", "Enter new name for this node:", nodeEditor.SelectedNode.Name))
+            {
+                if (form.ShowDialog(FindForm()) == DialogResult.Cancel)
+                    return;
+
+                nodeEditor.SelectedNode.Name = form.Result;
+                nodeEditor.Refresh();
+            }
+        }
+
+        private void butChangeNodeColor_Click(object sender, EventArgs e)
+        {
+            if (nodeEditor.SelectedNode == null)
+                return;
+
+            using (var colorDialog = new RealtimeColorDialog())
+            {
+                var oldColor = nodeEditor.SelectedNode.Color.ToWinFormsColor();
+                colorDialog.Color = oldColor;
+                colorDialog.FullOpen = true;
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                if (oldColor != colorDialog.Color)
+                {
+                    nodeEditor.SelectedNode.Color = colorDialog.Color.ToFloat3Color();
+                    nodeEditor.Refresh();
+                }
+            }
         }
     }
 }

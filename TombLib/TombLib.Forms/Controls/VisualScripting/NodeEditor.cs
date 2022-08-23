@@ -42,6 +42,7 @@ namespace TombLib.Controls.VisualScripting
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<TriggerNode> SelectedNodes { get; private set; } = new List<TriggerNode>();
+        public TriggerNode SelectedNode => SelectedNodes.LastOrDefault();
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -184,6 +185,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             var selectionRect = ToVisualCoord(_selectionArea);
+            bool selectionChanged = false;
 
             foreach (var control in Controls.OfType<VisibleNodeBase>())
             {
@@ -194,11 +196,20 @@ namespace TombLib.Controls.VisualScripting
                 if (selectionRect.IntersectsWith(controlRect))
                 {
                     if (!SelectedNodes.Contains(control.Node))
+                    {
+                        selectionChanged = true;
                         SelectedNodes.Add(control.Node);
+                    }
                 }
                 else if (SelectedNodes.Contains(control.Node))
+                {
+                    selectionChanged = true;
                     SelectedNodes.Remove(control.Node);
+                }
             }
+
+            if (selectionChanged)
+                OnSelectionChanged(EventArgs.Empty);
         }
 
         public void DeleteNodes()
@@ -686,6 +697,11 @@ namespace TombLib.Controls.VisualScripting
                 }
 
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
+
+                // Update colors
+                foreach (var n in nodeList)
+                    if (n.BackColor != n.Node.Color.ToWinFormsColor())
+                        n.BackColor = n.Node.Color.ToWinFormsColor();
 
                 // Draw connected nodes
                 foreach (var n in nodeList)
