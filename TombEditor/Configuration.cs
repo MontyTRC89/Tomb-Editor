@@ -130,6 +130,12 @@ namespace TombEditor
         public bool Palette_TextureSamplingMode { get; set; } = false;
         public bool Palette_PickColorFromSelectedObject { get; set; } = false;
 
+        // Node editor options
+
+        public int NodeEditor_Size { get; set; } = 256;
+        public int NodeEditor_GridStep { get; set; } = 8;
+        public bool NodeEditor_LinksAsRopes { get; set; } = false;
+
         // Gizmo options
 
         public float Gizmo_Size { get; set; } = 1536.0f;

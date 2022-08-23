@@ -27,6 +27,7 @@ namespace TombEditor.Controls
             {
                 _event = value;
                 UpdateUI();
+                nodeEditor.Nodes = _event.Nodes;
             }
         }
         private VolumeEvent _event = null;
@@ -62,6 +63,7 @@ namespace TombEditor.Controls
             _editor.EditorEventRaised += EditorEventRaised;
 
             ReloadFunctions();
+            nodeEditor.Initialize();
         }
 
         private void SelectTriggerMode()
@@ -74,18 +76,21 @@ namespace TombEditor.Controls
                 FindAndSelectFunction();
 
             if (!_lockUI)
-                _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.Constructor;
+                _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
 
 
         public void UpdateUI()
         {
             tbArgument.Enabled   =
-            nudCallCount.Enabled = 
-            lstFunctions.Enabled = _event != null;
+            nudCallCount.Enabled =
+            nudCallCount2.Enabled =
+            lstFunctions.Enabled = 
+            nodeEditor.Enabled =
+            rbLevelScript.Enabled = 
+            rbNodeEditor.Enabled = _event != null;
 
             FindAndSelectFunction();
-            ConstructVisualTrigger();
 
             if (_event == null)
                 return;
@@ -93,6 +98,7 @@ namespace TombEditor.Controls
             _lockUI = true;
 
             rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
+            rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
             tbArgument.Text = _event.Argument;
             nudCallCount.Value = _event.CallCounter;
 
@@ -167,13 +173,8 @@ namespace TombEditor.Controls
             _lockUI = false;
         }
 
-        private void ConstructVisualTrigger()
-        {
-            // TODO
-        }
-
         private void rbLevelScript_CheckedChanged(object sender, EventArgs e) => SelectTriggerMode();
-        private void rbConstructor_CheckedChanged(object sender, EventArgs e) => SelectTriggerMode();
+        private void rbNodeEditor_CheckedChanged(object sender, EventArgs e) => SelectTriggerMode();
 
         private void butSearch_Click(object sender, EventArgs e)
         {
@@ -230,6 +231,26 @@ namespace TombEditor.Controls
         private void lblListNotify_EnabledChanged(object sender, EventArgs e)
         {
             lblListNotify.Visible = lblListNotify.Enabled;
+        }
+
+        private void butAddConditionNode_Click(object sender, EventArgs e)
+        {
+            nodeEditor.AddConditionNode();
+        }
+
+        private void butAddActionNode_Click(object sender, EventArgs e)
+        {
+            nodeEditor.AddActionNode();
+        }
+
+        private void butClearNodes_Click(object sender, EventArgs e)
+        {
+            nodeEditor.ClearNodes();
+        }
+
+        private void butDeleteNode_Click(object sender, EventArgs e)
+        {
+            nodeEditor.DeleteNodes();
         }
     }
 }

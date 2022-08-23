@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using DarkUI.Config;
 using DarkUI.Icons;
 
 namespace DarkUI.Controls
@@ -77,6 +76,16 @@ namespace DarkUI.Controls
         }
         private int _gripMargin = 3;
 
+        [Category("Behavior")]
+        [Description("Should control snap to area borders or not.")]
+        [DefaultValue(true)]
+        public bool SnapToBorders { get; set; } = true;
+
+        [Category("Behavior")]
+        [Description("Can be draggable at any free place.")]
+        [DefaultValue(true)]
+        public bool DragAnyPoint { get; set; } = false;
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Padding Padding
@@ -95,9 +104,9 @@ namespace DarkUI.Controls
             ClampDimensions();
         }
 
-        public void FixPosition()
+        private void FixPosition()
         {
-            if(!DesignMode && Parent != null)
+            if (!DesignMode && Parent != null && SnapToBorders)
             {
                 int X = Location.X;
                 int Y = Location.Y;
@@ -179,9 +188,10 @@ namespace DarkUI.Controls
         protected override void WndProc(ref Message m)
         {
             const int WM_NCHITTEST = 0x0084;
+
             const int HTTRANSPARENT = -1;
 
-            if (isDragging && m.Msg == WM_NCHITTEST)
+            if (m.Msg == WM_NCHITTEST && isDragging)
                 m.Result = (IntPtr)HTTRANSPARENT;
             else
                 base.WndProc(ref m);
@@ -197,7 +207,7 @@ namespace DarkUI.Controls
             var g = e.Graphics;
             
             // Fill body
-            using (var b = new SolidBrush(Colors.GreyBackground))
+            using (var b = new SolidBrush(BackColor))
                 g.FillRectangle(b, ClientRectangle);
 
             // Draw grip
@@ -213,15 +223,21 @@ namespace DarkUI.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown(e);
-
-            if(e.Button == MouseButtons.Left && GetGripBounds().Contains(new Point(e.X, e.Y)))
+            if (e.Button == MouseButtons.Left && (DragAnyPoint || GetGripBounds().Contains(new Point(e.X, e.Y))))
                 DragStart(e.Location);
+            else
+            {
+                dragOffset = new Point(int.MaxValue, int.MaxValue);
+                base.OnMouseDown(e);
+            }
         }
 
         protected override void OnQueryContinueDrag(QueryContinueDragEventArgs qcdevent)
         {
             base.OnQueryContinueDrag(qcdevent);
+
+            if (!isDragging || dragOffset.X == int.MaxValue)
+                return;
 
             if (Parent.RectangleToScreen(Parent.ClientRectangle).Contains(Cursor.Position))
             {

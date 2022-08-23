@@ -162,6 +162,8 @@
     <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
     <Compile Include="LevelData\LuaScriptID.cs" />
     <Compile Include="LevelData\ReloadableResource.cs" />
+    <Compile Include="LevelData\VisualTriggering\TriggerNode.cs" />
+    <Compile Include="LevelData\VisualTriggering\TriggerNodeEnumerations.cs" />
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />

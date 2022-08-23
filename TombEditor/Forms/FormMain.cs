@@ -605,13 +605,7 @@ namespace TombEditor.Forms
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //level.Load("");
 
-            //var level = new TestLevel("e:\\trle\\data\\city130.tr4");
-            //level.Load("crash");
-
-            //level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
-            //level.Load("jungle");
         }
 
         private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)

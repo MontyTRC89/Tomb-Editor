@@ -166,6 +166,30 @@
     <Compile Include="Controls\TriggerManager.Designer.cs">
       <DependentUpon>TriggerManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeCondition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeCondition.Designer.cs">
+      <DependentUpon>VisibleNodeCondition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeAction.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeAction.Designer.cs">
+      <DependentUpon>VisibleNodeAction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeBase.Designer.cs">
+      <DependentUpon>VisibleNodeBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\NodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\NodeEditor.Designer.cs">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormBumpMaps.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -504,6 +528,18 @@
     <EmbeddedResource Include="Controls\TriggerManager.resx">
       <DependentUpon>TriggerManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\VisibleNodeCondition.resx">
+      <DependentUpon>VisibleNodeCondition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\VisibleNodeAction.resx">
+      <DependentUpon>VisibleNodeAction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\VisibleNodeBase.resx">
+      <DependentUpon>VisibleNodeBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\NodeEditor.resx">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </EmbeddedResource>
@@ -691,6 +727,7 @@
   <ItemGroup>
     <None Include="Resources\icons_actions\actions_TEN-16.png" />
     <None Include="Resources\icons_actions\actions_delete-16.png" />
+    <None Include="Resources\misc\misc_Shadow.png" />
     <Content Include="TE.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

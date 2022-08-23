@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using TombLib.IO;
+using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.LevelData
 {
@@ -18,7 +20,7 @@ namespace TombLib.LevelData
 
     public enum VolumeEventMode
     {
-        LevelScript, Constructor
+        LevelScript, NodeEditor
     }
 
     // Possible activator flags. If none is set, volume is disabled.
@@ -42,8 +44,7 @@ namespace TombLib.LevelData
         public VolumeEventMode Mode = VolumeEventMode.LevelScript;
         public string Function { get; set; } = string.Empty;
         public string Argument { get; set; } = string.Empty;
-
-        // public VolumeEventConstructor Constructor { get; set; } // TODO
+        public List<TriggerNode> Nodes { get; set; } = new List<TriggerNode>();
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
 
