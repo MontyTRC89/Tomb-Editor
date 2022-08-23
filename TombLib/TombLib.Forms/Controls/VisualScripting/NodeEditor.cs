@@ -666,6 +666,11 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            // Absorb event
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
