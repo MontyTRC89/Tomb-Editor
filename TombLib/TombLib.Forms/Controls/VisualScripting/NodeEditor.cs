@@ -77,6 +77,10 @@ namespace TombLib.Controls.VisualScripting
         private readonly Timer _updateTimer;
         private bool _queueMove = false;
 
+        public event EventHandler ViewPositionChanged;
+        private void OnViewPositionChanged(EventArgs e)
+            => ViewPositionChanged?.Invoke(this, e);
+
         public NodeEditor()
         {
             SetStyle(ControlStyles.UserPaint | 
@@ -206,23 +210,21 @@ namespace TombLib.Controls.VisualScripting
             return RectangleF.FromLTRB(Math.Min(start.X, end.X), Math.Min(start.Y, end.Y), Math.Max(start.X, end.X), Math.Max(start.Y, end.Y));
         }
 
-        private void LimitPosition()
-        {
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-        }
-
         private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint, bool limitPosition = false)
         {
             // Adjust ViewPosition in such a way, that the FixedPoint does not move visually
             ViewPosition = -worldPoint;
             ViewPosition = -FromVisualCoord(visualPoint);
+
             if (limitPosition)
-                LimitPosition();
+                ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
 
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
 
             Refresh();
+
+            OnViewPositionChanged(EventArgs.Empty);
         }
 
         public void UpdateVisibleNodes()
@@ -618,14 +620,14 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnPaint(e);
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
             // Draw background
             using (var b = new SolidBrush(Colors.DarkBackground))
                 e.Graphics.FillRectangle(b, ClientRectangle);
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
                 // Draw grid lines
                 Vector2 GridLines0 = FromVisualCoord(new PointF());
                 Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);

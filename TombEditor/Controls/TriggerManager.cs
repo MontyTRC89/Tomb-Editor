@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -67,6 +68,14 @@ namespace TombEditor.Controls
             nodeEditor.Initialize();
             nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
             nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
+
+            nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
+        }
+
+        private void NodeEditorViewPostionChanged(object sender, EventArgs e)
+        {
+            if (_event != null)
+                _event.NodePosition = nodeEditor.ViewPosition;
         }
 
         private void SelectTriggerMode()
@@ -81,7 +90,6 @@ namespace TombEditor.Controls
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
-
 
         public void UpdateUI()
         {
@@ -99,12 +107,17 @@ namespace TombEditor.Controls
                 return;
 
             _lockUI = true;
+            {
+                rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
+                rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
+                tbArgument.Text = _event.Argument;
+                nudCallCount.Value = _event.CallCounter;
 
-            rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
-            rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
-            tbArgument.Text = _event.Argument;
-            nudCallCount.Value = _event.CallCounter;
-
+                if (_event.NodePosition.X == float.MaxValue)
+                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
+                else
+                    nodeEditor.ViewPosition = _event.NodePosition;
+            }
             _lockUI = false;
         }
 
