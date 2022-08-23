@@ -67,6 +67,10 @@ namespace TombLib.Controls.VisualScripting
         private const string _elseString = "fail";
 
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
+        private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, 2);
+        private static readonly Brush _selectionBrush = new SolidBrush(Colors.BlueSelection.ToFloat3Color().ToWinFormsColor(0.5f));
+
+        private Rectangle2 _selectionArea;
 
         private Point _lastMousePosition;
         private Point _newMousePosition;
@@ -80,6 +84,10 @@ namespace TombLib.Controls.VisualScripting
         public event EventHandler ViewPositionChanged;
         private void OnViewPositionChanged(EventArgs e)
             => ViewPositionChanged?.Invoke(this, e);
+
+        public event EventHandler SelectionChanged;
+        private void OnSelectionChanged(EventArgs e)
+            => SelectionChanged?.Invoke(this, e);
 
         public NodeEditor()
         {
@@ -166,6 +174,31 @@ namespace TombLib.Controls.VisualScripting
                 SelectedNodes.Remove(node);
 
             Refresh();
+            OnSelectionChanged(EventArgs.Empty);
+        }
+
+        public void SelectNodesInArea()
+        {
+            if (_selectionArea == Rectangle2.Zero ||
+                _selectionArea.Width == 0 || _selectionArea.Height == 0)
+                return;
+
+            var selectionRect = ToVisualCoord(_selectionArea);
+
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+            {
+                if (!control.Visible)
+                    continue;
+
+                var controlRect = new RectangleF(control.Location, control.Size);
+                if (selectionRect.IntersectsWith(controlRect))
+                {
+                    if (!SelectedNodes.Contains(control.Node))
+                        SelectedNodes.Add(control.Node);
+                }
+                else if (SelectedNodes.Contains(control.Node))
+                    SelectedNodes.Remove(control.Node);
+            }
         }
 
         public void DeleteNodes()
@@ -223,7 +256,6 @@ namespace TombLib.Controls.VisualScripting
                 control.RefreshPosition();
 
             Refresh();
-
             OnViewPositionChanged(EventArgs.Empty);
         }
 
@@ -646,6 +678,13 @@ namespace TombLib.Controls.VisualScripting
                     e.Graphics.DrawLine(_gridPen,
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
 
+                // Draw selection area
+                if (_selectionArea != Rectangle2.Zero)
+                {
+                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
+                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
+                }
+
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
                 // Draw connected nodes
@@ -734,19 +773,27 @@ namespace TombLib.Controls.VisualScripting
             base.OnMouseMove(e);
             _animSnapCoords = new PointF[2] { _lastMousePosition, _lastMousePosition };
 
-            if (e.Button == MouseButtons.Right & _viewMoveMouseWorldCoord != null)
+            if (e.Button == MouseButtons.Right && _viewMoveMouseWorldCoord != null)
             {
                 _newMousePosition = e.Location;
                 _queueMove = true;
                 Resizing = true;
+                return;
             }
-            else
-                Resizing = false;
+            else if (e.Button == MouseButtons.Left)
+            {
+                _selectionArea.End = FromVisualCoord(e.Location);
+                SelectNodesInArea();
+                Refresh();
+            }
+
+            Resizing = false;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            _selectionArea = Rectangle2.Zero;
             Refresh();
         }
 
@@ -769,7 +816,11 @@ namespace TombLib.Controls.VisualScripting
                 _viewMoveMouseWorldCoord = FromVisualCoord(e.Location);
             }
             else if (e.Button == MouseButtons.Left)
+            {
+                var clickPos = FromVisualCoord(e.Location);
+                _selectionArea = new Rectangle2(clickPos, clickPos);
                 SelectedNodes.Clear();
+            }
         }
     }
 }
