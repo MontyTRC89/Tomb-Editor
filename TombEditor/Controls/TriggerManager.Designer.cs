@@ -21,11 +21,16 @@ namespace TombEditor.Controls
             this.lblNotify = new DarkUI.Controls.DarkLabel();
             this.butUnassign = new DarkUI.Controls.DarkButton();
             this.butSearch = new DarkUI.Controls.DarkButton();
-            this.rbConstructor = new DarkUI.Controls.DarkRadioButton();
+            this.rbNodeEditor = new DarkUI.Controls.DarkRadioButton();
             this.rbLevelScript = new DarkUI.Controls.DarkRadioButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nudCallCount = new DarkUI.Controls.DarkNumericUpDown();
             this.tbArgument = new DarkUI.Controls.DarkTextBox();
+            this.butAddActionNode = new DarkUI.Controls.DarkButton();
+            this.butAddConditionNode = new DarkUI.Controls.DarkButton();
+            this.butDeleteNode = new DarkUI.Controls.DarkButton();
+            this.nudCallCount2 = new DarkUI.Controls.DarkNumericUpDown();
+            this.butClearNodes = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabLevelScript = new System.Windows.Forms.TabPage();
             this.lstFunctions = new DarkUI.Controls.DarkListView();
@@ -34,15 +39,17 @@ namespace TombEditor.Controls
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lblListNotify = new DarkUI.Controls.DarkLabel();
             this.tabConstructor = new System.Windows.Forms.TabPage();
-            this.darkPanel2 = new DarkUI.Controls.DarkPanel();
+            this.panelNodeControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.nodeEditor = new TombEditor.Controls.VisualScripting.NodeEditor();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
             this.tabbedContainer.SuspendLayout();
             this.tabLevelScript.SuspendLayout();
             this.panelFunctionControls.SuspendLayout();
             this.tabConstructor.SuspendLayout();
-            this.darkPanel2.SuspendLayout();
+            this.panelNodeControls.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkPanel3
@@ -50,7 +57,7 @@ namespace TombEditor.Controls
             this.darkPanel3.Controls.Add(this.lblNotify);
             this.darkPanel3.Controls.Add(this.butUnassign);
             this.darkPanel3.Controls.Add(this.butSearch);
-            this.darkPanel3.Controls.Add(this.rbConstructor);
+            this.darkPanel3.Controls.Add(this.rbNodeEditor);
             this.darkPanel3.Controls.Add(this.rbLevelScript);
             this.darkPanel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkPanel3.Location = new System.Drawing.Point(0, 0);
@@ -98,17 +105,16 @@ namespace TombEditor.Controls
             this.toolTip.SetToolTip(this.butSearch, "Search for function");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
-            // rbConstructor
+            // rbNodeEditor
             // 
-            this.rbConstructor.AutoSize = true;
-            this.rbConstructor.Enabled = false;
-            this.rbConstructor.Location = new System.Drawing.Point(144, 5);
-            this.rbConstructor.Name = "rbConstructor";
-            this.rbConstructor.Size = new System.Drawing.Size(86, 17);
-            this.rbConstructor.TabIndex = 1;
-            this.rbConstructor.Text = "Constructor";
-            this.toolTip.SetToolTip(this.rbConstructor, "Visually construct a trigger");
-            this.rbConstructor.CheckedChanged += new System.EventHandler(this.rbConstructor_CheckedChanged);
+            this.rbNodeEditor.AutoSize = true;
+            this.rbNodeEditor.Location = new System.Drawing.Point(144, 5);
+            this.rbNodeEditor.Name = "rbNodeEditor";
+            this.rbNodeEditor.Size = new System.Drawing.Size(87, 17);
+            this.rbNodeEditor.TabIndex = 1;
+            this.rbNodeEditor.Text = "Node editor";
+            this.toolTip.SetToolTip(this.rbNodeEditor, "Visually construct a trigger");
+            this.rbNodeEditor.CheckedChanged += new System.EventHandler(this.rbNodeEditor_CheckedChanged);
             // 
             // rbLevelScript
             // 
@@ -116,7 +122,7 @@ namespace TombEditor.Controls
             this.rbLevelScript.Checked = true;
             this.rbLevelScript.Location = new System.Drawing.Point(5, 5);
             this.rbLevelScript.Name = "rbLevelScript";
-            this.rbLevelScript.Size = new System.Drawing.Size(133, 17);
+            this.rbLevelScript.Size = new System.Drawing.Size(131, 17);
             this.rbLevelScript.TabIndex = 0;
             this.rbLevelScript.TabStop = true;
             this.rbLevelScript.Text = "Level script functions";
@@ -151,6 +157,71 @@ namespace TombEditor.Controls
             this.toolTip.SetToolTip(this.tbArgument, "Determine function argument, if function supports it.\r\nMust be formatted accordin" +
         "g to lua syntax.");
             this.tbArgument.Validated += new System.EventHandler(this.tbArgument_Validated);
+            // 
+            // butAddActionNode
+            // 
+            this.butAddActionNode.Checked = false;
+            this.butAddActionNode.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddActionNode.Location = new System.Drawing.Point(0, 1);
+            this.butAddActionNode.Name = "butAddActionNode";
+            this.butAddActionNode.Size = new System.Drawing.Size(87, 23);
+            this.butAddActionNode.TabIndex = 5;
+            this.butAddActionNode.Text = "Action";
+            this.butAddActionNode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddActionNode, "Add new action node");
+            this.butAddActionNode.Click += new System.EventHandler(this.butAddActionNode_Click);
+            // 
+            // butAddConditionNode
+            // 
+            this.butAddConditionNode.Checked = false;
+            this.butAddConditionNode.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddConditionNode.Location = new System.Drawing.Point(93, 1);
+            this.butAddConditionNode.Name = "butAddConditionNode";
+            this.butAddConditionNode.Size = new System.Drawing.Size(87, 23);
+            this.butAddConditionNode.TabIndex = 6;
+            this.butAddConditionNode.Text = "Condition";
+            this.butAddConditionNode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddConditionNode, "Add new condition node");
+            this.butAddConditionNode.Click += new System.EventHandler(this.butAddConditionNode_Click);
+            // 
+            // butDeleteNode
+            // 
+            this.butDeleteNode.Checked = false;
+            this.butDeleteNode.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDeleteNode.Location = new System.Drawing.Point(186, 1);
+            this.butDeleteNode.Name = "butDeleteNode";
+            this.butDeleteNode.Size = new System.Drawing.Size(23, 23);
+            this.butDeleteNode.TabIndex = 7;
+            this.toolTip.SetToolTip(this.butDeleteNode, "Delete selected nodes");
+            this.butDeleteNode.Click += new System.EventHandler(this.butDeleteNode_Click);
+            // 
+            // nudCallCount2
+            // 
+            this.nudCallCount2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCallCount2.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudCallCount2.Location = new System.Drawing.Point(681, 2);
+            this.nudCallCount2.LoopValues = false;
+            this.nudCallCount2.Name = "nudCallCount2";
+            this.nudCallCount2.Size = new System.Drawing.Size(63, 22);
+            this.nudCallCount2.TabIndex = 3;
+            this.toolTip.SetToolTip(this.nudCallCount2, "Determines how many times trigger will be called.\r\nIf 0, it means trigger will be" +
+        " called infinitely.");
+            this.nudCallCount2.ValueChanged += new System.EventHandler(this.nudCallCount_ValueChanged);
+            // 
+            // butClearNodes
+            // 
+            this.butClearNodes.Checked = false;
+            this.butClearNodes.Image = global::TombEditor.Properties.Resources.actions_delete_16;
+            this.butClearNodes.Location = new System.Drawing.Point(215, 1);
+            this.butClearNodes.Name = "butClearNodes";
+            this.butClearNodes.Size = new System.Drawing.Size(23, 23);
+            this.butClearNodes.TabIndex = 8;
+            this.toolTip.SetToolTip(this.butClearNodes, "Clear all nodes");
+            this.butClearNodes.Click += new System.EventHandler(this.butClearNodes_Click);
             // 
             // tabbedContainer
             // 
@@ -207,7 +278,7 @@ namespace TombEditor.Controls
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(613, 4);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(62, 13);
+            this.darkLabel3.Size = new System.Drawing.Size(60, 13);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "Call count:";
             // 
@@ -217,7 +288,7 @@ namespace TombEditor.Controls
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 4);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(61, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(60, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Argument:";
             // 
@@ -236,34 +307,51 @@ namespace TombEditor.Controls
             // 
             // tabConstructor
             // 
-            this.tabConstructor.Controls.Add(this.darkPanel2);
+            this.tabConstructor.Controls.Add(this.panelNodeControls);
+            this.tabConstructor.Controls.Add(this.nodeEditor);
             this.tabConstructor.Location = new System.Drawing.Point(4, 22);
             this.tabConstructor.Name = "tabConstructor";
             this.tabConstructor.Padding = new System.Windows.Forms.Padding(3);
             this.tabConstructor.Size = new System.Drawing.Size(750, 349);
             this.tabConstructor.TabIndex = 13;
-            this.tabConstructor.Text = "Constructor";
+            this.tabConstructor.Text = "Node editor";
             this.tabConstructor.UseVisualStyleBackColor = true;
             // 
-            // darkPanel2
+            // panelNodeControls
             // 
-            this.darkPanel2.Controls.Add(this.darkLabel1);
-            this.darkPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkPanel2.Location = new System.Drawing.Point(3, 3);
-            this.darkPanel2.Name = "darkPanel2";
-            this.darkPanel2.Size = new System.Drawing.Size(744, 343);
-            this.darkPanel2.TabIndex = 0;
+            this.panelNodeControls.Controls.Add(this.butClearNodes);
+            this.panelNodeControls.Controls.Add(this.nudCallCount2);
+            this.panelNodeControls.Controls.Add(this.butDeleteNode);
+            this.panelNodeControls.Controls.Add(this.darkLabel1);
+            this.panelNodeControls.Controls.Add(this.butAddActionNode);
+            this.panelNodeControls.Controls.Add(this.butAddConditionNode);
+            this.panelNodeControls.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelNodeControls.Location = new System.Drawing.Point(3, 321);
+            this.panelNodeControls.Name = "panelNodeControls";
+            this.panelNodeControls.Size = new System.Drawing.Size(744, 25);
+            this.panelNodeControls.TabIndex = 8;
             // 
             // darkLabel1
             // 
-            this.darkLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(0, 0);
+            this.darkLabel1.Location = new System.Drawing.Point(613, 4);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(744, 343);
-            this.darkLabel1.TabIndex = 0;
-            this.darkLabel1.Text = "SORY!\r\nNOT IMPLEMATEL!";
-            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.darkLabel1.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel1.TabIndex = 2;
+            this.darkLabel1.Text = "Call count:";
+            // 
+            // nodeEditor
+            // 
+            this.nodeEditor.AllowDrop = true;
+            this.nodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodeEditor.Location = new System.Drawing.Point(3, 5);
+            this.nodeEditor.Name = "nodeEditor";
+            this.nodeEditor.Size = new System.Drawing.Size(744, 310);
+            this.nodeEditor.TabIndex = 0;
             // 
             // TriggerManager
             // 
@@ -277,12 +365,14 @@ namespace TombEditor.Controls
             this.darkPanel3.ResumeLayout(false);
             this.darkPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).EndInit();
             this.tabbedContainer.ResumeLayout(false);
             this.tabLevelScript.ResumeLayout(false);
             this.panelFunctionControls.ResumeLayout(false);
             this.panelFunctionControls.PerformLayout();
             this.tabConstructor.ResumeLayout(false);
-            this.darkPanel2.ResumeLayout(false);
+            this.panelNodeControls.ResumeLayout(false);
+            this.panelNodeControls.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -290,7 +380,7 @@ namespace TombEditor.Controls
         #endregion
         private TombLib.Controls.DarkTabbedContainer tabbedContainer;
         private DarkUI.Controls.DarkPanel darkPanel3;
-        private DarkUI.Controls.DarkRadioButton rbConstructor;
+        private DarkUI.Controls.DarkRadioButton rbNodeEditor;
         private DarkUI.Controls.DarkRadioButton rbLevelScript;
         private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkButton butUnassign;
@@ -304,8 +394,14 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkTextBox tbArgument;
         private System.Windows.Forms.TabPage tabConstructor;
-        private DarkUI.Controls.DarkPanel darkPanel2;
-        private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkLabel lblListNotify;
+        private VisualScripting.NodeEditor nodeEditor;
+        private DarkUI.Controls.DarkButton butDeleteNode;
+        private DarkUI.Controls.DarkButton butAddConditionNode;
+        private DarkUI.Controls.DarkButton butAddActionNode;
+        private DarkUI.Controls.DarkPanel panelNodeControls;
+        private DarkUI.Controls.DarkButton butClearNodes;
+        private DarkUI.Controls.DarkNumericUpDown nudCallCount2;
+        private DarkUI.Controls.DarkLabel darkLabel1;
     }
 }
