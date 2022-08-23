@@ -244,8 +244,11 @@ namespace DarkUI.Controls
                 var nextLocation = Parent.PointToClient(new Point(Cursor.Position.X - dragOffset.X, Cursor.Position.Y - dragOffset.Y));
 
                 // Snap toolbox to parent border
-                nextLocation.Offset(nextLocation.X < _dragSnappingMargin.Width ? -nextLocation.X : 0, nextLocation.Y < _dragSnappingMargin.Height ? -nextLocation.Y : 0);
-                nextLocation.Offset(nextLocation.X > dragBounds.Width - _dragSnappingMargin.Width ? -(nextLocation.X - dragBounds.Width) : 0, nextLocation.Y > dragBounds.Height - _dragSnappingMargin.Height ? -(nextLocation.Y - dragBounds.Height) : 0);
+                if (SnapToBorders)
+                {
+                    nextLocation.Offset(nextLocation.X < _dragSnappingMargin.Width ? -nextLocation.X : 0, nextLocation.Y < _dragSnappingMargin.Height ? -nextLocation.Y : 0);
+                    nextLocation.Offset(nextLocation.X > dragBounds.Width - _dragSnappingMargin.Width ? -(nextLocation.X - dragBounds.Width) : 0, nextLocation.Y > dragBounds.Height - _dragSnappingMargin.Height ? -(nextLocation.Y - dragBounds.Height) : 0);
+                }
 
                 Location = nextLocation;
                 Refresh(); // We need to invalidate all controls behind
