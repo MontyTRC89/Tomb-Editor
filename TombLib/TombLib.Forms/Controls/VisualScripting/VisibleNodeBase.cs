@@ -9,7 +9,7 @@ using DarkUI.Icons;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.VisualScripting
+namespace TombLib.Controls.VisualScripting
 {
     public partial class VisibleNodeBase : DarkFloatingToolbox
     {

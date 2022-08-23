@@ -1,4 +1,4 @@
-﻿namespace TombEditor.Controls.VisualScripting
+﻿namespace TombLib.Controls.VisualScripting
 {
     partial class VisibleNodeBase
     {

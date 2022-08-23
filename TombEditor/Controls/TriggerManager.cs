@@ -63,7 +63,10 @@ namespace TombEditor.Controls
             _editor.EditorEventRaised += EditorEventRaised;
 
             ReloadFunctions();
+
             nodeEditor.Initialize();
+            nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
+            nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
         }
 
         private void SelectTriggerMode()

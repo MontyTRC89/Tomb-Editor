@@ -41,7 +41,7 @@ namespace TombEditor.Controls
             this.tabConstructor = new System.Windows.Forms.TabPage();
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.nodeEditor = new TombEditor.Controls.VisualScripting.NodeEditor();
+            this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -395,7 +395,7 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkTextBox tbArgument;
         private System.Windows.Forms.TabPage tabConstructor;
         private DarkUI.Controls.DarkLabel lblListNotify;
-        private VisualScripting.NodeEditor nodeEditor;
+        private TombLib.Controls.VisualScripting.NodeEditor nodeEditor;
         private DarkUI.Controls.DarkButton butDeleteNode;
         private DarkUI.Controls.DarkButton butAddConditionNode;
         private DarkUI.Controls.DarkButton butAddActionNode;

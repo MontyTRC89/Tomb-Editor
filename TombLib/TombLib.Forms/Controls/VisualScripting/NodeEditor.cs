@@ -8,11 +8,10 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.VisualScripting
+namespace TombLib.Controls.VisualScripting
 {
     public enum ConnectionMode
     {
@@ -56,6 +55,10 @@ namespace TombEditor.Controls.VisualScripting
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Resizing { get; set; } = false;
 
+        public Color SelectionColor { get; set; } = Colors.BlueSelection;
+        public float GridStep { get; set; } = 8.0f;
+        public int GridSize { get; set; } = 256;
+
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
@@ -65,9 +68,6 @@ namespace TombEditor.Controls.VisualScripting
 
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
 
-        private float _gridStep = 8.0f;
-        private int _gridSize = 256;
-
         private Point _lastMousePosition;
         private Point _newMousePosition;
         private Vector2? _viewMoveMouseWorldCoord;
@@ -76,8 +76,6 @@ namespace TombEditor.Controls.VisualScripting
         private PointF[] _animSnapCoords = null;
         private readonly Timer _updateTimer;
         private bool _queueMove = false;
-
-        private Editor _editor;
 
         public NodeEditor()
         {
@@ -107,13 +105,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public void Initialize(List<TriggerNode> nodes = null)
         {
-            _editor = Editor.Instance;
-
-            _gridStep = _editor.Configuration.NodeEditor_GridStep;
-            _gridSize = _editor.Configuration.NodeEditor_Size;
-
-            ViewPosition = new Vector2(_gridSize / 2.0f,
-                                       _gridSize / 2.0f);
+            ViewPosition = new Vector2(GridSize / 2.0f,
+                                       GridSize / 2.0f);
             Nodes = nodes == null ? new List<TriggerNode>() : nodes;
             UpdateVisibleNodes();
             _updateTimer.Start();
@@ -189,8 +182,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public Vector2 FromVisualCoord(PointF pos)
         {
-            return new Vector2((pos.X - Width * 0.5f) / _gridStep + ViewPosition.X, 
-                               (Height * 0.5f - pos.Y) / _gridStep + ViewPosition.Y);
+            return new Vector2((pos.X - Width * 0.5f) / GridStep + ViewPosition.X, 
+                               (Height * 0.5f - pos.Y) / GridStep + ViewPosition.Y);
         }
 
         public Rectangle2 FromVisualCoord(RectangleF area)
@@ -202,8 +195,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public Point ToVisualCoord(Vector2 pos)
         {
-            return new Point((int)Math.Round((pos.X - ViewPosition.X) * _gridStep + Width * 0.5f), 
-                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * _gridStep));
+            return new Point((int)Math.Round((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
+                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
         }
 
         public RectangleF ToVisualCoord(Rectangle2 area)
@@ -215,7 +208,7 @@ namespace TombEditor.Controls.VisualScripting
 
         private void LimitPosition()
         {
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(_gridSize));
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
         }
 
         private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint, bool limitPosition = false)
@@ -568,7 +561,7 @@ namespace TombEditor.Controls.VisualScripting
 
             e.Graphics.SmoothingMode = SmoothingMode.None;
 
-            using (var b = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorSelection.ToWinFormsColor(0.5f)))
+            using (var b = new SolidBrush(SelectionColor))
             {
                 foreach (var node in SelectedNodes)
                 {
@@ -625,18 +618,18 @@ namespace TombEditor.Controls.VisualScripting
                 Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
                 Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
                 Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
-                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(_gridSize));
-                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(_gridSize));
+                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(GridSize));
+                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(GridSize));
                 Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
                 Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                 for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
                     e.Graphics.DrawLine(_gridPen,
-                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, _gridSize)));
+                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, GridSize)));
 
                 for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
                     e.Graphics.DrawLine(_gridPen,
-                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(_gridSize, y)));
+                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
 
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
@@ -757,6 +750,16 @@ namespace TombEditor.Controls.VisualScripting
             }
             else if (e.Button == MouseButtons.Left)
                 SelectedNodes.Clear();
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Prevent progress bar flickering
+                return cp;
+            }
         }
     }
 }
