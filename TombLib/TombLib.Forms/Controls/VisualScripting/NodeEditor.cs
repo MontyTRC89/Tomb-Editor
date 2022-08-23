@@ -836,6 +836,7 @@ namespace TombLib.Controls.VisualScripting
                 var clickPos = FromVisualCoord(e.Location);
                 _selectionArea = new Rectangle2(clickPos, clickPos);
                 SelectedNodes.Clear();
+                OnSelectionChanged(EventArgs.Empty);
             }
         }
     }
