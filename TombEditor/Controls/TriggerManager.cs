@@ -95,7 +95,7 @@ namespace TombEditor.Controls
 
         private void SelectTriggerMode()
         {
-            tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
+            tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 1 : 0;
             butUnassign.Visible = rbLevelScript.Checked;
             lblNotify.Visible = false;
 
