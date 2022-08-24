@@ -34,7 +34,7 @@ namespace TombLib.Controls.VisualScripting
             set
             {
                 _nodes = value;
-                UpdateVisibleNodes();
+                UpdateVisibleNodes(true);
             }
         }
         private List<TriggerNode> _nodes;
@@ -57,7 +57,7 @@ namespace TombLib.Controls.VisualScripting
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool Resizing { get; set; } = false;
+        public bool Resizing { get; private set; } = false;
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
@@ -125,7 +125,7 @@ namespace TombLib.Controls.VisualScripting
             ViewPosition = new Vector2(GridSize / 2.0f,
                                        GridSize / 2.0f);
             Nodes = nodes == null ? new List<TriggerNode>() : nodes;
-            UpdateVisibleNodes();
+            UpdateVisibleNodes(true);
             _updateTimer.Start();
         }
 
@@ -167,10 +167,32 @@ namespace TombLib.Controls.VisualScripting
             UpdateVisibleNodes();
         }
 
+        public void MoveSelectedNodes(TriggerNode rootNode, Vector2 delta)
+        {
+            if (SelectedNodes.Count <= 1)
+                return;
+
+            Resizing = true;
+            foreach (var node in SelectedNodes)
+            {
+                if (node == rootNode)
+                    continue;
+
+                node.ScreenPosition += delta;
+                var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
+
+                if (visibleNode != null)
+                    visibleNode.RefreshPosition();
+            }
+            Resizing = false;
+        }
+
         public void SelectNode(TriggerNode node, bool reset)
         {
             if (!LinearizedNodes().Contains(node))
                 return;
+
+            Resizing = false;
 
             if (reset)
                 SelectedNodes.Clear();
@@ -180,7 +202,7 @@ namespace TombLib.Controls.VisualScripting
             else
                 SelectedNodes.Remove(node);
 
-            Refresh();
+            Invalidate();
             OnSelectionChanged(EventArgs.Empty);
         }
 
@@ -245,7 +267,7 @@ namespace TombLib.Controls.VisualScripting
             foreach (var c in Controls.OfType<VisibleNodeBase>())
                 c.RefreshPosition();
 
-            Refresh();
+            Invalidate();
             OnViewPositionChanged(EventArgs.Empty);
         }
 
@@ -303,11 +325,11 @@ namespace TombLib.Controls.VisualScripting
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
 
-            Refresh();
+            Invalidate();
             OnViewPositionChanged(EventArgs.Empty);
         }
 
-        public void UpdateVisibleNodes()
+        public void UpdateVisibleNodes(bool fullRedraw = false)
         {
             var visibleNodes = Controls.OfType<VisibleNodeBase>().ToList();
             var linearizedNodes = LinearizedNodes();
@@ -326,6 +348,9 @@ namespace TombLib.Controls.VisualScripting
             foreach (var node in Nodes)
                 AddNodeControl(node, newControls);
 
+            if (fullRedraw && newControls.Count > 0)
+                Visible = false;
+
             // Add all controls at once, to avoid flickering
             foreach (var control in newControls)
             {
@@ -333,7 +358,8 @@ namespace TombLib.Controls.VisualScripting
                 control.RefreshPosition();
             }
 
-            Refresh();
+            Visible = true;
+            Invalidate();
         }
 
         public void Clear()
@@ -517,7 +543,7 @@ namespace TombLib.Controls.VisualScripting
             if (!Nodes.Contains(HotNode) && HotNode.Previous == null)
                 Nodes.Add(HotNode);
             HotNode = null;
-            Refresh();
+            Invalidate();
         }
 
         public Rectangle GetNodeRect(TriggerNode node)
@@ -662,12 +688,10 @@ namespace TombLib.Controls.VisualScripting
                 var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
-
-                var cv1 = (p1[0].ToVector2() + p2[0].ToVector2()) / 2.0f;
-                var cv2 = (p1[1].ToVector2() + p2[1].ToVector2()) / 2.0f;
+                var midY = (p1[0].Y + p2[0].Y) / 2.0f;
 
                 using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
-                    e.Graphics.DrawBezier(p, start, new PointF(start.X, cv1.Y), new PointF(end.X, cv1.Y), end);
+                    e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
             else
             {
@@ -742,7 +766,7 @@ namespace TombLib.Controls.VisualScripting
                         _lastMousePosition.Y < 0 || _lastMousePosition.Y > Height)
                         ResetHotNode();
 
-                Refresh();
+                Invalidate();
             }
 
             if (_animProgress >= 0.0f && _animProgress < 1.0f)
@@ -755,7 +779,7 @@ namespace TombLib.Controls.VisualScripting
             if (_queueMove)
             {
                 MoveToFixedPoint(_newMousePosition, _viewMoveMouseWorldCoord.Value, true);
-                Refresh();
+                Invalidate();
                 _queueMove = false;
             }
         }
@@ -901,7 +925,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 _selectionArea.End = FromVisualCoord(e.Location);
                 SelectNodesInArea();
-                Refresh();
+                Invalidate();
             }
 
             Resizing = false;
@@ -911,7 +935,7 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseUp(e);
             _selectionArea = Rectangle2.Zero;
-            Refresh();
+            Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)

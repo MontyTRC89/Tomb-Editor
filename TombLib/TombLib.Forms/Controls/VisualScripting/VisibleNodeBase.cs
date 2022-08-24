@@ -217,7 +217,7 @@ namespace TombLib.Controls.VisualScripting
             }
 
             Editor.HotNode = null;
-            Editor.Refresh();
+            Editor.Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -269,7 +269,6 @@ namespace TombLib.Controls.VisualScripting
             if (e.Button == MouseButtons.Left)
             {
                 Editor.SelectNode(Node, !(Control.ModifierKeys == Keys.Control));
-                Editor.Resizing = false;
                 BringToFront();
             }
 
@@ -282,8 +281,11 @@ namespace TombLib.Controls.VisualScripting
             if (Editor?.Resizing ?? true)
                 return;
 
+            var oldPosition = Node.ScreenPosition;
             StorePosition();
-            Editor.Refresh();
+            Editor.MoveSelectedNodes(Node, Node.ScreenPosition - oldPosition);
+
+            Editor.Invalidate();
             base.OnLocationChanged(e);
         }
 
