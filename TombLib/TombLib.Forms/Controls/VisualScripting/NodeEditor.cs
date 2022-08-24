@@ -65,7 +65,7 @@ namespace TombLib.Controls.VisualScripting
         public int GridSize { get; set; } = 256;
         public bool LinksAsRopes { get; set; } = false;
 
-        private const float _mouseWheelScrollFactor = 0.0015f;
+        private const float _mouseWheelScrollFactor = 0.04f;
 
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
@@ -1055,7 +1055,13 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseWheel(e);
 
-            ViewPosition -= 440.0f * new Vector2(0.0f, e.Delta * _mouseWheelScrollFactor);
+            var delta = e.Delta * _mouseWheelScrollFactor;
+
+            if (Control.ModifierKeys == Keys.Shift)
+                ViewPosition += new Vector2(delta, 0.0f);
+            else
+                ViewPosition += new Vector2(0.0f, delta);
+
             ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
             
             foreach (var control in Controls.OfType<VisibleNodeBase>())

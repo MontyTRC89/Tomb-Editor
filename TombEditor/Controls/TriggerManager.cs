@@ -96,8 +96,9 @@ namespace TombEditor.Controls
         private void SelectTriggerMode()
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 1 : 0;
-            butUnassign.Visible = rbLevelScript.Checked;
-            lblNotify.Visible = false;
+
+            lblNotify.Visible = rbLevelScript.Checked;
+            UpdateNodeEditorControls();
 
             if (rbLevelScript.Checked)
                 FindAndSelectFunction();
@@ -145,6 +146,8 @@ namespace TombEditor.Controls
             butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
+
+            butUnassign.Visible = rbLevelScript.Checked;
         }
 
         private void ReloadFunctions()
