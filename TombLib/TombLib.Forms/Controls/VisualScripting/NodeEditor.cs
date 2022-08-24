@@ -57,7 +57,7 @@ namespace TombLib.Controls.VisualScripting
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool Resizing { get; set; } = false;
+        public bool Resizing { get; private set; } = false;
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
@@ -167,10 +167,32 @@ namespace TombLib.Controls.VisualScripting
             UpdateVisibleNodes();
         }
 
+        public void MoveSelectedNodes(TriggerNode rootNode, Vector2 delta)
+        {
+            if (SelectedNodes.Count <= 1)
+                return;
+
+            Resizing = true;
+            foreach (var node in SelectedNodes)
+            {
+                if (node == rootNode)
+                    continue;
+
+                node.ScreenPosition += delta;
+                var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
+
+                if (visibleNode != null)
+                    visibleNode.RefreshPosition();
+            }
+            Resizing = false;
+        }
+
         public void SelectNode(TriggerNode node, bool reset)
         {
             if (!LinearizedNodes().Contains(node))
                 return;
+
+            Resizing = false;
 
             if (reset)
                 SelectedNodes.Clear();
