@@ -142,9 +142,9 @@ namespace TombEditor.Controls
         {
             butChangeNodeColor.Enabled =
             butRenameNode.Enabled =
-            butLinkSelectedNodes.Enabled =
             butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
+            butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
         }
 
         private void ReloadFunctions()

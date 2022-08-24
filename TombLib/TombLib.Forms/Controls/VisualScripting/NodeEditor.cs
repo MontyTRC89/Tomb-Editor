@@ -757,7 +757,8 @@ namespace TombLib.Controls.VisualScripting
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
 
-                using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
+                var normColor = color == Vector3.Zero ? color : Vector3.Normalize(color);
+                using (var p = new Pen(normColor.ToWinFormsColor(), width))
                     e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
             else
