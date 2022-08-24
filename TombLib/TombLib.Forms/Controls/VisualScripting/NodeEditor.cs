@@ -476,11 +476,11 @@ namespace TombLib.Controls.VisualScripting
                 foreach (var control in Controls.OfType<VisibleNodeBase>())
                 {
                     var rect = control.ClientRectangle;
-                    rect.Offset(control.Location);
+                    rect.Offset(ToVisualCoord(control.Node.ScreenPosition));
 
                     var rect2 = newNode.ClientRectangle;
                     rect2.Offset(new Point((int)pos.X, (int)pos.Y));
-                    rect2.Inflate((int)GridStep * 2, (int)GridStep * 2);
+                    rect2.Inflate((int)GridStep / 2, (int)GridStep * 2);
 
                     if (rect.IntersectsWith(rect2))
                         colliding = true;
