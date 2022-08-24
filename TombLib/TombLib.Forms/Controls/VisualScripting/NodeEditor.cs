@@ -135,7 +135,7 @@ namespace TombLib.Controls.VisualScripting
         {
             var node = new TriggerNodeCondition()
             {
-                Name = "Condition node " + Nodes.Count,
+                Name = "Condition node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
                 Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 1.0f, 0.8f),
                 Getter = "Test 2"
@@ -154,7 +154,7 @@ namespace TombLib.Controls.VisualScripting
         {
             var node = new TriggerNodeAction()
             {
-                Name = "Action node " + Nodes.Count,
+                Name = "Action node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
                 Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f),
                 Function = "Test 1"
