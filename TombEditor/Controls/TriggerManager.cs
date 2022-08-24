@@ -44,6 +44,7 @@ namespace TombEditor.Controls
             {
                 ReloadFunctions();
                 FindAndSelectFunction();
+                UpdateNodeEditorOptions();
             }
         }
 
@@ -68,8 +69,7 @@ namespace TombEditor.Controls
             ReloadFunctions();
 
             nodeEditor.Initialize();
-            nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
-            nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
+            UpdateNodeEditorOptions();
 
             nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
             nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
@@ -84,6 +84,13 @@ namespace TombEditor.Controls
         {
             if (_event != null)
                 _event.NodePosition = nodeEditor.ViewPosition;
+        }
+
+        private void UpdateNodeEditorOptions()
+        {
+            nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
+            nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
+            nodeEditor.LinksAsRopes = _editor.Configuration.NodeEditor_LinksAsRopes;
         }
 
         private void SelectTriggerMode()

@@ -62,6 +62,7 @@ namespace TombLib.Controls.VisualScripting
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
         public int GridSize { get; set; } = 256;
+        public bool LinksAsRopes { get; set; } = false;
 
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
@@ -580,8 +581,20 @@ namespace TombLib.Controls.VisualScripting
 
         private void DrawLink(PaintEventArgs e, Vector3 color, float alpha, PointF[] p1, PointF[] p2)
         {
-            using (var b = new SolidBrush(color.ToWinFormsColor(alpha)))
-                e.Graphics.FillPolygon(b, new PointF[4] { p1[0], p1[1], p2[1], p2[0] });
+            if (LinksAsRopes)
+            {
+                var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
+                var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
+                var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
+
+                using (var p = new Pen(Colors.LightestBackground, width))
+                    e.Graphics.DrawLine(p, start, end);
+            }
+            else
+            {
+                using (var b = new SolidBrush(color.ToWinFormsColor(alpha)))
+                    e.Graphics.FillPolygon(b, new PointF[4] { p1[0], p1[1], p2[1], p2[0] });
+            }
         }
 
         private void DrawHotNode(PaintEventArgs e, List<VisibleNodeBase> nodeList)
