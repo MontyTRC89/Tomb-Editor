@@ -587,7 +587,7 @@ namespace TombLib.Controls.VisualScripting
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
 
-                using (var p = new Pen(Colors.LightestBackground, width))
+                using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
                     e.Graphics.DrawLine(p, start, end);
             }
             else
