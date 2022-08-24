@@ -103,8 +103,12 @@ namespace TombLib.Controls.VisualScripting
                     break;
 
                 case ConnectionMode.Previous:
-                case ConnectionMode.Else:
                     if (Node.Previous != null)
+                        return false;
+                    break;
+
+                case ConnectionMode.Else:
+                    if ((Node as TriggerNodeCondition)?.Else != null)
                         return false;
                     break;
             }
