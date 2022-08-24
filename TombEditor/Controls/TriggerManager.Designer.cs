@@ -35,24 +35,25 @@ namespace TombEditor.Controls
             this.butChangeNodeColor = new DarkUI.Controls.DarkButton();
             this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
+            this.tabConstructor = new System.Windows.Forms.TabPage();
+            this.panelNodeControls = new DarkUI.Controls.DarkPanel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
+            this.lblWait = new DarkUI.Controls.DarkLabel();
             this.tabLevelScript = new System.Windows.Forms.TabPage();
             this.lstFunctions = new DarkUI.Controls.DarkListView();
             this.panelFunctionControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lblListNotify = new DarkUI.Controls.DarkLabel();
-            this.tabConstructor = new System.Windows.Forms.TabPage();
-            this.panelNodeControls = new DarkUI.Controls.DarkPanel();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
             this.tabbedContainer.SuspendLayout();
-            this.tabLevelScript.SuspendLayout();
-            this.panelFunctionControls.SuspendLayout();
             this.tabConstructor.SuspendLayout();
             this.panelNodeControls.SuspendLayout();
+            this.tabLevelScript.SuspendLayout();
+            this.panelFunctionControls.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkPanel3
@@ -270,6 +271,76 @@ namespace TombEditor.Controls
             this.tabbedContainer.Size = new System.Drawing.Size(758, 375);
             this.tabbedContainer.TabIndex = 1;
             // 
+            // tabConstructor
+            // 
+            this.tabConstructor.Controls.Add(this.panelNodeControls);
+            this.tabConstructor.Controls.Add(this.nodeEditor);
+            this.tabConstructor.Controls.Add(this.lblWait);
+            this.tabConstructor.Location = new System.Drawing.Point(4, 22);
+            this.tabConstructor.Name = "tabConstructor";
+            this.tabConstructor.Padding = new System.Windows.Forms.Padding(3);
+            this.tabConstructor.Size = new System.Drawing.Size(750, 349);
+            this.tabConstructor.TabIndex = 13;
+            this.tabConstructor.Text = "Node editor";
+            this.tabConstructor.UseVisualStyleBackColor = true;
+            // 
+            // panelNodeControls
+            // 
+            this.panelNodeControls.Controls.Add(this.butLinkSelectedNodes);
+            this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
+            this.panelNodeControls.Controls.Add(this.butRenameNode);
+            this.panelNodeControls.Controls.Add(this.butClearNodes);
+            this.panelNodeControls.Controls.Add(this.nudCallCount2);
+            this.panelNodeControls.Controls.Add(this.butDeleteNode);
+            this.panelNodeControls.Controls.Add(this.darkLabel1);
+            this.panelNodeControls.Controls.Add(this.butAddActionNode);
+            this.panelNodeControls.Controls.Add(this.butAddConditionNode);
+            this.panelNodeControls.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelNodeControls.Location = new System.Drawing.Point(3, 321);
+            this.panelNodeControls.Name = "panelNodeControls";
+            this.panelNodeControls.Size = new System.Drawing.Size(744, 25);
+            this.panelNodeControls.TabIndex = 8;
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(613, 4);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(62, 13);
+            this.darkLabel1.TabIndex = 2;
+            this.darkLabel1.Text = "Call count:";
+            // 
+            // nodeEditor
+            // 
+            this.nodeEditor.AllowDrop = true;
+            this.nodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodeEditor.GridSize = 256;
+            this.nodeEditor.GridStep = 8F;
+            this.nodeEditor.LinksAsRopes = false;
+            this.nodeEditor.Location = new System.Drawing.Point(3, 5);
+            this.nodeEditor.Name = "nodeEditor";
+            this.nodeEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
+            this.nodeEditor.Size = new System.Drawing.Size(744, 310);
+            this.nodeEditor.TabIndex = 0;
+            // 
+            // lblWait
+            // 
+            this.lblWait.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWait.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblWait.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblWait.Location = new System.Drawing.Point(3, 5);
+            this.lblWait.Name = "lblWait";
+            this.lblWait.Size = new System.Drawing.Size(744, 310);
+            this.lblWait.TabIndex = 9;
+            this.lblWait.Text = "Please wait...";
+            this.lblWait.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // tabLevelScript
             // 
             this.tabLevelScript.Controls.Add(this.lstFunctions);
@@ -341,61 +412,6 @@ namespace TombEditor.Controls
             this.lblListNotify.EnabledChanged += new System.EventHandler(this.lblListNotify_EnabledChanged);
             this.lblListNotify.Click += new System.EventHandler(this.lblListNotify_Click);
             // 
-            // tabConstructor
-            // 
-            this.tabConstructor.Controls.Add(this.panelNodeControls);
-            this.tabConstructor.Controls.Add(this.nodeEditor);
-            this.tabConstructor.Location = new System.Drawing.Point(4, 22);
-            this.tabConstructor.Name = "tabConstructor";
-            this.tabConstructor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConstructor.Size = new System.Drawing.Size(750, 349);
-            this.tabConstructor.TabIndex = 13;
-            this.tabConstructor.Text = "Node editor";
-            this.tabConstructor.UseVisualStyleBackColor = true;
-            // 
-            // panelNodeControls
-            // 
-            this.panelNodeControls.Controls.Add(this.butLinkSelectedNodes);
-            this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
-            this.panelNodeControls.Controls.Add(this.butRenameNode);
-            this.panelNodeControls.Controls.Add(this.butClearNodes);
-            this.panelNodeControls.Controls.Add(this.nudCallCount2);
-            this.panelNodeControls.Controls.Add(this.butDeleteNode);
-            this.panelNodeControls.Controls.Add(this.darkLabel1);
-            this.panelNodeControls.Controls.Add(this.butAddActionNode);
-            this.panelNodeControls.Controls.Add(this.butAddConditionNode);
-            this.panelNodeControls.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelNodeControls.Location = new System.Drawing.Point(3, 321);
-            this.panelNodeControls.Name = "panelNodeControls";
-            this.panelNodeControls.Size = new System.Drawing.Size(744, 25);
-            this.panelNodeControls.TabIndex = 8;
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(613, 4);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(62, 13);
-            this.darkLabel1.TabIndex = 2;
-            this.darkLabel1.Text = "Call count:";
-            // 
-            // nodeEditor
-            // 
-            this.nodeEditor.AllowDrop = true;
-            this.nodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.nodeEditor.GridSize = 256;
-            this.nodeEditor.GridStep = 8F;
-            this.nodeEditor.LinksAsRopes = false;
-            this.nodeEditor.Location = new System.Drawing.Point(3, 5);
-            this.nodeEditor.Name = "nodeEditor";
-            this.nodeEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-            this.nodeEditor.Size = new System.Drawing.Size(744, 310);
-            this.nodeEditor.TabIndex = 0;
-            // 
             // TriggerManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -410,12 +426,12 @@ namespace TombEditor.Controls
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).EndInit();
             this.tabbedContainer.ResumeLayout(false);
-            this.tabLevelScript.ResumeLayout(false);
-            this.panelFunctionControls.ResumeLayout(false);
-            this.panelFunctionControls.PerformLayout();
             this.tabConstructor.ResumeLayout(false);
             this.panelNodeControls.ResumeLayout(false);
             this.panelNodeControls.PerformLayout();
+            this.tabLevelScript.ResumeLayout(false);
+            this.panelFunctionControls.ResumeLayout(false);
+            this.panelFunctionControls.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -449,5 +465,6 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkButton butRenameNode;
         private DarkUI.Controls.DarkButton butChangeNodeColor;
         private DarkUI.Controls.DarkButton butLinkSelectedNodes;
+        private DarkUI.Controls.DarkLabel lblWait;
     }
 }

@@ -95,7 +95,7 @@ namespace TombEditor.Controls
 
         private void SelectTriggerMode()
         {
-            tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
+            tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 1 : 0;
             butUnassign.Visible = rbLevelScript.Checked;
             lblNotify.Visible = false;
 
@@ -289,12 +289,12 @@ namespace TombEditor.Controls
 
         private void butAddConditionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddConditionNode(Control.ModifierKeys != Keys.None);
+            nodeEditor.AddConditionNode(Control.ModifierKeys == Keys.None);
         }
 
         private void butAddActionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddActionNode(Control.ModifierKeys != Keys.None);
+            nodeEditor.AddActionNode(Control.ModifierKeys == Keys.None);
         }
 
         private void butClearNodes_Click(object sender, EventArgs e)

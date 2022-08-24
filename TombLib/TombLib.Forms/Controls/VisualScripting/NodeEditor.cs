@@ -34,6 +34,7 @@ namespace TombLib.Controls.VisualScripting
             set
             {
                 _nodes = value;
+                SelectedNodes.Clear();
                 UpdateVisibleNodes(true);
             }
         }
@@ -295,7 +296,11 @@ namespace TombLib.Controls.VisualScripting
             if (SelectedNode == null)
                 return;
 
-            var control = Controls.OfType<VisibleNodeBase>().First(c => c.Node == SelectedNode);
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == SelectedNode);
+
+            if (control == null)
+                return;
+
             var pos = ToVisualCoord(control.Node.ScreenPosition);
             pos.X = pos.X + control.Width / 2;
 
@@ -855,8 +860,6 @@ namespace TombLib.Controls.VisualScripting
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
                 // Draw grid lines
                 var GridLines0 = FromVisualCoord(new PointF());
                 var GridLines1 = FromVisualCoord(new PointF() + Size);
@@ -874,6 +877,8 @@ namespace TombLib.Controls.VisualScripting
                 for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
                     e.Graphics.DrawLine(_gridPen,
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
+
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
                 // Draw selection area
                 if (_selectionArea != Rectangle2.Zero)
