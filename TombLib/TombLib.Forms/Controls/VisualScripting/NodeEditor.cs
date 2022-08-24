@@ -146,7 +146,7 @@ namespace TombLib.Controls.VisualScripting
                 LinkToSelectedNode(node);
 
             UpdateVisibleNodes();
-            SelectNode(node, true);
+            SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
@@ -165,7 +165,7 @@ namespace TombLib.Controls.VisualScripting
                 LinkToSelectedNode(node);
 
             UpdateVisibleNodes();
-            SelectNode(node, true);
+            SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
@@ -233,7 +233,7 @@ namespace TombLib.Controls.VisualScripting
             Resizing = false;
         }
 
-        public void SelectNode(TriggerNode node, bool reset)
+        public void SelectNode(TriggerNode node, bool toggle, bool reset)
         {
             if (!LinearizedNodes().Contains(node))
                 return;
@@ -245,7 +245,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (!SelectedNodes.Contains(node))
                 SelectedNodes.Add(node);
-            else
+            else if (toggle)
                 SelectedNodes.Remove(node);
 
             Invalidate();
@@ -327,7 +327,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (match != null)
             {
-                SelectNode(match, true);
+                SelectNode(match, false, true);
                 ShowSelectedNode();
             }
         }
@@ -738,9 +738,7 @@ namespace TombLib.Controls.VisualScripting
                     continue;
 
                 // Reverse R/G color bias for else node
-                var color = node.Node.Color;
-                if (nextMode == ConnectionMode.Else)
-                    color = new Vector3(color.Y, color.X, color.Z);
+                var color = (nextMode == ConnectionMode.Else) ? FlipColorBias(node.Node.Color) : node.Node.Color;
 
                 var p1 = node.GetNodeScreenPosition(nextMode);
                 var p2 = nextVisibleNode.GetNodeScreenPosition(ConnectionMode.Previous);
@@ -792,13 +790,23 @@ namespace TombLib.Controls.VisualScripting
                 p = new PointF[2] { _lastMousePosition, _lastMousePosition };
 
             var alpha = (float)MathC.Lerp(_hotNodeTransparency, _connectedNodeTransparency, _animProgress >= 0.0f ? _animProgress : 0.0f);
-            
+
             // Reverse R/G bias for else node
-            var color = HotNode.Color;
-            if (HotNodeMode == ConnectionMode.Else)
-                color = new Vector3(color.Y, color.X, color.Z);
+            var color = (HotNodeMode == ConnectionMode.Else) ? FlipColorBias(HotNode.Color) : HotNode.Color;
 
             DrawLink(e, color, alpha, start, p);
+        }
+
+        private Vector3 FlipColorBias(Vector3 source)
+        {
+            var hue = source.ToWinFormsColor().GetHue();
+            var flipYX = new Vector3(source.Y, source.X, source.Z);
+            var flipZX = new Vector3(source.X, source.Z, source.Y);
+
+            if (Math.Abs(flipYX.ToWinFormsColor().GetHue() - hue) > 90.0f)
+                return flipYX;
+            else
+                return flipZX;
         }
 
         private void DrawSelection(PaintEventArgs e)
