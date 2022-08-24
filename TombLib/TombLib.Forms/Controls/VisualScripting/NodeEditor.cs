@@ -129,7 +129,7 @@ namespace TombLib.Controls.VisualScripting
             _updateTimer.Start();
         }
 
-        public void AddConditionNode()
+        public void AddConditionNode(bool linkToPrevious)
         {
             var node = new TriggerNodeCondition()
             {
@@ -139,13 +139,16 @@ namespace TombLib.Controls.VisualScripting
                 Getter = "Test 2"
             };
 
+            if (linkToPrevious)
+                LinkToSelectedNode(node);
+
             Nodes.Add(node);
             UpdateVisibleNodes();
             SelectNode(node, true);
             ShowSelectedNode();
         }
 
-        public void AddActionNode()
+        public void AddActionNode(bool linkToPrevious)
         {
             var node = new TriggerNodeAction()
             {
@@ -154,6 +157,9 @@ namespace TombLib.Controls.VisualScripting
                 Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f),
                 Function = "Test 1"
             };
+
+            if (linkToPrevious)
+                LinkToSelectedNode(node);
 
             Nodes.Add(node);
             UpdateVisibleNodes();
@@ -165,6 +171,15 @@ namespace TombLib.Controls.VisualScripting
         {
             Nodes.Clear();
             UpdateVisibleNodes();
+        }
+
+        public void LinkToSelectedNode(TriggerNode node)
+        {
+            if (SelectedNode == null || SelectedNode.Previous != null || node == null || node.Next != null)
+                return;
+
+            SelectedNode.Previous = node;
+            node.Next = SelectedNode;
         }
 
         public void MoveSelectedNodes(TriggerNode rootNode, Vector2 delta)
