@@ -134,7 +134,7 @@ namespace TombLib.Controls.VisualScripting
             var node = new TriggerNodeCondition()
             {
                 Name = "Condition node " + Nodes.Count,
-                ScreenPosition = ViewPosition,
+                ScreenPosition = new Vector2(float.MaxValue),
                 Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 1.0f, 0.8f),
                 Getter = "Test 2"
             };
@@ -149,7 +149,7 @@ namespace TombLib.Controls.VisualScripting
             var node = new TriggerNodeAction()
             {
                 Name = "Action node " + Nodes.Count,
-                ScreenPosition = ViewPosition,
+                ScreenPosition = new Vector2(float.MaxValue),
                 Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f),
                 Function = "Test 1"
             };
@@ -330,6 +330,51 @@ namespace TombLib.Controls.VisualScripting
             _animProgress = -1.0f;
         }
 
+        public Vector2 GetBestPosition(VisibleNodeBase newNode)
+        {
+            var selectedVisibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == SelectedNode);
+
+            var pos = Vector2.Zero;
+
+            if (selectedVisibleNode == null)
+            {
+                var x1 = ViewPosition.X;
+                var x2 = FromVisualCoord(ToVisualCoord(ViewPosition) + newNode.Size).X;
+                pos = ViewPosition - new Vector2((x2 - x1) / 2.0f, 0.0f);
+            }
+            else
+            {
+                var x = selectedVisibleNode.Location.X + selectedVisibleNode.Width / 2;
+                x -= newNode.Width / 2;
+                var y = selectedVisibleNode.Location.Y + selectedVisibleNode.Height;
+                pos = new Vector2(x, y);
+            }    
+
+            bool colliding = true;
+
+            while (colliding)
+            {
+                pos.Y += (int)(GridStep * 4);
+
+                colliding = false;
+
+                foreach (var control in Controls.OfType<VisibleNodeBase>())
+                {
+                    var rect = control.ClientRectangle;
+                    rect.Offset(control.Location);
+
+                    var rect2 = newNode.ClientRectangle;
+                    rect2.Offset(new Point((int)pos.X, (int)pos.Y));
+                    rect2.Inflate((int)GridStep * 2, (int)GridStep * 2);
+
+                    if (rect.IntersectsWith(rect2))
+                        colliding = true;
+                }
+            }
+
+            return FromVisualCoord(new PointF((int)pos.X, (int)pos.Y));
+        }
+
         private void AddNodeControl(TriggerNode node, List<VisibleNodeBase> collectedControls)
         {
             if (!Controls.OfType<VisibleNodeBase>().Any(c => c.Node == node))
@@ -346,6 +391,9 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
+
+                if (node.ScreenPosition.Y == float.MaxValue)
+                    node.ScreenPosition = GetBestPosition(control);
             }
 
             if (node.Next != null)
@@ -587,8 +635,11 @@ namespace TombLib.Controls.VisualScripting
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
 
+                var cv1 = (p1[0].ToVector2() + p2[0].ToVector2()) / 2.0f;
+                var cv2 = (p1[1].ToVector2() + p2[1].ToVector2()) / 2.0f;
+
                 using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
-                    e.Graphics.DrawLine(p, start, end);
+                    e.Graphics.DrawBezier(p, start, new PointF(start.X, cv1.Y), new PointF(end.X, cv1.Y), end);
             }
             else
             {
