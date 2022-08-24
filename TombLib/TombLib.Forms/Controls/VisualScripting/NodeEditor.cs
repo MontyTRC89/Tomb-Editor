@@ -662,12 +662,10 @@ namespace TombLib.Controls.VisualScripting
                 var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
-
-                var cv1 = (p1[0].ToVector2() + p2[0].ToVector2()) / 2.0f;
-                var cv2 = (p1[1].ToVector2() + p2[1].ToVector2()) / 2.0f;
+                var midY = (p1[0].Y + p2[0].Y) / 2.0f;
 
                 using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
-                    e.Graphics.DrawBezier(p, start, new PointF(start.X, cv1.Y), new PointF(end.X, cv1.Y), end);
+                    e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
             else
             {
