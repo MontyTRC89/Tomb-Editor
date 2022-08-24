@@ -139,10 +139,10 @@ namespace TombLib.Controls.VisualScripting
                 Getter = "Test 2"
             };
 
+            Nodes.Add(node);
             if (linkToPrevious)
                 LinkToSelectedNode(node);
 
-            Nodes.Add(node);
             UpdateVisibleNodes();
             SelectNode(node, true);
             ShowSelectedNode();
@@ -158,10 +158,10 @@ namespace TombLib.Controls.VisualScripting
                 Function = "Test 1"
             };
 
+            Nodes.Add(node);
             if (linkToPrevious)
                 LinkToSelectedNode(node);
 
-            Nodes.Add(node);
             UpdateVisibleNodes();
             SelectNode(node, true);
             ShowSelectedNode();
@@ -175,11 +175,40 @@ namespace TombLib.Controls.VisualScripting
 
         public void LinkToSelectedNode(TriggerNode node)
         {
-            if (SelectedNode == null || SelectedNode.Previous != null || node == null || node.Next != null)
+            if (SelectedNode == null || SelectedNode.Next != null || node == null || node.Previous != null)
                 return;
 
-            SelectedNode.Previous = node;
-            node.Next = SelectedNode;
+            SelectedNode.Next = node;
+            node.Previous = SelectedNode;
+
+            if (Nodes.Contains(node))
+                Nodes.Remove(node);
+        }
+
+        public void LinkSelectedNodes()
+        {
+            if (SelectedNodes.Count < 2)
+                return;
+
+            var orderedNodes = SelectedNodes.OrderByDescending(n => n.ScreenPosition.Y)
+                                            .ThenBy(n => n.ScreenPosition.X).ToList();
+
+            for (int i = 0; i <= orderedNodes.Count - 2; i++)
+            {
+                var node = orderedNodes[i];
+                var nextNode = orderedNodes[i + 1];
+
+                if (node.Next != null || nextNode.Previous != null)
+                    continue;
+
+                node.Next = nextNode;
+                nextNode.Previous = node;
+
+                if (Nodes.Contains(nextNode))
+                    Nodes.Remove(nextNode);
+            }
+
+            Invalidate();
         }
 
         public void MoveSelectedNodes(TriggerNode rootNode, Vector2 delta)

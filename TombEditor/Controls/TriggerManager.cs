@@ -332,5 +332,10 @@ namespace TombEditor.Controls
                 }
             }
         }
+
+        private void butLinkSelectedNodes_Click(object sender, EventArgs e)
+        {
+            nodeEditor.LinkSelectedNodes();
+        }
     }
 }

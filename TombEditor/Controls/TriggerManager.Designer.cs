@@ -44,6 +44,7 @@ namespace TombEditor.Controls
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
+            this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -190,7 +191,7 @@ namespace TombEditor.Controls
             // 
             this.butDeleteNode.Checked = false;
             this.butDeleteNode.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteNode.Location = new System.Drawing.Point(244, 1);
+            this.butDeleteNode.Location = new System.Drawing.Point(273, 1);
             this.butDeleteNode.Name = "butDeleteNode";
             this.butDeleteNode.Size = new System.Drawing.Size(23, 23);
             this.butDeleteNode.TabIndex = 7;
@@ -218,7 +219,7 @@ namespace TombEditor.Controls
             // 
             this.butClearNodes.Checked = false;
             this.butClearNodes.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butClearNodes.Location = new System.Drawing.Point(273, 1);
+            this.butClearNodes.Location = new System.Drawing.Point(302, 1);
             this.butClearNodes.Name = "butClearNodes";
             this.butClearNodes.Size = new System.Drawing.Size(23, 23);
             this.butClearNodes.TabIndex = 8;
@@ -343,6 +344,7 @@ namespace TombEditor.Controls
             // 
             // panelNodeControls
             // 
+            this.panelNodeControls.Controls.Add(this.butLinkSelectedNodes);
             this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
             this.panelNodeControls.Controls.Add(this.butRenameNode);
             this.panelNodeControls.Controls.Add(this.butClearNodes);
@@ -382,13 +384,24 @@ namespace TombEditor.Controls
             this.nodeEditor.Size = new System.Drawing.Size(744, 310);
             this.nodeEditor.TabIndex = 0;
             // 
+            // butLinkSelectedNodes
+            // 
+            this.butLinkSelectedNodes.Checked = false;
+            this.butLinkSelectedNodes.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
+            this.butLinkSelectedNodes.Location = new System.Drawing.Point(244, 1);
+            this.butLinkSelectedNodes.Name = "butLinkSelectedNodes";
+            this.butLinkSelectedNodes.Size = new System.Drawing.Size(23, 23);
+            this.butLinkSelectedNodes.TabIndex = 11;
+            this.toolTip.SetToolTip(this.butLinkSelectedNodes, "Link selected nodes, if possible");
+            this.butLinkSelectedNodes.Click += new System.EventHandler(this.butLinkSelectedNodes_Click);
+            // 
             // TriggerManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabbedContainer);
             this.Controls.Add(this.darkPanel3);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "TriggerManager";
             this.Size = new System.Drawing.Size(758, 400);
             this.darkPanel3.ResumeLayout(false);
@@ -434,5 +447,6 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkButton butRenameNode;
         private DarkUI.Controls.DarkButton butChangeNodeColor;
+        private DarkUI.Controls.DarkButton butLinkSelectedNodes;
     }
 }
