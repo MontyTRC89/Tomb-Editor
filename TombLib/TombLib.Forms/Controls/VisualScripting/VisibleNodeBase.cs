@@ -42,7 +42,10 @@ namespace TombLib.Controls.VisualScripting
             if (IsInView())
             {
                 if (!Visible) Visible = true;
-                Location = Editor.ToVisualCoord(Node.ScreenPosition);
+
+                var newX = MathC.Clamp(Node.ScreenPosition.X, 0, Editor.GridSize);
+                var newY = MathC.Clamp(Node.ScreenPosition.Y, 0, Editor.GridSize);
+                Location = Editor.ToVisualCoord(new Vector2(newX, newY));
             }
             else
                 Visible = false;
@@ -218,14 +221,6 @@ namespace TombLib.Controls.VisualScripting
 
             Editor.HotNode = null;
             Editor.Invalidate();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-
-            _mouseDown = false;
-            Editor.HotNode = null;
         }
 
         protected override void OnMouseLeave(EventArgs e)
