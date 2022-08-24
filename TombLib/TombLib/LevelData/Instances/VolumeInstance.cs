@@ -41,7 +41,7 @@ namespace TombLib.LevelData
     {
         private const int _noCallCounter = -1;
 
-        public VolumeEventMode Mode = VolumeEventMode.LevelScript;
+        public VolumeEventMode Mode = VolumeEventMode.NodeEditor;
         public string Function { get; set; } = string.Empty;
         public string Argument { get; set; } = string.Empty;
         public Vector2 NodePosition = new Vector2(float.MaxValue);
