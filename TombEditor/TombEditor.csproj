@@ -91,18 +91,6 @@
     <Compile Update="Controls\TriggerManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\VisualScripting\NodeEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\VisualScripting\VisibleNodeAction.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\VisualScripting\VisibleNodeBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\VisualScripting\VisibleNodeCondition.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>

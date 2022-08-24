@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using TombLib.LevelData.VisualScripting;
 
-namespace TombEditor.Controls.VisualScripting
+namespace TombLib.Controls.VisualScripting
 {
     public partial class VisibleNodeAction : VisibleNodeBase
     {

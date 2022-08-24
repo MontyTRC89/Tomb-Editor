@@ -1,8 +1,11 @@
 ﻿using DarkUI.Config;
+using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -41,6 +44,7 @@ namespace TombEditor.Controls
             {
                 ReloadFunctions();
                 FindAndSelectFunction();
+                UpdateNodeEditorOptions();
             }
         }
 
@@ -63,7 +67,30 @@ namespace TombEditor.Controls
             _editor.EditorEventRaised += EditorEventRaised;
 
             ReloadFunctions();
+
             nodeEditor.Initialize();
+            UpdateNodeEditorOptions();
+
+            nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
+            nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
+        }
+
+        private void NodeEditor_SelectionChanged(object sender, EventArgs e)
+        {
+            UpdateNodeEditorControls();
+        }
+
+        private void NodeEditorViewPostionChanged(object sender, EventArgs e)
+        {
+            if (_event != null)
+                _event.NodePosition = nodeEditor.ViewPosition;
+        }
+
+        private void UpdateNodeEditorOptions()
+        {
+            nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
+            nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
+            nodeEditor.LinksAsRopes = _editor.Configuration.NodeEditor_LinksAsRopes;
         }
 
         private void SelectTriggerMode()
@@ -78,7 +105,6 @@ namespace TombEditor.Controls
             if (!_lockUI)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
-
 
         public void UpdateUI()
         {
@@ -96,13 +122,27 @@ namespace TombEditor.Controls
                 return;
 
             _lockUI = true;
+            {
+                rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
+                rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
+                tbArgument.Text = _event.Argument;
+                nudCallCount.Value = _event.CallCounter;
 
-            rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
-            rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
-            tbArgument.Text = _event.Argument;
-            nudCallCount.Value = _event.CallCounter;
+                if (_event.NodePosition.X == float.MaxValue)
+                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
+                else
+                    nodeEditor.ViewPosition = _event.NodePosition;
 
+                UpdateNodeEditorControls();
+            }
             _lockUI = false;
+        }
+
+        private void UpdateNodeEditorControls()
+        {
+            butChangeNodeColor.Enabled =
+            butRenameNode.Enabled =
+            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
         }
 
         private void ReloadFunctions()
@@ -245,12 +285,52 @@ namespace TombEditor.Controls
 
         private void butClearNodes_Click(object sender, EventArgs e)
         {
+            if (DarkMessageBox.Show(FindForm(), "Do you really want to delete all nodes?", "Delete all nodes",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
             nodeEditor.ClearNodes();
         }
 
         private void butDeleteNode_Click(object sender, EventArgs e)
         {
             nodeEditor.DeleteNodes();
+        }
+
+        private void butRenameNode_Click(object sender, EventArgs e)
+        {
+            if (nodeEditor.SelectedNode == null)
+                return;
+
+            using (var form = new FormInputBox("Edit node name", "Enter new name for this node:", nodeEditor.SelectedNode.Name))
+            {
+                if (form.ShowDialog(FindForm()) == DialogResult.Cancel)
+                    return;
+
+                nodeEditor.SelectedNode.Name = form.Result;
+                nodeEditor.Refresh();
+            }
+        }
+
+        private void butChangeNodeColor_Click(object sender, EventArgs e)
+        {
+            if (nodeEditor.SelectedNode == null)
+                return;
+
+            using (var colorDialog = new RealtimeColorDialog())
+            {
+                var oldColor = nodeEditor.SelectedNode.Color.ToWinFormsColor();
+                colorDialog.Color = oldColor;
+                colorDialog.FullOpen = true;
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                if (oldColor != colorDialog.Color)
+                {
+                    nodeEditor.SelectedNode.Color = colorDialog.Color.ToFloat3Color();
+                    nodeEditor.Refresh();
+                }
+            }
         }
     }
 }

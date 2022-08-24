@@ -9,12 +9,14 @@ using DarkUI.Icons;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.VisualScripting
+namespace TombLib.Controls.VisualScripting
 {
     public partial class VisibleNodeBase : DarkFloatingToolbox
     {
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
+
+        protected const int _visibilityMargin = 32;
 
         protected List<Rectangle> _grips = new List<Rectangle>();
         protected int _currentGrip = -1;
@@ -37,7 +39,13 @@ namespace TombEditor.Controls.VisualScripting
 
         public void RefreshPosition()
         {
-            Location = Editor.ToVisualCoord(Node.ScreenPosition);
+            if (IsInView())
+            {
+                if (!Visible) Visible = true;
+                Location = Editor.ToVisualCoord(Node.ScreenPosition);
+            }
+            else
+                Visible = false;
         }
 
         public void StorePosition()
@@ -113,6 +121,16 @@ namespace TombEditor.Controls.VisualScripting
             }
 
             return result;
+        }
+
+        public bool IsInView()
+        {
+            var newLocation = Editor.ToVisualCoord(Node.ScreenPosition);
+            var newRect = ClientRectangle;
+            newRect.Offset(newLocation);
+            newRect.Inflate(_visibilityMargin, _visibilityMargin);
+
+            return newRect.IntersectsWith(Editor.ClientRectangle);
         }
 
         protected override void OnDragOver(DragEventArgs e)
@@ -270,6 +288,9 @@ namespace TombEditor.Controls.VisualScripting
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (!IsInView())
+                return;
+            
             base.OnPaint(e);
 
             foreach (var grip in _grips)

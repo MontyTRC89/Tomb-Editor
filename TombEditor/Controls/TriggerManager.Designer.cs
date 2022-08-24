@@ -31,6 +31,8 @@ namespace TombEditor.Controls
             this.butDeleteNode = new DarkUI.Controls.DarkButton();
             this.nudCallCount2 = new DarkUI.Controls.DarkNumericUpDown();
             this.butClearNodes = new DarkUI.Controls.DarkButton();
+            this.butRenameNode = new DarkUI.Controls.DarkButton();
+            this.butChangeNodeColor = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabLevelScript = new System.Windows.Forms.TabPage();
             this.lstFunctions = new DarkUI.Controls.DarkListView();
@@ -41,7 +43,7 @@ namespace TombEditor.Controls
             this.tabConstructor = new System.Windows.Forms.TabPage();
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.nodeEditor = new TombEditor.Controls.VisualScripting.NodeEditor();
+            this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -188,7 +190,7 @@ namespace TombEditor.Controls
             // 
             this.butDeleteNode.Checked = false;
             this.butDeleteNode.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteNode.Location = new System.Drawing.Point(186, 1);
+            this.butDeleteNode.Location = new System.Drawing.Point(244, 1);
             this.butDeleteNode.Name = "butDeleteNode";
             this.butDeleteNode.Size = new System.Drawing.Size(23, 23);
             this.butDeleteNode.TabIndex = 7;
@@ -216,12 +218,34 @@ namespace TombEditor.Controls
             // 
             this.butClearNodes.Checked = false;
             this.butClearNodes.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butClearNodes.Location = new System.Drawing.Point(215, 1);
+            this.butClearNodes.Location = new System.Drawing.Point(273, 1);
             this.butClearNodes.Name = "butClearNodes";
             this.butClearNodes.Size = new System.Drawing.Size(23, 23);
             this.butClearNodes.TabIndex = 8;
             this.toolTip.SetToolTip(this.butClearNodes, "Clear all nodes");
             this.butClearNodes.Click += new System.EventHandler(this.butClearNodes_Click);
+            // 
+            // butRenameNode
+            // 
+            this.butRenameNode.Checked = false;
+            this.butRenameNode.Image = global::TombEditor.Properties.Resources.general_edit_16;
+            this.butRenameNode.Location = new System.Drawing.Point(186, 1);
+            this.butRenameNode.Name = "butRenameNode";
+            this.butRenameNode.Size = new System.Drawing.Size(23, 23);
+            this.butRenameNode.TabIndex = 9;
+            this.toolTip.SetToolTip(this.butRenameNode, "Rename last selected node");
+            this.butRenameNode.Click += new System.EventHandler(this.butRenameNode_Click);
+            // 
+            // butChangeNodeColor
+            // 
+            this.butChangeNodeColor.Checked = false;
+            this.butChangeNodeColor.Image = global::TombEditor.Properties.Resources.actions_TextureMode_16;
+            this.butChangeNodeColor.Location = new System.Drawing.Point(215, 1);
+            this.butChangeNodeColor.Name = "butChangeNodeColor";
+            this.butChangeNodeColor.Size = new System.Drawing.Size(23, 23);
+            this.butChangeNodeColor.TabIndex = 10;
+            this.toolTip.SetToolTip(this.butChangeNodeColor, "Change color for last selected node");
+            this.butChangeNodeColor.Click += new System.EventHandler(this.butChangeNodeColor_Click);
             // 
             // tabbedContainer
             // 
@@ -319,6 +343,8 @@ namespace TombEditor.Controls
             // 
             // panelNodeControls
             // 
+            this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
+            this.panelNodeControls.Controls.Add(this.butRenameNode);
             this.panelNodeControls.Controls.Add(this.butClearNodes);
             this.panelNodeControls.Controls.Add(this.nudCallCount2);
             this.panelNodeControls.Controls.Add(this.butDeleteNode);
@@ -348,8 +374,11 @@ namespace TombEditor.Controls
             this.nodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodeEditor.GridSize = 256;
+            this.nodeEditor.GridStep = 8F;
             this.nodeEditor.Location = new System.Drawing.Point(3, 5);
             this.nodeEditor.Name = "nodeEditor";
+            this.nodeEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.nodeEditor.Size = new System.Drawing.Size(744, 310);
             this.nodeEditor.TabIndex = 0;
             // 
@@ -395,7 +424,7 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkTextBox tbArgument;
         private System.Windows.Forms.TabPage tabConstructor;
         private DarkUI.Controls.DarkLabel lblListNotify;
-        private VisualScripting.NodeEditor nodeEditor;
+        private TombLib.Controls.VisualScripting.NodeEditor nodeEditor;
         private DarkUI.Controls.DarkButton butDeleteNode;
         private DarkUI.Controls.DarkButton butAddConditionNode;
         private DarkUI.Controls.DarkButton butAddActionNode;
@@ -403,5 +432,7 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkButton butClearNodes;
         private DarkUI.Controls.DarkNumericUpDown nudCallCount2;
         private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkButton butRenameNode;
+        private DarkUI.Controls.DarkButton butChangeNodeColor;
     }
 }

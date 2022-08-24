@@ -44,6 +44,7 @@ namespace TombLib.LevelData
         public VolumeEventMode Mode = VolumeEventMode.LevelScript;
         public string Function { get; set; } = string.Empty;
         public string Argument { get; set; } = string.Empty;
+        public Vector2 NodePosition = new Vector2(float.MaxValue);
         public List<TriggerNode> Nodes { get; set; } = new List<TriggerNode>();
 
         public int CallCounter { get; set; } = 0; // How many times event can be called

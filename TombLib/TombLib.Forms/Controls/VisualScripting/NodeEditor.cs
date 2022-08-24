@@ -8,11 +8,10 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.VisualScripting
+namespace TombLib.Controls.VisualScripting
 {
     public enum ConnectionMode
     {
@@ -46,6 +45,10 @@ namespace TombEditor.Controls.VisualScripting
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TriggerNode SelectedNode => SelectedNodes.LastOrDefault();
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TriggerNode HotNode { get; set; } = null;
 
         [Browsable(false)]
@@ -56,6 +59,11 @@ namespace TombEditor.Controls.VisualScripting
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Resizing { get; set; } = false;
 
+        public Color SelectionColor { get; set; } = Colors.BlueSelection;
+        public float GridStep { get; set; } = 8.0f;
+        public int GridSize { get; set; } = 256;
+        public bool LinksAsRopes { get; set; } = false;
+
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
@@ -64,9 +72,10 @@ namespace TombEditor.Controls.VisualScripting
         private const string _elseString = "fail";
 
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
+        private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, 2);
+        private static readonly Brush _selectionBrush = new SolidBrush(Colors.BlueSelection.ToFloat3Color().ToWinFormsColor(0.5f));
 
-        private float _gridStep = 8.0f;
-        private int _gridSize = 256;
+        private Rectangle2 _selectionArea;
 
         private Point _lastMousePosition;
         private Point _newMousePosition;
@@ -77,7 +86,13 @@ namespace TombEditor.Controls.VisualScripting
         private readonly Timer _updateTimer;
         private bool _queueMove = false;
 
-        private Editor _editor;
+        public event EventHandler ViewPositionChanged;
+        private void OnViewPositionChanged(EventArgs e)
+            => ViewPositionChanged?.Invoke(this, e);
+
+        public event EventHandler SelectionChanged;
+        private void OnSelectionChanged(EventArgs e)
+            => SelectionChanged?.Invoke(this, e);
 
         public NodeEditor()
         {
@@ -107,13 +122,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public void Initialize(List<TriggerNode> nodes = null)
         {
-            _editor = Editor.Instance;
-
-            _gridStep = _editor.Configuration.NodeEditor_GridStep;
-            _gridSize = _editor.Configuration.NodeEditor_Size;
-
-            ViewPosition = new Vector2(_gridSize / 2.0f,
-                                       _gridSize / 2.0f);
+            ViewPosition = new Vector2(GridSize / 2.0f,
+                                       GridSize / 2.0f);
             Nodes = nodes == null ? new List<TriggerNode>() : nodes;
             UpdateVisibleNodes();
             _updateTimer.Start();
@@ -169,6 +179,47 @@ namespace TombEditor.Controls.VisualScripting
                 SelectedNodes.Remove(node);
 
             Refresh();
+            OnSelectionChanged(EventArgs.Empty);
+        }
+
+        public void SelectNodesInArea()
+        {
+            if (_selectionArea == Rectangle2.Zero ||
+                _selectionArea.Width == 0 || _selectionArea.Height == 0)
+                return;
+
+            var selectionRect = ToVisualCoord(_selectionArea);
+            bool selectionChanged = false;
+
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+            {
+                if (!control.Visible)
+                    continue;
+
+                var controlRect = new RectangleF(control.Location, control.Size);
+                if (selectionRect.IntersectsWith(controlRect))
+                {
+                    if (!SelectedNodes.Contains(control.Node))
+                    {
+                        selectionChanged = true;
+                        SelectedNodes.Add(control.Node);
+                    }
+                }
+                else if (SelectedNodes.Contains(control.Node))
+                {
+                    selectionChanged = true;
+                    SelectedNodes.Remove(control.Node);
+                }
+            }
+
+            if (selectionChanged)
+                OnSelectionChanged(EventArgs.Empty);
+        }
+
+        public void ClearSelection()
+        {
+            SelectedNodes.Clear();
+            OnSelectionChanged(EventArgs.Empty);
         }
 
         public void DeleteNodes()
@@ -189,8 +240,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public Vector2 FromVisualCoord(PointF pos)
         {
-            return new Vector2((pos.X - Width * 0.5f) / _gridStep + ViewPosition.X, 
-                               (Height * 0.5f - pos.Y) / _gridStep + ViewPosition.Y);
+            return new Vector2((pos.X - Width * 0.5f) / GridStep + ViewPosition.X, 
+                               (Height * 0.5f - pos.Y) / GridStep + ViewPosition.Y);
         }
 
         public Rectangle2 FromVisualCoord(RectangleF area)
@@ -202,8 +253,8 @@ namespace TombEditor.Controls.VisualScripting
 
         public Point ToVisualCoord(Vector2 pos)
         {
-            return new Point((int)Math.Round((pos.X - ViewPosition.X) * _gridStep + Width * 0.5f), 
-                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * _gridStep));
+            return new Point((int)Math.Round((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
+                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
         }
 
         public RectangleF ToVisualCoord(Rectangle2 area)
@@ -213,23 +264,20 @@ namespace TombEditor.Controls.VisualScripting
             return RectangleF.FromLTRB(Math.Min(start.X, end.X), Math.Min(start.Y, end.Y), Math.Max(start.X, end.X), Math.Max(start.Y, end.Y));
         }
 
-        private void LimitPosition()
-        {
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(_gridSize));
-        }
-
         private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint, bool limitPosition = false)
         {
             // Adjust ViewPosition in such a way, that the FixedPoint does not move visually
             ViewPosition = -worldPoint;
             ViewPosition = -FromVisualCoord(visualPoint);
+
             if (limitPosition)
-                LimitPosition();
+                ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
 
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
 
             Refresh();
+            OnViewPositionChanged(EventArgs.Empty);
         }
 
         public void UpdateVisibleNodes()
@@ -405,6 +453,9 @@ namespace TombEditor.Controls.VisualScripting
 
                 var visibleNode = control as VisibleNodeBase;
 
+                if (!visibleNode.Visible)
+                    continue;
+
                 if (visibleNode.Node != node)
                     continue;
 
@@ -446,6 +497,9 @@ namespace TombEditor.Controls.VisualScripting
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)
         {
+            if (!node.Visible)
+                return;
+
             var rect = node.ClientRectangle;
             rect.Offset(node.Location);
             rect.Inflate(16, 16);
@@ -454,6 +508,9 @@ namespace TombEditor.Controls.VisualScripting
 
         private void DrawHeader(PaintEventArgs e, VisibleNodeBase node)
         {
+            if (!node.Visible)
+                return;
+
             var size = TextRenderer.MeasureText(node.Node.Name, Font);
 
             var rect = node.ClientRectangle;
@@ -524,8 +581,20 @@ namespace TombEditor.Controls.VisualScripting
 
         private void DrawLink(PaintEventArgs e, Vector3 color, float alpha, PointF[] p1, PointF[] p2)
         {
-            using (var b = new SolidBrush(color.ToWinFormsColor(alpha)))
-                e.Graphics.FillPolygon(b, new PointF[4] { p1[0], p1[1], p2[1], p2[0] });
+            if (LinksAsRopes)
+            {
+                var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
+                var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
+                var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
+
+                using (var p = new Pen(Colors.LightestBackground, width))
+                    e.Graphics.DrawLine(p, start, end);
+            }
+            else
+            {
+                using (var b = new SolidBrush(color.ToWinFormsColor(alpha)))
+                    e.Graphics.FillPolygon(b, new PointF[4] { p1[0], p1[1], p2[1], p2[0] });
+            }
         }
 
         private void DrawHotNode(PaintEventArgs e, List<VisibleNodeBase> nodeList)
@@ -568,11 +637,15 @@ namespace TombEditor.Controls.VisualScripting
 
             e.Graphics.SmoothingMode = SmoothingMode.None;
 
-            using (var b = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorSelection.ToWinFormsColor(0.5f)))
+            using (var b = new SolidBrush(SelectionColor))
             {
                 foreach (var node in SelectedNodes)
                 {
                     var rect = GetNodeRect(node);
+
+                    if (rect.Width == 0 && rect.Height == 0)
+                        continue;
+
                     rect.Inflate(_selectionThickness, _selectionThickness);
                     e.Graphics.FillRectangle(b, rect);
                 }
@@ -612,33 +685,45 @@ namespace TombEditor.Controls.VisualScripting
         {
             base.OnPaint(e);
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
             // Draw background
             using (var b = new SolidBrush(Colors.DarkBackground))
                 e.Graphics.FillRectangle(b, ClientRectangle);
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
                 // Draw grid lines
                 Vector2 GridLines0 = FromVisualCoord(new PointF());
                 Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
                 Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
                 Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
-                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(_gridSize));
-                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(_gridSize));
+                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(GridSize));
+                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(GridSize));
                 Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
                 Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                 for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
                     e.Graphics.DrawLine(_gridPen,
-                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, _gridSize)));
+                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, GridSize)));
 
                 for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
                     e.Graphics.DrawLine(_gridPen,
-                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(_gridSize, y)));
+                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
+
+                // Draw selection area
+                if (_selectionArea != Rectangle2.Zero)
+                {
+                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
+                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
+                }
 
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
+
+                // Update colors
+                foreach (var n in nodeList)
+                    if (n.BackColor != n.Node.Color.ToWinFormsColor())
+                        n.BackColor = n.Node.Color.ToWinFormsColor();
 
                 // Draw connected nodes
                 foreach (var n in nodeList)
@@ -658,6 +743,11 @@ namespace TombEditor.Controls.VisualScripting
                 foreach (var n in nodeList)
                     DrawHeader(e, n);
             }
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            // Absorb event
         }
 
         protected override void OnResize(EventArgs e)
@@ -721,19 +811,27 @@ namespace TombEditor.Controls.VisualScripting
             base.OnMouseMove(e);
             _animSnapCoords = new PointF[2] { _lastMousePosition, _lastMousePosition };
 
-            if (e.Button == MouseButtons.Right & _viewMoveMouseWorldCoord != null)
+            if (e.Button == MouseButtons.Right && _viewMoveMouseWorldCoord != null)
             {
                 _newMousePosition = e.Location;
                 _queueMove = true;
                 Resizing = true;
+                return;
             }
-            else
-                Resizing = false;
+            else if (e.Button == MouseButtons.Left)
+            {
+                _selectionArea.End = FromVisualCoord(e.Location);
+                SelectNodesInArea();
+                Refresh();
+            }
+
+            Resizing = false;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            _selectionArea = Rectangle2.Zero;
             Refresh();
         }
 
@@ -756,7 +854,11 @@ namespace TombEditor.Controls.VisualScripting
                 _viewMoveMouseWorldCoord = FromVisualCoord(e.Location);
             }
             else if (e.Button == MouseButtons.Left)
-                SelectedNodes.Clear();
+            {
+                var clickPos = FromVisualCoord(e.Location);
+                _selectionArea = new Rectangle2(clickPos, clickPos);
+                ClearSelection();
+            }
         }
     }
 }
