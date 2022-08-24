@@ -350,8 +350,8 @@ namespace TombLib.Controls.VisualScripting
 
         public Rectangle2 FromVisualCoord(RectangleF area)
         {
-            Vector2 visibleAreaStart = FromVisualCoord(new PointF(area.Left, area.Top));
-            Vector2 visibleAreaEnd = FromVisualCoord(new PointF(area.Right, area.Bottom));
+            var visibleAreaStart = FromVisualCoord(new PointF(area.Left, area.Top));
+            var visibleAreaEnd   = FromVisualCoord(new PointF(area.Right, area.Bottom));
             return new Rectangle2(Vector2.Min(visibleAreaStart, visibleAreaEnd), Vector2.Max(visibleAreaStart, visibleAreaEnd));
         }
 
@@ -363,8 +363,8 @@ namespace TombLib.Controls.VisualScripting
 
         public RectangleF ToVisualCoord(Rectangle2 area)
         {
-            PointF start = ToVisualCoord(area.Start);
-            PointF end = ToVisualCoord(area.End);
+            var start = ToVisualCoord(area.Start);
+            var end   = ToVisualCoord(area.End);
             return RectangleF.FromLTRB(Math.Min(start.X, end.X), Math.Min(start.Y, end.Y), Math.Max(start.X, end.X), Math.Max(start.Y, end.Y));
         }
 
@@ -749,7 +749,7 @@ namespace TombLib.Controls.VisualScripting
                 var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
-                var midY = (p1[0].Y + p2[0].Y) / 2.0f;
+                var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
 
                 using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
                     e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
@@ -858,14 +858,14 @@ namespace TombLib.Controls.VisualScripting
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
                 // Draw grid lines
-                Vector2 GridLines0 = FromVisualCoord(new PointF());
-                Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
-                Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
-                Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
+                var GridLines0 = FromVisualCoord(new PointF());
+                var GridLines1 = FromVisualCoord(new PointF() + Size);
+                var GridLinesStart = Vector2.Min(GridLines0, GridLines1);
+                var GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
                 GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(GridSize));
                 GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(GridSize));
-                Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
-                Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
+                var GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
+                var GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                 for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
                     e.Graphics.DrawLine(_gridPen,
