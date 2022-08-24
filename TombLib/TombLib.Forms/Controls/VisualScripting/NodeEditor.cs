@@ -988,6 +988,9 @@ namespace TombLib.Controls.VisualScripting
 
             if (!Focused && Form.ActiveForm == FindForm())
                 Focus();
+
+            if (Control.MouseButtons == MouseButtons.None)
+                ResetHotNode();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

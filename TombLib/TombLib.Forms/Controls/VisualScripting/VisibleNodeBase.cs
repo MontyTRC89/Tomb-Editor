@@ -223,14 +223,6 @@ namespace TombLib.Controls.VisualScripting
             Editor.Invalidate();
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-
-            _mouseDown = false;
-            Editor.HotNode = null;
-        }
-
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
