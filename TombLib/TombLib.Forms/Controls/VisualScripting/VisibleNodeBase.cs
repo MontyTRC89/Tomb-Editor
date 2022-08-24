@@ -133,6 +133,9 @@ namespace TombLib.Controls.VisualScripting
 
         public bool IsInView()
         {
+            if (Editor == null)
+                return true;
+
             var newLocation = Editor.ToVisualCoord(Node.ScreenPosition);
             var newRect = ClientRectangle;
             newRect.Offset(newLocation);
@@ -235,6 +238,10 @@ namespace TombLib.Controls.VisualScripting
             _mouseDown = false;
 
             Invalidate();
+
+            if (Editor == null)
+                return;
+
             Editor.FindForm().ActiveControl = null;
             Editor.Focus();
         }
