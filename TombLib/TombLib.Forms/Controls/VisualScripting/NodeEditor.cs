@@ -690,6 +690,9 @@ namespace TombLib.Controls.VisualScripting
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
 
+                e.Graphics.DrawImage(Properties.Resources.misc_Shadow, 
+                    new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
+
                 e.Graphics.DrawString(_thenString, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 
@@ -697,6 +700,9 @@ namespace TombLib.Controls.VisualScripting
                 nextPoint = condNode.GetNodeScreenPosition(ConnectionMode.Else);
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
+
+                e.Graphics.DrawImage(Properties.Resources.misc_Shadow,
+                    new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
 
                 e.Graphics.DrawString(_elseString, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
