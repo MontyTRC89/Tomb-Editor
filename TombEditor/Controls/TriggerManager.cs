@@ -1,4 +1,5 @@
 ﻿using DarkUI.Config;
+using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -277,6 +278,10 @@ namespace TombEditor.Controls
 
         private void butClearNodes_Click(object sender, EventArgs e)
         {
+            if (DarkMessageBox.Show(FindForm(), "Do you really want to delete all nodes?", "Delete all nodes",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
             nodeEditor.ClearNodes();
         }
 

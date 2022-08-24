@@ -42,6 +42,9 @@ namespace TombLib.Controls.VisualScripting
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<TriggerNode> SelectedNodes { get; private set; } = new List<TriggerNode>();
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TriggerNode SelectedNode => SelectedNodes.LastOrDefault();
 
         [Browsable(false)]
@@ -210,6 +213,12 @@ namespace TombLib.Controls.VisualScripting
 
             if (selectionChanged)
                 OnSelectionChanged(EventArgs.Empty);
+        }
+
+        public void ClearSelection()
+        {
+            SelectedNodes.Clear();
+            OnSelectionChanged(EventArgs.Empty);
         }
 
         public void DeleteNodes()
@@ -835,8 +844,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 var clickPos = FromVisualCoord(e.Location);
                 _selectionArea = new Rectangle2(clickPos, clickPos);
-                SelectedNodes.Clear();
-                OnSelectionChanged(EventArgs.Empty);
+                ClearSelection();
             }
         }
     }
