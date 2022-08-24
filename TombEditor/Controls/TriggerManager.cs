@@ -144,6 +144,7 @@ namespace TombEditor.Controls
             butRenameNode.Enabled =
             butLinkSelectedNodes.Enabled =
             butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
+            butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
         }
 
         private void ReloadFunctions()

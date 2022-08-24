@@ -111,10 +111,12 @@ namespace TombEditor.Controls
             // rbNodeEditor
             // 
             this.rbNodeEditor.AutoSize = true;
-            this.rbNodeEditor.Location = new System.Drawing.Point(144, 5);
+            this.rbNodeEditor.Checked = true;
+            this.rbNodeEditor.Location = new System.Drawing.Point(5, 5);
             this.rbNodeEditor.Name = "rbNodeEditor";
             this.rbNodeEditor.Size = new System.Drawing.Size(87, 17);
             this.rbNodeEditor.TabIndex = 1;
+            this.rbNodeEditor.TabStop = true;
             this.rbNodeEditor.Text = "Node editor";
             this.toolTip.SetToolTip(this.rbNodeEditor, "Visually construct a trigger");
             this.rbNodeEditor.CheckedChanged += new System.EventHandler(this.rbNodeEditor_CheckedChanged);
@@ -122,12 +124,10 @@ namespace TombEditor.Controls
             // rbLevelScript
             // 
             this.rbLevelScript.AutoSize = true;
-            this.rbLevelScript.Checked = true;
-            this.rbLevelScript.Location = new System.Drawing.Point(5, 5);
+            this.rbLevelScript.Location = new System.Drawing.Point(98, 5);
             this.rbLevelScript.Name = "rbLevelScript";
             this.rbLevelScript.Size = new System.Drawing.Size(133, 17);
             this.rbLevelScript.TabIndex = 0;
-            this.rbLevelScript.TabStop = true;
             this.rbLevelScript.Text = "Level script functions";
             this.toolTip.SetToolTip(this.rbLevelScript, "Select from functions in level script file");
             this.rbLevelScript.CheckedChanged += new System.EventHandler(this.rbLevelScript_CheckedChanged);
@@ -261,8 +261,8 @@ namespace TombEditor.Controls
             // 
             // tabbedContainer
             // 
-            this.tabbedContainer.Controls.Add(this.tabLevelScript);
             this.tabbedContainer.Controls.Add(this.tabConstructor);
+            this.tabbedContainer.Controls.Add(this.tabLevelScript);
             this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabbedContainer.Location = new System.Drawing.Point(0, 25);
             this.tabbedContainer.Name = "tabbedContainer";

@@ -513,7 +513,7 @@ namespace TombLib.Controls.VisualScripting
                     AddNodeControl((node as TriggerNodeCondition).Else, collectedControls);
         }
 
-        private List<TriggerNode> LinearizedNodes()
+        public List<TriggerNode> LinearizedNodes()
         {
             var result = new List<TriggerNode>();
 
