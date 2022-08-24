@@ -180,7 +180,7 @@ namespace TombLib.Controls.VisualScripting
             else
                 SelectedNodes.Remove(node);
 
-            Refresh();
+            Invalidate();
             OnSelectionChanged(EventArgs.Empty);
         }
 
@@ -245,7 +245,7 @@ namespace TombLib.Controls.VisualScripting
             foreach (var c in Controls.OfType<VisibleNodeBase>())
                 c.RefreshPosition();
 
-            Refresh();
+            Invalidate();
             OnViewPositionChanged(EventArgs.Empty);
         }
 
@@ -303,7 +303,7 @@ namespace TombLib.Controls.VisualScripting
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
 
-            Refresh();
+            Invalidate();
             OnViewPositionChanged(EventArgs.Empty);
         }
 
@@ -333,7 +333,7 @@ namespace TombLib.Controls.VisualScripting
                 control.RefreshPosition();
             }
 
-            Refresh();
+            Invalidate();
         }
 
         public void Clear()
@@ -517,7 +517,7 @@ namespace TombLib.Controls.VisualScripting
             if (!Nodes.Contains(HotNode) && HotNode.Previous == null)
                 Nodes.Add(HotNode);
             HotNode = null;
-            Refresh();
+            Invalidate();
         }
 
         public Rectangle GetNodeRect(TriggerNode node)
@@ -740,7 +740,7 @@ namespace TombLib.Controls.VisualScripting
                         _lastMousePosition.Y < 0 || _lastMousePosition.Y > Height)
                         ResetHotNode();
 
-                Refresh();
+                Invalidate();
             }
 
             if (_animProgress >= 0.0f && _animProgress < 1.0f)
@@ -753,7 +753,7 @@ namespace TombLib.Controls.VisualScripting
             if (_queueMove)
             {
                 MoveToFixedPoint(_newMousePosition, _viewMoveMouseWorldCoord.Value, true);
-                Refresh();
+                Invalidate();
                 _queueMove = false;
             }
         }
@@ -899,7 +899,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 _selectionArea.End = FromVisualCoord(e.Location);
                 SelectNodesInArea();
-                Refresh();
+                Invalidate();
             }
 
             Resizing = false;
@@ -909,7 +909,7 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseUp(e);
             _selectionArea = Rectangle2.Zero;
-            Refresh();
+            Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)
