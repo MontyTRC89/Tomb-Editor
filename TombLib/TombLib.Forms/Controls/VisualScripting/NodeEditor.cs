@@ -315,6 +315,17 @@ namespace TombLib.Controls.VisualScripting
             OnViewPositionChanged(EventArgs.Empty);
         }
 
+        public void FindNodeByName(string name)
+        {
+            var match = LinearizedNodes().FirstOrDefault(n => n.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) != -1);
+
+            if (match != null)
+            {
+                SelectNode(match, true);
+                ShowSelectedNode();
+            }
+        }
+
         public void DeleteNodes()
         {
             if (SelectedNodes.Count == 0)

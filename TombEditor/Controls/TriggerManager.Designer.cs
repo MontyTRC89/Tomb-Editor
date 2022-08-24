@@ -105,7 +105,7 @@ namespace TombEditor.Controls
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(23, 23);
             this.butSearch.TabIndex = 2;
-            this.toolTip.SetToolTip(this.butSearch, "Search for function");
+            this.toolTip.SetToolTip(this.butSearch, "Search for item");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // rbNodeEditor
@@ -125,7 +125,7 @@ namespace TombEditor.Controls
             this.rbLevelScript.Checked = true;
             this.rbLevelScript.Location = new System.Drawing.Point(5, 5);
             this.rbLevelScript.Name = "rbLevelScript";
-            this.rbLevelScript.Size = new System.Drawing.Size(131, 17);
+            this.rbLevelScript.Size = new System.Drawing.Size(133, 17);
             this.rbLevelScript.TabIndex = 0;
             this.rbLevelScript.TabStop = true;
             this.rbLevelScript.Text = "Level script functions";
@@ -314,7 +314,7 @@ namespace TombEditor.Controls
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(613, 4);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel3.Size = new System.Drawing.Size(62, 13);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "Call count:";
             // 
@@ -324,7 +324,7 @@ namespace TombEditor.Controls
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 4);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(61, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Argument:";
             // 
@@ -377,7 +377,7 @@ namespace TombEditor.Controls
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(613, 4);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(62, 13);
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Call count:";
             // 
@@ -389,6 +389,7 @@ namespace TombEditor.Controls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nodeEditor.GridSize = 256;
             this.nodeEditor.GridStep = 8F;
+            this.nodeEditor.LinksAsRopes = false;
             this.nodeEditor.Location = new System.Drawing.Point(3, 5);
             this.nodeEditor.Name = "nodeEditor";
             this.nodeEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
