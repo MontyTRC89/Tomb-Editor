@@ -176,6 +176,7 @@ namespace TombLib.Controls.VisualScripting
         {
             Nodes.Clear();
             UpdateVisibleNodes();
+            ClearSelection();
         }
 
         public void LinkToSelectedNode(TriggerNode node)
@@ -349,6 +350,7 @@ namespace TombLib.Controls.VisualScripting
             }
 
             UpdateVisibleNodes();
+            ClearSelection();
         }
 
         public Vector2 FromVisualCoord(PointF pos)
