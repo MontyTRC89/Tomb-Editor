@@ -65,6 +65,8 @@ namespace TombLib.Controls.VisualScripting
         public int GridSize { get; set; } = 256;
         public bool LinksAsRopes { get; set; } = false;
 
+        private const float _mouseWheelScrollFactor = 0.04f;
+
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
@@ -101,7 +103,8 @@ namespace TombLib.Controls.VisualScripting
             SetStyle(ControlStyles.UserPaint | 
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.ResizeRedraw |
-                     ControlStyles.OptimizedDoubleBuffer, true);
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.Selectable, true);
 
             InitializeComponent();
 
@@ -146,7 +149,7 @@ namespace TombLib.Controls.VisualScripting
                 LinkToSelectedNode(node);
 
             UpdateVisibleNodes();
-            SelectNode(node, true);
+            SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
@@ -165,7 +168,7 @@ namespace TombLib.Controls.VisualScripting
                 LinkToSelectedNode(node);
 
             UpdateVisibleNodes();
-            SelectNode(node, true);
+            SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
@@ -233,7 +236,7 @@ namespace TombLib.Controls.VisualScripting
             Resizing = false;
         }
 
-        public void SelectNode(TriggerNode node, bool reset)
+        public void SelectNode(TriggerNode node, bool toggle, bool reset)
         {
             if (!LinearizedNodes().Contains(node))
                 return;
@@ -245,7 +248,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (!SelectedNodes.Contains(node))
                 SelectedNodes.Add(node);
-            else
+            else if (toggle)
                 SelectedNodes.Remove(node);
 
             Invalidate();
@@ -327,7 +330,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (match != null)
             {
-                SelectNode(match, true);
+                SelectNode(match, false, true);
                 ShowSelectedNode();
             }
         }
@@ -476,11 +479,11 @@ namespace TombLib.Controls.VisualScripting
                 foreach (var control in Controls.OfType<VisibleNodeBase>())
                 {
                     var rect = control.ClientRectangle;
-                    rect.Offset(control.Location);
+                    rect.Offset(ToVisualCoord(control.Node.ScreenPosition));
 
                     var rect2 = newNode.ClientRectangle;
                     rect2.Offset(new Point((int)pos.X, (int)pos.Y));
-                    rect2.Inflate((int)GridStep * 2, (int)GridStep * 2);
+                    rect2.Inflate((int)GridStep / 2, (int)GridStep * 2);
 
                     if (rect.IntersectsWith(rect2))
                         colliding = true;
@@ -738,9 +741,7 @@ namespace TombLib.Controls.VisualScripting
                     continue;
 
                 // Reverse R/G color bias for else node
-                var color = node.Node.Color;
-                if (nextMode == ConnectionMode.Else)
-                    color = new Vector3(color.Y, color.X, color.Z);
+                var color = (nextMode == ConnectionMode.Else) ? FlipColorBias(node.Node.Color) : node.Node.Color;
 
                 var p1 = node.GetNodeScreenPosition(nextMode);
                 var p2 = nextVisibleNode.GetNodeScreenPosition(ConnectionMode.Previous);
@@ -757,7 +758,8 @@ namespace TombLib.Controls.VisualScripting
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
 
-                using (var p = new Pen(Vector3.Normalize(color).ToWinFormsColor(), width))
+                var normColor = color == Vector3.Zero ? color : Vector3.Normalize(color);
+                using (var p = new Pen(normColor.ToWinFormsColor(), width))
                     e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
             else
@@ -791,13 +793,23 @@ namespace TombLib.Controls.VisualScripting
                 p = new PointF[2] { _lastMousePosition, _lastMousePosition };
 
             var alpha = (float)MathC.Lerp(_hotNodeTransparency, _connectedNodeTransparency, _animProgress >= 0.0f ? _animProgress : 0.0f);
-            
+
             // Reverse R/G bias for else node
-            var color = HotNode.Color;
-            if (HotNodeMode == ConnectionMode.Else)
-                color = new Vector3(color.Y, color.X, color.Z);
+            var color = (HotNodeMode == ConnectionMode.Else) ? FlipColorBias(HotNode.Color) : HotNode.Color;
 
             DrawLink(e, color, alpha, start, p);
+        }
+
+        private Vector3 FlipColorBias(Vector3 source)
+        {
+            var hue = source.ToWinFormsColor().GetHue();
+            var flipYX = new Vector3(source.Y, source.X, source.Z);
+            var flipZX = new Vector3(source.X, source.Z, source.Y);
+
+            if (Math.Abs(flipYX.ToWinFormsColor().GetHue() - hue) > 90.0f)
+                return flipYX;
+            else
+                return flipZX;
         }
 
         private void DrawSelection(PaintEventArgs e)
@@ -1010,9 +1022,6 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseEnter(e);
 
-            if (!Focused && Form.ActiveForm == FindForm())
-                Focus();
-
             if (Control.MouseButtons == MouseButtons.None)
             {
                 ResetHotNode();
@@ -1040,6 +1049,26 @@ namespace TombLib.Controls.VisualScripting
             }
             else
                 _selectionInProgress = false;
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            var delta = e.Delta * _mouseWheelScrollFactor;
+
+            if (Control.ModifierKeys == Keys.Shift)
+                ViewPosition += new Vector2(delta, 0.0f);
+            else
+                ViewPosition += new Vector2(0.0f, delta);
+
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
+            
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+                control.RefreshPosition();
+
+            Invalidate();
+            OnViewPositionChanged(EventArgs.Empty);
         }
     }
 }

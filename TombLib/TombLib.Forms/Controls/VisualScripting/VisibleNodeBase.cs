@@ -267,7 +267,10 @@ namespace TombLib.Controls.VisualScripting
         {
             if (e.Button == MouseButtons.Left)
             {
-                Editor.SelectNode(Node, !(Control.ModifierKeys == Keys.Control));
+                bool ctrlPressed  = Control.ModifierKeys.HasFlag(Keys.Control);
+                bool shiftPressed = Control.ModifierKeys.HasFlag(Keys.Shift);
+
+                Editor.SelectNode(Node, !shiftPressed, !ctrlPressed && !shiftPressed);
                 BringToFront();
             }
 
