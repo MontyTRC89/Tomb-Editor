@@ -96,7 +96,7 @@ namespace TombEditor.Controls
         private void SelectTriggerMode()
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 0 : 1;
-            butSearch.Visible = butUnassign.Visible = rbLevelScript.Checked;
+            butUnassign.Visible = rbLevelScript.Checked;
             lblNotify.Visible = false;
 
             if (rbLevelScript.Checked)
@@ -183,7 +183,6 @@ namespace TombEditor.Controls
 
             panelFunctionControls.Visible =
             lstFunctions.Visible =
-            butSearch.Enabled =
             butUnassign.Enabled = lstFunctions.Items.Count > 0;
         }
 
@@ -219,8 +218,21 @@ namespace TombEditor.Controls
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(lstFunctions) { ShowAboveControl = true };
-            searchPopUp.Show(this);
+            if (rbLevelScript.Checked)
+            {
+                var searchPopUp = new PopUpSearch(lstFunctions) { ShowAboveControl = true };
+                searchPopUp.Show(this);
+            }
+            else if (rbNodeEditor.Checked)
+            {
+                using (var form = new FormInputBox("Find node", "Enter name of the node to find:", nodeEditor.SelectedNode?.Name ?? string.Empty))
+                {
+                    if (form.ShowDialog(FindForm()) == DialogResult.Cancel)
+                        return;
+
+                    nodeEditor.FindNodeByName(form.Result);
+                }
+            }
         }
 
         private void butUnassign_Click(object sender, EventArgs e)
