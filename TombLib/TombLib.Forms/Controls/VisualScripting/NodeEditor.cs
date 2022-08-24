@@ -65,6 +65,8 @@ namespace TombLib.Controls.VisualScripting
         public int GridSize { get; set; } = 256;
         public bool LinksAsRopes { get; set; } = false;
 
+        private const float _mouseWheelScrollFactor = 0.0015f;
+
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
@@ -101,7 +103,8 @@ namespace TombLib.Controls.VisualScripting
             SetStyle(ControlStyles.UserPaint | 
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.ResizeRedraw |
-                     ControlStyles.OptimizedDoubleBuffer, true);
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.Selectable, true);
 
             InitializeComponent();
 
@@ -1019,9 +1022,6 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseEnter(e);
 
-            if (!Focused && Form.ActiveForm == FindForm())
-                Focus();
-
             if (Control.MouseButtons == MouseButtons.None)
             {
                 ResetHotNode();
@@ -1049,6 +1049,20 @@ namespace TombLib.Controls.VisualScripting
             }
             else
                 _selectionInProgress = false;
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            ViewPosition -= 440.0f * new Vector2(0.0f, e.Delta * _mouseWheelScrollFactor);
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
+            
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+                control.RefreshPosition();
+
+            Invalidate();
+            OnViewPositionChanged(EventArgs.Empty);
         }
     }
 }

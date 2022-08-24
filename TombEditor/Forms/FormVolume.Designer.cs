@@ -395,6 +395,7 @@ namespace TombEditor.Forms
             this.Controls.Add(this.darkSectionPanel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
+            this.KeyPreview = true;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(750, 460);
             this.Name = "FormVolume";
