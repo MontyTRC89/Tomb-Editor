@@ -76,9 +76,4 @@ namespace TombLib.LevelData.VisualScripting
         public string Function;
         public string Argument;
     }
-
-    public class VisualTrigger
-    {
-        public List<TriggerNode> Nodes;
-    }
 }
