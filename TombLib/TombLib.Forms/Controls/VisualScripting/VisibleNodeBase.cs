@@ -285,7 +285,7 @@ namespace TombLib.Controls.VisualScripting
             StorePosition();
             Editor.MoveSelectedNodes(Node, Node.ScreenPosition - oldPosition);
 
-            Editor.Update(); // Use instead of Invalidate() to avoid WinXP-like trails
+            Editor.Refresh(); // Use instead of Invalidate() to avoid WinXP-like trails
             base.OnLocationChanged(e);
         }
 
