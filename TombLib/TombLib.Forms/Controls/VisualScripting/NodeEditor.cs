@@ -142,6 +142,7 @@ namespace TombLib.Controls.VisualScripting
             Nodes.Add(node);
             UpdateVisibleNodes();
             SelectNode(node, true);
+            ShowSelectedNode();
         }
 
         public void AddActionNode()
@@ -157,6 +158,7 @@ namespace TombLib.Controls.VisualScripting
             Nodes.Add(node);
             UpdateVisibleNodes();
             SelectNode(node, true);
+            ShowSelectedNode();
         }
 
         public void ClearNodes()
@@ -220,6 +222,31 @@ namespace TombLib.Controls.VisualScripting
         {
             SelectedNodes.Clear();
             OnSelectionChanged(EventArgs.Empty);
+        }
+
+        public void ShowSelectedNode()
+        {
+            if (SelectedNode == null)
+                return;
+
+            var control = Controls.OfType<VisibleNodeBase>().First(c => c.Node == SelectedNode);
+            var pos = ToVisualCoord(control.Node.ScreenPosition);
+            pos.X = pos.X + control.Width / 2;
+
+            var rect = control.ClientRectangle;
+            rect.Offset(ToVisualCoord(control.Node.ScreenPosition));
+
+            if (ClientRectangle.Contains(rect))
+                return;
+
+            var finalCoord = FromVisualCoord(pos);
+            ViewPosition = finalCoord;
+
+            foreach (var c in Controls.OfType<VisibleNodeBase>())
+                c.RefreshPosition();
+
+            Refresh();
+            OnViewPositionChanged(EventArgs.Empty);
         }
 
         public void DeleteNodes()
@@ -344,9 +371,10 @@ namespace TombLib.Controls.VisualScripting
             }
             else
             {
-                var x = selectedVisibleNode.Location.X + selectedVisibleNode.Width / 2;
+                var location = ToVisualCoord(selectedVisibleNode.Node.ScreenPosition);
+                var x = location.X + selectedVisibleNode.Width / 2;
                 x -= newNode.Width / 2;
-                var y = selectedVisibleNode.Location.Y + selectedVisibleNode.Height;
+                var y = location.Y + selectedVisibleNode.Height;
                 pos = new Vector2(x, y);
             }    
 
