@@ -33,6 +33,7 @@ namespace TombEditor.Controls
             this.butClearNodes = new DarkUI.Controls.DarkButton();
             this.butRenameNode = new DarkUI.Controls.DarkButton();
             this.butChangeNodeColor = new DarkUI.Controls.DarkButton();
+            this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabLevelScript = new System.Windows.Forms.TabPage();
             this.lstFunctions = new DarkUI.Controls.DarkListView();
@@ -44,7 +45,6 @@ namespace TombEditor.Controls
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.nodeEditor = new TombLib.Controls.VisualScripting.NodeEditor();
-            this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -230,7 +230,7 @@ namespace TombEditor.Controls
             // 
             this.butRenameNode.Checked = false;
             this.butRenameNode.Image = global::TombEditor.Properties.Resources.general_edit_16;
-            this.butRenameNode.Location = new System.Drawing.Point(186, 1);
+            this.butRenameNode.Location = new System.Drawing.Point(215, 1);
             this.butRenameNode.Name = "butRenameNode";
             this.butRenameNode.Size = new System.Drawing.Size(23, 23);
             this.butRenameNode.TabIndex = 9;
@@ -241,12 +241,23 @@ namespace TombEditor.Controls
             // 
             this.butChangeNodeColor.Checked = false;
             this.butChangeNodeColor.Image = global::TombEditor.Properties.Resources.actions_TextureMode_16;
-            this.butChangeNodeColor.Location = new System.Drawing.Point(215, 1);
+            this.butChangeNodeColor.Location = new System.Drawing.Point(244, 1);
             this.butChangeNodeColor.Name = "butChangeNodeColor";
             this.butChangeNodeColor.Size = new System.Drawing.Size(23, 23);
             this.butChangeNodeColor.TabIndex = 10;
             this.toolTip.SetToolTip(this.butChangeNodeColor, "Change color for last selected node");
             this.butChangeNodeColor.Click += new System.EventHandler(this.butChangeNodeColor_Click);
+            // 
+            // butLinkSelectedNodes
+            // 
+            this.butLinkSelectedNodes.Checked = false;
+            this.butLinkSelectedNodes.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
+            this.butLinkSelectedNodes.Location = new System.Drawing.Point(186, 1);
+            this.butLinkSelectedNodes.Name = "butLinkSelectedNodes";
+            this.butLinkSelectedNodes.Size = new System.Drawing.Size(23, 23);
+            this.butLinkSelectedNodes.TabIndex = 11;
+            this.toolTip.SetToolTip(this.butLinkSelectedNodes, "Link selected nodes, if possible");
+            this.butLinkSelectedNodes.Click += new System.EventHandler(this.butLinkSelectedNodes_Click);
             // 
             // tabbedContainer
             // 
@@ -384,24 +395,13 @@ namespace TombEditor.Controls
             this.nodeEditor.Size = new System.Drawing.Size(744, 310);
             this.nodeEditor.TabIndex = 0;
             // 
-            // butLinkSelectedNodes
-            // 
-            this.butLinkSelectedNodes.Checked = false;
-            this.butLinkSelectedNodes.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
-            this.butLinkSelectedNodes.Location = new System.Drawing.Point(244, 1);
-            this.butLinkSelectedNodes.Name = "butLinkSelectedNodes";
-            this.butLinkSelectedNodes.Size = new System.Drawing.Size(23, 23);
-            this.butLinkSelectedNodes.TabIndex = 11;
-            this.toolTip.SetToolTip(this.butLinkSelectedNodes, "Link selected nodes, if possible");
-            this.butLinkSelectedNodes.Click += new System.EventHandler(this.butLinkSelectedNodes_Click);
-            // 
             // TriggerManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabbedContainer);
             this.Controls.Add(this.darkPanel3);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.Name = "TriggerManager";
             this.Size = new System.Drawing.Size(758, 400);
             this.darkPanel3.ResumeLayout(false);
