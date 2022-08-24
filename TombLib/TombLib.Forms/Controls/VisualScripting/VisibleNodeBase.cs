@@ -65,8 +65,9 @@ namespace TombLib.Controls.VisualScripting
 
             var grip = _grips[(int)mode];
 
-            var x = Location.X + grip.Left;
-            var y = Location.Y + grip.Top + grip.Height / 2;
+            var location = Editor.ToVisualCoord(Node.ScreenPosition);
+            var x = location.X + grip.Left;
+            var y = location.Y + grip.Top + grip.Height / 2;
 
             return new PointF[2]
             {
