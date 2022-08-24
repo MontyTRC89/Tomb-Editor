@@ -34,7 +34,7 @@ namespace TombLib.Controls.VisualScripting
             set
             {
                 _nodes = value;
-                UpdateVisibleNodes();
+                UpdateVisibleNodes(true);
             }
         }
         private List<TriggerNode> _nodes;
@@ -125,7 +125,7 @@ namespace TombLib.Controls.VisualScripting
             ViewPosition = new Vector2(GridSize / 2.0f,
                                        GridSize / 2.0f);
             Nodes = nodes == null ? new List<TriggerNode>() : nodes;
-            UpdateVisibleNodes();
+            UpdateVisibleNodes(true);
             _updateTimer.Start();
         }
 
@@ -307,7 +307,7 @@ namespace TombLib.Controls.VisualScripting
             OnViewPositionChanged(EventArgs.Empty);
         }
 
-        public void UpdateVisibleNodes()
+        public void UpdateVisibleNodes(bool fullRedraw = false)
         {
             var visibleNodes = Controls.OfType<VisibleNodeBase>().ToList();
             var linearizedNodes = LinearizedNodes();
@@ -326,6 +326,9 @@ namespace TombLib.Controls.VisualScripting
             foreach (var node in Nodes)
                 AddNodeControl(node, newControls);
 
+            if (fullRedraw && newControls.Count > 0)
+                Visible = false;
+
             // Add all controls at once, to avoid flickering
             foreach (var control in newControls)
             {
@@ -333,6 +336,7 @@ namespace TombLib.Controls.VisualScripting
                 control.RefreshPosition();
             }
 
+            Visible = true;
             Invalidate();
         }
 
