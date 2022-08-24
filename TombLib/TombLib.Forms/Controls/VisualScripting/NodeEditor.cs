@@ -78,6 +78,7 @@ namespace TombLib.Controls.VisualScripting
 
         private Rectangle2 _selectionArea;
 
+        private bool _selectionInProgress;
         private Point _lastMousePosition;
         private Point _newMousePosition;
         private Vector2? _viewMoveMouseWorldCoord;
@@ -987,7 +988,7 @@ namespace TombLib.Controls.VisualScripting
                 Resizing = true;
                 return;
             }
-            else if (e.Button == MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left && _selectionInProgress)
             {
                 _selectionArea.End = FromVisualCoord(e.Location);
                 SelectNodesInArea();
@@ -1001,6 +1002,7 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseUp(e);
             _selectionArea = Rectangle2.Zero;
+            _selectionInProgress = false;
             Invalidate();
         }
 
@@ -1012,7 +1014,11 @@ namespace TombLib.Controls.VisualScripting
                 Focus();
 
             if (Control.MouseButtons == MouseButtons.None)
+            {
                 ResetHotNode();
+                _selectionArea = Rectangle2.Zero;
+                _selectionInProgress = false;
+            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -1029,8 +1035,11 @@ namespace TombLib.Controls.VisualScripting
             {
                 var clickPos = FromVisualCoord(e.Location);
                 _selectionArea = new Rectangle2(clickPos, clickPos);
+                _selectionInProgress = true;
                 ClearSelection();
             }
+            else
+                _selectionInProgress = false;
         }
     }
 }
