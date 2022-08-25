@@ -209,7 +209,12 @@ namespace WadTool
             {
                 var item = (WadStateChangeRow)e.Row.DataBoundItem;
                 var cell = dgvStateChanges.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                cell.ToolTipText = TrCatalog.GetAnimationName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, item.NextAnimation);
+
+                var anim = _editor.Animations.FirstOrDefault(a => a.Index == item.NextAnimation);
+                if (anim != null)
+                    cell.ToolTipText = anim.WadAnimation.Name;
+                else
+                    cell.ToolTipText = TrCatalog.GetAnimationName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, item.NextAnimation);
             }
         }
 
