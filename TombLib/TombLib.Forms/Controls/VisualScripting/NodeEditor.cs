@@ -223,16 +223,18 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Resizing = true;
-            foreach (var node in SelectedNodes)
             {
-                if (node == rootNode)
-                    continue;
+                foreach (var node in SelectedNodes)
+                {
+                    if (node == rootNode)
+                        continue;
 
-                node.ScreenPosition += delta;
-                var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
+                    node.ScreenPosition += delta;
+                    var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
 
-                if (visibleNode != null)
-                    visibleNode.RefreshPosition();
+                    if (visibleNode != null)
+                        visibleNode.RefreshPosition();
+                }
             }
             Resizing = false;
         }
