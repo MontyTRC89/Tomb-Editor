@@ -34,8 +34,8 @@ namespace TombLib.LevelData.VisualTriggering
         Sinks,          // Listable
         FlybyCameras,   // Listable
         Volumes,        // Listable
-        Rooms,
-        SoundEffects
+        Rooms,          // Listable
+        SoundEffects    // Listable
     }
 
     public static class TriggerNodeEnumerations

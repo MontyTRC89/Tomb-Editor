@@ -755,7 +755,7 @@ namespace TombLib.Controls.VisualScripting
         {
             if (LinksAsRopes)
             {
-                var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
+                var width = (float)MathC.Clamp((p2[1].X - p2[0].X), 1, 2);
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
@@ -1059,15 +1059,19 @@ namespace TombLib.Controls.VisualScripting
 
             var delta = e.Delta * _mouseWheelScrollFactor;
 
-            if (Control.ModifierKeys == Keys.Shift)
-                ViewPosition += new Vector2(delta, 0.0f);
-            else
-                ViewPosition += new Vector2(0.0f, delta);
+            Resizing = true;
+            {
+                if (Control.ModifierKeys == Keys.Shift)
+                    ViewPosition += new Vector2(delta, 0.0f);
+                else
+                    ViewPosition += new Vector2(0.0f, delta);
 
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-            
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+                ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
+
+                foreach (var control in Controls.OfType<VisibleNodeBase>())
+                    control.RefreshPosition();
+            }
+            Resizing = false;
 
             Invalidate();
             OnViewPositionChanged(EventArgs.Empty);
