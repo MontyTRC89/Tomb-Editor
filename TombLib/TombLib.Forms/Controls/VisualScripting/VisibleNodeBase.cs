@@ -32,9 +32,20 @@ namespace TombLib.Controls.VisualScripting
 
         public VisibleNodeBase(TriggerNode node)
         {
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
             InitializeComponent();
             SnapToBorders = false;
             Node = node;
+
+            SpawnGrips();
+        }
+
+        protected virtual void SpawnGrips()
+        {
+            _grips.Clear();
+            _grips.Add(new Rectangle(Width / 2 - _gripWidth / 2, 0, _gripWidth, _gripHeight));
+            Invalidate();
         }
 
         public void RefreshPosition()
@@ -298,6 +309,12 @@ namespace TombLib.Controls.VisualScripting
             base.OnLocationChanged(e);
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            SpawnGrips();
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if (!IsInView())
@@ -313,6 +330,16 @@ namespace TombLib.Controls.VisualScripting
 
                 using (var brush = new TextureBrush(MenuIcons.grip_fill, WrapMode.Tile))
                     e.Graphics.FillRectangle(brush, grip);
+            }
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Prevent controls flickering
+                return cp;
             }
         }
     }
