@@ -257,7 +257,7 @@ namespace WadTool
                     {
                         Int16 limitNew = 0;
                         if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
-                            limit = limitNew;
+                            limit = limitNew == 0 ? (Int16)(_editor.GetRealNumberOfFrames(limitNew)) : limitNew;
                     }
                     else if (name == columnHighFrame.Name)
                     {
