@@ -36,13 +36,11 @@ namespace TombLib.Utils
                     return result;
 
                 var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
-
                 var nodeFunction = new NodeFunction();
 
                 foreach (string l in lines)
                 {
                     string line = l.Trim();
-
                     int cPoint = line.IndexOf(_commentPrefix);
 
                     if (cPoint >= 0)
@@ -59,15 +57,12 @@ namespace TombLib.Utils
                             nodeFunction.Conditional = cond;
                             continue;
                         }
-
-                        if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             nodeFunction.Name = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
                             continue;
                         }
-                            
-
-                        if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             var args = ExtractValues(comment.Substring(_nodeArgumentId.Length, comment.Length - _nodeArgumentId.Length));
 
@@ -77,6 +72,7 @@ namespace TombLib.Utils
                                 try { argType = (ArgumentType)Enum.Parse(typeof(ArgumentType), a); } catch { }
                                 nodeFunction.Arguments.Add(argType);
                             }
+
                             continue;
                         }
                     }
@@ -113,11 +109,12 @@ namespace TombLib.Utils
                             GetAllNodeFunctions(subfile, result, depth);
                     }
 
-                    if (string.IsNullOrEmpty(nodeFunction.Signature))
+                    if (string.IsNullOrEmpty(nodeFunction.Signature) ||
+                        nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
+                    {
+                        nodeFunction = new NodeFunction();
                         continue;
-
-                    if (nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
-                        continue;
+                    }
 
                     if (!result.Contains(nodeFunction))
                     {
