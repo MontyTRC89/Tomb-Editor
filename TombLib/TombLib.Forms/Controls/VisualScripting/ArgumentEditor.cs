@@ -119,6 +119,16 @@ namespace TombLib.Controls.VisualScripting
 
         }
 
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            // Absorb event
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            // Absorb event
+        }
+
         private void UnboxValue(string source)
         {
             switch((ArgumentType)container.TabIndex)

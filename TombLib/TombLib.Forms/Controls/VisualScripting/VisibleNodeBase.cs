@@ -96,20 +96,19 @@ namespace TombLib.Controls.VisualScripting
             int newY = _elementSpacing;
             int newX = _elementSpacing;
 
-            cbFunction.Visible = false;
             cbFunction.Size = new Size(refWidth, _elementHeight);
             cbFunction.Location = new Point(_elementSpacing, _elementSpacing);
 
             var elementsOnLines = new List<int>();
             int elements = 1;
-            foreach (var arg in func.Arguments)
+            for (int i = 0; i <= func.Arguments.Count; i++)
             {
                 elements++;
-                bool lastEntry = func.Arguments.IndexOf(arg) == func.Arguments.Count - 1;
+                bool lastEntry = i == func.Arguments.Count;
 
-                if (arg.NewLine || lastEntry)
+                if (lastEntry || func.Arguments[i].NewLine)
                 {
-                    elementsOnLines.Add(lastEntry ? elements : elements - 1);
+                    elementsOnLines.Add(elements - 1);
                     elements = 1;
                 }
             }
@@ -121,15 +120,17 @@ namespace TombLib.Controls.VisualScripting
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                     Name = "argEditor" + i.ToString(),
-                    Visible = false,
-                    Enabled = false
+                    Visible = false
                 };
 
                 _argControls.Add(ctrl);
                 Controls.Add(ctrl);
 
+                if (func.Arguments[i].NewLine)
+                    line++;
+
                 var normScale = func.Arguments[i].Width / 100.0f;
-                int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing * 2;
+                int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
                 ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
@@ -137,10 +138,11 @@ namespace TombLib.Controls.VisualScripting
                 // HACK: For first control, we need to reference func list which is outside of container.
                 if (newY == _elementSpacing && !func.Arguments[i].NewLine)
                 {
-                    workLineWidth += _elementSpacing;
-
                     for (int j = 0; j < i; j++)
+                    {
                         workLineWidth -= (_argControls[j].Width + _elementSpacing);
+                        _argControls[j].Left = _elementSpacing + workLineWidth + _elementSpacing;
+                    }
 
                     cbFunction.Width = workLineWidth;
                 }
@@ -149,7 +151,6 @@ namespace TombLib.Controls.VisualScripting
                 {
                     newX  = _elementSpacing;
                     newY += _elementHeight + _elementSpacing;
-                    line++;
                 }
                 else
                 {
@@ -176,7 +177,7 @@ namespace TombLib.Controls.VisualScripting
                 RefreshArgument(i);
 
             foreach (var control in _argControls)
-                control.Visible = control.Enabled = true;
+                control.Visible = true;
 
             Editor?.Invalidate();
         }
