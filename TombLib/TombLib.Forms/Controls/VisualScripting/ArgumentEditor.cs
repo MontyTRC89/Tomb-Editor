@@ -1,5 +1,6 @@
 ﻿using DarkUI.Config;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -39,6 +40,7 @@ namespace TombLib.Controls.VisualScripting
         public ArgumentEditor()
         {
             InitializeComponent();
+            container.Visible = (LicenseManager.UsageMode == LicenseUsageMode.Runtime);
         }
 
         public void SetArgumentType(ArgumentType type, NodeEditor editor)
@@ -107,6 +109,11 @@ namespace TombLib.Controls.VisualScripting
 
             using (var p = new Pen(Colors.GreySelection, 1))
                 e.Graphics.DrawRectangle(p, 0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
+
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+                e.Graphics.DrawString("Changes dependent on arg type in runtime.", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
         }
 
         private void UnboxValue(string source)
