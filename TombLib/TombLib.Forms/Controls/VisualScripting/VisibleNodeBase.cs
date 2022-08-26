@@ -83,6 +83,17 @@ namespace TombLib.Controls.VisualScripting
                 cbFunction.SelectedIndex = 0;
         }
 
+        public void TrimArguments()
+        {
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup.Arguments.Count < Node.Arguments.Count)
+                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
+            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
+                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                    Node.Arguments.Add(string.Empty);
+        }
+
         public void SpawnUIElements()
         {
             var func = cbFunction.SelectedItem as NodeFunction;
@@ -498,15 +509,9 @@ namespace TombLib.Controls.VisualScripting
             if (_lastSelectedIndex == cbFunction.SelectedIndex)
                 return;
 
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
-            var funcSetup = cbFunction.SelectedItem as NodeFunction;
-            if (funcSetup.Arguments.Count < Node.Arguments.Count)
-                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
-            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
-                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                    Node.Arguments.Add(string.Empty);
-
+            TrimArguments();
             SpawnUIElements();
+
             _lastSelectedIndex = cbFunction.SelectedIndex;
         }
     }
