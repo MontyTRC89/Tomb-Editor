@@ -118,7 +118,7 @@ namespace TombLib.Controls.VisualScripting
             for (int i = 0; i < Node.Arguments.Count; i++)
                 RefreshArgument(i);
 
-            Editor.Invalidate();
+            Editor?.Invalidate();
         }
 
         private void Ctrl_ValueChanged(object sender, EventArgs e)
