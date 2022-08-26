@@ -82,6 +82,16 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in editor.CachedFlybys)
                         cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
+                case ArgumentType.Rooms:
+                    foreach (var item in editor.CachedRooms)
+                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.Name));
+                    break;
+                case ArgumentType.SoundEffects:
+                    foreach (var item in editor.CachedSoundInfos)
+                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.Id.ToString()));
+                    break;
+                default:
+                    break;
             }
         }
 

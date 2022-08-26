@@ -171,12 +171,12 @@ namespace TombLib.Controls.VisualScripting
 
         public void PopulateCachedNodeLists(Level level)
         {
-            CachedMoveables  = level.GetAllObjects().OfType<MoveableInstance>().ToList();
-            CachedStatics    = level.GetAllObjects().OfType<StaticInstance>().ToList();
-            CachedCameras    = level.GetAllObjects().OfType<CameraInstance>().ToList();
-            CachedSinks      = level.GetAllObjects().OfType<SinkInstance>().ToList();
-            CachedFlybys     = level.GetAllObjects().OfType<FlybyCameraInstance>().ToList();
-            CachedVolumes    = level.GetAllObjects().OfType<VolumeInstance>().ToList();
+            CachedMoveables  = level.GetAllObjects().OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedStatics    = level.GetAllObjects().OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedCameras    = level.GetAllObjects().OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedSinks      = level.GetAllObjects().OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedFlybys     = level.GetAllObjects().OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedVolumes    = level.GetAllObjects().OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             CachedSoundInfos = level.Settings.GlobalSoundMap;
             CachedRooms      = level.ExistingRooms;
         }
