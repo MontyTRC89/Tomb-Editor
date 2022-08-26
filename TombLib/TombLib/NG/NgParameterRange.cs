@@ -337,7 +337,7 @@ namespace TombLib.NG
 
                 case NgParameterKind.LuaFunctions:
                     string path = level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile);
-                    var functions = ScriptingUtils.GetAllFunctionsNames(path);
+                    var functions = ScriptingUtils.GetAllFunctionNames(path);
                     if (functions != null)
                     {
                         return functions.Select(f => new TriggerParameterString(f));

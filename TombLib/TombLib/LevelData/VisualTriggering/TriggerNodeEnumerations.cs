@@ -1,4 +1,6 @@
-﻿namespace TombLib.LevelData.VisualTriggering
+﻿using System.Collections.Generic;
+
+namespace TombLib.LevelData.VisualScripting
 {
     // Condition type specifies how condition node will check condition.
     // Condition type should be internally processed by lua comparer which
@@ -38,4 +40,16 @@
         CompareOperand
     }
 
+    public class NodeFunction
+    {
+        public string Name { get; set; }
+        public bool Conditional { get; set; }
+        public string Signature { get; set; }
+        public List<ArgumentType> Arguments { get; private set; } = new List<ArgumentType>();
+
+        public override int GetHashCode()
+        {
+            return (Name + Conditional.ToString() + Signature + Arguments.Count.ToString()).GetHashCode();
+        }
+    }
 }

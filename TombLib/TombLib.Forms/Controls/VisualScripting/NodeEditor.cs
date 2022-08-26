@@ -62,6 +62,15 @@ namespace TombLib.Controls.VisualScripting
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Resizing { get; private set; } = false;
 
+        // Loaded lists of action and condition functions.
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<NodeFunction> ActionFunctions { get; private set; } = new List<NodeFunction>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<NodeFunction> ConditionFunctions { get; private set; } = new List<NodeFunction>();
+
         // Precache lists of objects to avoid polling every time user changes function
         // in a node list. By default it is set to nothing, but must be replaced externally
         // by a form/control where node editor is placed.

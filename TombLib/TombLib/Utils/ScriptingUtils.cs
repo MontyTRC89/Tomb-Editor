@@ -1,21 +1,124 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.Utils
 {
-    public class ScriptingUtils
+    public static class ScriptingUtils
     {
-        const int _maxRecursionDepth = 32;
+        private static readonly int _maxRecursionDepth = 32;
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+        private static readonly string _tableName = "LevelFuncs";
+        private static readonly string _includeStart = "require";
 
-        public static List<string> GetAllFunctionsNames(string path, List<string> list = null, int depth = 0)
+        private static readonly string _reservedFunctionPrefix = "__";
+        private static readonly string _commentPrefix = "--";
+
+        private static readonly string _nodeNameId = "name";
+        private static readonly string _nodeTypeId = "type";
+        private static readonly string _nodeArgumentId = "argument";
+
+        private static string ExtractValue(string source)
         {
-            const string tableName = "LevelFuncs";
-            const string includeStart = "require";
-            const string reservedFunctionPrefix = "__";
+            return source.Split('"').Where((item, index) => index % 2 != 0).FirstOrDefault();
+        }
 
-            string[] reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+        public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
+        {
+            var result = list == null ? new List<NodeFunction>() : list;
 
+            try
+            {
+                if (!File.Exists(path))
+                    return result;
+
+                var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
+
+                var nodeFunction = new NodeFunction();
+
+                foreach (string l in lines)
+                {
+                    string line = l.Trim();
+
+                    int cPoint = line.IndexOf(_commentPrefix);
+                    if (cPoint > 0)
+                    {
+                        line = line.Substring(0, cPoint - 1);
+
+                        var comment = line.Substring(cPoint + _commentPrefix.Length, line.Length).Trim();
+
+                        if (comment.StartsWith(_nodeTypeId, System.StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            bool cond = false;
+                            bool.TryParse(ExtractValue(comment.Substring(_nodeNameId.Length, line.Length)), out cond);
+                            nodeFunction.Conditional = cond;
+                        }
+
+                        if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
+                            nodeFunction.Name = ExtractValue(comment.Substring(_nodeNameId.Length, line.Length));
+
+                        if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var argType = ArgumentType.Numerical;
+                            argType = (ArgumentType)Enum.Parse(typeof(ArgumentType), 
+                                       ExtractValue(comment.Substring(_nodeNameId.Length, line.Length)).ToLower());
+                        }
+                    }
+                    else if (cPoint == 0)
+                        continue;
+
+                    if (line.StartsWith("function " + _tableName + "."))
+                    {
+                        int indexStart = line.IndexOf(".") + 1;
+                        int indexEnd = line.IndexOf("(") - indexStart;
+                        nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
+                    }
+                    else if (line.StartsWith(_tableName + "."))
+                    {
+                        int indexStart = line.IndexOf(".") + 1;
+                        int indexEnd = line.IndexOf("=") - indexStart;
+                        nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
+                    }
+                    else if (line.Contains(_includeStart))
+                    {
+                        int pos1 = line.IndexOf(_includeStart) + _includeStart.Length;
+                        int pos2 = line.Length;
+                        string subfile = line.Substring(pos1, pos2 - pos1);
+                        pos1 = subfile.IndexOf("(") + 1;
+                        pos2 = subfile.IndexOf(")");
+                        subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
+                        subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
+
+                        depth++;
+                        if (depth <= _maxRecursionDepth)
+                            GetAllNodeFunctions(subfile, result, depth);
+                    }
+                    else
+                        continue;
+
+                    if (string.IsNullOrEmpty(nodeFunction.Signature))
+                        continue;
+
+                    if (nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
+                        continue;
+
+                    if (!result.Contains(nodeFunction))
+                        result.Add(nodeFunction);
+                }
+
+                return result;
+            }
+            catch
+            {
+                return result;
+            }
+        }
+
+        public static List<string> GetAllFunctionNames(string path, List<string> list = null, int depth = 0)
+        {
             var result = list == null ? new List<string>() : list;
 
             try
@@ -32,7 +135,7 @@ namespace TombLib.Utils
                     string line = l.Trim();
                     bool skip = false;
 
-                    foreach (string name in reservedNames)
+                    foreach (var name in _reservedNames)
                     {
                         if (line.Contains(name))
                         {
@@ -50,21 +153,21 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         continue;
 
-                    if (line.StartsWith("function " + tableName + "."))
+                    if (line.StartsWith("function " + _tableName + "."))
                     {
                         int indexStart = line.IndexOf(".") + 1;
                         int indexEnd = line.IndexOf("(") - indexStart;
                         functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.StartsWith(tableName + "."))
+                    else if (line.StartsWith(_tableName + "."))
                     {
                         int indexStart = line.IndexOf(".") + 1;
                         int indexEnd = line.IndexOf("=") - indexStart;
                         functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.Contains(includeStart))
+                    else if (line.Contains(_includeStart))
                     {
-                        int pos1 = line.IndexOf(includeStart) + includeStart.Length;
+                        int pos1 = line.IndexOf(_includeStart) + _includeStart.Length;
                         int pos2 = line.Length;
                         string subfile = line.Substring(pos1, pos2 - pos1);
                         pos1 = subfile.IndexOf("(") + 1;
@@ -74,7 +177,7 @@ namespace TombLib.Utils
 
                         depth++;
                         if (depth <= _maxRecursionDepth)
-                            GetAllFunctionsNames(subfile, result, depth);
+                            GetAllFunctionNames(subfile, result, depth);
                     }
                     else
                         continue;
@@ -82,7 +185,7 @@ namespace TombLib.Utils
                     if (string.IsNullOrEmpty(functionName))
                         continue;
 
-                    if (functionName.StartsWith(reservedFunctionPrefix))
+                    if (functionName.StartsWith(_reservedFunctionPrefix))
                         continue;
 
                     if (!result.Contains(functionName))

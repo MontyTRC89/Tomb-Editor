@@ -22,8 +22,8 @@ namespace TombLib.LevelData.VisualScripting
         public Vector2 ScreenPosition { get; set; }
         public Vector3 Color { get; set; }
 
-        public string Function;
-        public List<string> Arguments;
+        public string Function { get; private set; }
+        public List<string> Arguments { get; private set; } = new List<string>();
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }

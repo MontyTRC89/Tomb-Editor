@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib.LevelData.VisualTriggering;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
 namespace TombLib.Controls.VisualScripting

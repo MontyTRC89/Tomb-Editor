@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
@@ -173,11 +174,18 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    var functions = ScriptingUtils.GetAllFunctionsNames(path);
+                    var functions = ScriptingUtils.GetAllFunctionNames(path);
                     functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
 
                     nodeEditor.CachedLuaFunctions.Clear();
                     nodeEditor.CachedLuaFunctions.AddRange(functions);
+
+                    var nodeFunctions = ScriptingUtils.GetAllNodeFunctions("test.lua");
+
+                    nodeEditor.ConditionFunctions.Clear();
+                    nodeEditor.ConditionFunctions.AddRange(nodeFunctions.Where(f => f.Conditional));
+                    nodeEditor.ActionFunctions.Clear();
+                    nodeEditor.ActionFunctions.AddRange(nodeFunctions.Where(f => !f.Conditional));
 
                     if (lstFunctions.Items.Count == 0)
                     {
