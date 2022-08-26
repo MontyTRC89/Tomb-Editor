@@ -52,18 +52,21 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
-        public void SpawnUIElements(List<NodeFunction> functions = null)
+        public void SpawnFunctionList(List<NodeFunction> functions)
         {
-            if (functions != null)
-            {
-                cbFunction.Items.Clear();
-                foreach (var f in functions)
-                    cbFunction.Items.Add(f);
+            if (functions == null)
+                return;
 
-                if (cbFunction.Items.Count > 0)
-                    cbFunction.SelectedIndex = 0;
-            }
+            cbFunction.Items.Clear();
+            foreach (var f in functions)
+                cbFunction.Items.Add(f);
 
+            if (cbFunction.Items.Count > 0)
+                cbFunction.SelectedIndex = 0;
+        }
+
+        public void SpawnUIElements()
+        {
             var func = cbFunction.SelectedItem as NodeFunction;
 
             if (func == null)
@@ -92,23 +95,27 @@ namespace TombLib.Controls.VisualScripting
                 var ctrl = new ArgumentEditor()
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                    Location = new Point(9, newY),
                     Name = "argEditor" + i.ToString(),
-                    Size = new Size(cbFunction.Width, cbFunction.Height)
+                    Visible = false
                 };
 
                 ctrl.SetArgumentType(func.Arguments[i], Editor);
 
                 _argControls.Add(ctrl);
                 Controls.Add(ctrl);
+
+                // If placed in constructor, it won't work properly.
+                ctrl.Size = new Size(cbFunction.Width, cbFunction.Height);
+                ctrl.Location = new Point(cbFunction.Left, newY);
+                ctrl.Visible = true;
+
                 ctrl.ValueChanged += Ctrl_ValueChanged;
             }
 
             var newHeight = cbFunction.Location.Y +
                             cbFunction.Size.Height +
                             _elementSpacing +
-                            (_elementSpacing + _elementHeight) * _argControls.Count +
-                            _elementSpacing + 1;
+                            (_elementSpacing + _elementHeight) * _argControls.Count;
 
             Size = new Size(Size.Width, newHeight);
 
