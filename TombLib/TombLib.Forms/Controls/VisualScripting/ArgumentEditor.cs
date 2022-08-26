@@ -41,6 +41,9 @@ namespace TombLib.Controls.VisualScripting
         {
             InitializeComponent();
             container.Visible = (LicenseManager.UsageMode == LicenseUsageMode.Runtime);
+
+            // HACK: Fix textbox UI height
+            tbString.AutoSize = false;
         }
 
         public void SetArgumentType(ArgumentType type, NodeEditor editor)
