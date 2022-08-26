@@ -16,6 +16,7 @@ namespace TombLib.Controls.VisualScripting
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
         protected const int _elementSpacing = 8;
+        protected const int _elementHeight = 24;
 
         protected const int _visibilityMargin = 32;
 
@@ -24,6 +25,7 @@ namespace TombLib.Controls.VisualScripting
         protected int _lastSnappedGrip = -1;
 
         private bool _mouseDown = false;
+        private int _lastSelectedIndex = -1;
 
         public NodeEditor Editor => Parent as NodeEditor;
         public TriggerNode Node { get; protected set; }
@@ -51,6 +53,22 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
+        public void DisposeUI()
+        {
+            // Remove old controls in reverse order
+            for (int i = _argControls.Count - 1; i >= 0; i--)
+            {
+                var control = _argControls[i];
+                control.ValueChanged -= Ctrl_ValueChanged;
+
+                if (Controls.Contains(control))
+                    Controls.Remove(control);
+
+                _argControls.RemoveAt(i);
+                control.Dispose();
+            }
+        }
+
         public void SpawnFunctionList(List<NodeFunction> functions)
         {
             if (functions == null)
@@ -72,95 +90,94 @@ namespace TombLib.Controls.VisualScripting
             if (func == null)
                 return;
 
-            for (int i = _argControls.Count - 1; i >= 0; i--)
-            {
-                var control = _argControls[i];
-                control.ValueChanged -= Ctrl_ValueChanged;
-
-                if (Controls.Contains(control))
-                    Controls.Remove(control);
-
-                _argControls.RemoveAt(i);
-                control.Dispose();
-            }
+            DisposeUI();
 
             var refWidth = Width - _elementSpacing * 2; 
             var newY = cbFunction.Location.Y;
             var newX = cbFunction.Location.X;
-            var controlsOnLine = 1;
 
-            cbFunction.Width = refWidth;
+            cbFunction.Visible = false;
+            cbFunction.Size = new Size(refWidth, _elementHeight);
+            cbFunction.Location = new Point(_elementSpacing, _elementSpacing);
 
+            var elementsOnLines = new List<int>();
+            int elements = 1;
+            foreach (var arg in func.Arguments)
+            {
+                elements++;
+
+                bool lastEntry = func.Arguments.IndexOf(arg) == func.Arguments.Count - 1;
+
+                if (arg.NewLine || )
+                {
+                    elementsOnLines.Add(elements - 1);
+                    elements = 1;
+                }
+            }
+
+            int line = 0;
             for (int i = 0; i < func.Arguments.Count; i++)
             {
                 var ctrl = new ArgumentEditor()
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                     Name = "argEditor" + i.ToString(),
-                    Visible = false
+                    Visible = false,
+                    Enabled = false
                 };
-
-                ctrl.SetArgumentType(func.Arguments[i], Editor);
 
                 _argControls.Add(ctrl);
                 Controls.Add(ctrl);
 
-                if (func.ArgumentLayout.Count > i)
+                var normScale = func.Arguments[i].Width / 100.0f;
+                int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing * 2;
+
+                ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
+                ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
+
+                // HACK: For first control, we need to reference func list which is outside of container.
+                if (newY == _elementSpacing && !func.Arguments[i].NewLine)
                 {
-                    var normScale = func.ArgumentLayout[i].Width / 100.0f;
+                    workLineWidth += _elementSpacing;
 
-                    // HACK: For first control, we need to reference func list which is outside of container.
-                    if (newY == cbFunction.Location.Y && !func.ArgumentLayout[i].NewLine)
-                    {
-                        for (int j = 0; j < _argControls.Count; j++)
-                        {
-                            if (func.ArgumentLayout.Count <= j) continue;
-                            cbFunction.Width -= (int)(normScale * refWidth - _elementSpacing * 2);
-                        }
-                    }
+                    for (int j = 0; j < i; j++)
+                        workLineWidth -= (_argControls[j].Width + _elementSpacing);
 
-                    if (func.ArgumentLayout[i].NewLine)
-                    {
-                        controlsOnLine = 1;
-                        newX  = cbFunction.Location.X;
-                        newY += cbFunction.Size.Height + _elementSpacing;
-                    }
-                    else
-                    {
-                        controlsOnLine++;
+                    cbFunction.Width = workLineWidth;
+                }
 
-                        if (_argControls.Count == 1)
-                            newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
-                        else
-                            newX = _argControls[i - 1].Left + _argControls[i - 1].Width + (_elementSpacing);
-                    }
-
-                    ctrl.Size = new Size((int)(refWidth * normScale) - _elementSpacing , cbFunction.Height);
-                    ctrl.Location = new Point(newX, newY);
+                if (func.Arguments[i].NewLine)
+                {
+                    newX  = _elementSpacing;
+                    newY += _elementHeight + _elementSpacing;
+                    line++;
                 }
                 else
                 {
-                    // If position data is placed in constructor, it won't work properly.
-                    ctrl.Size = new Size(cbFunction.Width, cbFunction.Height);
-                    ctrl.Location = new Point(cbFunction.Left, newY);
+                    if (_argControls.Count == 1)
+                    {
+                        cbFunction.Width -= ctrl.Width;
+                        newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
+                    }
+                    else
+                        newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
                 }
 
-                ctrl.Visible = true;
+                ctrl.Location = new Point(newX, newY);
                 ctrl.ValueChanged += Ctrl_ValueChanged;
             }
 
-            var newHeight = cbFunction.Location.Y +
-                            cbFunction.Size.Height +
-                            _elementSpacing +
-                            (_elementSpacing + cbFunction.Height) * _argControls.Count + 1;
+            var newHeight = _elementSpacing +
+                             elementsOnLines.Count * (_elementHeight + _elementSpacing);
 
             Size = new Size(Size.Width, newHeight);
-
-            for (int i = 0; i < _argControls.Count; i++)
-                _argControls[i].SetArgumentType(func.Arguments[i], Editor);
+            cbFunction.Visible = true;
 
             for (int i = 0; i < Node.Arguments.Count; i++)
                 RefreshArgument(i);
+
+            foreach (var control in _argControls)
+                control.Visible = control.Enabled = true;
 
             Editor?.Invalidate();
         }
@@ -477,6 +494,10 @@ namespace TombLib.Controls.VisualScripting
 
         private void cbFunction_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Prevent multiple firings (thanks Winforms)
+            if (_lastSelectedIndex == cbFunction.SelectedIndex)
+                return;
+
             Node.Function = (cbFunction.SelectedItem as NodeFunction).Name;
             Node.Arguments.Clear();
 
@@ -485,6 +506,7 @@ namespace TombLib.Controls.VisualScripting
                 Node.Arguments.Add(string.Empty);
 
             SpawnUIElements();
+            _lastSelectedIndex = cbFunction.SelectedIndex;
         }
     }
 }

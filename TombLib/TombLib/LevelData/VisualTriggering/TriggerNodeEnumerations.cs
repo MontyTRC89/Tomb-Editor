@@ -42,6 +42,7 @@ namespace TombLib.LevelData.VisualScripting
 
     public struct ArgumentLayout
     {
+        public ArgumentType Type;
         public bool NewLine;
         public float Width;
     }
@@ -51,8 +52,7 @@ namespace TombLib.LevelData.VisualScripting
         public string Name { get; set; }
         public bool Conditional { get; set; }
         public string Signature { get; set; }
-        public List<ArgumentType> Arguments { get; private set; } = new List<ArgumentType>();
-        public List<ArgumentLayout> ArgumentLayout { get; private set; } = new List<ArgumentLayout>();
+        public List<ArgumentLayout> Arguments { get; private set; } = new List<ArgumentLayout>();
 
         public override string ToString() => Name;
         public override int GetHashCode() => (Name + Conditional.ToString() + Signature + Arguments.Count.ToString()).GetHashCode();

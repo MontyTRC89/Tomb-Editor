@@ -458,7 +458,10 @@ namespace TombLib.Controls.VisualScripting
             {
                 var control = visibleNodes[i];
                 if (!linearizedNodes.Contains(control.Node))
+                {
                     Controls.Remove(control);
+                    control.DisposeUI();
+                }
             }
 
             var newControls = new List<VisibleNodeBase>();

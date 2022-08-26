@@ -20,7 +20,6 @@ namespace TombLib.Utils
         private static readonly string _nodeNameId = "!name";
         private static readonly string _nodeTypeId = "!condition";
         private static readonly string _nodeArgumentId = "!arguments";
-        private static readonly string _nodeArgumentLayout = "!argumentlayout";
         private static readonly string _nodeLayoutNewLine = "newline";
 
         private static List<string> ExtractValues(string source)
@@ -66,25 +65,13 @@ namespace TombLib.Utils
                         }
                         else if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            var args = ExtractValues(comment.Substring(_nodeArgumentId.Length, comment.Length - _nodeArgumentId.Length));
-
-                            foreach (var a in args)
-                            {
-                                var argType = ArgumentType.Numerical;
-                                try { argType = (ArgumentType)Enum.Parse(typeof(ArgumentType), a); } catch { }
-                                nodeFunction.Arguments.Add(argType);
-                            }
-
-                            continue;
-                        }
-                        else if (comment.StartsWith(_nodeArgumentLayout, System.StringComparison.InvariantCultureIgnoreCase))
-                        {
                             var settings = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length));
 
                             foreach (var s in settings)
                             {
                                 var argLayout = new ArgumentLayout()
                                 {
+                                    Type = ArgumentType.Numerical,
                                     NewLine = false,
                                     Width = 100.0f
                                 };
@@ -92,18 +79,17 @@ namespace TombLib.Utils
                                 var parameters = s.Split(',').Select(st => st.Trim());
                                 foreach (var p in parameters)
                                 {
+                                    float width = 100.0f;
+
                                     if (p.Equals(_nodeLayoutNewLine, StringComparison.InvariantCultureIgnoreCase))
                                         argLayout.NewLine = true;
+                                    else if (float.TryParse(p, out width))
+                                        argLayout.Width = width;
                                     else
-                                    {
-                                        float width = 100.0f;
-                                        if (float.TryParse(p, out width))
-                                            argLayout.Width = width;
-                                    }
+                                        try { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } catch { }
                                 }
 
-                                if (nodeFunction.ArgumentLayout.Count < nodeFunction.Arguments.Count)
-                                    nodeFunction.ArgumentLayout.Add(argLayout);
+                                 nodeFunction.Arguments.Add(argLayout);
                             }
                             continue;
                         }
