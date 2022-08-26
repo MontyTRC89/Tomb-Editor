@@ -47,9 +47,7 @@ namespace TombLib.LevelData.VisualScripting
         public string Signature { get; set; }
         public List<ArgumentType> Arguments { get; private set; } = new List<ArgumentType>();
 
-        public override int GetHashCode()
-        {
-            return (Name + Conditional.ToString() + Signature + Arguments.Count.ToString()).GetHashCode();
-        }
+        public override string ToString() => Name;
+        public override int GetHashCode() => (Name + Conditional.ToString() + Signature + Arguments.Count.ToString()).GetHashCode();
     }
 }

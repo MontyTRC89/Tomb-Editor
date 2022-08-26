@@ -37,7 +37,7 @@
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.GripSize = 0;
             this.Name = "VisibleNodeCondition";
-            this.Size = new System.Drawing.Size(455, 43);
+            this.Size = new System.Drawing.Size(417, 43);
             this.ResumeLayout(false);
 
         }

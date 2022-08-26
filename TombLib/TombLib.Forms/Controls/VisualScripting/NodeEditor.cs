@@ -568,6 +568,8 @@ namespace TombLib.Controls.VisualScripting
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
 
+                control.SpawnUIElements((node is TriggerNodeAction) ? ActionFunctions : ConditionFunctions);
+
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);
             }

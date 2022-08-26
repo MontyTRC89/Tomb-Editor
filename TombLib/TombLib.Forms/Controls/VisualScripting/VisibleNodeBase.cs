@@ -15,6 +15,8 @@ namespace TombLib.Controls.VisualScripting
     {
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
+        protected const int _elementSpacing = 8;
+        protected const int _elementHeight = 24;
 
         protected const int _visibilityMargin = 32;
 
@@ -26,6 +28,8 @@ namespace TombLib.Controls.VisualScripting
 
         public NodeEditor Editor => Parent as NodeEditor;
         public TriggerNode Node { get; protected set; }
+
+        private List<ArgumentEditor> _argControls = new List<ArgumentEditor>();
 
         // This constructor overload is needed so that VS designer don't get crazy.
         public VisibleNodeBase() : this(new TriggerNodeAction()) { }
@@ -46,6 +50,85 @@ namespace TombLib.Controls.VisualScripting
             _grips.Clear();
             _grips.Add(new Rectangle(Width / 2 - _gripWidth / 2, 0, _gripWidth, _gripHeight));
             Invalidate();
+        }
+
+        public void SpawnUIElements(List<NodeFunction> functions = null)
+        {
+            if (functions != null)
+            {
+                cbFunction.Items.Clear();
+                foreach (var f in functions)
+                    cbFunction.Items.Add(f);
+
+                if (cbFunction.Items.Count > 0)
+                    cbFunction.SelectedIndex = 0;
+            }
+
+            var func = cbFunction.SelectedItem as NodeFunction;
+
+            if (func == null)
+                return;
+
+            if (_argControls.Count > func.Arguments.Count)
+                for (int i = _argControls.Count - 1; i <= 0; i--)
+                {
+                    var control = _argControls[i];
+                    control.ValueChanged -= Ctrl_ValueChanged;
+
+                    if (Controls.Contains(control))
+                        Controls.Remove(control);
+
+                    _argControls.RemoveAt(i);
+                }
+
+            int oldArgControls = _argControls.Count;
+            for (int i = oldArgControls; i < func.Arguments.Count; i++)
+            {
+                var newY = cbFunction.Location.Y +
+                           cbFunction.Size.Height +
+                           _elementSpacing +
+                           (_elementSpacing + _elementHeight) * _argControls.Count;
+
+                var ctrl = new ArgumentEditor()
+                {
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                    Location = new Point(9, newY),
+                    Name = "argEditor" + i.ToString(),
+                    Size = new Size(cbFunction.Width, cbFunction.Height)
+                };
+
+                ctrl.SetArgumentType(func.Arguments[i], Editor);
+
+                _argControls.Add(ctrl);
+                Controls.Add(ctrl);
+                ctrl.ValueChanged += Ctrl_ValueChanged;
+            }
+
+            var newHeight = cbFunction.Location.Y +
+                            cbFunction.Size.Height +
+                            _elementSpacing +
+                            (_elementSpacing + _elementHeight) * _argControls.Count +
+                            _elementSpacing + 1;
+
+            Size = new Size(Size.Width, newHeight);
+
+            for (int i = 0; i < Node.Arguments.Count; i++)
+                RefreshArgument(i);
+        }
+
+        private void Ctrl_ValueChanged(object sender, EventArgs e)
+        {
+            var ctrl = sender as ArgumentEditor;
+            int index = _argControls.IndexOf(ctrl);
+
+            if (index != -1 && Node.Arguments.Count > index)
+                Node.Arguments[index] = ctrl.Text;
+        }
+
+        public void RefreshArgument(int index)
+        {
+            if (Node.Arguments.Count < index && _argControls.Count < index)
+                _argControls[index].Text = Node.Arguments[index];
         }
 
         public void RefreshPosition()
@@ -341,6 +424,12 @@ namespace TombLib.Controls.VisualScripting
                 cp.ExStyle |= 0x02000000;  // Prevent controls flickering
                 return cp;
             }
+        }
+
+        private void cbFunction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Name;
+            SpawnUIElements();
         }
     }
 }

@@ -109,12 +109,11 @@ namespace TombLib.Utils
                             GetAllNodeFunctions(subfile, result, depth);
                     }
 
-                    if (string.IsNullOrEmpty(nodeFunction.Signature) ||
-                        nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
-                    {
-                        nodeFunction = new NodeFunction();
+                    if (string.IsNullOrEmpty(nodeFunction.Signature))
                         continue;
-                    }
+
+                    if (nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
+                        continue;
 
                     if (!result.Contains(nodeFunction))
                     {
