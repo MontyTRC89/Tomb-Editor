@@ -68,7 +68,7 @@ namespace TombEditor.Controls
 
             ReloadFunctions();
 
-            nodeEditor.Initialize();
+            nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
 
             nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
@@ -175,6 +175,9 @@ namespace TombEditor.Controls
                 {
                     var functions = ScriptingUtils.GetAllFunctionsNames(path);
                     functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+
+                    nodeEditor.CachedLuaFunctions.Clear();
+                    nodeEditor.CachedLuaFunctions.AddRange(functions);
 
                     if (lstFunctions.Items.Count == 0)
                     {

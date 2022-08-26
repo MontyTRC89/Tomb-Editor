@@ -8,8 +8,10 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -38,7 +40,7 @@ namespace TombLib.Controls.VisualScripting
                 UpdateVisibleNodes(true);
             }
         }
-        private List<TriggerNode> _nodes;
+        private List<TriggerNode> _nodes = new List<TriggerNode>();
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -59,6 +61,39 @@ namespace TombLib.Controls.VisualScripting
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Resizing { get; private set; } = false;
+
+        // Precache lists of objects to avoid polling every time user changes function
+        // in a node list. By default it is set to nothing, but must be replaced externally
+        // by a form/control where node editor is placed.
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> CachedLuaFunctions { get; private set; } = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<MoveableInstance> CachedMoveables { get; private set; } = new List<MoveableInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<StaticInstance> CachedStatics { get; private set; } = new List<StaticInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<CameraInstance> CachedCameras { get; private set; } = new List<CameraInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<SinkInstance> CachedSinks { get; private set; } = new List<SinkInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<FlybyCameraInstance> CachedFlybys { get; private set; } = new List<FlybyCameraInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<VolumeInstance> CachedVolumes { get; private set; } = new List<VolumeInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<Room> CachedRooms { get; private set; } = new List<Room>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<WadSoundInfo> CachedSoundInfos { get; private set; } = new List<WadSoundInfo>();
+
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
@@ -125,13 +160,25 @@ namespace TombLib.Controls.VisualScripting
             base.Dispose(disposing);
         }
 
-        public void Initialize(List<TriggerNode> nodes = null)
+        public void Initialize(Level level)
         {
             ViewPosition = new Vector2(GridSize / 2.0f,
                                        GridSize / 2.0f);
-            Nodes = nodes == null ? new List<TriggerNode>() : nodes;
+            PopulateCachedNodeLists(level);
             UpdateVisibleNodes(true);
             _updateTimer.Start();
+        }
+
+        public void PopulateCachedNodeLists(Level level)
+        {
+            CachedMoveables  = level.GetAllObjects().OfType<MoveableInstance>().ToList();
+            CachedStatics    = level.GetAllObjects().OfType<StaticInstance>().ToList();
+            CachedCameras    = level.GetAllObjects().OfType<CameraInstance>().ToList();
+            CachedSinks      = level.GetAllObjects().OfType<SinkInstance>().ToList();
+            CachedFlybys     = level.GetAllObjects().OfType<FlybyCameraInstance>().ToList();
+            CachedVolumes    = level.GetAllObjects().OfType<VolumeInstance>().ToList();
+            CachedSoundInfos = level.Settings.GlobalSoundMap;
+            CachedRooms      = level.ExistingRooms;
         }
 
         public void AddConditionNode(bool linkToPrevious)
@@ -897,13 +944,6 @@ namespace TombLib.Controls.VisualScripting
 
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-                // Draw selection area
-                if (_selectionArea != Rectangle2.Zero)
-                {
-                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
-                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
-                }
-
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
                 // Update colors
@@ -917,6 +957,13 @@ namespace TombLib.Controls.VisualScripting
 
                 // Draw hot node
                 DrawHotNode(e, nodeList);
+
+                // Draw selection area
+                if (_selectionArea != Rectangle2.Zero)
+                {
+                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
+                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
+                }
 
                 // Draw shadows
                 foreach (var n in nodeList)
