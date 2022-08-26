@@ -22,26 +22,6 @@ namespace TombLib.LevelData.VisualScripting
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
 
-        public bool AttachToNext(TriggerNode node)
-        {
-            if (node.Previous != null)
-                return false;
-
-            Next = node;
-            node.Previous = this;
-            return true;
-        }
-
-        public bool AttachToPrevious(TriggerNode node)
-        {
-            if (node.Next != null)
-                return false;
-
-            Previous = node;
-            node.Next = this;
-            return true;
-        }
-
         public static void CleanUpNodes(List<TriggerNode> nodes)
         {
             var nodesToClean = new List<int>();
