@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cbFunction = new TombLib.Controls.DarkSearchableComboBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // cbFunction
             // 
             this.cbFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbFunction.FormattingEnabled = true;
             this.cbFunction.Location = new System.Drawing.Point(9, 9);
             this.cbFunction.Name = "cbFunction";
             this.cbFunction.Size = new System.Drawing.Size(400, 24);
@@ -60,5 +61,6 @@
         #endregion
 
         private TombLib.Controls.DarkSearchableComboBox cbFunction;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
