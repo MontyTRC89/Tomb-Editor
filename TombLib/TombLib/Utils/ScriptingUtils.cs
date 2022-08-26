@@ -147,11 +147,14 @@ namespace TombLib.Utils
                     if (nodeFunction.Signature.StartsWith(_reservedFunctionPrefix))
                         continue;
 
+                    if (string.IsNullOrEmpty(nodeFunction.Name) ||
+                        string.IsNullOrEmpty(nodeFunction.Signature))
+                        continue;
+
                     if (!result.Contains(nodeFunction))
-                    {
                         result.Add(nodeFunction);
-                        nodeFunction = new NodeFunction();
-                    }
+
+                    nodeFunction = new NodeFunction();
                 }
 
                 return result;

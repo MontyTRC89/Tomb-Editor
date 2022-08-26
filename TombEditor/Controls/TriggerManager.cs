@@ -157,13 +157,8 @@ namespace TombEditor.Controls
             lstFunctions.Items.Clear();
 
             // TODO: Add to level settings or whatever.
-            var nodeFunctions = ScriptingUtils.GetAllNodeFunctions("test.lua");
-
-            nodeEditor.ConditionFunctions.Clear();
-            nodeEditor.ConditionFunctions.AddRange(nodeFunctions.Where(f => f.Conditional));
-            nodeEditor.ActionFunctions.Clear();
-            nodeEditor.ActionFunctions.AddRange(nodeFunctions.Where(f => !f.Conditional));
-
+            nodeEditor.NodeFunctions.Clear();
+            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.GetAllNodeFunctions("test.lua"));
 
             if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
             {

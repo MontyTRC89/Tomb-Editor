@@ -66,10 +66,7 @@ namespace TombLib.Controls.VisualScripting
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<NodeFunction> ActionFunctions { get; private set; } = new List<NodeFunction>();
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<NodeFunction> ConditionFunctions { get; private set; } = new List<NodeFunction>();
+        public List<NodeFunction> NodeFunctions { get; private set; } = new List<NodeFunction>();
 
         // Precache lists of objects to avoid polling every time user changes function
         // in a node list. By default it is set to nothing, but must be replaced externally
@@ -478,6 +475,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 Controls.Add(control);
                 control.RefreshPosition();
+                control.SpawnFunctionList(NodeFunctions);
             }
 
             Visible = true;
@@ -567,8 +565,6 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
-
-                control.SpawnFunctionList((node is TriggerNodeAction) ? ActionFunctions : ConditionFunctions);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);

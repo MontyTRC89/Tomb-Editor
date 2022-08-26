@@ -58,7 +58,8 @@ namespace TombLib.Controls.VisualScripting
 
             cbFunction.Items.Clear();
             foreach (var f in functions)
-                cbFunction.Items.Add(f);
+                if (f.Conditional == (Node is TriggerNodeCondition))
+                    cbFunction.Items.Add(f);
 
             if (cbFunction.Items.Count > 0)
                 cbFunction.SelectedIndex = 0;
