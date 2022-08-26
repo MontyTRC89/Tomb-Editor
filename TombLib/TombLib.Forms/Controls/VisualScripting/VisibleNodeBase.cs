@@ -193,7 +193,7 @@ namespace TombLib.Controls.VisualScripting
 
         public void RefreshArgument(int index)
         {
-            if (Node.Arguments.Count < index && _argControls.Count < index)
+            if (Node.Arguments.Count > index && _argControls.Count > index)
                 _argControls[index].Text = Node.Arguments[index];
         }
 
@@ -498,12 +498,13 @@ namespace TombLib.Controls.VisualScripting
             if (_lastSelectedIndex == cbFunction.SelectedIndex)
                 return;
 
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Name;
-            Node.Arguments.Clear();
-
-            // TODO: Update variables properly
-            for (int i = 0; i < (cbFunction.SelectedItem as NodeFunction).Arguments.Count; i++)
-                Node.Arguments.Add(string.Empty);
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup.Arguments.Count < Node.Arguments.Count)
+                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
+            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
+                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                    Node.Arguments.Add(string.Empty);
 
             SpawnUIElements();
             _lastSelectedIndex = cbFunction.SelectedIndex;

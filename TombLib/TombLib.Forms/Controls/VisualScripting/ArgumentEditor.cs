@@ -131,7 +131,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void UnboxValue(string source)
         {
-            switch((ArgumentType)container.TabIndex)
+            switch((ArgumentType)container.SelectedIndex)
             {
                 case ArgumentType.Boolean:
                     {
