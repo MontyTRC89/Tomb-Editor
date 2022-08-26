@@ -162,7 +162,7 @@ namespace TombLib.Controls.VisualScripting
 
         private float[] UnboxVector3Value(string source)
         {
-            return source.Split(new string[] { "," }, StringSplitOptions.None).Select(x =>
+            return source.Split(new string[] { _separatorChar }, StringSplitOptions.None).Select(x =>
             {
                 float result;
                 if (float.TryParse(x.Trim(), out result))
@@ -183,7 +183,7 @@ namespace TombLib.Controls.VisualScripting
             var x = ((float)nudVector3X.Value).ToString();
             var y = ((float)nudVector3Y.Value).ToString();
             var z = ((float)nudVector3Z.Value).ToString();
-            _text = x + ", " + y + ", " + z;
+            _text = x + _separatorChar + y + _separatorChar + z;
             OnValueChanged(EventArgs.Empty);
         }
 
