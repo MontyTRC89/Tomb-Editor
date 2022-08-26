@@ -16,7 +16,6 @@ namespace TombLib.Controls.VisualScripting
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
         protected const int _elementSpacing = 8;
-        protected const int _elementHeight = 24;
 
         protected const int _visibilityMargin = 32;
 
@@ -72,26 +71,27 @@ namespace TombLib.Controls.VisualScripting
             if (func == null)
                 return;
 
-            if (_argControls.Count > func.Arguments.Count)
-                for (int i = _argControls.Count - 1; i >= 0; i--)
-                {
-                    var control = _argControls[i];
-                    control.ValueChanged -= Ctrl_ValueChanged;
-
-                    if (Controls.Contains(control))
-                        Controls.Remove(control);
-
-                    _argControls.RemoveAt(i);
-                }
-
-            int oldArgControls = _argControls.Count;
-            for (int i = oldArgControls; i < func.Arguments.Count; i++)
+            for (int i = _argControls.Count - 1; i >= 0; i--)
             {
-                var newY = cbFunction.Location.Y +
-                           cbFunction.Size.Height +
-                           _elementSpacing +
-                           (_elementSpacing + _elementHeight) * _argControls.Count;
+                var control = _argControls[i];
+                control.ValueChanged -= Ctrl_ValueChanged;
 
+                if (Controls.Contains(control))
+                    Controls.Remove(control);
+
+                _argControls.RemoveAt(i);
+                control.Dispose();
+            }
+
+            var refWidth = Width - _elementSpacing * 2; 
+            var newY = cbFunction.Location.Y;
+            var newX = cbFunction.Location.X;
+            var controlsOnLine = 1;
+
+            cbFunction.Width = refWidth;
+
+            for (int i = 0; i < func.Arguments.Count; i++)
+            {
                 var ctrl = new ArgumentEditor()
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
@@ -104,18 +104,54 @@ namespace TombLib.Controls.VisualScripting
                 _argControls.Add(ctrl);
                 Controls.Add(ctrl);
 
-                // If placed in constructor, it won't work properly.
-                ctrl.Size = new Size(cbFunction.Width, cbFunction.Height);
-                ctrl.Location = new Point(cbFunction.Left, newY);
-                ctrl.Visible = true;
+                if (func.ArgumentLayout.Count > i)
+                {
+                    var normScale = func.ArgumentLayout[i].Width / 100.0f;
 
+                    // HACK: For first control, we need to reference func list which is outside of container.
+                    if (newY == cbFunction.Location.Y && !func.ArgumentLayout[i].NewLine)
+                    {
+                        for (int j = 0; j < _argControls.Count; j++)
+                        {
+                            if (func.ArgumentLayout.Count <= j) continue;
+                            cbFunction.Width -= (int)(normScale * refWidth - _elementSpacing * 2);
+                        }
+                    }
+
+                    if (func.ArgumentLayout[i].NewLine)
+                    {
+                        controlsOnLine = 1;
+                        newX  = cbFunction.Location.X;
+                        newY += cbFunction.Size.Height + _elementSpacing;
+                    }
+                    else
+                    {
+                        controlsOnLine++;
+
+                        if (_argControls.Count == 1)
+                            newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
+                        else
+                            newX = _argControls[i - 1].Left + _argControls[i - 1].Width + (_elementSpacing);
+                    }
+
+                    ctrl.Size = new Size((int)(refWidth * normScale) - _elementSpacing , cbFunction.Height);
+                    ctrl.Location = new Point(newX, newY);
+                }
+                else
+                {
+                    // If position data is placed in constructor, it won't work properly.
+                    ctrl.Size = new Size(cbFunction.Width, cbFunction.Height);
+                    ctrl.Location = new Point(cbFunction.Left, newY);
+                }
+
+                ctrl.Visible = true;
                 ctrl.ValueChanged += Ctrl_ValueChanged;
             }
 
             var newHeight = cbFunction.Location.Y +
                             cbFunction.Size.Height +
                             _elementSpacing +
-                            (_elementSpacing + _elementHeight) * _argControls.Count + 1;
+                            (_elementSpacing + cbFunction.Height) * _argControls.Count + 1;
 
             Size = new Size(Size.Width, newHeight);
 

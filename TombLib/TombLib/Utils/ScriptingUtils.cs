@@ -20,6 +20,8 @@ namespace TombLib.Utils
         private static readonly string _nodeNameId = "!name";
         private static readonly string _nodeTypeId = "!condition";
         private static readonly string _nodeArgumentId = "!arguments";
+        private static readonly string _nodeArgumentLayout = "!argumentlayout";
+        private static readonly string _nodeLayoutNewLine = "newline";
 
         private static List<string> ExtractValues(string source)
         {
@@ -73,6 +75,36 @@ namespace TombLib.Utils
                                 nodeFunction.Arguments.Add(argType);
                             }
 
+                            continue;
+                        }
+                        else if (comment.StartsWith(_nodeArgumentLayout, System.StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var settings = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length));
+
+                            foreach (var s in settings)
+                            {
+                                var argLayout = new ArgumentLayout()
+                                {
+                                    NewLine = false,
+                                    Width = 100.0f
+                                };
+
+                                var parameters = s.Split(',').Select(st => st.Trim());
+                                foreach (var p in parameters)
+                                {
+                                    if (p.Equals(_nodeLayoutNewLine, StringComparison.InvariantCultureIgnoreCase))
+                                        argLayout.NewLine = true;
+                                    else
+                                    {
+                                        float width = 100.0f;
+                                        if (float.TryParse(p, out width))
+                                            argLayout.Width = width;
+                                    }
+                                }
+
+                                if (nodeFunction.ArgumentLayout.Count < nodeFunction.Arguments.Count)
+                                    nodeFunction.ArgumentLayout.Add(argLayout);
+                            }
                             continue;
                         }
                     }
