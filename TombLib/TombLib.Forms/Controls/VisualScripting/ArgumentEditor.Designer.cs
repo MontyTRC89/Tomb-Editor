@@ -255,6 +255,7 @@
             // 
             // panelColor
             // 
+            this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelColor.Location = new System.Drawing.Point(0, 0);
             this.panelColor.Name = "panelColor";

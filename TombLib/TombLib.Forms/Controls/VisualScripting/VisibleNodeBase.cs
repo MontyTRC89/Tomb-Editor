@@ -105,12 +105,11 @@ namespace TombLib.Controls.VisualScripting
             foreach (var arg in func.Arguments)
             {
                 elements++;
-
                 bool lastEntry = func.Arguments.IndexOf(arg) == func.Arguments.Count - 1;
 
-                if (arg.NewLine || )
+                if (arg.NewLine || lastEntry)
                 {
-                    elementsOnLines.Add(elements - 1);
+                    elementsOnLines.Add(lastEntry ? elements : elements - 1);
                     elements = 1;
                 }
             }
