@@ -66,27 +66,27 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Sinks:
                     foreach (var item in editor.CachedSinks)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.Statics:
                     foreach (var item in editor.CachedStatics)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.Moveables:
                     foreach (var item in editor.CachedMoveables)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.Volumes:
                     foreach (var item in editor.CachedVolumes)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.Cameras:
                     foreach (var item in editor.CachedCameras)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.FlybyCameras:
                     foreach (var item in editor.CachedFlybys)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
                     break;
                 case ArgumentType.Rooms:
                     foreach (var item in editor.CachedRooms)
