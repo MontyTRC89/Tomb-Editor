@@ -137,8 +137,8 @@ namespace TombLib.Controls.VisualScripting
                             switch (i)
                             {
                                 case 0: nudVector3X.Value = (decimal)currentFloat; break;
-                                case 1: nudVector3X.Value = (decimal)currentFloat; break;
-                                case 2: nudVector3X.Value = (decimal)currentFloat; break;
+                                case 1: nudVector3Y.Value = (decimal)currentFloat; break;
+                                case 2: nudVector3Z.Value = (decimal)currentFloat; break;
                             }    
                         }
                         break;
