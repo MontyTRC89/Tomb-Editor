@@ -92,9 +92,9 @@ namespace TombLib.Controls.VisualScripting
 
             DisposeUI();
 
-            var refWidth = Width - _elementSpacing * 2; 
-            var newY = cbFunction.Location.Y;
-            var newX = cbFunction.Location.X;
+            int refWidth = Width - _elementSpacing * 2; 
+            int newY = _elementSpacing;
+            int newX = _elementSpacing;
 
             cbFunction.Visible = false;
             cbFunction.Size = new Size(refWidth, _elementHeight);
