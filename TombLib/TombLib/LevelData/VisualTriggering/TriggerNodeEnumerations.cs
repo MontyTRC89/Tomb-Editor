@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TombLib.Utils;
-
-namespace TombLib.LevelData.VisualTriggering
+﻿namespace TombLib.LevelData.VisualTriggering
 {
     // Condition type specifies how condition node will check condition.
-    // Boolean means strict "is", numerical allows all kinds of operators,
-    // such as =, !=, >=, <=, > or <. Range allows to check values between two
-    // specific numericals.
+    // Condition type should be internally processed by lua comparer which
+    // should be called in condition function itself. For this reason, 
+    // condition function declaration must feature argument which will pass
+    // condition type to it.
 
     public enum ConditionType
     {
-        Boolean,
-        Numerical,
-        Range
+        Equal,
+        NotEqual,
+        Less,
+        LessOrEqual,
+        More,
+        MoreOrEqual
     }
 
     // For action node, argument type specifies how argument will be displayed
@@ -22,7 +21,7 @@ namespace TombLib.LevelData.VisualTriggering
 
     public enum ArgumentType
     {
-        Boolean,        // Listable
+        Boolean,
         Numerical,
         Vector3,
         String,
@@ -35,81 +34,8 @@ namespace TombLib.LevelData.VisualTriggering
         FlybyCameras,   // Listable
         Volumes,        // Listable
         Rooms,          // Listable
-        SoundEffects    // Listable
+        SoundEffects,   // Listable
+        CompareOperand
     }
 
-    public static class TriggerNodeEnumerations
-    {
-        public static IEnumerable<string> BuildList(Level level, ArgumentType type)
-        {
-            Func<int, string> formatSounds = (i) =>
-            {
-                var info = level?.Settings?.WadTryGetSoundInfo(i);
-                if (info != null)
-                    return info.Name;
-                else
-                    return i + ": --- Not present ---";
-            };
-
-            switch (type)
-            {
-                case ArgumentType.Boolean:
-                    return new List<string>() { "true", "false" };
-
-                case ArgumentType.Moveables:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<MoveableInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.Statics:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<StaticInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.Cameras:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<CameraInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.Sinks:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<SinkInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.FlybyCameras:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<FlybyCameraInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.Volumes:
-                    return level.ExistingRooms
-                        .SelectMany(room => room.Objects)
-                        .OfType<VolumeInstance>()
-                        .Where(o => !string.IsNullOrEmpty(o.LuaName))
-                        .Select(o => o.LuaName);
-
-                case ArgumentType.Rooms:
-                    return level.ExistingRooms.Select(r => r.Name);
-
-                case ArgumentType.LuaScript:
-                    return ScriptingUtils.GetAllFunctionsNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
-
-                case ArgumentType.SoundEffects:
-                    return Enumerable.Range(0, level.Settings.GlobalSoundMap.Count()).Select(formatSounds);
-
-                default:
-                    return null;
-            }
-        }
-    }
 }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData.VisualTriggering;
+using TombLib.Utils;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -89,6 +90,10 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.SoundEffects:
                     foreach (var item in editor.CachedSoundInfos)
                         cbList.Items.Add(new ComboBoxItem(item.ToString(), item.Id.ToString()));
+                    break;
+                case ArgumentType.CompareOperand:
+                    foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 default:
                     break;
