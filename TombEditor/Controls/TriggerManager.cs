@@ -156,6 +156,16 @@ namespace TombEditor.Controls
             lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
 
+
+
+            var nodeFunctions = ScriptingUtils.GetAllNodeFunctions("test.lua");
+
+            nodeEditor.ConditionFunctions.Clear();
+            nodeEditor.ConditionFunctions.AddRange(nodeFunctions.Where(f => f.Conditional));
+            nodeEditor.ActionFunctions.Clear();
+            nodeEditor.ActionFunctions.AddRange(nodeFunctions.Where(f => !f.Conditional));
+
+
             if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
             {
                 lblListNotify.Tag = 1;
@@ -179,13 +189,6 @@ namespace TombEditor.Controls
 
                     nodeEditor.CachedLuaFunctions.Clear();
                     nodeEditor.CachedLuaFunctions.AddRange(functions);
-
-                    var nodeFunctions = ScriptingUtils.GetAllNodeFunctions("test.lua");
-
-                    nodeEditor.ConditionFunctions.Clear();
-                    nodeEditor.ConditionFunctions.AddRange(nodeFunctions.Where(f => f.Conditional));
-                    nodeEditor.ActionFunctions.Clear();
-                    nodeEditor.ActionFunctions.AddRange(nodeFunctions.Where(f => !f.Conditional));
 
                     if (lstFunctions.Items.Count == 0)
                     {

@@ -18,12 +18,12 @@ namespace TombLib.Utils
         private static readonly string _commentPrefix = "--";
 
         private static readonly string _nodeNameId = "name";
-        private static readonly string _nodeTypeId = "type";
-        private static readonly string _nodeArgumentId = "argument";
+        private static readonly string _nodeTypeId = "condition";
+        private static readonly string _nodeArgumentId = "arguments";
 
-        private static string ExtractValue(string source)
+        private static List<string> ExtractValues(string source)
         {
-            return source.Split('"').Where((item, index) => index % 2 != 0).FirstOrDefault();
+            return source.Split('"').Where((item, index) => index % 2 != 0).ToList();
         }
 
         public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
@@ -44,31 +44,47 @@ namespace TombLib.Utils
                     string line = l.Trim();
 
                     int cPoint = line.IndexOf(_commentPrefix);
-                    if (cPoint > 0)
-                    {
-                        line = line.Substring(0, cPoint - 1);
 
-                        var comment = line.Substring(cPoint + _commentPrefix.Length, line.Length).Trim();
+                    if (cPoint >= 0)
+                    {
+                        int start = cPoint + _commentPrefix.Length;
+                        int end = line.Length;
+
+                        var comment = line.Substring(start, end - start).Trim();
 
                         if (comment.StartsWith(_nodeTypeId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             bool cond = false;
-                            bool.TryParse(ExtractValue(comment.Substring(_nodeNameId.Length, line.Length)), out cond);
+                            bool.TryParse(ExtractValues(comment.Substring(_nodeTypeId.Length, comment.Length - _nodeTypeId.Length)).LastOrDefault(), out cond);
                             nodeFunction.Conditional = cond;
+                            continue;
                         }
 
                         if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
-                            nodeFunction.Name = ExtractValue(comment.Substring(_nodeNameId.Length, line.Length));
+                        {
+                            nodeFunction.Name = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
+                            continue;
+                        }
+                            
 
                         if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            var argType = ArgumentType.Numerical;
-                            argType = (ArgumentType)Enum.Parse(typeof(ArgumentType), 
-                                       ExtractValue(comment.Substring(_nodeNameId.Length, line.Length)).ToLower());
+                            var args = ExtractValues(comment.Substring(_nodeArgumentId.Length, comment.Length - _nodeArgumentId.Length));
+
+                            foreach (var a in args)
+                            {
+                                var argType = ArgumentType.Numerical;
+                                try { argType = (ArgumentType)Enum.Parse(typeof(ArgumentType), a); } catch { }
+                                nodeFunction.Arguments.Add(argType);
+                            }
+                            continue;
                         }
                     }
+
+                    if (cPoint > 0)
+                        line = line.Substring(0, cPoint - 1);
                     else if (cPoint == 0)
-                        continue;
+                        line = string.Empty;
 
                     if (line.StartsWith("function " + _tableName + "."))
                     {
@@ -96,8 +112,6 @@ namespace TombLib.Utils
                         if (depth <= _maxRecursionDepth)
                             GetAllNodeFunctions(subfile, result, depth);
                     }
-                    else
-                        continue;
 
                     if (string.IsNullOrEmpty(nodeFunction.Signature))
                         continue;
@@ -106,7 +120,10 @@ namespace TombLib.Utils
                         continue;
 
                     if (!result.Contains(nodeFunction))
+                    {
                         result.Add(nodeFunction);
+                        nodeFunction = new NodeFunction();
+                    }
                 }
 
                 return result;
