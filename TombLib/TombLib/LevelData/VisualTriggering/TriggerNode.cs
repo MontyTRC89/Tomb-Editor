@@ -21,18 +21,6 @@ namespace TombLib.LevelData.VisualScripting
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
-
-        public static void CleanUpNodes(List<TriggerNode> nodes)
-        {
-            var nodesToClean = new List<int>();
-
-            for (int i = 0; i < nodes.Count; i++)
-                if (nodes[i].Previous != null)
-                    nodesToClean.Add(i);
-
-            for (int i = nodesToClean.Count - 1; i >= 0; i--)
-                nodes.RemoveAt(nodesToClean[i]);
-        }
     }
 
     // Condition node uses a getter, which can be arbitrary code block,
