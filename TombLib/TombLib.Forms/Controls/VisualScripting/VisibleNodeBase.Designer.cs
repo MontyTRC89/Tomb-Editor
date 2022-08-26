@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cbFunction = new DarkUI.Controls.DarkComboBox();
+            this.cbFunction = new TombLib.Controls.DarkSearchableComboBox();
             this.SuspendLayout();
             // 
             // cbFunction
@@ -59,6 +59,6 @@
 
         #endregion
 
-        private DarkUI.Controls.DarkComboBox cbFunction;
+        private TombLib.Controls.DarkSearchableComboBox cbFunction;
     }
 }

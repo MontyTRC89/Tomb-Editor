@@ -70,7 +70,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             if (_argControls.Count > func.Arguments.Count)
-                for (int i = _argControls.Count - 1; i <= 0; i--)
+                for (int i = _argControls.Count - 1; i >= 0; i--)
                 {
                     var control = _argControls[i];
                     control.ValueChanged -= Ctrl_ValueChanged;
@@ -112,8 +112,13 @@ namespace TombLib.Controls.VisualScripting
 
             Size = new Size(Size.Width, newHeight);
 
+            for (int i = 0; i < _argControls.Count; i++)
+                _argControls[i].SetArgumentType(func.Arguments[i], Editor);
+
             for (int i = 0; i < Node.Arguments.Count; i++)
                 RefreshArgument(i);
+
+            Editor.Invalidate();
         }
 
         private void Ctrl_ValueChanged(object sender, EventArgs e)
@@ -429,6 +434,11 @@ namespace TombLib.Controls.VisualScripting
         private void cbFunction_SelectedIndexChanged(object sender, EventArgs e)
         {
             Node.Function = (cbFunction.SelectedItem as NodeFunction).Name;
+            Node.Arguments.Clear();
+
+            for (int i = 0; i < (cbFunction.SelectedItem as NodeFunction).Arguments.Count; i++)
+                Node.Arguments.Add(string.Empty);
+
             SpawnUIElements();
         }
     }
