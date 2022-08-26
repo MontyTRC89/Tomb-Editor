@@ -17,9 +17,9 @@ namespace TombLib.Utils
         private static readonly string _reservedFunctionPrefix = "__";
         private static readonly string _commentPrefix = "--";
 
-        private static readonly string _nodeNameId = "name";
-        private static readonly string _nodeTypeId = "condition";
-        private static readonly string _nodeArgumentId = "arguments";
+        private static readonly string _nodeNameId = "!name";
+        private static readonly string _nodeTypeId = "!condition";
+        private static readonly string _nodeArgumentId = "!arguments";
 
         private static List<string> ExtractValues(string source)
         {

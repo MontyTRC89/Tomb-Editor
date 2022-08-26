@@ -156,8 +156,7 @@ namespace TombEditor.Controls
             lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
 
-
-
+            // TODO: Add to level settings or whatever.
             var nodeFunctions = ScriptingUtils.GetAllNodeFunctions("test.lua");
 
             nodeEditor.ConditionFunctions.Clear();

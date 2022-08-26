@@ -115,7 +115,7 @@ namespace TombLib.Controls.VisualScripting
             var newHeight = cbFunction.Location.Y +
                             cbFunction.Size.Height +
                             _elementSpacing +
-                            (_elementSpacing + _elementHeight) * _argControls.Count;
+                            (_elementSpacing + _elementHeight) * _argControls.Count + 1;
 
             Size = new Size(Size.Width, newHeight);
 
@@ -443,6 +443,7 @@ namespace TombLib.Controls.VisualScripting
             Node.Function = (cbFunction.SelectedItem as NodeFunction).Name;
             Node.Arguments.Clear();
 
+            // TODO: Update variables properly
             for (int i = 0; i < (cbFunction.SelectedItem as NodeFunction).Arguments.Count; i++)
                 Node.Arguments.Add(string.Empty);
 

@@ -214,8 +214,8 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxColorValue()
         {
-            _text = panelColor.BackColor.R.ToString() + ", " + 
-                    panelColor.BackColor.G.ToString() + ", " + 
+            _text = panelColor.BackColor.R.ToString() + _separatorChar + 
+                    panelColor.BackColor.G.ToString() + _separatorChar + 
                     panelColor.BackColor.B.ToString();
             OnValueChanged(EventArgs.Empty);
         }
