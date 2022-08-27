@@ -509,7 +509,8 @@ namespace TombLib.Controls.VisualScripting
             TrimArguments();
             SpawnUIElements();
 
-            toolTip.SetToolTip(sender as Control, cbFunction.SelectedItem.ToString());
+            toolTip.SetToolTip(sender as Control, (cbFunction.SelectedItem as NodeFunction)?
+                .Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
 
             _lastSelectedIndex = cbFunction.SelectedIndex;
         }

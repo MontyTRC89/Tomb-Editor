@@ -44,6 +44,16 @@ namespace TombLib.LevelData.VisualScripting
             return node;
         }
         object ICloneable.Clone() => Clone();
+
+        public override int GetHashCode()
+        {
+            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode() ^ Function.GetHashCode();
+            Arguments.ForEach(a => hash ^= a.GetHashCode());
+            if (Next != null)
+                hash ^= Next.GetHashCode();
+
+            return hash;
+        }
     }
 
     // TriggerNodeAction implementation is similar to base one
@@ -65,7 +75,15 @@ namespace TombLib.LevelData.VisualScripting
 
         public override TriggerNode Clone()
         {
-            var node = (TriggerNodeCondition)MemberwiseClone();
+            var node = new TriggerNodeCondition()
+            {
+                Color = Color,
+                Function = Function,
+                Name = Name,
+                ScreenPosition = ScreenPosition
+            };
+
+            node.Arguments.AddRange(Arguments);
 
             if (Next != null)
             {
