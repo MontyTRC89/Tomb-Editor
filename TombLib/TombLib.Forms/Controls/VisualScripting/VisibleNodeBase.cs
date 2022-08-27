@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Controls;
@@ -55,6 +56,8 @@ namespace TombLib.Controls.VisualScripting
 
         public void DisposeUI()
         {
+            toolTip.RemoveAll();
+
             // Remove old controls in reverse order
             for (int i = _argControls.Count - 1; i >= 0; i--)
             {
@@ -69,6 +72,17 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
+        public void TrimArguments()
+        {
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup.Arguments.Count < Node.Arguments.Count)
+                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
+            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
+                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                    Node.Arguments.Add(string.Empty);
+        }
+
         public void SpawnFunctionList(List<NodeFunction> functions)
         {
             if (functions == null)
@@ -81,17 +95,6 @@ namespace TombLib.Controls.VisualScripting
 
             if (cbFunction.Items.Count > 0)
                 cbFunction.SelectedIndex = 0;
-        }
-
-        public void TrimArguments()
-        {
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
-            var funcSetup = cbFunction.SelectedItem as NodeFunction;
-            if (funcSetup.Arguments.Count < Node.Arguments.Count)
-                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
-            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
-                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                    Node.Arguments.Add(string.Empty);
         }
 
         public void SpawnUIElements()
@@ -143,20 +146,9 @@ namespace TombLib.Controls.VisualScripting
                 var normScale = func.Arguments[i].Width / 100.0f;
                 int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
+                ctrl.SetToolTip(toolTip, func.Arguments[i].Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
                 ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
-
-                // HACK: For first control, we need to reference func list which is outside of container.
-                if (newY == _elementSpacing && !func.Arguments[i].NewLine)
-                {
-                    for (int j = 0; j < i; j++)
-                    {
-                        workLineWidth -= (_argControls[j].Width + _elementSpacing);
-                        _argControls[j].Left = _elementSpacing + workLineWidth + _elementSpacing;
-                    }
-
-                    cbFunction.Width = workLineWidth;
-                }
 
                 if (func.Arguments[i].NewLine)
                 {
@@ -166,10 +158,7 @@ namespace TombLib.Controls.VisualScripting
                 else
                 {
                     if (_argControls.Count == 1)
-                    {
-                        cbFunction.Width -= ctrl.Width;
                         newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
-                    }
                     else
                         newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
                 }
@@ -180,6 +169,17 @@ namespace TombLib.Controls.VisualScripting
 
             var newHeight = _elementSpacing +
                              elementsOnLines.Count * (_elementHeight + _elementSpacing);
+
+            // HACK: Fix up first line position
+            var firstLineControls = _argControls.Where(c => c.Location.Y == _elementSpacing).ToList();
+            if (firstLineControls.Count > 0)
+            {
+                int delta = (firstLineControls.Last().Location.X + firstLineControls.Last().Width) -
+                             firstLineControls.First().Location.X + _elementSpacing;
+
+                cbFunction.Width -= delta;
+                firstLineControls.ForEach(c => c.Location = new Point(c.Location.X - delta, c.Location.Y));
+            }
 
             Size = new Size(Size.Width, newHeight);
             cbFunction.Visible = true;
@@ -512,7 +512,8 @@ namespace TombLib.Controls.VisualScripting
             TrimArguments();
             SpawnUIElements();
 
-            toolTip.SetToolTip(sender as Control, cbFunction.SelectedItem.ToString());
+            toolTip.SetToolTip(sender as Control, (cbFunction.SelectedItem as NodeFunction)?
+                .Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
 
             _lastSelectedIndex = cbFunction.SelectedIndex;
         }

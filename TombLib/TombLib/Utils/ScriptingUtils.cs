@@ -16,10 +16,12 @@ namespace TombLib.Utils
 
         private static readonly string _reservedFunctionPrefix = "__";
         private static readonly string _commentPrefix = "--";
+        private static readonly string _metadataPrefix = "!";
 
-        private static readonly string _nodeNameId = "!name";
-        private static readonly string _nodeTypeId = "!condition";
-        private static readonly string _nodeArgumentId = "!arguments";
+        private static readonly string _nodeNameId = _metadataPrefix + "name";
+        private static readonly string _nodeTypeId = _metadataPrefix + "condition";
+        private static readonly string _nodeArgumentId = _metadataPrefix + "arguments";
+        private static readonly string _nodeDescriptionId = _metadataPrefix + "description";
         private static readonly string _nodeLayoutNewLine = "newline";
 
         private static List<string> ExtractValues(string source)
@@ -63,9 +65,14 @@ namespace TombLib.Utils
                             nodeFunction.Name = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
                             continue;
                         }
+                        else if (comment.StartsWith(_nodeDescriptionId, System.StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            nodeFunction.Description = ExtractValues(comment.Substring(_nodeDescriptionId.Length, comment.Length - _nodeDescriptionId.Length)).LastOrDefault();
+                            continue;
+                        }
                         else if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            var settings = ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length));
+                            var settings = ExtractValues(comment.Substring(_nodeArgumentId.Length, comment.Length - _nodeArgumentId.Length));
 
                             foreach (var s in settings)
                             {
@@ -86,7 +93,8 @@ namespace TombLib.Utils
                                     else if (float.TryParse(p, out width))
                                         argLayout.Width = width;
                                     else
-                                        try { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } catch { }
+                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } 
+                                        catch { argLayout.Description = p; }
                                 }
 
                                  nodeFunction.Arguments.Add(argLayout);

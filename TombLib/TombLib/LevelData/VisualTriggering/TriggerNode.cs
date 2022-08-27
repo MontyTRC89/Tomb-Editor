@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace TombLib.LevelData.VisualScripting
@@ -16,7 +17,7 @@ namespace TombLib.LevelData.VisualScripting
     // from level script, but they use similar notation. Such functions may have
     // several arguments, which are boxed to string values from UI controls of a node.
 
-    public abstract class TriggerNode
+    public abstract class TriggerNode : ICloneable
     {
         public string Name { get; set; }
         public Vector2 ScreenPosition { get; set; }
@@ -27,6 +28,32 @@ namespace TombLib.LevelData.VisualScripting
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
+
+        public virtual TriggerNode Clone()
+        {
+            var node = (TriggerNode)MemberwiseClone();
+
+            node.Arguments = new List<string>(Arguments);
+
+            if (Next != null)
+            {
+                node.Next = Next.Clone();
+                node.Next.Previous = node;
+            }
+
+            return node;
+        }
+        object ICloneable.Clone() => Clone();
+
+        public override int GetHashCode()
+        {
+            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode() ^ Function.GetHashCode();
+            Arguments.ForEach(a => hash ^= a.GetHashCode());
+            if (Next != null)
+                hash ^= Next.GetHashCode();
+
+            return hash;
+        }
     }
 
     // TriggerNodeAction implementation is similar to base one
@@ -45,5 +72,33 @@ namespace TombLib.LevelData.VisualScripting
     public class TriggerNodeCondition : TriggerNode
     {
         public TriggerNode Else { get; set; }
+
+        public override TriggerNode Clone()
+        {
+            var node = new TriggerNodeCondition()
+            {
+                Color = Color,
+                Function = Function,
+                Name = Name,
+                ScreenPosition = ScreenPosition
+            };
+
+            node.Arguments.AddRange(Arguments);
+
+            if (Next != null)
+            {
+                node.Next = Next.Clone();
+                node.Next.Previous = node;
+            }
+
+            if (Else != null)
+            {
+                node.Else = Else.Clone();
+                node.Else.Previous = node;
+            }
+
+            return node;
+
+        }
     }
 }

@@ -61,7 +61,11 @@ namespace TombLib.LevelData
             evt.Argument = Argument;
             evt.Function = Function;
             evt.CallCounter = CallCounter;
-
+            evt.Mode = Mode;
+            evt.NodePosition = NodePosition;
+            evt.Nodes = new List<TriggerNode>();
+            Nodes.ForEach(n => evt.Nodes.Add(n.Clone()));
+            
             return evt;
         }
 
@@ -71,9 +75,10 @@ namespace TombLib.LevelData
                 Mode == other.Mode &&
                 Function == other.Function &&
                 Argument == other.Argument &&
-                CallCounter == other.CallCounter;
-
-            //  VolumeEventConstructor.Equals(other.VolumeEventConstructor);
+                CallCounter == other.CallCounter &&
+                NodePosition == other.NodePosition &&
+                Nodes.Count == other.Nodes.Count &&
+                Nodes.TrueForAll(n => n.GetHashCode() == other.Nodes[Nodes.IndexOf(n)].GetHashCode());
         }
 
         public void Write(BinaryWriterEx writer)
