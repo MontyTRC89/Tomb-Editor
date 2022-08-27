@@ -216,6 +216,9 @@ namespace TombLib.Controls.VisualScripting
 
                 var newX = MathC.Clamp(Node.ScreenPosition.X, 0, Editor.GridSize);
                 var newY = MathC.Clamp(Node.ScreenPosition.Y, 0, Editor.GridSize);
+                if (newX != Node.ScreenPosition.X || newY != Node.ScreenPosition.Y)
+                    Node.ScreenPosition = new Vector2(newX, newY);
+
                 Location = Editor.ToVisualCoord(new Vector2(newX, newY));
             }
             else
