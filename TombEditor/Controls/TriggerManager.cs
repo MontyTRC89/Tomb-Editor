@@ -108,7 +108,6 @@ namespace TombEditor.Controls
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 1 : 0;
 
-            lblNotify.Visible = rbLevelScript.Checked;
             UpdateNodeEditorControls();
 
             if (rbLevelScript.Checked)
