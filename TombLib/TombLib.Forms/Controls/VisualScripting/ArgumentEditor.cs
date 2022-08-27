@@ -30,12 +30,12 @@ namespace TombLib.Controls.VisualScripting
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
         public event EventHandler ValueChanged;
-        private void OnValueChanged(EventArgs e)
-            => ValueChanged?.Invoke(this, e);
+        private void OnValueChanged()
+            => ValueChanged?.Invoke(this, EventArgs.Empty);
 
         public event EventHandler LocatedItemFound;
-        private void OnLocatedItemFound(IHasLuaName item, EventArgs e)
-            => LocatedItemFound?.Invoke(item, e);
+        private void OnLocatedItemFound(IHasLuaName item)
+            => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
         public new string Text 
         { 
@@ -135,7 +135,15 @@ namespace TombLib.Controls.VisualScripting
         {
             foreach (TabPage tab in container.TabPages)
                 foreach (Control control in tab.Controls)
+                {
                     toolTip.SetToolTip(control, caption);
+
+                    // HACK: there is no easy way of assigning tooltips to user controls...
+
+                    if (control is DarkSearchableComboBox)
+                        foreach (Control cnt in (control as DarkSearchableComboBox).Controls)
+                            toolTip.SetToolTip(cnt, caption);
+                }
         }
 
         public IHasLuaName LocateItem(NodeEditor editor)
@@ -276,7 +284,7 @@ namespace TombLib.Controls.VisualScripting
         private void BoxBoolValue()
         {
             _text = rbTrue.Checked.ToString().ToLower();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
             private void BoxVector3Value()
@@ -285,7 +293,7 @@ namespace TombLib.Controls.VisualScripting
             var y = ((float)nudVector3Y.Value).ToString();
             var z = ((float)nudVector3Z.Value).ToString();
             _text = x + _separatorChar + y + _separatorChar + z;
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxColorValue()
@@ -293,25 +301,25 @@ namespace TombLib.Controls.VisualScripting
             _text = panelColor.BackColor.R.ToString() + _separatorChar + 
                     panelColor.BackColor.G.ToString() + _separatorChar + 
                     panelColor.BackColor.B.ToString();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxNumericalValue()
         {
             _text = ((float)nudNumerical.Value).ToString();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxStringValue()
         {
             _text = tbString.Text;
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxListValue()
         {
-            _text = (cbList.SelectedItem as ComboBoxItem).Value;
-            OnValueChanged(EventArgs.Empty);
+            _text = (cbList.SelectedItem as ComboBoxItem)?.Value;
+            OnValueChanged();
         }
 
         private void rbTrue_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
@@ -346,7 +354,7 @@ namespace TombLib.Controls.VisualScripting
             if (item == null)
                 return;
 
-            OnLocatedItemFound(item, EventArgs.Empty);
+            OnLocatedItemFound(item);
         }
     }
 }
