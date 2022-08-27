@@ -140,6 +140,16 @@
             this.nudNumerical.Location = new System.Drawing.Point(0, 0);
             this.nudNumerical.LoopValues = false;
             this.nudNumerical.Margin = new System.Windows.Forms.Padding(0);
+            this.nudNumerical.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudNumerical.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.nudNumerical.Name = "nudNumerical";
             this.nudNumerical.Size = new System.Drawing.Size(430, 20);
             this.nudNumerical.TabIndex = 0;
@@ -185,6 +195,16 @@
             this.nudVector3Z.Location = new System.Drawing.Point(288, 0);
             this.nudVector3Z.LoopValues = false;
             this.nudVector3Z.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.nudVector3Z.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudVector3Z.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.nudVector3Z.Name = "nudVector3Z";
             this.nudVector3Z.Size = new System.Drawing.Size(142, 20);
             this.nudVector3Z.TabIndex = 2;
@@ -201,6 +221,16 @@
             this.nudVector3Y.Location = new System.Drawing.Point(145, 0);
             this.nudVector3Y.LoopValues = false;
             this.nudVector3Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.nudVector3Y.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudVector3Y.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.nudVector3Y.Name = "nudVector3Y";
             this.nudVector3Y.Size = new System.Drawing.Size(139, 20);
             this.nudVector3Y.TabIndex = 1;
@@ -217,6 +247,16 @@
             this.nudVector3X.Location = new System.Drawing.Point(0, 0);
             this.nudVector3X.LoopValues = false;
             this.nudVector3X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.nudVector3X.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudVector3X.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.nudVector3X.Name = "nudVector3X";
             this.nudVector3X.Size = new System.Drawing.Size(141, 20);
             this.nudVector3X.TabIndex = 0;

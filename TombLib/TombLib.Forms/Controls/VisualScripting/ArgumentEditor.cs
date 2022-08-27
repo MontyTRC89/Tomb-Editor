@@ -146,25 +146,34 @@ namespace TombLib.Controls.VisualScripting
                         float result;
                         if (!(float.TryParse(source, out result)))
                             result = 0.0f;
-                        nudNumerical.Value = (decimal)result;
+                        try { nudNumerical.Value = (decimal)result; }
+                        catch { nudNumerical.Value = (decimal)0; }
+                        
                         break;
                     }
                 case ArgumentType.Vector3:
                     {
                         var floats = UnboxVector3Value(source);
 
-                        for (int i = 0; i < 3; i++)
+                        try
                         {
-                            var currentFloat = 0.0f;
-                            if (floats.Length > i)
-                                currentFloat = floats[i];
-
-                            switch (i)
+                            for (int i = 0; i < 3; i++)
                             {
-                                case 0: nudVector3X.Value = (decimal)currentFloat; break;
-                                case 1: nudVector3Y.Value = (decimal)currentFloat; break;
-                                case 2: nudVector3Z.Value = (decimal)currentFloat; break;
-                            }    
+                                var currentFloat = 0.0f;
+                                if (floats.Length > i)
+                                    currentFloat = floats[i];
+
+                                switch (i)
+                                {
+                                    case 0: nudVector3X.Value = (decimal)currentFloat; break;
+                                    case 1: nudVector3Y.Value = (decimal)currentFloat; break;
+                                    case 2: nudVector3Z.Value = (decimal)currentFloat; break;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            nudVector3X.Value = nudVector3Y.Value = nudVector3Z.Value = (decimal)0;
                         }
                         break;
                     }
