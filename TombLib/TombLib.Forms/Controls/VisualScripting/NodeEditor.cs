@@ -132,12 +132,16 @@ namespace TombLib.Controls.VisualScripting
         private bool _queueMove = false;
 
         public event EventHandler ViewPositionChanged;
-        private void OnViewPositionChanged(EventArgs e)
-            => ViewPositionChanged?.Invoke(this, e);
+        private void OnViewPositionChanged()
+            => ViewPositionChanged?.Invoke(this, EventArgs.Empty);
 
         public event EventHandler SelectionChanged;
-        private void OnSelectionChanged(EventArgs e)
-            => SelectionChanged?.Invoke(this, e);
+        private void OnSelectionChanged()
+            => SelectionChanged?.Invoke(this, EventArgs.Empty);
+
+        public event EventHandler LocatedItemFound;
+        public void OnLocatedItemFound(IHasLuaName item)
+            => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
         public NodeEditor()
         {
@@ -312,7 +316,7 @@ namespace TombLib.Controls.VisualScripting
                 SelectedNodes.Remove(node);
 
             Invalidate();
-            OnSelectionChanged(EventArgs.Empty);
+            OnSelectionChanged();
         }
 
         public void SelectNodesInArea()
@@ -346,13 +350,13 @@ namespace TombLib.Controls.VisualScripting
             }
 
             if (selectionChanged)
-                OnSelectionChanged(EventArgs.Empty);
+                OnSelectionChanged();
         }
 
         public void ClearSelection()
         {
             SelectedNodes.Clear();
-            OnSelectionChanged(EventArgs.Empty);
+            OnSelectionChanged();
         }
 
         public void ShowSelectedNode()
@@ -381,7 +385,7 @@ namespace TombLib.Controls.VisualScripting
                 c.RefreshPosition();
 
             Invalidate();
-            OnViewPositionChanged(EventArgs.Empty);
+            OnViewPositionChanged();
         }
 
         public void FindNodeByName(string name)
@@ -451,7 +455,7 @@ namespace TombLib.Controls.VisualScripting
                 control.RefreshPosition();
 
             Invalidate();
-            OnViewPositionChanged(EventArgs.Empty);
+            OnViewPositionChanged();
         }
 
         public void UpdateVisibleNodes(bool fullRedraw = false)
@@ -1146,7 +1150,7 @@ namespace TombLib.Controls.VisualScripting
             Resizing = false;
 
             Invalidate();
-            OnViewPositionChanged(EventArgs.Empty);
+            OnViewPositionChanged();
         }
     }
 }

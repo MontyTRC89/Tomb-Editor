@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Controls;
 using DarkUI.Icons;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -62,7 +63,9 @@ namespace TombLib.Controls.VisualScripting
             for (int i = _argControls.Count - 1; i >= 0; i--)
             {
                 var control = _argControls[i];
+
                 control.ValueChanged -= Ctrl_ValueChanged;
+                control.LocatedItemFound -= Ctrl_LocatedItemFound;
 
                 if (Controls.Contains(control))
                     Controls.Remove(control);
@@ -165,6 +168,7 @@ namespace TombLib.Controls.VisualScripting
 
                 ctrl.Location = new Point(newX, newY);
                 ctrl.ValueChanged += Ctrl_ValueChanged;
+                ctrl.LocatedItemFound += Ctrl_LocatedItemFound;
             }
 
             var newHeight = _elementSpacing +
@@ -191,6 +195,12 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
 
             Editor?.Invalidate();
+        }
+
+        private void Ctrl_LocatedItemFound(object sender, EventArgs e)
+        {
+            if (sender is IHasLuaName)
+                Editor.OnLocatedItemFound(sender as IHasLuaName);
         }
 
         private void Ctrl_ValueChanged(object sender, EventArgs e)

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -26,9 +27,15 @@ namespace TombLib.Controls.VisualScripting
 
         private const string _separatorChar = ",";
 
+        private ArgumentType _argumentType = ArgumentType.Numerical;
+
         public event EventHandler ValueChanged;
         private void OnValueChanged(EventArgs e)
             => ValueChanged?.Invoke(this, e);
+
+        public event EventHandler LocatedItemFound;
+        private void OnLocatedItemFound(IHasLuaName item, EventArgs e)
+            => LocatedItemFound?.Invoke(item, e);
 
         public new string Text 
         { 
@@ -48,12 +55,31 @@ namespace TombLib.Controls.VisualScripting
 
         public void SetArgumentType(ArgumentType type, NodeEditor editor)
         {
+            _argumentType = type;
+
             if (type >= ArgumentType.LuaScript)
                 container.SelectedTab = tabList;
             else
             {
                 container.SelectedIndex = (int)type;
                 return;
+            }
+
+            switch (type)
+            {
+                case ArgumentType.Sinks:
+                case ArgumentType.Statics:
+                case ArgumentType.Moveables:
+                case ArgumentType.Volumes:
+                case ArgumentType.Cameras:
+                case ArgumentType.FlybyCameras:
+                    panelLocate.Size = new Size(cbList.Height, cbList.Height);
+                    panelLocate.Visible = true;
+                    break;
+
+                default:
+                    panelLocate.Visible = false;
+                    break;
             }
 
             cbList.Items.Clear();
@@ -110,6 +136,30 @@ namespace TombLib.Controls.VisualScripting
             foreach (TabPage tab in container.TabPages)
                 foreach (Control control in tab.Controls)
                     toolTip.SetToolTip(control, caption);
+        }
+
+        public IHasLuaName LocateItem(NodeEditor editor)
+        {
+            if (cbList.Items.Count == 0 || cbList.SelectedIndex == -1)
+                return null;
+
+            switch (_argumentType)
+            {
+                case ArgumentType.Sinks:
+                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Statics:
+                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Moveables:
+                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Volumes:
+                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Cameras:
+                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.FlybyCameras:
+                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                default:
+                    return null;
+            }
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -288,6 +338,15 @@ namespace TombLib.Controls.VisualScripting
                     BoxColorValue();
                 }
             }
+        }
+
+        private void butLocate_Click(object sender, EventArgs e)
+        {
+            var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
+            if (item == null)
+                return;
+
+            OnLocatedItemFound(item, EventArgs.Empty);
         }
     }
 }

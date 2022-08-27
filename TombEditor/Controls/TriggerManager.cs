@@ -3,7 +3,6 @@ using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
@@ -55,6 +54,10 @@ namespace TombEditor.Controls
             {
                 _editor.EditorEventRaised -= EditorEventRaised;
 
+                nodeEditor.ViewPositionChanged -= NodeEditorViewPostionChanged;
+                nodeEditor.SelectionChanged -= NodeEditor_SelectionChanged;
+                nodeEditor.LocatedItemFound -= NodeEditor_LocatedItemFound;
+
                 if (components != null)
                     components.Dispose();
             }
@@ -74,6 +77,13 @@ namespace TombEditor.Controls
 
             nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
             nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
+            nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
+        }
+
+        private void NodeEditor_LocatedItemFound(object sender, EventArgs e)
+        {
+            if (sender is PositionBasedObjectInstance)
+                _editor.ShowObject(sender as PositionBasedObjectInstance);
         }
 
         private void NodeEditor_SelectionChanged(object sender, EventArgs e)
