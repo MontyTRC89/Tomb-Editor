@@ -332,7 +332,8 @@ namespace TombLib.Controls.VisualScripting
 
         private void panelColor_MouseClick(object sender, MouseEventArgs e)
         {
-            using (var colorDialog = new RealtimeColorDialog())
+            using (var colorDialog = new RealtimeColorDialog(Control.MousePosition.X, 
+                       Control.MousePosition.Y, c => { panelColor.BackColor = c; }))
             {
                 var oldColor = panelColor.BackColor;
                 colorDialog.Color = oldColor;
