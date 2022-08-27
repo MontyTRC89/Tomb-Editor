@@ -1118,6 +1118,14 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseWheel(e);
 
+            if (Controls.OfType<VisibleNodeBase>().Any(c =>
+            {
+                var b = c.ClientRectangle;
+                b.Offset(c.Location);
+                return b.Contains(e.Location);
+            }))
+                return;
+
             var delta = e.Delta * _mouseWheelScrollFactor;
 
             Resizing = true;
