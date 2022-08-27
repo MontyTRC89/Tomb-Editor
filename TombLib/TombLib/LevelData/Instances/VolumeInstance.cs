@@ -61,7 +61,10 @@ namespace TombLib.LevelData
             evt.Argument = Argument;
             evt.Function = Function;
             evt.CallCounter = CallCounter;
-
+            evt.NodePosition = NodePosition;
+            evt.Nodes = new List<TriggerNode>();
+            Nodes.ForEach(n => evt.Nodes.Add(n.Clone()));
+            
             return evt;
         }
 
