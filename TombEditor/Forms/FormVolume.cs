@@ -244,5 +244,27 @@ namespace TombEditor.Forms
             var searchPopUp = new PopUpSearch(lstEvents) { ShowAboveControl = true };
             searchPopUp.Show(this);
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // HACK: Because WinForms has no proper way of translating keyboard events to nested
+            // controls, we need to introduce this helper function to translate pressed key info
+            // to currently active trigger manager.
+
+            switch (tcEvents.SelectedIndex)
+            {
+                case 0:
+                    tmEnter.ProcessKey(keyData);
+                    break;
+                case 1:
+                    tmInside.ProcessKey(keyData);
+                    break;
+                case 2:
+                    tmLeave.ProcessKey(keyData);
+                    break;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
     }
 }

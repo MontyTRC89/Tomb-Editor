@@ -222,6 +222,7 @@ namespace TombEditor.Forms
             // butCloneEventSet
             // 
             this.butCloneEventSet.Checked = false;
+            this.butCloneEventSet.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCloneEventSet.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCloneEventSet.Location = new System.Drawing.Point(33, 3);
             this.butCloneEventSet.Name = "butCloneEventSet";
@@ -300,7 +301,7 @@ namespace TombEditor.Forms
             this.tabPage_OnInside.Controls.Add(this.tmInside);
             this.tabPage_OnInside.Location = new System.Drawing.Point(4, 23);
             this.tabPage_OnInside.Name = "tabPage_OnInside";
-            this.tabPage_OnInside.Size = new System.Drawing.Size(442, 291);
+            this.tabPage_OnInside.Size = new System.Drawing.Size(511, 291);
             this.tabPage_OnInside.TabIndex = 1;
             this.tabPage_OnInside.Text = "When inside";
             // 
@@ -311,7 +312,7 @@ namespace TombEditor.Forms
             this.tmInside.Location = new System.Drawing.Point(0, 0);
             this.tmInside.Name = "tmInside";
             this.tmInside.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmInside.Size = new System.Drawing.Size(442, 291);
+            this.tmInside.Size = new System.Drawing.Size(511, 291);
             this.tmInside.TabIndex = 1;
             // 
             // tabPage_OnLeave
@@ -320,7 +321,7 @@ namespace TombEditor.Forms
             this.tabPage_OnLeave.Controls.Add(this.tmLeave);
             this.tabPage_OnLeave.Location = new System.Drawing.Point(4, 23);
             this.tabPage_OnLeave.Name = "tabPage_OnLeave";
-            this.tabPage_OnLeave.Size = new System.Drawing.Size(442, 291);
+            this.tabPage_OnLeave.Size = new System.Drawing.Size(511, 291);
             this.tabPage_OnLeave.TabIndex = 2;
             this.tabPage_OnLeave.Text = "When leaving";
             // 
@@ -331,7 +332,7 @@ namespace TombEditor.Forms
             this.tmLeave.Location = new System.Drawing.Point(0, 0);
             this.tmLeave.Name = "tmLeave";
             this.tmLeave.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.tmLeave.Size = new System.Drawing.Size(442, 291);
+            this.tmLeave.Size = new System.Drawing.Size(511, 291);
             this.tmLeave.TabIndex = 1;
             // 
             // grpActivators
@@ -386,7 +387,6 @@ namespace TombEditor.Forms
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(734, 421);
             this.Controls.Add(this.tbName);
             this.Controls.Add(this.darkLabel1);

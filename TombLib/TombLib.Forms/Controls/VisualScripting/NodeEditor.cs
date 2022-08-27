@@ -496,11 +496,6 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
-        public void Clear()
-        {
-            _nodes = new List<TriggerNode>();
-        }
-
         public bool AnimateSnap(ConnectionMode mode, VisibleNodeBase node)
         {
             if (_animProgress != -1.0f)

@@ -372,5 +372,56 @@ namespace TombEditor.Controls
         {
             nodeEditor.LinkSelectedNodes();
         }
+
+        public void ProcessKey(Keys keyCode)
+        {
+            if (rbLevelScript.Checked)
+            {
+                switch (keyCode)
+                {
+                    case Keys.Delete:
+                    case Keys.Back:
+                        lstFunctions.ClearSelection();
+                        break;
+                }
+            }
+            else
+            {
+                switch (keyCode)
+                {
+                    case Keys.Delete:
+                    case Keys.Back:
+                        nodeEditor.DeleteNodes();
+                        break;
+
+                    case (Keys.Shift | Keys.Delete):
+                    case (Keys.Shift | Keys.Back):
+                        nodeEditor.ClearNodes();
+                        break;
+
+                    case Keys.N:
+                    case Keys.A:
+                        nodeEditor.AddActionNode(true, false);
+                        break;
+
+                    case Keys.C:
+                        nodeEditor.AddConditionNode(true, false);
+                        break;
+
+                    case (Keys.Shift | Keys.N):
+                    case (Keys.Shift | Keys.A):
+                        nodeEditor.AddActionNode(true, true);
+                        break;
+
+                    case (Keys.Shift | Keys.C):
+                        nodeEditor.AddConditionNode(true, true);
+                        break;
+
+                    case Keys.Escape:
+                        nodeEditor.ClearSelection();
+                        break;
+                }
+            }
+        }
     }
 }
