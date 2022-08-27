@@ -187,7 +187,7 @@ namespace TombLib.Controls.VisualScripting
             CachedRooms      = level.ExistingRooms;
         }
 
-        public void AddConditionNode(bool linkToPrevious)
+        public void AddConditionNode(bool linkToPrevious, bool linkToElse)
         {
             var node = new TriggerNodeCondition()
             {
@@ -198,14 +198,14 @@ namespace TombLib.Controls.VisualScripting
 
             Nodes.Add(node);
             if (linkToPrevious)
-                LinkToSelectedNode(node);
+                LinkToSelectedNode(node, linkToElse);
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
-        public void AddActionNode(bool linkToPrevious)
+        public void AddActionNode(bool linkToPrevious, bool linkToElse)
         {
             var node = new TriggerNodeAction()
             {
@@ -216,7 +216,7 @@ namespace TombLib.Controls.VisualScripting
 
             Nodes.Add(node);
             if (linkToPrevious)
-                LinkToSelectedNode(node);
+                LinkToSelectedNode(node, linkToElse);
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
@@ -230,12 +230,16 @@ namespace TombLib.Controls.VisualScripting
             ClearSelection();
         }
 
-        public void LinkToSelectedNode(TriggerNode node)
+        public void LinkToSelectedNode(TriggerNode node, bool elseIfPossible)
         {
             if (SelectedNode == null || SelectedNode.Next != null || node == null || node.Previous != null)
                 return;
 
-            SelectedNode.Next = node;
+            if (elseIfPossible && SelectedNode is TriggerNodeCondition)
+                (SelectedNode as TriggerNodeCondition).Else = node;
+            else
+                SelectedNode.Next = node;
+
             node.Previous = SelectedNode;
 
             if (Nodes.Contains(node))

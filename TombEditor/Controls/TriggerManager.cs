@@ -300,12 +300,12 @@ namespace TombEditor.Controls
 
         private void butAddConditionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddConditionNode(Control.ModifierKeys == Keys.None);
+            nodeEditor.AddConditionNode(Control.ModifierKeys != Keys.Control, Control.ModifierKeys == Keys.Alt);
         }
 
         private void butAddActionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddActionNode(Control.ModifierKeys == Keys.None);
+            nodeEditor.AddActionNode(Control.ModifierKeys != Keys.Control, Control.ModifierKeys == Keys.Alt);
         }
 
         private void butClearNodes_Click(object sender, EventArgs e)
