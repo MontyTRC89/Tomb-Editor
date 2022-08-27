@@ -232,13 +232,15 @@ namespace TombLib.Controls.VisualScripting
 
         public void LinkToSelectedNode(TriggerNode node, bool elseIfPossible)
         {
-            if (SelectedNode == null || SelectedNode.Next != null || node == null || node.Previous != null)
+            if (SelectedNode == null || node == null || node.Previous != null)
                 return;
 
-            if (elseIfPossible && SelectedNode is TriggerNodeCondition)
+            if (elseIfPossible && SelectedNode is TriggerNodeCondition && (SelectedNode as TriggerNodeCondition)?.Else == null)
                 (SelectedNode as TriggerNodeCondition).Else = node;
-            else
+            else if (SelectedNode.Next == null)
                 SelectedNode.Next = node;
+            else
+                return;
 
             node.Previous = SelectedNode;
 
