@@ -3,6 +3,7 @@ using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
@@ -68,7 +69,7 @@ namespace TombEditor.Controls
 
             ReloadFunctions();
 
-            nodeEditor.Initialize();
+            nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
 
             nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
@@ -155,6 +156,10 @@ namespace TombEditor.Controls
             lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
 
+            // TODO: Add to level settings or whatever.
+            nodeEditor.NodeFunctions.Clear();
+            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.GetAllNodeFunctions("test.lua"));
+
             if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
             {
                 lblListNotify.Tag = 1;
@@ -173,8 +178,11 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    var functions = ScriptingUtils.GetAllFunctionsNames(path);
+                    var functions = ScriptingUtils.GetAllFunctionNames(path);
                     functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+
+                    nodeEditor.CachedLuaFunctions.Clear();
+                    nodeEditor.CachedLuaFunctions.AddRange(functions);
 
                     if (lstFunctions.Items.Count == 0)
                     {
@@ -292,12 +300,12 @@ namespace TombEditor.Controls
 
         private void butAddConditionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddConditionNode(Control.ModifierKeys == Keys.None);
+            nodeEditor.AddConditionNode(Control.ModifierKeys != Keys.Control, Control.ModifierKeys == Keys.Alt);
         }
 
         private void butAddActionNode_Click(object sender, EventArgs e)
         {
-            nodeEditor.AddActionNode(Control.ModifierKeys == Keys.None);
+            nodeEditor.AddActionNode(Control.ModifierKeys != Keys.Control, Control.ModifierKeys == Keys.Alt);
         }
 
         private void butClearNodes_Click(object sender, EventArgs e)

@@ -15,6 +15,8 @@ namespace TombLib.Controls.VisualScripting
     {
         protected const int _gripWidth = 200;
         protected const int _gripHeight = 6;
+        protected const int _elementSpacing = 8;
+        protected const int _elementHeight = 24;
 
         protected const int _visibilityMargin = 32;
 
@@ -23,18 +25,187 @@ namespace TombLib.Controls.VisualScripting
         protected int _lastSnappedGrip = -1;
 
         private bool _mouseDown = false;
+        private int _lastSelectedIndex = -1;
 
         public NodeEditor Editor => Parent as NodeEditor;
         public TriggerNode Node { get; protected set; }
+
+        private List<ArgumentEditor> _argControls = new List<ArgumentEditor>();
 
         // This constructor overload is needed so that VS designer don't get crazy.
         public VisibleNodeBase() : this(new TriggerNodeAction()) { }
 
         public VisibleNodeBase(TriggerNode node)
         {
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
             InitializeComponent();
             SnapToBorders = false;
             Node = node;
+
+            SpawnGrips();
+        }
+
+        protected virtual void SpawnGrips()
+        {
+            _grips.Clear();
+            _grips.Add(new Rectangle(Width / 2 - _gripWidth / 2, 0, _gripWidth, _gripHeight));
+            Invalidate();
+        }
+
+        public void DisposeUI()
+        {
+            // Remove old controls in reverse order
+            for (int i = _argControls.Count - 1; i >= 0; i--)
+            {
+                var control = _argControls[i];
+                control.ValueChanged -= Ctrl_ValueChanged;
+
+                if (Controls.Contains(control))
+                    Controls.Remove(control);
+
+                _argControls.RemoveAt(i);
+                control.Dispose();
+            }
+        }
+
+        public void SpawnFunctionList(List<NodeFunction> functions)
+        {
+            if (functions == null)
+                return;
+
+            cbFunction.Items.Clear();
+            foreach (var f in functions)
+                if (f.Conditional == (Node is TriggerNodeCondition))
+                    cbFunction.Items.Add(f);
+
+            if (cbFunction.Items.Count > 0)
+                cbFunction.SelectedIndex = 0;
+        }
+
+        public void TrimArguments()
+        {
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup.Arguments.Count < Node.Arguments.Count)
+                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
+            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
+                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                    Node.Arguments.Add(string.Empty);
+        }
+
+        public void SpawnUIElements()
+        {
+            var func = cbFunction.SelectedItem as NodeFunction;
+
+            if (func == null)
+                return;
+
+            DisposeUI();
+
+            int refWidth = Width - _elementSpacing * 2; 
+            int newY = _elementSpacing;
+            int newX = _elementSpacing;
+
+            cbFunction.Size = new Size(refWidth, _elementHeight);
+            cbFunction.Location = new Point(_elementSpacing, _elementSpacing);
+
+            var elementsOnLines = new List<int>();
+            int elements = 1;
+            for (int i = 0; i <= func.Arguments.Count; i++)
+            {
+                elements++;
+                bool lastEntry = i == func.Arguments.Count;
+
+                if (lastEntry || func.Arguments[i].NewLine)
+                {
+                    elementsOnLines.Add(elements - 1);
+                    elements = 1;
+                }
+            }
+
+            int line = 0;
+            for (int i = 0; i < func.Arguments.Count; i++)
+            {
+                var ctrl = new ArgumentEditor()
+                {
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                    Name = "argEditor" + i.ToString(),
+                    Visible = false
+                };
+
+                _argControls.Add(ctrl);
+                Controls.Add(ctrl);
+
+                if (func.Arguments[i].NewLine)
+                    line++;
+
+                var normScale = func.Arguments[i].Width / 100.0f;
+                int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
+
+                ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
+                ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
+
+                // HACK: For first control, we need to reference func list which is outside of container.
+                if (newY == _elementSpacing && !func.Arguments[i].NewLine)
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        workLineWidth -= (_argControls[j].Width + _elementSpacing);
+                        _argControls[j].Left = _elementSpacing + workLineWidth + _elementSpacing;
+                    }
+
+                    cbFunction.Width = workLineWidth;
+                }
+
+                if (func.Arguments[i].NewLine)
+                {
+                    newX  = _elementSpacing;
+                    newY += _elementHeight + _elementSpacing;
+                }
+                else
+                {
+                    if (_argControls.Count == 1)
+                    {
+                        cbFunction.Width -= ctrl.Width;
+                        newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
+                    }
+                    else
+                        newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
+                }
+
+                ctrl.Location = new Point(newX, newY);
+                ctrl.ValueChanged += Ctrl_ValueChanged;
+            }
+
+            var newHeight = _elementSpacing +
+                             elementsOnLines.Count * (_elementHeight + _elementSpacing);
+
+            Size = new Size(Size.Width, newHeight);
+            cbFunction.Visible = true;
+
+            for (int i = 0; i < Node.Arguments.Count; i++)
+                RefreshArgument(i);
+
+            foreach (var control in _argControls)
+                control.Visible = true;
+
+            Editor?.Invalidate();
+        }
+
+        private void Ctrl_ValueChanged(object sender, EventArgs e)
+        {
+            var ctrl = sender as ArgumentEditor;
+            int index = _argControls.IndexOf(ctrl);
+
+            if (index != -1 && Node.Arguments.Count > index)
+                Node.Arguments[index] = ctrl.Text;
+        }
+
+        public void RefreshArgument(int index)
+        {
+            if (Node.Arguments.Count > index && _argControls.Count > index)
+                _argControls[index].Text = Node.Arguments[index];
         }
 
         public void RefreshPosition()
@@ -133,6 +304,9 @@ namespace TombLib.Controls.VisualScripting
 
         public bool IsInView()
         {
+            if (Editor == null)
+                return true;
+
             var newLocation = Editor.ToVisualCoord(Node.ScreenPosition);
             var newRect = ClientRectangle;
             newRect.Offset(newLocation);
@@ -235,6 +409,10 @@ namespace TombLib.Controls.VisualScripting
             _mouseDown = false;
 
             Invalidate();
+
+            if (Editor == null)
+                return;
+
             Editor.FindForm().ActiveControl = null;
             Editor.Focus();
         }
@@ -291,6 +469,12 @@ namespace TombLib.Controls.VisualScripting
             base.OnLocationChanged(e);
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            SpawnGrips();
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if (!IsInView())
@@ -307,6 +491,30 @@ namespace TombLib.Controls.VisualScripting
                 using (var brush = new TextureBrush(MenuIcons.grip_fill, WrapMode.Tile))
                     e.Graphics.FillRectangle(brush, grip);
             }
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Prevent controls flickering
+                return cp;
+            }
+        }
+
+        private void cbFunction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Prevent multiple firings (thanks Winforms)
+            if (_lastSelectedIndex == cbFunction.SelectedIndex)
+                return;
+
+            TrimArguments();
+            SpawnUIElements();
+
+            toolTip.SetToolTip(sender as Control, cbFunction.SelectedItem.ToString());
+
+            _lastSelectedIndex = cbFunction.SelectedIndex;
         }
     }
 }

@@ -8,8 +8,10 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -38,7 +40,7 @@ namespace TombLib.Controls.VisualScripting
                 UpdateVisibleNodes(true);
             }
         }
-        private List<TriggerNode> _nodes;
+        private List<TriggerNode> _nodes = new List<TriggerNode>();
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -59,6 +61,45 @@ namespace TombLib.Controls.VisualScripting
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Resizing { get; private set; } = false;
+
+        // Loaded lists of action and condition functions.
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<NodeFunction> NodeFunctions { get; private set; } = new List<NodeFunction>();
+
+        // Precache lists of objects to avoid polling every time user changes function
+        // in a node list. By default it is set to nothing, but must be replaced externally
+        // by a form/control where node editor is placed.
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> CachedLuaFunctions { get; private set; } = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<MoveableInstance> CachedMoveables { get; private set; } = new List<MoveableInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<StaticInstance> CachedStatics { get; private set; } = new List<StaticInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<CameraInstance> CachedCameras { get; private set; } = new List<CameraInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<SinkInstance> CachedSinks { get; private set; } = new List<SinkInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<FlybyCameraInstance> CachedFlybys { get; private set; } = new List<FlybyCameraInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<VolumeInstance> CachedVolumes { get; private set; } = new List<VolumeInstance>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<Room> CachedRooms { get; private set; } = new List<Room>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<WadSoundInfo> CachedSoundInfos { get; private set; } = new List<WadSoundInfo>();
+
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
@@ -125,47 +166,57 @@ namespace TombLib.Controls.VisualScripting
             base.Dispose(disposing);
         }
 
-        public void Initialize(List<TriggerNode> nodes = null)
+        public void Initialize(Level level)
         {
             ViewPosition = new Vector2(GridSize / 2.0f,
                                        GridSize / 2.0f);
-            Nodes = nodes == null ? new List<TriggerNode>() : nodes;
+            PopulateCachedNodeLists(level);
             UpdateVisibleNodes(true);
             _updateTimer.Start();
         }
 
-        public void AddConditionNode(bool linkToPrevious)
+        public void PopulateCachedNodeLists(Level level)
+        {
+            CachedMoveables  = level.GetAllObjects().OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedStatics    = level.GetAllObjects().OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedCameras    = level.GetAllObjects().OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedSinks      = level.GetAllObjects().OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedFlybys     = level.GetAllObjects().OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedVolumes    = level.GetAllObjects().OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            CachedSoundInfos = level.Settings.GlobalSoundMap;
+            CachedRooms      = level.ExistingRooms;
+        }
+
+        public void AddConditionNode(bool linkToPrevious, bool linkToElse)
         {
             var node = new TriggerNodeCondition()
             {
                 Name = "Condition node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
-                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 1.0f, 0.8f),
-                Getter = "Test 2"
+                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 1.0f, 0.8f)
             };
 
             Nodes.Add(node);
             if (linkToPrevious)
-                LinkToSelectedNode(node);
+                LinkToSelectedNode(node, linkToElse);
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
             ShowSelectedNode();
         }
 
-        public void AddActionNode(bool linkToPrevious)
+        public void AddActionNode(bool linkToPrevious, bool linkToElse)
         {
             var node = new TriggerNodeAction()
             {
                 Name = "Action node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
-                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f),
-                Function = "Test 1"
+                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f)
             };
 
             Nodes.Add(node);
             if (linkToPrevious)
-                LinkToSelectedNode(node);
+                LinkToSelectedNode(node, linkToElse);
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
@@ -176,14 +227,19 @@ namespace TombLib.Controls.VisualScripting
         {
             Nodes.Clear();
             UpdateVisibleNodes();
+            ClearSelection();
         }
 
-        public void LinkToSelectedNode(TriggerNode node)
+        public void LinkToSelectedNode(TriggerNode node, bool elseIfPossible)
         {
             if (SelectedNode == null || SelectedNode.Next != null || node == null || node.Previous != null)
                 return;
 
-            SelectedNode.Next = node;
+            if (elseIfPossible && SelectedNode is TriggerNodeCondition)
+                (SelectedNode as TriggerNodeCondition).Else = node;
+            else
+                SelectedNode.Next = node;
+
             node.Previous = SelectedNode;
 
             if (Nodes.Contains(node))
@@ -222,16 +278,18 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Resizing = true;
-            foreach (var node in SelectedNodes)
             {
-                if (node == rootNode)
-                    continue;
+                foreach (var node in SelectedNodes)
+                {
+                    if (node == rootNode)
+                        continue;
 
-                node.ScreenPosition += delta;
-                var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
+                    node.ScreenPosition += delta;
+                    var visibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
 
-                if (visibleNode != null)
-                    visibleNode.RefreshPosition();
+                    if (visibleNode != null)
+                        visibleNode.RefreshPosition();
+                }
             }
             Resizing = false;
         }
@@ -349,6 +407,7 @@ namespace TombLib.Controls.VisualScripting
             }
 
             UpdateVisibleNodes();
+            ClearSelection();
         }
 
         public Vector2 FromVisualCoord(PointF pos)
@@ -403,7 +462,10 @@ namespace TombLib.Controls.VisualScripting
             {
                 var control = visibleNodes[i];
                 if (!linearizedNodes.Contains(control.Node))
+                {
                     Controls.Remove(control);
+                    control.DisposeUI();
+                }
             }
 
             var newControls = new List<VisibleNodeBase>();
@@ -420,6 +482,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 Controls.Add(control);
                 control.RefreshPosition();
+                control.SpawnFunctionList(NodeFunctions);
             }
 
             Visible = true;
@@ -753,7 +816,7 @@ namespace TombLib.Controls.VisualScripting
         {
             if (LinksAsRopes)
             {
-                var width = MathC.Clamp((p2[1].X - p2[0].X) / ((p1[1].X - p1[0].X) / 2), 1, 2);
+                var width = (float)MathC.Clamp((p2[1].X - p2[0].X), 1, 2);
                 var start = new Point((int)(p1[0].X + (p1[1].X - p1[0].X) / 2.0f), (int)p1[0].Y);
                 var end   = new Point((int)(p2[0].X + (p2[1].X - p2[0].X) / 2.0f), (int)p2[0].Y);
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
@@ -893,13 +956,6 @@ namespace TombLib.Controls.VisualScripting
 
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-                // Draw selection area
-                if (_selectionArea != Rectangle2.Zero)
-                {
-                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
-                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
-                }
-
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
                 // Update colors
@@ -913,6 +969,13 @@ namespace TombLib.Controls.VisualScripting
 
                 // Draw hot node
                 DrawHotNode(e, nodeList);
+
+                // Draw selection area
+                if (_selectionArea != Rectangle2.Zero)
+                {
+                    e.Graphics.FillRectangle(_selectionBrush, ToVisualCoord(_selectionArea));
+                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_selectionArea));
+                }
 
                 // Draw shadows
                 foreach (var n in nodeList)
@@ -1055,17 +1118,29 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseWheel(e);
 
+            if (Controls.OfType<VisibleNodeBase>().Any(c =>
+            {
+                var b = c.ClientRectangle;
+                b.Offset(c.Location);
+                return b.Contains(e.Location);
+            }))
+                return;
+
             var delta = e.Delta * _mouseWheelScrollFactor;
 
-            if (Control.ModifierKeys == Keys.Shift)
-                ViewPosition += new Vector2(delta, 0.0f);
-            else
-                ViewPosition += new Vector2(0.0f, delta);
+            Resizing = true;
+            {
+                if (Control.ModifierKeys == Keys.Shift)
+                    ViewPosition += new Vector2(delta, 0.0f);
+                else
+                    ViewPosition += new Vector2(0.0f, delta);
 
-            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-            
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+                ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
+
+                foreach (var control in Controls.OfType<VisibleNodeBase>())
+                    control.RefreshPosition();
+            }
+            Resizing = false;
 
             Invalidate();
             OnViewPositionChanged(EventArgs.Empty);

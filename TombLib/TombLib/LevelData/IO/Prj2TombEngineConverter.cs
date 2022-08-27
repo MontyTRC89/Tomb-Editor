@@ -473,6 +473,9 @@ namespace TombLib.LevelData.IO
                 {
                     if (room != null)
                     {
+                        foreach (var instance in room.AnyObjects.OfType<IHasLuaName>())
+                            instance.AllocateNewLuaName();
+
                         foreach (var instance in room.Objects)
                         {
                             if (instance is MoveableInstance)

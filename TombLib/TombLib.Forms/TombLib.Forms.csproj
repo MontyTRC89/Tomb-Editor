@@ -74,7 +74,8 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\TextureMapBase.cs" />
-    <Compile Update="Controls\TriggerParameterControl.cs">
+    <Compile Update="Controls\TriggerParameterControl.cs /">
+    <Compile Update="Controls\VisualScripting\ArgumentEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\VisualScripting\NodeEditor.cs">
