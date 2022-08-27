@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Controls;
@@ -146,18 +147,6 @@ namespace TombLib.Controls.VisualScripting
                 ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
 
-                // HACK: For first control, we need to reference func list which is outside of container.
-                if (newY == _elementSpacing && !func.Arguments[i].NewLine)
-                {
-                    for (int j = 0; j < i; j++)
-                    {
-                        workLineWidth -= (_argControls[j].Width + _elementSpacing);
-                        _argControls[j].Left = _elementSpacing + workLineWidth + _elementSpacing;
-                    }
-
-                    cbFunction.Width = workLineWidth;
-                }
-
                 if (func.Arguments[i].NewLine)
                 {
                     newX  = _elementSpacing;
@@ -166,10 +155,7 @@ namespace TombLib.Controls.VisualScripting
                 else
                 {
                     if (_argControls.Count == 1)
-                    {
-                        cbFunction.Width -= ctrl.Width;
                         newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
-                    }
                     else
                         newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
                 }
@@ -180,6 +166,17 @@ namespace TombLib.Controls.VisualScripting
 
             var newHeight = _elementSpacing +
                              elementsOnLines.Count * (_elementHeight + _elementSpacing);
+
+            // HACK: Fix up first line position
+            var firstLineControls = _argControls.Where(c => c.Location.Y == _elementSpacing).ToList();
+            if (firstLineControls.Count > 0)
+            {
+                int delta = (firstLineControls.Last().Location.X + firstLineControls.Last().Width) -
+                             firstLineControls.First().Location.X + _elementSpacing;
+
+                cbFunction.Width -= delta;
+                firstLineControls.ForEach(c => c.Location = new Point(c.Location.X - delta, c.Location.Y));
+            }
 
             Size = new Size(Size.Width, newHeight);
             cbFunction.Visible = true;
