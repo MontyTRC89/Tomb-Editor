@@ -27,13 +27,11 @@ namespace TombLib.LevelData
         {
             return ItemType +
                    ", Room = " + (Room?.ToString() ?? "NULL") +
-                   ", X = " + SectorPosition.X +
-                   ", Z = " + SectorPosition.Y +
                    ", Ocb = " + Ocb +
                    GetScriptIDOrName(false);
         }
 
-        public string ShortName() => ItemType.ShortName() + GetScriptIDOrName();
+        public string ShortName() => ItemType.ShortName() + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
 
         public static ItemInstance FromItemType(ItemType item)
         {
