@@ -374,6 +374,9 @@ namespace TombEditor.Controls
 
         public void ProcessKey(Keys keyCode)
         {
+            if (_event == null)
+                return;
+
             if (rbLevelScript.Checked)
             {
                 switch (keyCode)

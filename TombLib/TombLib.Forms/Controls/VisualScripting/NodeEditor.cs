@@ -1072,6 +1072,11 @@ namespace TombLib.Controls.VisualScripting
                 Invalidate();
             }
 
+            // HACK: Totally ugly hack, but without it, there is no guarantee that any nested
+            // control won't be active.
+            FindForm().ActiveControl = null;
+
+            // Make sure resizing attrib is unset at all times when not explicitly set.
             Resizing = false;
         }
 
