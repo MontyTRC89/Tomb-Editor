@@ -43,6 +43,7 @@ namespace TombLib.LevelData.VisualScripting
     public struct ArgumentLayout
     {
         public ArgumentType Type;
+        public string Description;
         public bool NewLine;
         public float Width;
     }

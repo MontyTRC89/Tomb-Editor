@@ -105,6 +105,13 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
+        public void SetToolTip(ToolTip toolTip, string caption)
+        {
+            foreach (TabPage tab in container.TabPages)
+                foreach (Control control in tab.Controls)
+                    toolTip.SetToolTip(control, caption);
+        }
+
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             using (var b = new SolidBrush(Colors.LightBackground))

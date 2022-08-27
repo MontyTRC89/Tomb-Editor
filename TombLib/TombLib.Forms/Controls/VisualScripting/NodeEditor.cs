@@ -465,6 +465,7 @@ namespace TombLib.Controls.VisualScripting
                 {
                     Controls.Remove(control);
                     control.DisposeUI();
+                    control.Dispose();
                 }
             }
 

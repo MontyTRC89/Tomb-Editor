@@ -56,6 +56,8 @@ namespace TombLib.Controls.VisualScripting
 
         public void DisposeUI()
         {
+            toolTip.RemoveAll();
+
             // Remove old controls in reverse order
             for (int i = _argControls.Count - 1; i >= 0; i--)
             {
@@ -70,6 +72,17 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
+        public void TrimArguments()
+        {
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup.Arguments.Count < Node.Arguments.Count)
+                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
+            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
+                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                    Node.Arguments.Add(string.Empty);
+        }
+
         public void SpawnFunctionList(List<NodeFunction> functions)
         {
             if (functions == null)
@@ -82,17 +95,6 @@ namespace TombLib.Controls.VisualScripting
 
             if (cbFunction.Items.Count > 0)
                 cbFunction.SelectedIndex = 0;
-        }
-
-        public void TrimArguments()
-        {
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
-            var funcSetup = cbFunction.SelectedItem as NodeFunction;
-            if (funcSetup.Arguments.Count < Node.Arguments.Count)
-                Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
-            else if (funcSetup.Arguments.Count > Node.Arguments.Count)
-                for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                    Node.Arguments.Add(string.Empty);
         }
 
         public void SpawnUIElements()
@@ -144,6 +146,7 @@ namespace TombLib.Controls.VisualScripting
                 var normScale = func.Arguments[i].Width / 100.0f;
                 int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
+                ctrl.SetToolTip(toolTip, func.Arguments[i].Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
                 ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
 

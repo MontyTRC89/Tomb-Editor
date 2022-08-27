@@ -93,7 +93,8 @@ namespace TombLib.Utils
                                     else if (float.TryParse(p, out width))
                                         argLayout.Width = width;
                                     else
-                                        try { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } catch { }
+                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } 
+                                        catch { argLayout.Description = p; }
                                 }
 
                                  nodeFunction.Arguments.Add(argLayout);
