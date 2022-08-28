@@ -79,6 +79,7 @@ namespace TombLib.Utils
                                 var argLayout = new ArgumentLayout()
                                 {
                                     Type = ArgumentType.Numerical,
+                                    Description = string.Empty,
                                     NewLine = false,
                                     Width = 100.0f
                                 };
