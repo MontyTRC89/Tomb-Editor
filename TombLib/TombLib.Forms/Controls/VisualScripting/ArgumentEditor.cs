@@ -339,7 +339,11 @@ namespace TombLib.Controls.VisualScripting
                 colorDialog.Color = oldColor;
                 colorDialog.FullOpen = true;
                 if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    panelColor.BackColor = oldColor;
+                    BoxColorValue();
                     return;
+                }
 
                 if (oldColor != colorDialog.Color)
                 {
