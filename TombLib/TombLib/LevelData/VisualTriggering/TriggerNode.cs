@@ -47,7 +47,11 @@ namespace TombLib.LevelData.VisualScripting
 
         public override int GetHashCode()
         {
-            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode() ^ Function.GetHashCode();
+            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode();
+
+            if (Function != null)
+                hash ^= Function.GetHashCode();
+
             Arguments.ForEach(a => { if (a != null) hash ^= a.GetHashCode(); });
             if (Next != null)
                 hash ^= Next.GetHashCode();
