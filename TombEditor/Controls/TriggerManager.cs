@@ -54,7 +54,7 @@ namespace TombEditor.Controls
             {
                 _editor.EditorEventRaised -= EditorEventRaised;
 
-                nodeEditor.ViewPositionChanged -= NodeEditorViewPostionChanged;
+                nodeEditor.ViewPositionChanged -= NodeEditor_ViewPostionChanged;
                 nodeEditor.SelectionChanged -= NodeEditor_SelectionChanged;
                 nodeEditor.LocatedItemFound -= NodeEditor_LocatedItemFound;
 
@@ -75,7 +75,7 @@ namespace TombEditor.Controls
             nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
 
-            nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
+            nodeEditor.ViewPositionChanged += NodeEditor_ViewPostionChanged;
             nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
             nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
         }
@@ -91,7 +91,7 @@ namespace TombEditor.Controls
             UpdateNodeEditorControls();
         }
 
-        private void NodeEditorViewPostionChanged(object sender, EventArgs e)
+        private void NodeEditor_ViewPostionChanged(object sender, EventArgs e)
         {
             if (_event != null)
                 _event.NodePosition = nodeEditor.ViewPosition;
