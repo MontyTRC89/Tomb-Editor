@@ -2,6 +2,14 @@
 
 namespace TombLib.LevelData.VisualScripting
 {
+    // Currently there is just 2 types of nodes: condition and action.
+
+    public enum NodeType
+    {
+        Action,
+        Condition
+    }
+
     // Condition type specifies how condition node will check condition.
     // Condition type should be internally processed by lua comparer which
     // should be called in condition function itself. For this reason, 

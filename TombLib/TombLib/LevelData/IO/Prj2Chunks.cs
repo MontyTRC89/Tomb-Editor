@@ -93,6 +93,15 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId EventFunction = ChunkId.FromString("TeEventFunction");
         /**********/public static readonly ChunkId EventArgument = ChunkId.FromString("TeEventArgument");
         /**********/public static readonly ChunkId EventCallCounter = ChunkId.FromString("TeEventCallCounter");
+        /**********/public static readonly ChunkId EventNodePosition = ChunkId.FromString("TeEventNodePos");
+        /**********/public static readonly ChunkId EventNodeNext = ChunkId.FromString("TeEventNodeNext");
+        /**********/public static readonly ChunkId EventNodeElse = ChunkId.FromString("TeEventNodeElse");
+        /***********/public static readonly ChunkId NodeType = ChunkId.FromString("TeNodeType");
+        /***********/public static readonly ChunkId NodeName = ChunkId.FromString("TeNodeName");
+        /***********/public static readonly ChunkId NodeScreenPosition = ChunkId.FromString("TeNodeScrPos");
+        /***********/public static readonly ChunkId NodeColor = ChunkId.FromString("TeNodeColor");
+        /***********/public static readonly ChunkId NodeFunction = ChunkId.FromString("TeNodeFunc");
+        /***********/public static readonly ChunkId NodeArgument = ChunkId.FromString("TeNodeArg");
         public static readonly ChunkId Rooms = ChunkId.FromString("TeRooms");
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");
