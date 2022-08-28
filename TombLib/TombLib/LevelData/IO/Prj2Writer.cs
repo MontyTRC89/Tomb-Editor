@@ -3,9 +3,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.IO
@@ -336,6 +336,9 @@ namespace TombLib.LevelData.IO
                                     chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Function ?? string.Empty);
                                     chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Argument ?? string.Empty);
                                     chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.CallCounter);
+                                    chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.NodePosition);
+                                    evt.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
+
                                     chunkIO.WriteChunkEnd();
                                 }
                             }
@@ -864,6 +867,27 @@ namespace TombLib.LevelData.IO
                 }
                 chunkIO.WriteChunkEnd();
             }
+        }
+
+        private static void WriteNode(ChunkWriter chunkIO, TriggerNode node, ChunkId type)
+        {
+            chunkIO.WriteChunkWithChildren(type, () =>
+            {
+                chunkIO.WriteChunkInt(Prj2Chunks.NodeType, (int)((node is TriggerNodeCondition) ? NodeType.Condition : NodeType.Action));
+                chunkIO.WriteChunkString(Prj2Chunks.NodeName, node.Name);
+                chunkIO.WriteChunkVector2(Prj2Chunks.NodeScreenPosition, node.ScreenPosition);
+                chunkIO.WriteChunkVector3(Prj2Chunks.NodeColor, node.Color);
+                chunkIO.WriteChunkString(Prj2Chunks.NodeFunction, node.Function);
+
+                foreach (var arg in node.Arguments)
+                    chunkIO.WriteChunkString(Prj2Chunks.NodeArgument, arg);
+
+                if (node.Next != null)
+                    WriteNode(chunkIO, node.Next, Prj2Chunks.EventNodeNext);
+
+                if ((node as TriggerNodeCondition)?.Else != null)
+                    WriteNode(chunkIO, (node as TriggerNodeCondition).Else, Prj2Chunks.EventNodeElse);
+            });
         }
     }
 }

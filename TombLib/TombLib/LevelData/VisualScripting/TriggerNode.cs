@@ -19,11 +19,11 @@ namespace TombLib.LevelData.VisualScripting
 
     public abstract class TriggerNode : ICloneable
     {
-        public string Name { get; set; }
-        public Vector2 ScreenPosition { get; set; }
-        public Vector3 Color { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
+        public Vector3 Color { get; set; } = Vector3.Zero;
 
-        public string Function { get; set; }
+        public string Function { get; set; } = string.Empty;
         public List<string> Arguments { get; private set; } = new List<string>();
 
         public TriggerNode Previous { get; set; }
@@ -47,8 +47,12 @@ namespace TombLib.LevelData.VisualScripting
 
         public override int GetHashCode()
         {
-            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode() ^ Function.GetHashCode();
-            Arguments.ForEach(a => hash ^= a.GetHashCode());
+            var hash = Name.GetHashCode() ^ ScreenPosition.GetHashCode() ^ Color.GetHashCode();
+
+            if (Function != null)
+                hash ^= Function.GetHashCode();
+
+            Arguments.ForEach(a => { if (a != null) hash ^= a.GetHashCode(); });
             if (Next != null)
                 hash ^= Next.GetHashCode();
 

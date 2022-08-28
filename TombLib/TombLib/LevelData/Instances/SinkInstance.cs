@@ -17,7 +17,7 @@ namespace TombLib.LevelData
                 GetScriptIDOrName(false);
         }
 
-        public string ShortName() => "Sink (Strength = " + (Strength + 1 ) + ")" + GetScriptIDOrName();
+        public string ShortName() => "Sink (" + (Strength + 1 ) + ")" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
 
         public string PrimaryAttribDesc => "Strength";
         public string SecondaryAttribDesc => string.Empty;

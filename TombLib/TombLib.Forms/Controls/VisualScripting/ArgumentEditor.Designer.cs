@@ -46,6 +46,8 @@
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.tabList = new System.Windows.Forms.TabPage();
             this.cbList = new TombLib.Controls.DarkSearchableComboBox();
+            this.panelLocate = new DarkUI.Controls.DarkPanel();
+            this.butLocate = new DarkUI.Controls.DarkButton();
             this.container.SuspendLayout();
             this.tabBoolean.SuspendLayout();
             this.boolBackground.SuspendLayout();
@@ -59,6 +61,7 @@
             this.tabString.SuspendLayout();
             this.tabColor.SuspendLayout();
             this.tabList.SuspendLayout();
+            this.panelLocate.SuspendLayout();
             this.SuspendLayout();
             // 
             // container
@@ -307,6 +310,7 @@
             // tabList
             // 
             this.tabList.Controls.Add(this.cbList);
+            this.tabList.Controls.Add(this.panelLocate);
             this.tabList.Location = new System.Drawing.Point(4, 22);
             this.tabList.Margin = new System.Windows.Forms.Padding(1);
             this.tabList.Name = "tabList";
@@ -320,9 +324,29 @@
             this.cbList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbList.Location = new System.Drawing.Point(0, 0);
             this.cbList.Name = "cbList";
-            this.cbList.Size = new System.Drawing.Size(430, 21);
+            this.cbList.Size = new System.Drawing.Size(406, 21);
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
+            // 
+            // panelLocate
+            // 
+            this.panelLocate.Controls.Add(this.butLocate);
+            this.panelLocate.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelLocate.Location = new System.Drawing.Point(406, 0);
+            this.panelLocate.Name = "panelLocate";
+            this.panelLocate.Size = new System.Drawing.Size(24, 23);
+            this.panelLocate.TabIndex = 1;
+            // 
+            // butLocate
+            // 
+            this.butLocate.Checked = false;
+            this.butLocate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butLocate.Image = global::TombLib.Properties.Resources.general_target_16;
+            this.butLocate.Location = new System.Drawing.Point(0, 0);
+            this.butLocate.Name = "butLocate";
+            this.butLocate.Size = new System.Drawing.Size(24, 23);
+            this.butLocate.TabIndex = 0;
+            this.butLocate.Click += new System.EventHandler(this.butLocate_Click);
             // 
             // ArgumentEditor
             // 
@@ -346,6 +370,7 @@
             this.tabString.PerformLayout();
             this.tabColor.ResumeLayout(false);
             this.tabList.ResumeLayout(false);
+            this.panelLocate.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -370,5 +395,7 @@
         private DarkUI.Controls.DarkPanel boolBackground;
         private DarkUI.Controls.DarkRadioButton rbFalse;
         private DarkUI.Controls.DarkRadioButton rbTrue;
+        private DarkUI.Controls.DarkPanel panelLocate;
+        private DarkUI.Controls.DarkButton butLocate;
     }
 }

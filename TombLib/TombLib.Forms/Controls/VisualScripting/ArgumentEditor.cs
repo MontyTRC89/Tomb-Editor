@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -26,9 +27,15 @@ namespace TombLib.Controls.VisualScripting
 
         private const string _separatorChar = ",";
 
+        private ArgumentType _argumentType = ArgumentType.Numerical;
+
         public event EventHandler ValueChanged;
-        private void OnValueChanged(EventArgs e)
-            => ValueChanged?.Invoke(this, e);
+        private void OnValueChanged()
+            => ValueChanged?.Invoke(this, EventArgs.Empty);
+
+        public event EventHandler LocatedItemFound;
+        private void OnLocatedItemFound(IHasLuaName item)
+            => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
         public new string Text 
         { 
@@ -48,12 +55,31 @@ namespace TombLib.Controls.VisualScripting
 
         public void SetArgumentType(ArgumentType type, NodeEditor editor)
         {
+            _argumentType = type;
+
             if (type >= ArgumentType.LuaScript)
                 container.SelectedTab = tabList;
             else
             {
                 container.SelectedIndex = (int)type;
                 return;
+            }
+
+            switch (type)
+            {
+                case ArgumentType.Sinks:
+                case ArgumentType.Statics:
+                case ArgumentType.Moveables:
+                case ArgumentType.Volumes:
+                case ArgumentType.Cameras:
+                case ArgumentType.FlybyCameras:
+                    panelLocate.Size = new Size(cbList.Height, cbList.Height);
+                    panelLocate.Visible = true;
+                    break;
+
+                default:
+                    panelLocate.Visible = false;
+                    break;
             }
 
             cbList.Items.Clear();
@@ -109,7 +135,39 @@ namespace TombLib.Controls.VisualScripting
         {
             foreach (TabPage tab in container.TabPages)
                 foreach (Control control in tab.Controls)
+                {
                     toolTip.SetToolTip(control, caption);
+
+                    // HACK: there is no easy way of assigning tooltips to user controls...
+
+                    if (control is DarkSearchableComboBox)
+                        foreach (Control cnt in (control as DarkSearchableComboBox).Controls)
+                            toolTip.SetToolTip(cnt, caption);
+                }
+        }
+
+        public IHasLuaName LocateItem(NodeEditor editor)
+        {
+            if (cbList.Items.Count == 0 || cbList.SelectedIndex == -1)
+                return null;
+
+            switch (_argumentType)
+            {
+                case ArgumentType.Sinks:
+                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Statics:
+                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Moveables:
+                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Volumes:
+                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.Cameras:
+                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                case ArgumentType.FlybyCameras:
+                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                default:
+                    return null;
+            }
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -226,7 +284,7 @@ namespace TombLib.Controls.VisualScripting
         private void BoxBoolValue()
         {
             _text = rbTrue.Checked.ToString().ToLower();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
             private void BoxVector3Value()
@@ -235,7 +293,7 @@ namespace TombLib.Controls.VisualScripting
             var y = ((float)nudVector3Y.Value).ToString();
             var z = ((float)nudVector3Z.Value).ToString();
             _text = x + _separatorChar + y + _separatorChar + z;
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxColorValue()
@@ -243,25 +301,25 @@ namespace TombLib.Controls.VisualScripting
             _text = panelColor.BackColor.R.ToString() + _separatorChar + 
                     panelColor.BackColor.G.ToString() + _separatorChar + 
                     panelColor.BackColor.B.ToString();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxNumericalValue()
         {
             _text = ((float)nudNumerical.Value).ToString();
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxStringValue()
         {
             _text = tbString.Text;
-            OnValueChanged(EventArgs.Empty);
+            OnValueChanged();
         }
 
         private void BoxListValue()
         {
-            _text = (cbList.SelectedItem as ComboBoxItem).Value;
-            OnValueChanged(EventArgs.Empty);
+            _text = (cbList.SelectedItem as ComboBoxItem)?.Value;
+            OnValueChanged();
         }
 
         private void rbTrue_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
@@ -274,7 +332,8 @@ namespace TombLib.Controls.VisualScripting
 
         private void panelColor_MouseClick(object sender, MouseEventArgs e)
         {
-            using (var colorDialog = new RealtimeColorDialog())
+            using (var colorDialog = new RealtimeColorDialog(Control.MousePosition.X, 
+                       Control.MousePosition.Y, c => { panelColor.BackColor = c; }))
             {
                 var oldColor = panelColor.BackColor;
                 colorDialog.Color = oldColor;
@@ -288,6 +347,15 @@ namespace TombLib.Controls.VisualScripting
                     BoxColorValue();
                 }
             }
+        }
+
+        private void butLocate_Click(object sender, EventArgs e)
+        {
+            var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
+            if (item == null)
+                return;
+
+            OnLocatedItemFound(item);
         }
     }
 }

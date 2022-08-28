@@ -195,7 +195,7 @@ namespace TombLib.LevelData
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Sphere volume" + GetScriptIDOrName();
+        public override string ShortName() => "Sphere volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 
     public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
@@ -238,7 +238,7 @@ namespace TombLib.LevelData
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Box volume" + GetScriptIDOrName();
+        public override string ShortName() => "Box volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 
     public abstract class VolumeInstance : PositionAndScriptBasedObjectInstance, ISpatial

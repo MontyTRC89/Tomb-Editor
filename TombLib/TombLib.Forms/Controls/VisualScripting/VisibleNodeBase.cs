@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Controls;
 using DarkUI.Icons;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -62,7 +63,9 @@ namespace TombLib.Controls.VisualScripting
             for (int i = _argControls.Count - 1; i >= 0; i--)
             {
                 var control = _argControls[i];
+
                 control.ValueChanged -= Ctrl_ValueChanged;
+                control.LocatedItemFound -= Ctrl_LocatedItemFound;
 
                 if (Controls.Contains(control))
                     Controls.Remove(control);
@@ -165,6 +168,7 @@ namespace TombLib.Controls.VisualScripting
 
                 ctrl.Location = new Point(newX, newY);
                 ctrl.ValueChanged += Ctrl_ValueChanged;
+                ctrl.LocatedItemFound += Ctrl_LocatedItemFound;
             }
 
             var newHeight = _elementSpacing +
@@ -193,6 +197,12 @@ namespace TombLib.Controls.VisualScripting
             Editor?.Invalidate();
         }
 
+        private void Ctrl_LocatedItemFound(object sender, EventArgs e)
+        {
+            if (sender is IHasLuaName)
+                Editor.OnLocatedItemFound(sender as IHasLuaName);
+        }
+
         private void Ctrl_ValueChanged(object sender, EventArgs e)
         {
             var ctrl = sender as ArgumentEditor;
@@ -216,6 +226,9 @@ namespace TombLib.Controls.VisualScripting
 
                 var newX = MathC.Clamp(Node.ScreenPosition.X, 0, Editor.GridSize);
                 var newY = MathC.Clamp(Node.ScreenPosition.Y, 0, Editor.GridSize);
+                if (newX != Node.ScreenPosition.X || newY != Node.ScreenPosition.Y)
+                    Node.ScreenPosition = new Vector2(newX, newY);
+
                 Location = Editor.ToVisualCoord(new Vector2(newX, newY));
             }
             else

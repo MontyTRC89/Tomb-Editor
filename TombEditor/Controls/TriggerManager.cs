@@ -3,7 +3,6 @@ using DarkUI.Forms;
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
@@ -55,6 +54,10 @@ namespace TombEditor.Controls
             {
                 _editor.EditorEventRaised -= EditorEventRaised;
 
+                nodeEditor.ViewPositionChanged -= NodeEditor_ViewPostionChanged;
+                nodeEditor.SelectionChanged -= NodeEditor_SelectionChanged;
+                nodeEditor.LocatedItemFound -= NodeEditor_LocatedItemFound;
+
                 if (components != null)
                     components.Dispose();
             }
@@ -72,8 +75,15 @@ namespace TombEditor.Controls
             nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
 
-            nodeEditor.ViewPositionChanged += NodeEditorViewPostionChanged;
+            nodeEditor.ViewPositionChanged += NodeEditor_ViewPostionChanged;
             nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
+            nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
+        }
+
+        private void NodeEditor_LocatedItemFound(object sender, EventArgs e)
+        {
+            if (sender is PositionBasedObjectInstance)
+                _editor.ShowObject(sender as PositionBasedObjectInstance);
         }
 
         private void NodeEditor_SelectionChanged(object sender, EventArgs e)
@@ -81,7 +91,7 @@ namespace TombEditor.Controls
             UpdateNodeEditorControls();
         }
 
-        private void NodeEditorViewPostionChanged(object sender, EventArgs e)
+        private void NodeEditor_ViewPostionChanged(object sender, EventArgs e)
         {
             if (_event != null)
                 _event.NodePosition = nodeEditor.ViewPosition;
@@ -98,7 +108,6 @@ namespace TombEditor.Controls
         {
             tabbedContainer.SelectedIndex = rbLevelScript.Checked ? 1 : 0;
 
-            lblNotify.Visible = rbLevelScript.Checked;
             UpdateNodeEditorControls();
 
             if (rbLevelScript.Checked)
@@ -361,6 +370,60 @@ namespace TombEditor.Controls
         private void butLinkSelectedNodes_Click(object sender, EventArgs e)
         {
             nodeEditor.LinkSelectedNodes();
+        }
+
+        public void ProcessKey(Keys keyCode)
+        {
+            if (_event == null)
+                return;
+
+            if (rbLevelScript.Checked)
+            {
+                switch (keyCode)
+                {
+                    case Keys.Delete:
+                    case Keys.Back:
+                        lstFunctions.ClearSelection();
+                        break;
+                }
+            }
+            else
+            {
+                switch (keyCode)
+                {
+                    case Keys.Delete:
+                    case Keys.Back:
+                        nodeEditor.DeleteNodes();
+                        break;
+
+                    case (Keys.Shift | Keys.Delete):
+                    case (Keys.Shift | Keys.Back):
+                        nodeEditor.ClearNodes();
+                        break;
+
+                    case Keys.N:
+                    case Keys.A:
+                        nodeEditor.AddActionNode(true, false);
+                        break;
+
+                    case Keys.C:
+                        nodeEditor.AddConditionNode(true, false);
+                        break;
+
+                    case (Keys.Shift | Keys.N):
+                    case (Keys.Shift | Keys.A):
+                        nodeEditor.AddActionNode(true, true);
+                        break;
+
+                    case (Keys.Shift | Keys.C):
+                        nodeEditor.AddConditionNode(true, true);
+                        break;
+
+                    case Keys.Escape:
+                        nodeEditor.ClearSelection();
+                        break;
+                }
+            }
         }
     }
 }

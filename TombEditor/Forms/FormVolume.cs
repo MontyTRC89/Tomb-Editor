@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -243,6 +244,36 @@ namespace TombEditor.Forms
         {
             var searchPopUp = new PopUpSearch(lstEvents) { ShowAboveControl = true };
             searchPopUp.Show(this);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Don't process reserved camera keys
+            if (WinFormsUtils.DirectionalCameraKeys.Contains(keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            // Don't process one-key and shift hotkeys if we're focused on control which allows text input
+            if (WinFormsUtils.CurrentControlSupportsInput(this, keyData))
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            // HACK: Because WinForms has no proper way of translating keyboard events to nested
+            // controls, we need to introduce this helper function to translate pressed key info
+            // to currently active trigger manager.
+
+            switch (tcEvents.SelectedIndex)
+            {
+                case 0:
+                    tmEnter.ProcessKey(keyData);
+                    break;
+                case 1:
+                    tmInside.ProcessKey(keyData);
+                    break;
+                case 2:
+                    tmLeave.ProcessKey(keyData);
+                    break;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }
