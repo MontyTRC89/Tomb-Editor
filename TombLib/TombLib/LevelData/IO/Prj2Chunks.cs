@@ -98,6 +98,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId EventNodeElse = ChunkId.FromString("TeEventNodeElse");
         /***********/public static readonly ChunkId NodeType = ChunkId.FromString("TeNodeType");
         /***********/public static readonly ChunkId NodeName = ChunkId.FromString("TeNodeName");
+        /***********/public static readonly ChunkId NodeSize = ChunkId.FromString("TeNodeSize");
         /***********/public static readonly ChunkId NodeScreenPosition = ChunkId.FromString("TeNodeScrPos");
         /***********/public static readonly ChunkId NodeColor = ChunkId.FromString("TeNodeColor");
         /***********/public static readonly ChunkId NodeFunction = ChunkId.FromString("TeNodeFunc");

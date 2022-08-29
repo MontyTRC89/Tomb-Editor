@@ -1679,6 +1679,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.NodeName)
                     node.Name = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.NodeSize)
+                    node.Size = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.NodeScreenPosition)
                     node.ScreenPosition = chunkIO.ReadChunkVector2(chunkSize);
                 else if (id == Prj2Chunks.NodeColor)
