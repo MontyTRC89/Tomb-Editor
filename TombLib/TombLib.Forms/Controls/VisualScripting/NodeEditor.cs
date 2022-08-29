@@ -996,6 +996,9 @@ namespace TombLib.Controls.VisualScripting
                 // Draw hot node
                 DrawHotNode(e, nodeList);
 
+                // Switch back to non-antialiased state
+                e.Graphics.SmoothingMode = SmoothingMode.Default;
+
                 // Draw selection area
                 if (_selectionArea != Rectangle2.Zero)
                 {
