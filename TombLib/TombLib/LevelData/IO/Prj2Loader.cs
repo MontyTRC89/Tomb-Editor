@@ -1679,6 +1679,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.NodeName)
                     node.Name = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.NodeSize)
+                    node.Size = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.NodeScreenPosition)
                     node.ScreenPosition = chunkIO.ReadChunkVector2(chunkSize);
                 else if (id == Prj2Chunks.NodeColor)
@@ -1688,15 +1690,9 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.NodeArgument)
                     node.Arguments.Add(chunkIO.ReadChunkString(chunkSize));
                 else if (id == Prj2Chunks.EventNodeNext)
-                {
-                    var nextNode = LoadNode(chunkIO, node);
-                    node.Next = nextNode;
-                }
+                    node.Next = LoadNode(chunkIO, node);
                 else if (id == Prj2Chunks.EventNodeElse)
-                {
-                    var elseNode = LoadNode(chunkIO, node);
-                    (node as TriggerNodeCondition).Else = elseNode;
-                }
+                    (node as TriggerNodeCondition).Else = LoadNode(chunkIO, node);
                 else
                     return false;
                 return true;

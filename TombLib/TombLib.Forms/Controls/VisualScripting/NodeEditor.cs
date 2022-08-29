@@ -378,6 +378,7 @@ namespace TombLib.Controls.VisualScripting
         {
             SelectedNodes.Clear();
             OnSelectionChanged();
+            Invalidate();
         }
 
         public void ShowSelectedNode()
@@ -595,7 +596,7 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
-                control.Size = new Size(node.Size, 0);
+                control.Size = new Size(node.Size, control.Size.Height);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);
@@ -978,8 +979,6 @@ namespace TombLib.Controls.VisualScripting
                     e.Graphics.DrawLine(_gridPen,
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
 
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
                 // Update colors
@@ -987,12 +986,18 @@ namespace TombLib.Controls.VisualScripting
                     if (n.BackColor != n.Node.Color.ToWinFormsColor())
                         n.BackColor = n.Node.Color.ToWinFormsColor();
 
+                // Draw node links antialiased
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
                 // Draw connected nodes
                 foreach (var n in nodeList)
                     DrawVisibleNodeLink(e, nodeList, n);
 
                 // Draw hot node
                 DrawHotNode(e, nodeList);
+
+                // Switch back to non-antialiased state
+                e.Graphics.SmoothingMode = SmoothingMode.Default;
 
                 // Draw selection area
                 if (_selectionArea != Rectangle2.Zero)
