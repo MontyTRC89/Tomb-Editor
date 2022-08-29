@@ -34,6 +34,7 @@ namespace TombLib.Controls.VisualScripting
         private const string _separatorChar = ",";
         private const string _quoteChar = "\"";
         private const string _objectIDLuaPrefix = "Objects.ObjID.";
+        private const string _activatorPrefix = "activator:GetName()";
 
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
@@ -107,6 +108,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
+                    cbList.Items.Add(new ComboBoxItem("Volume activator", _activatorPrefix));
                     foreach (var item in editor.CachedMoveables)
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
