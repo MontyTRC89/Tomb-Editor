@@ -979,14 +979,15 @@ namespace TombLib.Controls.VisualScripting
                     e.Graphics.DrawLine(_gridPen,
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(GridSize, y)));
 
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
                 var nodeList = Controls.OfType<VisibleNodeBase>().ToList();
 
                 // Update colors
                 foreach (var n in nodeList)
                     if (n.BackColor != n.Node.Color.ToWinFormsColor())
                         n.BackColor = n.Node.Color.ToWinFormsColor();
+
+                // Draw node links antialiased
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
                 // Draw connected nodes
                 foreach (var n in nodeList)
