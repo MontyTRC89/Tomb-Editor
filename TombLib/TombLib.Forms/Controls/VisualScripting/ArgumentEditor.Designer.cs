@@ -110,6 +110,7 @@
             this.rbFalse.TabIndex = 3;
             this.rbFalse.TabStop = true;
             this.rbFalse.Text = "False";
+            this.rbFalse.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
             // 
             // rbTrue
             // 
@@ -120,6 +121,7 @@
             this.rbTrue.TabIndex = 2;
             this.rbTrue.TabStop = true;
             this.rbTrue.Text = "True";
+            this.rbTrue.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
             // 
             // tabNumerical
             // 

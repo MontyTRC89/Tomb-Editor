@@ -338,8 +338,7 @@ namespace TombLib.Controls.VisualScripting
             OnValueChanged();
         }
 
-        private void rbTrue_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
-        private void rbFalse_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
+        private void rb_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
         private void nudNumerical_ValueChanged(object sender, EventArgs e) => BoxNumericalValue();
         private void nudVector3_ValueChanged(object sender, EventArgs e) => BoxVector3Value();
         private void tbString_TextChanged(object sender, EventArgs e) => BoxStringValue();
