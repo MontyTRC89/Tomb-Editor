@@ -44,6 +44,7 @@ namespace TombLib.Controls.VisualScripting
             InitializeComponent();
             SnapToBorders = false;
             Node = node;
+            Size = new Size(Editor?.DefaultNodeWidth ?? TriggerNode.DefaultSize, Size.Height);
 
             SpawnGrips();
         }

@@ -117,7 +117,7 @@ namespace TombLib.Controls.VisualScripting
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
         public int GridSize { get; set; } = 256;
-        public int DefaultNodeWidth { get; set; } = 400;
+        public int DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
         public bool LinksAsRopes { get; set; } = false;
 
         private const float _mouseWheelScrollFactor = 0.04f;
@@ -549,7 +549,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 var location = ToVisualCoord(selectedVisibleNode.Node.ScreenPosition);
                 var x = location.X + selectedVisibleNode.Width / 2;
-                x -= newNode.Width / 2;
+                x -= newNode.Node.Size / 2;
                 var y = location.Y + selectedVisibleNode.Height;
                 pos = new Vector2(x, y);
             }    
@@ -595,6 +595,7 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
+                control.Size = new Size(node.Size, 0);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);

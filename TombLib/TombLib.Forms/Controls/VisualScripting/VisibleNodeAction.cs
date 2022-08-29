@@ -6,10 +6,7 @@ namespace TombLib.Controls.VisualScripting
 {
     public partial class VisibleNodeAction : VisibleNodeBase
     {
-        public VisibleNodeAction(TriggerNode node) : base(node)
-        {
-            InitializeComponent();
-        }
+        public VisibleNodeAction(TriggerNode node) : base(node) { }
 
         protected override void SpawnGrips()
         {

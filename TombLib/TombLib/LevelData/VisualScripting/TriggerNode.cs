@@ -19,9 +19,11 @@ namespace TombLib.LevelData.VisualScripting
 
     public abstract class TriggerNode : ICloneable
     {
+        public static int DefaultSize = 400;
+
         public string Name { get; set; } = string.Empty;
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
-        public int Size { get; set; } = 400;
+        public int Size { get; set; } = DefaultSize;
         public Vector3 Color { get; set; } = Vector3.Zero;
 
         public string Function { get; set; } = string.Empty;

@@ -6,10 +6,7 @@ namespace TombLib.Controls.VisualScripting
     public partial class VisibleNodeCondition : VisibleNodeBase
     {
         private const int _condGripWidth = _gripWidth / 2;
-        public VisibleNodeCondition(TriggerNode node) : base(node)
-        {
-            InitializeComponent();
-        }
+        public VisibleNodeCondition(TriggerNode node) : base(node) { }
 
         protected override void SpawnGrips()
         {
