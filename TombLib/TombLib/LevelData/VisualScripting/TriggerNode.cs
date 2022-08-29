@@ -21,6 +21,7 @@ namespace TombLib.LevelData.VisualScripting
     {
         public string Name { get; set; } = string.Empty;
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
+        public int Size { get; set; } = 400;
         public Vector3 Color { get; set; } = Vector3.Zero;
 
         public string Function { get; set; } = string.Empty;

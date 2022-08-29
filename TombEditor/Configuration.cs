@@ -133,6 +133,7 @@ namespace TombEditor
         // Node editor options
 
         public int NodeEditor_Size { get; set; } = 256;
+        public int NodeEditor_DefaultNodeWidth { get; set; } = 400;
         public int NodeEditor_GridStep { get; set; } = 8;
         public bool NodeEditor_LinksAsRopes { get; set; } = false;
 

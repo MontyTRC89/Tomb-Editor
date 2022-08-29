@@ -45,12 +45,15 @@ namespace TombLib.LevelData.VisualScripting
         Volumes,        // Listable
         Rooms,          // Listable
         SoundEffects,   // Listable
+        WadSlots,       // Listable
+        Enumeration,
         CompareOperand
     }
 
     public struct ArgumentLayout
     {
         public ArgumentType Type;
+        public List<string> CustomEnumeration;
         public string Description;
         public bool NewLine;
         public float Width;

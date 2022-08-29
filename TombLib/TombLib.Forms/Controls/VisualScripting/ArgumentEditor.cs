@@ -20,12 +20,20 @@ namespace TombLib.Controls.VisualScripting
                 Value = value;
             }
 
+            public ComboBoxItem(PositionAndScriptBasedObjectInstance item)
+            {
+                DisplayText = item.ToShortString();
+                Value = _quoteChar +(item.LuaName == null ? string.Empty : item.LuaName) + _quoteChar;
+            }   
+
             public string DisplayText;
             public string Value;
             public override string ToString() => DisplayText;
         }
 
         private const string _separatorChar = ",";
+        private const string _quoteChar = "\"";
+        private const string _objectIDLuaPrefix = "Objects.ObjID.";
 
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
@@ -53,19 +61,19 @@ namespace TombLib.Controls.VisualScripting
             tbString.AutoSize = false;
         }
 
-        public void SetArgumentType(ArgumentType type, NodeEditor editor)
+        public void SetArgumentType(ArgumentLayout layout, NodeEditor editor)
         {
-            _argumentType = type;
+            _argumentType = layout.Type;
 
-            if (type >= ArgumentType.LuaScript)
+            if (_argumentType >= ArgumentType.LuaScript)
                 container.SelectedTab = tabList;
             else
             {
-                container.SelectedIndex = (int)type;
+                container.SelectedIndex = (int)_argumentType;
                 return;
             }
 
-            switch (type)
+            switch (_argumentType)
             {
                 case ArgumentType.Sinks:
                 case ArgumentType.Statics:
@@ -84,7 +92,7 @@ namespace TombLib.Controls.VisualScripting
 
             cbList.Items.Clear();
 
-            switch (type)
+            switch (_argumentType)
             {
                 case ArgumentType.LuaScript:
                     foreach (var item in editor.CachedLuaFunctions)
@@ -92,31 +100,31 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Sinks:
                     foreach (var item in editor.CachedSinks)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Statics:
                     foreach (var item in editor.CachedStatics)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
                     foreach (var item in editor.CachedMoveables)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Volumes:
                     foreach (var item in editor.CachedVolumes)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Cameras:
                     foreach (var item in editor.CachedCameras)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.FlybyCameras:
                     foreach (var item in editor.CachedFlybys)
-                        cbList.Items.Add(new ComboBoxItem(item.ToShortString(), item.LuaName == null ? string.Empty : item.LuaName));
+                        cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Rooms:
                     foreach (var item in editor.CachedRooms)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), item.Name));
+                        cbList.Items.Add(new ComboBoxItem(item.ToString(), _quoteChar + item.Name + _quoteChar));
                     break;
                 case ArgumentType.SoundEffects:
                     foreach (var item in editor.CachedSoundInfos)
@@ -125,6 +133,14 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.CompareOperand:
                     foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.WadSlots:
+                    foreach (var item in editor.CachedWadSlots)
+                        cbList.Items.Add(new ComboBoxItem(item, _objectIDLuaPrefix + item));
+                    break;
+                case ArgumentType.Enumeration:
+                    foreach (var item in layout.CustomEnumeration)
+                        cbList.Items.Add(new ComboBoxItem(item, layout.CustomEnumeration.IndexOf(item).ToString()));
                     break;
                 default:
                     break;
@@ -256,7 +272,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.String:
                     {
-                        tbString.Text = source;
+                        tbString.Text = source.StartsWith(_quoteChar) && source.EndsWith(_quoteChar) ? source.Substring(1, source.Length - 2) : source;
                         break;
                     }
                 default: // Lists
@@ -312,7 +328,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxStringValue()
         {
-            _text = tbString.Text;
+            _text = _quoteChar + tbString.Text + _quoteChar;
             OnValueChanged();
         }
 

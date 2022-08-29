@@ -12,6 +12,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -74,36 +75,49 @@ namespace TombLib.Controls.VisualScripting
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<string> CachedLuaFunctions { get; private set; } = new List<string>();
+        public IReadOnlyList<string> CachedLuaFunctions { get { return _cachedLuaFunctions; } }
+        private List<string> _cachedLuaFunctions = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<MoveableInstance> CachedMoveables { get; private set; } = new List<MoveableInstance>();
+        public IReadOnlyList<MoveableInstance> CachedMoveables { get { return _cachedMoveables; } }
+        private List<MoveableInstance> _cachedMoveables = new List<MoveableInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<StaticInstance> CachedStatics { get; private set; } = new List<StaticInstance>();
+        public IReadOnlyList<StaticInstance> CachedStatics { get { return _cachedStatics; } }
+        private List<StaticInstance> _cachedStatics = new List<StaticInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<CameraInstance> CachedCameras { get; private set; } = new List<CameraInstance>();
+        public IReadOnlyList<CameraInstance> CachedCameras { get { return _cachedCameras; } }
+        private List<CameraInstance> _cachedCameras = new List<CameraInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<SinkInstance> CachedSinks { get; private set; } = new List<SinkInstance>();
+        public IReadOnlyList<SinkInstance> CachedSinks { get { return _cachedSinks; } }
+        private List<SinkInstance> _cachedSinks = new List<SinkInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<FlybyCameraInstance> CachedFlybys { get; private set; } = new List<FlybyCameraInstance>();
+        public IReadOnlyList<FlybyCameraInstance> CachedFlybys { get { return _cachedFlybys; } }
+        private List<FlybyCameraInstance> _cachedFlybys = new List<FlybyCameraInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<VolumeInstance> CachedVolumes { get; private set; } = new List<VolumeInstance>();
+        public IReadOnlyList<VolumeInstance> CachedVolumes { get { return _cachedVolumes; } }
+        private List<VolumeInstance> _cachedVolumes = new List<VolumeInstance>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Room> CachedRooms { get; private set; } = new List<Room>();
+        public IReadOnlyList<Room> CachedRooms { get { return _cachedRooms; } }
+        private List<Room> _cachedRooms = new List<Room>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<WadSoundInfo> CachedSoundInfos { get; private set; } = new List<WadSoundInfo>();
-
+        public IReadOnlyList<WadSoundInfo> CachedSoundInfos { get { return _cachedSoundInfos; } }
+        private List<WadSoundInfo> _cachedSoundInfos = new List<WadSoundInfo>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedWadSlots { get { return _cachedWadSlots; } }
+        private List<string> _cachedWadSlots = new List<string>();
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
         public int GridSize { get; set; } = 256;
+        public int DefaultNodeWidth { get; set; } = 400;
         public bool LinksAsRopes { get; set; } = false;
 
         private const float _mouseWheelScrollFactor = 0.04f;
@@ -111,6 +125,9 @@ namespace TombLib.Controls.VisualScripting
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
+
+        private Vector3 _defaultConditionNodeTint = new Vector3(0.8f, 1.0f, 0.8f);
+        private Vector3 _defaultActionNodeTint = new Vector3(0.8f, 0.8f, 1.0f);
 
         private const string _thenString = "pass";
         private const string _elseString = "fail";
@@ -181,14 +198,16 @@ namespace TombLib.Controls.VisualScripting
 
         public void PopulateCachedNodeLists(Level level)
         {
-            CachedMoveables  = level.GetAllObjects().OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedStatics    = level.GetAllObjects().OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedCameras    = level.GetAllObjects().OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedSinks      = level.GetAllObjects().OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedFlybys     = level.GetAllObjects().OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedVolumes    = level.GetAllObjects().OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            CachedSoundInfos = level.Settings.GlobalSoundMap;
-            CachedRooms      = level.ExistingRooms;
+            _cachedMoveables    = level.GetAllObjects().OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedStatics      = level.GetAllObjects().OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedCameras      = level.GetAllObjects().OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedSinks        = level.GetAllObjects().OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedFlybys       = level.GetAllObjects().OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedVolumes      = level.GetAllObjects().OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundInfos   = level.Settings.GlobalSoundMap;
+            _cachedRooms        = level.ExistingRooms;
+            _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
         public void AddConditionNode(bool linkToPrevious, bool linkToElse)
@@ -197,7 +216,8 @@ namespace TombLib.Controls.VisualScripting
             {
                 Name = "Condition node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
-                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 1.0f, 0.8f)
+                Size = DefaultNodeWidth,
+                Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
             };
 
             Nodes.Add(node);
@@ -215,7 +235,8 @@ namespace TombLib.Controls.VisualScripting
             {
                 Name = "Action node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
-                Color = Colors.GreyBackground.ToFloat3Color() * new Vector3(0.8f, 0.8f, 1.0f)
+                Size = DefaultNodeWidth,
+                Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
             };
 
             Nodes.Add(node);
