@@ -473,9 +473,6 @@ namespace TombLib.LevelData.IO
                 {
                     if (room != null)
                     {
-                        foreach (var instance in room.AnyObjects.OfType<IHasLuaName>())
-                            instance.AllocateNewLuaName();
-
                         foreach (var instance in room.Objects)
                         {
                             if (instance is MoveableInstance)
@@ -542,6 +539,9 @@ namespace TombLib.LevelData.IO
                                     st.Color = Vector3.One;
                                 }
                             }
+
+                            if (instance is IHasLuaName)
+                                (instance as IHasLuaName).AllocateNewLuaName();
                         }
                     }
                 }
