@@ -595,7 +595,7 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = true;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
-                control.Size = new Size(node.Size, 0);
+                control.Size = new Size(node.Size, control.Size.Height);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);
