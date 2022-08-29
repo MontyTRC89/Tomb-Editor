@@ -39,7 +39,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFunction.Location = new System.Drawing.Point(9, 9);
             this.cbFunction.Name = "cbFunction";
-            this.cbFunction.Size = new System.Drawing.Size(400, 24);
+            this.cbFunction.Size = new System.Drawing.Size(133, 24);
             this.cbFunction.TabIndex = 2;
             this.cbFunction.SelectedIndexChanged += new System.EventHandler(this.cbFunction_SelectedIndexChanged);
             // 
@@ -52,7 +52,7 @@
             this.Font = new System.Drawing.Font("Segoe UI Semilight", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "VisibleNodeBase";
-            this.Size = new System.Drawing.Size(417, 43);
+            this.Size = new System.Drawing.Size(150, 42);
             this.VerticalGrip = false;
             this.ResumeLayout(false);
 

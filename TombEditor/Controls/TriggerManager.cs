@@ -101,6 +101,7 @@ namespace TombEditor.Controls
         {
             nodeEditor.GridSize = _editor.Configuration.NodeEditor_Size;
             nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
+            nodeEditor.DefaultNodeWidth = _editor.Configuration.NodeEditor_DefaultNodeWidth;
             nodeEditor.LinksAsRopes = _editor.Configuration.NodeEditor_LinksAsRopes;
         }
 
@@ -189,9 +190,6 @@ namespace TombEditor.Controls
                 {
                     var functions = ScriptingUtils.GetAllFunctionNames(path);
                     functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
-
-                    nodeEditor.CachedLuaFunctions.Clear();
-                    nodeEditor.CachedLuaFunctions.AddRange(functions);
 
                     if (lstFunctions.Items.Count == 0)
                     {

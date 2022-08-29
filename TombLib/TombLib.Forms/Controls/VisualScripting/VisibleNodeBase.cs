@@ -44,6 +44,7 @@ namespace TombLib.Controls.VisualScripting
             InitializeComponent();
             SnapToBorders = false;
             Node = node;
+            Size = new Size(Editor?.DefaultNodeWidth ?? TriggerNode.DefaultSize, Size.Height);
 
             SpawnGrips();
         }
@@ -107,7 +108,11 @@ namespace TombLib.Controls.VisualScripting
             if (func == null)
                 return;
 
+            Visible = false;
+
             DisposeUI();
+
+            Size = new Size(Node.Size, Size.Height);
 
             int refWidth = Width - _elementSpacing * 2; 
             int newY = _elementSpacing;
@@ -150,7 +155,7 @@ namespace TombLib.Controls.VisualScripting
                 int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
                 ctrl.SetToolTip(toolTip, func.Arguments[i].Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
-                ctrl.SetArgumentType(func.Arguments[i].Type, Editor);
+                ctrl.SetArgumentType(func.Arguments[i], Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
 
                 if (func.Arguments[i].NewLine)
@@ -193,6 +198,8 @@ namespace TombLib.Controls.VisualScripting
 
             foreach (var control in _argControls)
                 control.Visible = true;
+
+            Visible = true;
 
             Editor?.Invalidate();
         }

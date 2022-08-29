@@ -17,6 +17,8 @@ namespace TombLib.Utils
         private static readonly string _reservedFunctionPrefix = "__";
         private static readonly string _commentPrefix = "--";
         private static readonly string _metadataPrefix = "!";
+        private static readonly string _enumSplitterStart = "[";
+        private static readonly string _enumSplitterEnd = "]";
 
         private static readonly string _nodeNameId = _metadataPrefix + "name";
         private static readonly string _nodeTypeId = _metadataPrefix + "condition";
@@ -79,6 +81,8 @@ namespace TombLib.Utils
                                 var argLayout = new ArgumentLayout()
                                 {
                                     Type = ArgumentType.Numerical,
+                                    CustomEnumeration = new List<string>(),
+                                    Description = string.Empty,
                                     NewLine = false,
                                     Width = 100.0f
                                 };
@@ -92,8 +96,10 @@ namespace TombLib.Utils
                                         argLayout.NewLine = true;
                                     else if (float.TryParse(p, out width))
                                         argLayout.Width = width;
+                                    else if (p.StartsWith(_enumSplitterStart) && p.EndsWith(_enumSplitterEnd))
+                                        argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
                                     else
-                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); } 
+                                        try { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
                                         catch { argLayout.Description = p; }
                                 }
 
