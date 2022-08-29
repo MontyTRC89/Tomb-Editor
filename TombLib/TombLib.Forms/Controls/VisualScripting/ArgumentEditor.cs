@@ -108,7 +108,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
-                    cbList.Items.Add(new ComboBoxItem("Volume activator", _activatorPrefix));
+                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", _activatorPrefix));
                     foreach (var item in editor.CachedMoveables)
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
