@@ -378,6 +378,7 @@ namespace TombLib.Controls.VisualScripting
         {
             SelectedNodes.Clear();
             OnSelectionChanged();
+            Invalidate();
         }
 
         public void ShowSelectedNode()
