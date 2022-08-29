@@ -3,6 +3,7 @@ Version 1.5.3
 
 Tomb Editor:
  * Added node editor for TEN visual trigger construction.
+ * Automatically generate Lua names for all objects on TR4 to TEN project conversion.
  
 
 Version 1.5.2
