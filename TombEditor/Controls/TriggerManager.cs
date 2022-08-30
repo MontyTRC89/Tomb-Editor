@@ -418,10 +418,13 @@ namespace TombEditor.Controls
 
                     case (Keys.Shift | Keys.N):
                     case (Keys.Shift | Keys.A):
+                    case (Keys.Alt | Keys.N):
+                    case (Keys.Alt | Keys.A):
                         nodeEditor.AddActionNode(true, true);
                         break;
 
                     case (Keys.Shift | Keys.C):
+                    case (Keys.Alt | Keys.C):
                         nodeEditor.AddConditionNode(true, true);
                         break;
 

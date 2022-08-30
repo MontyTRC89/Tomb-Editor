@@ -457,8 +457,8 @@ namespace TombLib.Controls.VisualScripting
 
         public Point ToVisualCoord(Vector2 pos)
         {
-            return new Point((int)Math.Round((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
-                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
+            return new Point((int)Math.Floor((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
+                             (int)Math.Floor(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
         }
 
         public RectangleF ToVisualCoord(Rectangle2 area)
