@@ -487,6 +487,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnLocationChanged(EventArgs e)
         {
+            // HACK: bypassing base OnLocationChanged dramatically increases winforms redraw times.
+            // It doesn't provoke any rendering artifacts, so use it whenever parent is resizing.
+
             if (Editor?.Resizing ?? true)
                 return;
 
