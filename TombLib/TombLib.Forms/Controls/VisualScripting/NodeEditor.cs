@@ -851,6 +851,10 @@ namespace TombLib.Controls.VisualScripting
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
 
                 var normColor = color == Vector3.Zero ? color : Vector3.Normalize(color);
+                var luma = color.GetLuma();
+                if (luma < 0.33f)
+                    normColor = MathC.SmoothStep(color, normColor, luma * 3.0f);
+
                 using (var p = new Pen(normColor.ToWinFormsColor(), width))
                     e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
