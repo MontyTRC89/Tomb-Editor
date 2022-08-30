@@ -571,6 +571,7 @@ namespace TombLib.Controls.VisualScripting
                 {
                     var rect = control.ClientRectangle;
                     rect.Offset(ToVisualCoord(control.Node.ScreenPosition));
+                    rect.Inflate((int)GridStep / 2, (int)GridStep * 2);
 
                     var rect2 = newNode.ClientRectangle;
                     rect2.Offset(new Point((int)pos.X, (int)pos.Y));
