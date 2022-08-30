@@ -1198,7 +1198,6 @@ namespace TombLib.Controls.VisualScripting
                 ShowNode(SelectedNode);
             else if (Nodes.Count > 0)
                 ShowNode(Nodes.First());
-
         }
     }
 }
