@@ -226,7 +226,7 @@ namespace TombLib.Controls.VisualScripting
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
-            ShowSelectedNode();
+            ShowNode(SelectedNode);
         }
 
         public void AddActionNode(bool linkToPrevious, bool linkToElse)
@@ -245,7 +245,7 @@ namespace TombLib.Controls.VisualScripting
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
-            ShowSelectedNode();
+            ShowNode(SelectedNode);
         }
 
         public void ClearNodes()
@@ -381,12 +381,12 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
-        public void ShowSelectedNode()
+        public void ShowNode(TriggerNode node)
         {
-            if (SelectedNode == null)
+            if (node == null)
                 return;
 
-            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == SelectedNode);
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
 
             if (control == null)
                 return;
@@ -400,11 +400,15 @@ namespace TombLib.Controls.VisualScripting
             if (ClientRectangle.Contains(rect))
                 return;
 
-            var finalCoord = FromVisualCoord(pos);
-            ViewPosition = finalCoord;
+            Resizing = true;
+            {
+                var finalCoord = FromVisualCoord(pos);
+                ViewPosition = finalCoord;
 
-            foreach (var c in Controls.OfType<VisibleNodeBase>())
-                c.RefreshPosition();
+                foreach (var c in Controls.OfType<VisibleNodeBase>())
+                    c.RefreshPosition();
+            }
+            Resizing = false;
 
             Invalidate();
             OnViewPositionChanged();
@@ -417,7 +421,7 @@ namespace TombLib.Controls.VisualScripting
             if (match != null)
             {
                 SelectNode(match, false, true);
-                ShowSelectedNode();
+                ShowNode(SelectedNode);
             }
         }
 
@@ -1178,6 +1182,23 @@ namespace TombLib.Controls.VisualScripting
 
             Invalidate();
             OnViewPositionChanged();
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            base.OnMouseDoubleClick(e);
+
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            if (Nodes.Count == 0)
+                return;
+
+            if (SelectedNode != null)
+                ShowNode(SelectedNode);
+            else if (Nodes.Count > 0)
+                ShowNode(Nodes.First());
+
         }
     }
 }
