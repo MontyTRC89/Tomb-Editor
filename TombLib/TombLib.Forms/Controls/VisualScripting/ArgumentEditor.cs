@@ -172,17 +172,17 @@ namespace TombLib.Controls.VisualScripting
             switch (_argumentType)
             {
                 case ArgumentType.Sinks:
-                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Statics:
-                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Moveables:
-                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Volumes:
-                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Cameras:
-                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.FlybyCameras:
-                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == (cbList.SelectedItem as ComboBoxItem).Value);
+                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 default:
                     return null;
             }
@@ -274,7 +274,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.String:
                     {
-                        tbString.Text = source.StartsWith(_quoteChar) && source.EndsWith(_quoteChar) ? source.Substring(1, source.Length - 2) : source;
+                        tbString.Text = Unquote(source);
                         break;
                     }
                 default: // Lists
@@ -297,6 +297,14 @@ namespace TombLib.Controls.VisualScripting
                 else
                     return 0.0f;
             }).ToArray();
+        }
+
+        private string Unquote(string source)
+        {
+            if (source.StartsWith(_quoteChar) && source.EndsWith(_quoteChar))
+                return source.Substring(1, source.Length - 2);
+            else
+                return source;
         }
 
         private void BoxBoolValue()

@@ -226,7 +226,7 @@ namespace TombLib.Controls.VisualScripting
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
-            ShowSelectedNode();
+            ShowNode(SelectedNode);
         }
 
         public void AddActionNode(bool linkToPrevious, bool linkToElse)
@@ -245,7 +245,7 @@ namespace TombLib.Controls.VisualScripting
 
             UpdateVisibleNodes();
             SelectNode(node, false, true);
-            ShowSelectedNode();
+            ShowNode(SelectedNode);
         }
 
         public void ClearNodes()
@@ -381,12 +381,12 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
-        public void ShowSelectedNode()
+        public void ShowNode(TriggerNode node)
         {
-            if (SelectedNode == null)
+            if (node == null)
                 return;
 
-            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == SelectedNode);
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
 
             if (control == null)
                 return;
@@ -400,11 +400,15 @@ namespace TombLib.Controls.VisualScripting
             if (ClientRectangle.Contains(rect))
                 return;
 
-            var finalCoord = FromVisualCoord(pos);
-            ViewPosition = finalCoord;
+            Resizing = true;
+            {
+                var finalCoord = FromVisualCoord(pos);
+                ViewPosition = finalCoord;
 
-            foreach (var c in Controls.OfType<VisibleNodeBase>())
-                c.RefreshPosition();
+                foreach (var c in Controls.OfType<VisibleNodeBase>())
+                    c.RefreshPosition();
+            }
+            Resizing = false;
 
             Invalidate();
             OnViewPositionChanged();
@@ -417,7 +421,7 @@ namespace TombLib.Controls.VisualScripting
             if (match != null)
             {
                 SelectNode(match, false, true);
-                ShowSelectedNode();
+                ShowNode(SelectedNode);
             }
         }
 
@@ -453,8 +457,8 @@ namespace TombLib.Controls.VisualScripting
 
         public Point ToVisualCoord(Vector2 pos)
         {
-            return new Point((int)Math.Round((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
-                             (int)Math.Round(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
+            return new Point((int)Math.Floor((pos.X - ViewPosition.X) * GridStep + Width * 0.5f), 
+                             (int)Math.Floor(Height * 0.5f - (pos.Y - ViewPosition.Y) * GridStep));
         }
 
         public RectangleF ToVisualCoord(Rectangle2 area)
@@ -567,6 +571,7 @@ namespace TombLib.Controls.VisualScripting
                 {
                     var rect = control.ClientRectangle;
                     rect.Offset(ToVisualCoord(control.Node.ScreenPosition));
+                    rect.Inflate((int)GridStep / 2, (int)GridStep * 2);
 
                     var rect2 = newNode.ClientRectangle;
                     rect2.Offset(new Point((int)pos.X, (int)pos.Y));
@@ -847,6 +852,10 @@ namespace TombLib.Controls.VisualScripting
                 var midY  = (p1[0].Y + p2[0].Y) / 2.0f;
 
                 var normColor = color == Vector3.Zero ? color : Vector3.Normalize(color);
+                var luma = color.GetLuma();
+                if (luma < 0.33f)
+                    normColor = MathC.SmoothStep(color, normColor, luma * 3.0f);
+
                 using (var p = new Pen(normColor.ToWinFormsColor(), width))
                     e.Graphics.DrawBezier(p, start, new PointF(start.X, midY), new PointF(end.X, midY), end);
             }
@@ -1178,6 +1187,22 @@ namespace TombLib.Controls.VisualScripting
 
             Invalidate();
             OnViewPositionChanged();
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            base.OnMouseDoubleClick(e);
+
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            if (Nodes.Count == 0)
+                return;
+
+            if (SelectedNode != null)
+                ShowNode(SelectedNode);
+            else
+                ShowNode(Nodes.First());
         }
     }
 }
