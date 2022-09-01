@@ -133,7 +133,7 @@ namespace TombLib.Controls.VisualScripting
         private const string _elseString = "fail";
 
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
-        private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, 2);
+        private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, _selectionThickness);
         private static readonly Brush _selectionBrush = new SolidBrush(Colors.BlueSelection.ToFloat3Color().ToWinFormsColor(0.5f));
 
         private Rectangle2 _selectionArea;

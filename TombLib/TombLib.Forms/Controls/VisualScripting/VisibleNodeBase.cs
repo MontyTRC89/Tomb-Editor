@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Config;
 using DarkUI.Controls;
 using DarkUI.Icons;
 using TombLib.LevelData;
@@ -90,9 +91,13 @@ namespace TombLib.Controls.VisualScripting
 
         public void SpawnFunctionList(List<NodeFunction> functions)
         {
-            if (functions == null)
+            if (functions == null || functions.Count == 0)
+            {
+                cbFunction.Visible = false;
                 return;
+            }
 
+            cbFunction.Visible = true;
             cbFunction.Items.Clear();
             foreach (var f in functions)
                 if (f.Conditional == (Node is TriggerNodeCondition))
@@ -523,6 +528,11 @@ namespace TombLib.Controls.VisualScripting
                 using (var brush = new TextureBrush(MenuIcons.grip_fill, WrapMode.Tile))
                     e.Graphics.FillRectangle(brush, grip);
             }
+
+            if (!cbFunction.Visible)
+                using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.7f)))
+                    e.Graphics.DrawString("No node functions. Update node script file.", Font, b, ClientRectangle,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
         }
 
         protected override CreateParams CreateParams

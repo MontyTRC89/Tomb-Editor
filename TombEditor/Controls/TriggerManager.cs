@@ -166,9 +166,9 @@ namespace TombEditor.Controls
             lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
 
-            // TODO: Add to level settings or whatever.
             nodeEditor.NodeFunctions.Clear();
-            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.GetAllNodeFunctions("test.lua"));
+            nodeEditor.NodeFunctions.AddRange(
+                ScriptingUtils.GetAllNodeFunctions(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenNodeScriptFile)));
 
             if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
             {
