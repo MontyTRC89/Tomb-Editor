@@ -183,11 +183,12 @@ namespace TombLib.LevelData
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
+        public string ScriptDirectory { get; set; } = VariableCreate(VariableType.ScriptDirectory);
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
-        public string TenLuaScriptFile { get; set; } = null;
+        public string TenLuaScriptFile { get; set; } = VariableCreate(VariableType.ScriptDirectory) + Dir + VariableCreate(VariableType.LevelName) + ".lua";
+        public string TenNodeScriptFile { get; set; } = VariableCreate(VariableType.ScriptDirectory) + Dir + "NodeFunctions" + ".lua";
 
         // All data lists
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();

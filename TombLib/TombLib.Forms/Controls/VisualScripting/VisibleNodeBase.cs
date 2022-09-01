@@ -531,7 +531,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (!cbFunction.Visible)
                 using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.7f)))
-                    e.Graphics.DrawString("No node functions. Update node script.", Font, b, ClientRectangle,
+                    e.Graphics.DrawString("No node functions. Update node script file.", Font, b, ClientRectangle,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
         }
 
