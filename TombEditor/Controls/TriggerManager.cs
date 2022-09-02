@@ -428,6 +428,10 @@ namespace TombEditor.Controls
                         nodeEditor.AddConditionNode(true, true);
                         break;
 
+                    case Keys.L:
+                        nodeEditor.LinkSelectedNodes();
+                        break;
+
                     case Keys.Escape:
                         nodeEditor.ClearSelection();
                         break;
