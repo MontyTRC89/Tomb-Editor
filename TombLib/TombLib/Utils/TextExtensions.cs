@@ -6,6 +6,8 @@ namespace TombLib.Utils
 {
     public static class TextExtensions
     {
+        public const string QuoteChar = "\"";
+
         public static string ConvertToANSI(this string source)
         {
             var src  = System.Text.Encoding.UTF8;
@@ -33,6 +35,19 @@ namespace TombLib.Utils
         public static string SplitCamelcase(this string source)
         {
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
+        }
+
+        public static string Unquote(string source)
+        {
+            if (source.StartsWith(QuoteChar) && source.EndsWith(QuoteChar))
+                return source.Substring(1, source.Length - 2);
+            else
+                return source;
+        }
+
+        public static string Quote(string source)
+        {
+                return QuoteChar + source + QuoteChar;
         }
     }
 }
