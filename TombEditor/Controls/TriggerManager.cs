@@ -441,7 +441,7 @@ namespace TombEditor.Controls
 
         private void butExport_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes));
+            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction"));
         }
     }
 }
