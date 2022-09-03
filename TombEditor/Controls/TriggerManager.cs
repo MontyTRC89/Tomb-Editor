@@ -428,11 +428,20 @@ namespace TombEditor.Controls
                         nodeEditor.AddConditionNode(true, true);
                         break;
 
+                    case Keys.L:
+                        nodeEditor.LinkSelectedNodes();
+                        break;
+
                     case Keys.Escape:
                         nodeEditor.ClearSelection();
                         break;
                 }
             }
+        }
+
+        private void butExport_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes));
         }
     }
 }

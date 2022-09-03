@@ -10,15 +10,33 @@ namespace TombLib.Utils
     public static class ScriptingUtils
     {
         private static readonly int _maxRecursionDepth = 32;
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
-        private static readonly string _tableName = "LevelFuncs";
-        private static readonly string _includeStart = "require";
 
         private static readonly string _reservedFunctionPrefix = "__";
-        private static readonly string _commentPrefix = "--";
         private static readonly string _metadataPrefix = "!";
         private static readonly string _enumSplitterStart = "[";
         private static readonly string _enumSplitterEnd = "]";
+        private static readonly char   _tabChar = '\t';
+
+        private static readonly string _luaSplitter = ".";
+        private static readonly string _luaInclude = "require";
+        private static readonly string _luaFunc = "function";
+        private static readonly string _luaIf = "if";
+        private static readonly string _luaThen = "then";
+        private static readonly string _luaElse = "else";
+        private static readonly string _luaEnd = "end";
+        private static readonly string _luaNull = "nil";
+        private static readonly string _luaActivator = "activator";
+        private static readonly string _luaIs = "=";
+        private static readonly string _luaBrkOpen = "(";
+        private static readonly string _luaBrkClose = ")";
+        private static readonly string _luaSpace = " ";
+        private static readonly string _luaSeparator = ",";
+        private static readonly string _luaComment = "--";
+
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+        private static readonly string _levelFuncPrefix = "LevelFuncs" + _luaSplitter;
+        private static readonly string _levelNodePrefix = "__NodeFunction";
+        private static readonly string _levelExportedNodePrefix = "ExportedNodeFunction";
 
         private static readonly string _nodeNameId = _metadataPrefix + "name";
         private static readonly string _nodeTypeId = _metadataPrefix + "condition";
@@ -46,11 +64,11 @@ namespace TombLib.Utils
                 foreach (string l in lines)
                 {
                     string line = l.Trim();
-                    int cPoint = line.IndexOf(_commentPrefix);
+                    int cPoint = line.IndexOf(_luaComment);
 
                     if (cPoint >= 0)
                     {
-                        int start = cPoint + _commentPrefix.Length;
+                        int start = cPoint + _luaComment.Length;
                         int end = line.Length;
 
                         var comment = line.Substring(start, end - start).Trim();
@@ -114,25 +132,25 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         line = string.Empty;
 
-                    if (line.StartsWith("function " + _tableName + "."))
+                    if (line.StartsWith(_luaFunc + _luaSpace + _levelFuncPrefix))
                     {
-                        int indexStart = line.IndexOf(".") + 1;
-                        int indexEnd = line.IndexOf("(") - indexStart;
+                        int indexStart = line.IndexOf(_luaSplitter) + 1;
+                        int indexEnd = line.IndexOf(_luaBrkOpen) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.StartsWith(_tableName + "."))
+                    else if (line.StartsWith(_levelFuncPrefix))
                     {
-                        int indexStart = line.IndexOf(".") + 1;
-                        int indexEnd = line.IndexOf("=") - indexStart;
+                        int indexStart = line.IndexOf(_luaSplitter) + 1;
+                        int indexEnd = line.IndexOf(_luaIs) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.Contains(_includeStart))
+                    else if (line.Contains(_luaInclude))
                     {
-                        int pos1 = line.IndexOf(_includeStart) + _includeStart.Length;
+                        int pos1 = line.IndexOf(_luaInclude) + _luaInclude.Length;
                         int pos2 = line.Length;
                         string subfile = line.Substring(pos1, pos2 - pos1);
-                        pos1 = subfile.IndexOf("(") + 1;
-                        pos2 = subfile.IndexOf(")");
+                        pos1 = subfile.IndexOf(_luaBrkOpen) + 1;
+                        pos2 = subfile.IndexOf(_luaBrkClose);
                         subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
                         subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
 
@@ -195,31 +213,31 @@ namespace TombLib.Utils
                     if (skip)
                         continue;
 
-                    int cPoint = line.IndexOf("--");
+                    int cPoint = line.IndexOf(_luaComment);
                     if (cPoint > 0)
                         line = line.Substring(0, cPoint - 1);
                     else if (cPoint == 0)
                         continue;
 
-                    if (line.StartsWith("function " + _tableName + "."))
+                    if (line.StartsWith(_luaFunc + _luaSpace + _levelFuncPrefix))
                     {
-                        int indexStart = line.IndexOf(".") + 1;
-                        int indexEnd = line.IndexOf("(") - indexStart;
+                        int indexStart = line.IndexOf(_luaSplitter) + 1;
+                        int indexEnd = line.IndexOf(_luaBrkOpen) - indexStart;
                         functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.StartsWith(_tableName + "."))
+                    else if (line.StartsWith(_levelFuncPrefix))
                     {
-                        int indexStart = line.IndexOf(".") + 1;
-                        int indexEnd = line.IndexOf("=") - indexStart;
+                        int indexStart = line.IndexOf(_luaSplitter) + 1;
+                        int indexEnd = line.IndexOf(_luaIs) - indexStart;
                         functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.Contains(_includeStart))
+                    else if (line.Contains(_luaInclude))
                     {
-                        int pos1 = line.IndexOf(_includeStart) + _includeStart.Length;
+                        int pos1 = line.IndexOf(_luaInclude) + _luaInclude.Length;
                         int pos2 = line.Length;
                         string subfile = line.Substring(pos1, pos2 - pos1);
-                        pos1 = subfile.IndexOf("(") + 1;
-                        pos2 = subfile.IndexOf(")");
+                        pos1 = subfile.IndexOf(_luaBrkOpen) + 1;
+                        pos2 = subfile.IndexOf(_luaBrkClose);
                         subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
                         subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
 
@@ -246,6 +264,62 @@ namespace TombLib.Utils
             {
                 return result;
             }
+        }
+
+        private static string ParseFunctionString(string function, List<string> arguments)
+        {
+            string joined = _levelFuncPrefix + function + _luaBrkOpen + _luaActivator;
+            arguments.ForEach(arg => joined += _luaSeparator + _luaSpace + (string.IsNullOrEmpty(arg) ? _luaNull : arg));
+            joined += _luaBrkClose;
+            return joined;
+        }
+
+        private static string ParseNode(TriggerNode node, int indent, ref string source)
+        {
+            source += Environment.NewLine;
+
+            if (node is TriggerNodeAction)
+            {
+                source += string.Empty.PadLeft(indent, _tabChar) + 
+                          ParseFunctionString(node.Function, node.Arguments);
+
+                if (node.Next != null)
+                    ParseNode(node.Next, indent, ref source);
+            }
+
+            if (node is TriggerNodeCondition)
+            {
+                var condNode = node as TriggerNodeCondition;
+
+                source += string.Empty.PadLeft(indent, _tabChar) + 
+                          _luaIf + _luaSpace + _luaBrkOpen + 
+                          ParseFunctionString(condNode.Function, condNode.Arguments) + 
+                          _luaBrkClose + _luaSpace + _luaThen;
+                
+                if (condNode.Next != null)
+                    ParseNode(condNode.Next, indent + 1, ref source);
+
+                if (condNode.Else != null)
+                {
+                    source += Environment.NewLine + string.Empty.PadLeft(indent, _tabChar) + _luaElse;
+                    ParseNode(condNode.Else, indent + 1, ref source);
+                }
+
+                source += Environment.NewLine + string.Empty.PadLeft(indent, _tabChar) + _luaEnd;
+            }
+
+            return source;
+        }
+
+        public static string ParseNodes(List<TriggerNode> nodes, int eventIndex = -1)
+        {
+            var funcPrefix = eventIndex >= 0 ? _levelNodePrefix + eventIndex.ToString() : _levelExportedNodePrefix;
+            var result = _levelFuncPrefix + funcPrefix + 
+                         _luaSpace + _luaIs + _luaSpace + _luaFunc + _luaBrkOpen + _luaActivator + _luaBrkClose;
+
+            nodes.OrderByDescending(node => node.ScreenPosition.Y).ToList().ForEach(node => ParseNode(node, 1, ref result));
+            result += Environment.NewLine + _luaEnd;
+            return result;
         }
     }
 }

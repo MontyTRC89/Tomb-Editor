@@ -23,7 +23,7 @@ namespace TombLib.Controls.VisualScripting
             public ComboBoxItem(PositionAndScriptBasedObjectInstance item)
             {
                 DisplayText = item.ToShortString();
-                Value = _quoteChar +(item.LuaName == null ? string.Empty : item.LuaName) + _quoteChar;
+                Value = TextExtensions.Quote(item.LuaName == null ? string.Empty : item.LuaName);
             }   
 
             public string DisplayText;
@@ -32,7 +32,6 @@ namespace TombLib.Controls.VisualScripting
         }
 
         private const string _separatorChar = ",";
-        private const string _quoteChar = "\"";
         private const string _objectIDLuaPrefix = "Objects.ObjID.";
         private const string _activatorPrefix = "activator:GetName()";
 
@@ -126,7 +125,7 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Rooms:
                     foreach (var item in editor.CachedRooms)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), _quoteChar + item.Name + _quoteChar));
+                        cbList.Items.Add(new ComboBoxItem(item.ToString(), TextExtensions.Quote(item.Name)));
                     break;
                 case ArgumentType.SoundEffects:
                     foreach (var item in editor.CachedSoundInfos)
@@ -172,17 +171,17 @@ namespace TombLib.Controls.VisualScripting
             switch (_argumentType)
             {
                 case ArgumentType.Sinks:
-                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedSinks.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Statics:
-                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedStatics.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Moveables:
-                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedMoveables.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Volumes:
-                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedVolumes.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.Cameras:
-                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedCameras.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 case ArgumentType.FlybyCameras:
-                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    return editor.CachedFlybys.FirstOrDefault(i => i.LuaName == TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                 default:
                     return null;
             }
@@ -222,6 +221,8 @@ namespace TombLib.Controls.VisualScripting
                         if (!(bool.TryParse(source, out result)))
                             result = false;
                         rbTrue.Checked = result;
+
+                        BoxBoolValue();
                         break;
                     }
                 case ArgumentType.Numerical:
@@ -231,7 +232,8 @@ namespace TombLib.Controls.VisualScripting
                             result = 0.0f;
                         try { nudNumerical.Value = (decimal)result; }
                         catch { nudNumerical.Value = (decimal)0; }
-                        
+
+                        BoxNumericalValue();
                         break;
                     }
                 case ArgumentType.Vector3:
@@ -258,6 +260,8 @@ namespace TombLib.Controls.VisualScripting
                         {
                             nudVector3X.Value = nudVector3Y.Value = nudVector3Z.Value = (decimal)0;
                         }
+
+                        BoxVector3Value();
                         break;
                     }
                 case ArgumentType.Color:
@@ -270,11 +274,15 @@ namespace TombLib.Controls.VisualScripting
                                 bytes[i] = (byte)MathC.Clamp(floats[i], 0, 255);
 
                         panelColor.BackColor = Color.FromArgb(255, bytes[0], bytes[1], bytes[2]);
+
+                        BoxColorValue();
                         break;
                     }
                 case ArgumentType.String:
                     {
-                        tbString.Text = Unquote(source);
+                        tbString.Text = TextExtensions.Unquote(source);
+
+                        BoxStringValue();
                         break;
                     }
                 default: // Lists
@@ -282,6 +290,10 @@ namespace TombLib.Controls.VisualScripting
                         var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
                         if (index != null)
                             cbList.SelectedItem = index;
+                        else
+                            cbList.SelectedIndex = 0;
+
+                        BoxListValue();
                         break;
                     }
             }
@@ -297,14 +309,6 @@ namespace TombLib.Controls.VisualScripting
                 else
                     return 0.0f;
             }).ToArray();
-        }
-
-        private string Unquote(string source)
-        {
-            if (source.StartsWith(_quoteChar) && source.EndsWith(_quoteChar))
-                return source.Substring(1, source.Length - 2);
-            else
-                return source;
         }
 
         private void BoxBoolValue()
@@ -338,7 +342,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxStringValue()
         {
-            _text = _quoteChar + tbString.Text + _quoteChar;
+            _text = TextExtensions.Quote(tbString.Text);
             OnValueChanged();
         }
 
