@@ -36,6 +36,7 @@ namespace TombLib.Utils
         private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
         private static readonly string _levelFuncPrefix = "LevelFuncs" + _luaSplitter;
         private static readonly string _levelNodePrefix = "__NodeFunction";
+        private static readonly string _levelExportedNodePrefix = "ExportedNodeFunction";
 
         private static readonly string _nodeNameId = _metadataPrefix + "name";
         private static readonly string _nodeTypeId = _metadataPrefix + "condition";
@@ -310,9 +311,10 @@ namespace TombLib.Utils
             return source;
         }
 
-        public static string ParseNodes(List<TriggerNode> nodes, int eventIndex)
+        public static string ParseNodes(List<TriggerNode> nodes, int eventIndex = -1)
         {
-            var result = _levelFuncPrefix + _levelNodePrefix + eventIndex.ToString() + 
+            var funcPrefix = eventIndex >= 0 ? _levelNodePrefix + eventIndex.ToString() : _levelExportedNodePrefix;
+            var result = _levelFuncPrefix + funcPrefix + 
                          _luaSpace + _luaIs + _luaSpace + _luaFunc + _luaBrkOpen + _luaActivator + _luaBrkClose;
 
             nodes.OrderByDescending(node => node.ScreenPosition.Y).ToList().ForEach(node => ParseNode(node, 1, ref result));

@@ -46,6 +46,7 @@ namespace TombEditor.Controls
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lblListNotify = new DarkUI.Controls.DarkLabel();
+            this.butExport = new DarkUI.Controls.DarkButton();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -127,7 +128,7 @@ namespace TombEditor.Controls
             this.rbLevelScript.AutoSize = true;
             this.rbLevelScript.Location = new System.Drawing.Point(98, 5);
             this.rbLevelScript.Name = "rbLevelScript";
-            this.rbLevelScript.Size = new System.Drawing.Size(133, 17);
+            this.rbLevelScript.Size = new System.Drawing.Size(131, 17);
             this.rbLevelScript.TabIndex = 0;
             this.rbLevelScript.Text = "Level script functions";
             this.toolTip.SetToolTip(this.rbLevelScript, "Select from functions in level script file");
@@ -286,6 +287,7 @@ namespace TombEditor.Controls
             // 
             // panelNodeControls
             // 
+            this.panelNodeControls.Controls.Add(this.butExport);
             this.panelNodeControls.Controls.Add(this.butLinkSelectedNodes);
             this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
             this.panelNodeControls.Controls.Add(this.butRenameNode);
@@ -308,7 +310,7 @@ namespace TombEditor.Controls
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(613, 4);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(62, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(60, 13);
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Call count:";
             // 
@@ -318,6 +320,7 @@ namespace TombEditor.Controls
             this.nodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodeEditor.DefaultNodeWidth = 400;
             this.nodeEditor.GridSize = 256;
             this.nodeEditor.GridStep = 8F;
             this.nodeEditor.LinksAsRopes = false;
@@ -385,7 +388,7 @@ namespace TombEditor.Controls
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(613, 4);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(62, 13);
+            this.darkLabel3.Size = new System.Drawing.Size(60, 13);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "Call count:";
             // 
@@ -395,7 +398,7 @@ namespace TombEditor.Controls
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 4);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(61, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(60, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Argument:";
             // 
@@ -411,6 +414,17 @@ namespace TombEditor.Controls
             this.lblListNotify.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblListNotify.EnabledChanged += new System.EventHandler(this.lblListNotify_EnabledChanged);
             this.lblListNotify.Click += new System.EventHandler(this.lblListNotify_Click);
+            // 
+            // butExport
+            // 
+            this.butExport.Checked = false;
+            this.butExport.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butExport.Location = new System.Drawing.Point(331, 1);
+            this.butExport.Name = "butExport";
+            this.butExport.Size = new System.Drawing.Size(23, 23);
+            this.butExport.TabIndex = 12;
+            this.toolTip.SetToolTip(this.butExport, "Export lua script to clipboard");
+            this.butExport.Click += new System.EventHandler(this.butExport_Click);
             // 
             // TriggerManager
             // 
@@ -466,5 +480,6 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkButton butChangeNodeColor;
         private DarkUI.Controls.DarkButton butLinkSelectedNodes;
         private DarkUI.Controls.DarkLabel lblWait;
+        private DarkUI.Controls.DarkButton butExport;
     }
 }
