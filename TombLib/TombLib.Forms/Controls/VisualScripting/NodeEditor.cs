@@ -404,9 +404,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 var finalCoord = FromVisualCoord(pos);
                 ViewPosition = finalCoord;
-
-                foreach (var c in Controls.OfType<VisibleNodeBase>())
-                    c.RefreshPosition();
+                LayoutVisibleNodes();
             }
             Resizing = false;
 
@@ -476,9 +474,8 @@ namespace TombLib.Controls.VisualScripting
 
             if (limitPosition)
                 ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+            
+            LayoutVisibleNodes();
 
             Invalidate();
             OnViewPositionChanged();
@@ -486,6 +483,12 @@ namespace TombLib.Controls.VisualScripting
 
         public void UpdateVisibleNodes(bool fullRedraw = false)
         {
+            if (fullRedraw)
+            {
+                Resizing = true;
+                Visible = false;
+            }
+
             var visibleNodes = Controls.OfType<VisibleNodeBase>().ToList();
             var linearizedNodes = LinearizedNodes();
 
@@ -507,18 +510,23 @@ namespace TombLib.Controls.VisualScripting
             foreach (var node in Nodes)
                 AddNodeControl(node, newControls);
 
-            if (fullRedraw && newControls.Count > 0)
-                Visible = false;
-
             // Add all controls at once, to avoid flickering
             foreach (var control in newControls)
             {
+                if (fullRedraw)
+                    control.Location = new Point(int.MaxValue, int.MaxValue);
+
                 Controls.Add(control);
-                control.RefreshPosition();
                 control.SpawnFunctionList(NodeFunctions);
             }
 
-            Visible = true;
+            if (fullRedraw)
+            {
+                Resizing = false;
+                Visible = true;
+            }
+
+            LayoutVisibleNodes();
             Invalidate();
         }
 
@@ -536,6 +544,12 @@ namespace TombLib.Controls.VisualScripting
         {
             _animSnapCoords = new PointF[2] { _lastMousePosition, _lastMousePosition };
             _animProgress = -1.0f;
+        }
+
+        private void LayoutVisibleNodes()
+        {
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+                control.RefreshPosition();
         }
 
         public Vector2 GetBestPosition(VisibleNodeBase newNode)
@@ -598,7 +612,7 @@ namespace TombLib.Controls.VisualScripting
 
                 collectedControls.Add(control);
                 control.BackColor = node.Color.ToWinFormsColor();
-                control.Visible = true;
+                control.Visible = false;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
                 control.Size = new Size(node.Size, control.Size.Height);
@@ -1036,9 +1050,7 @@ namespace TombLib.Controls.VisualScripting
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+            LayoutVisibleNodes();
         }
 
         protected override void OnDragEnter(DragEventArgs e)
@@ -1179,9 +1191,7 @@ namespace TombLib.Controls.VisualScripting
                     ViewPosition += new Vector2(0.0f, delta);
 
                 ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-
-                foreach (var control in Controls.OfType<VisibleNodeBase>())
-                    control.RefreshPosition();
+                LayoutVisibleNodes();
             }
             Resizing = false;
 
