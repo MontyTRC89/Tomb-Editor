@@ -103,9 +103,10 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Moveables:
                     cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
-                    foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration
-                                                               .Any(e => s.WadObjectId.ShortName(TRVersion.Game.TombEngine)
-                                                               .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
+                    foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration.Count == 0 || 
+                                                                           layout.CustomEnumeration.Any(e => s
+                                                                            .WadObjectId.ShortName(TRVersion.Game.TombEngine)
+                                                                            .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Volumes:

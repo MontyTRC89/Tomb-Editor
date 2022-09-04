@@ -366,7 +366,7 @@
   <ItemGroup>
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.GridPlane.cs" />
-    <None Include="Catalogs\TEN Node Scripting\NodeFunctions.lua">
+    <None Include="Catalogs\TEN Node Scripting\Default.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Catalogs\TEN Node Scripting\Readme.md" />
