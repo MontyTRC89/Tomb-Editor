@@ -70,8 +70,10 @@ namespace TombEditor.Forms
 
             _genericMode = instance == null;
             _instance = _genericMode ? new BoxVolumeInstance() : instance;
-            PopulateEventSetList();
-            FindAndSelectEventSet();
+
+            if (!_genericMode)
+                FindAndSelectEventSet();
+
             SetupUI();
         }
 

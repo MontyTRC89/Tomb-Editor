@@ -1265,6 +1265,9 @@ namespace TombLib.Controls.VisualScripting
             if (neededArgument == ArgumentType.Boolean)
                 return;
 
+            if (!NodeFunctions.Any(f => f.Arguments.Any(a => a.Type == neededArgument)))
+                return;
+
             Resizing = true;
             {
                 var node = MakeNode(false);
