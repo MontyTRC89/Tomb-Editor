@@ -56,7 +56,7 @@ Metadata blocks can appear in any order, except **!Name** - it resets parsing of
 Metadata parsing happens until real function block starts (which should start with LevelFuncs. prefix).
 
 ARGDESC parameters can appear in any order, e.g. `!Argument "Foo, Numerical, 20"` is equal to
-`!Argument "Numerical, 20, Foo"`
+`!Argument "Numerical, 20, Foo"`.
 
 There could be several **!Argument** blocks, which will append arguments to previously parsed ones.
 
