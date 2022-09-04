@@ -501,11 +501,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 File.WriteAllText(nodeScriptName, comment + result);
 
-                // Merge all files from node scripting folder to a single one
-                var concatResult = "-- TombEngine node function file. Do not modify!" + Environment.NewLine + Environment.NewLine;
-                Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(file =>
-                    concatResult += string.Join(Environment.NewLine, File.ReadAllLines(file)) + Environment.NewLine);
-                File.WriteAllText(Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName), concatResult);
+                if (Directory.Exists(ScriptingUtils.NodeScriptPath))
+                {
+                    // Merge all files from node scripting folder to a single one
+                    var concatResult = "-- TombEngine node function file. Do not modify!" + Environment.NewLine + Environment.NewLine;
+                    Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(file =>
+                        concatResult += string.Join(Environment.NewLine, File.ReadAllLines(file)) + Environment.NewLine);
+                    File.WriteAllText(Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName), concatResult);
+                }
+                else
+                    _progressReporter.ReportWarn("Node catalog script path not found: directory " + ScriptingUtils.NodeScriptPath + " does not exist!");
             }
             else
                 ReportProgress(99, "No trigger node events found.");

@@ -34,6 +34,34 @@ LevelFuncs.TestMoveableId = function(moveableName, objectId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
 end
 
+-- !Name "If name of an object is..."
+-- !Description "Checks if moveable's name is the one specified."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, Object to check"
+-- !Arguments "NewLine, String, Object name to compare to"
+
+LevelFuncs.TestMoveableName = function(moveableName, name)
+	return TEN.Objects.GetMoveableByName(moveableName):GetName() == name
+end
+
+-- !Name "If animation of an object is..."
+-- !Description "Checks if moveable is currently playing specified animation number."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 1 ], Animation ID"
+
+LevelFuncs.TestMoveableAnimation = function(moveableName, animationId)
+	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
+end
+
+-- !Name "If state of an object is..."
+-- !Description "Checks if moveable's current state is the one specified."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 1 ], State ID"
+
+LevelFuncs.TestMoveableCurrentState = function(moveableName, stateId)
+	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
+end
+
 -- !Name "Flash screen"
 -- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
 -- !Arguments "Color, 10, Flash colour" "Numerical, 20, Flash speed" 
@@ -73,6 +101,38 @@ LevelFuncs.SetColor = function(moveableName, color)
     TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
 end
 
+-- !Name "Enable moveable"
+-- !Description "Enables moveable."
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.EnableMoveable = function(moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):Enable()
+end
+
+-- !Name "Disable moveable"
+-- !Description "Disables moveable."
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.DisableMoveable = function(moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):Disable()
+end
+
+-- !Name "Set moveable's animation"
+-- !Description "Sets moveable's animation."
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 ], Animation ID"
+
+LevelFuncs.SetMoveableAnimation = function(moveableName, animationId)
+    TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
+end
+
+-- !Name "Set moveable's state"
+-- !Description "Sets moveable's next state."
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 ], State ID"
+
+LevelFuncs.SetMoveableState = function(moveableName, stateId)
+    TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
+end
+
 -- !Name "Shatter object"
 -- !Description "Shatters object in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
@@ -87,4 +147,35 @@ end
 
 LevelFuncs.ExplodeMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Explode()
+end
+
+-- !Name "Play audio track"
+-- !Description "Plays specified audio track."
+-- !Arguments "NewLine, String, Name of the audiotrack to play"
+-- !Arguments "NewLine, Enumeration, [ Play once | Play in looped mode ], Sets whether the track should loop or not"
+
+LevelFuncs.PlayAudioTrack = function(name, looped)
+	if (looped == 1) then
+		TEN.Misc.PlayAudioTrack(moveableName, true)
+	else
+		TEN.Misc.PlayAudioTrack(moveableName, false)
+	end
+end
+
+-- !Name "If key is hit..."
+-- !Description "Checks if specific game key has just been hit (will be true only for 1 frame, until the key is released and hit again)."
+-- !Conditional "True"
+-- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
+
+LevelFuncs.KeyIsHit = function(keyCode)
+	return TEN.Misc.KeyIsHit(keyCode)
+end
+
+-- !Name "If key is held..."
+-- !Description "Checks if specific game key is being held (will be true as long as the player keeps their finger on that key)."
+-- !Conditional "True"
+-- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
+
+LevelFuncs.KeyIsHeld = function(keyCode)
+	return TEN.Misc.KeyIsHeld(keyCode)
 end
