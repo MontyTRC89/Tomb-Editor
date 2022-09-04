@@ -507,7 +507,6 @@ namespace TombEditor.Forms
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
             tbLuaPath.Text = _levelSettings.TenLuaScriptFile;
-            tbNodePath.Text = _levelSettings.TenNodeScriptFile;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -692,11 +691,9 @@ namespace TombEditor.Forms
             // TombEngine
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TombEngine);
             panelLuaPath.Visible = currentVersionToCheck;
-            panelNodeScript.Visible = currentVersionToCheck;
             if (currentVersionToCheck)
             {
                 tbLuaPath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile)) ? _correctColor : _wrongColor;
-                tbNodePath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenNodeScriptFile)) ? _correctColor : _wrongColor;
             }
 
             // TR4 and TombEngine platforms
@@ -1700,32 +1697,11 @@ namespace TombEditor.Forms
             }
         }
 
-        private void butBrowseNodePath_Click(object sender, EventArgs e)
-        {
-            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.TenNodeScriptFile,
-               "Select the Lua node function script file", new[] { new FileFormat("Lua script file", "lua") },
-               VariableType.LevelDirectory, false);
-
-            if (result != null)
-            {
-                _levelSettings.TenNodeScriptFile = result;
-                UpdateDialog();
-            }
-        }
-
         private void tbLuaPath_TextChanged(object sender, EventArgs e)
         {
             if (_levelSettings.TenLuaScriptFile == tbLuaPath.Text)
                 return;
             _levelSettings.TenLuaScriptFile = tbLuaPath.Text;
-            UpdateDialog();
-        }
-
-        private void tbNodePath_TextChanged(object sender, EventArgs e)
-        {
-            if (_levelSettings.TenNodeScriptFile == tbNodePath.Text)
-                return;
-            _levelSettings.TenNodeScriptFile = tbNodePath.Text;
             UpdateDialog();
         }
 

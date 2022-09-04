@@ -176,7 +176,6 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
                 chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? string.Empty);
-                chunkIO.WriteChunkString(Prj2Chunks.TenNodeScriptFile, settings.TenNodeScriptFile ?? string.Empty);
 
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {

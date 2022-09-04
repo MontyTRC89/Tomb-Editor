@@ -188,7 +188,6 @@ namespace TombLib.LevelData
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public string TenLuaScriptFile { get; set; } = VariableCreate(VariableType.ScriptDirectory) + Dir + VariableCreate(VariableType.LevelName) + ".lua";
-        public string TenNodeScriptFile { get; set; } = VariableCreate(VariableType.ScriptDirectory) + Dir + "NodeFunctions" + ".lua";
 
         // All data lists
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();

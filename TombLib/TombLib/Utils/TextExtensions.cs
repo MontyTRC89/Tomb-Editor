@@ -1,4 +1,6 @@
 ﻿using DarkUI.Forms;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -48,6 +50,11 @@ namespace TombLib.Utils
         public static string Quote(string source)
         {
                 return QuoteChar + source + QuoteChar;
+        }
+
+        public static List<string> ExtractValues(string source)
+        {
+            return source.Split('"').Where((item, index) => index % 2 != 0).ToList();
         }
     }
 }

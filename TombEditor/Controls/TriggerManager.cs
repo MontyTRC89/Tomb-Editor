@@ -168,7 +168,7 @@ namespace TombEditor.Controls
 
             nodeEditor.NodeFunctions.Clear();
             nodeEditor.NodeFunctions.AddRange(
-                ScriptingUtils.GetAllNodeFunctions(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenNodeScriptFile)));
+                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
 
             if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
             {
@@ -441,7 +441,7 @@ namespace TombEditor.Controls
 
         private void butExport_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes));
+            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction"));
         }
     }
 }
