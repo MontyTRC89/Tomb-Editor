@@ -788,7 +788,7 @@ namespace TombLib.Controls.VisualScripting
             rect.Offset(node.Location);
             rect.Offset(0, -(int)(size.Height * 1.2f));
 
-            using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.7f)))
+            using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.5f)))
                 e.Graphics.DrawString(node.Node.Name, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
 
