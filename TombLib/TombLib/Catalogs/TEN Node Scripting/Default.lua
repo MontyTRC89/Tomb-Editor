@@ -25,6 +25,15 @@ LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	return LevelFuncs.CompareValue(health, value, operand)
 end
 
+-- !Name "Check moveable ID"
+-- !Description "Checks if moveable belongs to a certain slot ID."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, WadSlots, Object ID to compare to"
+
+LevelFuncs.TestMoveableId = function(moveableName, objectId)
+	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
+end
+
 -- !Name "Flash screen"
 -- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
 -- !Arguments "Color, 10, Flash colour" "Numerical, 20, Flash speed" 

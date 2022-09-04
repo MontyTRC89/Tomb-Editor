@@ -134,7 +134,9 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.WadSlots:
-                    foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Any(e => s.IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
+                    foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
+                                                                          layout.CustomEnumeration.Any(e => s
+                                                                           .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + item));
                     break;
                 case ArgumentType.Enumeration:
@@ -306,8 +308,10 @@ namespace TombLib.Controls.VisualScripting
                         var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
                         if (index != null)
                             cbList.SelectedItem = index;
-                        else
+                        else if (cbList.Items.Count > 0)
                             cbList.SelectedIndex = 0;
+                        else
+                            cbList.SelectedIndex = -1;
 
                         BoxListValue();
                         break;
