@@ -17,7 +17,7 @@ end
 -- !Name "If health of an object is..."
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 ]" 
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
@@ -25,10 +25,10 @@ LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	return LevelFuncs.CompareValue(health, value, operand)
 end
 
--- !Name "If object ID is..."
+-- !Name "If ID of an object is..."
 -- !Description "Checks if moveable belongs to a certain slot ID."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, WadSlots, Object ID to compare to"
+-- !Arguments "NewLine, Moveables, Object to check" "NewLine, WadSlots, Object ID to compare to"
 
 LevelFuncs.TestMoveableId = function(moveableName, objectId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
@@ -43,7 +43,7 @@ LevelFuncs.FlashScreen = function(color, duration)
 end
 
 -- !Name "Play sound near moveable"
--- !Description "Plays specified sound ID around specified moveable."
+-- !Description "Plays specified sound ID around specified object."
 -- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
 
 LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
@@ -51,7 +51,7 @@ LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
 end
 
 -- !Name "Modify health of an object"
--- !Description "Set given entity's hitpoints."
+-- !Description "Set given object's' health."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 ], 15, Health value to define", "NewLine, Moveables"
 
@@ -66,7 +66,7 @@ LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 end
 
 -- !Name "Set object colour"
--- !Description "Sets moveable tint to a given value."
+-- !Description "Sets object tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
 
 LevelFuncs.SetColor = function(moveableName, color)
@@ -74,7 +74,7 @@ LevelFuncs.SetColor = function(moveableName, color)
 end
 
 -- !Name "Shatter object"
--- !Description "Shatters moveable in similar way to shatterable statics."
+-- !Description "Shatters object in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
 
 LevelFuncs.ShatterMoveable = function(moveableName)
@@ -82,7 +82,7 @@ LevelFuncs.ShatterMoveable = function(moveableName)
 end
 
 -- !Name "Explode object"
--- !Description "Explodes moveable."
+-- !Description "Explodes object."
 -- !Arguments "NewLine, Moveables"
 
 LevelFuncs.ExplodeMoveable = function(moveableName)
