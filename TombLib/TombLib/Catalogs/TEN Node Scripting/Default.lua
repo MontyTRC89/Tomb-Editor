@@ -20,7 +20,7 @@ end
 -- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 ]" 
 
-LevelFuncs.CheckEntityHealth = function(moveableName, operand, value)
+LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
 	return LevelFuncs.CompareValue(health, value, operand)
 end
