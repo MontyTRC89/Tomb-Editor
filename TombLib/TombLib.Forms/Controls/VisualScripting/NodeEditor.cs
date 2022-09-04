@@ -1219,5 +1219,49 @@ namespace TombLib.Controls.VisualScripting
             else
                 ShowNode(Nodes.First());
         }
+
+        private void NodeEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void NodeEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            var neededArgument = ArgumentType.Boolean; // Just use boolean because nothing will return it as enum
+
+            if (item is MoveableInstance)
+                neededArgument = ArgumentType.Moveables;
+            else if (item is StaticInstance)
+                neededArgument = ArgumentType.Statics;
+            else if (item is CameraInstance)
+                neededArgument = ArgumentType.Cameras;
+            else if (item is FlybyCameraInstance)
+                neededArgument = ArgumentType.FlybyCameras;
+            else if (item is SinkInstance)
+                neededArgument = ArgumentType.Sinks;
+            else if (item is VolumeInstance)
+                neededArgument = ArgumentType.Volumes;
+
+            if (neededArgument == ArgumentType.Boolean)
+                return;
+
+            AddActionNode(false, false);
+            var newVisibleNode = Controls.OfType<VisibleNodeBase>().First(c => c.Node == SelectedNode);
+            newVisibleNode.SelectFirstFunction(neededArgument, item.LuaName);
+
+            SelectedNode.ScreenPosition = FromVisualCoord(PointToClient(new Point(e.X, e.Y)));
+
+            LayoutVisibleNodes();
+            Invalidate();
+        }
     }
 }

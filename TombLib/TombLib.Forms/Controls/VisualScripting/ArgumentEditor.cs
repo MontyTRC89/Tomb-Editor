@@ -24,13 +24,14 @@ namespace TombLib.Controls.VisualScripting
             {
                 DisplayText = item.ToShortString();
                 Value = TextExtensions.Quote(item.LuaName == null ? string.Empty : item.LuaName);
-            }   
+            }
 
             public string DisplayText;
             public string Value;
             public override string ToString() => DisplayText;
         }
 
+        public ArgumentType ArgumentType => _argumentType;
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
         public event EventHandler ValueChanged;
@@ -328,7 +329,6 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.String:
                     {
                         tbString.Text = TextExtensions.Unquote(source);
-
                         BoxStringValue();
                         break;
                     }
@@ -452,18 +452,18 @@ namespace TombLib.Controls.VisualScripting
 
         private void cbList_DragDrop(object sender, DragEventArgs e)
         {
-            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
-            {
-                var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
-
-                if (string.IsNullOrEmpty(item.LuaName))
-                    return;
-
-                var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
-                if (index != -1)
-                    cbList.SelectedIndex = index;
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
                 return;
-            }
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+            if (index != -1)
+                cbList.SelectedIndex = index;
+            return;
         }
     }
 }
