@@ -104,7 +104,9 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Moveables:
                     cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
-                    foreach (var item in editor.CachedMoveables)
+                    foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration
+                                                               .Any(e => s.WadObjectId.ShortName(TRVersion.Game.TombEngine)
+                                                               .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Volumes:
@@ -132,12 +134,24 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.WadSlots:
-                    foreach (var item in editor.CachedWadSlots)
+                    foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Any(e => s.IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + item));
                     break;
                 case ArgumentType.Enumeration:
                     foreach (var item in layout.CustomEnumeration)
                         cbList.Items.Add(new ComboBoxItem(item, layout.CustomEnumeration.IndexOf(item).ToString()));
+                    break;
+                case ArgumentType.Numerical:
+                    foreach (var item in layout.CustomEnumeration)
+                        if (layout.CustomEnumeration.Count >= 2)
+                        {
+                            float min = -1000000.0f;
+                            float max =  1000000.0f;
+                            float.TryParse(layout.CustomEnumeration[0], out min);
+                            float.TryParse(layout.CustomEnumeration[1], out max);
+                            nudNumerical.Minimum = (decimal)min;
+                            nudNumerical.Maximum = (decimal)max;
+                        }
                     break;
                 default:
                     break;

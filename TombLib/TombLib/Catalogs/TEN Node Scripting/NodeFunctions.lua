@@ -16,8 +16,10 @@
 --   - Boolean, Numerical, Vector3, String, Color, 
 --   - LuaScript, Moveables, Statics, Cameras, Sinks, FlybyCameras, Volumes, 
 --   - Rooms, SoundEffects, WadSlots, Enumeration, CompareOperand - specifies argument type and its appearance in UI.
---   - [ENUMDESC1 | ENUMDESC2 | ENUMDESC...] - custom descriptions for "Enumeration" argument type. They will be converted to
---     numerical value on compilation.
+--   - [ENUMDESC1 | ENUMDESC2 | ENUMDESC...] - custom descriptions for "Enumeration" argument type or range for numerical type.
+--     For numerical value, first and second ENUMDESC parameters determine min/max UI range of value. 
+--     For moveable list, ENUMDESC parameters will filter out object ID names which contain any of ENUMDESCs only.
+--     For enumeration, ENUMDESC values will be converted to numericals on compilation in order of appearance.
 --   - Any other string value except listed above - tooltip for a given argument control.
 
 -- Helper function for value comparisons. Any function which uses
@@ -47,8 +49,8 @@ LevelFuncs.CheckEntityHealth = function(entityName, operand, value)
 end
 
 -- !Name "Flash screen"
--- !Description "Flashes screen with specified color and for specified duration0\nDuration value of 1 takes 1 second to flash."
--- !Arguments "Color, 10" "Numerical, 20" 
+-- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
+-- !Arguments "Color, 10, Flash colour" "Numerical, 20, Flash speed" 
 
 LevelFuncs.FlashScreen = function(color, duration)
     Effects.FlashScreen(color, duration)
@@ -57,7 +59,7 @@ end
 -- !Name "Modify health points"
 -- !Description "Set given entity's hitpoints."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
--- !Arguments "Numerical, 15, Health value to define", "NewLine, Moveables"
+-- !Arguments "Numerical, [ -1000 | 1000 ], 15, Health value to define", "NewLine, Moveables"
 
 LevelFuncs.SetHitPoints = function(operation, value, entityName)
 
@@ -67,4 +69,12 @@ LevelFuncs.SetHitPoints = function(operation, value, entityName)
 	else
 		TEN.Objects.GetMoveableByName(entityName):SetHP(value)
 	end
+end
+
+-- !Name "Set moveable colour"
+-- !Description "Sets moveable tint to a given value."
+-- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
+
+LevelFuncs.SetColor = function(moveableName, color)
+    TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
 end
