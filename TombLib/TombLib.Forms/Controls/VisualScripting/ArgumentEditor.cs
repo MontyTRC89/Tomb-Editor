@@ -62,31 +62,30 @@ namespace TombLib.Controls.VisualScripting
             _argumentType = layout.Type;
 
             if (_argumentType >= ArgumentType.LuaScript)
+            {
                 container.SelectedTab = tabList;
+
+                switch (_argumentType)
+                {
+                    case ArgumentType.Sinks:
+                    case ArgumentType.Statics:
+                    case ArgumentType.Moveables:
+                    case ArgumentType.Volumes:
+                    case ArgumentType.Cameras:
+                    case ArgumentType.FlybyCameras:
+                        panelLocate.Size = new Size(cbList.Height, cbList.Height);
+                        panelLocate.Visible = true;
+                        break;
+
+                    default:
+                        panelLocate.Visible = false;
+                        break;
+                }
+
+                cbList.Items.Clear();
+            }
             else
-            {
                 container.SelectedIndex = (int)_argumentType;
-                return;
-            }
-
-            switch (_argumentType)
-            {
-                case ArgumentType.Sinks:
-                case ArgumentType.Statics:
-                case ArgumentType.Moveables:
-                case ArgumentType.Volumes:
-                case ArgumentType.Cameras:
-                case ArgumentType.FlybyCameras:
-                    panelLocate.Size = new Size(cbList.Height, cbList.Height);
-                    panelLocate.Visible = true;
-                    break;
-
-                default:
-                    panelLocate.Visible = false;
-                    break;
-            }
-
-            cbList.Items.Clear();
 
             switch (_argumentType)
             {

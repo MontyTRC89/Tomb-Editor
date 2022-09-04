@@ -369,6 +369,7 @@
     <None Include="Catalogs\TEN Node Scripting\NodeFunctions.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Catalogs\TEN Node Scripting\Readme.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,8 @@ end
 -- !Name "Check moveable health"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check" "Numerical, 30, Hit points value" 
+-- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 ]" 
 
 LevelFuncs.CheckEntityHealth = function(entityName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(entityName):GetHP()
