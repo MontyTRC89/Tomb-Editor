@@ -20,6 +20,8 @@
 --     numerical value on compilation.
 --   - Any other string value except listed above - tooltip for a given argument control.
 
+local Util = require("Util")
+Util.ShortenTENCalls()
 
 -- Helper function for value comparisons. Any function which uses
 -- CompareOperand arguments should use this helper function for comparison.
