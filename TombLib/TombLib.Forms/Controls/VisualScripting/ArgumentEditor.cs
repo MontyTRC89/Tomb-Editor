@@ -241,7 +241,7 @@ namespace TombLib.Controls.VisualScripting
                         if (!(float.TryParse(source, out result)))
                             result = 0.0f;
                         try { nudNumerical.Value = (decimal)result; }
-                        catch { nudNumerical.Value = (decimal)0; }
+                        catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
                         BoxNumericalValue();
                         break;
