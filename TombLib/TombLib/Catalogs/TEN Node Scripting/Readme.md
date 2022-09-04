@@ -55,6 +55,9 @@ Metadata blocks can appear in any order, except **!Name** - it resets parsing of
 
 Metadata parsing happens until real function block starts (which should start with LevelFuncs. prefix).
 
+Conditional node functions (those with **!Conditional = "True"** specified) must return boolean value, otherwise
+their behaviour is undefined.
+
 ARGDESC parameters can appear in any order, e.g. `!Argument "Foo, Numerical, 20"` is equal to
 `!Argument "Numerical, 20, Foo"`.
 
