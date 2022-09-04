@@ -207,15 +207,32 @@ namespace TombLib.Controls.VisualScripting
             _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
+        public TriggerNode MakeNode(bool condition)
+        {
+            TriggerNode result;
+
+            if (condition)
+                result = new TriggerNodeCondition()
+                {
+                    Name = LuaSyntax.If.Capitalize() + " " + (LinearizedNodes().OfType<TriggerNodeCondition>().Count() + 1),
+                    Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
+                };
+            else
+                result = new TriggerNodeAction()
+                {
+                    Name = "Action " + (LinearizedNodes().OfType<TriggerNodeAction>().Count() + 1),
+                    Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
+                };
+
+            result.ScreenPosition = new Vector2(float.MaxValue);
+            result.Size = DefaultNodeWidth;
+
+            return result;
+        }
+
         public void AddConditionNode(bool linkToPrevious, bool linkToElse)
         {
-            var node = new TriggerNodeCondition()
-            {
-                Name = LuaSyntax.If.Capitalize() + " " + (LinearizedNodes().OfType<TriggerNodeCondition>().Count() + 1),
-                ScreenPosition = new Vector2(float.MaxValue),
-                Size = DefaultNodeWidth,
-                Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
-            };
+            var node = MakeNode(true);
 
             Nodes.Add(node);
             if (linkToPrevious)
@@ -228,13 +245,7 @@ namespace TombLib.Controls.VisualScripting
 
         public void AddActionNode(bool linkToPrevious, bool linkToElse)
         {
-            var node = new TriggerNodeAction()
-            {
-                Name = "Action " + (LinearizedNodes().OfType<TriggerNodeAction>().Count() + 1),
-                ScreenPosition = new Vector2(float.MaxValue),
-                Size = DefaultNodeWidth,
-                Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
-            };
+            var node = MakeNode(false);
 
             Nodes.Add(node);
             if (linkToPrevious)
@@ -1254,13 +1265,20 @@ namespace TombLib.Controls.VisualScripting
             if (neededArgument == ArgumentType.Boolean)
                 return;
 
-            AddActionNode(false, false);
-            var newVisibleNode = Controls.OfType<VisibleNodeBase>().First(c => c.Node == SelectedNode);
-            newVisibleNode.SelectFirstFunction(neededArgument, item.LuaName);
+            Resizing = true;
+            {
+                var node = MakeNode(false);
+                node.ScreenPosition = FromVisualCoord(PointToClient(new Point(e.X, e.Y)));
 
-            SelectedNode.ScreenPosition = FromVisualCoord(PointToClient(new Point(e.X, e.Y)));
+                Nodes.Add(node);
+                UpdateVisibleNodes();
+                SelectNode(node, false, true);
 
-            LayoutVisibleNodes();
+                var newVisibleNode = Controls.OfType<VisibleNodeBase>().First(c => c.Node == node);
+                newVisibleNode.SelectFirstFunction(neededArgument, item.LuaName);
+                newVisibleNode.BringToFront();
+            }
+            Resizing = false;
             Invalidate();
         }
     }
