@@ -121,7 +121,7 @@ namespace TombLib.Utils
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
                                     else
                                         try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
-                                        catch { argLayout.Description += p; }
+                                        catch { argLayout.Description = p; }
                                 }
 
                                  nodeFunction.Arguments.Add(argLayout);
