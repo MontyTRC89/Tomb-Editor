@@ -616,6 +616,8 @@ namespace TombLib.Controls.VisualScripting
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);
+
+                control.Location = ToVisualCoord(node.ScreenPosition);
             }
 
             if (node.Next != null)
