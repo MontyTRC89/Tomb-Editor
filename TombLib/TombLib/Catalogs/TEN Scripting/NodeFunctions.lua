@@ -43,7 +43,7 @@ end
 
 LevelFuncs.CheckEntityHealth = function(entityName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(entityName):GetHP()
-	return LevelFuncs.CompareValue(value, health, operand)
+	return LevelFuncs.CompareValue(health, value, operand)
 end
 
 -- !Name "Flash screen"
