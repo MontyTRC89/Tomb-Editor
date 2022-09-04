@@ -211,7 +211,7 @@ namespace TombLib.Controls.VisualScripting
         {
             var node = new TriggerNodeCondition()
             {
-                Name = LuaSyntax.If + " node " + LinearizedNodes().Count,
+                Name = LuaSyntax.If.Capitalize() + " node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
                 Size = DefaultNodeWidth,
                 Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
