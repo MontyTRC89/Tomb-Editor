@@ -7,7 +7,7 @@ TE uses metadata from comments in these files to build UI, while TEN uses actual
 
 On level compile, all files from this directory are merged into `NodeFunctions.lua` file, which is copied to TEN 
 `Scripts` folder and executed on level start-up, given that level contains any volumes.
-Therefore, NodeFunctions.lua file should never be modified.
+Therefore, NodeFunctions.lua file in TEN `Scripts` folder should never be modified.
 
 ### Format
 
