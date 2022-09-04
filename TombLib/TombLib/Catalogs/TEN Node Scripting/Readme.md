@@ -66,6 +66,30 @@ There could be several **!Argument** blocks, which will append arguments to prev
 ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 
 
+### Argument types (those you specify under **!Arguments** keyword)
+
+   - **Boolean** - a value which can be either `true` or `false`. Appears as a pair of radio buttons in UI.
+   - **Numerical** - numerical floating-point value. Range can be specified by **ENUMDESC** descriptors (see above).
+   - **Vector3** - Three floating-point values, can be used either for position or rotation.
+   - **String** - Raw text string, length is unlimited.
+   - **Color** - RGB color value, appears as color picker in UI.
+   - **LuaScript** - Existing lua function list from level script file.
+   - **Moveables** - A list of moveables in level which have lua names assigned.
+   - **Statics** - A list of statics in level which have lua names assigned.
+   - **Cameras** - Same as above, but cameras.
+   - **Sinks** - Same as above, but sinks.
+   - **FlybyCameras** - Same as above, but flybys.
+   - **Volumes** - Same as above, but volumes.
+   - **Rooms** - A list of existing rooms in level. Accessed by room name specified in TE UI.
+   - **SoundEffects** - A list of sound effects. Internally converted to numerical effect slot ID.
+   - **WadSlots** - A list of object slots which exist in all loaded wads. Internally accessed by numerical ID and/or 
+     `Objects.ObjID.` lua enumeration which is identical to TE/TEN object slot enumeration.
+   - **Enumeration** - Custom enumeration determined by **ENUMDESC** descriptors. Internally these descriptors are 
+     converted to numerical index.
+   - **CompareOperand** - Comparison operand enumeration, ranging from equal to various less-or-equal and more-or-equal
+     operands. Internally converted to numerical value and should be passed to `LevelFuncs.CompareValue` helper function
+     along with value and reference to check against, like this: `LevelFuncs.CompareValue(value, reference, operand)`.
+
 ### Example
 
 ```
