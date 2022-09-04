@@ -136,7 +136,7 @@
             // 
             // nudNumerical
             // 
-            this.nudNumerical.DecimalPlaces = 3;
+            this.nudNumerical.DecimalPlaces = 2;
             this.nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudNumerical.IncrementAlternate = new decimal(new int[] {
             10,
@@ -192,7 +192,7 @@
             // 
             // nudVector3Z
             // 
-            this.nudVector3Z.DecimalPlaces = 3;
+            this.nudVector3Z.DecimalPlaces = 2;
             this.nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3Z.IncrementAlternate = new decimal(new int[] {
             10,
@@ -219,7 +219,7 @@
             // 
             // nudVector3Y
             // 
-            this.nudVector3Y.DecimalPlaces = 3;
+            this.nudVector3Y.DecimalPlaces = 2;
             this.nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3Y.IncrementAlternate = new decimal(new int[] {
             10,
@@ -246,7 +246,7 @@
             // 
             // nudVector3X
             // 
-            this.nudVector3X.DecimalPlaces = 3;
+            this.nudVector3X.DecimalPlaces = 2;
             this.nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3X.IncrementAlternate = new decimal(new int[] {
             10,

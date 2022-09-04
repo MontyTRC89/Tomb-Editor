@@ -54,10 +54,17 @@ LevelFuncs.FlashScreen = function(color, duration)
     Effects.FlashScreen(color, duration)
 end
 
--- !Name "Set hit points"
+-- !Name "Modify health points"
 -- !Description "Set given entity's hitpoints."
--- !Arguments "NewLine, 80, Moveables" "Numerical, 20" 
+-- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value, while Set forces it."
+-- !Arguments "Numerical, 20, Health value to define", "NewLine, Moveables"
 
-LevelFuncs.SetHitPoints = function(entityName, value)
-	TEN.Objects.GetMoveableByName(entityName):SetHP(value)
+LevelFuncs.SetHitPoints = function(operation, value, entityName)
+
+	if (operation == 0) then
+		TEN.Objects.GetMoveableByName(entityName):SetHP(value)
+	else
+		local moveable = TEN.Objects.GetMoveableByName(entityName)
+		moveable:SetHP(moveable:GetHP() + value)
+	end
 end
