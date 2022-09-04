@@ -21,13 +21,14 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
  - **!Name "NAME"** - NAME will be visible name for this function in node editor.
 
- - **!Conditional "True"** - this is a condition node, otherwise it's action (or if !Conditional is not specified)
+ - **!Conditional "True"** - this is a condition node, otherwise if "False", it's action
+   (or if **!Conditional** is not specified).
 
- - **!Description "DESC"** - DESC will be a tooltip for a given function. You can use \n symbol to begin from a 
+ - **!Description "DESC"** - DESC will be a tooltip for a given function. You can use `\n` symbol to begin from a 
    new line.
 
- - **!Arguments "ARGDESC1" "ARGDESC2" "ARGDESC..."** - infinite amount of args, with ARGDESC parameters separated
-   by commas as follows:
+ - **!Arguments "ARGDESC1" "ARGDESC2" "ARGDESC..."** - infinite amount of args, with **ARGDESC** parameters
+   separated by commas as follows:
 
   - **0-100** - numerical value specifying width of control in percent of node width. For whole-line controls,
     this can be omitted.
