@@ -19,7 +19,7 @@ namespace TombEditor.Forms
         private bool _genericMode = false;
 
         private List<VolumeEventSet> _backupEventSetList;
-        private List<int> _backupEventSetIndices;
+        private Dictionary<VolumeInstance, int> _backupVolumes;
 
         private readonly PopUpInfo _popup = new PopUpInfo();
 
@@ -116,9 +116,9 @@ namespace TombEditor.Forms
 
         private void BackupEventSets()
         {
-            _backupEventSetIndices = new List<int>();
+            _backupVolumes = new Dictionary<VolumeInstance, int>();
             foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
-                _backupEventSetIndices.Add(_editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
+                _backupVolumes.Add(vol, _editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
 
             _backupEventSetList = new List<VolumeEventSet>();
             foreach (var evt in _editor.Level.Settings.EventSets)
@@ -130,12 +130,13 @@ namespace TombEditor.Forms
             _editor.Level.Settings.EventSets = _backupEventSetList;
 
             var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
-            for (int i = 0; i < volumes.Count; i++)
+
+            foreach (var vol in volumes)
             {
-                if (_backupEventSetIndices[i] >= 0)
-                    volumes[i].EventSet = _editor.Level.Settings.EventSets[_backupEventSetIndices[i]];
-                else
-                    volumes[i].EventSet = null; // Paranoia
+                int index = -1;
+                var entry = _backupVolumes.TryGetValue(vol, out index);
+                if (index >= 0)
+                    vol.EventSet = _backupEventSetList[index];
             }
         }
 
