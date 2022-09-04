@@ -24,13 +24,14 @@ namespace TombLib.Controls.VisualScripting
             {
                 DisplayText = item.ToShortString();
                 Value = TextExtensions.Quote(item.LuaName == null ? string.Empty : item.LuaName);
-            }   
+            }
 
             public string DisplayText;
             public string Value;
             public override string ToString() => DisplayText;
         }
 
+        public ArgumentType ArgumentType => _argumentType;
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
         public event EventHandler ValueChanged;
@@ -62,31 +63,30 @@ namespace TombLib.Controls.VisualScripting
             _argumentType = layout.Type;
 
             if (_argumentType >= ArgumentType.LuaScript)
+            {
                 container.SelectedTab = tabList;
+
+                switch (_argumentType)
+                {
+                    case ArgumentType.Sinks:
+                    case ArgumentType.Statics:
+                    case ArgumentType.Moveables:
+                    case ArgumentType.Volumes:
+                    case ArgumentType.Cameras:
+                    case ArgumentType.FlybyCameras:
+                        panelLocate.Size = new Size(cbList.Height, cbList.Height);
+                        panelLocate.Visible = true;
+                        break;
+
+                    default:
+                        panelLocate.Visible = false;
+                        break;
+                }
+
+                cbList.Items.Clear();
+            }
             else
-            {
                 container.SelectedIndex = (int)_argumentType;
-                return;
-            }
-
-            switch (_argumentType)
-            {
-                case ArgumentType.Sinks:
-                case ArgumentType.Statics:
-                case ArgumentType.Moveables:
-                case ArgumentType.Volumes:
-                case ArgumentType.Cameras:
-                case ArgumentType.FlybyCameras:
-                    panelLocate.Size = new Size(cbList.Height, cbList.Height);
-                    panelLocate.Visible = true;
-                    break;
-
-                default:
-                    panelLocate.Visible = false;
-                    break;
-            }
-
-            cbList.Items.Clear();
 
             switch (_argumentType)
             {
@@ -104,7 +104,10 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Moveables:
                     cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
-                    foreach (var item in editor.CachedMoveables)
+                    foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration.Count == 0 || 
+                                                                           layout.CustomEnumeration.Any(e => s
+                                                                            .WadObjectId.ShortName(TRVersion.Game.TombEngine)
+                                                                            .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Volumes:
@@ -132,12 +135,50 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.WadSlots:
-                    foreach (var item in editor.CachedWadSlots)
+                    foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
+                                                                          layout.CustomEnumeration.Any(e => s
+                                                                           .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
                         cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + item));
                     break;
                 case ArgumentType.Enumeration:
                     foreach (var item in layout.CustomEnumeration)
                         cbList.Items.Add(new ComboBoxItem(item, layout.CustomEnumeration.IndexOf(item).ToString()));
+                    break;
+                case ArgumentType.Numerical:
+                case ArgumentType.Vector3:
+                    if (layout.CustomEnumeration.Count >= 2)
+                    {
+                        float min   = -1000000.0f;
+                        float max   =  1000000.0f;
+                        float step1 =  1.0f;
+                        float step2 =  5.0f;
+                        float.TryParse(layout.CustomEnumeration[0], out min);
+                        float.TryParse(layout.CustomEnumeration[1], out max);
+                        if (layout.CustomEnumeration.Count >= 3)
+                            float.TryParse(layout.CustomEnumeration[2], out step1);
+                        if (layout.CustomEnumeration.Count >= 4)
+                            float.TryParse(layout.CustomEnumeration[3], out step2);
+
+                        nudVector3X.Minimum  =
+                        nudVector3Y.Minimum  =
+                        nudVector3Z.Minimum  =
+                        nudNumerical.Minimum = (decimal)min;
+
+                        nudVector3X.Maximum  =
+                        nudVector3Y.Maximum  =
+                        nudVector3Z.Maximum  =
+                        nudNumerical.Maximum = (decimal)max;
+
+                        nudVector3X.Increment  =
+                        nudVector3Y.Increment  =
+                        nudVector3Z.Increment  =
+                        nudNumerical.Increment = (decimal)step1;
+
+                        nudVector3X.IncrementAlternate  =
+                        nudVector3Y.IncrementAlternate  =
+                        nudVector3Z.IncrementAlternate  =
+                        nudNumerical.IncrementAlternate = (decimal)step2;
+                    }
                     break;
                 default:
                     break;
@@ -226,8 +267,8 @@ namespace TombLib.Controls.VisualScripting
                         float result;
                         if (!(float.TryParse(source, out result)))
                             result = 0.0f;
-                        try { nudNumerical.Value = (decimal)result; }
-                        catch { nudNumerical.Value = (decimal)0; }
+                        try   { nudNumerical.Value = (decimal)result; }
+                        catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
                         BoxNumericalValue();
                         break;
@@ -239,14 +280,14 @@ namespace TombLib.Controls.VisualScripting
 
                         var floats = UnboxVector3Value(source);
 
-                        try
+                        for (int i = 0; i < 3; i++)
                         {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                var currentFloat = 0.0f;
-                                if (floats.Length > i)
-                                    currentFloat = floats[i];
+                            var currentFloat = 0.0f;
+                            if (floats.Length > i)
+                                currentFloat = floats[i];
 
+                            try
+                            {
                                 switch (i)
                                 {
                                     case 0: nudVector3X.Value = (decimal)currentFloat; break;
@@ -254,10 +295,15 @@ namespace TombLib.Controls.VisualScripting
                                     case 2: nudVector3Z.Value = (decimal)currentFloat; break;
                                 }
                             }
-                        }
-                        catch
-                        {
-                            nudVector3X.Value = nudVector3Y.Value = nudVector3Z.Value = (decimal)0;
+                            catch
+                            {
+                                switch (i)
+                                {
+                                    case 0: nudVector3X.Value = (decimal)currentFloat < nudVector3X.Minimum ? nudVector3X.Minimum : nudVector3X.Maximum; break;
+                                    case 1: nudVector3Y.Value = (decimal)currentFloat < nudVector3Y.Minimum ? nudVector3Y.Minimum : nudVector3Y.Maximum; break;
+                                    case 2: nudVector3Z.Value = (decimal)currentFloat < nudVector3Z.Minimum ? nudVector3Z.Minimum : nudVector3Z.Maximum; break;
+                                }
+                            }
                         }
 
                         BoxVector3Value();
@@ -283,7 +329,6 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.String:
                     {
                         tbString.Text = TextExtensions.Unquote(source);
-
                         BoxStringValue();
                         break;
                     }
@@ -292,8 +337,10 @@ namespace TombLib.Controls.VisualScripting
                         var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
                         if (index != null)
                             cbList.SelectedItem = index;
-                        else
+                        else if (cbList.Items.Count > 0)
                             cbList.SelectedIndex = 0;
+                        else
+                            cbList.SelectedIndex = -1;
 
                         BoxListValue();
                         break;
@@ -395,6 +442,28 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             OnLocatedItemFound(item);
+        }
+
+        private void cbList_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void cbList_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+            if (index != -1)
+                cbList.SelectedIndex = index;
+            return;
         }
     }
 }

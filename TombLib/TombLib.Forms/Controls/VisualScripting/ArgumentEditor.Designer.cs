@@ -136,7 +136,7 @@
             // 
             // nudNumerical
             // 
-            this.nudNumerical.DecimalPlaces = 3;
+            this.nudNumerical.DecimalPlaces = 2;
             this.nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudNumerical.IncrementAlternate = new decimal(new int[] {
             10,
@@ -192,7 +192,7 @@
             // 
             // nudVector3Z
             // 
-            this.nudVector3Z.DecimalPlaces = 3;
+            this.nudVector3Z.DecimalPlaces = 2;
             this.nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3Z.IncrementAlternate = new decimal(new int[] {
             10,
@@ -219,7 +219,7 @@
             // 
             // nudVector3Y
             // 
-            this.nudVector3Y.DecimalPlaces = 3;
+            this.nudVector3Y.DecimalPlaces = 2;
             this.nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3Y.IncrementAlternate = new decimal(new int[] {
             10,
@@ -246,7 +246,7 @@
             // 
             // nudVector3X
             // 
-            this.nudVector3X.DecimalPlaces = 3;
+            this.nudVector3X.DecimalPlaces = 2;
             this.nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVector3X.IncrementAlternate = new decimal(new int[] {
             10,
@@ -327,12 +327,15 @@
             // 
             // cbList
             // 
+            this.cbList.AllowDrop = true;
             this.cbList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbList.Location = new System.Drawing.Point(0, 0);
             this.cbList.Name = "cbList";
             this.cbList.Size = new System.Drawing.Size(406, 21);
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
+            this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
+            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.cbList_DragEnter);
             // 
             // panelLocate
             // 
@@ -356,6 +359,7 @@
             // 
             // ArgumentEditor
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.container);

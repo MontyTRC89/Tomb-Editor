@@ -17,13 +17,15 @@
         {
             this.SuspendLayout();
             // 
-            // VisualScriptingEditor
+            // NodeEditor
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.DoubleBuffered = true;
-            this.Name = "VisualScriptingEditor";
+            this.Name = "NodeEditor";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NodeEditor_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NodeEditor_DragEnter);
             this.ResumeLayout(false);
 
         }

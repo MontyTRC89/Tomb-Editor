@@ -52,18 +52,15 @@ namespace TombLib.Utils
         private const string _nodeLayoutNewLine = "newline";
 
         public const string NodeScriptFileName = "NodeFunctions.lua";
-        public static string NodeScriptPath => DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Scripting\\" + NodeScriptFileName;
+        public static string NodeScriptPath => DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Node Scripting\\";
 
         public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
             var result = list == null ? new List<NodeFunction>() : list;
 
-            try
+            foreach (var file in Directory.GetFiles(path).Where(p => p.EndsWith(".lua"))) try
             {
-                if (!File.Exists(path))
-                    return result;
-
-                var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
+                var lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
                 var nodeFunction = new NodeFunction();
 
                 foreach (string l in lines)
@@ -123,7 +120,7 @@ namespace TombLib.Utils
                                     else if (p.StartsWith(_enumSplitterStart) && p.EndsWith(_enumSplitterEnd))
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
                                     else
-                                        try { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
+                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
                                         catch { argLayout.Description = p; }
                                 }
 
@@ -138,32 +135,15 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         line = string.Empty;
 
-                    if (line.StartsWith(LuaSyntax.Func + LuaSyntax.Space + LuaSyntax.LevelFuncPrefix))
-                    {
-                        int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
-                        int indexEnd = line.IndexOf(LuaSyntax.BracketOpen) - indexStart;
-                        nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
-                    }
-                    else if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
+                    if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
                     {
                         int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
                     }
-                    else if (line.Contains(LuaSyntax.Include))
-                    {
-                        int pos1 = line.IndexOf(LuaSyntax.Include) + LuaSyntax.Include.Length;
-                        int pos2 = line.Length;
-                        string subfile = line.Substring(pos1, pos2 - pos1);
-                        pos1 = subfile.IndexOf(LuaSyntax.BracketOpen) + 1;
-                        pos2 = subfile.IndexOf(LuaSyntax.BracketClose);
-                        subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
-                        subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
+                    else
+                        continue;
 
-                        depth++;
-                        if (depth <= _maxRecursionDepth)
-                            GetAllNodeFunctions(subfile, result, depth);
-                    }
 
                     if (string.IsNullOrEmpty(nodeFunction.Name) ||
                         string.IsNullOrEmpty(nodeFunction.Signature))
@@ -177,13 +157,13 @@ namespace TombLib.Utils
 
                     nodeFunction = new NodeFunction();
                 }
-
-                return result;
             }
             catch
             {
-                return result;
+                continue;
             }
+
+            return result;
         }
 
         public static List<string> GetAllFunctionNames(string path, List<string> list = null, int depth = 0)
@@ -222,13 +202,7 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         continue;
 
-                    if (line.StartsWith(LuaSyntax.Func + LuaSyntax.Space + LuaSyntax.LevelFuncPrefix))
-                    {
-                        int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
-                        int indexEnd = line.IndexOf(LuaSyntax.BracketOpen) - indexStart;
-                        functionName = line.Substring(indexStart, indexEnd).Trim();
-                    }
-                    else if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
+                    if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
                     {
                         int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;

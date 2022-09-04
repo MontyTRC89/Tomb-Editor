@@ -444,25 +444,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
             // Sort AI objects and put all LARA_START_POS objects (last AI object by ID) in front
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-            {
-                _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
-                ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
-            }
+            _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
 
             ReportProgress(45, "    Number of items: " + _items.Count);
-
-            int maxSafeItemCount = 1023;
-            int maxItemCount = 32767;
-
-            if (_items.Count > maxItemCount)
-            {
-                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash.";
-                _progressReporter.ReportWarn(warnString);
-            }
-
-            if (_items.Count > maxSafeItemCount)
-                _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
+            ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
 
         }
 
@@ -516,8 +501,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 File.WriteAllText(nodeScriptName, comment + result);
 
-                if (File.Exists(ScriptingUtils.NodeScriptPath))
-                    File.Copy(ScriptingUtils.NodeScriptPath, Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName), true);
+                // Merge all files from node scripting folder to a single one
+                var concatResult = "-- TombEngine node function file. Do not modify!" + Environment.NewLine + Environment.NewLine;
+                Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(file =>
+                    concatResult += string.Join(Environment.NewLine, File.ReadAllLines(file)) + Environment.NewLine);
+                File.WriteAllText(Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName), concatResult);
             }
             else
                 ReportProgress(99, "No trigger node events found.");

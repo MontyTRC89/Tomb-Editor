@@ -114,6 +114,19 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
+        public void SelectFirstFunction(ArgumentType type, string luaName)
+        {
+            var index = cbFunction.Items.OfType<NodeFunction>().IndexOf(f => f.Arguments.Any(t => t.Type == type));
+            if (index == -1)
+                return;
+
+            cbFunction.SelectedIndex = index;
+
+            var control = _argControls.FirstOrDefault(a => a.ArgumentType == type);
+            if (control != null)
+                control.Text = TextExtensions.Quote(luaName);
+        }
+
         public void SpawnUIElements()
         {
             var func = cbFunction.SelectedItem as NodeFunction;

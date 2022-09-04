@@ -39,6 +39,14 @@ namespace TombLib.Utils
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
 
+        public static string Capitalize(this string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return source;
+
+            return source.First().ToString().ToUpper() + string.Join(string.Empty, source.Skip(1));
+        }
+
         public static string Unquote(string source)
         {
             if (source.StartsWith(QuoteChar) && source.EndsWith(QuoteChar))

@@ -46,6 +46,14 @@ namespace TombEditor.Controls
                 FindAndSelectFunction();
                 UpdateNodeEditorOptions();
             }
+
+            if (obj is Editor.RoomListChangedEvent ||
+               (obj is Editor.ObjectChangedEvent && 
+               (obj as Editor.ObjectChangedEvent).ChangeType != ObjectChangeType.Change))
+            {
+                nodeEditor.PopulateCachedNodeLists(_editor.Level);
+                nodeEditor.RefreshArgumentUI();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -423,6 +431,10 @@ namespace TombEditor.Controls
                         nodeEditor.AddActionNode(true, true);
                         break;
 
+                    case (Keys.Control | Keys.A):
+                        nodeEditor.SelectAllNodes();
+                        break;
+
                     case (Keys.Shift | Keys.C):
                     case (Keys.Alt | Keys.C):
                         nodeEditor.AddConditionNode(true, true);
@@ -442,6 +454,7 @@ namespace TombEditor.Controls
         private void butExport_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction"));
+            _editor.SendMessage("Node tree was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
         }
     }
 }

@@ -129,9 +129,6 @@ namespace TombLib.Controls.VisualScripting
         private Vector3 _defaultConditionNodeTint = new Vector3(0.8f, 1.0f, 0.8f);
         private Vector3 _defaultActionNodeTint = new Vector3(0.8f, 0.8f, 1.0f);
 
-        private const string _thenString = "pass";
-        private const string _elseString = "fail";
-
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
         private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, _selectionThickness);
         private static readonly Brush _selectionBrush = new SolidBrush(Colors.BlueSelection.ToFloat3Color().ToWinFormsColor(0.5f));
@@ -210,15 +207,32 @@ namespace TombLib.Controls.VisualScripting
             _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
+        public TriggerNode MakeNode(bool condition)
+        {
+            TriggerNode result;
+
+            if (condition)
+                result = new TriggerNodeCondition()
+                {
+                    Name = LuaSyntax.If.Capitalize() + " " + (LinearizedNodes().OfType<TriggerNodeCondition>().Count() + 1),
+                    Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
+                };
+            else
+                result = new TriggerNodeAction()
+                {
+                    Name = "Action " + (LinearizedNodes().OfType<TriggerNodeAction>().Count() + 1),
+                    Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
+                };
+
+            result.ScreenPosition = new Vector2(float.MaxValue);
+            result.Size = DefaultNodeWidth;
+
+            return result;
+        }
+
         public void AddConditionNode(bool linkToPrevious, bool linkToElse)
         {
-            var node = new TriggerNodeCondition()
-            {
-                Name = "Condition node " + LinearizedNodes().Count,
-                ScreenPosition = new Vector2(float.MaxValue),
-                Size = DefaultNodeWidth,
-                Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
-            };
+            var node = MakeNode(true);
 
             Nodes.Add(node);
             if (linkToPrevious)
@@ -231,13 +245,7 @@ namespace TombLib.Controls.VisualScripting
 
         public void AddActionNode(bool linkToPrevious, bool linkToElse)
         {
-            var node = new TriggerNodeAction()
-            {
-                Name = "Action node " + LinearizedNodes().Count,
-                ScreenPosition = new Vector2(float.MaxValue),
-                Size = DefaultNodeWidth,
-                Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
-            };
+            var node = MakeNode(false);
 
             Nodes.Add(node);
             if (linkToPrevious)
@@ -340,6 +348,14 @@ namespace TombLib.Controls.VisualScripting
             OnSelectionChanged();
         }
 
+        public void SelectAllNodes()
+        {
+            SelectedNodes.Clear();
+            SelectedNodes.AddRange(LinearizedNodes());
+            Invalidate();
+            OnSelectionChanged();
+        }
+
         public void SelectNodesInArea()
         {
             if (_selectionArea == Rectangle2.Zero ||
@@ -404,9 +420,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 var finalCoord = FromVisualCoord(pos);
                 ViewPosition = finalCoord;
-
-                foreach (var c in Controls.OfType<VisibleNodeBase>())
-                    c.RefreshPosition();
+                LayoutVisibleNodes();
             }
             Resizing = false;
 
@@ -476,9 +490,8 @@ namespace TombLib.Controls.VisualScripting
 
             if (limitPosition)
                 ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+            
+            LayoutVisibleNodes();
 
             Invalidate();
             OnViewPositionChanged();
@@ -486,6 +499,12 @@ namespace TombLib.Controls.VisualScripting
 
         public void UpdateVisibleNodes(bool fullRedraw = false)
         {
+            if (fullRedraw)
+            {
+                Resizing = true;
+                Visible = false;
+            }
+
             var visibleNodes = Controls.OfType<VisibleNodeBase>().ToList();
             var linearizedNodes = LinearizedNodes();
 
@@ -507,19 +526,30 @@ namespace TombLib.Controls.VisualScripting
             foreach (var node in Nodes)
                 AddNodeControl(node, newControls);
 
-            if (fullRedraw && newControls.Count > 0)
-                Visible = false;
-
             // Add all controls at once, to avoid flickering
             foreach (var control in newControls)
             {
+                if (fullRedraw)
+                    control.Location = new Point(int.MaxValue, int.MaxValue);
+
                 Controls.Add(control);
-                control.RefreshPosition();
                 control.SpawnFunctionList(NodeFunctions);
             }
 
-            Visible = true;
+            if (fullRedraw)
+            {
+                Resizing = false;
+                Visible = true;
+            }
+
+            LayoutVisibleNodes();
             Invalidate();
+        }
+
+        public void RefreshArgumentUI()
+        {
+            foreach (var vnode in Controls.OfType<VisibleNodeBase>())
+                vnode.SpawnUIElements();
         }
 
         public bool AnimateSnap(ConnectionMode mode, VisibleNodeBase node)
@@ -536,6 +566,12 @@ namespace TombLib.Controls.VisualScripting
         {
             _animSnapCoords = new PointF[2] { _lastMousePosition, _lastMousePosition };
             _animProgress = -1.0f;
+        }
+
+        private void LayoutVisibleNodes()
+        {
+            foreach (var control in Controls.OfType<VisibleNodeBase>())
+                control.RefreshPosition();
         }
 
         public Vector2 GetBestPosition(VisibleNodeBase newNode)
@@ -598,13 +634,15 @@ namespace TombLib.Controls.VisualScripting
 
                 collectedControls.Add(control);
                 control.BackColor = node.Color.ToWinFormsColor();
-                control.Visible = true;
+                control.Visible = false;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
                 control.Size = new Size(node.Size, control.Size.Height);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
                     node.ScreenPosition = GetBestPosition(control);
+
+                control.Location = ToVisualCoord(node.ScreenPosition);
             }
 
             if (node.Next != null)
@@ -777,7 +815,7 @@ namespace TombLib.Controls.VisualScripting
             rect.Offset(node.Location);
             rect.Offset(0, -(int)(size.Height * 1.2f));
 
-            using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.7f)))
+            using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.5f)))
                 e.Graphics.DrawString(node.Node.Name, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
 
@@ -787,7 +825,7 @@ namespace TombLib.Controls.VisualScripting
 
             using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.3f)))
             {
-                size = TextRenderer.MeasureText(_thenString, Font);
+                size = TextRenderer.MeasureText(LuaSyntax.Then, Font);
                 var nextPoint = condNode.GetNodeScreenPosition(ConnectionMode.Next);
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
@@ -795,10 +833,10 @@ namespace TombLib.Controls.VisualScripting
                 e.Graphics.DrawImage(Properties.Resources.misc_Shadow, 
                     new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
 
-                e.Graphics.DrawString(_thenString, Font, b, rect,
+                e.Graphics.DrawString(LuaSyntax.Then, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 
-                size = TextRenderer.MeasureText(_elseString, Font);
+                size = TextRenderer.MeasureText(LuaSyntax.Else, Font);
                 nextPoint = condNode.GetNodeScreenPosition(ConnectionMode.Else);
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
@@ -806,7 +844,7 @@ namespace TombLib.Controls.VisualScripting
                 e.Graphics.DrawImage(Properties.Resources.misc_Shadow,
                     new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
 
-                e.Graphics.DrawString(_elseString, Font, b, rect,
+                e.Graphics.DrawString(LuaSyntax.Else, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
         }
@@ -1036,9 +1074,7 @@ namespace TombLib.Controls.VisualScripting
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
-            foreach (var control in Controls.OfType<VisibleNodeBase>())
-                control.RefreshPosition();
+            LayoutVisibleNodes();
         }
 
         protected override void OnDragEnter(DragEventArgs e)
@@ -1179,9 +1215,7 @@ namespace TombLib.Controls.VisualScripting
                     ViewPosition += new Vector2(0.0f, delta);
 
                 ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-
-                foreach (var control in Controls.OfType<VisibleNodeBase>())
-                    control.RefreshPosition();
+                LayoutVisibleNodes();
             }
             Resizing = false;
 
@@ -1203,6 +1237,60 @@ namespace TombLib.Controls.VisualScripting
                 ShowNode(SelectedNode);
             else
                 ShowNode(Nodes.First());
+        }
+
+        private void NodeEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void NodeEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            var neededArgument = ArgumentType.Boolean; // Just use boolean because nothing will return it as enum
+
+            if (item is MoveableInstance)
+                neededArgument = ArgumentType.Moveables;
+            else if (item is StaticInstance)
+                neededArgument = ArgumentType.Statics;
+            else if (item is CameraInstance)
+                neededArgument = ArgumentType.Cameras;
+            else if (item is FlybyCameraInstance)
+                neededArgument = ArgumentType.FlybyCameras;
+            else if (item is SinkInstance)
+                neededArgument = ArgumentType.Sinks;
+            else if (item is VolumeInstance)
+                neededArgument = ArgumentType.Volumes;
+
+            if (neededArgument == ArgumentType.Boolean)
+                return;
+
+            if (!NodeFunctions.Any(f => f.Arguments.Any(a => a.Type == neededArgument)))
+                return;
+
+            Resizing = true;
+            {
+                var node = MakeNode(false);
+                node.ScreenPosition = FromVisualCoord(PointToClient(new Point(e.X, e.Y)));
+
+                Nodes.Add(node);
+                UpdateVisibleNodes();
+                SelectNode(node, false, true);
+
+                var newVisibleNode = Controls.OfType<VisibleNodeBase>().First(c => c.Node == node);
+                newVisibleNode.SelectFirstFunction(neededArgument, item.LuaName);
+                newVisibleNode.BringToFront();
+            }
+            Resizing = false;
+            Invalidate();
         }
     }
 }
