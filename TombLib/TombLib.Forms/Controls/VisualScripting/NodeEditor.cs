@@ -348,6 +348,14 @@ namespace TombLib.Controls.VisualScripting
             OnSelectionChanged();
         }
 
+        public void SelectAllNodes()
+        {
+            SelectedNodes.Clear();
+            SelectedNodes.AddRange(LinearizedNodes());
+            Invalidate();
+            OnSelectionChanged();
+        }
+
         public void SelectNodesInArea()
         {
             if (_selectionArea == Rectangle2.Zero ||

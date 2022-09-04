@@ -431,6 +431,10 @@ namespace TombEditor.Controls
                         nodeEditor.AddActionNode(true, true);
                         break;
 
+                    case (Keys.Control | Keys.A):
+                        nodeEditor.SelectAllNodes();
+                        break;
+
                     case (Keys.Shift | Keys.C):
                     case (Keys.Alt | Keys.C):
                         nodeEditor.AddConditionNode(true, true);
