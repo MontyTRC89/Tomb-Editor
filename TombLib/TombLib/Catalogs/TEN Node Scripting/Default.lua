@@ -42,6 +42,14 @@ LevelFuncs.FlashScreen = function(color, duration)
     Effects.FlashScreen(color, duration)
 end
 
+-- !Name "Play sound around moveable"
+-- !Description "Plays specified sound ID around specified moveable."
+-- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
+
+LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
+    Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
+end
+
 -- !Name "Modify health points"
 -- !Description "Set given entity's hitpoints."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."

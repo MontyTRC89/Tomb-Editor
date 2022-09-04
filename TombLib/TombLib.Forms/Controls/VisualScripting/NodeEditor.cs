@@ -129,9 +129,6 @@ namespace TombLib.Controls.VisualScripting
         private Vector3 _defaultConditionNodeTint = new Vector3(0.8f, 1.0f, 0.8f);
         private Vector3 _defaultActionNodeTint = new Vector3(0.8f, 0.8f, 1.0f);
 
-        private const string _thenString = "pass";
-        private const string _elseString = "fail";
-
         private static readonly Pen _gridPen = new Pen((Colors.DarkBackground.ToFloat3Color() * 1.15f).ToWinFormsColor(), 1);
         private static readonly Pen _selectionPen = new Pen(Colors.BlueSelection, _selectionThickness);
         private static readonly Brush _selectionBrush = new SolidBrush(Colors.BlueSelection.ToFloat3Color().ToWinFormsColor(0.5f));
@@ -214,7 +211,7 @@ namespace TombLib.Controls.VisualScripting
         {
             var node = new TriggerNodeCondition()
             {
-                Name = "Condition node " + LinearizedNodes().Count,
+                Name = LuaSyntax.If + " node " + LinearizedNodes().Count,
                 ScreenPosition = new Vector2(float.MaxValue),
                 Size = DefaultNodeWidth,
                 Color = Colors.GreyBackground.ToFloat3Color() * _defaultConditionNodeTint
@@ -801,7 +798,7 @@ namespace TombLib.Controls.VisualScripting
 
             using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(0.3f)))
             {
-                size = TextRenderer.MeasureText(_thenString, Font);
+                size = TextRenderer.MeasureText(LuaSyntax.Then, Font);
                 var nextPoint = condNode.GetNodeScreenPosition(ConnectionMode.Next);
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
@@ -809,10 +806,10 @@ namespace TombLib.Controls.VisualScripting
                 e.Graphics.DrawImage(Properties.Resources.misc_Shadow, 
                     new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
 
-                e.Graphics.DrawString(_thenString, Font, b, rect,
+                e.Graphics.DrawString(LuaSyntax.Then, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 
-                size = TextRenderer.MeasureText(_elseString, Font);
+                size = TextRenderer.MeasureText(LuaSyntax.Else, Font);
                 nextPoint = condNode.GetNodeScreenPosition(ConnectionMode.Else);
                 rect = new Rectangle((int)nextPoint[0].X, condNode.Location.Y + condNode.Height + (int)(size.Height * 0.4f),
                                      (int)(nextPoint[1].X - nextPoint[0].X), size.Height);
@@ -820,7 +817,7 @@ namespace TombLib.Controls.VisualScripting
                 e.Graphics.DrawImage(Properties.Resources.misc_Shadow,
                     new Rectangle((int)((nextPoint[0].X + nextPoint[1].X) / 2) - size.Width / 2, rect.Y, size.Width, size.Height));
 
-                e.Graphics.DrawString(_elseString, Font, b, rect,
+                e.Graphics.DrawString(LuaSyntax.Else, Font, b, rect,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
         }
