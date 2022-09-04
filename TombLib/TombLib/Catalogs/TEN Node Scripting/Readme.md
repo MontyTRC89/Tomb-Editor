@@ -71,7 +71,8 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
    - **Boolean** - a value which can be either `true` or `false`. Appears as a pair of radio buttons in UI.
    - **Numerical** - numerical floating-point value. Range can be specified by **ENUMDESC** descriptors (see above).
    - **Vector3** - Three floating-point values, can be used either for position or rotation.
-   - **String** - Raw text string, length is unlimited.
+   - **String** - Raw text string, length is unlimited. If parsed to functions which draw on-screen strings, `\n` 
+     combination may be used to start a new line.
    - **Color** - RGB color value, appears as color picker in UI.
    - **LuaScript** - Existing lua function list from level script file.
    - **Moveables** - A list of moveables in level which have lua names assigned.
