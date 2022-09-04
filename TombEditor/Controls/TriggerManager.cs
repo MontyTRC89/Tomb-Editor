@@ -46,6 +46,14 @@ namespace TombEditor.Controls
                 FindAndSelectFunction();
                 UpdateNodeEditorOptions();
             }
+
+            if (obj is Editor.RoomListChangedEvent ||
+               (obj is Editor.ObjectChangedEvent && 
+               (obj as Editor.ObjectChangedEvent).ChangeType != ObjectChangeType.Change))
+            {
+                nodeEditor.PopulateCachedNodeLists(_editor.Level);
+                nodeEditor.RefreshArgumentUI();
+            }
         }
 
         protected override void Dispose(bool disposing)

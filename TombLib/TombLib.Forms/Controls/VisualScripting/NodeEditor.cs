@@ -527,6 +527,12 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
+        public void RefreshArgumentUI()
+        {
+            foreach (var vnode in Controls.OfType<VisibleNodeBase>())
+                vnode.SpawnUIElements();
+        }
+
         public bool AnimateSnap(ConnectionMode mode, VisibleNodeBase node)
         {
             if (_animProgress != -1.0f)

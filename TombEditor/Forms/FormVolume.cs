@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
@@ -11,7 +12,7 @@ namespace TombEditor.Forms
 {
     public partial class FormVolume : DarkForm
     {
-        private readonly VolumeInstance _instance;
+        private VolumeInstance _instance;
         private readonly Editor _editor;
 
         private bool _lockUI = false;
@@ -62,6 +63,18 @@ namespace TombEditor.Forms
             base.Dispose(disposing);
         }
 
+        public void ChangeVolume(VolumeInstance instance)
+        {
+            if (instance == null && _genericMode)
+                return;
+
+            _genericMode = instance == null;
+            _instance = _genericMode ? new BoxVolumeInstance() : instance;
+            PopulateEventSetList();
+            FindAndSelectEventSet();
+            SetupUI();
+        }
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.MessageEvent)
@@ -74,24 +87,29 @@ namespace TombEditor.Forms
                 Close();
 
             if (obj is Editor.SelectedObjectChangedEvent)
+                ChangeVolume(_editor.SelectedObject as VolumeInstance);
+
+            if (obj is Editor.EventSetsChangedEvent)
             {
-                if (_editor.SelectedObject is VolumeInstance)
-                {
-                    var index = lstEvents.Items.IndexOf(item => (item.Tag as VolumeEventSet) == (_editor.SelectedObject as VolumeInstance).EventSet);
-                    if (index != -1)
-                        lstEvents.SelectItem(index);
-                }
+                PopulateEventSetList();
+                FindAndSelectEventSet();
             }
         }
 
         private void SetupUI()
         {
-            if (!_genericMode)
-                return;
-
-            butSearch.Location = butUnassignEventSet.Location;
-            butUnassignEventSet.Visible = false;
-            Text = "Event set editor";
+            if (_genericMode)
+            {
+                butSearch.Location = butUnassignEventSet.Location;
+                butUnassignEventSet.Visible = false;
+                Text = "Edit volumes";
+            }
+            else
+            {
+                butSearch.Location = new Point(butUnassignEventSet.Location.X - butSearch.Width - 6, butSearch.Location.Y);
+                butUnassignEventSet.Visible = true;
+                Text = "Edit volume: " + _instance.ToShortString();
+            }
         }
 
         private void BackupEventSets()
@@ -202,16 +220,16 @@ namespace TombEditor.Forms
         private void butOk_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
-            _editor.EventSetsChange();
             Close();
+            _editor.EventSetsChange();
         }
 
         private void butCancel_Click(object sender, EventArgs e)
         {
-            RestoreEventSets();
             DialogResult = DialogResult.Cancel;
-            _editor.EventSetsChange();
             Close();
+            RestoreEventSets();
+            _editor.EventSetsChange();
         }
 
         private void lstEvents_SelectedIndicesChanged(object sender, EventArgs e)
