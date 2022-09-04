@@ -28,7 +28,7 @@ LevelFuncs.CompareValue = function(value, reference, operand)
 	local result = false
 
 	if (operand == 0 and value == reference) then result = true end
-	if (operand == 1 and value != reference) then result = true end
+	if (operand == 1 and value ~= reference) then result = true end
 	if (operand == 2 and value <  reference) then result = true end
 	if (operand == 3 and value <= reference) then result = true end
 	if (operand == 4 and value >  reference) then result = true end
@@ -52,7 +52,7 @@ end
 -- !Arguments "Color, 10" "Numerical, 20" 
 
 LevelFuncs.FlashScreen = function(color, duration)
-    Effects.Flash(color, duration)
+    Effects.FlashScreen(color, duration)
 end
 
 -- !Name "Set hit points"

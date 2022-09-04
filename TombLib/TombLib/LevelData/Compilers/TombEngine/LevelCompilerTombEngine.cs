@@ -517,7 +517,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 File.WriteAllText(nodeScriptName, comment + result);
 
                 if (File.Exists(ScriptingUtils.NodeScriptPath))
-                    File.Copy(ScriptingUtils.NodeScriptPath, Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName));
+                    File.Copy(ScriptingUtils.NodeScriptPath, Path.Combine(scriptDirectory, ScriptingUtils.NodeScriptFileName), true);
             }
             else
                 ReportProgress(99, "No trigger node events found.");

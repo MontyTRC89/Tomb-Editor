@@ -87,6 +87,7 @@ namespace TombLib.Utils
                         }
                         else if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
+                            nodeFunction = new NodeFunction(); // Reset every time we encounter new name
                             nodeFunction.Name = TextExtensions.ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
                             continue;
                         }

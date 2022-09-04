@@ -104,7 +104,14 @@ namespace TombLib.Controls.VisualScripting
                     cbFunction.Items.Add(f);
 
             if (cbFunction.Items.Count > 0)
-                cbFunction.SelectedIndex = 0;
+            {
+                int existingIndex = cbFunction.Items.OfType<NodeFunction>().IndexOf(f => f.Signature == Node.Function);
+
+                if (existingIndex != -1)
+                    cbFunction.SelectedIndex = existingIndex;
+                else
+                    cbFunction.SelectedIndex = 0;
+            }
         }
 
         public void SpawnUIElements()
@@ -550,6 +557,8 @@ namespace TombLib.Controls.VisualScripting
             // Prevent multiple firings (thanks Winforms)
             if (_lastSelectedIndex == cbFunction.SelectedIndex)
                 return;
+
+            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
 
             TrimArguments();
             SpawnUIElements();
