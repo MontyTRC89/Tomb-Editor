@@ -61,6 +61,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Catalogs\TEN Node Scripting\Default.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TrCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
