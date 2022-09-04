@@ -51,12 +51,14 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
  - **Any other string value except listed above** - tooltip for a given argument control.
  
 
-Metadata blocks can appear in any order, except !Name - it resets parsing of current function.
+Metadata blocks can appear in any order, except **!Name** - it resets parsing of current function.
 
 Metadata parsing happens until real function block starts (which should start with LevelFuncs. prefix).
 
-ARGDESC parameters can appear in any order, e.g. !Argument "Foo, Numerical, 20" is equal to
-!Argument "Numerical, 20, Foo"
+ARGDESC parameters can appear in any order, e.g. `!Argument "Foo, Numerical, 20"` is equal to
+`!Argument "Numerical, 20, Foo"`
+
+There could be several **!Argument** blocks, which will append arguments to previously parsed ones.
 
 ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 
