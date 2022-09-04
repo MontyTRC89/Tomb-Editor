@@ -20,6 +20,8 @@ namespace TombEditor.Forms
         private List<VolumeEventSet> _backupEventSetList;
         private List<int> _backupEventSetIndices;
 
+        private readonly PopUpInfo _popup = new PopUpInfo();
+
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
@@ -28,6 +30,7 @@ namespace TombEditor.Forms
 
             _instance = _genericMode ? new BoxVolumeInstance() : instance;
             _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -46,6 +49,26 @@ namespace TombEditor.Forms
             // Populate and select event set list
             PopulateEventSetList();
             FindAndSelectEventSet();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+
+            if (disposing && (components != null))
+                components.Dispose();
+
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.MessageEvent)
+            {
+                var msg = (Editor.MessageEvent)obj;
+                PopUpInfo.Show(_popup, msg.ForceInMainWindow ? null : FindForm(), tcEvents, msg.Message, msg.Type);
+            }
         }
 
         private void SetupUI()
