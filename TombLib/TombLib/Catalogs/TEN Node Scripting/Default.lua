@@ -20,8 +20,8 @@ end
 -- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 ]" 
 
-LevelFuncs.CheckEntityHealth = function(entityName, operand, value)
-	local health = TEN.Objects.GetMoveableByName(entityName):GetHP()
+LevelFuncs.CheckEntityHealth = function(moveableName, operand, value)
+	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
 	return LevelFuncs.CompareValue(health, value, operand)
 end
 
@@ -38,13 +38,13 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 ], 15, Health value to define", "NewLine, Moveables"
 
-LevelFuncs.SetHitPoints = function(operation, value, entityName)
+LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 
 	if (operation == 0) then
-		local moveable = TEN.Objects.GetMoveableByName(entityName)
+		local moveable = TEN.Objects.GetMoveableByName(moveableName)
 		moveable:SetHP(moveable:GetHP() + value)
 	else
-		TEN.Objects.GetMoveableByName(entityName):SetHP(value)
+		TEN.Objects.GetMoveableByName(moveableName):SetHP(value)
 	end
 end
 
@@ -54,4 +54,20 @@ end
 
 LevelFuncs.SetColor = function(moveableName, color)
     TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Shatter moveable"
+-- !Description "Shatters moveable in similar way to shatterable statics."
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.ShatterMoveable = function(moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):Shatter()
+end
+
+-- !Name "Explode moveable"
+-- !Description "Explodes moveable."
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.ExplodeMoveable = function(moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):Explode()
 end
