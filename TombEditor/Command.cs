@@ -894,9 +894,14 @@ namespace TombEditor
 
             AddCommand("EditEventSets", "Edit event sets...", CommandType.Edit, delegate (CommandArgs args)
             {
-                using (var formVolume = new FormVolume(null))
-                    if (formVolume.ShowDialog(args.Window) == DialogResult.OK)
-                        args.Editor.EventSetsChange();
+                var existingWindow = Application.OpenForms[nameof(FormVolume)];
+                if (existingWindow == null)
+                {
+                    var propForm = new FormVolume(null);
+                    propForm.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
             });
 
             AddCommand("SearchAndReplaceObjects", "Search and replace objects...", CommandType.Edit, delegate (CommandArgs args)

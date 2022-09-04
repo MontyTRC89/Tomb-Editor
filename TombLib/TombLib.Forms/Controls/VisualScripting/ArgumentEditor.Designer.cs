@@ -327,12 +327,15 @@
             // 
             // cbList
             // 
+            this.cbList.AllowDrop = true;
             this.cbList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbList.Location = new System.Drawing.Point(0, 0);
             this.cbList.Name = "cbList";
             this.cbList.Size = new System.Drawing.Size(406, 21);
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
+            this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
+            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.cbList_DragEnter);
             // 
             // panelLocate
             // 
@@ -356,6 +359,7 @@
             // 
             // ArgumentEditor
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.container);

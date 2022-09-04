@@ -414,5 +414,27 @@ namespace TombLib.Controls.VisualScripting
 
             OnLocatedItemFound(item);
         }
+
+        private void cbList_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void cbList_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
+            {
+                var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+                if (string.IsNullOrEmpty(item.LuaName))
+                    return;
+
+                var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+                if (index != -1)
+                    cbList.SelectedIndex = index;
+                return;
+            }
+        }
     }
 }

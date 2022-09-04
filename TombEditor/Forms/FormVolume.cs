@@ -69,6 +69,19 @@ namespace TombEditor.Forms
                 var msg = (Editor.MessageEvent)obj;
                 PopUpInfo.Show(_popup, msg.ForceInMainWindow ? null : FindForm(), tcEvents, msg.Message, msg.Type);
             }
+
+            if (obj is Editor.LevelChangedEvent)
+                Close();
+
+            if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                if (_editor.SelectedObject is VolumeInstance)
+                {
+                    var index = lstEvents.Items.IndexOf(item => (item.Tag as VolumeEventSet) == (_editor.SelectedObject as VolumeInstance).EventSet);
+                    if (index != -1)
+                        lstEvents.SelectItem(index);
+                }
+            }
         }
 
         private void SetupUI()
@@ -189,6 +202,7 @@ namespace TombEditor.Forms
         private void butOk_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            _editor.EventSetsChange();
             Close();
         }
 
@@ -196,6 +210,7 @@ namespace TombEditor.Forms
         {
             RestoreEventSets();
             DialogResult = DialogResult.Cancel;
+            _editor.EventSetsChange();
             Close();
         }
 
