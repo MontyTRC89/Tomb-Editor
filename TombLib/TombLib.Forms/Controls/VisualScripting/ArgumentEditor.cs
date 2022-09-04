@@ -31,10 +31,6 @@ namespace TombLib.Controls.VisualScripting
             public override string ToString() => DisplayText;
         }
 
-        private const string _separatorChar = ",";
-        private const string _objectIDLuaPrefix = "Objects.ObjID.";
-        private const string _activatorPrefix = "activator:GetName()";
-
         private ArgumentType _argumentType = ArgumentType.Numerical;
 
         public event EventHandler ValueChanged;
@@ -107,7 +103,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
-                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", _activatorPrefix));
+                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
                     foreach (var item in editor.CachedMoveables)
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
@@ -137,7 +133,7 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.WadSlots:
                     foreach (var item in editor.CachedWadSlots)
-                        cbList.Items.Add(new ComboBoxItem(item, _objectIDLuaPrefix + item));
+                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + item));
                     break;
                 case ArgumentType.Enumeration:
                     foreach (var item in layout.CustomEnumeration)
@@ -238,6 +234,9 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Vector3:
                     {
+                        if (source.StartsWith(LuaSyntax.Vec3TypePrefix + "(") && source.EndsWith(")"))
+                            source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.Vec3TypePrefix.Length - 2);
+
                         var floats = UnboxVector3Value(source);
 
                         try
@@ -266,6 +265,9 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Color:
                     {
+                        if (source.StartsWith(LuaSyntax.ColorTypePrefix + "(") && source.EndsWith(")"))
+                            source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.ColorTypePrefix.Length - 2);
+
                         var floats = UnboxVector3Value(source);
                         var bytes = new byte[3] { 0, 0, 0 };
 
@@ -301,7 +303,7 @@ namespace TombLib.Controls.VisualScripting
 
         private float[] UnboxVector3Value(string source)
         {
-            return source.Split(new string[] { _separatorChar }, StringSplitOptions.None).Select(x =>
+            return source.Split(new string[] { LuaSyntax.Separator }, StringSplitOptions.None).Select(x =>
             {
                 float result;
                 if (float.TryParse(x.Trim(), out result))
@@ -317,20 +319,24 @@ namespace TombLib.Controls.VisualScripting
             OnValueChanged();
         }
 
-            private void BoxVector3Value()
+        private void BoxVector3Value()
         {
             var x = ((float)nudVector3X.Value).ToString();
             var y = ((float)nudVector3Y.Value).ToString();
             var z = ((float)nudVector3Z.Value).ToString();
-            _text = x + _separatorChar + y + _separatorChar + z;
+            _text = LuaSyntax.Vec3TypePrefix + LuaSyntax.BracketOpen + 
+                    x + LuaSyntax.Separator + 
+                    y + LuaSyntax.Separator + 
+                    z + LuaSyntax.BracketClose;
             OnValueChanged();
         }
 
         private void BoxColorValue()
         {
-            _text = panelColor.BackColor.R.ToString() + _separatorChar + 
-                    panelColor.BackColor.G.ToString() + _separatorChar + 
-                    panelColor.BackColor.B.ToString();
+            _text = LuaSyntax.ColorTypePrefix + LuaSyntax.BracketOpen +
+                    panelColor.BackColor.R.ToString() + LuaSyntax.Separator + 
+                    panelColor.BackColor.G.ToString() + LuaSyntax.Separator + 
+                    panelColor.BackColor.B.ToString() + LuaSyntax.BracketClose;
             OnValueChanged();
         }
 

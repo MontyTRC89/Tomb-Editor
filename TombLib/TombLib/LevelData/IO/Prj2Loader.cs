@@ -188,8 +188,6 @@ namespace TombLib.LevelData.IO
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.TenLuaScriptFile)
                     settings.TenLuaScriptFile = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.TenNodeScriptFile)
-                    settings.TenNodeScriptFile = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
                     bool Update1_0_8 = false;

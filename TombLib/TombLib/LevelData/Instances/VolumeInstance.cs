@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using TombLib.IO;
 using TombLib.LevelData.VisualScripting;
 
@@ -81,11 +83,40 @@ namespace TombLib.LevelData
                 Nodes.TrueForAll(n => n.GetHashCode() == other.Nodes[Nodes.IndexOf(n)].GetHashCode());
         }
 
-        public void Write(BinaryWriterEx writer)
+        public string GenerateFunctionName(List<VolumeEventSet> eventSets)
+        {
+            var belongedSet = eventSets.FirstOrDefault(s => s.OnInside == this || s.OnLeave == this || s.OnEnter == this);
+            if (belongedSet == null)
+                return "UNKNOWN";
+
+            var trimmedName = "__" + eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
+                                     Regex.Replace(belongedSet.Name, @"\s", string.Empty);
+
+            if (this == belongedSet.OnInside)
+                return trimmedName + "_OnInside";
+            else if (this == belongedSet.OnLeave)
+                return trimmedName + "_OnLeave";
+            else if (this == belongedSet.OnEnter)
+                return trimmedName + "_OnEnter";
+
+            return "UNKNOWN";
+        }
+
+        public void Write(BinaryWriterEx writer, List<VolumeEventSet> eventSets)
         {
             writer.Write((int)Mode);
-            writer.Write(Function);
-            writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
+
+            if (Mode == VolumeEventMode.NodeEditor)
+            {
+                writer.Write(Nodes.Count > 0 ? GenerateFunctionName(eventSets) : string.Empty);
+                writer.Write(string.Empty);
+            }
+            else
+            {
+                writer.Write(Function);
+                writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
+            }
+
             writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
         }
     }
@@ -148,14 +179,14 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriterEx writer, List<VolumeEventSet> eventSets)
         {
             writer.Write(Name);
             writer.Write((int)Activators);
 
-            OnEnter.Write(writer);
-            OnInside.Write(writer);
-            OnLeave.Write(writer);
+            OnEnter.Write(writer, eventSets);
+            OnInside.Write(writer, eventSets);
+            OnLeave.Write(writer, eventSets);
         }
 
         public bool Equals(VolumeEventSet other)

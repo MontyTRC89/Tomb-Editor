@@ -53,6 +53,14 @@
             this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.gameExecutableFilePathTxt = new DarkUI.Controls.DarkTextBox();
+            this.panelScripts = new System.Windows.Forms.Panel();
+            this.scriptPathBut = new DarkUI.Controls.DarkButton();
+            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
+            this.tbScriptPath = new DarkUI.Controls.DarkTextBox();
+            this.panelLuaPath = new System.Windows.Forms.Panel();
+            this.butBrowseLuaPath = new DarkUI.Controls.DarkButton();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.tbLuaPath = new DarkUI.Controls.DarkTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.gameLevelFilePathBut = new DarkUI.Controls.DarkButton();
             this.gameLevelFilePathTxt = new DarkUI.Controls.DarkTextBox();
@@ -181,24 +189,14 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panelLuaPath = new System.Windows.Forms.Panel();
-            this.butBrowseLuaPath = new DarkUI.Controls.DarkButton();
-            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tbLuaPath = new DarkUI.Controls.DarkTextBox();
-            this.panelScripts = new System.Windows.Forms.Panel();
-            this.scriptPathBut = new DarkUI.Controls.DarkButton();
-            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
-            this.tbScriptPath = new DarkUI.Controls.DarkTextBox();
-            this.panelNodeScript = new System.Windows.Forms.Panel();
-            this.butBrowseNodePath = new DarkUI.Controls.DarkButton();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
-            this.tbNodePath = new DarkUI.Controls.DarkTextBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabGame.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panelScripts.SuspendLayout();
+            this.panelLuaPath.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -228,9 +226,6 @@
             this.panel12.SuspendLayout();
             this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
-            this.panelLuaPath.SuspendLayout();
-            this.panelScripts.SuspendLayout();
-            this.panelNodeScript.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -240,14 +235,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(102, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(101, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -264,7 +259,7 @@
             this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
             this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
-            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(156, 17);
+            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(155, 17);
             this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
             this.GameEnableExtraReverbPresetsCheckBox.Text = "Show FLEP reverb presets";
             this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
@@ -276,7 +271,7 @@
             this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
             this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(170, 17);
+            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(168, 17);
             this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
             this.GameEnableExtraBlendingModesCheckBox.Text = "Show extra blending modes";
             this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
@@ -389,7 +384,7 @@
             this.cbKeepSampleRate.AutoSize = true;
             this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 235);
             this.cbKeepSampleRate.Name = "cbKeepSampleRate";
-            this.cbKeepSampleRate.Size = new System.Drawing.Size(209, 17);
+            this.cbKeepSampleRate.Size = new System.Drawing.Size(208, 17);
             this.cbKeepSampleRate.TabIndex = 114;
             this.cbKeepSampleRate.Tag = "";
             this.cbKeepSampleRate.Text = "Use custom sample rate for sounds:";
@@ -402,7 +397,7 @@
             this.cbRemoveObjects.AutoSize = true;
             this.cbRemoveObjects.Location = new System.Drawing.Point(3, 212);
             this.cbRemoveObjects.Name = "cbRemoveObjects";
-            this.cbRemoveObjects.Size = new System.Drawing.Size(251, 17);
+            this.cbRemoveObjects.Size = new System.Drawing.Size(253, 17);
             this.cbRemoveObjects.TabIndex = 112;
             this.cbRemoveObjects.Tag = "";
             this.cbRemoveObjects.Text = "Remove unused objects from compiled level";
@@ -429,7 +424,7 @@
             this.cbRemapAnimTextures.AutoSize = true;
             this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 166);
             this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
-            this.cbRemapAnimTextures.Size = new System.Drawing.Size(396, 17);
+            this.cbRemapAnimTextures.Size = new System.Drawing.Size(397, 17);
             this.cbRemapAnimTextures.TabIndex = 110;
             this.cbRemapAnimTextures.Tag = "";
             this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
@@ -442,7 +437,7 @@
             this.cbDither16BitTextures.AutoSize = true;
             this.cbDither16BitTextures.Location = new System.Drawing.Point(3, 143);
             this.cbDither16BitTextures.Name = "cbDither16BitTextures";
-            this.cbDither16BitTextures.Size = new System.Drawing.Size(135, 17);
+            this.cbDither16BitTextures.Size = new System.Drawing.Size(132, 17);
             this.cbDither16BitTextures.TabIndex = 109;
             this.cbDither16BitTextures.Tag = "";
             this.cbDither16BitTextures.Text = "Dither 16-bit textures";
@@ -454,7 +449,7 @@
             this.cbOverrideAllLightQuality.AutoSize = true;
             this.cbOverrideAllLightQuality.Location = new System.Drawing.Point(216, 42);
             this.cbOverrideAllLightQuality.Name = "cbOverrideAllLightQuality";
-            this.cbOverrideAllLightQuality.Size = new System.Drawing.Size(168, 17);
+            this.cbOverrideAllLightQuality.Size = new System.Drawing.Size(166, 17);
             this.cbOverrideAllLightQuality.TabIndex = 108;
             this.cbOverrideAllLightQuality.Tag = "";
             this.cbOverrideAllLightQuality.Text = "Override individual settings";
@@ -493,7 +488,7 @@
             this.cbAgressiveTexturePacking.AutoSize = true;
             this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 97);
             this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
-            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(337, 17);
+            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(340, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
             this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
@@ -606,7 +601,6 @@
             this.tabGame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabGame.Controls.Add(this.panel3);
             this.tabGame.Controls.Add(this.panelScripts);
-            this.tabGame.Controls.Add(this.panelNodeScript);
             this.tabGame.Controls.Add(this.panelLuaPath);
             this.tabGame.Controls.Add(this.panel1);
             this.tabGame.Controls.Add(this.panel2);
@@ -627,9 +621,9 @@
             this.panel3.Controls.Add(this.darkLabel3);
             this.panel3.Controls.Add(this.gameExecutableFilePathTxt);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 303);
+            this.panel3.Location = new System.Drawing.Point(3, 253);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(772, 199);
+            this.panel3.Size = new System.Drawing.Size(772, 249);
             this.panel3.TabIndex = 3;
             // 
             // GameEnableQuickStartFeatureCheckBox
@@ -671,6 +665,86 @@
             this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(652, 22);
             this.gameExecutableFilePathTxt.TabIndex = 2;
             this.gameExecutableFilePathTxt.TextChanged += new System.EventHandler(this.gameExecutableFilePathTxt_TextChanged);
+            // 
+            // panelScripts
+            // 
+            this.panelScripts.Controls.Add(this.scriptPathBut);
+            this.panelScripts.Controls.Add(this.darkLabel15);
+            this.panelScripts.Controls.Add(this.tbScriptPath);
+            this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelScripts.Location = new System.Drawing.Point(3, 203);
+            this.panelScripts.Name = "panelScripts";
+            this.panelScripts.Size = new System.Drawing.Size(772, 50);
+            this.panelScripts.TabIndex = 99;
+            // 
+            // scriptPathBut
+            // 
+            this.scriptPathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptPathBut.Checked = false;
+            this.scriptPathBut.Location = new System.Drawing.Point(677, 23);
+            this.scriptPathBut.Name = "scriptPathBut";
+            this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
+            this.scriptPathBut.TabIndex = 3;
+            this.scriptPathBut.Text = "Browse";
+            this.scriptPathBut.Click += new System.EventHandler(this.scriptPathBut_Click);
+            // 
+            // darkLabel15
+            // 
+            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel15.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel15.Name = "darkLabel15";
+            this.darkLabel15.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel15.TabIndex = 1;
+            this.darkLabel15.Text = "Path of TXT files for script (Optional):";
+            // 
+            // tbScriptPath
+            // 
+            this.tbScriptPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScriptPath.Location = new System.Drawing.Point(19, 23);
+            this.tbScriptPath.Name = "tbScriptPath";
+            this.tbScriptPath.Size = new System.Drawing.Size(652, 22);
+            this.tbScriptPath.TabIndex = 2;
+            // 
+            // panelLuaPath
+            // 
+            this.panelLuaPath.Controls.Add(this.butBrowseLuaPath);
+            this.panelLuaPath.Controls.Add(this.darkLabel10);
+            this.panelLuaPath.Controls.Add(this.tbLuaPath);
+            this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelLuaPath.Location = new System.Drawing.Point(3, 153);
+            this.panelLuaPath.Name = "panelLuaPath";
+            this.panelLuaPath.Size = new System.Drawing.Size(772, 50);
+            this.panelLuaPath.TabIndex = 100;
+            // 
+            // butBrowseLuaPath
+            // 
+            this.butBrowseLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseLuaPath.Checked = false;
+            this.butBrowseLuaPath.Location = new System.Drawing.Point(677, 23);
+            this.butBrowseLuaPath.Name = "butBrowseLuaPath";
+            this.butBrowseLuaPath.Size = new System.Drawing.Size(92, 22);
+            this.butBrowseLuaPath.TabIndex = 3;
+            this.butBrowseLuaPath.Text = "Browse";
+            this.butBrowseLuaPath.Click += new System.EventHandler(this.butBrowseLuaPath_Click);
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel10.TabIndex = 1;
+            this.darkLabel10.Text = "Path of Lua level script file:";
+            // 
+            // tbLuaPath
+            // 
+            this.tbLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaPath.Location = new System.Drawing.Point(19, 23);
+            this.tbLuaPath.Name = "tbLuaPath";
+            this.tbLuaPath.Size = new System.Drawing.Size(652, 22);
+            this.tbLuaPath.TabIndex = 2;
             // 
             // panel1
             // 
@@ -898,7 +972,7 @@
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.ReadOnly = true;
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Width = 104;
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Width = 102;
             // 
             // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
             // 
@@ -908,7 +982,7 @@
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.ReadOnly = true;
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Width = 131;
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Width = 127;
             // 
             // darkLabel4
             // 
@@ -917,7 +991,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(3, 3);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(411, 26);
+            this.darkLabel4.Size = new System.Drawing.Size(406, 26);
             this.darkLabel4.TabIndex = 5;
             this.darkLabel4.Text = "List of texture resources (eg *.png, *.tga, *.bmp).\r\nOnly the areas used in the t" +
     "extures will be compiled into the playable level file.";
@@ -1013,7 +1087,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(3, 3);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(412, 26);
+            this.darkLabel5.Size = new System.Drawing.Size(408, 26);
             this.darkLabel5.TabIndex = 1;
             this.darkLabel5.Text = "List of object resources (eg *.wad2, *.wad).\r\nObjects inside the files mentioned " +
     "earlier in the list take priority over later files.";
@@ -1049,7 +1123,7 @@
             this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel11.Location = new System.Drawing.Point(3, 3);
             this.darkLabel11.Name = "darkLabel11";
-            this.darkLabel11.Size = new System.Drawing.Size(277, 13);
+            this.darkLabel11.Size = new System.Drawing.Size(276, 13);
             this.darkLabel11.TabIndex = 1;
             this.darkLabel11.Text = "All imported geometries associated with this project:";
             // 
@@ -1209,7 +1283,7 @@
             this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel17.Location = new System.Drawing.Point(3, 3);
             this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(388, 13);
+            this.darkLabel17.Size = new System.Drawing.Size(386, 13);
             this.darkLabel17.TabIndex = 0;
             this.darkLabel17.Text = "Static meshes which should be automatically merged with room geometry:";
             // 
@@ -1493,9 +1567,9 @@
             this.cbAutodetectIfNoneSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbAutodetectIfNoneSelected.AutoSize = true;
             this.cbAutodetectIfNoneSelected.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbAutodetectIfNoneSelected.Location = new System.Drawing.Point(486, 222);
+            this.cbAutodetectIfNoneSelected.Location = new System.Drawing.Point(492, 222);
             this.cbAutodetectIfNoneSelected.Name = "cbAutodetectIfNoneSelected";
-            this.cbAutodetectIfNoneSelected.Size = new System.Drawing.Size(290, 17);
+            this.cbAutodetectIfNoneSelected.Size = new System.Drawing.Size(284, 17);
             this.cbAutodetectIfNoneSelected.TabIndex = 117;
             this.cbAutodetectIfNoneSelected.Text = "Autodetect sounds on compilation if none selected";
             this.cbAutodetectIfNoneSelected.CheckedChanged += new System.EventHandler(this.cbAutodetectIfNoneSelected_CheckedChanged);
@@ -1549,7 +1623,7 @@
             this.lblCatalogsPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblCatalogsPrompt.Location = new System.Drawing.Point(3, 3);
             this.lblCatalogsPrompt.Name = "lblCatalogsPrompt";
-            this.lblCatalogsPrompt.Size = new System.Drawing.Size(462, 26);
+            this.lblCatalogsPrompt.Size = new System.Drawing.Size(460, 26);
             this.lblCatalogsPrompt.TabIndex = 106;
             this.lblCatalogsPrompt.Text = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be" +
     " loaded.\r\nIf any sound info ID is duplicated in any of catalog, first one will b" +
@@ -1827,7 +1901,7 @@
             this.lblPathsPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblPathsPrompt.Location = new System.Drawing.Point(3, 3);
             this.lblPathsPrompt.Name = "lblPathsPrompt";
-            this.lblPathsPrompt.Size = new System.Drawing.Size(555, 26);
+            this.lblPathsPrompt.Size = new System.Drawing.Size(545, 26);
             this.lblPathsPrompt.TabIndex = 1;
             this.lblPathsPrompt.Text = "Locations from which sound samples will be loaded.\r\nEach required sample will be " +
     "searched in folders in top to bottom order. If not found, sound is not played.";
@@ -1992,7 +2066,7 @@
             this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel22.Location = new System.Drawing.Point(0, 43);
             this.darkLabel22.Name = "darkLabel22";
-            this.darkLabel22.Size = new System.Drawing.Size(113, 13);
+            this.darkLabel22.Size = new System.Drawing.Size(111, 13);
             this.darkLabel22.TabIndex = 106;
             this.darkLabel22.Text = "Default light quality:";
             // 
@@ -2012,7 +2086,7 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(0, 15);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(120, 13);
+            this.darkLabel16.Size = new System.Drawing.Size(118, 13);
             this.darkLabel16.TabIndex = 90;
             this.darkLabel16.Text = "Default ambient light:";
             // 
@@ -2131,127 +2205,6 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
-            // panelLuaPath
-            // 
-            this.panelLuaPath.Controls.Add(this.butBrowseLuaPath);
-            this.panelLuaPath.Controls.Add(this.darkLabel10);
-            this.panelLuaPath.Controls.Add(this.tbLuaPath);
-            this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelLuaPath.Location = new System.Drawing.Point(3, 153);
-            this.panelLuaPath.Name = "panelLuaPath";
-            this.panelLuaPath.Size = new System.Drawing.Size(772, 50);
-            this.panelLuaPath.TabIndex = 100;
-            // 
-            // butBrowseLuaPath
-            // 
-            this.butBrowseLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butBrowseLuaPath.Checked = false;
-            this.butBrowseLuaPath.Location = new System.Drawing.Point(677, 23);
-            this.butBrowseLuaPath.Name = "butBrowseLuaPath";
-            this.butBrowseLuaPath.Size = new System.Drawing.Size(92, 22);
-            this.butBrowseLuaPath.TabIndex = 3;
-            this.butBrowseLuaPath.Text = "Browse";
-            this.butBrowseLuaPath.Click += new System.EventHandler(this.butBrowseLuaPath_Click);
-            // 
-            // darkLabel10
-            // 
-            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(0, 3);
-            this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel10.TabIndex = 1;
-            this.darkLabel10.Text = "Path of Lua level script file:";
-            // 
-            // tbLuaPath
-            // 
-            this.tbLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaPath.Location = new System.Drawing.Point(19, 23);
-            this.tbLuaPath.Name = "tbLuaPath";
-            this.tbLuaPath.Size = new System.Drawing.Size(652, 22);
-            this.tbLuaPath.TabIndex = 2;
-            // 
-            // panelScripts
-            // 
-            this.panelScripts.Controls.Add(this.scriptPathBut);
-            this.panelScripts.Controls.Add(this.darkLabel15);
-            this.panelScripts.Controls.Add(this.tbScriptPath);
-            this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelScripts.Location = new System.Drawing.Point(3, 253);
-            this.panelScripts.Name = "panelScripts";
-            this.panelScripts.Size = new System.Drawing.Size(772, 50);
-            this.panelScripts.TabIndex = 99;
-            // 
-            // scriptPathBut
-            // 
-            this.scriptPathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.scriptPathBut.Checked = false;
-            this.scriptPathBut.Location = new System.Drawing.Point(677, 23);
-            this.scriptPathBut.Name = "scriptPathBut";
-            this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
-            this.scriptPathBut.TabIndex = 3;
-            this.scriptPathBut.Text = "Browse";
-            this.scriptPathBut.Click += new System.EventHandler(this.scriptPathBut_Click);
-            // 
-            // darkLabel15
-            // 
-            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(0, 3);
-            this.darkLabel15.Name = "darkLabel15";
-            this.darkLabel15.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel15.TabIndex = 1;
-            this.darkLabel15.Text = "Path of TXT files for script (Optional):";
-            // 
-            // tbScriptPath
-            // 
-            this.tbScriptPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScriptPath.Location = new System.Drawing.Point(19, 23);
-            this.tbScriptPath.Name = "tbScriptPath";
-            this.tbScriptPath.Size = new System.Drawing.Size(652, 22);
-            this.tbScriptPath.TabIndex = 2;
-            // 
-            // panelNodeScript
-            // 
-            this.panelNodeScript.Controls.Add(this.butBrowseNodePath);
-            this.panelNodeScript.Controls.Add(this.darkLabel21);
-            this.panelNodeScript.Controls.Add(this.tbNodePath);
-            this.panelNodeScript.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelNodeScript.Location = new System.Drawing.Point(3, 203);
-            this.panelNodeScript.Name = "panelNodeScript";
-            this.panelNodeScript.Size = new System.Drawing.Size(772, 50);
-            this.panelNodeScript.TabIndex = 101;
-            // 
-            // butBrowseNodePath
-            // 
-            this.butBrowseNodePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butBrowseNodePath.Checked = false;
-            this.butBrowseNodePath.Location = new System.Drawing.Point(677, 23);
-            this.butBrowseNodePath.Name = "butBrowseNodePath";
-            this.butBrowseNodePath.Size = new System.Drawing.Size(92, 22);
-            this.butBrowseNodePath.TabIndex = 3;
-            this.butBrowseNodePath.Text = "Browse";
-            this.butBrowseNodePath.Click += new System.EventHandler(this.butBrowseNodePath_Click);
-            // 
-            // darkLabel21
-            // 
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(0, 3);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel21.TabIndex = 1;
-            this.darkLabel21.Text = "Path of Lua node function script file:";
-            // 
-            // tbNodePath
-            // 
-            this.tbNodePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbNodePath.Location = new System.Drawing.Point(19, 23);
-            this.tbNodePath.Name = "tbNodePath";
-            this.tbNodePath.Size = new System.Drawing.Size(652, 22);
-            this.tbNodePath.TabIndex = 2;
-            this.tbNodePath.TextChanged += new System.EventHandler(this.tbNodePath_TextChanged);
-            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2277,6 +2230,10 @@
             this.tabGame.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panelScripts.ResumeLayout(false);
+            this.panelScripts.PerformLayout();
+            this.panelLuaPath.ResumeLayout(false);
+            this.panelLuaPath.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -2319,12 +2276,6 @@
             this.panel12.PerformLayout();
             this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
-            this.panelLuaPath.ResumeLayout(false);
-            this.panelLuaPath.PerformLayout();
-            this.panelScripts.ResumeLayout(false);
-            this.panelScripts.PerformLayout();
-            this.panelNodeScript.ResumeLayout(false);
-            this.panelNodeScript.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2502,9 +2453,5 @@
         private DarkUI.Controls.DarkButton scriptPathBut;
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkTextBox tbScriptPath;
-        private System.Windows.Forms.Panel panelNodeScript;
-        private DarkUI.Controls.DarkButton butBrowseNodePath;
-        private DarkUI.Controls.DarkLabel darkLabel21;
-        private DarkUI.Controls.DarkTextBox tbNodePath;
     }
 }

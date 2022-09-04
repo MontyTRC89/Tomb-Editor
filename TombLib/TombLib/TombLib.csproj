@@ -366,6 +366,9 @@
   <ItemGroup>
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.GridPlane.cs" />
+    <None Include="Catalogs\TEN Scripting\NodeFunctions.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
