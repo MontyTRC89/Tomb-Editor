@@ -18,7 +18,7 @@ end
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
--- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 ]" 
+-- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 1 | 5 ]" 
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
@@ -53,7 +53,7 @@ end
 -- !Name "Modify health of an object"
 -- !Description "Set given object's' health."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
--- !Arguments "Numerical, [ -1000 | 1000 ], 15, Health value to define", "NewLine, Moveables"
+-- !Arguments "Numerical, [ -1000 | 1000 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
 LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 

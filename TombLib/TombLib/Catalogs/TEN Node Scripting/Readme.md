@@ -42,7 +42,9 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
-      - For numerical value, first and second ENUMDESC values determine min/max UI range of value. Rest is ignored.
+      - For Numerical and Vector3 value types, first and second ENUMDESC values determine min/max UI range of
+        value. Optional third and fourth values determine mousewheel increment and alternate increment (with
+        shift button pressed) respectively.
       - For Moveables and WadSlots lists, ENUMDESC values will filter out object ID names which contain any of
         ENUMDESCs only.
       - For Enumeration, ENUMDESC values will be displayed as is but converted to numericals on compilation

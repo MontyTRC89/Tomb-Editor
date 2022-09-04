@@ -144,16 +144,40 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item, layout.CustomEnumeration.IndexOf(item).ToString()));
                     break;
                 case ArgumentType.Numerical:
-                    foreach (var item in layout.CustomEnumeration)
-                        if (layout.CustomEnumeration.Count >= 2)
-                        {
-                            float min = -1000000.0f;
-                            float max =  1000000.0f;
-                            float.TryParse(layout.CustomEnumeration[0], out min);
-                            float.TryParse(layout.CustomEnumeration[1], out max);
-                            nudNumerical.Minimum = (decimal)min;
-                            nudNumerical.Maximum = (decimal)max;
-                        }
+                case ArgumentType.Vector3:
+                    if (layout.CustomEnumeration.Count >= 2)
+                    {
+                        float min   = -1000000.0f;
+                        float max   =  1000000.0f;
+                        float step1 =  1.0f;
+                        float step2 =  5.0f;
+                        float.TryParse(layout.CustomEnumeration[0], out min);
+                        float.TryParse(layout.CustomEnumeration[1], out max);
+                        if (layout.CustomEnumeration.Count >= 3)
+                            float.TryParse(layout.CustomEnumeration[2], out step1);
+                        if (layout.CustomEnumeration.Count >= 4)
+                            float.TryParse(layout.CustomEnumeration[3], out step2);
+
+                        nudVector3X.Minimum  =
+                        nudVector3Y.Minimum  =
+                        nudVector3Z.Minimum  =
+                        nudNumerical.Minimum = (decimal)min;
+
+                        nudVector3X.Maximum  =
+                        nudVector3Y.Maximum  =
+                        nudVector3Z.Maximum  =
+                        nudNumerical.Maximum = (decimal)max;
+
+                        nudVector3X.Increment  =
+                        nudVector3Y.Increment  =
+                        nudVector3Z.Increment  =
+                        nudNumerical.Increment = (decimal)step1;
+
+                        nudVector3X.IncrementAlternate  =
+                        nudVector3Y.IncrementAlternate  =
+                        nudVector3Z.IncrementAlternate  =
+                        nudNumerical.IncrementAlternate = (decimal)step2;
+                    }
                     break;
                 default:
                     break;
@@ -242,7 +266,7 @@ namespace TombLib.Controls.VisualScripting
                         float result;
                         if (!(float.TryParse(source, out result)))
                             result = 0.0f;
-                        try { nudNumerical.Value = (decimal)result; }
+                        try   { nudNumerical.Value = (decimal)result; }
                         catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
                         BoxNumericalValue();
@@ -255,14 +279,14 @@ namespace TombLib.Controls.VisualScripting
 
                         var floats = UnboxVector3Value(source);
 
-                        try
+                        for (int i = 0; i < 3; i++)
                         {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                var currentFloat = 0.0f;
-                                if (floats.Length > i)
-                                    currentFloat = floats[i];
+                            var currentFloat = 0.0f;
+                            if (floats.Length > i)
+                                currentFloat = floats[i];
 
+                            try
+                            {
                                 switch (i)
                                 {
                                     case 0: nudVector3X.Value = (decimal)currentFloat; break;
@@ -270,10 +294,15 @@ namespace TombLib.Controls.VisualScripting
                                     case 2: nudVector3Z.Value = (decimal)currentFloat; break;
                                 }
                             }
-                        }
-                        catch
-                        {
-                            nudVector3X.Value = nudVector3Y.Value = nudVector3Z.Value = (decimal)0;
+                            catch
+                            {
+                                switch (i)
+                                {
+                                    case 0: nudVector3X.Value = (decimal)currentFloat < nudVector3X.Minimum ? nudVector3X.Minimum : nudVector3X.Maximum; break;
+                                    case 1: nudVector3Y.Value = (decimal)currentFloat < nudVector3Y.Minimum ? nudVector3Y.Minimum : nudVector3Y.Maximum; break;
+                                    case 2: nudVector3Z.Value = (decimal)currentFloat < nudVector3Z.Minimum ? nudVector3Z.Minimum : nudVector3Z.Maximum; break;
+                                }
+                            }
                         }
 
                         BoxVector3Value();
