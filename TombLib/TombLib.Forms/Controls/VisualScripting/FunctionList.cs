@@ -32,8 +32,6 @@ namespace TombLib.Controls.VisualScripting
 
             foreach (var group in groups)
             {
-                group.OrderBy(i => i.Name);
-
                 var rootNode = new DarkTreeNode(group.Key);
 
                 foreach (var item in group)
