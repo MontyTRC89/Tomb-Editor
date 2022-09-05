@@ -18,7 +18,7 @@ end
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
--- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 1 | 5 ]" 
+-- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 0 | 1 | 5 ]" 
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
@@ -47,7 +47,7 @@ end
 -- !Name "If animation of an object is..."
 -- !Description "Checks if moveable is currently playing specified animation number."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 1 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.TestMoveableAnimation = function(moveableName, animationId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
@@ -56,7 +56,7 @@ end
 -- !Name "If state of an object is..."
 -- !Description "Checks if moveable's current state is the one specified."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 1 ], State ID"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.TestMoveableCurrentState = function(moveableName, stateId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
@@ -64,7 +64,7 @@ end
 
 -- !Name "Flash screen"
 -- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
--- !Arguments "Color, 10, Flash colour" "Numerical, 20, Flash speed" 
+-- !Arguments "Color, 10, Flash colour" "Numerical, 20, [ 0.1 | 10 | 2 ], Flash speed" 
 
 LevelFuncs.FlashScreen = function(color, duration)
     Effects.FlashScreen(color, duration)
@@ -88,7 +88,7 @@ end
 
 -- !Name "Set moveable's animation"
 -- !Description "Sets moveable's animation."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.SetMoveableAnimation = function(moveableName, animationId)
     TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
@@ -96,7 +96,7 @@ end
 
 -- !Name "Set moveable's state"
 -- !Description "Sets moveable's next state."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 ], State ID"
+-- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.SetMoveableState = function(moveableName, stateId)
     TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
@@ -129,7 +129,7 @@ end
 -- !Name "Modify health of an object"
 -- !Description "Set given object's' health."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
--- !Arguments "Numerical, [ -1000 | 1000 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
+-- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
 LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 

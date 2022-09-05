@@ -158,11 +158,11 @@ namespace TombLib.Controls.VisualScripting
                         float.TryParse(layout.CustomEnumeration[1], out max);
 
                         if (layout.CustomEnumeration.Count >= 3)
-                            float.TryParse(layout.CustomEnumeration[2], out step1);
+                            int.TryParse(layout.CustomEnumeration[2], out decimals);
                         if (layout.CustomEnumeration.Count >= 4)
-                            float.TryParse(layout.CustomEnumeration[3], out step2);
+                            float.TryParse(layout.CustomEnumeration[3], out step1);
                         if (layout.CustomEnumeration.Count >= 5)
-                            int.TryParse(layout.CustomEnumeration[4], out decimals);
+                            float.TryParse(layout.CustomEnumeration[4], out step2);
 
                         nudVector3X.Minimum  =
                         nudVector3Y.Minimum  =
