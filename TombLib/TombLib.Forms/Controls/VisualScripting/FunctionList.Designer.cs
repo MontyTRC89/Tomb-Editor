@@ -68,7 +68,7 @@
             this.lblDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblDesc.Location = new System.Drawing.Point(1, 1);
             this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Padding = new System.Windows.Forms.Padding(4);
+            this.lblDesc.Padding = new System.Windows.Forms.Padding(2);
             this.lblDesc.Size = new System.Drawing.Size(275, 75);
             this.lblDesc.TabIndex = 0;
             // 
