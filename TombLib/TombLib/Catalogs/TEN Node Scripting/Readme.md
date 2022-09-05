@@ -103,7 +103,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
--- !Arguments "Numerical, 30, [ 0 | 1000 ], Hit points value" 
+-- !Arguments "Numerical, 30, [ 0 | 1000 | 0 ], Hit points value" 
 
 LevelFuncs.CheckEntityHealth = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(entityName):GetHP()
@@ -121,7 +121,8 @@ UI symmetry is not guaranteed.
 
 Also note that "Hit points value" argument is placed on separate **!Arguments** block, and this is correct, 
 since it will appear after previous argument block. Also, being numerical argument, it will allow user to
-only define values between 0 and 1000. All other values will be clamped.
+only define values between 0 and 1000. All other values will be clamped. Decimal places for a value won't
+show, as third parameter in square brackets is set to 0.
 
 **LevelFuncs.CheckEntityHealth** function declaration should contain same amount of arguments and in the same
 order as metadata argument signature. Therefore, **moveableName** will be read from "Moveable to check"
