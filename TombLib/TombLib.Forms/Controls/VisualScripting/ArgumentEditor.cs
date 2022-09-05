@@ -152,12 +152,17 @@ namespace TombLib.Controls.VisualScripting
                         float max   =  1000000.0f;
                         float step1 =  1.0f;
                         float step2 =  5.0f;
+                        int decimals = 0;
+
                         float.TryParse(layout.CustomEnumeration[0], out min);
                         float.TryParse(layout.CustomEnumeration[1], out max);
+
                         if (layout.CustomEnumeration.Count >= 3)
                             float.TryParse(layout.CustomEnumeration[2], out step1);
                         if (layout.CustomEnumeration.Count >= 4)
                             float.TryParse(layout.CustomEnumeration[3], out step2);
+                        if (layout.CustomEnumeration.Count >= 5)
+                            int.TryParse(layout.CustomEnumeration[4], out decimals);
 
                         nudVector3X.Minimum  =
                         nudVector3Y.Minimum  =
@@ -178,6 +183,11 @@ namespace TombLib.Controls.VisualScripting
                         nudVector3Y.IncrementAlternate  =
                         nudVector3Z.IncrementAlternate  =
                         nudNumerical.IncrementAlternate = (decimal)step2;
+
+                        nudVector3X.DecimalPlaces  =
+                        nudVector3Y.DecimalPlaces  =
+                        nudVector3Z.DecimalPlaces  =
+                        nudNumerical.DecimalPlaces = decimals;
                     }
                     break;
                 default:
