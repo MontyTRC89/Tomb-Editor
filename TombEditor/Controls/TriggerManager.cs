@@ -1,4 +1,5 @@
 ﻿using DarkUI.Config;
+using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
 using System.ComponentModel;
@@ -147,6 +148,7 @@ namespace TombEditor.Controls
                 rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
+                nudCallCount2.Value = _event.CallCounter;
 
                 if (_event.NodePosition.X == float.MaxValue)
                     nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
@@ -281,7 +283,7 @@ namespace TombEditor.Controls
             if (_event == null || _lockUI)
                 return;
 
-            _event.CallCounter = (int)nudCallCount.Value;
+            _event.CallCounter = (int)(sender as DarkNumericUpDown).Value;
         }
 
         private void tbArgument_Validated(object sender, EventArgs e)
