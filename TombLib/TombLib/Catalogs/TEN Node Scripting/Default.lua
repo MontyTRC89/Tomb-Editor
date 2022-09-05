@@ -15,6 +15,7 @@ LevelFuncs.CompareValue = function(value, reference, operand)
 end
 
 -- !Name "If health of an object is..."
+-- !Section "Object parameters"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
@@ -26,6 +27,7 @@ LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 end
 
 -- !Name "If ID of an object is..."
+-- !Section "Object parameters"
 -- !Description "Checks if moveable belongs to a certain slot ID."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, WadSlots, Object ID to compare to"
@@ -35,6 +37,7 @@ LevelFuncs.TestMoveableId = function(moveableName, objectId)
 end
 
 -- !Name "If name of an object is..."
+-- !Section "Object parameters"
 -- !Description "Checks if moveable's name is the one specified."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check"
@@ -45,6 +48,7 @@ LevelFuncs.TestMoveableName = function(moveableName, name)
 end
 
 -- !Name "If animation of an object is..."
+-- !Section "Object parameters"
 -- !Description "Checks if moveable is currently playing specified animation number."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
@@ -54,6 +58,7 @@ LevelFuncs.TestMoveableAnimation = function(moveableName, animationId)
 end
 
 -- !Name "If state of an object is..."
+-- !Section "Object parameters"
 -- !Description "Checks if moveable's current state is the one specified."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
@@ -63,6 +68,7 @@ LevelFuncs.TestMoveableCurrentState = function(moveableName, stateId)
 end
 
 -- !Name "Flash screen"
+-- !Section "Effects"
 -- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
 -- !Arguments "Color, 10, Flash colour" "Numerical, 20, [ 0.1 | 10 | 2 ], Flash speed" 
 
@@ -71,6 +77,7 @@ LevelFuncs.FlashScreen = function(color, duration)
 end
 
 -- !Name "Enable moveable"
+-- !Section "Object state"
 -- !Description "Enables moveable."
 -- !Arguments "NewLine, Moveables"
 
@@ -79,6 +86,7 @@ LevelFuncs.EnableMoveable = function(moveableName)
 end
 
 -- !Name "Disable moveable"
+-- !Section "Object state"
 -- !Description "Disables moveable."
 -- !Arguments "NewLine, Moveables"
 
@@ -87,6 +95,7 @@ LevelFuncs.DisableMoveable = function(moveableName)
 end
 
 -- !Name "Set moveable's animation"
+-- !Section "Object parameters"
 -- !Description "Sets moveable's animation."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
@@ -95,6 +104,7 @@ LevelFuncs.SetMoveableAnimation = function(moveableName, animationId)
 end
 
 -- !Name "Set moveable's state"
+-- !Section "Object parameters"
 -- !Description "Sets moveable's next state."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
@@ -103,6 +113,7 @@ LevelFuncs.SetMoveableState = function(moveableName, stateId)
 end
 
 -- !Name "Shatter object"
+-- !Section "Effects"
 -- !Description "Shatters object in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
 
@@ -111,6 +122,7 @@ LevelFuncs.ShatterMoveable = function(moveableName)
 end
 
 -- !Name "Explode object"
+-- !Section "Effects"
 -- !Description "Explodes object."
 -- !Arguments "NewLine, Moveables"
 
@@ -119,6 +131,7 @@ LevelFuncs.ExplodeMoveable = function(moveableName)
 end
 
 -- !Name "Play sound near moveable"
+-- !Section "Effects"
 -- !Description "Plays specified sound ID around specified object."
 -- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
 
@@ -127,6 +140,7 @@ LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
 end
 
 -- !Name "Modify health of an object"
+-- !Section "Object parameters"
 -- !Description "Set given object's' health."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
@@ -142,6 +156,7 @@ LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 end
 
 -- !Name "Set object colour"
+-- !Section "Object parameters"
 -- !Description "Sets object tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
 
@@ -150,6 +165,7 @@ LevelFuncs.SetColor = function(moveableName, color)
 end
 
 -- !Name "Play audio track"
+-- !Section "Effects"
 -- !Description "Plays specified audio track."
 -- !Arguments "NewLine, String, Name of the audiotrack to play"
 -- !Arguments "NewLine, Enumeration, [ Play once | Play in looped mode ], Sets whether the track should loop or not"
@@ -163,6 +179,7 @@ LevelFuncs.PlayAudioTrack = function(name, looped)
 end
 
 -- !Name "If key is hit..."
+-- !Section "Controls"
 -- !Description "Checks if specific game key has just been hit (will be true only for 1 frame, until the key is released and hit again)."
 -- !Conditional "True"
 -- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
@@ -172,6 +189,7 @@ LevelFuncs.KeyIsHit = function(keyCode)
 end
 
 -- !Name "If key is held..."
+-- !Section "Controls"
 -- !Description "Checks if specific game key is being held (will be true as long as the player keeps their finger on that key)."
 -- !Conditional "True"
 -- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"

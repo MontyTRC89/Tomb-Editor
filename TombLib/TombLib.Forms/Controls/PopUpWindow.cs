@@ -7,14 +7,6 @@ namespace TombLib.Forms
 {
     public partial class PopUpWindow : DarkForm
     {
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
-
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
         private readonly Timer _animTimer = new Timer() { Interval = 10 };
         private float _animProgress = 0.0f;
         private Point _initialPosition;
@@ -22,6 +14,8 @@ namespace TombLib.Forms
         public PopUpWindow() { }
         public PopUpWindow(Point position)
         {
+            Opacity = 0.0f;
+
             // Store initial pos
             _initialPosition = position;
 
@@ -48,6 +42,12 @@ namespace TombLib.Forms
 
                 var shift = Math.Min(Size.Height / 4, 32);
 
+                // Clamp position
+                var bounds = Screen.FromControl(this).Bounds;
+                var x = Math.Min(_initialPosition.X + Width, bounds.Width) - Width;
+                var y = Math.Min(_initialPosition.Y + Height, bounds.Height) - Height;
+                _initialPosition = new Point(x, y);
+
                 // Smoothly descend pop-up window from parent control using sine function
                 Location = new Point(_initialPosition.X, _initialPosition.Y - shift + (int)(shift * Math.Sin(_animProgress * Math.PI / 2)));
 
@@ -57,16 +57,8 @@ namespace TombLib.Forms
                 {
                     _animProgress = 0.0f;
                     _animTimer.Stop();
+                    Focus();
                 }
-            }
-        }
-
-        public void Drag(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
         }
     }

@@ -63,6 +63,7 @@ namespace TombLib.LevelData.VisualScripting
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Section { get; set; }
         public bool Conditional { get; set; }
         public string Signature { get; set; }
         public List<ArgumentLayout> Arguments { get; private set; } = new List<ArgumentLayout>();

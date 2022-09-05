@@ -498,6 +498,13 @@ namespace TombEditor
             RaiseEvent(new LoadedImportedGeometriesChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
+        // This is invoked if the loaded script has changed for the level.
+        public class LoadedScriptsChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void LoadedScriptsChange()
+        {
+            RaiseEvent(new LoadedScriptsChangedEvent());
+        }
+
         // This is invoked if the animated texture sets changed for the level.
         public class AnimatedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void AnimatedTexturesChange()

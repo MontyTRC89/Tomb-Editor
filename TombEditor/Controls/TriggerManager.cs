@@ -40,7 +40,7 @@ namespace TombEditor.Controls
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.ConfigurationChangedEvent)
+            if (obj is Editor.LoadedScriptsChangedEvent)
             {
                 ReloadFunctions();
                 FindAndSelectFunction();
@@ -304,7 +304,7 @@ namespace TombEditor.Controls
             if (result != null)
             {
                 _editor.Level.Settings.TenLuaScriptFile = result;
-                _editor.ConfigurationChange();
+                _editor.LoadedScriptsChange();
             }
         }
 

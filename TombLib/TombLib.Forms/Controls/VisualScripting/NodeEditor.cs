@@ -176,6 +176,9 @@ namespace TombLib.Controls.VisualScripting
             _updateTimer.Stop();
             _updateTimer.Tick -= UpdateTimer_Tick;
 
+            foreach (Control control in Controls)
+                control.Dispose();
+
             Controls.Clear();
 
             if (disposing && (components != null))
@@ -515,7 +518,6 @@ namespace TombLib.Controls.VisualScripting
                 if (!linearizedNodes.Contains(control.Node))
                 {
                     Controls.Remove(control);
-                    control.DisposeUI();
                     control.Dispose();
                 }
             }
@@ -1145,8 +1147,9 @@ namespace TombLib.Controls.VisualScripting
             }
 
             // HACK: Totally ugly hack, but without it, there is no guarantee that any nested
-            // control won't be active.
-            FindForm().ActiveControl = null;
+            // control won't be active and keyboard events won't fire.
+            if (FindForm() == Form.ActiveForm)
+                FindForm().ActiveControl = null;
 
             // Make sure resizing attrib is unset at all times when not explicitly set.
             Resizing = false;

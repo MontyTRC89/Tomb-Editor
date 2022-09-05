@@ -147,6 +147,12 @@
     <Compile Include="Controls\VisualScripting\ArgumentEditor.Designer.cs">
       <DependentUpon>ArgumentEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VisualScripting\FunctionList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\FunctionList.Designer.cs">
+      <DependentUpon>FunctionList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\VisualScripting\NodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -248,6 +254,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VisualScripting\ArgumentEditor.resx">
       <DependentUpon>ArgumentEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\FunctionList.resx">
+      <DependentUpon>FunctionList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VisualScripting\NodeEditor.resx">
       <DependentUpon>NodeEditor.cs</DependentUpon>
