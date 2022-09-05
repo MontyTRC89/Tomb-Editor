@@ -7904,6 +7904,8 @@
 			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />
 			<anim item="1" id="10" name="MIDAS GOLDEN DEATH" />
 			<anim item="1" id="11" name="GONG STRIKE" />
+			<anim item="1" id="12" name="WILLARD MUTANT DEATH" />
+			<anim item="1" id="13" name="SUBWAY TRAIN DEATH END" />
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
