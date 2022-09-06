@@ -37,7 +37,7 @@
 			<moveable id="10" name="Crocodile (on land)" essential="false" t5m="CROCODILE" />
 			<moveable id="11" name="Crocodile (in water)" essential="false" t5m="CROCODILE" />
 			<moveable id="12" name="Lion (male)" essential="false" t5m="LION" />
-			<moveable id="13" name="Lion (female)" essential="false" t5m="LION" />
+			<moveable id="13" name="Lion (female)" essential="false" t5m="LIONESS" />
 			<moveable id="14" name="Panther" essential="false" t5m="LION" />
 			<moveable id="15" name="Gorilla" essential="false" t5m="APE" />
 			<moveable id="16" name="Giant Rat (on land)" essential="false" t5m="BIG_RAT" />
@@ -867,7 +867,7 @@
 			<moveable id="257" name="Door bell" essential="false" />
 			<moveable id="258" name="Alarm bell" essential="false"  />
 			<moveable id="259" name="Helicopter" essential="false"  />
-			<moveable id="260" name="The butler" essential="false" />
+			<moveable id="260" name="The butler" essential="false" t5m="WINSTON" />
 			<moveable id="262" name="Lara cutscene placement" t5m="LARA_START_POS" />
 			<moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" t5m="ANIMATING1" />
 			<moveable id="264" name="Dragon explosion emitter" />
@@ -1402,13 +1402,13 @@
 			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS_CAIRO" /> 
 			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
-			<moveable id="42" name="Crawler mutant" essential="false" /> 
-			<moveable id="44" name="Tinnos wasp" essential="false" /> 
-			<moveable id="45" name="Tinnos monster" essential="false" />
-			<moveable id="46" name="Brute mutant (with claw)" essential="false" /> 
+			<moveable id="42" name="Crawler mutant" essential="false" t5m="CRAWLER_MUTANT" /> 
+			<moveable id="44" name="Tinnos wasp" essential="false" t5m="TINNOS_WASP" />
+			<moveable id="45" name="Tinnos monster" essential="false" t5m="TINNOS_MONSTER" />
+			<moveable id="46" name="Brute mutant (with claw)" essential="false" t5m="BRUTE_MUTANT" /> 
 			<moveable id="47" name="Tinnos wasp respawn point" essential="false" />
 			<moveable id="48" name="Raptor respawn point" />
-			<moveable id="49" name="Willardspider" essential="false"/> 
+			<moveable id="49" name="Willardspider" essential="false" t5m="WILLARD_SPIDER_BOSS" /> 
 			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" t5m="FLAMETHROWER_BADDY" /> 
 			<moveable id="51" name="London goon" essential="false" t5m="SAS_CAIRO"/> 
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
@@ -1417,7 +1417,7 @@
 			<moveable id="58" name="Thames Wharf machine" essential="false" /> 
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
-			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
+			<moveable id="62" name="Prisoner" essential="false" t5m="PRISONER" />
 			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
 			<moveable id="64" name="Gun turret" essential="false" t5m="SENTRY_GUN"/>
 			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
@@ -1637,8 +1637,8 @@
 			<moveable id="355" name="Skybox" hidden="true" t5m="HORIZON" />
 			<moveable id="357" name="Unknown id #357" />
 			<moveable id="358" name="Unknown id #358" />
-			<moveable id="360" name="The butler" essential="false" />
-			<moveable id="361" name="The butler in military outfit and target" essential="false" />
+			<moveable id="360" name="The butler" essential="false" t5m="WINSTON" />
+			<moveable id="361" name="The butler in military outfit and target" essential="false" t5m="MESHSWAP_WINSTON_ARMY" />
 			<moveable id="365" name="Earthquake" essential="false" t5m="EARTHQUAKE" />
 			<moveable id="366" name="Yellow shell casing" hidden="true" />
 			<moveable id="367" name="Red shell casing" hidden="true" />
@@ -5877,6 +5877,7 @@
 			<moveable id="137" name="HAMMERHEAD" />
 			<moveable id="138" name="CROCODILE_GOD" />
 			<moveable id="139" name="LOCUSTS_EMITTER" />
+			<moveable id="140" name="LIONESS" />
 			<moveable id="150" name="SCUBA_HARPOON" />
 			<moveable id="151" name="SCUBA_DIVER" />
 			<moveable id="152" name="GOON_SILENCER1" />
@@ -5925,6 +5926,8 @@
 			<moveable id="195" name="CYBORG" />
 			<moveable id="196" name="SNIPER" />
 			<moveable id="197" name="CHEF" />
+			<moveable id="198" name="PRISONER" />
+			<moveable id="199" name="WINSTON" />
 			<moveable id="220" name="WINGED_MUMMY" />
 			<moveable id="221" name="CENTAUR_MUTANT" />
 			<moveable id="222" name="DOPPELGANGER" use_body_from="225" />
@@ -5998,6 +6001,11 @@
 			<moveable id="290" name="BOSS_SHIELD" />
 			<moveable id="291" name="BOSS_EXPLOSION_SHOCKWAVE" />
 			<moveable id="292" name="BOSS_EXPLOSION_RING" />
+			<moveable id="293" name="WILLARD_SPIDER_BOSS" />
+			<moveable id="294" name="CRAWLER_MUTANT" />
+			<moveable id="295" name="BRUTE_MUTANT" />
+			<moveable id="296" name="TINNOS_MONSTER" />
+			<moveable id="297" name="TINNOS_WASP" />
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
 			<moveable id="322" name="DISK_SHOOTER" />
@@ -6575,6 +6583,7 @@
 			<moveable id="1117" name="MESHSWAP_ROMAN_GOD2" />
 			<moveable id="1118" name="MESHSWAP_MONKEY_MEDIPACK" />
 			<moveable id="1119" name="MESHSWAP_MONKEY_KEY" />
+			<moveable id="1120" name="MESHSWAP_WINSTON_ARMY" />
 			
 			<moveable id="1200" name="ANIMATING1" />
 			<moveable id="1201" name="ANIMATING2" />
