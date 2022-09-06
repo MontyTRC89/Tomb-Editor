@@ -90,7 +90,7 @@ namespace TombLib.LevelData
             if (belongedSet == null)
                 return "UNKNOWN";
 
-            var trimmedName = LuaSyntax.LevelFuncPrefix + LuaSyntax.ReservedFunctionPrefix + 
+            var trimmedName = LuaSyntax.ReservedFunctionPrefix + 
                               eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
                               Regex.Replace(belongedSet.Name, @"\s", string.Empty);
 
