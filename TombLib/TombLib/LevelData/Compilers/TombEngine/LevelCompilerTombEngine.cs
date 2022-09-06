@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Windows.Forms;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -466,8 +465,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(99, "\nCopying node catalogs to level script folder...");
 
-            Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(file =>
-                File.Copy(file, Path.Combine(scriptDirectory, Path.GetFileName(file)), true));
+            Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(src =>
+            {
+                var dest = Path.Combine(scriptDirectory, Path.GetFileName(src));
+
+                if (File.Exists(dest))
+                    File.SetAttributes(dest, FileAttributes.Normal);
+
+                File.Copy(src, dest, true);
+                File.SetAttributes(dest, FileAttributes.ReadOnly);
+            });
         }
     }
 }

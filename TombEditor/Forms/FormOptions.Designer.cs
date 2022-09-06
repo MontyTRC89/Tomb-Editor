@@ -244,7 +244,18 @@
             this.darkNumericUpDown20 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
             this.darkCheckBox38 = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel78 = new DarkUI.Controls.DarkLabel();
+            this.darkComboBox2 = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel77 = new DarkUI.Controls.DarkLabel();
+            this.darkComboBox1 = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel33 = new DarkUI.Controls.DarkLabel();
+            this.darkNumericUpDown11 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkNumericUpDown31 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel75 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel76 = new DarkUI.Controls.DarkLabel();
+            this.darkNumericUpDown43 = new DarkUI.Controls.DarkNumericUpDown();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -311,6 +322,10 @@
             this.darkGroupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown20)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown21)).BeginInit();
+            this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown11)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown31)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown43)).BeginInit();
             this.SuspendLayout();
             // 
             // tabbedContainer
@@ -323,6 +338,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage8);
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage4);
+            this.tabbedContainer.Controls.Add(this.tabPage9);
             this.tabbedContainer.Size = new System.Drawing.Size(394, 537);
             // 
             // tabPage6
@@ -332,7 +348,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 511);
+            this.tabPage6.Size = new System.Drawing.Size(386, 484);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -343,7 +359,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -355,7 +371,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(363, 1122);
+            this.panel2.Size = new System.Drawing.Size(363, 1100);
             this.panel2.TabIndex = 4;
             // 
             // groupColorScheme
@@ -418,7 +434,7 @@
             this.groupColorScheme.Controls.Add(this.darkLabel42);
             this.groupColorScheme.Controls.Add(this.panelColorSelector1);
             this.groupColorScheme.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupColorScheme.Location = new System.Drawing.Point(3, 273);
+            this.groupColorScheme.Location = new System.Drawing.Point(3, 251);
             this.groupColorScheme.Name = "groupColorScheme";
             this.groupColorScheme.Size = new System.Drawing.Size(357, 846);
             this.groupColorScheme.TabIndex = 3;
@@ -1012,7 +1028,6 @@
             // 
             // darkGroupBox6
             // 
-            this.darkGroupBox6.Controls.Add(this.darkCheckBox38);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox45);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox42);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox37);
@@ -1026,7 +1041,7 @@
             this.darkGroupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox6.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox6.Name = "darkGroupBox6";
-            this.darkGroupBox6.Size = new System.Drawing.Size(357, 273);
+            this.darkGroupBox6.Size = new System.Drawing.Size(357, 251);
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
@@ -1528,9 +1543,9 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(386, 511);
+            this.tabPage1.Size = new System.Drawing.Size(386, 484);
             this.tabPage1.TabIndex = 18;
-            this.tabPage1.Text = "3D rendering";
+            this.tabPage1.Text = "3D window";
             // 
             // tabSubPanel1
             // 
@@ -1540,7 +1555,7 @@
             this.tabSubPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel1.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel1.Name = "tabSubPanel1";
-            this.tabSubPanel1.Size = new System.Drawing.Size(380, 505);
+            this.tabSubPanel1.Size = new System.Drawing.Size(380, 478);
             this.tabSubPanel1.TabIndex = 11;
             // 
             // darkGroupBox8
@@ -1554,7 +1569,7 @@
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox8.Location = new System.Drawing.Point(0, 410);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(380, 94);
+            this.darkGroupBox8.Size = new System.Drawing.Size(363, 94);
             this.darkGroupBox8.TabIndex = 22;
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Text = "Text";
@@ -1631,7 +1646,7 @@
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel3.Size = new System.Drawing.Size(380, 410);
+            this.panel3.Size = new System.Drawing.Size(363, 410);
             this.panel3.TabIndex = 21;
             // 
             // darkGroupBox4
@@ -1661,7 +1676,7 @@
             this.darkGroupBox4.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox4.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(374, 407);
+            this.darkGroupBox4.Size = new System.Drawing.Size(357, 407);
             this.darkGroupBox4.TabIndex = 19;
             this.darkGroupBox4.TabStop = false;
             this.darkGroupBox4.Text = "Rendering";
@@ -1929,7 +1944,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(386, 511);
+            this.tabPage5.Size = new System.Drawing.Size(386, 484);
             this.tabPage5.TabIndex = 19;
             this.tabPage5.Text = "Gizmo";
             // 
@@ -2098,7 +2113,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(386, 511);
+            this.tabPage8.Size = new System.Drawing.Size(386, 484);
             this.tabPage8.TabIndex = 20;
             this.tabPage8.Text = "Item browser";
             // 
@@ -2305,7 +2320,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(386, 511);
+            this.tabPage3.Size = new System.Drawing.Size(386, 484);
             this.tabPage3.TabIndex = 21;
             this.tabPage3.Text = "2D window";
             // 
@@ -2550,7 +2565,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(386, 511);
+            this.tabPage4.Size = new System.Drawing.Size(386, 484);
             this.tabPage4.TabIndex = 22;
             this.tabPage4.Text = "Texture map";
             // 
@@ -2800,7 +2815,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(386, 511);
+            this.tabPage7.Size = new System.Drawing.Size(386, 484);
             this.tabPage7.TabIndex = 23;
             this.tabPage7.Text = "3D controls";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -3113,15 +3128,207 @@
             this.darkNumericUpDown21.TabIndex = 27;
             this.darkNumericUpDown21.Tag = "Rendering3D_NavigationSpeedKeyRotate";
             // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.darkCheckBox38);
+            this.tabPage9.Controls.Add(this.darkLabel78);
+            this.tabPage9.Controls.Add(this.darkComboBox2);
+            this.tabPage9.Controls.Add(this.darkLabel77);
+            this.tabPage9.Controls.Add(this.darkComboBox1);
+            this.tabPage9.Controls.Add(this.darkLabel33);
+            this.tabPage9.Controls.Add(this.darkNumericUpDown11);
+            this.tabPage9.Controls.Add(this.darkNumericUpDown31);
+            this.tabPage9.Controls.Add(this.darkLabel75);
+            this.tabPage9.Controls.Add(this.darkLabel76);
+            this.tabPage9.Controls.Add(this.darkNumericUpDown43);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(386, 511);
+            this.tabPage9.TabIndex = 24;
+            this.tabPage9.Text = "Node editor";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
             // darkCheckBox38
             // 
             this.darkCheckBox38.AutoSize = true;
-            this.darkCheckBox38.Location = new System.Drawing.Point(6, 251);
+            this.darkCheckBox38.Location = new System.Drawing.Point(9, 159);
             this.darkCheckBox38.Name = "darkCheckBox38";
             this.darkCheckBox38.Size = new System.Drawing.Size(187, 17);
-            this.darkCheckBox38.TabIndex = 50;
+            this.darkCheckBox38.TabIndex = 56;
             this.darkCheckBox38.Tag = "NodeEditor_LinksAsRopes";
             this.darkCheckBox38.Text = "Draw node editor links as ropes";
+            // 
+            // darkLabel78
+            // 
+            this.darkLabel78.AutoSize = true;
+            this.darkLabel78.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel78.Location = new System.Drawing.Point(6, 123);
+            this.darkLabel78.Name = "darkLabel78";
+            this.darkLabel78.Size = new System.Drawing.Size(115, 13);
+            this.darkLabel78.TabIndex = 55;
+            this.darkLabel78.Text = "Default event to edit:";
+            // 
+            // darkComboBox2
+            // 
+            this.darkComboBox2.FormattingEnabled = true;
+            this.darkComboBox2.Items.AddRange(new object[] {
+            "On enter",
+            "On inside",
+            "On leave"});
+            this.darkComboBox2.Location = new System.Drawing.Point(168, 120);
+            this.darkComboBox2.Name = "darkComboBox2";
+            this.darkComboBox2.Size = new System.Drawing.Size(150, 23);
+            this.darkComboBox2.TabIndex = 54;
+            this.darkComboBox2.Tag = "NodeEditor_DefaultEventToEdit";
+            // 
+            // darkLabel77
+            // 
+            this.darkLabel77.AutoSize = true;
+            this.darkLabel77.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel77.Location = new System.Drawing.Point(6, 94);
+            this.darkLabel77.Name = "darkLabel77";
+            this.darkLabel77.Size = new System.Drawing.Size(119, 13);
+            this.darkLabel77.TabIndex = 53;
+            this.darkLabel77.Text = "Default editing mode:";
+            // 
+            // darkComboBox1
+            // 
+            this.darkComboBox1.FormattingEnabled = true;
+            this.darkComboBox1.Items.AddRange(new object[] {
+            "Level script functions",
+            "Node editor"});
+            this.darkComboBox1.Location = new System.Drawing.Point(168, 91);
+            this.darkComboBox1.Name = "darkComboBox1";
+            this.darkComboBox1.Size = new System.Drawing.Size(150, 23);
+            this.darkComboBox1.TabIndex = 52;
+            this.darkComboBox1.Tag = "NodeEditor_DefaultEventMode";
+            // 
+            // darkLabel33
+            // 
+            this.darkLabel33.AutoSize = true;
+            this.darkLabel33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel33.Location = new System.Drawing.Point(6, 9);
+            this.darkLabel33.Name = "darkLabel33";
+            this.darkLabel33.Size = new System.Drawing.Size(93, 13);
+            this.darkLabel33.TabIndex = 45;
+            this.darkLabel33.Text = "Node graph size:";
+            // 
+            // darkNumericUpDown11
+            // 
+            this.darkNumericUpDown11.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            262144});
+            this.darkNumericUpDown11.IncrementAlternate = new decimal(new int[] {
+            1,
+            0,
+            0,
+            262144});
+            this.darkNumericUpDown11.Location = new System.Drawing.Point(254, 35);
+            this.darkNumericUpDown11.LoopValues = false;
+            this.darkNumericUpDown11.Maximum = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown11.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown11.Name = "darkNumericUpDown11";
+            this.darkNumericUpDown11.Size = new System.Drawing.Size(64, 22);
+            this.darkNumericUpDown11.TabIndex = 50;
+            this.darkNumericUpDown11.Tag = "NodeEditor_GridStep";
+            this.darkNumericUpDown11.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // darkNumericUpDown31
+            // 
+            this.darkNumericUpDown31.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.darkNumericUpDown31.IncrementAlternate = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.darkNumericUpDown31.Location = new System.Drawing.Point(254, 7);
+            this.darkNumericUpDown31.LoopValues = false;
+            this.darkNumericUpDown31.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown31.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown31.Name = "darkNumericUpDown31";
+            this.darkNumericUpDown31.Size = new System.Drawing.Size(64, 22);
+            this.darkNumericUpDown31.TabIndex = 46;
+            this.darkNumericUpDown31.Tag = "NodeEditor_Size";
+            this.darkNumericUpDown31.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // darkLabel75
+            // 
+            this.darkLabel75.AutoSize = true;
+            this.darkLabel75.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel75.Location = new System.Drawing.Point(6, 37);
+            this.darkLabel75.Name = "darkLabel75";
+            this.darkLabel75.Size = new System.Drawing.Size(120, 13);
+            this.darkLabel75.TabIndex = 49;
+            this.darkLabel75.Text = "Node graph grid step:";
+            // 
+            // darkLabel76
+            // 
+            this.darkLabel76.AutoSize = true;
+            this.darkLabel76.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel76.Location = new System.Drawing.Point(6, 65);
+            this.darkLabel76.Name = "darkLabel76";
+            this.darkLabel76.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel76.TabIndex = 47;
+            this.darkLabel76.Text = "Default node width:";
+            // 
+            // darkNumericUpDown43
+            // 
+            this.darkNumericUpDown43.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.darkNumericUpDown43.Location = new System.Drawing.Point(254, 63);
+            this.darkNumericUpDown43.LoopValues = false;
+            this.darkNumericUpDown43.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown43.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown43.Name = "darkNumericUpDown43";
+            this.darkNumericUpDown43.Size = new System.Drawing.Size(64, 22);
+            this.darkNumericUpDown43.TabIndex = 48;
+            this.darkNumericUpDown43.Tag = "NodeEditor_DefaultNodeWidth";
+            this.darkNumericUpDown43.Value = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
             // 
             // FormOptions
             // 
@@ -3214,6 +3421,11 @@
             this.darkGroupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown20)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown21)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown11)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown31)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown43)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3436,6 +3648,17 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox45;
         private DarkUI.Controls.DarkCheckBox darkCheckBox46;
         private DarkUI.Controls.DarkCheckBox darkCheckBox47;
+        private System.Windows.Forms.TabPage tabPage9;
+        private DarkUI.Controls.DarkLabel darkLabel33;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown11;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown31;
+        private DarkUI.Controls.DarkLabel darkLabel75;
+        private DarkUI.Controls.DarkLabel darkLabel76;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown43;
+        private DarkUI.Controls.DarkLabel darkLabel77;
+        private DarkUI.Controls.DarkComboBox darkComboBox1;
+        private DarkUI.Controls.DarkLabel darkLabel78;
+        private DarkUI.Controls.DarkComboBox darkComboBox2;
         private DarkUI.Controls.DarkCheckBox darkCheckBox38;
     }
 }
