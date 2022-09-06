@@ -52,7 +52,7 @@ namespace TombLib.Utils
         private const string _nodeDescriptionId = _metadataPrefix + "description";
         private const string _nodeLayoutNewLine = "newline";
 
-        public const string GameNodeScriptPath = "Scripts\\NodeCatalogs\\";
+        public const string GameNodeScriptPath = "Scripts\\Engine\\NodeCatalogs\\";
         public static string NodeScriptPath => Path.Combine(DefaultPaths.ProgramDirectory, "Catalogs\\TEN Node Catalogs\\");
 
         public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)

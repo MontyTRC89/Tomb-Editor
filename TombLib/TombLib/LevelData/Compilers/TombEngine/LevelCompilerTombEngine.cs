@@ -466,8 +466,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(99, "\nCopying node catalogs to level script folder...");
 
-            Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(file =>
-                File.Copy(file, Path.Combine(scriptDirectory, Path.GetFileName(file)), true));
+            Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(src =>
+            {
+                var dest = Path.Combine(scriptDirectory, Path.GetFileName(src));
+                File.Copy(src, dest, true);
+                File.SetAttributes(dest, FileAttributes.ReadOnly);
+            });
         }
     }
 }
