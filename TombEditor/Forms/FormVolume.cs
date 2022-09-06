@@ -247,7 +247,11 @@ namespace TombEditor.Forms
             if (lstEvents.SelectedItem == null)
                 return;
 
-            _instance.EventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            var newEventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            if (_instance.EventSet == newEventSet)
+                return;
+
+            _instance.EventSet = newEventSet;
             LoadEventSetIntoUI();
         }
 

@@ -560,7 +560,7 @@ namespace TombLib.Controls.VisualScripting
             _animProgress = -1.0f;
         }
 
-        private void LayoutVisibleNodes()
+        public void LayoutVisibleNodes()
         {
             Lock(true);
             foreach (var control in Controls.OfType<VisibleNodeBase>())

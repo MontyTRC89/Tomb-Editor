@@ -32,8 +32,8 @@ namespace TombEditor.Controls
             set
             {
                 _event = value;
+                UpdateNodes();
                 UpdateUI();
-                nodeEditor.Nodes = _event == null ? new List<TriggerNode>() : _event.Nodes;
             }
         }
         private VolumeEvent _event = null;
@@ -129,7 +129,20 @@ namespace TombEditor.Controls
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
 
-        public void UpdateUI()
+        private void UpdateNodes()
+        {
+            if (_event != null)
+            {
+                if (_event.NodePosition.X == float.MaxValue)
+                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
+                else
+                    nodeEditor.ViewPosition = _event.NodePosition;
+            }
+            
+            nodeEditor.Nodes = _event == null ? new List<TriggerNode>() : _event.Nodes;
+        }
+
+        private void UpdateUI()
         {
             tbArgument.Enabled   =
             nudCallCount.Enabled =
@@ -151,11 +164,6 @@ namespace TombEditor.Controls
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
                 nudCallCount2.Value = _event.CallCounter;
-
-                if (_event.NodePosition.X == float.MaxValue)
-                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
-                else
-                    nodeEditor.ViewPosition = _event.NodePosition;
 
                 UpdateNodeEditorControls();
             }
