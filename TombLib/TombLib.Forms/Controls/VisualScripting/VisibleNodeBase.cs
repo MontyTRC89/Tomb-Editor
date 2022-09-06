@@ -154,7 +154,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Visible = false;
-
+            SuspendLayout();
             DisposeUI();
 
             Size = new Size(Node.Size, Size.Height);
@@ -250,8 +250,9 @@ namespace TombLib.Controls.VisualScripting
             foreach (var sub in WinFormsUtils.AllSubControls(this))
                 sub.MouseDown += Ctrl_RightClick;
 
+            ResumeLayout();
             Visible = true;
-
+            Invalidate();
             Editor?.Invalidate();
         }
 

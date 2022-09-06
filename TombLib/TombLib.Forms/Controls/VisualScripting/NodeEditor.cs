@@ -315,7 +315,7 @@ namespace TombLib.Controls.VisualScripting
             if (SelectedNodes.Count <= 1)
                 return;
 
-            Resizing = true;
+            Lock(true);
             {
                 foreach (var node in SelectedNodes)
                 {
@@ -329,7 +329,7 @@ namespace TombLib.Controls.VisualScripting
                         visibleNode.RefreshPosition();
                 }
             }
-            Resizing = false;
+            Lock(false);
         }
 
         public void SelectNode(TriggerNode node, bool toggle, bool reset)
@@ -419,13 +419,9 @@ namespace TombLib.Controls.VisualScripting
             if (ClientRectangle.Contains(rect))
                 return;
 
-            Resizing = true;
-            {
-                var finalCoord = FromVisualCoord(pos);
-                ViewPosition = finalCoord;
-                LayoutVisibleNodes();
-            }
-            Resizing = false;
+            var finalCoord = FromVisualCoord(pos);
+            ViewPosition = finalCoord;
+            LayoutVisibleNodes();
 
             Invalidate();
             OnViewPositionChanged();
@@ -503,10 +499,7 @@ namespace TombLib.Controls.VisualScripting
         public void UpdateVisibleNodes(bool fullRedraw = false)
         {
             if (fullRedraw)
-            {
-                Resizing = true;
-                Visible = false;
-            }
+                Lock(true);
 
             var visibleNodes = Controls.OfType<VisibleNodeBase>().ToList();
             var linearizedNodes = LinearizedNodes();
@@ -539,10 +532,7 @@ namespace TombLib.Controls.VisualScripting
             }
 
             if (fullRedraw)
-            {
-                Resizing = false;
-                Visible = true;
-            }
+                Lock(false);
 
             LayoutVisibleNodes();
             Invalidate();
@@ -572,8 +562,10 @@ namespace TombLib.Controls.VisualScripting
 
         private void LayoutVisibleNodes()
         {
+            Lock(true);
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
+            Lock(false);
         }
 
         public Vector2 GetBestPosition(VisibleNodeBase newNode)
@@ -1210,17 +1202,13 @@ namespace TombLib.Controls.VisualScripting
 
             var delta = e.Delta * _mouseWheelScrollFactor;
 
-            Resizing = true;
-            {
-                if (Control.ModifierKeys == Keys.Shift)
-                    ViewPosition += new Vector2(delta, 0.0f);
-                else
-                    ViewPosition += new Vector2(0.0f, delta);
+            if (Control.ModifierKeys == Keys.Shift)
+                ViewPosition += new Vector2(delta, 0.0f);
+            else
+                ViewPosition += new Vector2(0.0f, delta);
 
-                ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
-                LayoutVisibleNodes();
-            }
-            Resizing = false;
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(GridSize));
+            LayoutVisibleNodes();
 
             Invalidate();
             OnViewPositionChanged();
@@ -1279,7 +1267,7 @@ namespace TombLib.Controls.VisualScripting
             if (!NodeFunctions.Any(f => f.Arguments.Any(a => a.Type == neededArgument)))
                 return;
 
-            Resizing = true;
+            Lock(true);
             {
                 var node = MakeNode(false);
                 node.ScreenPosition = FromVisualCoord(PointToClient(new Point(e.X, e.Y)));
@@ -1292,8 +1280,18 @@ namespace TombLib.Controls.VisualScripting
                 newVisibleNode.SelectFirstFunction(neededArgument, item.LuaName);
                 newVisibleNode.BringToFront();
             }
-            Resizing = false;
+            Lock(false);
             Invalidate();
+        }
+
+        private void Lock(bool locked)
+        {
+            Resizing = locked;
+
+            if (locked)
+                SuspendLayout();
+            else
+                ResumeLayout();
         }
     }
 }
