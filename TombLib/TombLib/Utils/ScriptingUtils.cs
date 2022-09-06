@@ -52,8 +52,8 @@ namespace TombLib.Utils
         private const string _nodeDescriptionId = _metadataPrefix + "description";
         private const string _nodeLayoutNewLine = "newline";
 
-        public const string NodeScriptFileName = "NodeFunctions.lua";
-        public static string NodeScriptPath => DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Node Scripting\\";
+        public const string GameNodeScriptPath = "Scripts\\NodeScripting\\";
+        public static string NodeScriptPath => Path.Combine(DefaultPaths.ProgramDirectory, "Catalogs\\TEN Node Scripting\\");
 
         public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
