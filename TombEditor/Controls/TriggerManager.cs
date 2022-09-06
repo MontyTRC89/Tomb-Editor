@@ -31,6 +31,9 @@ namespace TombEditor.Controls
             }
             set
             {
+                if (_event == value)
+                    return;
+
                 _event = value;
                 UpdateNodes();
                 UpdateUI();
