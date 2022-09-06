@@ -242,10 +242,7 @@ namespace TombLib.Controls.VisualScripting
                 RefreshArgument(i);
 
             foreach (var control in _argControls)
-            {
-                control.MouseDown += Ctrl_RightClick;
                 control.Visible = true;
-            }
 
             foreach (var sub in WinFormsUtils.AllSubControls(this))
                 sub.MouseDown += Ctrl_RightClick;
