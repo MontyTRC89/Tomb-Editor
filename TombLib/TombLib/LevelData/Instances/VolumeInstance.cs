@@ -90,8 +90,9 @@ namespace TombLib.LevelData
             if (belongedSet == null)
                 return "UNKNOWN";
 
-            var trimmedName = "__" + eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
-                                     Regex.Replace(belongedSet.Name, @"\s", string.Empty);
+            var trimmedName = LuaSyntax.LevelFuncPrefix + LuaSyntax.ReservedFunctionPrefix + 
+                              eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
+                              Regex.Replace(belongedSet.Name, @"\s", string.Empty);
 
             if (this == belongedSet.OnInside)
                 return trimmedName + "_OnInside";
