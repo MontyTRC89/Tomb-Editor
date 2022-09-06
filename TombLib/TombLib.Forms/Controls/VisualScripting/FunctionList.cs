@@ -108,6 +108,9 @@ namespace TombLib.Controls.VisualScripting
 
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)
         {
+            _currentIndex = -1;
+            lblDesc.Text = string.Empty;
+
             if (treeFunctions.SelectedNodes.Count == 0 ||
                 treeFunctions.SelectedNodes.First().Nodes.Count != 0)
                 return;
