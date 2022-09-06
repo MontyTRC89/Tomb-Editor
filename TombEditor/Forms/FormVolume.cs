@@ -261,7 +261,16 @@ namespace TombEditor.Forms
 
         private void butNewEventSet_Click(object sender, EventArgs e)
         {
-            var newSet = new VolumeEventSet() { Name = "New event set " + lstEvents.Items.Count };
+            var newSet = new VolumeEventSet() 
+            { 
+                Name = "New event set " + lstEvents.Items.Count,
+                LastUsedEventIndex = _editor.Configuration.NodeEditor_DefaultEventToEdit
+            };
+
+            newSet.OnEnter.Mode  =
+            newSet.OnInside.Mode =
+            newSet.OnLeave.Mode  = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
+
             _editor.Level.Settings.EventSets.Add(newSet);
             _instance.EventSet = newSet;
 
