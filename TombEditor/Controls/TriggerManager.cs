@@ -1,6 +1,8 @@
 ﻿using DarkUI.Config;
+using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Numerics;
@@ -8,6 +10,7 @@ using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -29,8 +32,8 @@ namespace TombEditor.Controls
             set
             {
                 _event = value;
+                UpdateNodes();
                 UpdateUI();
-                nodeEditor.Nodes = _event.Nodes;
             }
         }
         private VolumeEvent _event = null;
@@ -40,7 +43,7 @@ namespace TombEditor.Controls
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.ConfigurationChangedEvent)
+            if (obj is Editor.LoadedScriptsChangedEvent)
             {
                 ReloadFunctions();
                 FindAndSelectFunction();
@@ -122,11 +125,24 @@ namespace TombEditor.Controls
             if (rbLevelScript.Checked)
                 FindAndSelectFunction();
 
-            if (!_lockUI)
+            if (!_lockUI && _event != null)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
 
-        public void UpdateUI()
+        private void UpdateNodes()
+        {
+            if (_event != null)
+            {
+                if (_event.NodePosition.X == float.MaxValue)
+                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
+                else
+                    nodeEditor.ViewPosition = _event.NodePosition;
+            }
+            
+            nodeEditor.Nodes = _event == null ? new List<TriggerNode>() : _event.Nodes;
+        }
+
+        private void UpdateUI()
         {
             tbArgument.Enabled   =
             nudCallCount.Enabled =
@@ -147,11 +163,7 @@ namespace TombEditor.Controls
                 rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
-
-                if (_event.NodePosition.X == float.MaxValue)
-                    nodeEditor.ViewPosition = new Vector2(nodeEditor.GridSize / 2.0f);
-                else
-                    nodeEditor.ViewPosition = _event.NodePosition;
+                nudCallCount2.Value = _event.CallCounter;
 
                 UpdateNodeEditorControls();
             }
@@ -281,7 +293,7 @@ namespace TombEditor.Controls
             if (_event == null || _lockUI)
                 return;
 
-            _event.CallCounter = (int)nudCallCount.Value;
+            _event.CallCounter = (int)(sender as DarkNumericUpDown).Value;
         }
 
         private void tbArgument_Validated(object sender, EventArgs e)
@@ -304,7 +316,7 @@ namespace TombEditor.Controls
             if (result != null)
             {
                 _editor.Level.Settings.TenLuaScriptFile = result;
-                _editor.ConfigurationChange();
+                _editor.LoadedScriptsChange();
             }
         }
 

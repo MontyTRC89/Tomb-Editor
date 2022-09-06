@@ -185,6 +185,11 @@ namespace TombEditor.Forms
             cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
             cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
 
+            // A hack to prevent respawn for non-visible event tabs
+            tmEnter.Event = tmInside.Event = tmLeave.Event = null;
+            tcEvents.SelectedIndex = _instance.EventSet.LastUsedEventIndex;
+            tcEvents.Invalidate();
+
             tmEnter.Event = _instance.EventSet.OnEnter;
             tmInside.Event = _instance.EventSet.OnInside;
             tmLeave.Event = _instance.EventSet.OnLeave;
@@ -242,7 +247,11 @@ namespace TombEditor.Forms
             if (lstEvents.SelectedItem == null)
                 return;
 
-            _instance.EventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            var newEventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            if (_instance.EventSet == newEventSet)
+                return;
+
+            _instance.EventSet = newEventSet;
             LoadEventSetIntoUI();
         }
 
@@ -333,6 +342,11 @@ namespace TombEditor.Forms
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void tcEvents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _instance.EventSet.LastUsedEventIndex = tcEvents.SelectedIndex;
         }
     }
 }

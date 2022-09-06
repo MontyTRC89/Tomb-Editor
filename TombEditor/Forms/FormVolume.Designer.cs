@@ -261,6 +261,7 @@ namespace TombEditor.Forms
             this.tcEvents.SelectedIndex = 0;
             this.tcEvents.Size = new System.Drawing.Size(519, 318);
             this.tcEvents.TabIndex = 1;
+            this.tcEvents.SelectedIndexChanged += new System.EventHandler(this.tcEvents_SelectedIndexChanged);
             // 
             // tabPage_OnEnter
             // 

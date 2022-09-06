@@ -305,6 +305,7 @@ namespace TombLib.LevelData.IO
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
                             chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
+                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, set.LastUsedEventIndex);
                             chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)set.Activators);
 
                             for (int i = 0; i < 3; i++)

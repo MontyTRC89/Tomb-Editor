@@ -242,10 +242,6 @@ namespace TombLib.Controls.VisualScripting
             using (var p = new Pen(Colors.GreySelection, 1))
                 e.Graphics.DrawRectangle(p, 0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
 
-            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
-                e.Graphics.DrawString("Changes dependent on arg type in runtime.", Font, Brushes.DarkGray, ClientRectangle,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-
         }
 
         protected override void OnLocationChanged(EventArgs e)
@@ -424,6 +420,9 @@ namespace TombLib.Controls.VisualScripting
 
         private void panelColor_MouseClick(object sender, MouseEventArgs e)
         {
+            if (e.Button != MouseButtons.Left)
+                return;
+
             using (var colorDialog = new RealtimeColorDialog(Control.MousePosition.X, 
                        Control.MousePosition.Y, c => { panelColor.BackColor = c; }))
             {

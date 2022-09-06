@@ -46,13 +46,14 @@ namespace TombLib.Utils
         private const char _tabChar = '\t';
 
         private const string _nodeNameId = _metadataPrefix + "name";
+        private const string _nodeSectionId = _metadataPrefix + "section";
         private const string _nodeTypeId = _metadataPrefix + "condition";
         private const string _nodeArgumentId = _metadataPrefix + "arguments";
         private const string _nodeDescriptionId = _metadataPrefix + "description";
         private const string _nodeLayoutNewLine = "newline";
 
-        public const string NodeScriptFileName = "NodeFunctions.lua";
-        public static string NodeScriptPath => DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Node Scripting\\";
+        public const string GameNodeScriptPath = "Scripts\\NodeCatalogs\\";
+        public static string NodeScriptPath => Path.Combine(DefaultPaths.ProgramDirectory, "Catalogs\\TEN Node Catalogs\\");
 
         public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
@@ -94,6 +95,11 @@ namespace TombLib.Utils
                         else if (comment.StartsWith(_nodeDescriptionId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             nodeFunction.Description = TextExtensions.ExtractValues(comment.Substring(_nodeDescriptionId.Length, comment.Length - _nodeDescriptionId.Length)).LastOrDefault();
+                            continue;
+                        }
+                        else if (comment.StartsWith(_nodeSectionId, System.StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            nodeFunction.Section = TextExtensions.ExtractValues(comment.Substring(_nodeSectionId.Length, comment.Length - _nodeSectionId.Length)).LastOrDefault();
                             continue;
                         }
                         else if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))

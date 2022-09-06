@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using TombLib.IO;
 using TombLib.LevelData.VisualScripting;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -108,8 +109,9 @@ namespace TombLib.LevelData
 
             if (Mode == VolumeEventMode.NodeEditor)
             {
-                writer.Write(Nodes.Count > 0 ? GenerateFunctionName(eventSets) : string.Empty);
-                writer.Write(string.Empty);
+                var funcName = GenerateFunctionName(eventSets);
+                writer.Write(Nodes.Count > 0 ? funcName : string.Empty);
+                writer.Write(ScriptingUtils.ParseNodes(Nodes, funcName));
             }
             else
             {
@@ -124,6 +126,7 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
+        public int LastUsedEventIndex = 0;
         public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.

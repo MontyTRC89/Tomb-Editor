@@ -51,6 +51,22 @@ namespace TombLib.Controls.VisualScripting
             SpawnGrips();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            DisposeUI();
+
+            if (disposing)
+            {
+                MouseDown -= Ctrl_RightClick;
+                cbFunction.MouseDown -= Ctrl_RightClick;
+            }
+
+            if (disposing && (components != null))
+                components.Dispose();
+
+            base.Dispose(disposing);
+        }
+
         protected virtual void SpawnGrips()
         {
             _grips.Clear();
@@ -61,6 +77,9 @@ namespace TombLib.Controls.VisualScripting
         public void DisposeUI()
         {
             toolTip.RemoveAll();
+
+            foreach (var sub in WinFormsUtils.AllSubControls(this))
+                sub.MouseDown -= Ctrl_RightClick;
 
             // Remove old controls in reverse order
             for (int i = _argControls.Count - 1; i >= 0; i--)
@@ -135,7 +154,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Visible = false;
-
+            SuspendLayout();
             DisposeUI();
 
             Size = new Size(Node.Size, Size.Height);
@@ -223,10 +242,17 @@ namespace TombLib.Controls.VisualScripting
                 RefreshArgument(i);
 
             foreach (var control in _argControls)
+            {
+                control.MouseDown += Ctrl_RightClick;
                 control.Visible = true;
+            }
 
+            foreach (var sub in WinFormsUtils.AllSubControls(this))
+                sub.MouseDown += Ctrl_RightClick;
+
+            ResumeLayout();
             Visible = true;
-
+            Invalidate();
             Editor?.Invalidate();
         }
 
@@ -243,6 +269,18 @@ namespace TombLib.Controls.VisualScripting
 
             if (index != -1 && Node.Arguments.Count > index)
                 Node.Arguments[index] = ctrl.Text;
+        }
+
+        private void Ctrl_RightClick(object sender, MouseEventArgs e)
+        {
+            if (!cbFunction.Visible)
+                return;
+
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            var funcList = new FunctionList(Cursor.Position, cbFunction);
+            funcList.Show(this.FindForm());
         }
 
         public void RefreshArgument(int index)
@@ -467,8 +505,11 @@ namespace TombLib.Controls.VisualScripting
             if (RectangleToScreen(ClientRectangle).Contains(Control.MousePosition))
                 return;
 
-            Editor.FindForm().ActiveControl = null;
-            Editor.Focus();
+            if (Form.ActiveForm == Editor.FindForm())
+            {
+                Editor.FindForm().ActiveControl = null;
+                Editor.Focus();
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -580,6 +621,11 @@ namespace TombLib.Controls.VisualScripting
                 .Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
 
             _lastSelectedIndex = cbFunction.SelectedIndex;
+        }
+
+        private void cbFunction_MouseDown(object sender, MouseEventArgs e)
+        {
+            Ctrl_RightClick(sender, e);
         }
     }
 }

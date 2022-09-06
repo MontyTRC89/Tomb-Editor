@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Component Designer generated code
 
         /// <summary> 
@@ -42,6 +29,7 @@
             this.cbFunction.Size = new System.Drawing.Size(133, 24);
             this.cbFunction.TabIndex = 2;
             this.cbFunction.SelectedIndexChanged += new System.EventHandler(this.cbFunction_SelectedIndexChanged);
+            this.cbFunction.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cbFunction_MouseDown);
             // 
             // VisibleNodeBase
             // 
@@ -49,7 +37,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.cbFunction);
-            this.Font = new System.Drawing.Font("Segoe UI Semilight", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.Font = new System.Drawing.Font("Segoe UI Semilight", 9F);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "VisibleNodeBase";
             this.Size = new System.Drawing.Size(150, 42);
