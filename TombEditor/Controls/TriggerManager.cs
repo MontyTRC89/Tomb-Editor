@@ -2,6 +2,7 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Numerics;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -31,7 +33,7 @@ namespace TombEditor.Controls
             {
                 _event = value;
                 UpdateUI();
-                nodeEditor.Nodes = _event.Nodes;
+                nodeEditor.Nodes = _event == null ? new List<TriggerNode>() : _event.Nodes;
             }
         }
         private VolumeEvent _event = null;
@@ -123,7 +125,7 @@ namespace TombEditor.Controls
             if (rbLevelScript.Checked)
                 FindAndSelectFunction();
 
-            if (!_lockUI)
+            if (!_lockUI && _event != null)
                 _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
         }
 
