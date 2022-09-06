@@ -1463,8 +1463,8 @@
 			<moveable id="120" name="Fan" essential="false" />
 			<moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" essential="false" />
 			<moveable id="122" name="Temple statue (original petrified state)" essential="false" t5m="SHIVA_STATUE"/>
-			<moveable id="123" name="Monkey with medipack" use_body_from="71" /> 
-			<moveable id="124" name="Monkey with key" use_body_from="71" /> 
+			<moveable id="123" name="Monkey with medipack" use_body_from="71" t5m="MESHSWAP_MONKEY_MEDIPACK"/> 
+			<moveable id="124" name="Monkey with key" use_body_from="71" t5m ="MESHSWAP_MONKEY_KEY"/> 
 			<moveable id="127" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="128" name="Above-water switch" essential="false" 	t5m="SWITCH_TYPE3" />
 			<moveable id="129" name="Above-water switch" essential="false" t5m="SWITCH_TYPE4" />
@@ -6573,6 +6573,9 @@
 			<moveable id="1115" name="MESHSWAP_HITMAN" />
 			<moveable id="1116" name="MESHSWAP_ROMAN_GOD1" />
 			<moveable id="1117" name="MESHSWAP_ROMAN_GOD2" />
+			<moveable id="1118" name="MESHSWAP_MONKEY_MEDIPACK" />
+			<moveable id="1119" name="MESHSWAP_MONKEY_KEY" />
+			
 			<moveable id="1200" name="ANIMATING1" />
 			<moveable id="1201" name="ANIMATING2" />
 			<moveable id="1202" name="ANIMATING3" />
