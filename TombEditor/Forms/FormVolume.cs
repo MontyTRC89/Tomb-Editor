@@ -191,6 +191,7 @@ namespace TombEditor.Forms
 
             tbName.Text = _instance.EventSet.Name;
             tcEvents.SelectedIndex = _instance.EventSet.LastUsedEventIndex;
+            tcEvents.Invalidate();
 
             _lockUI = false;
         }
