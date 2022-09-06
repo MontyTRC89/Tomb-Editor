@@ -170,9 +170,16 @@ namespace TombEditor.Forms
             lstEvents.ClearSelection();
         }
 
-        private void LoadEventSetIntoUI()
+        private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
         {
+            _instance.EventSet = newEventSet;
+
             if (_instance.EventSet == null)
+                return;
+
+            if (_instance.EventSet.OnEnter  == tmEnter.Event  &&
+                _instance.EventSet.OnInside == tmInside.Event &&
+                _instance.EventSet.OnLeave  == tmLeave.Event)
                 return;
 
             UpdateUI();
@@ -248,11 +255,8 @@ namespace TombEditor.Forms
                 return;
 
             var newEventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
-            if (_instance.EventSet == newEventSet)
-                return;
 
-            _instance.EventSet = newEventSet;
-            LoadEventSetIntoUI();
+            LoadEventSetIntoUI(newEventSet);
         }
 
         private void butNewEventSet_Click(object sender, EventArgs e)
