@@ -126,6 +126,7 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
+        public int LastUsedEventIndex = 0;
         public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.

@@ -190,6 +190,7 @@ namespace TombEditor.Forms
             tmLeave.Event = _instance.EventSet.OnLeave;
 
             tbName.Text = _instance.EventSet.Name;
+            tcEvents.SelectedIndex = _instance.EventSet.LastUsedEventIndex;
 
             _lockUI = false;
         }
@@ -333,6 +334,11 @@ namespace TombEditor.Forms
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void tcEvents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _instance.EventSet.LastUsedEventIndex = tcEvents.SelectedIndex;
         }
     }
 }
