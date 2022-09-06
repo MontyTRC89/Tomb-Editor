@@ -7896,19 +7896,19 @@
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
 			<anim item="1" id="0" name="UNSURE?" />
-			<anim item="1" id="1" name="WAKING UP" />
-			<anim item="1" id="2" name="XIAN SPEAR GUARD IMPALE" />
-			<anim item="1" id="3" name="SUBWAY TRAIN DEATH"/>
-			<anim item="1" id="4" name="TYRANNOSAUR DEATH" />
+			<anim item="1" id="1" name="WAKING_UP" />
+			<anim item="1" id="2" name="XIAN_SPEAR_GUARD_IMPALE" />
+			<anim item="1" id="3" name="SUBWAY_TRAIN_DEATH"/>
+			<anim item="1" id="4" name="TYRANNOSAUR_DEATH" />
 			<anim item="1" id="5" name="UNSURE?" />
-			<anim item="1" id="6" name="GIANT MUTANT DEATH" />
-			<anim item="1" id="7" name="SHIVA IMPALE DEATH" />
-			<anim item="1" id="8" name="TNT ACTIVATION" />
-			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />
-			<anim item="1" id="10" name="MIDAS GOLDEN DEATH" />
-			<anim item="1" id="11" name="GONG STRIKE" />
-			<anim item="1" id="12" name="WILLARD MUTANT DEATH" />
-			<anim item="1" id="13" name="SUBWAY TRAIN DEATH END" />
+			<anim item="1" id="6" name="GIANT_MUTANT_DEATH" />
+			<anim item="1" id="7" name="SHIVA_IMPALE_DEATH" />
+			<anim item="1" id="8" name="TNT_ACTIVATION" />
+			<anim item="1" id="9" name="MIDAS_LEAD_TO_GOLD" />
+			<anim item="1" id="10" name="MIDAS_GOLDEN_DEATH" />
+			<anim item="1" id="11" name="GONG_STRIKE" />
+			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
+			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
