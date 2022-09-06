@@ -469,6 +469,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(src =>
             {
                 var dest = Path.Combine(scriptDirectory, Path.GetFileName(src));
+
+                if (File.Exists(dest))
+                    File.SetAttributes(dest, FileAttributes.Normal);
+
                 File.Copy(src, dest, true);
                 File.SetAttributes(dest, FileAttributes.ReadOnly);
             });
