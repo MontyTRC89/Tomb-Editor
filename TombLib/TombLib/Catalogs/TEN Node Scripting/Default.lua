@@ -14,8 +14,8 @@ LevelFuncs.CompareValue = function(value, reference, operand)
 	return result
 end
 
--- !Name "If health of an object is..."
--- !Section "Object parameters"
+-- !Name "If health of a moveable is..."
+-- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
@@ -26,8 +26,8 @@ LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	return LevelFuncs.CompareValue(health, value, operand)
 end
 
--- !Name "If ID of an object is..."
--- !Section "Object parameters"
+-- !Name "If ID of a moveable is..."
+-- !Section "Moveable parameters"
 -- !Description "Checks if moveable belongs to a certain slot ID."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, WadSlots, Object ID to compare to"
@@ -36,8 +36,8 @@ LevelFuncs.TestMoveableId = function(moveableName, objectId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
 end
 
--- !Name "If name of an object is..."
--- !Section "Object parameters"
+-- !Name "If name of a moveable is..."
+-- !Section "Moveable parameters"
 -- !Description "Checks if moveable's name is the one specified."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check"
@@ -47,8 +47,8 @@ LevelFuncs.TestMoveableName = function(moveableName, name)
 	return TEN.Objects.GetMoveableByName(moveableName):GetName() == name
 end
 
--- !Name "If animation of an object is..."
--- !Section "Object parameters"
+-- !Name "If animation of a moveable is..."
+-- !Section "Moveable parameters"
 -- !Description "Checks if moveable is currently playing specified animation number."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
@@ -57,8 +57,8 @@ LevelFuncs.TestMoveableAnimation = function(moveableName, animationId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
--- !Name "If state of an object is..."
--- !Section "Object parameters"
+-- !Name "If state of a moveable is..."
+-- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current state is the one specified."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
@@ -77,7 +77,7 @@ LevelFuncs.FlashScreen = function(color, duration)
 end
 
 -- !Name "Enable moveable"
--- !Section "Object state"
+-- !Section "Moveable state"
 -- !Description "Enables moveable."
 -- !Arguments "NewLine, Moveables"
 
@@ -86,7 +86,7 @@ LevelFuncs.EnableMoveable = function(moveableName)
 end
 
 -- !Name "Disable moveable"
--- !Section "Object state"
+-- !Section "Moveable state"
 -- !Description "Disables moveable."
 -- !Arguments "NewLine, Moveables"
 
@@ -95,7 +95,7 @@ LevelFuncs.DisableMoveable = function(moveableName)
 end
 
 -- !Name "Set moveable's animation"
--- !Section "Object parameters"
+-- !Section "Moveable parameters"
 -- !Description "Sets moveable's animation."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
@@ -104,7 +104,7 @@ LevelFuncs.SetMoveableAnimation = function(moveableName, animationId)
 end
 
 -- !Name "Set moveable's state"
--- !Section "Object parameters"
+-- !Section "Moveable parameters"
 -- !Description "Sets moveable's next state."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
@@ -112,8 +112,8 @@ LevelFuncs.SetMoveableState = function(moveableName, stateId)
     TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
 end
 
--- !Name "Shatter object"
--- !Section "Effects"
+-- !Name "Shatter moveable"
+-- !Section "Moveable state"
 -- !Description "Shatters object in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
 
@@ -121,8 +121,8 @@ LevelFuncs.ShatterMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Shatter()
 end
 
--- !Name "Explode object"
--- !Section "Effects"
+-- !Name "Explode moveable"
+-- !Section "Moveable state"
 -- !Description "Explodes object."
 -- !Arguments "NewLine, Moveables"
 
@@ -139,9 +139,9 @@ LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
     Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
 end
 
--- !Name "Modify health of an object"
--- !Section "Object parameters"
--- !Description "Set given object's' health."
+-- !Name "Modify health of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable's' health."
 -- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
@@ -156,8 +156,8 @@ LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 end
 
 -- !Name "Set object colour"
--- !Section "Object parameters"
--- !Description "Sets object tint to a given value."
+-- !Section "Moveable parameters"
+-- !Description "Sets moveable tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
 
 LevelFuncs.SetColor = function(moveableName, color)
