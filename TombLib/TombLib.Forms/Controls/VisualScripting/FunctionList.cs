@@ -131,6 +131,12 @@ namespace TombLib.Controls.VisualScripting
             SearchNodes(txtSearch.Text);
         }
 
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+                SearchNodes(txtSearch.Text);
+        }
+
         private void treeFunctions_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (_currentIndex != -1)
