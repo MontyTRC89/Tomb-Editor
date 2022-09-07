@@ -155,6 +155,30 @@ LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 	end
 end
 
+-- !Name "Modify position of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable position."
+-- !Arguments "NewLine, Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 75, Position value to define"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.SetPosition = function(operation, value, moveableName)
+
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+
+	if (operation == 0) then
+		local position = moveable:GetPosition();
+		position.x = position.x + value.x
+		position.y = position.y + value.y
+		position.z = position.z + value.z
+		moveable:SetPosition(position)
+	else
+		moveable:SetPosition(value)
+	end
+
+	moveable:SetPosition(rotation)
+end
+
 -- !Name "Modify rotation of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable rotation."
