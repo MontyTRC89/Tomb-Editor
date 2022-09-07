@@ -1,5 +1,5 @@
-Version 1.5.3
-=============
+Version 1.6
+===========
 
 Tomb Editor:
  * Added node editor for TEN visual trigger construction.
