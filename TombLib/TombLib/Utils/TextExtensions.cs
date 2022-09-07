@@ -49,6 +49,9 @@ namespace TombLib.Utils
 
         public static string Unquote(string source)
         {
+            if (string.IsNullOrEmpty(source))
+                return source;
+
             if (source.StartsWith(QuoteChar) && source.EndsWith(QuoteChar))
                 return source.Substring(1, source.Length - 2);
             else
@@ -57,7 +60,10 @@ namespace TombLib.Utils
 
         public static string Quote(string source)
         {
-                return QuoteChar + source + QuoteChar;
+            if (string.IsNullOrEmpty(source))
+                source = string.Empty;
+
+            return QuoteChar + source + QuoteChar;
         }
 
         public static List<string> ExtractValues(string source)
