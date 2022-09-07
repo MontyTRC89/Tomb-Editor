@@ -141,8 +141,8 @@ end
 
 -- !Name "Modify health of a moveable"
 -- !Section "Moveable parameters"
--- !Description "Set given moveable's' health."
--- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value, while Set forces it."
+-- !Description "Set given moveable health."
+-- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
 LevelFuncs.SetHitPoints = function(operation, value, moveableName)
@@ -153,6 +153,33 @@ LevelFuncs.SetHitPoints = function(operation, value, moveableName)
 	else
 		TEN.Objects.GetMoveableByName(moveableName):SetHP(value)
 	end
+end
+
+-- !Name "Modify rotation of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable rotation."
+-- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
+
+LevelFuncs.SetRotation = function(operation, value, moveableName)
+
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+	local rotation = moveable:GetRotation();
+
+	if (operation == 0) then
+		local rot = rotation.y + value
+		if (rot > 360) then
+			rotation.y = rot - 360
+		elseif (rot < 0) then
+			rotation.y = 360 + rot
+		else
+			rotation.y = rotation.y + value
+		end
+	else
+		rotation.y = value
+	end
+
+	moveable:SetRotation(rotation)
 end
 
 -- !Name "Set object colour"
