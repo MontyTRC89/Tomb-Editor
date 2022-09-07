@@ -7,7 +7,7 @@
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
-	return LevelFuncs.CompareValue(health, value, operand)
+	return LevelFuncs.CompareValue(health, operand, value)
 end
 
 -- !Name "If ID of a moveable is..."
@@ -172,7 +172,7 @@ LevelFuncs.SetRotation = function(operation, value, moveableName)
 	moveable:SetRotation(rotation)
 end
 
--- !Name "Set object colour"
+-- !Name "Set moveable colour"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
