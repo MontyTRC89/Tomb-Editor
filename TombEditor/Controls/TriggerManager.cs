@@ -91,6 +91,9 @@ namespace TombEditor.Controls
             nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
 
+            // HACK: Switch mode just for the display without actually loaded events
+            rbLevelScript.Checked = _editor.Configuration.NodeEditor_DefaultEventMode == 0;
+
             nodeEditor.ViewPositionChanged += NodeEditor_ViewPostionChanged;
             nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
             nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
