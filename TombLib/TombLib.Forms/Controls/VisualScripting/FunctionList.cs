@@ -16,7 +16,7 @@ namespace TombLib.Controls.VisualScripting
         private DarkSearchableComboBox _callbackControl;
         private int _currentIndex = -1;
 
-        public FunctionList(Point position, DarkSearchableComboBox callbackControl) : base(position)
+        public FunctionList(Point position, DarkSearchableComboBox callbackControl) : base(position, true)
         {
             InitializeComponent();
             _callbackControl = callbackControl;
@@ -55,7 +55,6 @@ namespace TombLib.Controls.VisualScripting
         private void SearchNodes(string text)
         {
             var nodes = treeFunctions.GetAllNodes().Where(n => !string.IsNullOrEmpty(n.Text)).ToList();
-
             var currNodeIndex = -1;
 
             if (treeFunctions.SelectedNodes.Count > 0)
