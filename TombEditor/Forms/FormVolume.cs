@@ -177,6 +177,8 @@ namespace TombEditor.Forms
         {
             _instance.EventSet = newEventSet;
 
+            UpdateUI();
+
             if (_instance.EventSet == null)
                 return;
 
@@ -184,8 +186,6 @@ namespace TombEditor.Forms
                 _instance.EventSet.OnInside == tmInside.Event &&
                 _instance.EventSet.OnLeave  == tmLeave.Event)
                 return;
-
-            UpdateUI();
 
             _lockUI = true;
 
