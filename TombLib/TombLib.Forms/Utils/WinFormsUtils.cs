@@ -32,6 +32,11 @@ namespace TombLib.Utils
                     (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
         }
 
+        public static Color ToWinFormsColor(this Vector3 color, float alpha)
+        {
+            return ToWinFormsColor(new Vector4(color.X, color.Y, color.Z, alpha));
+        }
+
         public static Color MixWith(this Color firstColor, Color secondColor, double mixFactor)
         {
             if (mixFactor > 1)

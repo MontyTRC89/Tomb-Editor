@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Forms;
 using TombLib.Utils;

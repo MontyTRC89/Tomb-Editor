@@ -741,10 +741,16 @@ namespace TombEditor
 
 
             // Display form
-            using (var formVolume = GetObjectSetupWindow(box))
+            var existingWindow = Application.OpenForms[nameof(FormVolume)];
+            if (existingWindow == null)
             {
-                if (formVolume.ShowDialog(owner) != DialogResult.OK)
-                    return;
+                var propForm = new FormVolume(box);
+                propForm.Show(owner);
+            }
+            else
+            {
+                existingWindow.Focus();
+                (existingWindow as FormVolume).ChangeVolume(box);
             }
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
@@ -1100,10 +1106,17 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.IsTombEngine, "Trigger volume"))
                     return;
 
-                using (var formVolume = GetObjectSetupWindow((VolumeInstance)instance))
-                    if (formVolume.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                _editor.ObjectChange(instance, ObjectChangeType.Change);
+                var existingWindow = Application.OpenForms[nameof(FormVolume)];
+                if (existingWindow == null)
+                {
+                    var propForm = new FormVolume((VolumeInstance)instance);
+                    propForm.Show(owner);
+                }
+                else
+                {
+                    existingWindow.Focus();
+                    (existingWindow as FormVolume).ChangeVolume((VolumeInstance)instance);
+                }
             }
             else if (instance is MemoInstance)
             {

@@ -539,6 +539,9 @@ namespace TombLib.LevelData.IO
                                     st.Color = Vector3.One;
                                 }
                             }
+
+                            if (instance is IHasLuaName)
+                                (instance as IHasLuaName).AllocateNewLuaName();
                         }
                     }
                 }

@@ -61,13 +61,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Catalogs\TrCatalog.xml">
+    <None Update="Catalogs\TEN Node Catalogs\Controls.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Effects.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Flow.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Helpers.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Moveables.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Statics.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Update="Catalogs\NgCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TrCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

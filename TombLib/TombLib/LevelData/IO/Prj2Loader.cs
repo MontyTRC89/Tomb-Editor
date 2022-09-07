@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.LevelData.IO
 {
@@ -494,6 +495,8 @@ namespace TombLib.LevelData.IO
                                 eventSetIndex = chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
+                                eventSet.LastUsedEventIndex = chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)
                                 eventSet.Activators = (VolumeActivators)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetOnEnter  ||
@@ -512,6 +515,10 @@ namespace TombLib.LevelData.IO
                                         evt.Argument = chunkIO.ReadChunkString(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventCallCounter)
                                         evt.CallCounter = chunkIO.ReadChunkInt(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventNodePosition)
+                                        evt.NodePosition = chunkIO.ReadChunkVector2(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventNodeNext)
+                                        evt.Nodes.Add(LoadNode(chunkIO));
                                     else
                                         return false;
                                     return true;
@@ -1659,6 +1666,42 @@ namespace TombLib.LevelData.IO
                 return true;
             });
             return true;
+        }
+
+        private static TriggerNode LoadNode(ChunkReader chunkIO, TriggerNode previous = null)
+        {
+            TriggerNode node = new TriggerNodeAction();
+            
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id == Prj2Chunks.NodeType)
+                {
+                    if ((NodeType)chunkIO.ReadChunkInt(chunkSize) == NodeType.Condition)
+                        node = new TriggerNodeCondition();
+                }
+                else if (id == Prj2Chunks.NodeName)
+                    node.Name = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.NodeSize)
+                    node.Size = chunkIO.ReadChunkInt(chunkSize);
+                else if (id == Prj2Chunks.NodeScreenPosition)
+                    node.ScreenPosition = chunkIO.ReadChunkVector2(chunkSize);
+                else if (id == Prj2Chunks.NodeColor)
+                    node.Color = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.NodeFunction)
+                    node.Function = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.NodeArgument)
+                    node.Arguments.Add(chunkIO.ReadChunkString(chunkSize));
+                else if (id == Prj2Chunks.EventNodeNext)
+                    node.Next = LoadNode(chunkIO, node);
+                else if (id == Prj2Chunks.EventNodeElse)
+                    (node as TriggerNodeCondition).Else = LoadNode(chunkIO, node);
+                else
+                    return false;
+                return true;
+            });
+
+            node.Previous = previous;
+            return node;
         }
 
         private static uint? ReadOptionalLEB128Int(BinaryReaderEx reader)

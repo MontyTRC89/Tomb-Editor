@@ -681,7 +681,7 @@
 			<moveable id="18" name="Masked goon (black mask)" essential="false" t5m="GOON_SILENCER3" />
 			<moveable id="19" name="Knifethrower" essential="false" t5m="KNIFETHROWER" />
 			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_SHOTGUN" />
-			<moveable id="21" name="Rat" essential="false" t5m="BIG_RAT" />
+			<moveable id="21" name="Rat" essential="false" t5m="RAT" />
 			<moveable id="22" name="Dragon (front)" show_with="23" essential="false" t5m="DRAGON_FRONT" />
 			<moveable id="23" name="Dragon (back)" show_with="22" essential="false" t5m="DRAGON_BACK" />
 			<moveable id="24" name="Gondola (Venetian boat)" essential="false" t5m="ANIMATING100" />
@@ -860,7 +860,7 @@
 			<moveable id="247" name="Pointer (nullmesh)?" />
 			<moveable id="248" name="Grenade (single)" hidden="true" t5m="GRENADE" />
 			<moveable id="249" name="Harpoon (flying)" hidden="true" t5m="HARPOON" />
-			<moveable id="251" name="Spark emitter" essential="false" />
+			<moveable id="251" name="Spark emitter" essential="false" t5m="KNIFETHROWER_KNIFE"/>
 			<moveable id="253" name="Flame emitter" essential="false" />
 			<moveable id="254" name="Skybox" hidden="true" t5m="HORIZON" />
 			<moveable id="256" name="Monk" essential="false" />
@@ -1384,7 +1384,7 @@
 			<moveable id="20" name="Tribesman with spiked ax" essential="false" t5m="TRIBESMAN_WITH_AX"/>
 			<moveable id="21" name="Tribesman with poison-dart gun" essential="false" t5m="TRIBESMAN_WITH_DARTS"/>
 			<moveable id="22" name="Dog" essential="false" t5m="DOG"/>
-			<moveable id="23" name="Rat" essential="false" t5m="BIG_RAT"/>
+			<moveable id="23" name="Rat" essential="false" t5m="RAT"/>
 			<moveable id="24" name="Kill All Triggers" essential="false" t5m="KILL_ALL_TRIGGERS"/>
 			<moveable id="25" name="Killer whale" essential="false" t5m="WHALE"/>
 			<moveable id="26" name="Scuba diver" essential="false" t5m="SCUBA_DIVER"/>
@@ -1397,7 +1397,7 @@
 			<moveable id="34" name="Compsognathus" essential="false" t5m="SMALL_DINOSAUR"/>
 			<moveable id="35" name="Lizard thing" essential="false" t5m="LIZARD"/>
 			<moveable id="36" name="Puna guy" essential="false" t5m="PUNA_BOSS"/>
-			<moveable id="37" name="Mercenary" essential="false" />
+			<moveable id="37" name="Mercenary" essential="false"  t5m="TROOPS"/>
 			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" t5m="SHOOT_SWITCH2" />
 			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS_CAIRO" /> 
@@ -1426,7 +1426,7 @@
 			<moveable id="68" name="Killer tripwire" essential="false" t5m="TRIPWIRE"/> 
 			<moveable id="69" name="Cobra / Rattlesnake" essential="false" t5m="COBRA" />
 			<moveable id="70" name="Temple statue" essential="false" t5m="SHIVA"/>
-			<moveable id="71" name="Monkey" essential="false" t5m="BABOON_NORMAL"/> 
+			<moveable id="71" name="Monkey" essential="false" t5m="MONKEY"/> 
 			<moveable id="73" name="Tony Firehands" essential="false" t5m="TONY_BOSS"/>
 			<moveable id="74" ai="true" name="AI Guard" essential="false" t5m="AI_GUARD" />
 			<moveable id="75" ai="true" name="AI Ambush" essential="false" t5m="AI_AMBUSH"/>
@@ -1463,8 +1463,8 @@
 			<moveable id="120" name="Fan" essential="false" />
 			<moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" essential="false" />
 			<moveable id="122" name="Temple statue (original petrified state)" essential="false" t5m="SHIVA_STATUE"/>
-			<moveable id="123" name="Monkey with medipack" use_body_from="71" /> 
-			<moveable id="124" name="Monkey with key" use_body_from="71" /> 
+			<moveable id="123" name="Monkey with medipack" use_body_from="71" t5m="MESHSWAP_MONKEY_MEDIPACK"/> 
+			<moveable id="124" name="Monkey with key" use_body_from="71" t5m="MESHSWAP_MONKEY_KEY"/> 
 			<moveable id="127" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="128" name="Above-water switch" essential="false" 	t5m="SWITCH_TYPE3" />
 			<moveable id="129" name="Above-water switch" essential="false" t5m="SWITCH_TYPE4" />
@@ -2806,7 +2806,7 @@
 			<moveable id="58" name="JEAN_YVES_MIP" description="Jean Yves Mip" hidden="true" />
 			<moveable id="59" name="TROOPS" description="Troops" t5m="TROOPS" essential="false" />
 			<moveable id="60" name="TROOPS_MIP" description="Troops Mip" hidden="true" />
-			<moveable id="61" name="KNIGHTS_TEMPLAR" description="Knights Templar" t5m="KNIGHTS_TEMPLAR" essential="false" />
+			<moveable id="61" name="KNIGHTS_TEMPLAR" description="Knights Templar" t5m="KNIGHT_TEMPLAR" essential="false" />
 			<moveable id="62" name="KNIGHTS_TEMPLAR_MIP" description="Knights Templar Mip" hidden="true" />
 			<moveable id="63" name="MUTANT" description="Mutant" essential="false" t5m="CROCODILE_GOD" />
 			<moveable id="64" name="MUTANT_MIP" description="Mutant Mip" hidden="true" />
@@ -6573,6 +6573,9 @@
 			<moveable id="1115" name="MESHSWAP_HITMAN" />
 			<moveable id="1116" name="MESHSWAP_ROMAN_GOD1" />
 			<moveable id="1117" name="MESHSWAP_ROMAN_GOD2" />
+			<moveable id="1118" name="MESHSWAP_MONKEY_MEDIPACK" />
+			<moveable id="1119" name="MESHSWAP_MONKEY_KEY" />
+			
 			<moveable id="1200" name="ANIMATING1" />
 			<moveable id="1201" name="ANIMATING2" />
 			<moveable id="1202" name="ANIMATING3" />
@@ -7893,17 +7896,19 @@
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
 			<anim item="1" id="0" name="UNSURE?" />
-			<anim item="1" id="1" name="WAKING UP" />
-			<anim item="1" id="2" name="XIAN SPEAR GUARD IMPALE" />
-			<anim item="1" id="3" name="SUBWAY TRAIN DEATH"/>
-			<anim item="1" id="4" name="TYRANNOSAUR DEATH" />
+			<anim item="1" id="1" name="WAKING_UP" />
+			<anim item="1" id="2" name="XIAN_SPEAR_GUARD_IMPALE" />
+			<anim item="1" id="3" name="SUBWAY_TRAIN_DEATH"/>
+			<anim item="1" id="4" name="TYRANNOSAUR_DEATH" />
 			<anim item="1" id="5" name="UNSURE?" />
-			<anim item="1" id="6" name="GIANT MUTANT DEATH" />
-			<anim item="1" id="7" name="SHIVA IMPALE DEATH" />
-			<anim item="1" id="8" name="TNT ACTIVATION" />
-			<anim item="1" id="9" name="MIDAS LEAD TO GOLD" />
-			<anim item="1" id="10" name="MIDAS GOLDEN DEATH" />
-			<anim item="1" id="11" name="GONG STRIKE" />
+			<anim item="1" id="6" name="GIANT_MUTANT_DEATH" />
+			<anim item="1" id="7" name="SHIVA_IMPALE_DEATH" />
+			<anim item="1" id="8" name="TNT_ACTIVATION" />
+			<anim item="1" id="9" name="MIDAS_LEAD_TO_GOLD" />
+			<anim item="1" id="10" name="MIDAS_GOLDEN_DEATH" />
+			<anim item="1" id="11" name="GONG_STRIKE" />
+			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
+			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<!--Shiva-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />

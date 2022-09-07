@@ -1,3 +1,14 @@
+Version 1.5.3
+=============
+
+Tomb Editor:
+ * Added node editor for TEN visual trigger construction.
+ * Automatically generate Lua names for all objects on TR4 to TEN project conversion.
+ 
+WadTool:
+ * Show proper animation name tooltip in state change editor.
+ * Don't clamp low frame number in state change editor if high frame is not yet set. 
+
 Version 1.5.2
 =============
 

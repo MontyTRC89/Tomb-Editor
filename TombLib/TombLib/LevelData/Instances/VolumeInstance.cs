@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using TombLib.IO;
+using TombLib.LevelData.VisualScripting;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -18,7 +23,7 @@ namespace TombLib.LevelData
 
     public enum VolumeEventMode
     {
-        LevelScript, Constructor
+        LevelScript, NodeEditor
     }
 
     // Possible activator flags. If none is set, volume is disabled.
@@ -39,11 +44,11 @@ namespace TombLib.LevelData
     {
         private const int _noCallCounter = -1;
 
-        public VolumeEventMode Mode = VolumeEventMode.LevelScript;
+        public VolumeEventMode Mode = VolumeEventMode.NodeEditor;
         public string Function { get; set; } = string.Empty;
         public string Argument { get; set; } = string.Empty;
-
-        // public VolumeEventConstructor Constructor { get; set; } // TODO
+        public Vector2 NodePosition = new Vector2(float.MaxValue);
+        public List<TriggerNode> Nodes { get; set; } = new List<TriggerNode>();
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
 
@@ -59,7 +64,11 @@ namespace TombLib.LevelData
             evt.Argument = Argument;
             evt.Function = Function;
             evt.CallCounter = CallCounter;
-
+            evt.Mode = Mode;
+            evt.NodePosition = NodePosition;
+            evt.Nodes = new List<TriggerNode>();
+            Nodes.ForEach(n => evt.Nodes.Add(n.Clone()));
+            
             return evt;
         }
 
@@ -69,16 +78,48 @@ namespace TombLib.LevelData
                 Mode == other.Mode &&
                 Function == other.Function &&
                 Argument == other.Argument &&
-                CallCounter == other.CallCounter;
-
-            //  VolumeEventConstructor.Equals(other.VolumeEventConstructor);
+                CallCounter == other.CallCounter &&
+                NodePosition == other.NodePosition &&
+                Nodes.Count == other.Nodes.Count &&
+                Nodes.TrueForAll(n => n.GetHashCode() == other.Nodes[Nodes.IndexOf(n)].GetHashCode());
         }
 
-        public void Write(BinaryWriterEx writer)
+        public string GenerateFunctionName(List<VolumeEventSet> eventSets)
+        {
+            var belongedSet = eventSets.FirstOrDefault(s => s.OnInside == this || s.OnLeave == this || s.OnEnter == this);
+            if (belongedSet == null)
+                return "UNKNOWN";
+
+            var trimmedName = LuaSyntax.ReservedFunctionPrefix + 
+                              eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
+                              Regex.Replace(belongedSet.Name, @"\s", string.Empty);
+
+            if (this == belongedSet.OnInside)
+                return trimmedName + "_OnInside";
+            else if (this == belongedSet.OnLeave)
+                return trimmedName + "_OnLeave";
+            else if (this == belongedSet.OnEnter)
+                return trimmedName + "_OnEnter";
+
+            return "UNKNOWN";
+        }
+
+        public void Write(BinaryWriterEx writer, List<VolumeEventSet> eventSets)
         {
             writer.Write((int)Mode);
-            writer.Write(Function);
-            writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
+
+            if (Mode == VolumeEventMode.NodeEditor)
+            {
+                var funcName = GenerateFunctionName(eventSets);
+                writer.Write(Nodes.Count > 0 ? funcName : string.Empty);
+                writer.Write(ScriptingUtils.ParseNodes(Nodes, funcName));
+            }
+            else
+            {
+                writer.Write(Function);
+                writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
+            }
+
             writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
         }
     }
@@ -86,6 +127,7 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
+        public int LastUsedEventIndex = 0;
         public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.
@@ -141,14 +183,14 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriterEx writer, List<VolumeEventSet> eventSets)
         {
             writer.Write(Name);
             writer.Write((int)Activators);
 
-            OnEnter.Write(writer);
-            OnInside.Write(writer);
-            OnLeave.Write(writer);
+            OnEnter.Write(writer, eventSets);
+            OnInside.Write(writer, eventSets);
+            OnLeave.Write(writer, eventSets);
         }
 
         public bool Equals(VolumeEventSet other)
@@ -188,7 +230,7 @@ namespace TombLib.LevelData
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Sphere volume" + GetScriptIDOrName();
+        public override string ShortName() => "Sphere volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 
     public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
@@ -231,7 +273,7 @@ namespace TombLib.LevelData
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Box volume" + GetScriptIDOrName();
+        public override string ShortName() => "Box volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 
     public abstract class VolumeInstance : PositionAndScriptBasedObjectInstance, ISpatial
