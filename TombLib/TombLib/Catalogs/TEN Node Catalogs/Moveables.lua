@@ -7,7 +7,7 @@
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
-	return LevelFuncs.CompareValue(health, operand, value)
+	return LevelFuncs.CompareValue(health, value, operand)
 end
 
 -- !Name "If ID of a moveable is..."
@@ -141,8 +141,6 @@ LevelFuncs.SetPosition = function(operation, value, moveableName)
 	else
 		moveable:SetPosition(value)
 	end
-
-	moveable:SetPosition(rotation)
 end
 
 -- !Name "Modify rotation of a moveable"
