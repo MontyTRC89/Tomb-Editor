@@ -282,7 +282,7 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Vector3:
                     {
                         if (source.StartsWith(LuaSyntax.Vec3TypePrefix + "(") && source.EndsWith(")"))
-                            source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.Vec3TypePrefix.Length - 2);
+                            source = source.Substring(LuaSyntax.Vec3TypePrefix.Length + 1, source.Length - LuaSyntax.Vec3TypePrefix.Length - 2);
 
                         var floats = UnboxVector3Value(source);
 

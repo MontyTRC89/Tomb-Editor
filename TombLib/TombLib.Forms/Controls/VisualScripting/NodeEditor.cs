@@ -198,12 +198,14 @@ namespace TombLib.Controls.VisualScripting
 
         public void PopulateCachedNodeLists(Level level)
         {
-            _cachedMoveables    = level.GetAllObjects().OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedStatics      = level.GetAllObjects().OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedCameras      = level.GetAllObjects().OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedSinks        = level.GetAllObjects().OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedFlybys       = level.GetAllObjects().OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedVolumes      = level.GetAllObjects().OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            var allObjects = level.GetAllObjects();
+
+            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedStatics      = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedCameras      = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedSinks        = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;

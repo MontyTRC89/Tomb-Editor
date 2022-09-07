@@ -331,6 +331,7 @@
             this.cbList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbList.Location = new System.Drawing.Point(0, 0);
             this.cbList.Name = "cbList";
+            this.cbList.SearchThreshold = 10;
             this.cbList.Size = new System.Drawing.Size(406, 21);
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);

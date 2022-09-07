@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Config;
-using DarkUI.Forms;
 using TombLib.Utils;
 using TombLib.LevelData;
 using DarkUI.Controls;
@@ -12,10 +11,8 @@ using System.Linq;
 
 namespace TombLib.Forms
 {
-    public partial class PopUpSearch : DarkForm
+    public partial class PopUpSearch : PopUpWindow
     {
-        private readonly Timer _animTimer = new Timer() { Interval = 10 };
-        private float _animProgress = 0.0f;
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
 
@@ -27,7 +24,7 @@ namespace TombLib.Forms
 
         public bool ShowAboveControl { get; set; } = false;
 
-        public PopUpSearch(Control callbackControl, TRVersion.Game version = TRVersion.Game.TR4)
+        public PopUpSearch(Control callbackControl, TRVersion.Game version = TRVersion.Game.TR4) : base(new Point(), true)
         {
             InitializeComponent();
 
@@ -71,9 +68,7 @@ namespace TombLib.Forms
             BackColor = Colors.DarkBackground;
 
             // Start intro animation
-            _animProgress = 0.0f;
             _animTimer.Tick += UpdateTimer;
-            _animTimer.Start();
         }
 
         protected override void Dispose(bool disposing)
@@ -87,48 +82,41 @@ namespace TombLib.Forms
             base.Dispose(disposing);
         }
 
+        private Point GetCallbackControlLocation(Control callbackControl)
+        {
+            var callbackControlLocation = callbackControl.PointToScreen(Point.Empty);
+
+            if (ShowAboveControl)
+                return new Point(callbackControlLocation.X, callbackControlLocation.Y - Height);
+            else
+                return new Point(callbackControlLocation.X, callbackControlLocation.Y + callbackControl.Size.Height);
+        }
+
         private void UpdateTimer(object sender, EventArgs e)
         {
-            if(_animProgress >= 0.0f) // Intro animation
+            _descend = !ShowAboveControl;
+            _initialPosition = GetCallbackControlLocation(_callbackControl);
+
+            if (_animProgress >= 0.0f)
+                return;
+
+            _animProgress -= 0.1f;
+
+            if (_animProgress > -1.0f)
+                txtSearchString.BackColor = _wrongColor;
+            else
             {
-                _animProgress += 0.1f;
-                if (_animProgress > 1.0f) _animProgress = 1.0f;
-
-                // Smoothly descend pop-up window from parent control using sine function
-                var callbackControlLocation = _callbackControl.PointToScreen(Point.Empty);
-
-                if (ShowAboveControl)
-                    Location = new Point(callbackControlLocation.X,
-                    callbackControlLocation.Y - (int)(MinimumSize.Height * Math.Sin(_animProgress * Math.PI / 2)));
-                else
-                    Location = new Point(callbackControlLocation.X,
-                    callbackControlLocation.Y + _callbackControl.Size.Height - MinimumSize.Height + (int)(MinimumSize.Height * Math.Sin(_animProgress * Math.PI / 2)));
-
-                Opacity = _animProgress;
-
-                if (_animProgress == 1.0f)
-                {
-                    _animProgress = 0.0f;
-                    _animTimer.Stop();
-                }
-            }
-            else // Search error animation
-            {
-                _animProgress -= 0.1f;
-
-                if (_animProgress > -1.0f)
-                    txtSearchString.BackColor = _wrongColor;
-                else
-                {
-                    txtSearchString.BackColor = _correctColor;
-                    _animProgress = 0.0f;
-                    _animTimer.Stop();
-                }
+                txtSearchString.BackColor = _correctColor;
+                _animProgress = 0.0f;
+                _animTimer.Stop();
             }
         }
 
         private void FormPopUpSearch_KeyDown(object sender, KeyEventArgs e)
         {
+            if (_animTimer.Enabled)
+                return;
+
             if (e.KeyCode == Keys.Escape) // Quit
             {
                 Close();
