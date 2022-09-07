@@ -142,7 +142,7 @@ end
 -- !Name "Modify health of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable health."
--- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
 LevelFuncs.SetHitPoints = function(operation, value, moveableName)
@@ -158,7 +158,7 @@ end
 -- !Name "Modify rotation of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable rotation."
--- !Arguments "Enumeration, [ Change | Set ], 30, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
 
 LevelFuncs.SetRotation = function(operation, value, moveableName)
