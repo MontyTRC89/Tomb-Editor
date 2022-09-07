@@ -81,9 +81,10 @@ namespace TombLib.LevelData
             OldWood = 12,
             OldMetal = 13,
 
-            Custom1 = 14, // TEN only!
+            Custom1 = 14, // Can be used in TRNG with FLEP
             Custom2 = 15,
-            Custom3 = 16,
+
+            Custom3 = 16, // TEN only!
             Custom4 = 17,
             Custom5 = 18,
             Custom6 = 19,
@@ -106,7 +107,7 @@ namespace TombLib.LevelData
 
             // Delete new values in case legacy engine is used
             if (settings.GameVersion != TRVersion.Game.TombEngine)
-                result = result.Where(e => !e.Contains("Custom")).ToList();
+                result = result.Where(e => !e.Contains("Custom") || e == "Custom 1" || e == "Custom 2").ToList();
 
             return result;
         }
