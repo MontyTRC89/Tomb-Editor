@@ -48,7 +48,8 @@ namespace TombEditor.Controls
         {
             if (obj is Editor.LoadedScriptsChangedEvent)
             {
-                ReloadFunctions();
+                ReloadScriptFunctions();
+                ReloadNodeFunctions();
                 FindAndSelectFunction();
                 UpdateNodeEditorOptions();
             }
@@ -79,12 +80,13 @@ namespace TombEditor.Controls
             base.Dispose(disposing);
         }
 
-        public void Initialize(Editor editor)
+        public void Initialize(Editor editor, List<NodeFunction> nodeFunctions, List<string> scriptFunctions)
         {
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            ReloadFunctions();
+            ReloadNodeFunctions(nodeFunctions);
+            ReloadScriptFunctions(scriptFunctions);
 
             nodeEditor.Initialize(editor.Level);
             UpdateNodeEditorOptions();
@@ -184,41 +186,45 @@ namespace TombEditor.Controls
             butUnassign.Visible = rbLevelScript.Checked;
         }
 
-        private void ReloadFunctions()
+        private void ReloadScriptFunctions(List<string> scriptFunctions = null)
         {
-            lblListNotify.ForeColor = Colors.DisabledText;
             lstFunctions.Items.Clear();
 
-            nodeEditor.NodeFunctions.Clear();
-            nodeEditor.NodeFunctions.AddRange(
-                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
-
-            if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
+            if (scriptFunctions != null)
             {
-                lblListNotify.Tag = 1;
-                lblListNotify.Text = "Level script file is not specified." + "\n" +
-                                     "Click here to load level script file.";
+                scriptFunctions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
             }
             else
             {
-                string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
+                lblListNotify.ForeColor = Colors.DisabledText;
 
-                if (!File.Exists(path))
+                if (string.IsNullOrEmpty(_editor.Level.Settings.TenLuaScriptFile?.Trim() ?? string.Empty))
                 {
                     lblListNotify.Tag = 1;
-                    lblListNotify.Text = "Level script file '" + Path.GetFileName(path) + "' not found." + "\n" +
-                                         "Click here to choose replacement.";
+                    lblListNotify.Text = "Level script file is not specified." + "\n" +
+                                         "Click here to load level script file.";
                 }
                 else
                 {
-                    var functions = ScriptingUtils.GetAllFunctionNames(path);
-                    functions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+                    string path = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile);
 
-                    if (lstFunctions.Items.Count == 0)
+                    if (!File.Exists(path))
                     {
-                        lblListNotify.Tag = 0;
-                        lblListNotify.Text = "Level script file does not have any level functions." + "\n" +
-                                             "They must have 'LevelFuncs.FuncName = function() ... end' format.";
+                        lblListNotify.Tag = 1;
+                        lblListNotify.Text = "Level script file '" + Path.GetFileName(path) + "' not found." + "\n" +
+                                             "Click here to choose replacement.";
+                    }
+                    else
+                    {
+                        scriptFunctions = ScriptingUtils.GetAllFunctionNames(path);
+                        scriptFunctions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
+
+                        if (lstFunctions.Items.Count == 0)
+                        {
+                            lblListNotify.Tag = 0;
+                            lblListNotify.Text = "Level script file does not have any level functions." + "\n" +
+                                                 "They must have 'LevelFuncs.FuncName = function() ... end' format.";
+                        }
                     }
                 }
             }
@@ -226,6 +232,20 @@ namespace TombEditor.Controls
             panelFunctionControls.Visible =
             lstFunctions.Visible =
             butUnassign.Enabled = lstFunctions.Items.Count > 0;
+        }
+
+        private void ReloadNodeFunctions(List<NodeFunction> nodeFunctions = null)
+        {
+            nodeEditor.NodeFunctions.Clear();
+
+            if (nodeFunctions != null)
+            {
+                nodeEditor.NodeFunctions.AddRange(nodeFunctions);
+                return;
+            }
+
+            nodeEditor.NodeFunctions.AddRange(
+                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
         }
 
         private void FindAndSelectFunction()

@@ -40,9 +40,11 @@ namespace TombEditor.Forms
             BackupEventSets();
 
             // Populate function lists
-            tmEnter.Initialize(_editor);
-            tmInside.Initialize(_editor);
-            tmLeave.Initialize(_editor);
+            var nodeFuncs = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
+            var scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
+            tmEnter.Initialize(_editor, nodeFuncs, scriptFuncs);
+            tmInside.Initialize(_editor, nodeFuncs, scriptFuncs);
+            tmLeave.Initialize(_editor, nodeFuncs, scriptFuncs);
 
             // Determine editing mode
             SetupUI();
