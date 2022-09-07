@@ -382,6 +382,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Catalogs\TEN Node Catalogs\Readme.md" />
+    <None Include="Catalogs\TEN Node Catalogs\Statics.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

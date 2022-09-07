@@ -141,8 +141,6 @@ LevelFuncs.SetPosition = function(operation, value, moveableName)
 	else
 		moveable:SetPosition(value)
 	end
-
-	moveable:SetPosition(rotation)
 end
 
 -- !Name "Modify rotation of a moveable"
