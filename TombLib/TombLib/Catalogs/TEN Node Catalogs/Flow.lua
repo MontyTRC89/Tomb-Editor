@@ -14,7 +14,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 7 | 0 ], Level secret index"
 
 LevelFuncs.AddSecret = function(number)
-    Flow.AddSecret(number)
+    TEN.Flow.AddSecret(number)
 end
 
 -- !Name "Set secret count"
@@ -23,7 +23,7 @@ end
 -- !Arguments "Numerical, 15, [0 | 99 | 0], New secret count"
 
 LevelFuncs.SetSecretCount = function(number)
-    Flow.SetSecretCount(number)
+    TEN.Flow.SetSecretCount(number)
 end
 
 -- !Name "If game secret count is..."
@@ -33,5 +33,5 @@ end
 -- !Arguments "CompareOperand, 25, Compare operation" "Numerical, 15, [0 | 99 | 0 ], Secret count"
 
 LevelFuncs.GetSecretCount = function(operand, number)
-    return LevelFuncs.CompareValue(Flow.GetSecretCount(), number, operand)
+    return LevelFuncs.CompareValue(TEN.Flow.GetSecretCount(), number, operand)
 end
