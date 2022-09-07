@@ -268,8 +268,14 @@ namespace TombLib.Utils
         private static string ParseFunctionString(string function, List<string> arguments)
         {
             string joined = LuaSyntax.LevelFuncPrefix + function + LuaSyntax.BracketOpen;
-            arguments.ForEach(arg => joined += (string.IsNullOrEmpty(arg) ? LuaSyntax.Null : arg) + 
-                                               ((arguments.Count > 1 && arguments.IndexOf(arg) != arguments.Count - 1) ? (LuaSyntax.Separator + LuaSyntax.Space) : string.Empty));
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                joined += (string.IsNullOrEmpty(arguments[i]) ? LuaSyntax.Null : arguments[i]);
+                if (arguments.Count > 1 && i < arguments.Count - 1)
+                    joined += (LuaSyntax.Separator + LuaSyntax.Space);
+            }
+
             joined += LuaSyntax.BracketClose;
             return joined;
         }
