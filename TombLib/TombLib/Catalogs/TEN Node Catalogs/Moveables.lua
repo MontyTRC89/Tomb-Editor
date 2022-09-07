@@ -7,7 +7,7 @@
 
 LevelFuncs.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
-	return LevelFuncs.CompareValue(health, operand, value)
+	return LevelFuncs.CompareValue(health, value, operand)
 end
 
 -- !Name "If ID of a moveable is..."
