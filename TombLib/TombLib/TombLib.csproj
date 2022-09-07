@@ -162,6 +162,8 @@
     <Compile Include="LevelData\IO\Prj2TombEngineConverter.cs" />
     <Compile Include="LevelData\LuaScriptID.cs" />
     <Compile Include="LevelData\ReloadableResource.cs" />
+    <Compile Include="LevelData\VisualScripting\TriggerNode.cs" />
+    <Compile Include="LevelData\VisualScripting\TriggerNodeEnumerations.cs" />
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />
@@ -364,6 +366,25 @@
   <ItemGroup>
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.GridPlane.cs" />
+    <None Include="Catalogs\TEN Node Catalogs\Controls.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Catalogs\TEN Node Catalogs\Effects.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Catalogs\TEN Node Catalogs\Flow.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Catalogs\TEN Node Catalogs\Helpers.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Catalogs\TEN Node Catalogs\Moveables.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Catalogs\TEN Node Catalogs\Readme.md" />
+    <None Include="Catalogs\TEN Node Catalogs\Statics.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

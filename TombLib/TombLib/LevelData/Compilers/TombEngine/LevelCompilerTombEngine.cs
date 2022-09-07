@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
@@ -95,6 +96,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
             WriteLevelTombEngine();
+            CopyNodeScripts();
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
@@ -441,26 +443,38 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
             // Sort AI objects and put all LARA_START_POS objects (last AI object by ID) in front
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-            {
-                _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
-                ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
-            }
+            _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
 
             ReportProgress(45, "    Number of items: " + _items.Count);
+            ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
+        }
 
-            int maxSafeItemCount = 1023;
-            int maxItemCount = 32767;
+        private void CopyNodeScripts()
+        {
+            var scriptDirectory = Path.Combine(Path.GetDirectoryName(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)), 
+                                               ScriptingUtils.GameNodeScriptPath);
 
-            if (_items.Count > maxItemCount)
+            if (!Directory.Exists(ScriptingUtils.NodeScriptPath))
             {
-                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash.";
-                _progressReporter.ReportWarn(warnString);
+                _progressReporter.ReportWarn("Node script catalog was not found. Node scripts were not copied to game folder.");
+                return;
             }
 
-            if (_items.Count > maxSafeItemCount)
-                _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
+            if (!Directory.Exists(scriptDirectory))
+                Directory.CreateDirectory(scriptDirectory);
 
+            ReportProgress(99, "\nCopying node catalogs to level script folder...");
+
+            Directory.GetFiles(ScriptingUtils.NodeScriptPath).Where(p => p.EndsWith(".lua")).ToList().ForEach(src =>
+            {
+                var dest = Path.Combine(scriptDirectory, Path.GetFileName(src));
+
+                if (File.Exists(dest))
+                    File.SetAttributes(dest, FileAttributes.Normal);
+
+                File.Copy(src, dest, true);
+                File.SetAttributes(dest, FileAttributes.ReadOnly);
+            });
         }
     }
 }

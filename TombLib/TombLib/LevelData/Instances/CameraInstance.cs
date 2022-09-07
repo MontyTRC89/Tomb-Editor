@@ -25,6 +25,6 @@
                 GetScriptIDOrName(false);
         }
 
-        public string ShortName() => (CameraMode == CameraInstanceMode.Locked ? "Locked camera" : (CameraMode == CameraInstanceMode.Sniper ? "Sniper camera" : "Camera")) + " (Room " + (Room?.ToString() ?? "NULL") + ")" + GetScriptIDOrName();
+        public string ShortName() => (CameraMode == CameraInstanceMode.Locked ? "Locked camera" : (CameraMode == CameraInstanceMode.Sniper ? "Sniper camera" : "Camera")) + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 }

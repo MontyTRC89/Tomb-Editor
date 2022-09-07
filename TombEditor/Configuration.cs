@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
 
 namespace TombEditor
@@ -130,6 +131,15 @@ namespace TombEditor
         public bool Palette_TextureSamplingMode { get; set; } = false;
         public bool Palette_PickColorFromSelectedObject { get; set; } = false;
 
+        // Node editor options
+
+        public int NodeEditor_Size { get; set; } = 256;
+        public int NodeEditor_DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
+        public int NodeEditor_GridStep { get; set; } = 8;
+        public bool NodeEditor_LinksAsRopes { get; set; } = false;
+        public int NodeEditor_DefaultEventMode { get; set; } = 1;
+        public int NodeEditor_DefaultEventToEdit { get; set; } = 0;
+
         // Gizmo options
 
         public float Gizmo_Size { get; set; } = 1536.0f;
@@ -240,7 +250,7 @@ namespace TombEditor
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;
         public Point Window_FormVolume_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormVolume_Size { get; set; } = new Size(670, 460);
+        public Size Window_FormVolume_Size { get; set; } = new Size(750, 460);
         public bool Window_FormVolume_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;

@@ -141,6 +141,36 @@
     <Compile Include="Controls\TextureMapBase.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualScripting\ArgumentEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\ArgumentEditor.Designer.cs">
+      <DependentUpon>ArgumentEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\FunctionList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\FunctionList.Designer.cs">
+      <DependentUpon>FunctionList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\NodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\NodeEditor.Designer.cs">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeAction.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeBase.Designer.cs">
+      <DependentUpon>VisibleNodeBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\VisibleNodeCondition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\FormOptionsBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,6 +252,18 @@
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\ArgumentEditor.resx">
+      <DependentUpon>ArgumentEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\FunctionList.resx">
+      <DependentUpon>FunctionList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\NodeEditor.resx">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\VisibleNodeBase.resx">
+      <DependentUpon>VisibleNodeBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\WadTreeControl.resx">
       <DependentUpon>WadTreeControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -267,6 +309,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\misc\misc_Shadow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -238,7 +238,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write event sets
                 writer.Write((uint)_level.Settings.EventSets.Count);
                 foreach (var set in _level.Settings.EventSets)
-                    set.Write(writer);
+                    set.Write(writer, _level.Settings.EventSets);
 
                 // Write sound meta data
                 PrepareSoundsData();
@@ -394,7 +394,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     WriteSoundData(writer);
                 }
 
-                ReportProgress(90, "Compressing level...");
+                ReportProgress(99, "Compressing level...");
 
                 inStream.Seek(0, SeekOrigin.Begin);
 
@@ -421,7 +421,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
             }           
 
-            ReportProgress(99, "Done");
+            ReportProgress(100, "Done");
         }
     }
 }

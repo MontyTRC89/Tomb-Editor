@@ -691,6 +691,7 @@
   <ItemGroup>
     <None Include="Resources\icons_actions\actions_TEN-16.png" />
     <None Include="Resources\icons_actions\actions_delete-16.png" />
+    <None Include="Resources\misc\misc_Shadow.png" />
     <Content Include="TE.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

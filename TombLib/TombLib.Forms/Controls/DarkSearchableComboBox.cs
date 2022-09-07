@@ -11,10 +11,16 @@ namespace TombLib.Controls
     [DefaultEvent(nameof(SelectedIndexChanged))]
     public partial class DarkSearchableComboBox : UserControl
     {
-        public TRVersion.Game GameVersion = TRVersion.Game.TR4;
         public DarkComboBox Control { get { return combo; } }
-
         public ComboBox.ObjectCollection Items => combo.Items;
+
+        [Browsable(true)]
+        [DefaultValue(0)]
+        public int SearchThreshold { get; set; } = 0;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TRVersion.Game GameVersion = TRVersion.Game.TR4;
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -87,5 +93,13 @@ namespace TombLib.Controls
         }
 
         private void button_Click(object sender, EventArgs e) => Search();
+
+        private void combo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SearchThreshold == 0 || Items.Count > SearchThreshold)
+                button.Visible = true;
+            else
+                button.Visible = false;
+        }
     }
 }

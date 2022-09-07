@@ -54,6 +54,7 @@
             this.combo.Name = "combo";
             this.combo.Size = new System.Drawing.Size(129, 21);
             this.combo.TabIndex = 0;
+            this.combo.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
             this.combo.Resize += new System.EventHandler(this.combo_Resize);
             // 
             // DarkSearchableComboBox

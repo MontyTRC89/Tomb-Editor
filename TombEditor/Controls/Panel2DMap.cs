@@ -431,9 +431,7 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Middle:
-                    RectangleF oldArea = ToVisualCoord(_selectionArea._area);
                     _selectionArea._area.End = FromVisualCoord(e.Location);
-                    RectangleF newArea = ToVisualCoord(_selectionArea._area);
                     _selectionArea._roomSelectionCache = null;
                     Invalidate();
                     break;
