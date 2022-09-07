@@ -80,34 +80,37 @@ namespace TombLib.Utils
                         int end = line.Length;
 
                         var comment = line.Substring(start, end - start).Trim();
-                        if (comment.StartsWith(_nodeIgnoreId, System.StringComparison.InvariantCultureIgnoreCase))
+                        if (comment.StartsWith(_nodeIgnoreId, StringComparison.InvariantCultureIgnoreCase))
                         { 
                             ignore = true;
                         }
-                        else if (comment.StartsWith(_nodeTypeId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeTypeId, StringComparison.InvariantCultureIgnoreCase))
                         {
                             bool cond = false;
                             bool.TryParse(TextExtensions.ExtractValues(comment.Substring(_nodeTypeId.Length, comment.Length - _nodeTypeId.Length)).LastOrDefault(), out cond);
                             nodeFunction.Conditional = cond;
                             continue;
                         }
-                        else if (comment.StartsWith(_nodeNameId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeNameId, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            nodeFunction = new NodeFunction(); // Reset every time we encounter new name
                             nodeFunction.Name = TextExtensions.ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
                             continue;
                         }
-                        else if (comment.StartsWith(_nodeDescriptionId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeDescriptionId, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            nodeFunction.Description = TextExtensions.ExtractValues(comment.Substring(_nodeDescriptionId.Length, comment.Length - _nodeDescriptionId.Length)).LastOrDefault();
+                            var newLine = TextExtensions.ExtractValues(comment.Substring(_nodeDescriptionId.Length, comment.Length - _nodeDescriptionId.Length)).LastOrDefault();
+                            if (string.IsNullOrEmpty(nodeFunction.Description))
+                                nodeFunction.Description = newLine;
+                            else
+                                nodeFunction.Description += Environment.NewLine + newLine;
                             continue;
                         }
-                        else if (comment.StartsWith(_nodeSectionId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeSectionId, StringComparison.InvariantCultureIgnoreCase))
                         {
                             nodeFunction.Section = TextExtensions.ExtractValues(comment.Substring(_nodeSectionId.Length, comment.Length - _nodeSectionId.Length)).LastOrDefault();
                             continue;
                         }
-                        else if (comment.StartsWith(_nodeArgumentId, System.StringComparison.InvariantCultureIgnoreCase))
+                        else if (comment.StartsWith(_nodeArgumentId, StringComparison.InvariantCultureIgnoreCase))
                         {
                             var settings = TextExtensions.ExtractValues(comment.Substring(_nodeArgumentId.Length, comment.Length - _nodeArgumentId.Length));
 
@@ -163,7 +166,6 @@ namespace TombLib.Utils
                     }
                     else
                         continue;
-
 
                     if (string.IsNullOrEmpty(nodeFunction.Name) ||
                         string.IsNullOrEmpty(nodeFunction.Signature))
@@ -266,8 +268,14 @@ namespace TombLib.Utils
         private static string ParseFunctionString(string function, List<string> arguments)
         {
             string joined = LuaSyntax.LevelFuncPrefix + function + LuaSyntax.BracketOpen;
-            arguments.ForEach(arg => joined += (string.IsNullOrEmpty(arg) ? LuaSyntax.Null : arg) + 
-                                               ((arguments.Count > 1 && arguments.IndexOf(arg) != arguments.Count - 1) ? (LuaSyntax.Separator + LuaSyntax.Space) : string.Empty));
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                joined += (string.IsNullOrEmpty(arguments[i]) ? LuaSyntax.Null : arguments[i]);
+                if (arguments.Count > 1 && i < arguments.Count - 1)
+                    joined += (LuaSyntax.Separator + LuaSyntax.Space);
+            }
+
             joined += LuaSyntax.BracketClose;
             return joined;
         }
