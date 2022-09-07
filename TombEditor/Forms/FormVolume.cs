@@ -1,9 +1,9 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using DarkUI.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -40,9 +40,11 @@ namespace TombEditor.Forms
             BackupEventSets();
 
             // Populate function lists
-            tmEnter.Initialize(_editor);
-            tmInside.Initialize(_editor);
-            tmLeave.Initialize(_editor);
+            var nodeFuncs = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
+            var scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
+            tmEnter.Initialize(_editor, nodeFuncs, scriptFuncs);
+            tmInside.Initialize(_editor, nodeFuncs, scriptFuncs);
+            tmLeave.Initialize(_editor, nodeFuncs, scriptFuncs);
 
             // Determine editing mode
             SetupUI();
@@ -133,6 +135,9 @@ namespace TombEditor.Forms
 
             foreach (var vol in volumes)
             {
+                if (!_backupVolumes.ContainsKey(vol))
+                    continue;
+
                 int index = -1;
                 var entry = _backupVolumes.TryGetValue(vol, out index);
                 if (index >= 0)
@@ -221,12 +226,12 @@ namespace TombEditor.Forms
 
         private void UpdateUI()
         {
-            tbName.Enabled = 
-            grpActivators.Enabled = 
-            tcEvents.Enabled = 
+            tbName.Enabled =
+            grpActivators.Enabled =
+            tcEvents.Enabled =
             butUnassignEventSet.Enabled = _instance.EventSet != null;
 
-            butCloneEventSet.Enabled = 
+            butCloneEventSet.Enabled =
             butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
 
             butSearch.Enabled = lstEvents.Items.Count > 0;
@@ -261,8 +266,8 @@ namespace TombEditor.Forms
 
         private void butNewEventSet_Click(object sender, EventArgs e)
         {
-            var newSet = new VolumeEventSet() 
-            { 
+            var newSet = new VolumeEventSet()
+            {
                 Name = "New event set " + lstEvents.Items.Count,
                 LastUsedEventIndex = _editor.Configuration.NodeEditor_DefaultEventToEdit
             };
