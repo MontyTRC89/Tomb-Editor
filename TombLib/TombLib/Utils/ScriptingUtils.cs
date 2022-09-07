@@ -45,6 +45,7 @@ namespace TombLib.Utils
         private const string _enumSplitterEnd = "]";
         private const char _tabChar = '\t';
 
+        private const string _nodeIgnoreId = _metadataPrefix + "ignore";
         private const string _nodeNameId = _metadataPrefix + "name";
         private const string _nodeSectionId = _metadataPrefix + "section";
         private const string _nodeTypeId = _metadataPrefix + "condition";
@@ -66,6 +67,7 @@ namespace TombLib.Utils
             {
                 var lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
                 var nodeFunction = new NodeFunction();
+                bool ignore = false;
 
                 foreach (string l in lines)
                 {
@@ -78,8 +80,11 @@ namespace TombLib.Utils
                         int end = line.Length;
 
                         var comment = line.Substring(start, end - start).Trim();
-
-                        if (comment.StartsWith(_nodeTypeId, System.StringComparison.InvariantCultureIgnoreCase))
+                        if (comment.StartsWith(_nodeIgnoreId, System.StringComparison.InvariantCultureIgnoreCase))
+                        { 
+                            ignore = true;
+                        }
+                        else if (comment.StartsWith(_nodeTypeId, System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             bool cond = false;
                             bool.TryParse(TextExtensions.ExtractValues(comment.Substring(_nodeTypeId.Length, comment.Length - _nodeTypeId.Length)).LastOrDefault(), out cond);
@@ -146,6 +151,12 @@ namespace TombLib.Utils
 
                     if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
                     {
+                        if (ignore)
+                        {
+                            ignore = false;
+                            continue;
+                        }
+
                         int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
