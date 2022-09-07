@@ -1,19 +1,3 @@
--- Helper function for value comparisons. Any function which uses
--- CompareOperand arguments should use this helper function for comparison.
-
-LevelFuncs.CompareValue = function(value, reference, operand)
-	local result = false
-
-	if (operand == 0 and value == reference) then result = true end
-	if (operand == 1 and value ~= reference) then result = true end
-	if (operand == 2 and value <  reference) then result = true end
-	if (operand == 3 and value <= reference) then result = true end
-	if (operand == 4 and value >  reference) then result = true end
-	if (operand == 5 and value >= reference) then result = true end
-	
-	return result
-end
-
 -- !Name "If health of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."
@@ -65,15 +49,6 @@ end
 
 LevelFuncs.TestMoveableCurrentState = function(moveableName, stateId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
-end
-
--- !Name "Flash screen"
--- !Section "Effects"
--- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."
--- !Arguments "Color, 10, Flash colour" "Numerical, 20, [ 0.1 | 10 | 2 | 0.1 | 0.5 ], Flash speed" 
-
-LevelFuncs.FlashScreen = function(color, duration)
-    Effects.FlashScreen(color, duration)
 end
 
 -- !Name "Enable moveable"
@@ -128,15 +103,6 @@ end
 
 LevelFuncs.ExplodeMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Explode()
-end
-
--- !Name "Play sound near moveable"
--- !Section "Effects"
--- !Description "Plays specified sound ID around specified object."
--- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
-
-LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
-    Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
 end
 
 -- !Name "Modify health of a moveable"
@@ -213,38 +179,4 @@ end
 
 LevelFuncs.SetColor = function(moveableName, color)
     TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
-end
-
--- !Name "Play audio track"
--- !Section "Effects"
--- !Description "Plays specified audio track."
--- !Arguments "NewLine, String, Name of the audiotrack to play"
--- !Arguments "NewLine, Enumeration, [ Play once | Play in looped mode ], Sets whether the track should loop or not"
-
-LevelFuncs.PlayAudioTrack = function(name, looped)
-	if (looped == 1) then
-		TEN.Misc.PlayAudioTrack(moveableName, true)
-	else
-		TEN.Misc.PlayAudioTrack(moveableName, false)
-	end
-end
-
--- !Name "If key is hit..."
--- !Section "Controls"
--- !Description "Checks if specific game key has just been hit (will be true only for 1 frame, until the key is released and hit again)."
--- !Conditional "True"
--- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
-
-LevelFuncs.KeyIsHit = function(keyCode)
-	return TEN.Misc.KeyIsHit(keyCode)
-end
-
--- !Name "If key is held..."
--- !Section "Controls"
--- !Description "Checks if specific game key is being held (will be true as long as the player keeps their finger on that key)."
--- !Conditional "True"
--- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
-
-LevelFuncs.KeyIsHeld = function(keyCode)
-	return TEN.Misc.KeyIsHeld(keyCode)
 end
