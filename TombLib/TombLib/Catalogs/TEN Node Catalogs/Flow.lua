@@ -1,8 +1,19 @@
-﻿-- !Name "End level"
+﻿-- !Name "If random chance is met..."
+-- !Section "Game flow"
+-- !Conditional "True"
+-- !Description "Happens whether a random chance on the range from 1 to 100 percent was met."
+-- !Description "Every time this condition is called, chance is recalculated"
+-- !Arguments "Numerical, 15, [ 1 | 100 | 0 ], Percentage to hit a chance"
+
+LevelFuncs.TestPercentageChance = function(percentageRange)
+    return (math.random() * 100 <= percentageRange)
+end
+
+-- !Name "End level"
 -- !Section "Game flow"
 -- !Description "Ends current level and loads next level according to number. If number is 0, loads next level."
 -- !Description "If number is more than level count, loads title."
--- !Arguments "Numerical, 15, [ 0 | 99 | 0], Level number"
+-- !Arguments "Numerical, 15, [ 0 | 99 | 0 ], Level number"
 
 LevelFuncs.EndLevel = function(number)
     Flow.EndLevel(number)
