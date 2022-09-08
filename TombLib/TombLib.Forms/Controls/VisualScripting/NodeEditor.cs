@@ -808,7 +808,7 @@ namespace TombLib.Controls.VisualScripting
 
             var node = MakeNode(func.Conditional);
             node.Function = func.Signature;
-            node.ScreenPosition = FromVisualCoord(_lastMousePosition);
+            node.ScreenPosition = FromVisualCoord(PointToClient((sender as Form).Location));
 
             Nodes.Add(node);
             UpdateVisibleNodes();
