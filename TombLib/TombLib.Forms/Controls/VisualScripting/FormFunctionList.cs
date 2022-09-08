@@ -14,7 +14,6 @@ namespace TombLib.Controls.VisualScripting
     public partial class FormFunctionList : PopUpWindow
     {
         private Control _callbackControl;
-        private int _currentIndex = -1;
 
         public NodeFunction SelectedFunction { get; private set; }
 
@@ -96,6 +95,17 @@ namespace TombLib.Controls.VisualScripting
                 treeFunctions.SelectNode(nodes[currNodeIndex]);
         }
 
+        private void TryApplyFunction()
+        {
+            if (SelectedFunction == null)
+                return;
+
+            if (_callbackControl is DarkSearchableComboBox)
+                (_callbackControl as DarkSearchableComboBox).SelectedItem = SelectedFunction;
+
+            Close();
+        }
+
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
@@ -106,7 +116,6 @@ namespace TombLib.Controls.VisualScripting
 
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)
         {
-            _currentIndex = -1;
             lblDesc.Text = string.Empty;
 
             if (treeFunctions.SelectedNodes.Count == 0 ||
@@ -116,24 +125,8 @@ namespace TombLib.Controls.VisualScripting
             var func = treeFunctions.SelectedNodes.FirstOrDefault()?.Tag as NodeFunction;
             SelectedFunction = func;
 
-            if (func == null)
-                return;
-
-            if (_callbackControl is DarkSearchableComboBox)
-            {
-                var index = (_callbackControl as DarkSearchableComboBox).Items.IndexOf(func);
-                if (index == -1)
-                    return;
-
-                _currentIndex = index;
-            }
-
-            lblDesc.Text = TextExtensions.SingleLineToMultiLine(func.Description);
-        }
-
-        private void butSearch_Click(object sender, EventArgs e)
-        {
-            SearchNodes(txtSearch.Text);
+            if (func != null)
+                lblDesc.Text = TextExtensions.SingleLineToMultiLine(func.Description);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -142,13 +135,13 @@ namespace TombLib.Controls.VisualScripting
                 SearchNodes(txtSearch.Text);
         }
 
-        private void treeFunctions_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void treeFunctions_KeyDown(object sender, KeyEventArgs e)
         {
-            if (_currentIndex != -1 && _callbackControl is DarkSearchableComboBox)
-                (_callbackControl as DarkSearchableComboBox).SelectedIndex = _currentIndex;
-
-            if (SelectedFunction != null)
-                Close();
+            if (e.KeyCode == Keys.Return)
+                TryApplyFunction();
         }
+
+        private void butSearch_Click(object sender, EventArgs e) => SearchNodes(txtSearch.Text);
+        private void treeFunctions_MouseDoubleClick(object sender, MouseEventArgs e) => TryApplyFunction();
     }
 }
