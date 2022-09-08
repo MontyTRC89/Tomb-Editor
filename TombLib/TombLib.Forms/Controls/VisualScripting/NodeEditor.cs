@@ -145,6 +145,8 @@ namespace TombLib.Controls.VisualScripting
         private readonly Timer _updateTimer;
         private bool _queueMove = false;
 
+        private FormFunctionList _functionList = null;
+
         public event EventHandler ViewPositionChanged;
         private void OnViewPositionChanged()
             => ViewPositionChanged?.Invoke(this, EventArgs.Empty);
@@ -671,7 +673,7 @@ namespace TombLib.Controls.VisualScripting
                 AddNodeToLinearizedList((node as TriggerNodeCondition).Else, list);
         }
 
-        public void DisconnectPreviousNode(TriggerNode node)
+        private void DisconnectPreviousNode(TriggerNode node)
         {
             foreach (var n in LinearizedNodes())
             {
@@ -687,7 +689,7 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        public void DisconnectElseNode(TriggerNode node)
+        private void DisconnectElseNode(TriggerNode node)
         {
             foreach (var n in LinearizedNodes())
             {
@@ -711,7 +713,7 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        public void DisconnectNextNode(TriggerNode node)
+        private void DisconnectNextNode(TriggerNode node)
         {
             foreach (var n in LinearizedNodes())
             {
@@ -737,7 +739,7 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
-        public Rectangle GetNodeRect(TriggerNode node)
+        private Rectangle GetNodeRect(TriggerNode node)
         {
             foreach (var control in Controls)
             {
@@ -786,6 +788,31 @@ namespace TombLib.Controls.VisualScripting
                 return incomingNode == targetNode;
             else
                 return result;
+        }
+
+        private void OpenNodeContext(Point location)
+        {
+            if (_functionList != null)
+                _functionList.FormClosed -= MakeNodeByContext;
+
+            _functionList = new FormFunctionList(PointToScreen(location), this, NodeFunctions);
+            _functionList.FormClosed += MakeNodeByContext;
+            _functionList.Show();
+        }
+
+        private void MakeNodeByContext(object sender, FormClosedEventArgs e)
+        {
+            var func = (sender as FormFunctionList).SelectedFunction;
+            if (func == null)
+                return;
+
+            var node = MakeNode(func.Conditional);
+            node.Function = func.Signature;
+            node.ScreenPosition = FromVisualCoord(_lastMousePosition);
+
+            Nodes.Add(node);
+            UpdateVisibleNodes();
+            SelectNode(node, false, true);
         }
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)
@@ -1161,23 +1188,8 @@ namespace TombLib.Controls.VisualScripting
 
             var delta = Vector2.Distance(new VectorInt2(_lastMousePosition.X, _lastMousePosition.Y), 
                                          new VectorInt2(_initialMousePosition.X, _initialMousePosition.Y));
-            if (delta > 4.0f)
-                return;
-
-            using (var funcList = new FormFunctionList(PointToScreen(e.Location), this, NodeFunctions))
-            {
-                if (funcList.ShowDialog(this) == DialogResult.Cancel ||
-                    funcList.SelectedFunction == null)
-                    return;
-
-                var node = MakeNode(funcList.SelectedFunction.Conditional);
-                node.Function = funcList.SelectedFunction.Signature;
-                node.ScreenPosition = FromVisualCoord(e.Location);
-
-                Nodes.Add(node);
-                UpdateVisibleNodes();
-                SelectNode(node, false, true);
-            }
+            if (delta < 4.0f)
+                OpenNodeContext(e.Location);
         }
 
         protected override void OnMouseEnter(EventArgs e)

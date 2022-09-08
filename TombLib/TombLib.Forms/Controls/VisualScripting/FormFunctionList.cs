@@ -96,30 +96,12 @@ namespace TombLib.Controls.VisualScripting
                 treeFunctions.SelectNode(nodes[currNodeIndex]);
         }
 
-        private void ReturnResultAndClose()
-        {
-            if (SelectedFunction != null)
-                DialogResult = DialogResult.OK;
-            else
-                DialogResult = DialogResult.Cancel;
-
-            _callbackControl.FindForm().Activate();
-            Close();
-        }
-
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
-            ReturnResultAndClose();
-        }
 
-        protected override void WndProc(ref Message m)
-        {
-            // HACK: Close modal form when clicked outside
-            if (m.Msg == 0x0086 && m.WParam.ToInt32() == 0)
-                ReturnResultAndClose();
-            else
-                base.WndProc(ref m);
+            if (!Disposing)
+                Close();
         }
 
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)
@@ -166,7 +148,7 @@ namespace TombLib.Controls.VisualScripting
                 (_callbackControl as DarkSearchableComboBox).SelectedIndex = _currentIndex;
 
             if (SelectedFunction != null)
-                ReturnResultAndClose();
+                Close();
         }
     }
 }
