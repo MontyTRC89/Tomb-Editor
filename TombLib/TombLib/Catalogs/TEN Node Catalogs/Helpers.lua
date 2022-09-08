@@ -13,3 +13,17 @@ LevelFuncs.CompareValue = function(value, reference, operand)
 	
 	return result
 end
+
+-- Helper function for easy generation of a display string with all parameters set.
+
+LevelFuncs.GenerateString = function(text, x, y, center, shadow, color)
+
+	local options = { }
+	if (shadow == true) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
+	if (center == true) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
+
+	local rX = TEN.Misc.PercentToScreen(x, 0)
+	local rY = TEN.Misc.PercentToScreen(y, 0)
+
+	return TEN.Strings.DisplayString(text, rX, rY, color, false, options)
+end

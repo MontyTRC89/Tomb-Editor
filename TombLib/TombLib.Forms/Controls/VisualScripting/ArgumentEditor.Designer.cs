@@ -30,9 +30,7 @@
         {
             this.container = new TombLib.Controls.DarkTabbedContainer();
             this.tabBoolean = new System.Windows.Forms.TabPage();
-            this.boolBackground = new DarkUI.Controls.DarkPanel();
-            this.rbFalse = new DarkUI.Controls.DarkRadioButton();
-            this.rbTrue = new DarkUI.Controls.DarkRadioButton();
+            this.cbBool = new DarkUI.Controls.DarkCheckBox();
             this.tabNumerical = new System.Windows.Forms.TabPage();
             this.nudNumerical = new DarkUI.Controls.DarkNumericUpDown();
             this.tabVector3 = new System.Windows.Forms.TabPage();
@@ -50,7 +48,6 @@
             this.butLocate = new DarkUI.Controls.DarkButton();
             this.container.SuspendLayout();
             this.tabBoolean.SuspendLayout();
-            this.boolBackground.SuspendLayout();
             this.tabNumerical.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).BeginInit();
             this.tabVector3.SuspendLayout();
@@ -81,7 +78,7 @@
             // 
             // tabBoolean
             // 
-            this.tabBoolean.Controls.Add(this.boolBackground);
+            this.tabBoolean.Controls.Add(this.cbBool);
             this.tabBoolean.Location = new System.Drawing.Point(4, 22);
             this.tabBoolean.Margin = new System.Windows.Forms.Padding(0);
             this.tabBoolean.Name = "tabBoolean";
@@ -90,38 +87,16 @@
             this.tabBoolean.Text = "Boolean";
             this.tabBoolean.UseVisualStyleBackColor = true;
             // 
-            // boolBackground
+            // cbBool
             // 
-            this.boolBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.boolBackground.Controls.Add(this.rbFalse);
-            this.boolBackground.Controls.Add(this.rbTrue);
-            this.boolBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.boolBackground.Location = new System.Drawing.Point(0, 0);
-            this.boolBackground.Name = "boolBackground";
-            this.boolBackground.Size = new System.Drawing.Size(430, 23);
-            this.boolBackground.TabIndex = 0;
-            // 
-            // rbFalse
-            // 
-            this.rbFalse.AutoSize = true;
-            this.rbFalse.Location = new System.Drawing.Point(54, 2);
-            this.rbFalse.Name = "rbFalse";
-            this.rbFalse.Size = new System.Drawing.Size(50, 17);
-            this.rbFalse.TabIndex = 3;
-            this.rbFalse.TabStop = true;
-            this.rbFalse.Text = "False";
-            this.rbFalse.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
-            // 
-            // rbTrue
-            // 
-            this.rbTrue.AutoSize = true;
-            this.rbTrue.Location = new System.Drawing.Point(3, 2);
-            this.rbTrue.Name = "rbTrue";
-            this.rbTrue.Size = new System.Drawing.Size(47, 17);
-            this.rbTrue.TabIndex = 2;
-            this.rbTrue.TabStop = true;
-            this.rbTrue.Text = "True";
-            this.rbTrue.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
+            this.cbBool.AutoSize = true;
+            this.cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cbBool.Location = new System.Drawing.Point(0, 0);
+            this.cbBool.Name = "cbBool";
+            this.cbBool.Size = new System.Drawing.Size(430, 23);
+            this.cbBool.TabIndex = 0;
+            this.cbBool.Text = "None";
+            this.cbBool.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
             // 
             // tabNumerical
             // 
@@ -368,8 +343,7 @@
             this.Size = new System.Drawing.Size(438, 49);
             this.container.ResumeLayout(false);
             this.tabBoolean.ResumeLayout(false);
-            this.boolBackground.ResumeLayout(false);
-            this.boolBackground.PerformLayout();
+            this.tabBoolean.PerformLayout();
             this.tabNumerical.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).EndInit();
             this.tabVector3.ResumeLayout(false);
@@ -403,10 +377,8 @@
         private DarkUI.Controls.DarkTextBox tbString;
         private DarkUI.Controls.DarkPanel panelColor;
         private DarkSearchableComboBox cbList;
-        private DarkUI.Controls.DarkPanel boolBackground;
-        private DarkUI.Controls.DarkRadioButton rbFalse;
-        private DarkUI.Controls.DarkRadioButton rbTrue;
         private DarkUI.Controls.DarkPanel panelLocate;
         private DarkUI.Controls.DarkButton butLocate;
+        private DarkUI.Controls.DarkCheckBox cbBool;
     }
 }
