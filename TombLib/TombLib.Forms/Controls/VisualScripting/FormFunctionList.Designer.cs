@@ -49,6 +49,7 @@
             this.treeFunctions.TabIndex = 0;
             this.treeFunctions.Text = "darkTreeView1";
             this.treeFunctions.SelectedNodesChanged += new System.EventHandler(this.treeFunctions_SelectedNodesChanged);
+            this.treeFunctions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeFunctions_KeyDown);
             this.treeFunctions.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeFunctions_MouseDoubleClick);
             // 
             // sectionDesc

@@ -233,7 +233,7 @@ namespace TombLib.LevelData
         public override string ShortName() => "Sphere volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
     }
 
-    public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
+    public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYXRoll
     {
         protected const float _maxSize = ushort.MaxValue;
         protected const float _minSize = 32.0f;
@@ -265,6 +265,13 @@ namespace TombLib.LevelData
             set { _rotationX = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
         private float _rotationX = 0.0f;
+
+        public float Roll
+        {
+            get { return _roll; }
+            set { _roll = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+        }
+        private float _roll = 0.0f;
 
         public override string ToString()
         {

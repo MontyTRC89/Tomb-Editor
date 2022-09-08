@@ -1604,7 +1604,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest ||
                          id3 == Prj2Chunks.ObjectTriggerVolume1 ||
-                         id3 == Prj2Chunks.ObjectTriggerVolume2)
+                         id3 == Prj2Chunks.ObjectTriggerVolume2 ||
+                         id3 == Prj2Chunks.ObjectTriggerVolume3)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
 
@@ -1619,6 +1620,11 @@ namespace TombLib.LevelData.IO
                                 bv.Size = chunkIO.Raw.ReadVector3();
                                 bv.RotationY = chunkIO.Raw.ReadSingle();
                                 bv.RotationX = chunkIO.Raw.ReadSingle();
+
+                                if (id3 == Prj2Chunks.ObjectTriggerVolume3)
+                                    bv.Roll = chunkIO.Raw.ReadSingle();
+                                else
+                                    bv.Roll = 0.0f;
                             }
                             break;
                         case VolumeShape.Sphere:
@@ -1652,7 +1658,8 @@ namespace TombLib.LevelData.IO
                         else
                             instance.EventSet = null;
 
-                        if (id3 == Prj2Chunks.ObjectTriggerVolume2)
+                        if (id3 == Prj2Chunks.ObjectTriggerVolume2 ||
+                            id3 == Prj2Chunks.ObjectTriggerVolume3)
                             instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                         else
                             instance.LuaName = string.Empty;
