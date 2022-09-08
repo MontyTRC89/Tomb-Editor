@@ -1,5 +1,4 @@
-﻿using DarkUI.Config;
-using DarkUI.Controls;
+﻿using DarkUI.Controls;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -30,14 +29,6 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnDeactivate(e);
             Close();
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            base.OnPaintBackground(e);
-
-            using (var pen = new Pen(Colors.DarkBackground, 2))
-                e.Graphics.DrawRectangle(pen, ClientRectangle);
         }
 
         private void tbText_TextChanged(object sender, EventArgs e)

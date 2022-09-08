@@ -97,14 +97,6 @@ namespace TombLib.Controls.VisualScripting
             Close();
         }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            base.OnPaintBackground(e);
-
-            using (var pen = new Pen(Colors.DarkBackground, 2))
-                e.Graphics.DrawRectangle(pen, ClientRectangle);
-        }
-
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)
         {
             _currentIndex = -1;
