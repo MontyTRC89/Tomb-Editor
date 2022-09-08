@@ -9,8 +9,7 @@ LevelFuncs.CompareValue = function(value, reference, operand)
 	if (operand == 2 and value <  reference) then result = true end
 	if (operand == 3 and value <= reference) then result = true end
 	if (operand == 4 and value >  reference) then result = true end
-	if (operand == 5 and value >= reference) then result = true end
-	
+	if (operand == 5 and value >= reference) then result = true end	
 	return result
 end
 
