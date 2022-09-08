@@ -40,6 +40,7 @@
             this.nudVector3X = new DarkUI.Controls.DarkNumericUpDown();
             this.tabString = new System.Windows.Forms.TabPage();
             this.tbString = new DarkUI.Controls.DarkTextBox();
+            this.butMultiline = new DarkUI.Controls.DarkButton();
             this.tabColor = new System.Windows.Forms.TabPage();
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.tabList = new System.Windows.Forms.TabPage();
@@ -249,6 +250,7 @@
             // tabString
             // 
             this.tabString.Controls.Add(this.tbString);
+            this.tabString.Controls.Add(this.butMultiline);
             this.tabString.Location = new System.Drawing.Point(4, 22);
             this.tabString.Margin = new System.Windows.Forms.Padding(1);
             this.tabString.Name = "tabString";
@@ -262,9 +264,20 @@
             this.tbString.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbString.Location = new System.Drawing.Point(0, 0);
             this.tbString.Name = "tbString";
-            this.tbString.Size = new System.Drawing.Size(430, 20);
+            this.tbString.Size = new System.Drawing.Size(407, 20);
             this.tbString.TabIndex = 0;
             this.tbString.TextChanged += new System.EventHandler(this.tbString_TextChanged);
+            // 
+            // butMultiline
+            // 
+            this.butMultiline.Checked = false;
+            this.butMultiline.Dock = System.Windows.Forms.DockStyle.Right;
+            this.butMultiline.Image = global::TombLib.Properties.Resources.general_Multiline_text_16;
+            this.butMultiline.Location = new System.Drawing.Point(407, 0);
+            this.butMultiline.Name = "butMultiline";
+            this.butMultiline.Size = new System.Drawing.Size(23, 23);
+            this.butMultiline.TabIndex = 1;
+            this.butMultiline.Click += new System.EventHandler(this.butMultiline_Click);
             // 
             // tabColor
             // 
@@ -329,7 +342,7 @@
             this.butLocate.Image = global::TombLib.Properties.Resources.general_target_16;
             this.butLocate.Location = new System.Drawing.Point(0, 0);
             this.butLocate.Name = "butLocate";
-            this.butLocate.Size = new System.Drawing.Size(24, 23);
+            this.butLocate.Size = new System.Drawing.Size(23, 23);
             this.butLocate.TabIndex = 0;
             this.butLocate.Click += new System.EventHandler(this.butLocate_Click);
             // 
@@ -380,5 +393,6 @@
         private DarkUI.Controls.DarkPanel panelLocate;
         private DarkUI.Controls.DarkButton butLocate;
         private DarkUI.Controls.DarkCheckBox cbBool;
+        private DarkUI.Controls.DarkButton butMultiline;
     }
 }

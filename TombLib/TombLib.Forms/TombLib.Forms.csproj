@@ -147,11 +147,17 @@
     <Compile Include="Controls\VisualScripting\ArgumentEditor.Designer.cs">
       <DependentUpon>ArgumentEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\VisualScripting\FunctionList.cs">
+    <Compile Include="Controls\VisualScripting\FormMultilineText.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\VisualScripting\FunctionList.Designer.cs">
-      <DependentUpon>FunctionList.cs</DependentUpon>
+    <Compile Include="Controls\VisualScripting\FormMultilineText.Designer.cs">
+      <DependentUpon>FormMultilineText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\FormFunctionList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualScripting\FormFunctionList.Designer.cs">
+      <DependentUpon>FormFunctionList.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\VisualScripting\NodeEditor.cs">
       <SubType>UserControl</SubType>
@@ -255,8 +261,11 @@
     <EmbeddedResource Include="Controls\VisualScripting\ArgumentEditor.resx">
       <DependentUpon>ArgumentEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\VisualScripting\FunctionList.resx">
-      <DependentUpon>FunctionList.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\VisualScripting\FormFunctionList.resx">
+      <DependentUpon>FormFunctionList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VisualScripting\FormMultilineText.resx">
+      <DependentUpon>FormMultilineText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VisualScripting\NodeEditor.resx">
       <DependentUpon>NodeEditor.cs</DependentUpon>
@@ -312,6 +321,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\misc\misc_Shadow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Multiline-text-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

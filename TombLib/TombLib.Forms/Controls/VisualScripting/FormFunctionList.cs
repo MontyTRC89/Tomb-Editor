@@ -11,12 +11,12 @@ using TombLib.Utils;
 
 namespace TombLib.Controls.VisualScripting
 {
-    public partial class FunctionList : PopUpWindow
+    public partial class FormFunctionList : PopUpWindow
     {
         private DarkSearchableComboBox _callbackControl;
         private int _currentIndex = -1;
 
-        public FunctionList(Point position, DarkSearchableComboBox callbackControl) : base(position, true)
+        public FormFunctionList(Point position, DarkSearchableComboBox callbackControl) : base(position, true)
         {
             InitializeComponent();
             _callbackControl = callbackControl;
