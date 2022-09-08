@@ -199,7 +199,7 @@ namespace TombLib.Controls.VisualScripting
                 var normScale = func.Arguments[i].Width / 100.0f;
                 int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
-                ctrl.SetToolTip(toolTip, func.Arguments[i].Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
+                ctrl.SetToolTip(toolTip, TextExtensions.SingleLineToMultiLine(func.Arguments[i].Description));
                 ctrl.SetArgumentType(func.Arguments[i], Editor);
                 ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
 
@@ -614,8 +614,7 @@ namespace TombLib.Controls.VisualScripting
             TrimArguments();
             SpawnUIElements();
 
-            toolTip.SetToolTip(sender as Control, (cbFunction.SelectedItem as NodeFunction)?
-                .Description?.Replace("\\n", Environment.NewLine) ?? string.Empty);
+            toolTip.SetToolTip(sender as Control, TextExtensions.SingleLineToMultiLine((cbFunction.SelectedItem as NodeFunction)?.Description ?? string.Empty));
 
             _lastSelectedIndex = cbFunction.SelectedIndex;
         }

@@ -115,7 +115,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             _currentIndex = index;
-            lblDesc.Text = func.Description.Replace("\\n", Environment.NewLine);
+            lblDesc.Text = TextExtensions.SingleLineToMultiLine(func.Description);
         }
 
         private void butSearch_Click(object sender, EventArgs e)

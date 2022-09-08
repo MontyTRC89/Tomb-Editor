@@ -69,16 +69,25 @@ namespace TombLib.Utils
 
         public static List<string> ExtractValues(string source)
         {
+            if (string.IsNullOrEmpty(source))
+                return new List<string>();
+
             return source.Split('"').Where((item, index) => index % 2 != 0).ToList();
         }
 
         public static string MultiLineToSingleLine(string source)
         {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
             return source.Replace(Environment.NewLine, "\\n");
         }
 
         public static string SingleLineToMultiLine(string source)
         {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
             return source.Replace("\\n", Environment.NewLine);
         }
     }
