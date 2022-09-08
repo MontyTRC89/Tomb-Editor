@@ -28,6 +28,15 @@ LevelFuncs.DisableStatic = function(staticName)
     TEN.Objects.GetStaticByName(staticName):Disable()
 end
 
+-- !Name "Play sound near static mesh"
+-- !Section "Static mesh state"
+-- !Description "Plays specified sound ID around specified static mesh."
+-- !Arguments "NewLine, Statics, Static mesh to play sound around" "NewLine, SoundEffects, Sound to play"
+
+LevelFuncs.PlaySoundAroundMoveable = function(staticName, soundID)
+    TEN.Misc.PlaySound(soundID, TEN.Objects.GetStaticByName(staticName):GetPosition())
+end
+
 -- !Name "Modify position of a static mesh"
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh position."

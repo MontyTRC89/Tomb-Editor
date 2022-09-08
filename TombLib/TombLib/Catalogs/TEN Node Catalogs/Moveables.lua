@@ -105,6 +105,15 @@ LevelFuncs.ExplodeMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Explode()
 end
 
+-- !Name "Play sound near moveable"
+-- !Section "Moveable state"
+-- !Description "Plays specified sound ID around specified moveable."
+-- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
+
+LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
+    TEN.Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
+end
+
 -- !Name "Modify health of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable health."
