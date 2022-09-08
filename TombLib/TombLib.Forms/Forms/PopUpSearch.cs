@@ -128,14 +128,6 @@ namespace TombLib.Forms
 
             var exactMatch = _searchItems.Any(s => s.IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1);
 
-            if (txtSearchString.Text == string.Empty || _searchItems.Count == 0)
-            {
-                // Indicate failed search
-                _animProgress = -0.1f;
-                _animTimer.Start();
-                return;
-            }
-
             if (_searchItems.Count == 1)
                 _currentIndex = 0; // Point to only one existing entry
             else
@@ -185,6 +177,10 @@ namespace TombLib.Forms
                 }
                 return;
             }
+
+            // Indicate failed search
+            _animProgress = -0.1f;
+            _animTimer.Start();
         }
 
         protected override void OnDeactivate(EventArgs e)
