@@ -10,6 +10,24 @@ LevelFuncs.TestStaticScale = function(staticName, operand, value)
 	return LevelFuncs.CompareValue(scale, value, operand)
 end
 
+-- !Name "Enable static mesh"
+-- !Section "Static mesh state"
+-- !Description "Enables static mesh, e.g. after shattering or manually disabling it."
+-- !Arguments "NewLine, Statics"
+
+LevelFuncs.EnableStatic = function(staticName)
+    TEN.Objects.GetStaticByName(staticName):Enable()
+end
+
+-- !Name "Disable static mesh"
+-- !Section "Static mesh state"
+-- !Description "Disables static mesh."
+-- !Arguments "NewLine, Statics"
+
+LevelFuncs.DisableStatic = function(staticName)
+    TEN.Objects.GetStaticByName(staticName):Disable()
+end
+
 -- !Name "Modify position of a static mesh"
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh position."
