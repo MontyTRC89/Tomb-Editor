@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Controls.VisualScripting
 {
-    partial class FunctionList
+    partial class FormFunctionList
     {
         /// <summary>
         /// Required designer variable.
@@ -93,7 +93,7 @@
             this.butSearch.TabIndex = 3;
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
-            // FunctionList
+            // FormFunctionList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -107,9 +107,10 @@
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FunctionList";
+            this.Name = "FormFunctionList";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "FunctionList";
             this.sectionDesc.ResumeLayout(false);

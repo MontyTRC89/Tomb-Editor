@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -69,6 +70,16 @@ namespace TombLib.Utils
         public static List<string> ExtractValues(string source)
         {
             return source.Split('"').Where((item, index) => index % 2 != 0).ToList();
+        }
+
+        public static string MultiLineToSingleLine(string source)
+        {
+            return source.Replace(Environment.NewLine, "\\n");
+        }
+
+        public static string SingleLineToMultiLine(string source)
+        {
+            return source.Replace("\\n", Environment.NewLine);
         }
     }
 }

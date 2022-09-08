@@ -483,5 +483,11 @@ namespace TombLib.Controls.VisualScripting
                 cbList.SelectedIndex = index;
             return;
         }
+
+        private void butMultiline_Click(object sender, EventArgs e)
+        {
+            var multiline = new FormMultilineText(Cursor.Position, tbString);
+            multiline.Show(this.FindForm());
+        }
     }
 }

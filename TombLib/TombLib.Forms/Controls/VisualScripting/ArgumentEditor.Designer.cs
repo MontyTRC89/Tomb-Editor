@@ -40,6 +40,8 @@
             this.nudVector3X = new DarkUI.Controls.DarkNumericUpDown();
             this.tabString = new System.Windows.Forms.TabPage();
             this.tbString = new DarkUI.Controls.DarkTextBox();
+            this.panelMultiline = new DarkUI.Controls.DarkPanel();
+            this.butMultiline = new DarkUI.Controls.DarkButton();
             this.tabColor = new System.Windows.Forms.TabPage();
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.tabList = new System.Windows.Forms.TabPage();
@@ -56,6 +58,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).BeginInit();
             this.tabString.SuspendLayout();
+            this.panelMultiline.SuspendLayout();
             this.tabColor.SuspendLayout();
             this.tabList.SuspendLayout();
             this.panelLocate.SuspendLayout();
@@ -249,6 +252,7 @@
             // tabString
             // 
             this.tabString.Controls.Add(this.tbString);
+            this.tabString.Controls.Add(this.panelMultiline);
             this.tabString.Location = new System.Drawing.Point(4, 22);
             this.tabString.Margin = new System.Windows.Forms.Padding(1);
             this.tabString.Name = "tabString";
@@ -262,9 +266,29 @@
             this.tbString.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbString.Location = new System.Drawing.Point(0, 0);
             this.tbString.Name = "tbString";
-            this.tbString.Size = new System.Drawing.Size(430, 20);
+            this.tbString.Size = new System.Drawing.Size(407, 20);
             this.tbString.TabIndex = 0;
             this.tbString.TextChanged += new System.EventHandler(this.tbString_TextChanged);
+            // 
+            // panelMultiline
+            // 
+            this.panelMultiline.Controls.Add(this.butMultiline);
+            this.panelMultiline.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelMultiline.Location = new System.Drawing.Point(406, 0);
+            this.panelMultiline.Name = "panelMultiline";
+            this.panelMultiline.Size = new System.Drawing.Size(24, 23);
+            this.panelMultiline.TabIndex = 2;
+            // 
+            // butMultiline
+            // 
+            this.butMultiline.Checked = false;
+            this.butMultiline.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butMultiline.Image = global::TombLib.Properties.Resources.general_Multiline_text_16;
+            this.butMultiline.Location = new System.Drawing.Point(0, 0);
+            this.butMultiline.Name = "butMultiline";
+            this.butMultiline.Size = new System.Drawing.Size(24, 23);
+            this.butMultiline.TabIndex = 2;
+            this.butMultiline.Click += new System.EventHandler(this.butMultiline_Click);
             // 
             // tabColor
             // 
@@ -353,6 +377,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).EndInit();
             this.tabString.ResumeLayout(false);
             this.tabString.PerformLayout();
+            this.panelMultiline.ResumeLayout(false);
             this.tabColor.ResumeLayout(false);
             this.tabList.ResumeLayout(false);
             this.panelLocate.ResumeLayout(false);
@@ -380,5 +405,7 @@
         private DarkUI.Controls.DarkPanel panelLocate;
         private DarkUI.Controls.DarkButton butLocate;
         private DarkUI.Controls.DarkCheckBox cbBool;
+        private DarkUI.Controls.DarkPanel panelMultiline;
+        private DarkUI.Controls.DarkButton butMultiline;
     }
 }
