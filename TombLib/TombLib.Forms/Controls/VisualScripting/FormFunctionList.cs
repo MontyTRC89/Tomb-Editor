@@ -36,7 +36,7 @@ namespace TombLib.Controls.VisualScripting
             {
                 var rootNode = new DarkTreeNode(group.Key);
 
-                foreach (var item in group)
+                foreach (var item in group.OrderBy(f => !f.Conditional))
                 {
                     var newNode = new DarkTreeNode(item.Name) { Tag = item };
                     rootNode.Nodes.Add(newNode);
