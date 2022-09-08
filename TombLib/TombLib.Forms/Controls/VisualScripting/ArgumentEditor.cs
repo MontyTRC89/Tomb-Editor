@@ -144,6 +144,9 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in layout.CustomEnumeration)
                         cbList.Items.Add(new ComboBoxItem(item, layout.CustomEnumeration.IndexOf(item).ToString()));
                     break;
+                case ArgumentType.Boolean:
+                    cbBool.Text = layout.Description;
+                    break;
                 case ArgumentType.Numerical:
                 case ArgumentType.Vector3:
                     if (layout.CustomEnumeration.Count >= 2)
@@ -244,6 +247,12 @@ namespace TombLib.Controls.VisualScripting
 
         }
 
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            base.OnBackColorChanged(e);
+            tabBoolean.BackColor = BackColor;
+        }
+
         protected override void OnLocationChanged(EventArgs e)
         {
             // Absorb event
@@ -263,7 +272,7 @@ namespace TombLib.Controls.VisualScripting
                         bool result;
                         if (!(bool.TryParse(source, out result)))
                             result = false;
-                        rbTrue.Checked = result;
+                        cbBool.Checked = result;
 
                         BoxBoolValue();
                         break;
@@ -368,7 +377,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxBoolValue()
         {
-            _text = rbTrue.Checked.ToString().ToLower();
+            _text = cbBool.Checked.ToString().ToLower();
             OnValueChanged();
         }
 

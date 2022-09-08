@@ -79,6 +79,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Statics.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Text.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Update="Catalogs\NgCatalog.xml">
