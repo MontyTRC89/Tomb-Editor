@@ -21,9 +21,6 @@ LevelFuncs.GenerateString = function(text, x, y, center, shadow, color)
 	local options = { }
 	if (shadow == true) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
 	if (center == true) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
-
-	local rX = TEN.Misc.PercentToScreen(x, 0)
-	local rY = TEN.Misc.PercentToScreen(y, 0)
-
+	local rX, rY = TEN.Misc.PercentToScreen(x, y)
 	return TEN.Strings.DisplayString(text, rX, rY, color, false, options)
 end
