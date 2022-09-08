@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DarkUI.Forms;
 using System.Drawing;
+using DarkUI.Config;
 
 namespace TombLib.Forms
 {
@@ -35,6 +36,14 @@ namespace TombLib.Forms
             _animTimer.Dispose();
 
             base.Dispose(disposing);
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+
+            using (var pen = new Pen(Colors.DarkBackground, 2))
+                e.Graphics.DrawRectangle(pen, ClientRectangle);
         }
 
         private void UpdateTimer(object sender, EventArgs e)
