@@ -63,15 +63,6 @@ LevelFuncs.Vibrate = function(strength, time)
     TEN.Misc.Vibrate(strength, time)
 end
 
--- !Name "Play sound near moveable"
--- !Section "Effects"
--- !Description "Plays specified sound ID around specified object."
--- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
-
-LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
-    TEN.Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
-end
-
 -- !Name "Play audio track"
 -- !Section "Effects"
 -- !Description "Plays specified audio track."
