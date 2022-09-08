@@ -2,7 +2,7 @@
 -- !Section "Game flow"
 -- !Conditional "True"
 -- !Description "Happens whether a random chance on the range from 1 to 100 percent was met."
--- !Description "Every time this condition is called, chance is recalculated"
+-- !Description "Every time this condition is called, chance is recalculated."
 -- !Arguments "Numerical, 15, [ 1 | 100 | 0 ], Percentage to hit a chance"
 
 LevelFuncs.TestPercentageChance = function(percentageRange)

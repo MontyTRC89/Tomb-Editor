@@ -492,7 +492,7 @@ namespace TombEditor.Controls
         private void butExport_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction"));
-            _editor.SendMessage("Node tree was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
+            _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
         }
     }
 }
