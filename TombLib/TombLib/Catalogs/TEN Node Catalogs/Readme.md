@@ -78,7 +78,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 ### Argument types (those you specify under **!Arguments** keyword)
 
    - **Boolean** - a value which can be either `true` or `false`. Appears as a checkbox with argument description
-     as a label .
+     as a label.
    - **Numerical** - numerical floating-point value. Range, limits and decimals can be specified by **ENUMDESC**
      descriptors (see above).
    - **Vector3** - Three floating-point values, can be used either for position or rotation. Range, limits and
