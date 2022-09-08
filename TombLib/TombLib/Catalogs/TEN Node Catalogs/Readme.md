@@ -51,7 +51,11 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
       - For Enumeration, ENUMDESC values will be displayed as is but converted to numericals on compilation
         in order of appearance.
 
- - **Any other string value except listed above** - tooltip for a given argument control.
+   - **Any other string value except listed above** - tooltip for a given argument control.
+   
+ - **!Ignore** - if this keyword is used, nearest encountered function declaration will be ignored. Useful if you
+   need to place helper functions which must be ignored by parser (however, it is recommended to use `Helpers.lua`
+   file for those).
  
 
 Metadata blocks can appear in any order, except **!Name** - it resets parsing of current function.
@@ -66,12 +70,15 @@ ARGDESC parameters can appear in any order, e.g. `!Argument "Foo, Numerical, 20"
 
 There could be several **!Argument** blocks, which will append arguments to previously parsed ones.
 
+There could be several **!Description** blocks, which will append as a new line to previous description block.
+
 ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 
 
 ### Argument types (those you specify under **!Arguments** keyword)
 
-   - **Boolean** - a value which can be either `true` or `false`. Appears as a pair of radio buttons in UI.
+   - **Boolean** - a value which can be either `true` or `false`. Appears as a checkbox with argument description
+     as a label .
    - **Numerical** - numerical floating-point value. Range, limits and decimals can be specified by **ENUMDESC**
      descriptors (see above).
    - **Vector3** - Three floating-point values, can be used either for position or rotation. Range, limits and
