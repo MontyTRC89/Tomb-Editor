@@ -137,7 +137,7 @@ namespace TombLib.Controls.VisualScripting
 
         private bool _selectionInProgress;
         private Point _lastMousePosition;
-        private Point _newMousePosition;
+        private Point _initialMousePosition;
         private Vector2? _viewMoveMouseWorldCoord;
 
         private float _animProgress = 1.0f;
@@ -988,7 +988,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (_queueMove)
             {
-                MoveToFixedPoint(_newMousePosition, _viewMoveMouseWorldCoord.Value, true);
+                MoveToFixedPoint(_lastMousePosition, _viewMoveMouseWorldCoord.Value, true);
                 Invalidate();
                 _queueMove = false;
             }
@@ -1128,7 +1128,6 @@ namespace TombLib.Controls.VisualScripting
 
             if (e.Button == MouseButtons.Right && _viewMoveMouseWorldCoord != null)
             {
-                _newMousePosition = e.Location;
                 _queueMove = true;
                 Resizing = true;
                 return;
@@ -1152,9 +1151,33 @@ namespace TombLib.Controls.VisualScripting
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
             _selectionArea = Rectangle2.Zero;
             _selectionInProgress = false;
             Invalidate();
+
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            var delta = Vector2.Distance(new VectorInt2(_lastMousePosition.X, _lastMousePosition.Y), 
+                                         new VectorInt2(_initialMousePosition.X, _initialMousePosition.Y));
+            if (delta > 4.0f)
+                return;
+
+            using (var funcList = new FormFunctionList(PointToScreen(e.Location), this, NodeFunctions))
+            {
+                if (funcList.ShowDialog(this) == DialogResult.Cancel ||
+                    funcList.SelectedFunction == null)
+                    return;
+
+                var node = MakeNode(funcList.SelectedFunction.Conditional);
+                node.Function = funcList.SelectedFunction.Signature;
+                node.ScreenPosition = FromVisualCoord(e.Location);
+
+                Nodes.Add(node);
+                UpdateVisibleNodes();
+                SelectNode(node, false, true);
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -1175,7 +1198,7 @@ namespace TombLib.Controls.VisualScripting
 
             if (e.Button == MouseButtons.Right)
             {
-                _lastMousePosition = e.Location;
+                _lastMousePosition = _initialMousePosition = e.Location;
                 Capture = true; // Capture mouse for zoom and panning
                 _viewMoveMouseWorldCoord = FromVisualCoord(e.Location);
             }

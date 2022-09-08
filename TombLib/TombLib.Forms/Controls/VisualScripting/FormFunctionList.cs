@@ -13,10 +13,12 @@ namespace TombLib.Controls.VisualScripting
 {
     public partial class FormFunctionList : PopUpWindow
     {
-        private DarkSearchableComboBox _callbackControl;
+        private Control _callbackControl;
         private int _currentIndex = -1;
 
-        public FormFunctionList(Point position, DarkSearchableComboBox callbackControl) : base(position, true)
+        public NodeFunction SelectedFunction { get; private set; }
+
+        public FormFunctionList(Point position, Control callbackControl, List<NodeFunction> functions) : base(position, true)
         {
             InitializeComponent();
             _callbackControl = callbackControl;
@@ -26,7 +28,7 @@ namespace TombLib.Controls.VisualScripting
             lblDesc.ForeColor = Colors.DisabledText;
 
             var nodes = new List<DarkTreeNode>();
-            var groups = callbackControl.Items.OfType<NodeFunction>().GroupBy(f => f.Section);
+            var groups = functions.OfType<NodeFunction>().GroupBy(f => f.Section);
 
             DarkTreeNode neededNode = null;
 
@@ -39,15 +41,18 @@ namespace TombLib.Controls.VisualScripting
                     var newNode = new DarkTreeNode(item.Name) { Tag = item };
                     rootNode.Nodes.Add(newNode);
 
-                    if (item == callbackControl.SelectedItem)
+                    if (item == ((callbackControl as DarkSearchableComboBox)?.SelectedItem ?? null))
                         neededNode = newNode;
                 }
 
                 treeFunctions.Nodes.Add(rootNode);
             }
 
-            treeFunctions.SelectNode(neededNode);
-            treeFunctions.EnsureVisible();
+            if (neededNode != null)
+            {
+                treeFunctions.SelectNode(neededNode);
+                treeFunctions.EnsureVisible();
+            }
 
             txtSearch.Focus(); 
         }
@@ -91,10 +96,30 @@ namespace TombLib.Controls.VisualScripting
                 treeFunctions.SelectNode(nodes[currNodeIndex]);
         }
 
+        private void ReturnResultAndClose()
+        {
+            if (SelectedFunction != null)
+                DialogResult = DialogResult.OK;
+            else
+                DialogResult = DialogResult.Cancel;
+
+            _callbackControl.FindForm().Activate();
+            Close();
+        }
+
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
-            Close();
+            ReturnResultAndClose();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            // HACK: Close modal form when clicked outside
+            if (m.Msg == 0x0086 && m.WParam.ToInt32() == 0)
+                ReturnResultAndClose();
+            else
+                base.WndProc(ref m);
         }
 
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)
@@ -107,14 +132,20 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             var func = treeFunctions.SelectedNodes.FirstOrDefault()?.Tag as NodeFunction;
+            SelectedFunction = func;
+
             if (func == null)
                 return;
 
-            var index = _callbackControl.Items.IndexOf(func);
-            if (index == -1)
-                return;
+            if (_callbackControl is DarkSearchableComboBox)
+            {
+                var index = (_callbackControl as DarkSearchableComboBox).Items.IndexOf(func);
+                if (index == -1)
+                    return;
 
-            _currentIndex = index;
+                _currentIndex = index;
+            }
+
             lblDesc.Text = TextExtensions.SingleLineToMultiLine(func.Description);
         }
 
@@ -131,11 +162,11 @@ namespace TombLib.Controls.VisualScripting
 
         private void treeFunctions_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (_currentIndex != -1)
-            {
-                _callbackControl.SelectedIndex = _currentIndex;
-                Close();
-            }
+            if (_currentIndex != -1 && _callbackControl is DarkSearchableComboBox)
+                (_callbackControl as DarkSearchableComboBox).SelectedIndex = _currentIndex;
+
+            if (SelectedFunction != null)
+                ReturnResultAndClose();
         }
     }
 }

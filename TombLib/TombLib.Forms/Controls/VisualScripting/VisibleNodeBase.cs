@@ -276,7 +276,7 @@ namespace TombLib.Controls.VisualScripting
             if (e.Button != MouseButtons.Right)
                 return;
 
-            var funcList = new FormFunctionList(Cursor.Position, cbFunction);
+            var funcList = new FormFunctionList(Cursor.Position, cbFunction, cbFunction.Items.OfType<NodeFunction>().ToList());
             funcList.Show(this.FindForm());
         }
 
