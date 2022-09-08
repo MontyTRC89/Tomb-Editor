@@ -41,7 +41,6 @@ namespace TombLib.Controls.VisualScripting
             this.tbText.Location = new System.Drawing.Point(6, 6);
             this.tbText.Multiline = true;
             this.tbText.Name = "tbText";
-            this.tbText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbText.Size = new System.Drawing.Size(404, 210);
             this.tbText.TabIndex = 0;
             this.tbText.TextChanged += new System.EventHandler(this.tbText_TextChanged);

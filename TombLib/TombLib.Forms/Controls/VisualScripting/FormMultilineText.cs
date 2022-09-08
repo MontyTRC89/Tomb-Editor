@@ -20,6 +20,12 @@ namespace TombLib.Controls.VisualScripting
             tbText.Text = TextExtensions.SingleLineToMultiLine(callbackControl.Text);
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            tbText.DeselectAll();
+        }
+
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
@@ -40,13 +46,8 @@ namespace TombLib.Controls.VisualScripting
             {
                 var size = g.MeasureString(tbText.Text, tbText.Font, tbText.Width);
                 var dimensions = new Size((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height));
-                tbText.ScrollBars = dimensions.Height > tbText.Height ? ScrollBars.Vertical : ScrollBars.None;
+                tbText.ScrollBars = dimensions.Height > tbText.Height - tbText.Padding.Top - tbText.Padding.Bottom ? ScrollBars.Vertical : ScrollBars.None;
             }
-
-            if (tbText.Text.Split(Environment.NewLine.ToCharArray()).Length > 20)
-                tbText.ScrollBars = ScrollBars.Vertical;
-            else
-                tbText.ScrollBars = ScrollBars.None;
 
             _callbackControl.Text = TextExtensions.MultiLineToSingleLine(tbText.Text);
         }
