@@ -429,6 +429,9 @@ namespace TombEditor.Controls
         {
             var result = new List<TriggerNode>();
 
+            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+                return result;
+
             if (nodeEditor.SelectedNodes.Count == 0)
                 return result;
 
@@ -443,6 +446,9 @@ namespace TombEditor.Controls
 
         public void PasteNodes(List<TriggerNode> nodes)
         {
+            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+                return;
+
             if (nodes.Count == 0)
                 return;
 
