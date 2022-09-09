@@ -416,7 +416,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxListValue()
         {
-            _text = (cbList.SelectedItem as ComboBoxItem)?.Value;
+            _text = (cbList.SelectedItem as ComboBoxItem)?.Value ?? string.Empty;
             OnValueChanged();
         }
 
