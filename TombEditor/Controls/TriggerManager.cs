@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
@@ -422,6 +423,32 @@ namespace TombEditor.Controls
         private void butLinkSelectedNodes_Click(object sender, EventArgs e)
         {
             nodeEditor.LinkSelectedNodes();
+        }
+
+        public List<TriggerNode> CopyNodes(bool cut)
+        {
+            var result = new List<TriggerNode>();
+
+            if (nodeEditor.SelectedNodes.Count == 0)
+                return result;
+
+            foreach (var node in nodeEditor.SelectedNodes.Where(n => !nodeEditor.SelectedNodes.Contains(n.Previous)))
+                result.Add(node.Clone());
+
+            if (cut)
+                nodeEditor.DeleteNodes();
+
+            return result;
+        }
+
+        public void PasteNodes(List<TriggerNode> nodes)
+        {
+            if (nodes.Count == 0)
+                return;
+
+            nodes.ForEach(n => nodeEditor.Nodes.Add(n.Clone()));
+            nodeEditor.UpdateVisibleNodes();
+            nodeEditor.ShowNode(nodeEditor.Nodes.First());
         }
 
         public void ProcessKey(Keys keyCode)

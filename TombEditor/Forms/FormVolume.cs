@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombEditor.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -20,6 +22,8 @@ namespace TombEditor.Forms
 
         private List<VolumeEventSet> _backupEventSetList;
         private Dictionary<VolumeInstance, int> _backupVolumes;
+
+        private List<TriggerNode> _clipboard;
 
         private readonly PopUpInfo _popup = new PopUpInfo();
 
@@ -344,17 +348,44 @@ namespace TombEditor.Forms
             // controls, we need to introduce this helper function to translate pressed key info
             // to currently active trigger manager.
 
+            TriggerManager manager = null;
+
             switch (tcEvents.SelectedIndex)
             {
                 case 0:
-                    tmEnter.ProcessKey(keyData);
+                    manager = tmEnter;
                     break;
                 case 1:
-                    tmInside.ProcessKey(keyData);
+                    manager = tmInside;
                     break;
                 case 2:
-                    tmLeave.ProcessKey(keyData);
+                    manager = tmLeave;
                     break;
+            }
+
+            switch (keyData)
+            {
+                case (Keys.Control | Keys.C):
+                    var copiedNodes = manager.CopyNodes(false);
+                    if (copiedNodes.Count > 0)
+                    {
+                        _clipboard = copiedNodes;
+                        _editor.SendMessage("Selected nodes are copied to clipboard.", PopupType.Info);
+                    }
+                    break;
+
+                case (Keys.Control | Keys.X):
+                    _clipboard = manager.CopyNodes(true);
+                    break;
+
+                case (Keys.Control | Keys.V):
+                    manager.PasteNodes(_clipboard);
+                    break;
+
+                default:
+                    manager.ProcessKey(keyData);
+                    break;
+
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
