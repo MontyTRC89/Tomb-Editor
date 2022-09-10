@@ -161,10 +161,10 @@ namespace TombLib.Controls.VisualScripting
 
             int refWidth = Width - _elementSpacing * 2; 
             int newY = _elementSpacing;
-            int newX = _elementSpacing;
+            int newX = _elementSpacing + GripSize;
 
             cbFunction.Size = new Size(refWidth, _elementHeight);
-            cbFunction.Location = new Point(_elementSpacing, _elementSpacing);
+            cbFunction.Location = new Point(newX, newY);
 
             var elementsOnLines = new List<int>();
             int elements = 1;
@@ -205,7 +205,7 @@ namespace TombLib.Controls.VisualScripting
 
                 if (func.Arguments[i].NewLine)
                 {
-                    newX  = _elementSpacing;
+                    newX  = _elementSpacing + GripSize;
                     newY += _elementHeight + _elementSpacing;
                 }
                 else

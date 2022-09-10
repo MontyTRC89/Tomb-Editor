@@ -123,6 +123,7 @@ namespace TombEditor.Controls
             nodeEditor.GridStep = _editor.Configuration.NodeEditor_GridStep;
             nodeEditor.DefaultNodeWidth = _editor.Configuration.NodeEditor_DefaultNodeWidth;
             nodeEditor.LinksAsRopes = _editor.Configuration.NodeEditor_LinksAsRopes;
+            nodeEditor.ShowGrips = _editor.Configuration.NodeEditor_ShowGrips;
         }
 
         private void SelectTriggerMode()

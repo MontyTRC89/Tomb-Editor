@@ -119,12 +119,14 @@ namespace TombLib.Controls.VisualScripting
         public int GridSize { get; set; } = 256;
         public int DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
         public bool LinksAsRopes { get; set; } = false;
+        public bool ShowGrips { get; set; } = false;
 
         private const float _mouseWheelScrollFactor = 0.04f;
 
         private const float _hotNodeTransparency = 0.6f;
         private const float _connectedNodeTransparency = 0.8f;
         private const int _selectionThickness = 2;
+        private const int _gripSize = 8;
 
         private Vector3 _defaultConditionNodeTint = new Vector3(0.8f, 1.0f, 0.8f);
         private Vector3 _defaultActionNodeTint = new Vector3(0.8f, 0.8f, 1.0f);
@@ -635,6 +637,7 @@ namespace TombLib.Controls.VisualScripting
                 control.Visible = false;
                 control.SnapToBorders = false;
                 control.DragAnyPoint = true;
+                control.GripSize = ShowGrips ? _gripSize : 0;
                 control.Size = new Size(node.Size, control.Size.Height);
 
                 if (node.ScreenPosition.Y == float.MaxValue)
