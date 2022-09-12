@@ -1,7 +1,9 @@
+LevelFuncs.Engine.Node = {}
+
 -- Helper function for value comparisons. Any function which uses
 -- CompareOperand arguments should use this helper function for comparison.
 
-LevelFuncs.CompareValue = function(value, reference, operand)
+LevelFuncs.Engine.Node.CompareValue = function(value, reference, operand)
 
 	local result = false
 	if (operand == 0 and value == reference) then result = true end
@@ -15,7 +17,7 @@ end
 
 -- Helper function for easy generation of a display string with all parameters set.
 
-LevelFuncs.GenerateString = function(text, x, y, center, shadow, color)
+LevelFuncs.Engine.Node.GenerateString = function(text, x, y, center, shadow, color)
 
 	local options = { }
 	if (shadow == true) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end

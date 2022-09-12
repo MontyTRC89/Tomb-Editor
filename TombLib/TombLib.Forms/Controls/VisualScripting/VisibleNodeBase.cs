@@ -159,12 +159,12 @@ namespace TombLib.Controls.VisualScripting
 
             Size = new Size(Node.Size, Size.Height);
 
-            int refWidth = Width - _elementSpacing * 2; 
+            int refWidth = (Width - _elementSpacing * 2) - GripSize; 
             int newY = _elementSpacing;
-            int newX = _elementSpacing;
+            int newX = _elementSpacing + GripSize;
 
             cbFunction.Size = new Size(refWidth, _elementHeight);
-            cbFunction.Location = new Point(_elementSpacing, _elementSpacing);
+            cbFunction.Location = new Point(newX, newY);
 
             var elementsOnLines = new List<int>();
             int elements = 1;
@@ -196,16 +196,15 @@ namespace TombLib.Controls.VisualScripting
                 if (func.Arguments[i].NewLine)
                     line++;
 
-                var normScale = func.Arguments[i].Width / 100.0f;
-                int workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
+                float normScale = func.Arguments[i].Width / 100.0f;
+                float workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
 
                 ctrl.SetToolTip(toolTip, TextExtensions.SingleLineToMultiLine(func.Arguments[i].Description));
                 ctrl.SetArgumentType(func.Arguments[i], Editor);
-                ctrl.Size = new Size((int)(workLineWidth * normScale), cbFunction.Height);
 
                 if (func.Arguments[i].NewLine)
                 {
-                    newX  = _elementSpacing;
+                    newX  = _elementSpacing + GripSize;
                     newY += _elementHeight + _elementSpacing;
                 }
                 else
@@ -216,6 +215,13 @@ namespace TombLib.Controls.VisualScripting
                         newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
                 }
 
+                var controlSize = new Size((int)Math.Round(workLineWidth * normScale), cbFunction.Height);
+
+                // HACK: Trim second-line controls which may stick of bounds due to accumulated rounding error
+                if (line > 0 && controlSize.Width + newX > Size.Width - _elementSpacing)
+                    controlSize.Width = controlSize.Width - ((controlSize.Width + newX) - (Size.Width - _elementSpacing));
+
+                ctrl.Size = controlSize;
                 ctrl.Location = new Point(newX, newY);
                 ctrl.ValueChanged += Ctrl_ValueChanged;
                 ctrl.LocatedItemFound += Ctrl_LocatedItemFound;

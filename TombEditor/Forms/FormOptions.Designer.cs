@@ -256,6 +256,7 @@
             this.darkLabel75 = new DarkUI.Controls.DarkLabel();
             this.darkLabel76 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown43 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkCheckBox48 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -348,7 +349,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 484);
+            this.tabPage6.Size = new System.Drawing.Size(386, 511);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -359,7 +360,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -2565,7 +2566,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(386, 484);
+            this.tabPage4.Size = new System.Drawing.Size(386, 511);
             this.tabPage4.TabIndex = 22;
             this.tabPage4.Text = "Texture map";
             // 
@@ -3130,6 +3131,8 @@
             // 
             // tabPage9
             // 
+            this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage9.Controls.Add(this.darkCheckBox48);
             this.tabPage9.Controls.Add(this.darkCheckBox38);
             this.tabPage9.Controls.Add(this.darkLabel78);
             this.tabPage9.Controls.Add(this.darkComboBox2);
@@ -3146,7 +3149,6 @@
             this.tabPage9.Size = new System.Drawing.Size(386, 511);
             this.tabPage9.TabIndex = 24;
             this.tabPage9.Text = "Node editor";
-            this.tabPage9.UseVisualStyleBackColor = true;
             // 
             // darkCheckBox38
             // 
@@ -3329,6 +3331,16 @@
             0,
             0,
             0});
+            // 
+            // darkCheckBox48
+            // 
+            this.darkCheckBox48.AutoSize = true;
+            this.darkCheckBox48.Location = new System.Drawing.Point(9, 182);
+            this.darkCheckBox48.Name = "darkCheckBox48";
+            this.darkCheckBox48.Size = new System.Drawing.Size(158, 17);
+            this.darkCheckBox48.TabIndex = 57;
+            this.darkCheckBox48.Tag = "NodeEditor_ShowGrips";
+            this.darkCheckBox48.Text = "Show side grips for nodes";
             // 
             // FormOptions
             // 
@@ -3660,5 +3672,6 @@
         private DarkUI.Controls.DarkLabel darkLabel78;
         private DarkUI.Controls.DarkComboBox darkComboBox2;
         private DarkUI.Controls.DarkCheckBox darkCheckBox38;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox48;
     }
 }
