@@ -201,7 +201,7 @@ namespace TombLib.Controls.VisualScripting
         public void SetToolTip(ToolTip toolTip, string caption)
         {
             foreach (TabPage tab in container.TabPages)
-                foreach (Control control in tab.Controls)
+                foreach (Control control in WinFormsUtils.AllSubControls(tab))
                 {
                     toolTip.SetToolTip(control, caption);
 

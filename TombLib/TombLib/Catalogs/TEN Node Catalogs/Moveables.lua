@@ -35,7 +35,7 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable is currently playing specified animation number."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
@@ -45,10 +45,60 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current state is the one specified."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.Engine.Node.TestMoveableCurrentState = function(moveableName, stateId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
+end
+
+-- !Name "If rotation of a moveable is within range..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current rotation is within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 15, [ 0 | 359 | 0 ], In range (in degrees)" "Numerical, 15, [ 0 | 359 | 0 ], Out range (in degrees)"
+
+LevelFuncs.Engine.Node.TestMoveableRotation = function(moveableName, rot1, rot2)
+	local rot = TEN.Objects.GetMoveableByName(moveableName):GetRotation().y
+	return (rot >= rot1 and rot <= rot2)
+end
+
+-- !Name "If position of a moveable is within range..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current position is within specified range."
+-- !Description "If single-dimension check is needed, set other dimensions to values well out of level bounds."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 ], Upper position bound" "NewLine, Vector3, [ -1000000 | 1000000 | 0 ], Lower position bound"
+
+LevelFuncs.Engine.Node.TestMoveablePosition = function(moveableName, pos1, pos2)
+	local pos = TEN.Objects.GetMoveableByName(moveableName):GetPosition()
+	return (pos.x >= pos1.x and pos.x <= pos2.x and
+			pos.y >= pos1.y and pos.y <= pos2.y and
+			pos.z >= pos1.z and pos.z <= pos2.z)
+end
+
+-- !Name "If OCB of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current OCB is equal to specified."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 30, [ -65536 | 65535 | 0 ], OCB value"
+
+LevelFuncs.Engine.Node.TestMoveableOCB = function(moveableName, value)
+	local ocb = TEN.Objects.GetMoveableByName(moveableName):GetOCB()
+	return (ocb == value)
+end
+
+-- !Name "If mesh number of a moveable is visible..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's mesh index is visible."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 30, [ 0 | 31 | 0 ], Mesh index to check"
+
+LevelFuncs.Engine.Node.TestMoveableMeshVisibility = function(moveableName, value)
+	return TEN.Objects.GetMoveableByName(moveableName):MeshIsVisible(value)
 end
 
 -- !Name "Enable moveable"
@@ -72,7 +122,7 @@ end
 -- !Name "Set moveable's animation"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's animation."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.Engine.Node.SetMoveableAnimation = function(moveableName, animationId)
     TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
@@ -81,7 +131,7 @@ end
 -- !Name "Set moveable's state"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's next state."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.Engine.Node.SetMoveableState = function(moveableName, stateId)
     TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
@@ -94,6 +144,16 @@ end
 
 LevelFuncs.Engine.Node.ShatterMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Shatter()
+end
+
+-- !Name "Shatter specified moveable mesh"
+-- !Section "Moveable state"
+-- !Description "Shatters specified moveable mesh."
+-- !Arguments "NewLine, Moveables, 85"
+-- !Arguments "Numerical, 15, [ 0 | 31 | 0 ], Mesh index to shatter"
+
+LevelFuncs.Engine.Node.ShatterMoveableMesh = function(moveableName, value)
+	TEN.Objects.GetMoveableByName(moveableName):ShatterMesh(value)
 end
 
 -- !Name "Explode moveable"
@@ -120,7 +180,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
-LevelFuncs.Engine.Node.SetHitPoints = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetMoveableHitPoints = function(operation, value, moveableName)
 
 	if (operation == 0) then
 		local moveable = TEN.Objects.GetMoveableByName(moveableName)
@@ -130,6 +190,15 @@ LevelFuncs.Engine.Node.SetHitPoints = function(operation, value, moveableName)
 	end
 end
 
+-- !Name "Modify OCB of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable OCB."
+-- !Arguments "Numerical, [ -65536 | 65535 | 0 | 1 | 5 ], 20, OCB to define", "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.SetMoveableOCB = function(value, moveableName)
+	TEN.Objects.GetMoveableByName(moveableName):SetOCB(value)
+end
+
 -- !Name "Modify position of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable position."
@@ -137,7 +206,7 @@ end
 -- !Arguments "Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 75, Position value to define"
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.Engine.Node.SetPosition = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetMoveablePosition = function(operation, value, moveableName)
 
 	local moveable = TEN.Objects.GetMoveableByName(moveableName)
 
@@ -158,7 +227,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
 
-LevelFuncs.Engine.Node.SetRotation = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveableName)
 
 	local moveable = TEN.Objects.GetMoveableByName(moveableName)
 	local rotation = moveable:GetRotation();
@@ -184,6 +253,20 @@ end
 -- !Description "Sets moveable tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
 
-LevelFuncs.Engine.Node.SetColor = function(moveableName, color)
+LevelFuncs.Engine.Node.SetMoveableColor = function(moveableName, color)
     TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set specified moveable mesh visibility"
+-- !Section "Moveable parameters"
+-- !Description "Sets specified moveable mesh visibility."
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 15, [ 0 | 31 | 0 ], Mesh index to check" "Boolean, 15, Visible"
+
+LevelFuncs.Engine.Node.SetMoveableMeshVisibility = function(moveableName, value, state)
+	if (state == true) then
+		TEN.Objects.GetMoveableByName(moveableName):ShowMesh(value)
+	else
+		TEN.Objects.GetMoveableByName(moveableName):HideMesh(value)
+	end
 end

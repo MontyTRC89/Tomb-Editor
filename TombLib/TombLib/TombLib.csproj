@@ -64,6 +64,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Controls.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Creatures.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Effects.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
