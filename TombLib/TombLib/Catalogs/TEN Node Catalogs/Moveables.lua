@@ -101,6 +101,16 @@ LevelFuncs.Engine.Node.TestMoveableMeshVisibility = function(moveableName, value
 	return TEN.Objects.GetMoveableByName(moveableName):MeshIsVisible(value)
 end
 
+-- !Name "If creature was hit with weapon..."
+-- !Section "Creature state"
+-- !Description "Checks if creature was shot with any weapon."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableHitStatus = function(moveableName)
+	return TEN.Objects.GetMoveableByName(moveableName):GetHitStatus()
+end
+
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
 -- !Description "Enables moveable."
