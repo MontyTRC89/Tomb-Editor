@@ -28,8 +28,8 @@ end
 -- !Name "Set cinematic bars"
 -- !Section "Effects"
 -- !Description "Toggle cinematic bars visibility."
--- !Arguments "Numerical, 15, [0 | 100 | 0 ], Cinematic bars height"
--- !Arguments "Numerical, 15, [0 | 100 | 0 ], Cinematic bars speed"
+-- !Arguments "Numerical, 15, [0 | 100 ], Cinematic bars height"
+-- !Arguments "Numerical, 15, [0 | 100 ], Cinematic bars speed"
 
 LevelFuncs.Engine.Node.SetCineBars = function(height, speed)
     TEN.Misc.SetCineBars(height, speed)
@@ -47,7 +47,7 @@ end
 -- !Name "Shake camera"
 -- !Section "Effects"
 -- !Description "Shakes camera with specified strength.\nStrength also determines how long effect would take place."
--- !Arguments "Numerical, 20, [ 0 | 256 | 0 ], Shake strength" 
+-- !Arguments "Numerical, 20, [ 0 | 256 ], Shake strength" 
 
 LevelFuncs.Engine.Node.ShakeCamera = function(strength)
     TEN.Effects.MakeEarthquake(strength)
