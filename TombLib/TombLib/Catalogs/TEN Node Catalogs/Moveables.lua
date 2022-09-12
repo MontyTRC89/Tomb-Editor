@@ -35,7 +35,7 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable is currently playing specified animation number."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
@@ -45,10 +45,37 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current state is the one specified."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.Engine.Node.TestMoveableCurrentState = function(moveableName, stateId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
+end
+
+-- !Name "If rotation of a moveable is within range..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current rotation is within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 15, [ 0 | 359 | 0 ], In range (in degrees)" "Numerical, 15, [ 0 | 359 | 0 ], Out range (in degrees)"
+
+LevelFuncs.Engine.Node.TestMoveableRotation = function(moveableName, rot1, rot2)
+	local rot = TEN.Objects.GetMoveableByName(moveableName):GetRotation().y
+	return (rot >= rot1 and rot <= rot2)
+end
+
+-- !Name "If position of a moveable is within range..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current position is within specified range."
+-- !Description "If single-dimension check is needed, set other dimensions to values well out of level bounds."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 ], Upper position bound" "NewLine, Vector3, [ -1000000 | 1000000 | 0 ], Lower position bound"
+
+LevelFuncs.Engine.Node.TestMoveablePosition = function(moveableName, pos1, pos2)
+	local pos = TEN.Objects.GetMoveableByName(moveableName):GetPosition()
+	return (pos.x >= pos1.x and pos.x <= pos2.x and
+			pos.y >= pos1.y and pos.y <= pos2.y and
+			pos.z >= pos1.z and pos.z <= pos2.z)
 end
 
 -- !Name "Enable moveable"
@@ -72,7 +99,7 @@ end
 -- !Name "Set moveable's animation"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's animation."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
 LevelFuncs.Engine.Node.SetMoveableAnimation = function(moveableName, animationId)
     TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
@@ -81,7 +108,7 @@ end
 -- !Name "Set moveable's state"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's next state."
--- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
 LevelFuncs.Engine.Node.SetMoveableState = function(moveableName, stateId)
     TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
