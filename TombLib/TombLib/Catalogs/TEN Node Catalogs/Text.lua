@@ -5,9 +5,9 @@
 -- !Arguments "NewLine, Numerical, 20, X position, [ 0 | 100 | 0 ]" "Numerical, 20, Y position, [ 0 | 100 | 0 ]" 
 -- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 20, Text color"
 
-LevelFuncs.DrawText = function(text, x, y, center, shadow, color)
+LevelFuncs.Engine.Node.DrawText = function(text, x, y, center, shadow, color)
 
-	local string = LevelFuncs.GenerateString(text, x, y, center, shadow, color)
+	local string = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
 	TEN.Strings.ShowString(string, 1 / 30)
 end
 
@@ -19,8 +19,8 @@ end
 -- !Arguments "NewLine, Numerical, 20, X position, [ 0 | 100 | 0 ]" "Numerical, 20, Y position, [ 0 | 100 | 0 ]" 
 -- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 20, Text color"
 
-LevelFuncs.DrawTextForTimespan = function(time, text, x, y, center, shadow, color)
+LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, center, shadow, color)
 
-	local string = LevelFuncs.GenerateString(text, x, y, center, shadow, color)
+	local string = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
 	TEN.Strings.ShowString(string, time)
 end

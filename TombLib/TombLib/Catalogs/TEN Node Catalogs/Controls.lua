@@ -4,7 +4,7 @@
 -- !Conditional "True"
 -- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
 
-LevelFuncs.KeyIsHit = function(keyCode)
+LevelFuncs.Engine.Node.KeyIsHit = function(keyCode)
 	return TEN.Misc.KeyIsHit(keyCode)
 end
 
@@ -14,6 +14,6 @@ end
 -- !Conditional "True"
 -- !Arguments "NewLine, Enumeration, [ Forward | Back | Left | Right | Crouch | Sprint | Walk | Jump | Action | Draw | Flare | Look | Roll | Inventory | Pause | Step Left | Step Right ]"
 
-LevelFuncs.KeyIsHeld = function(keyCode)
+LevelFuncs.Engine.Node.KeyIsHeld = function(keyCode)
 	return TEN.Misc.KeyIsHeld(keyCode)
 end

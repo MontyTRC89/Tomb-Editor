@@ -5,9 +5,9 @@
 -- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperand, 70, Kind of check"
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]" 
 
-LevelFuncs.TestStaticScale = function(staticName, operand, value)
+LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operand, value)
 	local scale = TEN.Objects.GetStaticByName(staticName):GetScale()
-	return LevelFuncs.CompareValue(scale, value, operand)
+	return LevelFuncs.Engine.Node.CompareValue(scale, value, operand)
 end
 
 -- !Name "Enable static mesh"
@@ -15,7 +15,7 @@ end
 -- !Description "Enables static mesh, e.g. after shattering or manually disabling it."
 -- !Arguments "NewLine, Statics"
 
-LevelFuncs.EnableStatic = function(staticName)
+LevelFuncs.Engine.Node.EnableStatic = function(staticName)
     TEN.Objects.GetStaticByName(staticName):Enable()
 end
 
@@ -24,7 +24,7 @@ end
 -- !Description "Disables static mesh."
 -- !Arguments "NewLine, Statics"
 
-LevelFuncs.DisableStatic = function(staticName)
+LevelFuncs.Engine.Node.DisableStatic = function(staticName)
     TEN.Objects.GetStaticByName(staticName):Disable()
 end
 
@@ -33,7 +33,7 @@ end
 -- !Description "Plays specified sound ID around specified static mesh."
 -- !Arguments "NewLine, Statics, Static mesh to play sound around" "NewLine, SoundEffects, Sound to play"
 
-LevelFuncs.PlaySoundAroundMoveable = function(staticName, soundID)
+LevelFuncs.Engine.Node.PlaySoundAroundMoveable = function(staticName, soundID)
     TEN.Misc.PlaySound(soundID, TEN.Objects.GetStaticByName(staticName):GetPosition())
 end
 
@@ -44,7 +44,7 @@ end
 -- !Arguments "Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 75, Position value to define"
 -- !Arguments "NewLine, Statics"
 
-LevelFuncs.SetStaticPosition = function(operation, value, staticName)
+LevelFuncs.Engine.Node.SetStaticPosition = function(operation, value, staticName)
 
 	local stat = TEN.Objects.GetStaticByName(staticName)
 
@@ -65,7 +65,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Statics"
 
-LevelFuncs.SetStaticRotation = function(operation, value, staticName)
+LevelFuncs.Engine.Node.SetStaticRotation = function(operation, value, staticName)
 
 	local stat = TEN.Objects.GetStaticByName(staticName)
 	local rotation = stat:GetRotation();
@@ -92,7 +92,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 25, Scale value to define", "NewLine, Statics"
 
-LevelFuncs.SetStaticScale = function(operation, value, staticName)
+LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 
 	local stat = TEN.Objects.GetStaticByName(staticName)
 
@@ -109,7 +109,7 @@ end
 -- !Description "Sets static mesh tint to a given value."
 -- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour" 
 
-LevelFuncs.SetStaticColor = function(staticName, color)
+LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
     TEN.Objects.GetStaticByName(staticName):SetColor(color)
 end
 
@@ -118,6 +118,6 @@ end
 -- !Description "Shatters static mesh.\nAlso applicable to non-shatterable statics."
 -- !Arguments "NewLine, Statics"
 
-LevelFuncs.ShatterStatic = function(staticName)
+LevelFuncs.Engine.Node.ShatterStatic = function(staticName)
     TEN.Objects.GetStaticByName(staticName):Shatter()
 end

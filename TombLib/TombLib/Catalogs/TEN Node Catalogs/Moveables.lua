@@ -5,9 +5,9 @@
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 0 | 1 | 5 ]" 
 
-LevelFuncs.TestHitPoints = function(moveableName, operand, value)
+LevelFuncs.Engine.Node.TestHitPoints = function(moveableName, operand, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
-	return LevelFuncs.CompareValue(health, value, operand)
+	return LevelFuncs.Engine.Node.CompareValue(health, value, operand)
 end
 
 -- !Name "If ID of a moveable is..."
@@ -16,7 +16,7 @@ end
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, Object to check" "NewLine, WadSlots, Object ID to compare to"
 
-LevelFuncs.TestMoveableId = function(moveableName, objectId)
+LevelFuncs.Engine.Node.TestMoveableId = function(moveableName, objectId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
 end
 
@@ -27,7 +27,7 @@ end
 -- !Arguments "NewLine, Moveables, Object to check"
 -- !Arguments "NewLine, String, Object name to compare to"
 
-LevelFuncs.TestMoveableName = function(moveableName, name)
+LevelFuncs.Engine.Node.TestMoveableName = function(moveableName, name)
 	return TEN.Objects.GetMoveableByName(moveableName):GetName() == name
 end
 
@@ -37,7 +37,7 @@ end
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
-LevelFuncs.TestMoveableAnimation = function(moveableName, animationId)
+LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
@@ -47,7 +47,7 @@ end
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
-LevelFuncs.TestMoveableCurrentState = function(moveableName, stateId)
+LevelFuncs.Engine.Node.TestMoveableCurrentState = function(moveableName, stateId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
 end
 
@@ -56,7 +56,7 @@ end
 -- !Description "Enables moveable."
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.EnableMoveable = function(moveableName)
+LevelFuncs.Engine.Node.EnableMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Enable()
 end
 
@@ -65,7 +65,7 @@ end
 -- !Description "Disables moveable."
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.DisableMoveable = function(moveableName)
+LevelFuncs.Engine.Node.DisableMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Disable()
 end
 
@@ -74,7 +74,7 @@ end
 -- !Description "Sets moveable's animation."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], Animation ID"
 
-LevelFuncs.SetMoveableAnimation = function(moveableName, animationId)
+LevelFuncs.Engine.Node.SetMoveableAnimation = function(moveableName, animationId)
     TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
 end
 
@@ -83,7 +83,7 @@ end
 -- !Description "Sets moveable's next state."
 -- !Arguments "NewLine, Moveables, 80"  "Numerical, 20, [ 0 | 1000 | 0 ], State ID"
 
-LevelFuncs.SetMoveableState = function(moveableName, stateId)
+LevelFuncs.Engine.Node.SetMoveableState = function(moveableName, stateId)
     TEN.Objects.GetMoveableByName(moveableName):SetState(stateId)
 end
 
@@ -92,7 +92,7 @@ end
 -- !Description "Shatters object in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.ShatterMoveable = function(moveableName)
+LevelFuncs.Engine.Node.ShatterMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Shatter()
 end
 
@@ -101,7 +101,7 @@ end
 -- !Description "Explodes object."
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.ExplodeMoveable = function(moveableName)
+LevelFuncs.Engine.Node.ExplodeMoveable = function(moveableName)
     TEN.Objects.GetMoveableByName(moveableName):Explode()
 end
 
@@ -110,7 +110,7 @@ end
 -- !Description "Plays specified sound ID around specified moveable."
 -- !Arguments "NewLine, Moveables, Moveable to play sound around" "NewLine, SoundEffects, Sound to play"
 
-LevelFuncs.PlaySoundAroundMoveable = function(moveableName, soundID)
+LevelFuncs.Engine.Node.PlaySoundAroundMoveable = function(moveableName, soundID)
     TEN.Misc.PlaySound(soundID, TEN.Objects.GetMoveableByName(moveableName):GetPosition())
 end
 
@@ -120,7 +120,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Health value to define", "NewLine, Moveables"
 
-LevelFuncs.SetHitPoints = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetHitPoints = function(operation, value, moveableName)
 
 	if (operation == 0) then
 		local moveable = TEN.Objects.GetMoveableByName(moveableName)
@@ -137,7 +137,7 @@ end
 -- !Arguments "Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 75, Position value to define"
 -- !Arguments "NewLine, Moveables"
 
-LevelFuncs.SetPosition = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetPosition = function(operation, value, moveableName)
 
 	local moveable = TEN.Objects.GetMoveableByName(moveableName)
 
@@ -158,7 +158,7 @@ end
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
 
-LevelFuncs.SetRotation = function(operation, value, moveableName)
+LevelFuncs.Engine.Node.SetRotation = function(operation, value, moveableName)
 
 	local moveable = TEN.Objects.GetMoveableByName(moveableName)
 	local rotation = moveable:GetRotation();
@@ -184,6 +184,6 @@ end
 -- !Description "Sets moveable tint to a given value."
 -- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour" 
 
-LevelFuncs.SetColor = function(moveableName, color)
+LevelFuncs.Engine.Node.SetColor = function(moveableName, color)
     TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
 end

@@ -5,7 +5,7 @@
 -- !Description "Every time this condition is called, chance is recalculated."
 -- !Arguments "Numerical, 15, [ 1 | 100 | 0 ], Percentage of event occurence"
 
-LevelFuncs.TestPercentageChance = function(percentageRange)
+LevelFuncs.Engine.Node.TestPercentageChance = function(percentageRange)
     return (math.random() * 100 <= percentageRange)
 end
 
@@ -15,7 +15,7 @@ end
 -- !Description "If number is more than level count, loads title."
 -- !Arguments "Numerical, 15, [ 0 | 99 | 0 ], Level number"
 
-LevelFuncs.EndLevel = function(number)
+LevelFuncs.Engine.Node.EndLevel = function(number)
     Flow.EndLevel(number)
 end
 
@@ -24,7 +24,7 @@ end
 -- !Description "Adds one secret to game secret count and plays secret soundtrack."
 -- !Arguments "Numerical, 15, [ 0 | 7 | 0 ], Level secret index"
 
-LevelFuncs.AddSecret = function(number)
+LevelFuncs.Engine.Node.AddSecret = function(number)
     TEN.Flow.AddSecret(number)
 end
 
@@ -33,7 +33,7 @@ end
 -- !Description "Overwrites current game secret count with provided one."
 -- !Arguments "Numerical, 15, [0 | 99 | 0], New secret count"
 
-LevelFuncs.SetSecretCount = function(number)
+LevelFuncs.Engine.Node.SetSecretCount = function(number)
     TEN.Flow.SetSecretCount(number)
 end
 
@@ -43,6 +43,6 @@ end
 -- !Conditional "True"
 -- !Arguments "CompareOperand, 25, Compare operation" "Numerical, 15, [0 | 99 | 0 ], Secret count"
 
-LevelFuncs.GetSecretCount = function(operand, number)
-    return LevelFuncs.CompareValue(TEN.Flow.GetSecretCount(), number, operand)
+LevelFuncs.Engine.Node.GetSecretCount = function(operand, number)
+    return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operand)
 end

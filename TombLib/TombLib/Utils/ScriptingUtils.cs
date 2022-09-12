@@ -32,6 +32,7 @@ namespace TombLib.Utils
         public const string ReservedFunctionPrefix = "__";
 
         public const string LevelFuncPrefix = "LevelFuncs" + Splitter;
+        public const string NodeCatalogPrefix = LevelFuncPrefix + "Engine" + Splitter + "Node" + Splitter;
     }
 
     public static class ScriptingUtils
@@ -152,7 +153,7 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         line = string.Empty;
 
-                    if (line.StartsWith(LuaSyntax.LevelFuncPrefix))
+                    if (line.StartsWith(LuaSyntax.NodeCatalogPrefix))
                     {
                         if (ignore)
                         {
@@ -160,7 +161,7 @@ namespace TombLib.Utils
                             continue;
                         }
 
-                        int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
+                        int indexStart = line.LastIndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
                     }
@@ -267,7 +268,7 @@ namespace TombLib.Utils
 
         private static string ParseFunctionString(string function, List<string> arguments)
         {
-            string joined = LuaSyntax.LevelFuncPrefix + function + LuaSyntax.BracketOpen;
+            string joined = LuaSyntax.NodeCatalogPrefix + function + LuaSyntax.BracketOpen;
 
             for (int i = 0; i < arguments.Count; i++)
             {
