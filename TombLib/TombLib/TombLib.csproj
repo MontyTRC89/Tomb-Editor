@@ -378,7 +378,7 @@
     <None Include="Catalogs\TEN Node Catalogs\Flow.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Catalogs\TEN Node Catalogs\_Helpers.lua">
+    <None Include="Catalogs\TEN Node Catalogs\_System.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Catalogs\TEN Node Catalogs\Moveables.lua">

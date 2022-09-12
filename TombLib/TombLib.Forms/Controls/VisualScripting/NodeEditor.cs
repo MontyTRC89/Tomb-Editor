@@ -169,10 +169,14 @@ namespace TombLib.Controls.VisualScripting
                      ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.Selectable, true);
 
-            InitializeComponent();
+            AllowDrop = true;
+            DoubleBuffered = true;
 
             _updateTimer = new Timer { Interval = 10 };
             _updateTimer.Tick += UpdateTimer_Tick;
+
+            DragDrop += NodeEditor_DragDrop;
+            DragEnter += NodeEditor_DragEnter;
         }
 
         protected override void Dispose(bool disposing)
@@ -180,13 +184,13 @@ namespace TombLib.Controls.VisualScripting
             _updateTimer.Stop();
             _updateTimer.Tick -= UpdateTimer_Tick;
 
+            DragDrop -= NodeEditor_DragDrop;
+            DragEnter -= NodeEditor_DragEnter;
+
             foreach (Control control in Controls)
                 control.Dispose();
 
             Controls.Clear();
-
-            if (disposing && (components != null))
-                components.Dispose();
 
             base.Dispose(disposing);
         }

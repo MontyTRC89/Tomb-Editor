@@ -44,8 +44,8 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
   
       - For Numerical and Vector3 value types, first and second ENUMDESC values determine min/max UI range of
         value. Optional third argument specifies amount of decimal places (for integer, set it to 0). Optional
-	fourth and fifth values determine mousewheel increment and alternate increment (with shift button 
-	pressed) respectively.
+        fourth and fifth values determine mousewheel increment and alternate increment (with shift button 
+        pressed) respectively.
       - For Moveables and WadSlots lists, ENUMDESC values will filter out object ID names which contain any of
         ENUMDESCs only.
       - For Enumeration, ENUMDESC values will be displayed as is but converted to numericals on compilation
@@ -54,11 +54,11 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
    - **Any other string value except listed above** - tooltip for a given argument control.
    
  - **!Ignore** - if this keyword is used, nearest encountered function declaration will be ignored. Useful if you
-   need to place helper functions which must be ignored by parser (however, it is recommended to use `Helpers.lua`
+   need to place helper functions which must be ignored by parser (however, it is recommended to use `_System.lua`
    file for those).
  
 
-Metadata blocks can appear in any order, except **!Name** - it resets parsing of current function.
+Metadata blocks can appear in any order.
 
 Metadata parsing happens until real function block starts (which should start with LevelFuncs. prefix).
 

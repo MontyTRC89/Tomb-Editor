@@ -162,9 +162,6 @@
     <Compile Include="Controls\VisualScripting\NodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\VisualScripting\NodeEditor.Designer.cs">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\VisualScripting\VisibleNodeAction.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -266,9 +263,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VisualScripting\FormMultilineText.resx">
       <DependentUpon>FormMultilineText.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\VisualScripting\NodeEditor.resx">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VisualScripting\VisibleNodeBase.resx">
       <DependentUpon>VisibleNodeBase.cs</DependentUpon>
