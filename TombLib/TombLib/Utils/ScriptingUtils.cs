@@ -64,7 +64,7 @@ namespace TombLib.Utils
             if (!Directory.Exists(path))
                 return result;
 
-            foreach (var file in Directory.GetFiles(path).Where(p => p.EndsWith(".lua"))) try
+            foreach (var file in Directory.GetFiles(path).Where(p => !p.StartsWith("_") && p.EndsWith(".lua"))) try
             {
                 var lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
                 var nodeFunction = new NodeFunction();

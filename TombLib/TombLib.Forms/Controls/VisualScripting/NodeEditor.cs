@@ -636,7 +636,7 @@ namespace TombLib.Controls.VisualScripting
                 control.BackColor = node.Color.ToWinFormsColor();
                 control.Visible = false;
                 control.SnapToBorders = false;
-                control.DragAnyPoint = true;
+                control.DragAnyPoint = !ShowGrips;
                 control.GripSize = ShowGrips ? _gripSize : 0;
                 control.Size = new Size(node.Size, control.Size.Height);
 
