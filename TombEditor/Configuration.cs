@@ -136,7 +136,7 @@ namespace TombEditor
         public int NodeEditor_Size { get; set; } = 256;
         public int NodeEditor_DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
         public int NodeEditor_GridStep { get; set; } = 8;
-        public bool NodeEditor_LinksAsRopes { get; set; } = false;
+        public bool NodeEditor_LinksAsRopes { get; set; } = true;
         public bool NodeEditor_ShowGrips { get; set; } = true;
         public int NodeEditor_DefaultEventMode { get; set; } = 1;
         public int NodeEditor_DefaultEventToEdit { get; set; } = 0;
