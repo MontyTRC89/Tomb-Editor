@@ -92,7 +92,10 @@ namespace TombLib.Controls.VisualScripting
             }
 
             if (currNodeIndex != -1)
+            {
                 treeFunctions.SelectNode(nodes[currNodeIndex]);
+                treeFunctions.EnsureVisible();
+            }
         }
 
         private void TryApplyFunction()
