@@ -159,7 +159,7 @@ namespace TombLib.Controls.VisualScripting
 
             Size = new Size(Node.Size, Size.Height);
 
-            int refWidth = Width - _elementSpacing * 2; 
+            int refWidth = (Width - _elementSpacing * 2) - GripSize; 
             int newY = _elementSpacing;
             int newX = _elementSpacing + GripSize;
 
