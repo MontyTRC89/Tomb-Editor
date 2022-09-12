@@ -101,6 +101,19 @@ LevelFuncs.Engine.Node.TestMoveableMeshVisibility = function(moveableName, value
 	return TEN.Objects.GetMoveableByName(moveableName):MeshIsVisible(value)
 end
 
+-- !Name "If moveable is on the line of sight with other..."
+-- !Section "Moveable state"
+-- !Description "Checks if one moveable is on the line of sight with another moveable."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableLOS = function(moveableName1, moveableName2)
+	local mov1 = TEN.Objects.GetMoveableByName(moveableName1)
+	local mov2 = TEN.Objects.GetMoveableByName(moveableName2)
+	return TEN.Misc.HasLineOfSight(mov1:GetRoom(), mov1:GetPosition(), mov2:GetPosition())
+end
+
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
 -- !Description "Enables moveable."
