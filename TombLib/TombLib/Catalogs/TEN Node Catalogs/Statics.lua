@@ -39,12 +39,12 @@ end
 -- !Section "Static mesh parameters"
 -- !Description "Compares selected static mesh scale with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperator, 70, Kind of check"
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]" 
 
-LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operand, value)
+LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operator, value)
 	local scale = TEN.Objects.GetStaticByName(staticName):GetScale()
-	return LevelFuncs.Engine.Node.CompareValue(scale, value, operand)
+	return LevelFuncs.Engine.Node.CompareValue(scale, value, operator)
 end
 
 -- !Name "If collision of a static mesh is solid..."

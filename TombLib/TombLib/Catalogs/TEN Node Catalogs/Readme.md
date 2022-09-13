@@ -37,7 +37,7 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
     another argument with another **NewLine** is encountered.
 
    - **Boolean, Numerical, Vector3, String, Color, LuaScript, Moveables, Statics, Cameras, Sinks, FlybyCameras,
-    Volumes, Rooms, SoundEffects, WadSlots, Enumeration, CompareOperand** - keywords which specify argument type
+    Volumes, Rooms, SoundEffects, WadSlots, Enumeration, CompareOperator** - keywords which specify argument type
     and its appearance in UI.
 
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
@@ -99,9 +99,9 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
      `Objects.ObjID.` lua enumeration which is identical to TE/TEN object slot enumeration.
    - **Enumeration** - Custom enumeration determined by **ENUMDESC** descriptors. Internally these descriptors are 
      converted to numerical index.
-   - **CompareOperand** - Comparison operand enumeration, ranging from equal to various less-or-equal and more-or-equal
-     operands. Internally converted to numerical value and should be passed to `LevelFuncs.CompareValue` helper function
-     along with value and reference to check against, like this: `LevelFuncs.CompareValue(value, reference, operand)`.
+   - **CompareOperator** - Comparison operator enumeration, ranging from equal to various less-or-equal and more-or-equal
+     operators. Internally converted to numerical value and should be passed to `LevelFuncs.CompareValue` helper function
+     along with operand and reference to check against, like this: `LevelFuncs.CompareValue(operand, reference, operator)`.
 
 ### Example
 
@@ -109,12 +109,12 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
 -- !Name "Check moveable health"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperator, 70, Kind of check"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 0 ], Hit points value" 
 
-LevelFuncs.CheckEntityHealth = function(moveableName, operand, value)
+LevelFuncs.CheckEntityHealth = function(moveableName, operator, value)
 	local health = TEN.Objects.GetMoveableByName(entityName):GetHP()
-	return LevelFuncs.CompareValue(health, value, operand)
+	return LevelFuncs.CompareValue(health, value, operator)
 end
 ```
 
@@ -133,4 +133,4 @@ show, as third parameter in square brackets is set to 0.
 
 **LevelFuncs.CheckEntityHealth** function declaration should contain same amount of arguments and in the same
 order as metadata argument signature. Therefore, **moveableName** will be read from "Moveable to check"
-UI argument, **operand** will be read from "Kind of check", and so on.
+UI argument, **operator** will be read from "Kind of check", and so on.

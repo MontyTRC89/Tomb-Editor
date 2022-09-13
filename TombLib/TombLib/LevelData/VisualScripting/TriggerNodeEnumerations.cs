@@ -48,7 +48,7 @@ namespace TombLib.LevelData.VisualScripting
         SoundTracks,    // Listable
         WadSlots,       // Listable
         Enumeration,
-        CompareOperand
+        CompareOperator
     }
 
     public struct ArgumentLayout

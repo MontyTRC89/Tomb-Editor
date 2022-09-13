@@ -12,12 +12,12 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperator, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 0 | 1 | 5 ]" 
 
-LevelFuncs.Engine.Node.TestHitPoints = function(moveableName, operand, value)
+LevelFuncs.Engine.Node.TestHitPoints = function(moveableName, operator, value)
 	local health = TEN.Objects.GetMoveableByName(moveableName):GetHP()
-	return LevelFuncs.Engine.Node.CompareValue(health, value, operand)
+	return LevelFuncs.Engine.Node.CompareValue(health, value, operator)
 end
 
 -- !Name "If ID of a moveable is..."

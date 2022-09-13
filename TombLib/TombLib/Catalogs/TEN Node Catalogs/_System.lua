@@ -1,17 +1,29 @@
 LevelFuncs.Engine.Node = {}
 
 -- Helper function for value comparisons. Any function which uses
--- CompareOperand arguments should use this helper function for comparison.
+-- CompareOperator arguments should use this helper function for comparison.
 
-LevelFuncs.Engine.Node.CompareValue = function(value, reference, operand)
+LevelFuncs.Engine.Node.CompareValue = function(operand, reference, operator)
 
 	local result = false
-	if (operand == 0 and value == reference) then result = true end
-	if (operand == 1 and value ~= reference) then result = true end
-	if (operand == 2 and value <  reference) then result = true end
-	if (operand == 3 and value <= reference) then result = true end
-	if (operand == 4 and value >  reference) then result = true end
-	if (operand == 5 and value >= reference) then result = true end	
+	if (operator == 0 and operand == reference) then result = true end
+	if (operator == 1 and operand ~= reference) then result = true end
+	if (operator == 2 and operand <  reference) then result = true end
+	if (operator == 3 and operand <= reference) then result = true end
+	if (operator == 4 and operand >  reference) then result = true end
+	if (operator == 5 and operand >= reference) then result = true end	
+	return result
+end
+
+-- Helper function for value modification.
+
+LevelFuncs.Engine.Node.ModifyValue = function(operand, reference, operator)
+
+	local result = reference
+	if (operator == 0) then result = reference + operand end
+	if (operator == 1) then result = reference - operand end
+	if (operator == 2) then result = reference * operand end
+	if (operator == 3) then result = reference / operand end
 	return result
 end
 
