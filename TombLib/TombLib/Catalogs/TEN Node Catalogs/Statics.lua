@@ -109,7 +109,7 @@ end
 -- !Name "Modify rotation of a static mesh"
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh rotation."
--- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticRotation = function(operation, value, staticName)
@@ -136,8 +136,8 @@ end
 -- !Name "Modify scale of a static mesh"
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh scale."
--- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 25, Scale value to define", "NewLine, Statics"
+-- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 15, Scale value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 
@@ -165,7 +165,7 @@ end
 -- !Description "If solid flag is unset, collision will be soft."
 -- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
 
-LevelFuncs.Engine.Node.SetStaticCollisionMode = function(staticName, solid)
+LevelFuncs.Engine.Node.SetStaticCollisionMode = function(solid, staticName)
     TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
 end
 
