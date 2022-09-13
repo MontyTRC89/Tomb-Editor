@@ -66,7 +66,7 @@ end
 -- !Name "Play audio track"
 -- !Section "Effects"
 -- !Description "Plays specified audio track."
--- !Arguments "NewLine, 82, String, Name of the audiotrack to play" "Boolean, 18, Looped"
+-- !Arguments "NewLine, 82, SoundTracks, Name of the audiotrack to play" "Boolean, 18, Looped"
 
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
 	TEN.Misc.PlayAudioTrack(moveableName, looped)

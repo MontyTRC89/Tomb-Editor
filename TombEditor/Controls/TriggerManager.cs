@@ -56,6 +56,7 @@ namespace TombEditor.Controls
             }
 
             if (obj is Editor.RoomListChangedEvent ||
+                obj is Editor.LoadedWadsChangedEvent ||
                (obj is Editor.ObjectChangedEvent && 
                (obj as Editor.ObjectChangedEvent).ChangeType != ObjectChangeType.Change))
             {

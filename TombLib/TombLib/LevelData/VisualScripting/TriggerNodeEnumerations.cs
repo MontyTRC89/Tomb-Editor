@@ -45,6 +45,7 @@ namespace TombLib.LevelData.VisualScripting
         Volumes,        // Listable
         Rooms,          // Listable
         SoundEffects,   // Listable
+        SoundTracks,    // Listable
         WadSlots,       // Listable
         Enumeration,
         CompareOperand

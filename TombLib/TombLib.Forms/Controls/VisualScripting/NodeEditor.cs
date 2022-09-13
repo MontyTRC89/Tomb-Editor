@@ -111,6 +111,10 @@ namespace TombLib.Controls.VisualScripting
         private List<WadSoundInfo> _cachedSoundInfos = new List<WadSoundInfo>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedSoundTracks { get { return _cachedSoundTracks; } }
+        private List<string> _cachedSoundTracks = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<string> CachedWadSlots { get { return _cachedWadSlots; } }
         private List<string> _cachedWadSlots = new List<string>();
 
@@ -215,9 +219,9 @@ namespace TombLib.Controls.VisualScripting
             _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;
-            _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
         public TriggerNode MakeNode(bool condition)

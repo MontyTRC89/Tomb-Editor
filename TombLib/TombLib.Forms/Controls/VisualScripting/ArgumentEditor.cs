@@ -130,6 +130,10 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in editor.CachedSoundInfos)
                         cbList.Items.Add(new ComboBoxItem(item.ToString(), item.Id.ToString()));
                     break;
+                case ArgumentType.SoundTracks:
+                    foreach (var item in editor.CachedSoundTracks)
+                        cbList.Items.Add(new ComboBoxItem(item, item));
+                    break;
                 case ArgumentType.CompareOperand:
                     foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
