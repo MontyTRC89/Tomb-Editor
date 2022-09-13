@@ -2,7 +2,7 @@
 -- !Section "Variables"
 -- !Description "Checks if specified level variable complies to specified compare function."
 -- !Conditional "True"
--- !Arguments "NewLine, String, 50" "CompareOperator, 25" "Numerical, 25"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ]" "CompareOperator, 25" "Numerical, 25"
 
 LevelFuncs.Engine.Node.TestLevelVariable = function(varName, operator, value)
     if (LevelVars[varName] == nil) then
@@ -16,7 +16,7 @@ end
 -- !Section "Variables"
 -- !Description "Modify variable, according to specified operator and operand."
 -- !Description "If variable with specified name does not exist,\nit is initialized as 0 before performing modify operation."
--- !Arguments "NewLine, String, 50" "Enumeration, 25, [ + | - | * | / ]" "Numerical, 25, [ -65536 | 65535 | 2 ]"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ]" "Enumeration, 25, [ + | - | * | / ]" "Numerical, 25, [ -65536 | 65535 | 2 ]"
 
 LevelFuncs.Engine.Node.ModifyLevelVariable = function(varName, operator, operand)
     if (LevelVars[varName] == nil) then
@@ -30,7 +30,7 @@ end
 -- !Name "Delete level variable"
 -- !Section "Variables"
 -- !Description "Delete level variable, if it exists."
--- !Arguments "NewLine, String, 100"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ]"
 
 LevelFuncs.Engine.Node.DeleteLevelVariable = function(varName, operator, operand)
     if (LevelVars[varName] ~= nil) then
