@@ -2,7 +2,8 @@
 -- !Section "Variables"
 -- !Description "Checks if specified level variable complies to specified compare function."
 -- !Conditional "True"
--- !Arguments "NewLine, String, 50, [ NoMultiline ]" "CompareOperator, 25" "Numerical, 25"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
+-- !Arguments "CompareOperator, 25" "Numerical, 25, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.TestLevelVariable = function(varName, operator, value)
     if (LevelVars[varName] == nil) then
@@ -16,7 +17,8 @@ end
 -- !Section "Variables"
 -- !Description "Modify level variable, according to specified operator and operand."
 -- !Description "If level variable with specified name does not exist,\nit is initialized as 0 before performing modify operation."
--- !Arguments "NewLine, String, 50, [ NoMultiline ]" "Enumeration, 25, [ + | - | * | / ]" "Numerical, 25, [ -65536 | 65535 | 2 ]"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
+-- !Arguments "Enumeration, 25, [ + | - | * | / ]" "Numerical, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyLevelVariable = function(varName, operator, operand)
     if (LevelVars[varName] == nil) then
@@ -30,7 +32,7 @@ end
 -- !Name "Delete level variable"
 -- !Section "Variables"
 -- !Description "Delete level variable, if it exists."
--- !Arguments "NewLine, String, 100, [ NoMultiline ]"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ], Variable name"
 
 LevelFuncs.Engine.Node.DeleteLevelVariable = function(varName, operator, operand)
     if (LevelVars[varName] ~= nil) then
@@ -44,7 +46,8 @@ end
 -- !Section "Variables"
 -- !Description "Checks if specified game variable complies to specified compare function."
 -- !Conditional "True"
--- !Arguments "NewLine, String, 50, [ NoMultiline ]" "CompareOperator, 25" "Numerical, 25"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
+-- !Arguments "CompareOperator, 25" "Numerical, 25, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.TestGameVariable = function(varName, operator, value)
     if (GameVars[varName] == nil) then
@@ -58,7 +61,8 @@ end
 -- !Section "Variables"
 -- !Description "Modify game variable, according to specified operator and operand."
 -- !Description "If game variable with specified name does not exist,\nit is initialized as 0 before performing modify operation."
--- !Arguments "NewLine, String, 50, [ NoMultiline ]" "Enumeration, 25, [ + | - | * | / ]" "Numerical, 25, [ -65536 | 65535 | 2 ]"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
+-- !Arguments "Enumeration, 25, [ + | - | * | / ]" "Numerical, 25, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyGameVariable = function(varName, operator, operand)
     if (GameVars[varName] == nil) then
@@ -72,7 +76,7 @@ end
 -- !Name "Delete game variable"
 -- !Section "Variables"
 -- !Description "Delete game variable, if it exists."
--- !Arguments "NewLine, String, 100, [ NoMultiline ]"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ], Variable name"
 
 LevelFuncs.Engine.Node.DeleteGameVariable = function(varName, operator, operand)
     if (GameVars[varName] ~= nil) then
