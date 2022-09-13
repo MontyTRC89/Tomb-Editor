@@ -1,3 +1,13 @@
+-- !Name "If moveable is active..."
+-- !Section "Moveable state"
+-- !Description "Checks if moveable is active."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableActivity = function(moveableName)
+	return TEN.Objects.GetMoveableByName(moveableName):GetActive()
+end
+
 -- !Name "If health of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."
@@ -51,18 +61,6 @@ LevelFuncs.Engine.Node.TestMoveableCurrentState = function(moveableName, stateId
 	return TEN.Objects.GetMoveableByName(moveableName):GetState() == stateId
 end
 
--- !Name "If rotation of a moveable is within range..."
--- !Section "Moveable parameters"
--- !Description "Checks if moveable's current rotation is within specified range."
--- !Conditional "True"
--- !Arguments "NewLine, Moveables, 70"
--- !Arguments "Numerical, 15, [ 0 | 359 ], In range (in degrees)" "Numerical, 15, [ 0 | 359 ], Out range (in degrees)"
-
-LevelFuncs.Engine.Node.TestMoveableRotation = function(moveableName, rot1, rot2)
-	local rot = TEN.Objects.GetMoveableByName(moveableName):GetRotation().y
-	return (rot >= rot1 and rot <= rot2)
-end
-
 -- !Name "If position of a moveable is within range..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current position is within specified range."
@@ -76,6 +74,18 @@ LevelFuncs.Engine.Node.TestMoveablePosition = function(moveableName, pos1, pos2)
 	return (pos.x >= pos1.x and pos.x <= pos2.x and
 			pos.y >= pos1.y and pos.y <= pos2.y and
 			pos.z >= pos1.z and pos.z <= pos2.z)
+end
+
+-- !Name "If rotation of a moveable is within range..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current rotation is within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 70"
+-- !Arguments "Numerical, 15, [ 0 | 359 ], In range (in degrees)" "Numerical, 15, [ 0 | 359 ], Out range (in degrees)"
+
+LevelFuncs.Engine.Node.TestMoveableRotation = function(moveableName, rot1, rot2)
+	local rot = TEN.Objects.GetMoveableByName(moveableName):GetRotation().y
+	return (rot >= rot1 and rot <= rot2)
 end
 
 -- !Name "If OCB of a moveable is..."
