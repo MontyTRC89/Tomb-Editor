@@ -71,9 +71,9 @@ namespace TombLib.LevelData.VisualScripting
     }
 
     // Condition node uses function as a bool test and uses arguments to determine
-    // value and operand to compare gotten value. Therefore, functions bound to
+    // value and operator to compare gotten value. Therefore, functions bound to
     // condition nodes must have boolean return value and accept at least two
-    // arguments, one of which being a compared value and another being an operand
+    // arguments, one of which being a compared value and another being an operator
     // type. Else node is optional and allows to divert script to other branch.
 
     public class TriggerNodeCondition : TriggerNode

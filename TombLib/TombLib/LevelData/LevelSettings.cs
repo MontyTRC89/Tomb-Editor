@@ -290,6 +290,20 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public List<string> GetListOfSoundtracks()
+        {
+            var path = Path.Combine(Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath)), "Audio");
+
+            if (!Directory.Exists(path))
+                return new List<string>();
+
+            var ext = new List<string> { "wav", "mp3", "ogg" };
+
+            return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+                            .Where(s => ext.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
+                            .Select(s => Path.GetFileNameWithoutExtension(s)).Distinct().ToList();
+        }
+
         public string GetVariable(VariableType type)
         {
             string result;

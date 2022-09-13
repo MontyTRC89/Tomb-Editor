@@ -1,13 +1,60 @@
-﻿-- !Name "If scale of a static mesh is..."
+﻿-- !Name "If static mesh is visible..."
+-- !Section "Static mesh state"
+-- !Description "Checks if static mesh is visible."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics"
+
+LevelFuncs.Engine.Node.TestStaticActivity = function(staticName)
+	return TEN.Objects.GetStaticByName(staticName):GetActive()
+end
+
+-- !Name "If position of a static mesh is within range..."
+-- !Section "Static mesh parameters"
+-- !Description "Checks if static mesh's current position is within specified range."
+-- !Description "If single-dimension check is needed, set other dimensions to values well out of level bounds."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 ], Upper position bound" "NewLine, Vector3, [ -1000000 | 1000000 ], Lower position bound"
+
+LevelFuncs.Engine.Node.TestStaticPosition = function(staticName, pos1, pos2)
+	local pos = TEN.Objects.GetStaticByName(staticName):GetPosition()
+	return (pos.x >= pos1.x and pos.x <= pos2.x and
+			pos.y >= pos1.y and pos.y <= pos2.y and
+			pos.z >= pos1.z and pos.z <= pos2.z)
+end
+
+-- !Name "If rotation of a static mesh is within range..."
+-- !Section "Static mesh parameters"
+-- !Description "Checks if static mesh's current rotation is within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics, 70"
+-- !Arguments "Numerical, 15, [ 0 | 359 ], In range (in degrees)" "Numerical, 15, [ 0 | 359 ], Out range (in degrees)"
+
+LevelFuncs.Engine.Node.TestStaticRotation = function(staticName, rot1, rot2)
+	local rot = TEN.Objects.GetStaticByName(staticName):GetRotation().y
+	return (rot >= rot1 and rot <= rot2)
+end
+
+-- !Name "If scale of a static mesh is..."
 -- !Section "Static mesh parameters"
 -- !Description "Compares selected static mesh scale with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperand, 70, Kind of check"
+-- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperator, 70, Kind of check"
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]" 
 
-LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operand, value)
+LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operator, value)
 	local scale = TEN.Objects.GetStaticByName(staticName):GetScale()
-	return LevelFuncs.Engine.Node.CompareValue(scale, value, operand)
+	return LevelFuncs.Engine.Node.CompareValue(scale, value, operator)
+end
+
+-- !Name "If collision of a static mesh is solid..."
+-- !Section "Static mesh parameters"
+-- !Description "Checks if given static mesh's collision mode is solid."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics, Static mesh to check"
+
+LevelFuncs.Engine.Node.TestStaticCollisionMode = function(staticName)
+	return TEN.Objects.GetStaticByName(staticName):GetSolid()
 end
 
 -- !Name "Enable static mesh"
@@ -33,7 +80,7 @@ end
 -- !Description "Plays specified sound ID around specified static mesh."
 -- !Arguments "NewLine, Statics, Static mesh to play sound around" "NewLine, SoundEffects, Sound to play"
 
-LevelFuncs.Engine.Node.PlaySoundAroundMoveable = function(staticName, soundID)
+LevelFuncs.Engine.Node.PlaySoundAroundStatic = function(staticName, soundID)
     TEN.Misc.PlaySound(soundID, TEN.Objects.GetStaticByName(staticName):GetPosition())
 end
 
@@ -111,6 +158,15 @@ end
 
 LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
     TEN.Objects.GetStaticByName(staticName):SetColor(color)
+end
+
+-- !Name "Set static mesh collision mode"
+-- !Section "Static mesh parameters"
+-- !Description "If solid flag is unset, collision will be soft."
+-- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
+
+LevelFuncs.Engine.Node.SetStaticCollisionMode = function(staticName, solid)
+    TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
 end
 
 -- !Name "Shatter static mesh"

@@ -111,6 +111,10 @@ namespace TombLib.Controls.VisualScripting
         private List<WadSoundInfo> _cachedSoundInfos = new List<WadSoundInfo>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedSoundTracks { get { return _cachedSoundTracks; } }
+        private List<string> _cachedSoundTracks = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<string> CachedWadSlots { get { return _cachedWadSlots; } }
         private List<string> _cachedWadSlots = new List<string>();
 
@@ -169,10 +173,14 @@ namespace TombLib.Controls.VisualScripting
                      ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.Selectable, true);
 
-            InitializeComponent();
+            AllowDrop = true;
+            DoubleBuffered = true;
 
             _updateTimer = new Timer { Interval = 10 };
             _updateTimer.Tick += UpdateTimer_Tick;
+
+            DragDrop += NodeEditor_DragDrop;
+            DragEnter += NodeEditor_DragEnter;
         }
 
         protected override void Dispose(bool disposing)
@@ -180,13 +188,13 @@ namespace TombLib.Controls.VisualScripting
             _updateTimer.Stop();
             _updateTimer.Tick -= UpdateTimer_Tick;
 
+            DragDrop -= NodeEditor_DragDrop;
+            DragEnter -= NodeEditor_DragEnter;
+
             foreach (Control control in Controls)
                 control.Dispose();
 
             Controls.Clear();
-
-            if (disposing && (components != null))
-                components.Dispose();
 
             base.Dispose(disposing);
         }
@@ -211,9 +219,9 @@ namespace TombLib.Controls.VisualScripting
             _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;
-            _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
         public TriggerNode MakeNode(bool condition)
@@ -636,7 +644,7 @@ namespace TombLib.Controls.VisualScripting
                 control.BackColor = node.Color.ToWinFormsColor();
                 control.Visible = false;
                 control.SnapToBorders = false;
-                control.DragAnyPoint = !ShowGrips;
+                control.DragAnyPoint = true;
                 control.GripSize = ShowGrips ? _gripSize : 0;
                 control.Size = new Size(node.Size, control.Size.Height);
 

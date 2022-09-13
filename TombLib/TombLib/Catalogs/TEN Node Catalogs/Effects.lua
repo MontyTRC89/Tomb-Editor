@@ -28,8 +28,8 @@ end
 -- !Name "Set cinematic bars"
 -- !Section "Effects"
 -- !Description "Toggle cinematic bars visibility."
--- !Arguments "Numerical, 15, [0 | 100 | 0 ], Cinematic bars height"
--- !Arguments "Numerical, 15, [0 | 100 | 0 ], Cinematic bars speed"
+-- !Arguments "Numerical, 15, [0 | 100 ], Cinematic bars height"
+-- !Arguments "Numerical, 15, [0 | 100 ], Cinematic bars speed"
 
 LevelFuncs.Engine.Node.SetCineBars = function(height, speed)
     TEN.Misc.SetCineBars(height, speed)
@@ -47,7 +47,7 @@ end
 -- !Name "Shake camera"
 -- !Section "Effects"
 -- !Description "Shakes camera with specified strength.\nStrength also determines how long effect would take place."
--- !Arguments "Numerical, 20, [ 0 | 256 | 0 ], Shake strength" 
+-- !Arguments "Numerical, 20, [ 0 | 256 ], Shake strength" 
 
 LevelFuncs.Engine.Node.ShakeCamera = function(strength)
     TEN.Effects.MakeEarthquake(strength)
@@ -66,13 +66,8 @@ end
 -- !Name "Play audio track"
 -- !Section "Effects"
 -- !Description "Plays specified audio track."
--- !Arguments "NewLine, String, Name of the audiotrack to play"
--- !Arguments "NewLine, Enumeration, [ Play once | Play in looped mode ], Sets whether the track should loop or not"
+-- !Arguments "NewLine, 82, SoundTracks, Name of the audiotrack to play" "Boolean, 18, Looped"
 
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
-	if (looped == 1) then
-		TEN.Misc.PlayAudioTrack(moveableName, true)
-	else
-		TEN.Misc.PlayAudioTrack(moveableName, false)
-	end
+	TEN.Misc.PlayAudioTrack(name, looped)
 end

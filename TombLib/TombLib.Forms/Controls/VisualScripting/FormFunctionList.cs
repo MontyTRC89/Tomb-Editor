@@ -58,7 +58,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void SearchNodes(string text)
         {
-            var nodes = treeFunctions.GetAllNodes().Where(n => !string.IsNullOrEmpty(n.Text)).ToList();
+            var nodes = treeFunctions.GetAllNodes().Where(n => n.Nodes.Count == 0 && !string.IsNullOrEmpty(n.Text)).ToList();
             var currNodeIndex = -1;
 
             if (treeFunctions.SelectedNodes.Count > 0)
@@ -114,7 +114,10 @@ namespace TombLib.Controls.VisualScripting
             base.OnDeactivate(e);
 
             if (!Disposing)
+            {
+                SelectedFunction = null;
                 Close();
+            }
         }
 
         private void treeFunctions_SelectedNodesChanged(object sender, EventArgs e)

@@ -5,6 +5,7 @@ Tomb Editor:
  * Added node editor for TEN visual trigger construction.
  * Allow rotating volumes on roll axis.
  * Automatically generate Lua names for all objects on TR4 to TEN project conversion.
+ * Fix epic memory leak which occured during textbox input.
  
 WadTool:
  * Show proper animation name tooltip in state change editor.
