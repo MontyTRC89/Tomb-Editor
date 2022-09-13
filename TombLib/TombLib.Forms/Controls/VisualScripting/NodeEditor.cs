@@ -823,7 +823,10 @@ namespace TombLib.Controls.VisualScripting
 
             Nodes.Add(node);
             UpdateVisibleNodes();
+
+            var previousNode = SelectedNode;
             SelectNode(node, false, true);
+            LinkToSelectedNode(previousNode, Control.ModifierKeys == Keys.Alt);
         }
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)
