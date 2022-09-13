@@ -163,7 +163,7 @@ end
 -- !Name "Set static mesh collision mode"
 -- !Section "Static mesh parameters"
 -- !Description "If solid flag is unset, collision will be soft."
--- !Arguments "NewLine, Statics, 85" "Boolean, 15, Solid" 
+-- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticCollisionMode = function(staticName, solid)
     TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
