@@ -88,6 +88,9 @@ namespace TombLib.Controls.VisualScripting
             else
                 container.SelectedIndex = (int)_argumentType;
 
+            if (_argumentType == ArgumentType.String)
+                panelMultiline.Visible = !layout.CustomEnumeration.Contains("NoMultiline");
+
             switch (_argumentType)
             {
                 case ArgumentType.LuaScript:

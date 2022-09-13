@@ -46,6 +46,7 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
         value. Optional third argument specifies amount of decimal places (for integer, set it to 0). Optional
         fourth and fifth values determine mousewheel increment and alternate increment (with shift button 
         pressed) respectively.
+      - For String value type, specifying **NoMultiline** as ENUMDESC hides button which engages multiline editing.
       - For Moveables and WadSlots lists, ENUMDESC values will filter out object ID names which contain any of
         ENUMDESCs only.
       - For Enumeration, ENUMDESC values will be displayed as is but converted to numericals on compilation

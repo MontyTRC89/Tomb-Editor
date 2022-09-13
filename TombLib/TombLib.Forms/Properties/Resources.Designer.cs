@@ -193,6 +193,26 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap general_NodeAction_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_NodeAction_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap general_NodeCondition_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_NodeCondition_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap general_Open_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Open-16", resourceCulture);
