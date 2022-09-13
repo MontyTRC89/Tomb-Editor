@@ -38,6 +38,12 @@ namespace TombLib.Controls.VisualScripting
                 foreach (var item in group.OrderBy(f => !f.Conditional))
                 {
                     var newNode = new DarkTreeNode(item.Name) { Tag = item };
+
+                    if (item.Conditional)
+                        newNode.Icon = Properties.Resources.general_NodeCondition_16;
+                    else
+                        newNode.Icon = Properties.Resources.general_NodeAction_16;
+
                     rootNode.Nodes.Add(newNode);
 
                     if (item == ((callbackControl as DarkSearchableComboBox)?.SelectedItem ?? null))

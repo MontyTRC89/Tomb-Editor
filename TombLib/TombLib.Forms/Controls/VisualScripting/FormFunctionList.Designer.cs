@@ -45,6 +45,7 @@
             this.treeFunctions.Location = new System.Drawing.Point(6, 34);
             this.treeFunctions.MaxDragChange = 20;
             this.treeFunctions.Name = "treeFunctions";
+            this.treeFunctions.ShowIcons = true;
             this.treeFunctions.Size = new System.Drawing.Size(277, 269);
             this.treeFunctions.TabIndex = 0;
             this.treeFunctions.Text = "darkTreeView1";
