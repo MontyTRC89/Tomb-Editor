@@ -69,5 +69,5 @@ end
 -- !Arguments "NewLine, 82, SoundTracks, Name of the audiotrack to play" "Boolean, 18, Looped"
 
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
-	TEN.Misc.PlayAudioTrack(moveableName, looped)
+	TEN.Misc.PlayAudioTrack(name, looped)
 end
