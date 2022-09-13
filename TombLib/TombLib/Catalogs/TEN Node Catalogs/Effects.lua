@@ -71,3 +71,20 @@ end
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
 	TEN.Misc.PlayAudioTrack(name, looped)
 end
+
+-- !Name "Stop audio track"
+-- !Section "Effects"
+-- !Description "Stops audio track of the specified mode."
+-- !Arguments "Boolean, 18, Looped"
+
+LevelFuncs.Engine.Node.StopAudioTrack = function(looped)
+	TEN.Misc.StopAudioTrack(looped)
+end
+
+-- !Name "Stop both audio tracks"
+-- !Section "Effects"
+-- !Description "Stops audio tracks of both looped and one-shot types."
+
+LevelFuncs.Engine.Node.StopAudioTracks = function()
+	TEN.Misc.StopAudioTracks()
+end
