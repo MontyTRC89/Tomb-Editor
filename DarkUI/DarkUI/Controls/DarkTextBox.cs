@@ -92,6 +92,7 @@ namespace DarkUI.Controls
                     using (var p = new Pen(Colors.GreySelection))
                         g.DrawRectangle(p, rect);
                 }
+                Native.ReleaseDC(Handle, hdc);
             }
         }
 
