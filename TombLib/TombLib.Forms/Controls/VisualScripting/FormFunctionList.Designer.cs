@@ -46,7 +46,7 @@
             this.treeFunctions.MaxDragChange = 20;
             this.treeFunctions.Name = "treeFunctions";
             this.treeFunctions.ShowIcons = true;
-            this.treeFunctions.Size = new System.Drawing.Size(277, 269);
+            this.treeFunctions.Size = new System.Drawing.Size(328, 317);
             this.treeFunctions.TabIndex = 0;
             this.treeFunctions.Text = "darkTreeView1";
             this.treeFunctions.SelectedNodesChanged += new System.EventHandler(this.treeFunctions_SelectedNodesChanged);
@@ -58,10 +58,10 @@
             this.sectionDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sectionDesc.Controls.Add(this.lblDesc);
-            this.sectionDesc.Location = new System.Drawing.Point(6, 309);
+            this.sectionDesc.Location = new System.Drawing.Point(6, 357);
             this.sectionDesc.Name = "sectionDesc";
             this.sectionDesc.SectionHeader = null;
-            this.sectionDesc.Size = new System.Drawing.Size(277, 77);
+            this.sectionDesc.Size = new System.Drawing.Size(328, 77);
             this.sectionDesc.TabIndex = 1;
             // 
             // lblDesc
@@ -71,7 +71,7 @@
             this.lblDesc.Location = new System.Drawing.Point(1, 1);
             this.lblDesc.Name = "lblDesc";
             this.lblDesc.Padding = new System.Windows.Forms.Padding(2);
-            this.lblDesc.Size = new System.Drawing.Size(275, 75);
+            this.lblDesc.Size = new System.Drawing.Size(326, 75);
             this.lblDesc.TabIndex = 0;
             // 
             // txtSearch
@@ -80,7 +80,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(6, 6);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(255, 22);
+            this.txtSearch.Size = new System.Drawing.Size(306, 22);
             this.txtSearch.TabIndex = 2;
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             // 
@@ -89,7 +89,7 @@
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Checked = false;
             this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(261, 6);
+            this.butSearch.Location = new System.Drawing.Point(312, 6);
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(22, 22);
             this.butSearch.TabIndex = 3;
@@ -99,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(289, 392);
+            this.ClientSize = new System.Drawing.Size(340, 440);
             this.Controls.Add(this.butSearch);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.sectionDesc);
