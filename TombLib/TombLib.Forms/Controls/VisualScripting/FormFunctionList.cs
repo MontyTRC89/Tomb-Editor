@@ -115,6 +115,12 @@ namespace TombLib.Controls.VisualScripting
             Close();
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            txtSearch.Focus();
+        }
+
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);

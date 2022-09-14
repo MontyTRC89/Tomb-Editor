@@ -196,7 +196,7 @@ namespace TombEditor.Controls
         {
             lstFunctions.Items.Clear();
 
-            if (scriptFunctions != null)
+            if (scriptFunctions != null && scriptFunctions.Count > 0)
             {
                 scriptFunctions.ForEach(f => lstFunctions.Items.Add(new DarkUI.Controls.DarkListItem(f)));
             }

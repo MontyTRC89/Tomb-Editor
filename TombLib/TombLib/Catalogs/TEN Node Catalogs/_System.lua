@@ -24,6 +24,7 @@ LevelFuncs.Engine.Node.ModifyValue = function(operand, reference, operator)
 	if (operator == 1) then result = reference - operand end
 	if (operator == 2) then result = reference * operand end
 	if (operator == 3) then result = reference / operand end
+	if (operator == 4) then result = operand end
 	return result
 end
 
