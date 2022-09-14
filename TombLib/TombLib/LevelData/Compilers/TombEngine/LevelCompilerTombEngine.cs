@@ -462,6 +462,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             if (!Directory.Exists(scriptDirectory))
                 Directory.CreateDirectory(scriptDirectory);
+            else
+            {
+                foreach (var file in Directory.GetFiles(scriptDirectory))
+                {
+                    File.SetAttributes(file, FileAttributes.Normal);
+                    File.Delete(file);
+                }
+            }
 
             ReportProgress(99, "\nCopying node catalogs to level script folder...");
 
