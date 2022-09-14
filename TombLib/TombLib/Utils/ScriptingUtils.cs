@@ -9,7 +9,6 @@ namespace TombLib.Utils
 {
     public static class LuaSyntax
     {
-        public const string Splitter = ".";
         public const string Include = "require";
         public const string Func = "function";
         public const string If = "if";
@@ -20,15 +19,16 @@ namespace TombLib.Utils
         public const string Is = "=";
         public const string BracketOpen = "(";
         public const string BracketClose = ")";
+        public const string Splitter = ".";
         public const string Separator = ",";
         public const string Space = " ";
         public const string Comment = "--";
 
         public const string Activator = "activator";
         public const string ActivatorNamePrefix = Activator + ":GetName()";
-        public const string ColorTypePrefix = "Color";
-        public const string Vec3TypePrefix = "Vec3";
-        public const string ObjectIDPrefix = "Objects.ObjID.";
+        public const string ColorTypePrefix = "TEN.Color";
+        public const string Vec3TypePrefix = "TEN.Vec3";
+        public const string ObjectIDPrefix = "TEN.Objects.ObjID";
         public const string ReservedFunctionPrefix = "__";
 
         public const string LevelFuncPrefix = "LevelFuncs" + Splitter;

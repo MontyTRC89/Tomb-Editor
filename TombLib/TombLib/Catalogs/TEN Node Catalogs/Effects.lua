@@ -1,3 +1,12 @@
+-- !Name "Check if fade out is complete"
+-- !Section "Effects"
+-- !Conditional "True"
+-- !Description "Check if fade out was finished and screen is totally black."
+
+LevelFuncs.Engine.Node.FadeOutComplete = function()
+    return TEN.Misc.FadeOutComplete()
+end
+
 -- !Name "Flash screen"
 -- !Section "Effects"
 -- !Description "Flashes screen with specified color and for specified duration.\nDuration value of 1 takes 1 second to flash."

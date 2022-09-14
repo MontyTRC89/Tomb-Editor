@@ -145,7 +145,7 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                           layout.CustomEnumeration.Any(e => s
                                                                            .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
-                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + item));
+                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + LuaSyntax.Splitter + item));
                     break;
                 case ArgumentType.Enumeration:
                     foreach (var item in layout.CustomEnumeration)
