@@ -157,11 +157,11 @@ namespace TombLib.Controls.VisualScripting
             SuspendLayout();
             DisposeUI();
 
-            Size = new Size(Node.Size, Size.Height);
-
             var scale = 1.0f;
             using (var gfx = FindForm().CreateGraphics())
                 scale = (float)gfx.DpiX / 96.0f;
+
+            Size = new Size((int)(Node.Size * scale), Size.Height);
 
             int scaledSpacing = (int)(_elementSpacing * scale);
             int scaledHeight  = (int)(_elementHeight * scale);
