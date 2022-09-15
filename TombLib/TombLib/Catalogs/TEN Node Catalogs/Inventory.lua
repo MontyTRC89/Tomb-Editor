@@ -11,9 +11,9 @@ end
 
 -- !Name "Remove item from inventory"
 -- !Section "Inventory"
--- !Description "Removes x of an item to the inventory.\nA count of 0 will completely remove the item from the inventory."
+-- !Description "Removes specified item count from the inventory.\nA count of 0 will completely remove the item from the inventory."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], Object to add to Lara's inventory."
--- !Arguments "20, Numerical, [ 0 | 1000 | 1 ], Amount of items to remove (0 to remove all)."
+-- !Arguments "20, Numerical, [ 0 | 1000 ], Amount of items to remove (0 to remove all)."
 
 LevelFuncs.Engine.Node.RemoveInventoryItem = function(item, count)
     
