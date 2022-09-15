@@ -159,11 +159,18 @@ namespace TombLib.Controls.VisualScripting
 
             Size = new Size(Node.Size, Size.Height);
 
-            int refWidth = (Width - _elementSpacing * 2) - GripSize; 
-            int newY = _elementSpacing;
-            int newX = _elementSpacing + GripSize;
+            var scale = 1.0f;
+            using (var gfx = FindForm().CreateGraphics())
+                scale = (float)gfx.DpiX / 96.0f;
 
-            cbFunction.Size = new Size(refWidth, _elementHeight);
+            int scaledSpacing = (int)(_elementSpacing * scale);
+            int scaledHeight  = (int)(_elementHeight * scale);
+
+            int refWidth = (Width - scaledSpacing * 2) - GripSize; 
+            int newY = scaledSpacing;
+            int newX = scaledSpacing + GripSize;
+
+            cbFunction.Size = new Size(refWidth, scaledHeight);
             cbFunction.Location = new Point(newX, newY);
 
             var elementsOnLines = new List<int>();
@@ -197,29 +204,29 @@ namespace TombLib.Controls.VisualScripting
                     line++;
 
                 float normScale = func.Arguments[i].Width / 100.0f;
-                float workLineWidth = refWidth - (elementsOnLines[line] - 1) * _elementSpacing;
+                float workLineWidth = refWidth - (elementsOnLines[line] - 1) * scaledSpacing;
 
                 ctrl.SetToolTip(toolTip, TextExtensions.SingleLineToMultiLine(func.Arguments[i].Description));
                 ctrl.SetArgumentType(func.Arguments[i], Editor);
 
                 if (func.Arguments[i].NewLine)
                 {
-                    newX  = _elementSpacing + GripSize;
-                    newY += _elementHeight + _elementSpacing;
+                    newX  = scaledSpacing + GripSize;
+                    newY += scaledHeight + scaledSpacing;
                 }
                 else
                 {
                     if (_argControls.Count == 1)
-                        newX = cbFunction.Left + cbFunction.Width + _elementSpacing;
+                        newX = cbFunction.Left + cbFunction.Width + scaledSpacing;
                     else
-                        newX = _argControls[i - 1].Left + _argControls[i - 1].Width + _elementSpacing;
+                        newX = _argControls[i - 1].Left + _argControls[i - 1].Width + scaledSpacing;
                 }
 
                 var controlSize = new Size((int)Math.Round(workLineWidth * normScale), cbFunction.Height);
 
                 // HACK: Trim second-line controls which may stick of bounds due to accumulated rounding error
-                if (line > 0 && controlSize.Width + newX > Size.Width - _elementSpacing)
-                    controlSize.Width = controlSize.Width - ((controlSize.Width + newX) - (Size.Width - _elementSpacing));
+                if (line > 0 && controlSize.Width + newX > Size.Width - scaledSpacing)
+                    controlSize.Width = controlSize.Width - ((controlSize.Width + newX) - (Size.Width - scaledSpacing));
 
                 ctrl.Size = controlSize;
                 ctrl.Location = new Point(newX, newY);
@@ -227,15 +234,15 @@ namespace TombLib.Controls.VisualScripting
                 ctrl.LocatedItemFound += Ctrl_LocatedItemFound;
             }
 
-            var newHeight = _elementSpacing +
-                             elementsOnLines.Count * (_elementHeight + _elementSpacing);
+            var newHeight = scaledSpacing +
+                             elementsOnLines.Count * (scaledHeight + scaledSpacing);
 
             // HACK: Fix up first line position
-            var firstLineControls = _argControls.Where(c => c.Location.Y == _elementSpacing).ToList();
+            var firstLineControls = _argControls.Where(c => c.Location.Y == scaledSpacing).ToList();
             if (firstLineControls.Count > 0)
             {
                 int delta = (firstLineControls.Last().Location.X + firstLineControls.Last().Width) -
-                             firstLineControls.First().Location.X + _elementSpacing;
+                             firstLineControls.First().Location.X + scaledSpacing;
 
                 cbFunction.Width -= delta;
                 firstLineControls.ForEach(c => c.Location = new Point(c.Location.X - delta, c.Location.Y));

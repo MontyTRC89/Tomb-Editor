@@ -126,7 +126,7 @@ namespace TombEditor.Controls
             // rbLevelScript
             // 
             this.rbLevelScript.AutoSize = true;
-            this.rbLevelScript.Location = new System.Drawing.Point(98, 5);
+            this.rbLevelScript.Location = new System.Drawing.Point(103, 5);
             this.rbLevelScript.Name = "rbLevelScript";
             this.rbLevelScript.Size = new System.Drawing.Size(131, 17);
             this.rbLevelScript.TabIndex = 0;
