@@ -88,6 +88,27 @@ LevelFuncs.Engine.Node.TestMoveableRotation = function(moveableName, rot1, rot2)
 	return (rot >= rot1 and rot <= rot2)
 end
 
+-- !Name "If speed of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks moveable's current speed."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 100"
+-- !Arguments "NewLine, CompareOperator, 30, Kind of check" "Numerical, 20, [ 0 | 1000 ], Speed value (per frame)"
+-- !Arguments "Enumeration, 50, [ Horizontal | Vertical | Combined ], Speed direction to compare"
+
+LevelFuncs.Engine.Node.TestMoveableSpeed = function(moveableName, operator, value, type)
+	local spd = TEN.Objects.GetMoveableByName(moveableName):GetVelocity()
+	
+	if (type == 0) then
+		return LevelFuncs.Engine.Node.CompareValue(spd.z, value, operator)
+	elseif (type == 1) then
+		return LevelFuncs.Engine.Node.CompareValue(spd.y, value, operator)
+	else
+		local length = math.sqrt(spd.x * spd.x + spd.y * spd.y + spd.z * spd.z)
+		return LevelFuncs.Engine.Node.CompareValue(length, value, operator)
+	end
+end
+
 -- !Name "If OCB of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current OCB is equal to specified."

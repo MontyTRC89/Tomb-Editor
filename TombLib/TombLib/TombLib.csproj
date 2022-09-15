@@ -76,6 +76,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Flow.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Inventory.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Moveables.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
