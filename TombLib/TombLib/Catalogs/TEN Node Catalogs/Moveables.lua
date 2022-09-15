@@ -145,6 +145,52 @@ LevelFuncs.Engine.Node.TestMoveableLOS = function(moveableName1, moveableName2)
 	return TEN.Misc.HasLineOfSight(mov1:GetRoom(), mov1:GetPosition(), mov2:GetPosition())
 end
 
+-- !Name "If distance between moveables is..."
+-- !Section "Moveable state"
+-- !Description "Checks if the distance between moveables complies to specified."
+-- !Conditional "True"
+-- !Arguments "NewLine, CompareOperator, 30, Kind of check" "Numerical, 20, [ 0 | 1000000 ], Distance value to compare"
+-- !Arguments "Enumeration, 50, [ All dimensions | Horizontal only ], Distance type to compare"
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableDistance = function(operator, value, type, moveableName1, moveableName2)
+	local mov1 = TEN.Objects.GetMoveableByName(moveableName1)
+	local mov2 = TEN.Objects.GetMoveableByName(moveableName2)
+
+	local distance = 0
+	if (type == 0) then
+		distance = TEN.Misc.CalculateDistance(mov1:GetPosition(), mov2:GetPosition())
+	else
+		distance = TEN.Misc.CalculateHorizontalDistance(mov1:GetPosition(), mov2:GetPosition())
+	end
+
+	return LevelFuncs.Engine.Node.CompareValue(distance, value, operator)
+end
+
+-- !Name "If distance between static and moveable is..."
+-- !Section "Moveable state"
+-- !Description "Checks if the distance between moveable and static mesh complies to specified."
+-- !Conditional "True"
+-- !Arguments "NewLine, CompareOperator, 30, Kind of check" "Numerical, 20, [ 0 | 1000000 ], Distance value to compare"
+-- !Arguments "Enumeration, 50, [ All dimensions | Horizontal only ], Distance type to compare"
+-- !Arguments "NewLine, Statics"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableDistanceWithStatic = function(operator, value, type, staticName, moveableName)
+	local stat = TEN.Objects.GetStaticByName(staticName)
+	local mov  = TEN.Objects.GetMoveableByName(moveableName)
+
+	local distance = 0
+	if (type == 0) then
+		distance = TEN.Misc.CalculateDistance(mov:GetPosition(), stat:GetPosition())
+	else
+		distance = TEN.Misc.CalculateHorizontalDistance(mov:GetPosition(), stat:GetPosition())
+	end
+
+	return LevelFuncs.Engine.Node.CompareValue(distance, value, operator)
+end
+
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
 -- !Description "Enables moveable."
