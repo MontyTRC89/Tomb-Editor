@@ -314,7 +314,7 @@ namespace TombLib.LevelData
                     result = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     break;
                 case VariableType.ScriptDirectory:
-                    result = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Dir + "Script";
+                    result = GetVariable(VariableType.GameDirectory) + Dir + "Scripts";
                     break;
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
