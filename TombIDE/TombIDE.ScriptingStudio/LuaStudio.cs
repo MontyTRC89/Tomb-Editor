@@ -186,8 +186,6 @@ namespace TombIDE.ScriptingStudio
 
 				File.WriteAllText(Path.Combine(ScriptRootDirectoryPath, dataName + ".lua"),
 					$"---- FILE: \\{dataName}.lua\n\n" +
-					"local Util = require(\"Util\")\n" +
-					"Util.ShortenTENCalls()\n\n" +
 					"LevelFuncs.OnLoad = function() end\n" +
 					"LevelFuncs.OnSave = function() end\n" +
 					"LevelFuncs.OnStart = function() end\n" +
