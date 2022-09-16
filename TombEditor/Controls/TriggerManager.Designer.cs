@@ -34,6 +34,7 @@ namespace TombEditor.Controls
             this.butRenameNode = new DarkUI.Controls.DarkButton();
             this.butChangeNodeColor = new DarkUI.Controls.DarkButton();
             this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
+            this.butExport = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabConstructor = new System.Windows.Forms.TabPage();
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
@@ -46,7 +47,6 @@ namespace TombEditor.Controls
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lblListNotify = new DarkUI.Controls.DarkLabel();
-            this.butExport = new DarkUI.Controls.DarkButton();
             this.darkPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCallCount2)).BeginInit();
@@ -59,11 +59,11 @@ namespace TombEditor.Controls
             // 
             // darkPanel3
             // 
+            this.darkPanel3.Controls.Add(this.rbLevelScript);
             this.darkPanel3.Controls.Add(this.lblNotify);
             this.darkPanel3.Controls.Add(this.butUnassign);
             this.darkPanel3.Controls.Add(this.butSearch);
             this.darkPanel3.Controls.Add(this.rbNodeEditor);
-            this.darkPanel3.Controls.Add(this.rbLevelScript);
             this.darkPanel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkPanel3.Location = new System.Drawing.Point(0, 0);
             this.darkPanel3.Name = "darkPanel3";
