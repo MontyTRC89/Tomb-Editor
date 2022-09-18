@@ -12,8 +12,8 @@ on level start-up, given that level contains any volumes. Therefore, NodeFunctio
 ### Format
 
 Lua node scripts should follow this convention: several metadata signatures should be followed by actual function
-body which should start with conventional **LevelFuncs.** prefix. Amount of argument metadata signatures should
-be the same as actual function arguments, and should be listed in the same order.
+body which should start with conventional **LevelFuncs.Engine.Node.** prefix. Amount of argument metadata
+signatures should be the same as actual function arguments, and should be listed in the same order.
 
 ### Metadata signature reference
 
