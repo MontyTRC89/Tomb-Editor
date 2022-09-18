@@ -61,7 +61,8 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
 Metadata blocks can appear in any order.
 
-Metadata parsing happens until real function block starts (which should start with LevelFuncs. prefix).
+Metadata parsing happens until real function block starts (which should start with **LevelFuncs.Engine.Node.** 
+prefix).
 
 Conditional node functions (those with **!Conditional = "True"** specified) must return boolean value, otherwise
 their behaviour is undefined.
