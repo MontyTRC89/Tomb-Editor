@@ -5,9 +5,9 @@
 This folder contains lua script files which will be referenced by both TE and TEN to work with node trigger system.
 TE uses metadata from comments in these files to build UI, while TEN uses actual functions to execute node scripts.
 
-On level compile, all files from this directory are merged into `NodeFunctions.lua` file, which is copied to TEN 
-`Scripts` folder and executed on level start-up, given that level contains any volumes.
-Therefore, NodeFunctions.lua file in TEN `Scripts` folder should never be modified.
+On level compile, all files from this directory are copied to TEN `Scripts\NodeCatalogs` folder and executed
+on level start-up, given that level contains any volumes. Therefore, NodeFunctions.lua file in TEN
+`Scripts\NodeCatalogs` folder should never be modified.
 
 ### Format
 
