@@ -34,6 +34,11 @@ namespace TombLib.LevelData
             }
         }
 
+        public override ObjectInstance Clone()
+        {
+            return new ObjectGroup(_objects.Select(o => o.Clone() as PositionBasedObjectInstance).ToList());
+        }
+
         public void Add(PositionBasedObjectInstance objectInstance) => _objects.Add(objectInstance);
         public void Remove(PositionBasedObjectInstance objectInstance) => _objects.Remove(objectInstance);
         public bool Contains(PositionBasedObjectInstance obInstance) => _objects.Contains(obInstance);
