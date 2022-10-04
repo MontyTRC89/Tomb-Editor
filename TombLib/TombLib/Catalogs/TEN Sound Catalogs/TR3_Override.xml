@@ -2,6 +2,25 @@
 <WadSounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<SoundInfos>
 		<WadSoundInfo>
+			<Id>0</Id>
+			<Name>TR3_LARA_JUMP</Name>
+			<Volume>50</Volume>
+			<RangeInSectors>13</RangeInSectors>
+			<Chance>50</Chance>
+			<PitchFactor>10</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>true</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>TR3_LARA_JUMP_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>false</Global>
+			<Indexed>true</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
 			<Id>1</Id>
 			<Name>TR3_LARA_CLIMB2</Name>
 			<Volume>70</Volume>
@@ -85,7 +104,7 @@
 			<Chance>50</Chance>
 			<PitchFactor>10</PitchFactor>
 			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>false</RandomizePitch>
+			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>true</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
@@ -562,25 +581,6 @@
 			<Indexed>true</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>117</Id>
-			<Name>TR3_LARA_CLIMB_WALLS_NOISE</Name>
-			<Volume>27</Volume>
-			<RangeInSectors>10</RangeInSectors>
-			<Chance>100</Chance>
-			<PitchFactor>40</PitchFactor>
-			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>false</RandomizePitch>
-			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples>
-				<WadSample>
-					<FileName>back_jm2.wav</FileName>
-				</WadSample>
-			</Samples>
-			<Global>false</Global>
-			<Indexed>true</Indexed>
-		</WadSoundInfo>
-		<WadSoundInfo>
 			<Id>143</Id>
 			<Name>TR3_GENERIC_BODY_SLAM</Name>
 			<Volume>30</Volume>
@@ -598,25 +598,6 @@
 			</Samples>
 			<Global>false</Global>
 			<Indexed>true</Indexed>
-		</WadSoundInfo>
-		<WadSoundInfo>
-			<Id>146</Id>
-			<Name>TR3_LARA_DEATH3</Name>
-			<Volume>70</Volume>
-			<RangeInSectors>10</RangeInSectors>
-			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
-			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>true</RandomizePitch>
-			<RandomizeVolume>true</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples>
-				<WadSample>
-					<FileName>TR3_LARA_DEATH2_01.wav</FileName>
-				</WadSample>
-			</Samples>
-			<Global>false</Global>
-			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>337</Id>
