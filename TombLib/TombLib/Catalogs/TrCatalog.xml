@@ -1625,9 +1625,9 @@
 			<moveable id="335" name="Smoke #3" essential="false" />
 			<moveable id="336" name="Smoke #4" essential="false" />
 			<moveable id="337" name="Greenish Smoke" essential="false" />
-			<moveable id="338" name="Pirahnas" essential="false" />
-			<moveable id="339" name="Fish" essential="false" />
-			<moveable id="347" name="Bat swarm" essential="false" />
+			<moveable id="338" name="Pirahnas" essential="false" /> 
+			<moveable id="339" name="Fish" essential="false" t5m="FISH_EMITTER" />
+			<moveable id="347" name="Bat swarm" essential="false" t5m="BAT_EMMITER" />
 			<moveable id="349" name="Animating 1" essential="false" t5m="ANIMATING5" />
 			<moveable id="350" name="Animating 2" essential="false" t5m="ANIMATING6" />
 			<moveable id="351" name="Animating 3" essential="false" t5m="ANIMATING7" />
