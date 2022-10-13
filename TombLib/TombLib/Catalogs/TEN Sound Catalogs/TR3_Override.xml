@@ -9,7 +9,7 @@
 			<Chance>50</Chance>
 			<PitchFactor>10</PitchFactor>
 			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>false</RandomizePitch>
+			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>true</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
