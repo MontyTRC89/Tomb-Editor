@@ -163,12 +163,12 @@ namespace WadTool
 
         private void UpdateCollisionBoxUI()
         {
-            nudColBoxMinX.Value = (decimal)_static.CollisionBox.Minimum.X;
-            nudColBoxMinY.Value = (decimal)_static.CollisionBox.Minimum.Y;
-            nudColBoxMinZ.Value = (decimal)_static.CollisionBox.Minimum.Z;
-            nudColBoxMaxX.Value = (decimal)_static.CollisionBox.Maximum.X;
-            nudColBoxMaxY.Value = (decimal)_static.CollisionBox.Maximum.Y;
-            nudColBoxMaxZ.Value = (decimal)_static.CollisionBox.Maximum.Z;
+            nudColBoxMinX.Value = (decimal)Math.Min(_static.CollisionBox.Minimum.X, (float)nudColBoxMinX.Maximum);
+            nudColBoxMinY.Value = (decimal)Math.Min(_static.CollisionBox.Minimum.Y, (float)nudColBoxMinY.Maximum);
+            nudColBoxMinZ.Value = (decimal)Math.Min(_static.CollisionBox.Minimum.Z, (float)nudColBoxMinZ.Maximum);
+            nudColBoxMaxX.Value = (decimal)Math.Min(_static.CollisionBox.Maximum.X, (float)nudColBoxMaxX.Maximum);
+            nudColBoxMaxY.Value = (decimal)Math.Min(_static.CollisionBox.Maximum.Y, (float)nudColBoxMaxY.Maximum);
+            nudColBoxMaxZ.Value = (decimal)Math.Min(_static.CollisionBox.Maximum.Z, (float)nudColBoxMaxZ.Maximum);
         }
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
