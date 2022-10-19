@@ -323,7 +323,7 @@ namespace TombLib.Controls.VisualScripting
 
         public PointF[] GetNodeScreenPosition(ConnectionMode mode, bool force = false)
         {
-            var result = new PointF[2] { new PointF(-1, -1), new PointF(-1, -1) };
+            var result = new PointF[] { new PointF(-1, -1), new PointF(-1, -1) };
 
             if (Node == null)
                 return result;
@@ -337,7 +337,7 @@ namespace TombLib.Controls.VisualScripting
             var x = location.X + grip.Left;
             var y = location.Y + grip.Top + grip.Height / 2;
 
-            return new PointF[2]
+            return new PointF[]
             {
                 new PointF(x, y),
                 new PointF(x + grip.Width, y)
