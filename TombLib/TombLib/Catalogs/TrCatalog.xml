@@ -7940,9 +7940,9 @@
 			<state item="0" id="140" name="SHIMMY_45_OUTER_RIGHT" />
 			<state item="0" id="141" name="SHIMMY_45_INNER_LEFT" />
 			<state item="0" id="142" name="SHIMMY_45_INNER_RIGHT" />
-			<state item="0" id="143" name="UNUSED1" />
-			<state item="0" id="144" name="UNUSED2" />
-			<state item="0" id="145" name="UNUSED3" />
+			<state item="0" id="143" name="SLOPE_CLIMB_IDLE" />
+			<state item="0" id="144" name="SLOPE_CLIMB_UP" />
+			<state item="0" id="145" name="SLOPE_CLIMB_DOWN " />
 			<state item="0" id="146" name="COGWHEEL_UNGRAB" />
 			<state item="0" id="147" name="STEP_UP" />
 			<state item="0" id="148" name="STEP_DOWN" />
@@ -7953,6 +7953,24 @@
 			<state item="0" id="153" name="CRAWL_EXIT_DOWN_STEP" />
 			<state item="0" id="154" name="CRAWL_EXIT_JUMP" />
 			<state item="0" id="155" name="CRAWL_EXIT_FLIP" />
+			<state item="0" id="156" name="SLOPE_CLIMB_HANG" />
+			<state item="0" id="157" name="SLOPE_CLIMB_SHIMMY" />
+			<state item="0" id="158" name="SLOPE_CLIMB_START" />
+			<state item="0" id="159" name="SLOPE_CLIMB_STOP" />
+			<state item="0" id="160" name="SLOPE_CLIMB_END" />
+			<state item="0" id="161" name="CRAWL_STEP_UP" />
+			<state item="0" id="162" name="CRAWL_STEP_DOWN" />
+			<state item="0" id="163" name="MONKEY_BACK" />
+			<state item="0" id="164" name="VAULT" />
+			<state item="0" id="165" name="VAULT_2_STEPS" />
+			<state item="0" id="166" name="VAULT_3_STEPS" />
+			<state item="0" id="167" name="VAULT_1_STEP_CROUCH" />
+			<state item="0" id="168" name="VAULT_2_STEPS_CROUCH" />
+			<state item="0" id="169" name="VAULT_3_STEPS_CROUCH" />
+			<state item="0" id="170" name="SOFT_SPLAT" />
+			<state item="0" id="171" name="CROUCH_TURN_180" />
+			<state item="0" id="172" name="CRAWL_TURN_180" />
+			<state item="0" id="173" name="TURN_180" />
 		
 			<!-- Shiva -->
 			<state item="244" id="0" name="IDLE "/>
