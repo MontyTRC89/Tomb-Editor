@@ -909,7 +909,7 @@ namespace TombLib.LevelData.Compilers
                             var newSoundDetail = new tr_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
                             newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * short.MaxValue);
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * short.MaxValue);
+                            newSoundDetail.Chance = (ushort)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * short.MaxValue);
                             newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
