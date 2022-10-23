@@ -10,8 +10,9 @@ Tomb Editor:
  
 WadTool:
  * Show proper animation name tooltip in state change editor.
- * Don't clamp low frame number in state change editor if high frame is not yet set. 
- * Added missing Human-readable Animation State names for the new TEN animations.
+ * Don't clamp the low frame number in state change editor if high frame is not yet set. 
+ * Added missing Human-readable Animation State names for the new Lara's TEN animations.
+ * Added missing Human-readable Animation names for the new Lara's TEN animations.
 
 Version 1.5.2
 =============
