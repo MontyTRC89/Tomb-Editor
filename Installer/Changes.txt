@@ -22,7 +22,7 @@ Tomb Editor:
  * Allow scaling static meshes for TEN.
  * Display scaled static meshes according to TRNG OCB value.
  * Fix occasional errors when compiling pathfinding data in TEN levels.
- * Reorganize the way objects which can have Lua names are renamed.
+ * Reorganize the way objects which can have Lua name are renamed.
  * Add ability to rename volumes.
  * Flip floor/ceiling splits if non-quad ghost blocks are present.
  * Show debug output window when launching TEN via quick start feature.
@@ -1183,7 +1183,7 @@ Optimized NG triggers catalog
 Fixed bug in depth bar
 Fixed loading of missing WAD
 Fixed loading of missing TGA
-Fixed problems with UV co-ordinates (the horizon bug)
+Fixed problems with UV coordinates (the horizon bug)
 Replaced ugly exception with a nice message when no candidate for the portal is found
 Fixed alpha transparency for objects imported from compiled levels
 Added Wad Tool to the Tools menu of Tomb Editor
@@ -1193,7 +1193,7 @@ Version 1.0.5 - 01/01/2017
 Added path of SCRIPT.TXT file for NG text triggers in Level settings
 Added strings to NG text triggers
 Added sound editor inside Tomb Editor (only for Wad2)
-Sorted NG items in combo boxes
+Sorted NG items in comboboxes
 Worked on NG animated textures (not fully working yet)
 Fixed bugs in the geometry importer
 Added support for multiple objects in Metasequoia importer
@@ -1220,7 +1220,7 @@ Version 1.0.4 - 10/12/2017
 ==========================
 Added NG triggers
 Added NG header
-Fixed fast-level loading
+Fixed fast level loading
 Fixed crash in animated textures
 The additional group transforms (domes, pyramids, etc)
 Added correct drawing of special sectors in stacked rooms
@@ -1231,7 +1231,7 @@ Fixes to dark UI controls
 Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
 Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floor data creation for portals (this fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug
@@ -1254,7 +1254,7 @@ Fixed other minor bugs
 
 Version 1.0.2 - 18/11/2017
 ==========================
-Sectors like a monkey, box, death, etc are drawn over portals now
+Sectors like monkey, box, death, etc are drawn over portals now
 Added an error message box when you reach the limit of 21 dynamic lights per room (TR4 engine limitation)
 Added a fix for handling corrupted WADs by WadMerger
 Fixed random DXGI error after Prj2 opening
