@@ -53,6 +53,15 @@ LevelFuncs.Engine.Node.SetFOV = function(fov)
     TEN.Misc.SetFOV(fov)
 end
 
+-- !Name "Play flyby sequence"
+-- !Section "Effects"
+-- !Description "Plays desired flyby sequence."
+-- !Arguments "Numerical, 20, [ 0 | 256 ], Flyby sequence index" 
+
+LevelFuncs.Engine.Node.PlayFlyBy = function(index)
+    TEN.Misc.PlayFlyBy(index)
+end
+
 -- !Name "Shake camera"
 -- !Section "Effects"
 -- !Description "Shakes camera with specified strength.\nStrength also determines how long effect would take place."

@@ -14,6 +14,8 @@ namespace TombLib.Wad
 
     public class WadSoundInfo
     {
+        public const float MaxAttribValue = 100.0f;
+
         public int Id { get; set; }
         public string Name { get; set; }
         public int Volume { get; set; }

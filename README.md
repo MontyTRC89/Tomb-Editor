@@ -28,6 +28,7 @@ I would like to to thank all the following people that contributed to the develo
 * Gh0stBlade
 * JMN
 * Joey79100
+* l.m.
 * leveldesigner1
 * Lore
 * Lwmte

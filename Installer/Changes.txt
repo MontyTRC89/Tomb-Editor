@@ -3,13 +3,16 @@ Version 1.6
 
 Tomb Editor:
  * Added node editor for TEN visual trigger construction.
- * Allow rotating volumes on roll axis.
+ * Allow rotating volumes on the roll axis.
  * Automatically generate Lua names for all objects on TR4 to TEN project conversion.
- * Fix epic memory leak which occured during textbox input.
+ * Fix epic memory leak which occurred during textbox input.
+
  
 WadTool:
- * Show proper animation name tooltip in state change editor.
- * Don't clamp low frame number in state change editor if high frame is not yet set. 
+ * Show proper animation name tooltip in the state change editor.
+ * Don't clamp the low frame number in the state change editor if the high frame is not yet set. 
+ * Added missing Human-readable Animation State names for the new Lara's TEN animations.
+ * Added missing Human-readable Animation names for the new Lara's TEN animations.
 
 Version 1.5.2
 =============
@@ -1180,10 +1183,10 @@ Optimized NG triggers catalog
 Fixed bug in depth bar
 Fixed loading of missing WAD
 Fixed loading of missing TGA
-Fixed problems with UV coords (the horizon bug)
-Replaced ugly exception with a nice message when no candidate for portal is found
-Fixed alpha trasparency for objects imported from compiled levels
-Added Wad Tool to Tools menu of Tomb Editor
+Fixed problems with UV coordinates (the horizon bug)
+Replaced ugly exception with a nice message when no candidate for the portal is found
+Fixed alpha transparency for objects imported from compiled levels
+Added Wad Tool to the Tools menu of Tomb Editor
 
 Version 1.0.5 - 01/01/2017
 ==========================
@@ -1192,16 +1195,16 @@ Added strings to NG text triggers
 Added sound editor inside Tomb Editor (only for Wad2)
 Sorted NG items in comboboxes
 Worked on NG animated textures (not fully working yet)
-Fixed bugs in geometry importer
+Fixed bugs in the geometry importer
 Added support for multiple objects in Metasequoia importer
 Small bugs fixed
-Added the ability to browse single samples in import WAD window
-Added multiple rooms selection in 2D map
+Added the ability to browse single samples in the import WAD window
+Added multiple rooms selection in a 2D map
 Added room copy/paste (clipboard and drag and drop)
 Moved a lot of code in TombLib.dll for future plugins/tools development
 Changed math classes for future render library abstraction
-Added more infos to 2D map
-Fixed geometry building bugs
+Added more info to the 2D map
+Fixed geometry-building bugs
 Fixed NG header
 Fixed water intensity calculation
 Added values for rain/snow/quicksand
@@ -1210,8 +1213,8 @@ Fixed negative UV texture bug
 Added a function for setting the same ambient light for all rooms
 Fixed sounds paths
 Fixed bug with EXTRA statics
-Started working on multiple materials/objects in same MQO (will be ready in 1.0.6)
-Improvments in trigger window
+Started working on multiple materials/objects in the same MQO (will be ready in 1.0.6)
+Improvements in the trigger window
 
 Version 1.0.4 - 10/12/2017
 ==========================
@@ -1219,50 +1222,50 @@ Added NG triggers
 Added NG header
 Fixed fast level loading
 Fixed crash in animated textures
-Added group transforms (domes, pyramids, etc)
+The additional group transforms (domes, pyramids, etc)
 Added correct drawing of special sectors in stacked rooms
-Replaced old style tooltip in 2d Grid with standard Windows's tooltip
+Replaced old style tooltip in 2d Grid with standard Windows tooltip
 Fixed some memory leaks
-Added game version settings for switching between vanilla tomb4.exe and TRNG (and more in future)
+Added game version settings for switching between vanilla tomb4.exe and TRNG (and more in the future)
 Fixes to dark UI controls
-Autoswitch of special sectors in 3D view for seeing correcctly overlapped special sectors
-Fixed bugs on gizmo
+Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
+Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floordata creation for portals (thhis fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug
 Added "L" lock flag to rooms
 Fixed bug for RF-ED not synced correctly on portals when you edit a room
-Added a new window that popups when you import WADs and some WAV samples are missing. This window allows the user to brose for samples.
+Added a new window that popups when you import WADs and some WAV samples are missing. This window allows the user to browse for samples.
 Fixed bug about cameras and sinks (it was visible for example in Karnak)
-Added context menus for oobjects, unselected blocks and selected area
-Added compiler statistics in status bar
+Added context menus for objects, unselected blocks, and selected area
+Added compiler statistics in the status bar
 Many other small bugfixes and improvements
 
 Version 1.0.3 - 21/11/2017
 ==========================
 Fixed crash while generating boxes near the maximum limit of 2048
 Fixed importing of EXTRA SLOTS static meshes while loading PRJ
-Fixed horizontal portals flickering and missing rooms if camera was exactly on portal
-Fixed bug with anim commands that was causing the roll animation bug
+Fixed horizontal portals flickering and missing rooms if the camera was exactly on the portal
+Fixed a bug with anim commands that was causing the roll animation bug
 Fixed light on/off importing from PRJ
 Fixed other minor bugs 
 
 Version 1.0.2 - 18/11/2017
 ==========================
 Sectors like monkey, box, death, etc are drawn over portals now
-Added an error messagebox when you reach the limit of 21 dynamic lights per room (TR4 engine limitation)
+Added an error message box when you reach the limit of 21 dynamic lights per room (TR4 engine limitation)
 Added a fix for handling corrupted WADs by WadMerger
 Fixed random DXGI error after Prj2 opening
-Diagonal walls are drawn correctly in 2D grid
+Diagonal walls are drawn correctly in a 2D grid
 Solved lag while texturing
-Fixed loading of PRJ with not texture map or WAD
+Fixed loading of PRJ with no texture map or WAD
 Fixed exception that occurred when Wad2 had no items inside
-Optimized rendering while moving mouse on 3D view
+Optimized rendering while moving the mouse on 3D view
 Fixed smooth editing tools
-Fixed grid walls functions for diagonal walls
+Fixed grid walls function for diagonal walls
 Added some missing tooltips
-Fixed hotkey description for rotate menu entry
+Fixed hotkey description for the rotate menu entry
 Fixed some bugs with geometry tools
 Minor bugs fixed

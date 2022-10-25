@@ -787,10 +787,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                         var newSoundDetail = new tr3_sound_details();
                         newSoundDetail.Sample = (ushort)lastSampleIndex;
-                        newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-                        newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
-                        newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
-                        newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
+                        newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * byte.MaxValue);
+                        newSoundDetail.Chance = (byte)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * byte.MaxValue);
+                        newSoundDetail.Range  = (byte)soundDetail.RangeInSectors;
+                        newSoundDetail.Pitch  = (byte)Math.Round(soundDetail.PitchFactor / WadSoundInfo.MaxAttribValue * sbyte.MaxValue + (soundDetail.PitchFactor < 0 ? (byte.MaxValue + 1) : 0));
                         newSoundDetail.Characteristics = characteristics;
                         bw.WriteBlock(newSoundDetail);
                         lastSampleIndex += soundDetail.Samples.Count;
