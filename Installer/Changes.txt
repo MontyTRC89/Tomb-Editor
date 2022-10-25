@@ -1,3 +1,14 @@
+Version 1.61
+============
+
+Tomb Editor:
+ * Fix exception when selecting animation sets with unsupported animation type.
+ 
+WadTool:
+ * Added missing Human-readable Animation State names for the new Lara's TEN animations.
+ * Added missing Human-readable Animation names for the new Lara's TEN animations.
+
+
 Version 1.6
 ===========
 
@@ -7,12 +18,9 @@ Tomb Editor:
  * Automatically generate Lua names for all objects on TR4 to TEN project conversion.
  * Fix epic memory leak which occurred during textbox input.
 
- 
 WadTool:
  * Show proper animation name tooltip in the state change editor.
  * Don't clamp the low frame number in the state change editor if the high frame is not yet set. 
- * Added missing Human-readable Animation State names for the new Lara's TEN animations.
- * Added missing Human-readable Animation names for the new Lara's TEN animations.
 
 Version 1.5.2
 =============
