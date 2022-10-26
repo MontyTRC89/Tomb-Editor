@@ -3,6 +3,7 @@ Version 1.61
 
 Tomb Editor:
  * Fix exception when selecting animation sets with unsupported animation type.
+ * Fix level script functions not parsing properly in some cases.
  
 WadTool:
  * Added missing Human-readable Animation State names for the new Lara's TEN animations.

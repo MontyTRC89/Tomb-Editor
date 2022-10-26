@@ -207,6 +207,9 @@ namespace TombLib.Utils
                     string line = l.Trim();
                     bool skip = false;
 
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+
                     foreach (var name in _reservedNames)
                     {
                         if (line.Contains(name))
@@ -229,6 +232,10 @@ namespace TombLib.Utils
                     {
                         int indexStart = line.IndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
+
+                        if (indexEnd <= 0)
+                            continue;
+
                         functionName = line.Substring(indexStart, indexEnd).Trim();
                     }
                     else if (line.Contains(LuaSyntax.Include))
@@ -257,13 +264,13 @@ namespace TombLib.Utils
                     if (!result.Contains(functionName))
                         result.Add(functionName);
                 }
-
-                return result;
             }
             catch
             {
                 return result;
             }
+
+            return result;
         }
 
         private static string ParseFunctionString(string function, List<string> arguments)
