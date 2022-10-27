@@ -337,7 +337,10 @@ namespace TombEditor.Forms
             if (tooManyFramesWarning.Visible = _editor.Level.IsNG && frameCount > _maxLegacyFrames)
                 toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "!\nThis will cause crash in TRNG!");
 
-            comboEffect.SelectedItem = selectedSet.AnimationType;
+            if (comboEffect.Items.Contains(selectedSet.AnimationType))
+                comboEffect.SelectedItem = selectedSet.AnimationType;
+            else
+                comboEffect.SelectedItem = null;
 
             if (_editor.Level.IsNG || _editor.Level.IsTombEngine)
             {
@@ -436,7 +439,7 @@ namespace TombEditor.Forms
 
             var g = args.Graphics;
 
-            if (selectedSet.IsUvRotate)
+            if (selectedSet.IsUvRotate && comboEffect.SelectedItem != null)
             {
                 g.DrawImage(image, new Point(0, _lastY * 2 - 128));
                 g.DrawImage(image, new Point(0, _lastY * 2));
@@ -1055,7 +1058,20 @@ namespace TombEditor.Forms
 
         private void OnEffectChanged()
         {
+            // This case can happen if there is a mismatch between game version
+            // and selected animation type.
+
+            if (comboEffect.SelectedItem == null)
+            {
+                comboFps.Visible = false;
+                numericUpDownFPS.Visible = true;
+                numericUpDownFPS.Enabled = false;
+                comboUvRotate.Enabled = false;
+                return;
+            }
+
             var effect = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
+
             switch (effect)
             {
                 case AnimatedTextureAnimationType.Frames:
