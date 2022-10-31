@@ -184,7 +184,11 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_Download_Click(object sender, EventArgs e)
-			=> Process.Start("https://www.tombraiderforums.com/showpost.php?p=7636390");
+			=> Process.Start(new ProcessStartInfo()
+			{
+				FileName = "https://www.tombraiderforums.com/showpost.php?p=7636390",
+				UseShellExecute = true
+			});
 
 		private void button_Refresh_Click(object sender, EventArgs e)
 			=> UpdatePlugins();
