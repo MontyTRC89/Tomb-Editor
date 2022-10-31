@@ -9,6 +9,9 @@ WadTool:
  * Added missing Human-readable Animation State names for the new Lara's TEN animations.
  * Added missing Human-readable Animation names for the new Lara's TEN animations.
 
+TombIDE:
+ * Updated PLAY.exe for new game projects.
+ * Updated Tomb1Main preset to 2.11.
 
 Version 1.6
 ===========
