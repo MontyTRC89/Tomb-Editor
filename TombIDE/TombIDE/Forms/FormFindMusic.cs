@@ -16,7 +16,11 @@ namespace TombIDE
 		}
 
 		private void button_Download_Click(object sender, EventArgs e)
-			=> Process.Start("https://mega.nz/file/f9llhQAY#y0RqaMhR4ghtQ-1IFAGbHep_FCmkV8Q66bzdMWVqtuY"); // Hardcoded links, yay!
+			=> Process.Start(new ProcessStartInfo()
+			{
+				FileName = "https://mega.nz/file/f9llhQAY#y0RqaMhR4ghtQ-1IFAGbHep_FCmkV8Q66bzdMWVqtuY", // Hardcoded links, yay!
+				UseShellExecute = true
+			});
 
 		private void button_Browse_Click(object sender, EventArgs e)
 		{
