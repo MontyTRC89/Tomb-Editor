@@ -82,6 +82,7 @@ namespace TombIDE.ProjectMaster.Forms
 			{
 				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "Tomb1Main.exe"),
+				Path.Combine(_ide.Project.EnginePath, "Tomb1Main_ConfigTool.exe"),
 				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
