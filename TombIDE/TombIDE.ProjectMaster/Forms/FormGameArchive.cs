@@ -80,6 +80,7 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFiles = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "Tomb1Main.exe"),
 				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
@@ -100,6 +101,7 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFiles = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "COPYING.txt"),
 				Path.Combine(_ide.Project.EnginePath, "Tomb2.exe"),
 				Path.Combine(_ide.Project.EnginePath, "TR2Main.json"),
@@ -123,6 +125,7 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFiles = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "audio", "cdaudio.wad"),
 				Path.Combine(_ide.Project.EnginePath, "data.bin"),
 				Path.Combine(_ide.Project.EnginePath, "tomb3.exe"),
@@ -140,6 +143,7 @@ namespace TombIDE.ProjectMaster.Forms
 		{
 			string[] importantFolders = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "audio"),
 				Path.Combine(_ide.Project.EnginePath, "data"),
 				Path.Combine(_ide.Project.EnginePath, "pix"),
