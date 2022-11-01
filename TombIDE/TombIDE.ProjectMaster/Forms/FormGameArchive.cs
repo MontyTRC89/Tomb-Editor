@@ -80,7 +80,8 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "Tomb1Main.exe")
+				Path.Combine(_ide.Project.EnginePath, "Tomb1Main.exe"),
+				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
 			CreateArchive(importantFolders, importantFiles, filePath, readmeText);
@@ -101,7 +102,8 @@ namespace TombIDE.ProjectMaster.Forms
 			{
 				Path.Combine(_ide.Project.EnginePath, "COPYING.txt"),
 				Path.Combine(_ide.Project.EnginePath, "Tomb2.exe"),
-				Path.Combine(_ide.Project.EnginePath, "TR2Main.json")
+				Path.Combine(_ide.Project.EnginePath, "TR2Main.json"),
+				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
@@ -123,7 +125,8 @@ namespace TombIDE.ProjectMaster.Forms
 			{
 				Path.Combine(_ide.Project.EnginePath, "audio", "cdaudio.wad"),
 				Path.Combine(_ide.Project.EnginePath, "data.bin"),
-				Path.Combine(_ide.Project.EnginePath, "tomb3.exe")
+				Path.Combine(_ide.Project.EnginePath, "tomb3.exe"),
+				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
@@ -148,7 +151,8 @@ namespace TombIDE.ProjectMaster.Forms
 				Path.Combine(_ide.Project.EnginePath, "load.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
 				Path.Combine(_ide.Project.EnginePath, "patches.bin"),
-				Path.Combine(_ide.Project.EnginePath, "tomb4.exe")
+				Path.Combine(_ide.Project.EnginePath, "tomb4.exe"),
+				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
@@ -174,7 +178,8 @@ namespace TombIDE.ProjectMaster.Forms
 			string[] importantFiles = new string[]
 			{
 				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "TombEngine.exe")
+				Path.Combine(_ide.Project.EnginePath, "TombEngine.exe"),
+				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();

@@ -110,7 +110,7 @@
 			this.label_Enter.Name = "label_Enter";
 			this.label_Enter.Size = new System.Drawing.Size(744, 30);
 			this.label_Enter.TabIndex = 2;
-			this.label_Enter.Text = "Enter readme.txt text: (Optional)";
+			this.label_Enter.Text = "Enter README.txt text: (Optional)";
 			this.label_Enter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// timer
