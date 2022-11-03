@@ -448,7 +448,7 @@ namespace TombEditor.Controls
 
         public void PasteNodes(List<TriggerNode> nodes)
         {
-            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (nodes == null || _event == null || _event.Mode == VolumeEventMode.LevelScript)
                 return;
 
             if (nodes.Count == 0)
