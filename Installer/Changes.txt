@@ -9,8 +9,9 @@ Tomb Editor:
  * Add RunLuaScript and RunConditionalLuaScript node functions.
  
 WadTool:
- * Added missing Human-readable Animation State names for the new Lara's TEN animations.
- * Added missing Human-readable Animation names for the new Lara's TEN animations.
+ * Added missing state names for the new Lara's TEN animations.
+ * Added missing animation names for the new Lara's TEN animations.
+ * Fix incorrect remap of pushable blocks to broken TEN slots.
 
 TombIDE:
  * Updated PLAY.exe for new game projects.
