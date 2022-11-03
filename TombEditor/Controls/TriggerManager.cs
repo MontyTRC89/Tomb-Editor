@@ -90,7 +90,7 @@ namespace TombEditor.Controls
             ReloadNodeFunctions(nodeFunctions);
             ReloadScriptFunctions(scriptFunctions);
 
-            nodeEditor.Initialize(editor.Level);
+            nodeEditor.Initialize(editor.Level, scriptFunctions);
             UpdateNodeEditorOptions();
 
             // HACK: Switch mode just for the display without actually loaded events

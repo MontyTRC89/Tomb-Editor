@@ -18,7 +18,8 @@ end
 -- !Description "Modify level variable, according to specified operator and operand."
 -- !Description "If level variable with specified name does not exist,\nit is initialized as 0 before performing modify operation."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
--- !Arguments "Enumeration, 25, [ + | - | * | / | = ]" "Numerical, [ -65536 | 65535 | 2 ], Variable value"
+-- !Arguments "Enumeration, 25, [ + | - | * | / | = ], Mathematical operation to perform"
+-- !Arguments "Numerical, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyLevelVariable = function(varName, operator, operand)
     if (LevelVars[varName] == nil) then
@@ -62,7 +63,8 @@ end
 -- !Description "Modify game variable, according to specified operator and operand."
 -- !Description "If game variable with specified name does not exist,\nit is initialized as 0 before performing modify operation."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Variable name"
--- !Arguments "Enumeration, 25, [ + | - | * | / | = ]" "Numerical, 25, [ -65536 | 65535 | 2 ], Variable value"
+-- !Arguments "Enumeration, 25, [ + | - | * | / | = ], Mathematical operation to perform"
+-- !Arguments "Numerical, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyGameVariable = function(varName, operator, operand)
     if (GameVars[varName] == nil) then

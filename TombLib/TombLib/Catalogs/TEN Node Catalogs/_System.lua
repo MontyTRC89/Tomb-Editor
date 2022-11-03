@@ -38,3 +38,17 @@ LevelFuncs.Engine.Node.GenerateString = function(text, x, y, center, shadow, col
 	local rX, rY = TEN.Misc.PercentToScreen(x, y)
 	return TEN.Strings.DisplayString(text, rX, rY, color, false, options)
 end
+
+LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
+
+   if inputStr == nil then
+      inputStr = "%s"
+   end
+   
+   local t = {}
+   for str in string.gmatch(inputStr, "([^"..delimiter.."]+)") do
+      table.insert(t, str)
+   end
+   
+   return t
+end
