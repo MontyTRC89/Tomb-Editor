@@ -500,7 +500,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
                 // TODO! replace with customizable data from trcatalog, properties, etc?
-                if (oldStaticMesh.ToString().ToLower().Contains("shatter"))
+                if (TrCatalog.IsStaticShatterable(TRVersion.Game.TombEngine, oldStaticMesh.Id.TypeId))
                     newStaticMesh.ShatterType = (short)ShatterType.Fragment;
                 else
                     newStaticMesh.ShatterType = (short)ShatterType.None;
