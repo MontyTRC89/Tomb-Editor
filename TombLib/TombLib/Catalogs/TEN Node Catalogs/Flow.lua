@@ -46,3 +46,39 @@ end
 LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
     return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
 end
+
+-- !Name "Run script function"
+-- !Section "Game flow"
+-- !Description "Runs specified Lua function from level script file."
+-- !Description "If needed, arguments should be provided in string form, divided by commas."
+-- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
+
+LevelFuncs.Engine.Node.RunLuaScript = function(funcName, args)
+
+	if (funcName == nil) then
+		print("There is no specified function in level script!")
+		return
+	end
+	
+    funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
+end
+
+-- !Name "If script function returns..."
+-- !Section "Game flow"
+-- !Description "Runs specified conditional Lua function from level script file."
+-- !Description "Function should return either numerical or boolean (treated as 0 or 1) value."
+-- !Description "If needed, arguments should be provided in string form, divided by commas."
+-- !Conditional "True"
+-- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ -65536 | 65535 ]"
+-- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
+
+LevelFuncs.Engine.Node.RunConditionalLuaScript = function(operator, result, funcName, args)
+
+	if (funcName == nil) then
+		print("There is no specified function in level script!")
+		return 0
+	end
+	
+    local params = LevelFuncs.Engine.Node.SplitString(args, ",")
+    return LevelFuncs.Engine.Node.CompareValue(funcName(table.unpack(params)), result, operator)
+end

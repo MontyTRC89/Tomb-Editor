@@ -1,13 +1,17 @@
-Version 1.61
-============
+Version 1.6.1
+=============
 
 Tomb Editor:
  * Fix exception when selecting animation sets with unsupported animation type.
+ * Fix exception when pushing Ctrl+V in newly opened node editor.
  * Fix level script functions not parsing properly in some cases.
+ * Fix sound info chance value packing for TR1-TR3.
+ * Add RunLuaScript and RunConditionalLuaScript node functions.
  
 WadTool:
- * Added missing Human-readable Animation State names for the new Lara's TEN animations.
- * Added missing Human-readable Animation names for the new Lara's TEN animations.
+ * Added missing state names for the new Lara's TEN animations.
+ * Added missing animation names for the new Lara's TEN animations.
+ * Fix incorrect remap of pushable blocks to broken TEN slots.
 
 TombIDE:
  * Updated PLAY.exe for new game projects.

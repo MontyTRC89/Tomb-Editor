@@ -199,16 +199,16 @@ namespace TombLib.Controls.VisualScripting
             base.Dispose(disposing);
         }
 
-        public void Initialize(Level level)
+        public void Initialize(Level level, List<string> scriptFunctions = null)
         {
             ViewPosition = new Vector2(GridSize / 2.0f,
                                        GridSize / 2.0f);
-            PopulateCachedNodeLists(level);
+            PopulateCachedNodeLists(level, scriptFunctions);
             UpdateVisibleNodes(true);
             _updateTimer.Start();
         }
 
-        public void PopulateCachedNodeLists(Level level)
+        public void PopulateCachedNodeLists(Level level, List<string> scriptFunctions = null)
         {
             var allObjects = level.GetAllObjects();
 
@@ -222,6 +222,11 @@ namespace TombLib.Controls.VisualScripting
             _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;
+
+            if (scriptFunctions != null)
+                _cachedLuaFunctions = scriptFunctions;
+            else
+                _cachedLuaFunctions = ScriptingUtils.GetAllFunctionNames(level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile));
         }
 
         public TriggerNode MakeNode(bool condition)

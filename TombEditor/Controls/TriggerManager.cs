@@ -90,7 +90,7 @@ namespace TombEditor.Controls
             ReloadNodeFunctions(nodeFunctions);
             ReloadScriptFunctions(scriptFunctions);
 
-            nodeEditor.Initialize(editor.Level);
+            nodeEditor.Initialize(editor.Level, scriptFunctions);
             UpdateNodeEditorOptions();
 
             // HACK: Switch mode just for the display without actually loaded events
@@ -448,7 +448,7 @@ namespace TombEditor.Controls
 
         public void PasteNodes(List<TriggerNode> nodes)
         {
-            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (nodes == null || _event == null || _event.Mode == VolumeEventMode.LevelScript)
                 return;
 
             if (nodes.Count == 0)
