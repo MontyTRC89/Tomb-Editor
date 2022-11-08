@@ -1325,10 +1325,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         portalToMerge.Direction == mergedPortal.Direction)
                     {
                         int xMin = Math.Min(portalToMerge.Vertices.Min(v => v.X), mergedPortal.Vertices.Min(v => v.X));
-                        int yMin = Math.Min(portalToMerge.Vertices.Min(v => v.Y), mergedPortal.Vertices.Min(v => v.Y));
+                        int yTop = Math.Min(portalToMerge.Vertices.Min(v => v.Y), mergedPortal.Vertices.Min(v => v.Y));
                         int zMin = Math.Min(portalToMerge.Vertices.Min(v => v.Z), mergedPortal.Vertices.Min(v => v.Z));
                         int xMax = Math.Max(portalToMerge.Vertices.Max(v => v.X), mergedPortal.Vertices.Max(v => v.X));
-                        int yMax = Math.Max(portalToMerge.Vertices.Max(v => v.Y), mergedPortal.Vertices.Max(v => v.Y));
+                        int yBottom = Math.Max(portalToMerge.Vertices.Max(v => v.Y), mergedPortal.Vertices.Max(v => v.Y));
                         int zMax = Math.Max(portalToMerge.Vertices.Max(v => v.Z), mergedPortal.Vertices.Max(v => v.Z));
 
                         found = true;
@@ -1336,45 +1336,45 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         switch (portalToMerge.Direction)
                         {
                             case PortalDirection.WallPositiveX:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yMax, zMax);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMin);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMin);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yMin, zMax);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMax);
                                 break;
 
                             case PortalDirection.WallNegativeX:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMin);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yMax, zMax);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yMin, zMax);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMin);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMin);
                                 break;
 
                             case PortalDirection.WallPositiveZ:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMax);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMax);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMax);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMax);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMax);
                                 break;
 
                             case PortalDirection.WallNegativeZ:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yMax, zMin);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yMax, zMin);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yMin, zMin);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yMin, zMin);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMin);
                                 break;
 
                             case PortalDirection.Floor:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMin, zMax);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMin, zMax);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMin);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMin);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yTop, zMin);
                                 break;
 
                             case PortalDirection.Ceiling:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMin);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMin);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMax, zMax);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMax, zMax);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yBottom, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMax);
                                 break;
                         }
                     }
