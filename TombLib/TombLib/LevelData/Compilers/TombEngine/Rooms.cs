@@ -1313,7 +1313,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void MergePortals(TombEngineRoom room)
         {
-            ICollection<TombEnginePortal> mergedPortals = new List<TombEnginePortal>();
+            List<TombEnginePortal> mergedPortals = new List<TombEnginePortal>();
 
             foreach (TombEnginePortal portalToMerge in room.Portals)
             {
@@ -1385,6 +1385,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     mergedPortals.Add(portalToMerge);
                 }
             }
+
+            room.Portals = mergedPortals;
         }
 
         private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, bool isCeiling)
