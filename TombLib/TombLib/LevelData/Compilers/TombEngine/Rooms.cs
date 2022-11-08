@@ -1102,6 +1102,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         throw new ApplicationException("Unknown PortalDirection");
                 }
             }
+
+            MergePortals(newRoom);
         }
 
         private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, BlockEdge[] relevantEdges, BlockEdge[] oppositeRelevantEdges)
@@ -1259,7 +1261,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                 Vertices = portalVertices,
-                Normal = normal
+                Normal = normal,
+                Direction = portal.Direction
             });
         }
 
@@ -1306,6 +1309,82 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Add new portal plane
             portalPlanes.Add(portalPlane);
             portalAreas.Add(new RectangleInt2(x, z, x, z));
+        }
+
+        private void MergePortals(TombEngineRoom room)
+        {
+            ICollection<TombEnginePortal> mergedPortals = new List<TombEnginePortal>();
+
+            foreach (TombEnginePortal portalToMerge in room.Portals)
+            {
+                bool found = false;
+
+                foreach (TombEnginePortal mergedPortal in mergedPortals)
+                {
+                    if (portalToMerge.AdjoiningRoom == mergedPortal.AdjoiningRoom &&
+                        portalToMerge.Direction == mergedPortal.Direction)
+                    {
+                        int xMin = Math.Min(portalToMerge.Vertices.Min(v => v.X), mergedPortal.Vertices.Min(v => v.X));
+                        int yMin = Math.Min(portalToMerge.Vertices.Min(v => v.Y), mergedPortal.Vertices.Min(v => v.Y));
+                        int zMin = Math.Min(portalToMerge.Vertices.Min(v => v.Z), mergedPortal.Vertices.Min(v => v.Z));
+                        int xMax = Math.Max(portalToMerge.Vertices.Max(v => v.X), mergedPortal.Vertices.Max(v => v.X));
+                        int yMax = Math.Max(portalToMerge.Vertices.Max(v => v.Y), mergedPortal.Vertices.Max(v => v.Y));
+                        int zMax = Math.Max(portalToMerge.Vertices.Max(v => v.Z), mergedPortal.Vertices.Max(v => v.Z));
+
+                        found = true;
+
+                        switch (portalToMerge.Direction)
+                        {
+                            case PortalDirection.WallPositiveX:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yMax, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yMin, zMax);
+                                break;
+
+                            case PortalDirection.WallNegativeX:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yMax, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yMin, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMin);
+                                break;
+
+                            case PortalDirection.WallPositiveZ:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMax);
+                                break;
+
+                            case PortalDirection.WallNegativeZ:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yMax, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yMax, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yMin, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yMin, zMin);
+                                break;
+
+                            case PortalDirection.Floor:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMin, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMin, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMin, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMin, zMin);
+                                break;
+
+                            case PortalDirection.Ceiling:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yMax, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yMax, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yMax, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yMax, zMax);
+                                break;
+                        }
+                    }
+                }
+
+                if (!found)
+                {
+                    mergedPortals.Add(portalToMerge);
+                }
+            }
         }
 
         private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, bool isCeiling)
@@ -1416,7 +1495,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
-                    Normal = normal
+                    Normal = normal,
+                    Direction = isCeiling ? PortalDirection.Ceiling : PortalDirection.Floor
                 });
             }
         }
