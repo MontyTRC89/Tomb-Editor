@@ -2,7 +2,7 @@ Version 1.6.1
 =============
 
 Tomb Editor:
- * Add RunLuaScript and RunConditionalLuaScript node functions.
+ * Add SwapMoveableMesh, RunLuaScript and RunConditionalLuaScript node functions.
  * Use shatter attribute in trcatalog.xml to apply static shatter property in TEN.
  * Fix exception when selecting animated textures with unsupported animation type.
  * Fix exception when pushing Ctrl+V in newly opened node editor.
