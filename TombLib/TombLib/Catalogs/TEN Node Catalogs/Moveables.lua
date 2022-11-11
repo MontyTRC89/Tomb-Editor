@@ -360,3 +360,14 @@ LevelFuncs.Engine.Node.SetMoveableMeshVisibility = function(moveableName, value,
 		TEN.Objects.GetMoveableByName(moveableName):HideMesh(value)
 	end
 end
+
+-- !Name "Swap specified moveable mesh with another"
+-- !Section "Moveable parameters"
+-- !Description "Swaps specified moveable mesh with another moveable mesh."
+-- !Arguments "NewLine, 80, Moveables, Destination moveable" "Numerical, 20, [ 0 | 31 ], Mesh index to swap"
+-- !Arguments "NewLine, 80, WadSlots, Source slot" "Numerical, 20, [ 0 | 31 ], Mesh index to use"
+
+LevelFuncs.Engine.Node.SwapMoveableMesh = function(dest, destIndex, srcSlot, srcIndex)
+	
+	TEN.Objects.GetMoveableByName(dest):SwapMesh(destIndex, srcSlot, srcIndex)
+end
