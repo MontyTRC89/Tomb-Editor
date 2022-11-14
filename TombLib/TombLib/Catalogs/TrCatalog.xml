@@ -6249,6 +6249,7 @@
 			<moveable id="444" name="PUSHABLE_OBJECT_CLIMBABLE10" />
 			<moveable id="445" name="TRAIN" />
 			<moveable id="446" name="EXPLOSION" />
+			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
