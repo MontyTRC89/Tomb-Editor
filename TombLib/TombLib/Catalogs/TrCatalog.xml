@@ -4891,7 +4891,7 @@
 			<moveable id="62" name="Roman statue_mip" hidden="true" />
 			<moveable id="63" name="Small dragon" y_adjust="2" t5m="HYDRA" />
 			<moveable id="64" name="Small dragon_mip" y_adjust="2" hidden="true" />
-			<moveable id="65" name="Laser head" t5m="LASER_HEAD" />
+			<moveable id="65" name="Laser head" t5m="LASERHEAD" />
 			<moveable id="66" name="Laser head_mip" hidden="true" />
 			<moveable id="67" name="Cyborg" y_adjust="0.030" t5m="CYBORG" />
 			<moveable id="68" name="Cyborg_mip" t5m="CYBORG_MIP" hidden="true" />
