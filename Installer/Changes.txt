@@ -1,3 +1,9 @@
+Version 1.6.2
+=============
+
+WadTool:
+ * Fixed Lara Anim 464, 466, and 472 which were missing sound effects.
+
 Version 1.6.1
 =============
 
