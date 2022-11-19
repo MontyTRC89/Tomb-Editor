@@ -372,7 +372,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (parameter is MoveableInstance)
                 {
                     MoveableInstance @object = (MoveableInstance)parameter;
-                    bool isAI = @object.WadObjectId.TypeId >= 398 && @object.WadObjectId.TypeId <= 406;
+                    bool isAI = TrCatalog.IsMoveableAI(_level.Settings.GameVersion, @object.WadObjectId.TypeId);
                     var table = isAI ? _aiObjectsTable : _moveablesTable;
                     if (!table.TryGetValue(@object, out index))
                     {
