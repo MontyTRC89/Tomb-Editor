@@ -82,8 +82,13 @@ namespace TombLib.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.SupportsTransparentBackColor |
                      ControlStyles.ResizeRedraw, true);
+        }
 
-            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+        protected override void OnParentVisibleChanged(EventArgs e)
+        {
+            base.OnParentVisibleChanged(e);
+
+            if (!DesignMode)
             {
                 SetStyle(ControlStyles.UserPaint, true);
 

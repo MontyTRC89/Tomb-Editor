@@ -1,71 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FA212817-73AF-453A-9F34-A59BEABFF916}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>WadTool</RootNamespace>
-    <AssemblyName>WadTool</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>false</DebugSymbols>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowedReferenceRelatedFileExtensions>
-      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
-           Only *.allowedextension files will be included, which doesn't exist in my case.
-       -->
-      .allowedextension
-    </AllowedReferenceRelatedFileExtensions>
-    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>WT.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -90,243 +50,60 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AnimationEditor.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Controls\AnimCommandEditor.cs">
+    <Compile Update="Controls\AnimCommandEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\AnimCommandEditor.Designer.cs">
-      <DependentUpon>AnimCommandEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ContextMenus\MoveableContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelRenderingMainPreview.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelRenderingAnimationEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelRenderingMesh.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelRenderingSkeleton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelRenderingStaticEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelTextureMap.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAnimationEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAnimationEditor.Designer.cs">
-      <DependentUpon>FormAnimationEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormAnimationFixer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAnimationFixer.Designer.cs">
-      <DependentUpon>FormAnimationFixer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMeshEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMeshEditor.Designer.cs">
-      <DependentUpon>FormMeshEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormNewWad2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormNewWad2.Designer.cs">
-      <DependentUpon>FormNewWad2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormOptions.Designer.cs">
-      <DependentUpon>FormOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormReplaceAnimCommands.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormReplaceAnimCommands.Designer.cs">
-      <DependentUpon>FormReplaceAnimCommands.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSelectSlot.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSelectSlot.Designer.cs">
-      <DependentUpon>FormSelectSlot.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSkeletonEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSkeletonEditor.Designer.cs">
-      <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSpriteSequenceEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSpriteSequenceEditor.Designer.cs">
-      <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormAnimCommandsEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAnimCommandsEditor.Designer.cs">
-      <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormStateChangesEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormStateChangesEditor.Designer.cs">
-      <DependentUpon>FormStateChangesEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormStaticEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormStaticEditor.Designer.cs">
-      <DependentUpon>FormStaticEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GizmoAnimationEditor.cs" />
-    <Compile Include="GizmoSkeletonEditor.cs" />
-    <Compile Include="GizmoMeshEditor.cs" />
-    <Compile Include="GizmoStaticEditor.cs" />
-    <Compile Include="GizmoStaticEditorLight.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Controls\ContextMenus\BaseContextMenu.cs" />
+    <Compile Update="Controls\ContextMenus\MoveableContextMenu.cs" />
+    <Compile Update="Controls\PanelRenderingMainPreview.cs" />
+    <Compile Update="Controls\PanelRenderingAnimationEditor.cs" />
+    <Compile Update="Controls\PanelRenderingMesh.cs" />
+    <Compile Update="Controls\PanelRenderingSkeleton.cs" />
+    <Compile Update="Controls\PanelRenderingStaticEditor.cs" />
+    <Compile Update="Controls\PanelTextureMap.cs" />
+    <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Undo.cs" />
-    <Compile Include="WadActions.cs" />
-    <Compile Include="WadMeshBoneNode.cs" />
-    <Compile Include="WadToolClass.cs" />
-    <EmbeddedResource Include="Controls\AnimCommandEditor.resx">
-      <DependentUpon>AnimCommandEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAnimationEditor.resx">
-      <DependentUpon>FormAnimationEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAnimationFixer.resx">
-      <DependentUpon>FormAnimationFixer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMeshEditor.resx">
-      <DependentUpon>FormMeshEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormNewWad2.resx">
-      <DependentUpon>FormNewWad2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormOptions.resx">
-      <DependentUpon>FormOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormReplaceAnimCommands.resx">
-      <DependentUpon>FormReplaceAnimCommands.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSelectSlot.resx">
-      <DependentUpon>FormSelectSlot.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSkeletonEditor.resx">
-      <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSpriteSequenceEditor.resx">
-      <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAnimCommandsEditor.resx">
-      <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormStateChangesEditor.resx">
-      <DependentUpon>FormStateChangesEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormStaticEditor.resx">
-      <DependentUpon>FormStaticEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
-      <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
-      <Name>TombLib.Forms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj">
-      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
-      <Name>TombLib.Rendering</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj">
-      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.Rendering\TombLib.Rendering.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="WT.ico" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>SET ERRORLEVEL = 0</PostBuildEvent>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 </Project>

@@ -30,6 +30,8 @@ namespace FileAssociation
 		private static void OpenGUI()
 		{
 			Application.EnableVisualStyles();
+			Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+			Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new FormMain());
 		}

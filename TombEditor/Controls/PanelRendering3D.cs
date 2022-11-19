@@ -832,10 +832,10 @@ namespace TombEditor.Controls
 
                             _editor.SelectedObject = obj;
                         }
-
-                        if (obj is ItemInstance)
-                            _dragObjectPicked = true; // Prepare for drag-n-drop
                     }
+
+                    if (obj is ItemInstance)
+                        _dragObjectPicked = true; // Prepare for drag-n-drop
 
                     if (obj is ISpatial)
                         _editor.LastSelection = LastSelectionType.SpatialObject;

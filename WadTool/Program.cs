@@ -4,6 +4,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
@@ -19,6 +20,8 @@ namespace WadTool
         [STAThread]
         public static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
@@ -30,6 +33,8 @@ namespace WadTool
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
                 Application.EnableVisualStyles();
+                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 Application.ThreadException += (sender, e) =>

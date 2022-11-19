@@ -254,6 +254,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public ushort AdjoiningRoom;
         public VectorInt3 Normal;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public VectorInt3[] Vertices;
+
+        public PortalDirection Direction;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

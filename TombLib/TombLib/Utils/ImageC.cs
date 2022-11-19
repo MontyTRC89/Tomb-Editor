@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Drawing.PSD;
+using bzPSD;
 using System.IO;
 using System.Linq;
 using System.Numerics;

@@ -12,6 +12,7 @@ using TombLib.NG;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
+using System.Text;
 
 namespace TombEditor
 {
@@ -22,6 +23,8 @@ namespace TombEditor
         [STAThread]
         public static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             string startFile = null;
             string batchFile = null;
             bool doBatchCompile = false;
@@ -61,6 +64,8 @@ namespace TombEditor
 
                     // Setup application
                     Application.EnableVisualStyles();
+                    Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+                    Application.SetHighDpiMode(HighDpiMode.SystemAware);
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                     Application.ThreadException += (sender, e) =>

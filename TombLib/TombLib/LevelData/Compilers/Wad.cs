@@ -276,7 +276,8 @@ namespace TombLib.LevelData.Compilers
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
                 {
-                    AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
+                    AnimationTr4HelperData animationHelper = new AnimationTr4HelperData();
+                    animationDictionary.TryAdd(animation, animationHelper);
                     animationHelper.KeyFrameOffset = _frames.Count * 2;
 
                     // Store the frames in an intermediate data structure to pad them to the same size in the next step.

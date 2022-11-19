@@ -1,82 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{92D73867-1202-43E5-B615-FB998ED8F796}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombIDE.Shared</RootNamespace>
-    <AssemblyName>TombIDE.Shared</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="DefaultLayouts.cs" />
-    <Compile Include="Enumerations.cs" />
-    <Compile Include="Resources\Localization\Localization.cs" />
-    <Compile Include="Strings.cs" />
-    <Compile Include="SharedClasses\PathHelper.cs" />
-    <Compile Include="SharedForms\FormLoading.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SharedForms\FormLoading.Designer.cs">
-      <DependentUpon>FormLoading.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SharedClasses\ImageHandling.cs" />
-    <Compile Include="SharedClasses\LevelHandling.cs" />
-    <Compile Include="IDEConfiguration.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Project.cs" />
-    <Compile Include="ProjectLevel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharedClasses\SharedMethods.cs" />
-    <Compile Include="IDE.cs" />
-    <Compile Include="SharedClasses\XmlHandling.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{F19472F5-8C44-4C51-A8A0-B9DE5F555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
-      <Project>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SharedForms\FormLoading.resx">
-      <DependentUpon>FormLoading.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Localization\EN\TombIDE.xml">
@@ -160,86 +113,106 @@
     <Content Include="TIDE\NGC\VGE\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TombEngine.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TR1.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TR2.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TR3.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TR4.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\Game Icons\TRNG.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\Templates\Defaults\TR4 Resources\load.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TIDE\NGC\center_settings.bin">
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TIDE\NGC\center_settings.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\audio\keep.me">
+    <None Update="TIDE\NGC\VGE\audio\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\data\keep.me">
+    <None Update="TIDE\NGC\VGE\data\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\ENGLISH.DAT">
+    <None Update="TIDE\NGC\VGE\ENGLISH.DAT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\graphics\wads\keep.me">
+    <None Update="TIDE\NGC\VGE\graphics\wads\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\pix\keep.me">
+    <None Update="TIDE\NGC\VGE\pix\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\SCRIPT.DAT">
+    <None Update="TIDE\NGC\VGE\SCRIPT.DAT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\sound\samples\keep.me">
+    <None Update="TIDE\NGC\VGE\sound\samples\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\NGC\VGE\tools\keep.me">
+    <None Update="TIDE\NGC\VGE\tools\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Defaults\TR4 Resources\uklogo.pak">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TombEngine.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Extras\FLEP.zip">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TR1.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TEN.zip">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TR2.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TR1.zip">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TR3.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TR2.zip">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TR4.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TR3.zip">
+    <None Update="TIDE\Templates\Defaults\Game Icons\TRNG.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TR4.zip">
+    <None Update="TIDE\Templates\Defaults\TR4 Resources\load.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Presets\TRNG.zip">
+    <None Update="TIDE\Templates\Defaults\TR4 Resources\uklogo.pak">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Shared\TR4-TEN Shared Audio.zip">
+    <None Update="TIDE\Templates\Engines\TEN.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TIDE\Templates\Shared\TR4-TRNG Shared Files.zip">
+    <None Update="TIDE\Templates\Engines\TR1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Engines\TR2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Engines\TR3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Engines\TR4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Engines\TRNG.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Extras\FLEP.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TEN.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TR1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TR2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TR3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TR4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Presets\TRNG.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Shared\TR4-TEN Shared Audio.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\Templates\Shared\TR4-TRNG Shared Files.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

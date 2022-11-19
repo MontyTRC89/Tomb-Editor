@@ -1,262 +1,84 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E9772C8-DFFD-4ABB-A319-8226F9A4EE14}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombIDE.ProjectMaster</RootNamespace>
-    <AssemblyName>TombIDE.ProjectMaster</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CustomTabControl">
       <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
     </Reference>
-    <Reference Include="IconExtractor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BetterIconExtractor.1.0.0\lib\net40\IconExtractor.dll</HintPath>
-    </Reference>
-    <Reference Include="IconInjector, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IconInjector.1.0.0\lib\net40\IconInjector.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Include="Forms\FormGameArchive.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormGameArchive.Designer.cs">
-      <DependentUpon>FormGameArchive.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormPleaseWait.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormPleaseWait.Designer.cs">
-      <DependentUpon>FormPleaseWait.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormImportLevel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormImportLevel.Designer.cs">
-      <DependentUpon>FormImportLevel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormLevelSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormLevelSetup.Designer.cs">
-      <DependentUpon>FormLevelSetup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormRenameLauncher.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormRenameLauncher.Designer.cs">
-      <DependentUpon>FormRenameLauncher.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormRenameLevel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormRenameLevel.Designer.cs">
-      <DependentUpon>FormRenameLevel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LevelManager.cs">
+    <Compile Update="LevelManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LevelManager.Designer.cs">
-      <DependentUpon>LevelManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PakFile.cs" />
-    <Compile Include="PluginManager.cs">
+    <Compile Update="PluginManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PluginManager.Designer.cs">
-      <DependentUpon>PluginManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Sections\SectionLevelList.cs">
+    <Compile Update="Sections\SectionLevelList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\SectionLevelList.Designer.cs">
-      <DependentUpon>SectionLevelList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\SectionProjectSettings.cs">
+    <Compile Update="Sections\SectionProjectSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\SectionProjectSettings.Designer.cs">
-      <DependentUpon>SectionProjectSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Miscellaneous.cs">
+    <Compile Update="Miscellaneous.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Miscellaneous.Designer.cs">
-      <DependentUpon>Miscellaneous.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sections\SectionLevelProperties.cs">
+    <Compile Update="Sections\SectionLevelProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\SectionLevelProperties.Designer.cs">
-      <DependentUpon>SectionLevelProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsProjectInfo.cs">
+    <Compile Update="Sections\Settings Sections\SettingsProjectInfo.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsProjectInfo.Designer.cs">
-      <DependentUpon>SettingsProjectInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsIcon.cs">
+    <Compile Update="Sections\Settings Sections\SettingsIcon.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsIcon.Designer.cs">
-      <DependentUpon>SettingsIcon.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsLogo.cs">
+    <Compile Update="Sections\Settings Sections\SettingsLogo.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsLogo.Designer.cs">
-      <DependentUpon>SettingsLogo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsSpecialFunctions.cs">
+    <Compile Update="Sections\Settings Sections\SettingsSpecialFunctions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsSpecialFunctions.Designer.cs">
-      <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsSplashScreen.cs">
+    <Compile Update="Sections\Settings Sections\SettingsSplashScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsSplashScreen.Designer.cs">
-      <DependentUpon>SettingsSplashScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsStartupImage.cs">
+    <Compile Update="Sections\Settings Sections\SettingsStartupImage.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Sections\Settings Sections\SettingsStartupImage.Designer.cs">
-      <DependentUpon>SettingsStartupImage.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\FormGameArchive.resx">
-      <DependentUpon>FormGameArchive.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormImportLevel.resx">
-      <DependentUpon>FormImportLevel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormLevelSetup.resx">
-      <DependentUpon>FormLevelSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPleaseWait.resx">
-      <DependentUpon>FormPleaseWait.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormRenameLauncher.resx">
-      <DependentUpon>FormRenameLauncher.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormRenameLevel.resx">
-      <DependentUpon>FormRenameLevel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelManager.resx">
-      <DependentUpon>LevelManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PluginManager.resx">
-      <DependentUpon>PluginManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\SectionLevelList.resx">
-      <DependentUpon>SectionLevelList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\SectionLevelProperties.resx">
-      <DependentUpon>SectionLevelProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\SectionProjectSettings.resx">
-      <DependentUpon>SectionProjectSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Miscellaneous.resx">
-      <DependentUpon>Miscellaneous.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsIcon.resx">
-      <DependentUpon>SettingsIcon.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsProjectInfo.resx">
-      <DependentUpon>SettingsProjectInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsLogo.resx">
-      <DependentUpon>SettingsLogo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsSpecialFunctions.resx">
-      <DependentUpon>SettingsSpecialFunctions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsSplashScreen.resx">
-      <DependentUpon>SettingsSplashScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sections\Settings Sections\SettingsStartupImage.resx">
-      <DependentUpon>SettingsStartupImage.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
-      <Project>{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}</Project>
-      <Name>TombLib.Forms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
-      <Project>{5d9a72e7-4b33-4177-ad7c-1b46591005fd}</Project>
-      <Name>TombLib.Scripting.ClassicScript</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
-      <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
-      <Name>TombIDE.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
-      <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
+    <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\actions_compile-16.png" />
@@ -287,7 +109,13 @@
     <Content Include="Resources\wad_file.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="IconUtilities" Version="1.0.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

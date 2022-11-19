@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
@@ -18,6 +19,8 @@ namespace SoundTool
         [STAThread]
         public static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             var extensions = new List<string>() { ".xml", ".txt" };
 
             string startFile = null;
@@ -63,6 +66,8 @@ namespace SoundTool
                 mutex.WaitOne(TimeSpan.Zero, true))
             {
                 Application.EnableVisualStyles();
+                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
 

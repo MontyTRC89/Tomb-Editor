@@ -1,117 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3EAAFD71-DD96-427D-8793-643DADD2F3A3}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombLib.Scripting</RootNamespace>
-    <AssemblyName>TombLib.Scripting</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\BuildRelease\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bases\ColorSchemeBase.cs" />
-    <Compile Include="Bases\ConfigurationBase.cs" />
-    <Compile Include="Bases\ContentNodesProviderBase.cs">
+    <Compile Update="Bases\ContentNodesProviderBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Bases\TextEditorBase.cs" />
-    <Compile Include="Bases\TextEditorConfigBase.cs" />
-    <Compile Include="Enums\FindingOrder.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Interfaces\ISupportsFindReplace.cs" />
-    <Compile Include="Objects\CellContentChangedEventArgs.cs" />
-    <Compile Include="Objects\ObjectClickedEventArgs.cs" />
-    <Compile Include="Resources\StringEditorDefaults.cs" />
-    <Compile Include="Utils\WhiteSpaceConverter.cs" />
-    <Compile Include="Workers\ContentChangedWorker.cs">
+    <Compile Update="Workers\ContentChangedWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Objects\DataGridUndoItem.cs" />
-    <Compile Include="Workers\ErrorDetectionWorker.cs">
+    <Compile Update="Workers\ErrorDetectionWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EventDelegates.cs" />
-    <Compile Include="Forms\FormFindReplace.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFindReplace.Designer.cs">
-      <DependentUpon>FormFindReplace.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\IEditorControl.cs" />
-    <Compile Include="Interfaces\IErrorDetector.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="Objects\BasicCleaner.cs" />
-    <Compile Include="Objects\CompletionData.cs" />
-    <Compile Include="Enums\EditorType.cs" />
-    <Compile Include="Objects\FindReplaceItem.cs" />
-    <Compile Include="Objects\FindReplaceEventArgs.cs" />
-    <Compile Include="Objects\FindReplaceSource.cs" />
-    <Compile Include="Objects\HighlightingObject.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\BookmarkRenderer.cs" />
-    <Compile Include="Rendering\ErrorRenderer.cs" />
-    <Compile Include="Rendering\TextRendering.cs" />
-    <Compile Include="Resources\TextEditorBaseDefaults.cs" />
-    <Compile Include="Controls\ExtendedDarkDataGridView.cs">
+    <Compile Update="Controls\ExtendedDarkDataGridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Helpers\StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\FormFindReplace.resx">
-      <DependentUpon>FormFindReplace.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib\TombLib.csproj">
-      <Project>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</Project>
-      <Name>TombLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".editorconfig" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

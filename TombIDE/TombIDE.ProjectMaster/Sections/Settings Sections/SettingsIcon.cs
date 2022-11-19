@@ -95,7 +95,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				IconInjector.InjectIcon(_ide.Project.LaunchFilePath, iconPath);
+				IconUtilities.InjectIcon(_ide.Project.LaunchFilePath, iconPath);
 				UpdateIcons();
 			}
 			catch (Exception ex)
@@ -110,13 +110,13 @@ namespace TombIDE.ProjectMaster
 			string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".exe");
 			File.Copy(_ide.Project.LaunchFilePath, tempFilePath);
 
-			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.ExtractIcon(tempFilePath, IconSize.Jumbo).ToBitmap());
+			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconUtilities.ExtractIcon(tempFilePath, IconSize.Jumbo).ToBitmap());
 
 			// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
 			Bitmap ico_128 = ImageHandling.ResizeImage(ico_256, 128, 128) as Bitmap;
 
-			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconExtractor.ExtractIcon(tempFilePath, IconSize.ExtraLarge).ToBitmap());
-			Bitmap ico_16 = IconExtractor.ExtractIcon(tempFilePath, IconSize.Small).ToBitmap();
+			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconUtilities.ExtractIcon(tempFilePath, IconSize.ExtraLarge).ToBitmap());
+			Bitmap ico_16 = IconUtilities.ExtractIcon(tempFilePath, IconSize.Small).ToBitmap();
 
 			if (ico_256.Width == ico_48.Width && ico_256.Height == ico_48.Height)
 			{
