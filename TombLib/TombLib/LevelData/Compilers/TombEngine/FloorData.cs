@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using TombLib.NG;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
