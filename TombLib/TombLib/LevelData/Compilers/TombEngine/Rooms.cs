@@ -140,12 +140,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
-                AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                AlternateGroup = (byte)(room.Alternated ? room.AlternateGroup : -1),
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomsRemappingDictionary[room.AlternateRoom] : -1,
+                AlternateGroup = room.Alternated ? room.AlternateGroup : -1,
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                ReverbInfo = (byte)room.Properties.Reverberation,
+                ReverbInfo = room.Properties.Reverberation,
                 Flags = 0x40
             };
 
