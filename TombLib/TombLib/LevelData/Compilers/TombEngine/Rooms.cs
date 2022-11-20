@@ -141,7 +141,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
                 AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                AlternateGroup = (byte)(room.Alternated /*&& room.AlternateRoom != null*/ ? room.AlternateGroup : 0),
+                AlternateGroup = (byte)(room.Alternated ? room.AlternateGroup : -1),
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
