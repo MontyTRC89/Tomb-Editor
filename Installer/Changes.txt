@@ -3,7 +3,7 @@ Version 1.6.2
 
 Tomb Editor:
  * Fix some objects not linking to triggers in TEN compiler.
- * New Special Effect nodes added to Emit Particles From A Moveable, Static and Mesh.
+ * New Special Effect nodes added to Emit Particles and/or Dynamic Lights From A Moveable, Static and Mesh.
  * New Special Effects nodes added to Emit Lightning Arc.
  * New Special Effects nodes added to Emit Shockwave.
 
