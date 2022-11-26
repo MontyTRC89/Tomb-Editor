@@ -6,6 +6,7 @@ Tomb Editor:
 
 WadTool (TEN base wad):
  * Make Lara standing animation less wobbly.
+ * Update pose animations to make Lara breathing whilst posing
  * Add placeholder detachable HK lasersight mesh.
  * Fix Lara animations 464, 466, and 472 which were missing sound effects.
 
