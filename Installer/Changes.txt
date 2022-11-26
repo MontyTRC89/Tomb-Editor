@@ -4,7 +4,9 @@ Version 1.6.2
 Tomb Editor:
  * Fix some objects not linking to triggers in TEN compiler.
 
-WadTool:
+WadTool (TEN base wad):
+ * Make Lara standing animation less wobbly.
+ * Add placeholder detachable HK lasersight mesh.
  * Fix Lara animations 464, 466, and 472 which were missing sound effects.
 
 Version 1.6.1
