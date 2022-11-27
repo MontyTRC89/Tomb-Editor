@@ -4,6 +4,7 @@ Version 1.6.2
 Tomb Editor:
  * Fix some objects not linking to triggers in TEN compiler.
  * Fix rename object dialog locking up editor when switching to other app.
+ * Fix possible exceptions after using context menus.
 
 WadTool:
  * Automatically correct bounding boxes for standable objects when importing to TEN wad.
