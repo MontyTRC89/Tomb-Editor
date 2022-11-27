@@ -18,14 +18,14 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Select objects", null, (o, e) =>
             {
-                EditorActions.SelectObjectsInArea(this, editor.SelectedSectors);
+                EditorActions.SelectObjectsInArea(owner, editor.SelectedSectors);
             }));
 
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
             {
-                EditorActions.MoveLara(this, targetRoom, targetBlock);
+                EditorActions.MoveLara(owner, targetRoom, targetBlock);
             }));
 
 			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => 
@@ -80,12 +80,12 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Crop room", Properties.Resources.general_crop_16, (o, e) =>
             {
-                EditorActions.CropRoom(targetRoom, targetArea, this);
+                EditorActions.CropRoom(targetRoom, targetArea, owner);
             }));
 
             Items.Add(new ToolStripMenuItem("Split room", Properties.Resources.actions_Split_16, (o, e) =>
             {
-                EditorActions.SplitRoom(this);
+                EditorActions.SplitRoom(owner);
             }));
         }
     }

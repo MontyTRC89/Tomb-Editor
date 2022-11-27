@@ -16,14 +16,14 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Select objects", null, (o, e) =>
             {
-                EditorActions.SelectObjectsInArea(this, editor.SelectedSectors);
+                EditorActions.SelectObjectsInArea(owner, editor.SelectedSectors);
             }));
 
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
             {
-                EditorActions.MoveLara(this, targetRoom, targetBlock);
+                EditorActions.MoveLara(owner, targetRoom, targetBlock);
             }));
 
 			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => 

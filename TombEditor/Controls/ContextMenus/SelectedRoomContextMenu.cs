@@ -13,14 +13,14 @@ namespace TombEditor.Controls.ContextMenus
         {
             Items.Add(new ToolStripMenuItem("Export rooms...", Properties.Resources.general_Export_16, (o, e) =>
             {
-                EditorActions.ExportRooms(_editor.SelectedRooms, this);
+                EditorActions.ExportRooms(_editor.SelectedRooms, owner);
             }));
 
             Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Delete rooms", Properties.Resources.general_trash_16, (o, e) =>
             {
-                EditorActions.DeleteRooms(_editor.SelectedRooms, this);
+                EditorActions.DeleteRooms(_editor.SelectedRooms, owner);
             }));
 
             Items.Add(new ToolStripMenuItem("Copy rooms", Properties.Resources.general_copy_16, (o, e) =>
