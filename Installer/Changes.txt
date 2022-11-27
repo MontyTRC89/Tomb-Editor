@@ -10,7 +10,7 @@ WadTool:
  * Fix main window right-click menus not working after visiting other windows.
  * TEN Base WAD:
   - Make Lara standing animation less wobbly.
-  - Update pose animations to make Lara breath whilst posing
+  - Update pose animations to make Lara breath whilst posing.
   - Add placeholder detachable HK lasersight mesh.
   - Fix Lara animations 464, 466, and 472 which were missing sound effects.
 
