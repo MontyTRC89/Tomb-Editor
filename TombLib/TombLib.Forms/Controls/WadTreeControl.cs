@@ -88,27 +88,27 @@ namespace TombLib.Controls
 
             // Update tree
             KeepSelection(() =>
+            {
+                var nodes = tree.Nodes.ToList();
+                tree.Nodes.Clear();
+                if (Wad == null)
+                    return;
+
                 {
-                    var nodes = tree.Nodes.ToList();
-                    tree.Nodes.Clear();
-                    if (Wad == null)
-                        return;
+                    var mainNode = AddOrReuseChild(nodes, "Moveables");
+                    UpdateList(mainNode, _wad.Moveables.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
+                }
+                {
+                    var mainNode = AddOrReuseChild(nodes, "Statics");
+                    UpdateList(mainNode, _wad.Statics.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
+                }
+                {
+                    var mainNode = AddOrReuseChild(nodes, "Sprite sequences");
+                    UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
+                }
 
-                    {
-                        var mainNode = AddOrReuseChild(nodes, "Moveables");
-                        UpdateList(mainNode, _wad.Moveables.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
-                    }
-                    {
-                        var mainNode = AddOrReuseChild(nodes, "Statics");
-                        UpdateList(mainNode, _wad.Statics.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
-                    }
-                    {
-                        var mainNode = AddOrReuseChild(nodes, "Sprite sequences");
-                        UpdateList(mainNode, _wad.SpriteSequences.Values.Select(o => o.Id), o => o.ToString(Wad.GameVersion));
-                    }
-
-                    tree.Nodes.AddRange(nodes);
-                });
+                tree.Nodes.AddRange(nodes);
+            });
         }
 
         public void UpdateMetadata()
@@ -152,7 +152,6 @@ namespace TombLib.Controls
         {
             var selectedNodes = new HashSet<object>(tree.SelectedNodes.Select(node => node.Tag).Where(tag => tag != null));
             tree.SelectedNodes.Clear();
-            bool selectionIsDifferent = false;
 
             update();
 
@@ -168,16 +167,13 @@ namespace TombLib.Controls
                         if (selectedNodes.Contains(node.Tag))
                             newSelectedNodes.Add(node);
                 tree.SelectNodes(newSelectedNodes);
-                selectionIsDifferent = newSelectedNodes.Count != selectedNodes.Count;
             }
             finally
             {
                 _changing = false;
             }
 
-            // See if anything changed in the selection
-            if (selectionIsDifferent)
-                SelectedWadObjectIdsChanged?.Invoke(this, EventArgs.Empty);
+            SelectedWadObjectIdsChanged?.Invoke(this, EventArgs.Empty);
 
             // Workaround update problems
             Invalidate();
