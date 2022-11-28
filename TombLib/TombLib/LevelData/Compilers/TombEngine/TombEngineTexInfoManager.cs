@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -1595,25 +1596,31 @@ namespace TombLib.LevelData.Compilers
             }
 
 #if DEBUG
-            for (int n = 0; n < RoomsAtlas.Count; n++)
+            try
             {
-                RoomsAtlas[n].ColorMap.Save("RoomsAtlas" + n + ".png");
-            }
+                Directory.CreateDirectory("OutputDebug");
 
-            for (int n = 0; n < MoveablesAtlas.Count; n++)
-            {
-                MoveablesAtlas[n].ColorMap.Save("MoveablesAtlas" + n + ".png");
-            }
+                for (int n = 0; n < RoomsAtlas.Count; n++)
+                {
+                    RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
+                }
 
-            for (int n = 0; n < StaticsAtlas.Count; n++)
-            {
-                StaticsAtlas[n].ColorMap.Save("StaticsAtlas" + n + ".png");
-            }
+                for (int n = 0; n < MoveablesAtlas.Count; n++)
+                {
+                    MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
+                }
 
-            for (int n = 0; n < AnimatedAtlas.Count; n++)
-            {
-                AnimatedAtlas[n].ColorMap.Save("AnimatedAtlas" + n + ".png");
+                for (int n = 0; n < StaticsAtlas.Count; n++)
+                {
+                    StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
+                }
+
+                for (int n = 0; n < AnimatedAtlas.Count; n++)
+                {
+                    AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
+                }
             }
+            catch { }   
 #endif
 
             // Finally compile all texinfos
