@@ -181,25 +181,9 @@ namespace TombLib.LevelData.Compilers
             public int AtlasIndex { get; set; }
             public VectorInt2 AtlasDimensions { get; set; }
             public int[] Padding { get; set; } = new int[4]; // LTRB
-            public bool SqueezeAndDuplicate { get; set; } // Needed for UVRotate
             public Texture Texture { get; private set; }
             public TextureDestination Destination { get; set; }
-
-            // Waterfall textures need to stay on top of texture page without
-            // padding, because of extremely ugly Core Design waterfall UVRotate hack.
-            private bool _topmostAndUnpadded;
-            public bool TopmostAndUnpadded
-            {
-                get { return _topmostAndUnpadded; }
-                set { if (value) _topmostAndUnpadded = value; }
-            }
-
-            private bool _requireSort;
-            public bool RequireSort
-            {
-                get { return _requireSort; }
-                set { if (value) _requireSort = value; }
-            }
+            public BlendMode BlendMode { get; set; }
 
             private Rectangle2 _area;
             public Rectangle2 Area
@@ -248,7 +232,6 @@ namespace TombLib.LevelData.Compilers
 
                 Texture = texture;
                 Destination = destination;
-                SqueezeAndDuplicate = false;
             }
 
             // Compare parent's properties with incoming texture properties.
@@ -378,7 +361,7 @@ namespace TombLib.LevelData.Compilers
                 => (ParametersSimilar(texture, destination) && texture.GetRect().Round().Contains(_area));
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
-            public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle, bool topmostAndUnpadded, bool requireSort)
+            public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle,BlendMode blendMode)
             {
                 var relative = new Vector2[isForTriangle ? 3 : 4];
                 var absolute = new Vector2[isForTriangle ? 3 : 4];
@@ -398,10 +381,7 @@ namespace TombLib.LevelData.Compilers
                     AbsCoord = absolute
                 });
 
-                // Refresh topmost flag
-                TopmostAndUnpadded |= topmostAndUnpadded;
-
-                RequireSort |= requireSort;
+                
 
                 // Expand parent area, if needed
                 var rect = texture.GetRect();
@@ -448,8 +428,7 @@ namespace TombLib.LevelData.Compilers
                 foreach (var parent in parents)
                 {
                     Area = Area.Union(parent.Area);
-                    TopmostAndUnpadded |= parent.TopmostAndUnpadded; // Refresh topmost flag
-                    RequireSort |= parent.RequireSort;
+                    BlendMode= parent.BlendMode;
 
                     foreach (var child in parent.Children)
                         parent.MoveChild(child, this);
@@ -476,9 +455,6 @@ namespace TombLib.LevelData.Compilers
                 foreach (var parent in CompiledAnimation)
                 {
                     var newParent = new ParentTextureArea(parent.Area, parent.Texture, parent.Destination);
-
-                    // Squeeze and duplicate bitmap data for UVRotate texture sets
-                    newParent.SqueezeAndDuplicate = Origin.IsUvRotate;
 
                     foreach (var child in parent.Children)
                     {
@@ -620,7 +596,7 @@ namespace TombLib.LevelData.Compilers
         // Try to add texture to existing parent(s) either as a child of one, or as a parent, merging
         // enclosed parents.
 
-        private bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, bool requireSort, bool topmostAndUnpadded = false, int animFrameIndex = -1)
+        private bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int animFrameIndex = -1)
         {
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
@@ -628,7 +604,7 @@ namespace TombLib.LevelData.Compilers
                 if (!parent.IsPotentialParent(texture, destination, animFrameIndex >= 0, MaxTileSize))
                     continue;
 
-                parent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, topmostAndUnpadded, requireSort);
+                parent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, blendMode);
                 return true;
             }
 
@@ -637,7 +613,7 @@ namespace TombLib.LevelData.Compilers
             if (childrenWannabes.Count > 0)
             {
                 var newParent = new ParentTextureArea(texture, destination);
-                newParent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, topmostAndUnpadded, requireSort);
+                newParent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, blendMode);
                 newParent.MergeParents(parentList, childrenWannabes);
                 parentList.Add(newParent);
                 return true;
@@ -788,7 +764,7 @@ namespace TombLib.LevelData.Compilers
 
         // Gets existing TexInfo child index if there is similar one in parent textures list
         private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
-                                   bool isForTriangle, bool topmostAndUnpadded, bool requireSort,
+                                   bool isForTriangle, BlendMode blendMode,
                                    bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
@@ -824,8 +800,7 @@ namespace TombLib.LevelData.Compilers
                     if (result != _noTexInfo)
                     {
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
-                        parent.TopmostAndUnpadded |= topmostAndUnpadded;
-                        parent.RequireSort |= requireSort;
+                        parent.BlendMode = blendMode;
 
                         // Refresh parent area (only in case it's from the same texture set, otherwise clashes are possible)
                         if (areaToLook.Texture == parent.Texture && !areaToLook.ParentArea.IsZero)
@@ -869,16 +844,16 @@ namespace TombLib.LevelData.Compilers
 
         // Generate new parent with incoming texture and immediately add incoming texture as a child
 
-        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, bool requireSort, bool topmostAndUnpadded, int frameIndex = -1)
+        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, destination);
             parentList.Add(newParent);
-            newParent.AddChild(texture, frameIndex >= 0 ? frameIndex : GetNewTexInfoIndex(), isForTriangle, topmostAndUnpadded, requireSort);
+            newParent.AddChild(texture, frameIndex >= 0 ? frameIndex : GetNewTexInfoIndex(), isForTriangle, blendMode);
         }
 
         // Only exposed variation of AddTexture that should be used outside of TexInfoManager itself
 
-        public Result AddTexture(TextureArea texture, TextureDestination destination, bool isForTriangle, bool requireSort, bool topmostAndUnpadded = false)
+        public Result AddTexture(TextureArea texture, TextureDestination destination, bool isForTriangle, BlendMode blendMode)
         {
             if (_dataHasBeenLaidOut)
                 throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
@@ -886,26 +861,21 @@ namespace TombLib.LevelData.Compilers
             // Only try to remap animated textures if fast mode is disabled
             bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
 
-            // UVRotate hack is needed for TR4-5, because we couldn't figure real Core's UVRotate approach. 
-            // For TombEngine, hopefully no such hack will be needed.
-            var uvRotateHack = false;
-
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
-            var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
+            var refQuad = texture;
 
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
                 foreach (var actualTex in _actualAnimTextures)
                 {
                     // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
-                    var toQuad = actualTex.Origin.IsUvRotate && uvRotateHack;
-                    var asTriangle = toQuad ? false : isForTriangle;
-                    var reference = toQuad ? refQuad : texture;
+                    var asTriangle = isForTriangle;
+                    var reference = texture;
 
-                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, destination, asTriangle, false, requireSort, true, remapAnimatedTextures, _animTextureLookupMargin);
+                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, destination, asTriangle, blendMode, true, remapAnimatedTextures, _animTextureLookupMargin);
                     if (existing.HasValue)
                     {
-                        var result = new Result { ConvertToQuad = toQuad, Rotation = existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex, Animated = true };
+                        var result = new Result { ConvertToQuad = false, Rotation = existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex, Animated = true };
                         return result;
                     }
                 }
@@ -915,24 +885,23 @@ namespace TombLib.LevelData.Compilers
                 foreach (var refTex in _referenceAnimTextures)
                 {
                     // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
-                    var toQuad = refTex.Origin.IsUvRotate && uvRotateHack;
-                    var asTriangle = toQuad ? false : isForTriangle;
-                    var reference = toQuad ? refQuad : texture;
+                    var asTriangle = isForTriangle;
+                    var reference = texture;
 
                     // If reference set found, generate actual one and immediately return fresh result
-                    if (GetTexInfo(reference, refTex.CompiledAnimation, destination, asTriangle, false, false, requireSort, remapAnimatedTextures, _animTextureLookupMargin).HasValue)
+                    if (GetTexInfo(reference, refTex.CompiledAnimation, destination, asTriangle, blendMode, false, remapAnimatedTextures, _animTextureLookupMargin).HasValue)
                     {
                         GenerateAnimTexture(refTex, refQuad, destination, isForTriangle);
-                        var result = AddTexture(texture, destination, isForTriangle, requireSort);
+                        var result = AddTexture(texture, destination, isForTriangle, blendMode);
                         {
                             result.Animated = true;
                         }
-                        return new Result() { ConvertToQuad = toQuad, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex, Animated = true };
+                        return new Result() { ConvertToQuad = false, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex, Animated = true };
                     }
                 }
 
             // No animated textures identified, add texture as ordinary one
-            return AddTexture(texture, _parentTextures, destination, isForTriangle, requireSort, topmostAndUnpadded);
+            return AddTexture(texture, _parentTextures, destination, isForTriangle, blendMode);
         }
 
         // Internal AddTexture variation which is capable of adding texture to various ParentTextureArea lists
@@ -941,11 +910,11 @@ namespace TombLib.LevelData.Compilers
         // texture frame is being processed. If so, frame index is saved into TexInfoIndex field of resulting child.
         // Later on, on real anim texture creation, this index is used to sort frames in proper order.
 
-        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, bool requireSort, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int animFrameIndex = -1, bool makeCanonical = true)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
-            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, destination, isForTriangle, topmostAndUnpadded, requireSort);
+            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, destination, isForTriangle, blendMode);
 
             if (!result.HasValue)
             {
@@ -955,14 +924,14 @@ namespace TombLib.LevelData.Compilers
                 var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle) : texture;
 
                 // If no any potential parents or children, create as new parent
-                if (!TryToAddToExisting(canonicalTexture, parentList, destination, isForTriangle, requireSort, topmostAndUnpadded, animFrameIndex))
-                    AddParent(canonicalTexture, parentList, destination, isForTriangle, requireSort, topmostAndUnpadded, animFrameIndex);
+                if (!TryToAddToExisting(canonicalTexture, parentList, destination, isForTriangle, blendMode, animFrameIndex))
+                    AddParent(canonicalTexture, parentList, destination, isForTriangle, blendMode, animFrameIndex);
 
                 // Try again to get texinfo
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = _dummyTexInfo, Rotation = 0 };
                 else
-                    result = GetTexInfo(texture, parentList, destination, isForTriangle, topmostAndUnpadded, requireSort);
+                    result = GetTexInfo(texture, parentList, destination, isForTriangle, blendMode);
             }
 
             if (!result.HasValue)
@@ -1066,7 +1035,7 @@ namespace TombLib.LevelData.Compilers
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
                         {
-                            AddTexture(newFrame, refAnim.CompiledAnimation, TextureDestination.RoomOrAggressive, (triangleVariation > 0), newFrame.BlendMode == BlendMode.AlphaBlend, set.AnimationType == AnimatedTextureAnimationType.UVRotate, index, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, TextureDestination.RoomOrAggressive, (triangleVariation > 0), newFrame.BlendMode, index, set.IsUvRotate);
                             index++;
                         }
                     }
@@ -1125,8 +1094,7 @@ namespace TombLib.LevelData.Compilers
                 if (result.ContainsKey(bmpHash))
                 {
                     tex.Children.ForEach(child => tex.MoveChildWithoutRepositioning(child, result[bmpHash]));
-                    if (tex.TopmostAndUnpadded) result[bmpHash].TopmostAndUnpadded = true;
-                    if (tex.RequireSort) result[bmpHash].RequireSort = true;
+                    result[bmpHash].BlendMode = tex.BlendMode;
                 }
                 else
                     result.TryAdd(bmpHash, tex);
@@ -1155,7 +1123,7 @@ namespace TombLib.LevelData.Compilers
                 // Calculate adaptive padding at all sides
                 int padding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
 
-                int tP = textures[i].TopmostAndUnpadded ? 0 : padding; // Ugly, but needed for tomb4 UVRotate
+                int tP = padding;
                 int bP = padding;
                 int lP = padding;
                 int rP = padding;
@@ -1166,7 +1134,7 @@ namespace TombLib.LevelData.Compilers
                 // If hor/ver padding won't fully fit, get existing space and calculate padding out of it
                 if (verticalPaddingSpace < tP + bP)
                 {
-                    tP = (tP == 0) ? tP : verticalPaddingSpace / 2; // Ugly, but needed for tomb4 UVRotate
+                    tP = verticalPaddingSpace / 2;
                     bP = verticalPaddingSpace - tP;
                 }
                 if (horizontalPaddingSpace < padding * 2)
@@ -1243,38 +1211,8 @@ namespace TombLib.LevelData.Compilers
                     var destX = p.PositionInPage.X + p.Padding[0];
                     var destY = p.PositionInPage.Y + p.Padding[1];
 
-                    if (p.SqueezeAndDuplicate)
-                    {
-                        // If squeeze-and-duplicate approach is needed (UVRotate), use system drawing routines
-                        // to do high-quality bicubic resampling.
-
-                        // Copy original region to new image
-                        var originalImage = ImageC.CreateNew(width, height);
-                        originalImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
-
-                        // Make squeezed bitmap and put original one into it using bicubic resampling
-                        var destBitmap = new Bitmap(width, height / 2);
-                        using (var graphics = System.Drawing.Graphics.FromImage(destBitmap))
-                        {
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
-                        }
-
-                        // Twice copy squeezed image to original image
-                        var squeezedImage = ImageC.FromSystemDrawingImage(destBitmap);
-                        originalImage.CopyFrom(0, 0, squeezedImage, 0, 0, width, height / 2);
-
-                        originalImage.CopyFrom(0, height / 2, squeezedImage, 0, 0, width, height / 2);
-
-                        // Copy squeezed-and-duplicated image to texture map and add padding
-                        image.ColorMap.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
-                        AddPadding(p, originalImage, image.ColorMap, 0, actualPadding, 0, 0);
-                    }
-                    else
-                    {
-                        image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
-                        AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
-                    }
+                    image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
+                    AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
 
                     // Do the bump map if needed
 
@@ -1567,8 +1505,25 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
-            roomTextures = roomTextures.OrderBy(item => item.RequireSort).ToList();
-            objectsTextures = objectsTextures.OrderBy(item => item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
+            roomTextures = roomTextures
+                .OrderBy(item => item.BlendMode)
+                .ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y)
+                .ToList();
+
+            objectsTextures = objectsTextures
+                .OrderBy(item => item.BlendMode)
+                .ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y)
+                .ToList();
+
+            moveablesTextures = moveablesTextures
+               .OrderBy(item => item.BlendMode)
+               .ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y)
+               .ToList();
+
+            staticsTextures = staticsTextures
+               .OrderBy(item => item.BlendMode)
+               .ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y)
+               .ToList();
 
             // Calculate new X, Y of each texture area
             NumRoomPages = PlaceTexturesInMap(ref roomTextures);
