@@ -1174,14 +1174,15 @@ namespace TombLib.LevelData.Compilers
                 return VectorInt2.Zero;
             }
 
-            bool done = true;
-
+            bool done;
             int atlasWidth = 256;
             int atlasHeight = 256;
 
             do
             {
                 RectPacker texPacker = new RectPackerTree(new VectorInt2(atlasWidth, atlasHeight));
+
+                done = true;
 
                 for (int i = 0; i < textures.Count; i++)
                 {
@@ -1236,6 +1237,7 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
             } while (!done);
+
 
             return new VectorInt2(atlasWidth, atlasHeight);
         }
