@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -13,7 +10,6 @@ using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -93,34 +89,18 @@ namespace TombLib.LevelData.Compilers
 
         public int TexInfoCount { get; private set; } = 0;
 
-        // Final texture pages and its counters
-
-        public int NumRoomPages { get; private set; }
-        public ImageC RoomsPagesPacked { get; private set; }
+        // Final texture pages 
         public List<TombEngineAtlas> RoomsAtlas { get; private set; }
-
-        public int NumObjectsPages { get; private set; }
-        public ImageC ObjectsPagesPacked { get; private set; }
-
-        public int NumMoveablesPages { get; private set; }
         public List<TombEngineAtlas> MoveablesAtlas { get; private set; }
-
-        public int NumStaticsPages { get; private set; }
         public List<TombEngineAtlas> StaticsAtlas { get; private set; }
-
-        public int NumBumpPages { get; private set; }
-        public ImageC BumpPagesPacked { get; private set; }
-
-        public int NumAnimatedPages { get; private set; }
         public List<TombEngineAtlas> AnimatedAtlas { get; private set; }
 
-        // Precompiled object textures are kept in this dictionary.
 
+        // Precompiled object textures are kept in this dictionary.
         private SortedDictionary<int, ObjectTexture> _objectTextures;
 
         // Precompiled anim texture indices are kept separately to avoid
         // messing up after texture page cleanup.
-
         private List<List<ushort>> _animTextureIndices;
 
         // Expose the latter publicly, because TRNG compiler needs it
@@ -1096,7 +1076,7 @@ namespace TombLib.LevelData.Compilers
         // Maps parent texture areas on the proposed texture map.
         // This step only prepares for actual image data layout, actual layout is done in BuildTextureMap.
 
-        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures, bool forceMinimumPadding = false)
+        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures)
         {
             if (textures.Count == 0)
                 return 0;
@@ -1111,7 +1091,7 @@ namespace TombLib.LevelData.Compilers
                 int h = (int)(textures[i].Area.Height);
 
                 // Calculate adaptive padding at all sides
-                int padding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+                int padding = _padding == 0 ? _minimumPadding : _padding;
 
                 int tP = padding;
                 int bP = padding;
@@ -1167,7 +1147,7 @@ namespace TombLib.LevelData.Compilers
             return (currentPage + 1);
         }
 
-        private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures, bool forceMinimumPadding)
+        private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures)
         {
             if (textures.Count == 0)
             {
@@ -1191,7 +1171,7 @@ namespace TombLib.LevelData.Compilers
                     int h = (int)(textures[i].Area.Height);
 
                     // Calculate adaptive padding at all sides
-                    int padding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+                    int padding = _padding == 0 ? _minimumPadding : _padding;
 
                     int tP = padding;
                     int bP = padding;
@@ -1446,7 +1426,6 @@ namespace TombLib.LevelData.Compilers
             var moveablesTextures = new List<ParentTextureArea>();
             var staticsTextures = new List<ParentTextureArea>();
             var animatedTextures = new List<List<ParentTextureArea>>();
-            var numAnimatedPages = new List<int>();
 
             for (int i = 0; i < _parentTextures.Count; i++)
             {
@@ -1469,7 +1448,6 @@ namespace TombLib.LevelData.Compilers
                 var parentTextures = _actualAnimTextures[n].CompiledAnimation;
 
                 animatedTextures.Add(new List<ParentTextureArea>());
-                numAnimatedPages.Add(0);
 
                 for (int i = 0; i < parentTextures.Count; i++)
                 {
@@ -1507,28 +1485,26 @@ namespace TombLib.LevelData.Compilers
                .ToList();
 
             // Calculate new X, Y of each texture area
-            NumRoomPages = PlaceTexturesInMap(ref roomTextures);
-            NumMoveablesPages = PlaceTexturesInMap(ref moveablesTextures, true);
-            NumStaticsPages = PlaceTexturesInMap(ref staticsTextures, true);
+            int numRoomsAtlases = PlaceTexturesInMap(ref roomTextures);
+            int numMoveablesAtlases = PlaceTexturesInMap(ref moveablesTextures);
+            int numStaticsAtlases = PlaceTexturesInMap(ref staticsTextures);
 
             ICollection<VectorInt2> animatedAtlasSizes = new List<VectorInt2>();
-            for (int n = 0; n < numAnimatedPages.Count; n++)
+            for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
-                numAnimatedPages[n] = PlaceTexturesInMap(ref textures, true);
-                animatedAtlasSizes.Add(PlaceAnimatedTexturesInMap(ref textures, true));
+                animatedAtlasSizes.Add(PlaceAnimatedTexturesInMap(ref textures));
             }
 
-            // In TombEngine, we have only 4K texture atlases
-            // We pack pages like in old games, but then we pack them quickly in big atlases
+            // In TombEngine, we pack textures in 4K pages and we can use big textures up to 256 pixels without bleeding
             VectorInt2 atlasSize = new VectorInt2(AtlasSize, AtlasSize);
 
-            RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false, 0, atlasSize);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true, 0, atlasSize);
-            AnimatedAtlas = new List<TombEngineAtlas>();
+            RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numMoveablesAtlases, false, true, 0, atlasSize);
 
-            for (int n = 0; n < numAnimatedPages.Count; n++)
+            AnimatedAtlas = new List<TombEngineAtlas>();
+            for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
                 AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, false, false, AnimatedAtlas.Count, animatedAtlasSizes.ElementAt(n)));
