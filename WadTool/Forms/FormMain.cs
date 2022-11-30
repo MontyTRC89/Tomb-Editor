@@ -118,7 +118,8 @@ namespace WadTool
 
             if (obj is WadToolClass.MainSelectionChangedEvent ||
                 obj is WadToolClass.DestinationWadChangedEvent ||
-                obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
+                obj is WadToolClass.SourceWadChangedEvent || 
+                obj is InitEvent)
             {
                 var mainSelection = _tool.MainSelection;
                 if (mainSelection == null)

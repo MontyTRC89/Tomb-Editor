@@ -3,14 +3,18 @@ Version 1.6.2
 
 Tomb Editor:
  * Fix some objects not linking to triggers in TEN compiler.
+ * Fix rename object dialog locking up editor when switching to other app.
+ * Fix possible exceptions with gizmo assigned to an object about to be deleted.
+ * Fix possible exceptions after using context menus.
 
 WadTool:
-
-* TEN Base WAD:
- * Make Lara standing animation less wobbly.
- * Update pose animations to make Lara breath whilst posing
- * Add placeholder detachable HK lasersight mesh.
- * Fix Lara animations 464, 466, and 472 which were missing sound effects.
+ * Automatically correct bounding boxes for standable objects when importing to TEN wad.
+ * Fix main window right-click menus not working after visiting other windows.
+ * TEN Base WAD:
+  - Make Lara standing animation less wobbly.
+  - Update pose animations to make Lara breath whilst posing.
+  - Add placeholder detachable HK lasersight mesh.
+  - Fix Lara animations 464, 466, and 472 which were missing sound effects.
 
 Version 1.6.1
 =============

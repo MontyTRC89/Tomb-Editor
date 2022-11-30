@@ -147,7 +147,12 @@ namespace TombEditor
                         return new Vector3();
                 }
                 else if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    return ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;
+                {
+                    if (_editor.SelectedObject.Room == null)
+                        return new Vector3();
+                    else
+                        return ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;
+                }
                 else
                     return new Vector3();
             }

@@ -28,7 +28,7 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Rename object", Properties.Resources.general_edit_16, (o, e) =>
                     {
-                        EditorActions.RenameObject(targetObject, this);
+                        EditorActions.RenameObject(targetObject, owner);
                     }));
                 }
             }
@@ -37,23 +37,23 @@ namespace TombEditor.Controls.ContextMenus
             { 
                 Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
                 {
-                    EditorActions.EditObject(targetObject, this);
+                    EditorActions.EditObject(targetObject, owner);
                 }));
             }
 
             Items.Add(new ToolStripMenuItem("Copy", Properties.Resources.general_copy_link_16, (o, e) =>
             {
-                EditorActions.TryCopyObject(targetObject, this);
+                EditorActions.TryCopyObject(targetObject, owner);
             }));
 
             Items.Add(new ToolStripMenuItem("Clone", Properties.Resources.actions_rubber_stamp_16, (o, e) =>
             {
-                EditorActions.TryStampObject(targetObject, this);
+                EditorActions.TryStampObject(targetObject, owner);
             }));
 
             Items.Add(new ToolStripMenuItem("Delete", Properties.Resources.toolbox_Eraser_16, (o, e) =>
             {
-                EditorActions.DeleteObject(targetObject, this);
+                EditorActions.DeleteObject(targetObject, owner);
             }));
 
             Items.Add(new ToolStripMenuItem("Bookmark object", null, (o, e) =>
