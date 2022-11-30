@@ -1135,7 +1135,9 @@ namespace TombLib.LevelData.Compilers.Util
                         {
                             ia.SetWrapMode(WrapMode.TileFlipXY);
                             var rect = new Rectangle(0, 0, destBitmap.Width, destBitmap.Height);
-                            graphics.DrawImage(originalImage.ToBitmap(), rect, 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, ia);
+                            
+                            using (var bmp = originalImage.ToBitmap())
+                                graphics.DrawImage(bmp, rect, 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, ia);
                         }
                     }
 
