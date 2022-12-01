@@ -599,9 +599,9 @@
             // tabGame
             // 
             this.tabGame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabGame.Controls.Add(this.panelLuaPath);
             this.tabGame.Controls.Add(this.panel3);
             this.tabGame.Controls.Add(this.panelScripts);
-            this.tabGame.Controls.Add(this.panelLuaPath);
             this.tabGame.Controls.Add(this.panel1);
             this.tabGame.Controls.Add(this.panel2);
             this.tabGame.Controls.Add(this.panel7);
