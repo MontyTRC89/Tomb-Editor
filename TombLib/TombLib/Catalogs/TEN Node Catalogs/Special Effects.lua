@@ -50,77 +50,57 @@ LevelFuncs.Engine.Node.MoveableParticleEmitter = function(
 
 end
 
---!Name "Emit Particles From A Mesh"
---!Section "Special Effects"
+--!Name "Emit particles from a mesh"
+--!Section "Particles"
 --!Conditional "False"
---!Description "Add particles to a specified mesh.\nThis effect is drawn every frame."
---!Arguments "NewLine,Moveables,70,Choose the moveable where the particles will spawn from." "Numerical,30,[0|100],Mesh Number.\nThis can be found in Wadtool in the Animation Editor"
---!Arguments "NewLine,Vector3,100,[-32000|32000],Velocity X Y Z"
---!Arguments "NewLine,Numerical,33,[0|100],Choose sprite for emitter.\nSprites are based on the DEFAULT_SPRITES slot in Wadtool\n0 = Flame Emitter\n1 = Underwater blood\n2 = Waterfall\n3 = Mist\n4 = Splash Ring 1\n5 = Splash Ring 2\n6 = Splash Ring 3\n7 = Splash Ring 4\n8 = Water Splash\n9 = Water Ring\n11 = Specular\n13 = Underwater Bubble\n14 = Underwater Dust\n15 = Blood\n28 = Lightning\n29 = Lensflare Ring\n30 = Lensflare Ring 2 \n31 = Lensflare Sundisc\n32 = Lensflare Bright Spark"
---!Arguments "Numerical,33,[-32768| 32767],Gravity"
---!Arguments "Numerical,33,[-32000|32000],Rotation"
---!Arguments "NewLine,Color,50,Start Color","Color,50,End Color"
---!Arguments "NewLine,Enumeration,25,[OPAQUE|ALPHATEST|ADDITIVE|NOZTEST|SUBTRACTIVE|WIREFRAME|EXCLUDE|SCREEN|LIGHTEN|ALPHABLEND], Choose blend type for particles"
---!Arguments "Numerical,25,[-32000|32000],Start Size"
---!Arguments "Numerical,25,[-32000|32000],End Size"
---!Arguments "Numerical,25,[-32000|32000],Lifetime (in seconds)"
---!Arguments "NewLine,Boolean,50,Add Damage?","Boolean,50,Add Poison?"
+--!Description "Emit particles from a specified mesh.\nThis effect is drawn every frame."
+--!Arguments "NewLine, Moveables, 70, Choose the moveable where the particles will spawn from." "Numerical, 30, [0 | 100], Mesh Number.\nThis can be found in Wadtool in the Animation Editor"
+--!Arguments "NewLine, Vector3, 100, [-32000 | 32000], Velocity X Y Z"
+--!Arguments "NewLine, Numerical, 100, [0 | 100], Choose sprite for emitter.\nSprites are based on the DEFAULT_SPRITES slot in Wadtool\n0 = Flame Emitter\n1 = Underwater blood\n2 = Waterfall\n3 = Mist\n4 = Splash Ring 1\n5 = Splash Ring 2\n6 = Splash Ring 3\n7 = Splash Ring 4\n8 = Water Splash\n9 = Water Ring\n11 = Specular\n13 = Underwater Bubble\n14 = Underwater Dust\n15 = Blood\n28 = Lightning\n29 = Lensflare Ring\n30 = Lensflare Ring 2 \n31 = Lensflare Sundisc\n32 = Lensflare Bright Spark"
+--!Arguments "NewLine, 100, [-32768 |  32767], Gravity"
+--!Arguments "NewLine, 100, [-32000 | 32000], Rotation"
+--!Arguments "NewLine, Color, 50, Start Color", "Color, 50, End Color"
+--!Arguments "NewLine, Enumeration, 100, [Opaque | Alpha test | Add | No Z test | Subtract | Wireframe | Exclude | Screen | Lighten | Alpha blend], Blend type for particles"
+--!Arguments "NewLine, 100, [-32000 | 32000], Start Size"
+--!Arguments "NewLine, 100, [-32000 | 32000], End Size"
+--!Arguments "NewLine, 100, [-32000 | 32000], Lifetime (in seconds)"
+--!Arguments "NewLine, Boolean, 50, Add Damage?" , "Boolean, 50, Add Poison?"
 
 LevelFuncs.Engine.Node.MeshParticleEmitter=function(
-    Moveable,
-    MeshNum,
-    particleVelocity,
-    spriteID,
-    ParticleGravity,
-    ParticleRotation,
-    StartColor,
-    EndColor,
-    BlendMode,
-    ParticleStartSize,
-    ParticleEndSize,
-    ParticleLife,
-    DamageBool,
-    PoisonBool
-)
-local Entity = GetMoveableByName(Moveable)
-local JointPos = Moveable:GetJointPosition(MeshNum)
+		pos,
+		meshnum,
+		velocity,
+		spriteID,
+		gravity,
+		rotation,
+		startColor,
+		endColor,
+		blendID,
+		startSize,
+		endSize,
+		life,
+		damage,
+		poison
+	)
 
-local BlendID 
-if BlendMode == 0 then
-    BlendID = TEN.Effects.BlendID.OPAQUE end
-if BlendMode == 1 then
-    BlendID = TEN.Effects.BlendID.ALPHATEST end
-if BlendMode == 2 then
-    BlendID = TEN.Effects.BlendID.ADDITIVE end
-if BlendMode == 3 then
-    BlendID = TEN.Effects.BlendID.NOZTEST end
-if BlendMode == 4 then
-    BlendID = TEN.Effects.BlendID.SUBTRACTIVE end
-if BlendMode == 5 then
-    BlendID = TEN.Effects.BlendID.WIREFRAME end
-if BlendMode == 6 then
-    BlendID = TEN.Effects.BlendID.EXCLUDE end
-if BlendMode == 7 then
-    BlendID = TEN.Effects.BlendID.SCREEN end
-if BlendMode == 8 then
-    BlendID = TEN.Effects.BlendID.LIGHTEN end
-if BlendMode == 9 then
-    BlendID = TEN.Effects.BlendID.ALPHABLEND end
+	local pos = GetMoveableByName(moveable):GetJointPosition(meshnum)
+	local blendID = LevelFuncs.Engine.Node.GetBlendMode(blendMode)
+
 
     TEN.Effects.EmitParticle(
-    JointPos,
-    particleVelocity,
-    spriteID,
-    ParticleGravity,
-    ParticleRotation,
-    StartColor,
-    EndColor,
-    BlendID,
-    ParticleStartSize,
-    ParticleEndSize,
-    ParticleLife,
-    DamageBool,
-    PoisonBool
+		pos,
+		velocity,
+		spriteID,
+		gravity,
+		rotation,
+		startColor,
+		endColor,
+		blendID,
+		startSize,
+		endSize,
+		life,
+		damage,
+		poison
     )
 end
 
@@ -345,3 +325,4 @@ LevelFuncs.Engine.Node.DynamicLightStaticMesh = function(Static, LightColor, Ran
         TEN.Misc.PlaySound(SoundEffect, StaticPos)
     end
 end
+
