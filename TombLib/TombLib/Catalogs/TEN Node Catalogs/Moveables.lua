@@ -371,3 +371,46 @@ LevelFuncs.Engine.Node.SwapMoveableMesh = function(dest, destIndex, srcSlot, src
 	
 	TEN.Objects.GetMoveableByName(dest):SwapMesh(destIndex, srcSlot, srcIndex)
 end
+
+-- !Name "If moveable has effect..."
+-- !Section "Moveable state"
+-- !Conditional "True"
+-- !Description "Checks if moveable currently has an effect attached."
+-- !Arguments "Enumeration, 40, [ Fire | Sparks | Smoke | Electric ignite | Red ignite | Custom ], Effect type to compare"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+LevelFuncs.Engine.Node.TestMoveableEffect = function(effectID, moveableName)
+
+	local effect = TEN.Objects.GetMoveableByName(moveableName):GetEffect()
+
+	if (effect == 0) then
+		return false
+	else
+		return effectID == effect - 1
+	end
+end
+
+-- !Name "Set moveable effect"
+-- !Section "Moveable state"
+-- !Description "Assigns specific effect to a moveable."
+-- !Arguments "Enumeration, 30, [ Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
+-- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+
+LevelFuncs.Engine.Node.SetMoveableEffect = function(effectID, timeout, moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):SetEffect(effectID + 1, timeout)
+end
+
+-- !Name "Set custom moveable effect"
+-- !Section "Moveable state"
+-- !Description "Assigns custom colored burn effect to a moveable."
+-- !Arguments "Color, 10, Effect primary colour" 
+-- !Arguments "Color, 10, Effect secondary colour" 
+-- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+
+LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
+end
