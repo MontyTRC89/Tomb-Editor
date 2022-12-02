@@ -4,6 +4,9 @@ Version 1.6.2
 Tomb Editor:
  * Add SetEffect, SetCustomEffect, TestLaraVehicle and TestLaraTargeting node functions.
  * Don't allow to export nodes if there are no nodes.
+ * Fix texture border bleeding in TEN compiler.
+ * Fix broken double-sided triangle textures in TEN compiler.
+ * Fix several memory leaks related to texture conversion.
  * Fix some objects not linking to triggers in TEN compiler.
  * Fix rename object dialog locking up editor when switching to other app.
  * Fix possible exceptions with gizmo assigned to an object about to be deleted.

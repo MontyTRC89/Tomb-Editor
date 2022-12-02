@@ -56,33 +56,35 @@ namespace TombLib.Rendering
                         // Manually add MIP levels.
                         // We can't use automatic DX10 mipmaps because TRTombalized renderer.   
 
-                        var bmp = img.ToBitmap();
-                        for (int i = 0; i < _mipLevels; i++)
+                        using (var bmp = img.ToBitmap())
                         {
-                            // Calculate next mip level dimensions
-                            var mult = (i + 1) * 2;
-                            var destRect = new Rectangle(0, 0, bmp.Width / mult, bmp.Height / mult);
-                            var destImage = new Bitmap(bmp.Width / mult, bmp.Height / mult);
-
-                            // Downscale and apply next MIP level
-                            destImage.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
-                            using (var graphics = System.Drawing.Graphics.FromImage(destImage))
+                            for (int i = 0; i < _mipLevels; i++)
                             {
-                                graphics.CompositingMode = CompositingMode.SourceCopy;
-                                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                                // Calculate next mip level dimensions
+                                var mult = (i + 1) * 2;
+                                var destRect = new Rectangle(0, 0, bmp.Width / mult, bmp.Height / mult);
+                                var destImage = new Bitmap(bmp.Width / mult, bmp.Height / mult);
 
-                                using (var wrapMode = new ImageAttributes())
+                                // Downscale and apply next MIP level
+                                destImage.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
+                                using (var graphics = System.Drawing.Graphics.FromImage(destImage))
                                 {
-                                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                                    graphics.DrawImage(bmp, destRect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, wrapMode);
-                                }
-                            }
+                                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+                                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                                    graphics.CompositingQuality = CompositingQuality.HighQuality;
 
-                            // Save next MIP level to image array
-                            _serviceTextures.Add(ImageC.FromSystemDrawingImage(destImage));
+                                    using (var wrapMode = new ImageAttributes())
+                                    {
+                                        wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                                        graphics.DrawImage(bmp, destRect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, wrapMode);
+                                    }
+                                }
+
+                                // Save next MIP level to image array
+                                _serviceTextures.Add(ImageC.FromSystemDrawingImage(destImage));
+                            }
                         }
                     }
                 }
