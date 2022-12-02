@@ -67,20 +67,20 @@ end
 --!Arguments "NewLine, Boolean, 50, Add damage?" , "Boolean, 50, Add poison?"
 
 LevelFuncs.Engine.Node.MeshParticleEmitter=function(
-		pos, 
-		meshnum, 
-		velocity, 
-		spriteID, 
-		gravity, 
-		rotation, 
-		startColor, 
-		endColor, 
-		blendID, 
-		startSize, 
-		endSize, 
-		life, 
-		damage, 
-		poison
+	pos, 
+	meshnum, 
+	velocity, 
+	spriteID, 
+	gravity, 
+	rotation, 
+	startColor, 
+	endColor, 
+	blendID, 
+	startSize, 
+	endSize, 
+	life, 
+	damage, 
+	poison
 	)
 
 	local pos = GetMoveableByName(moveable):GetJointPosition(meshnum)
@@ -168,18 +168,18 @@ end
 --!Arguments "NewLine, Boolean, 30, Add source light" , "Boolean, 40, Add destination light" , "Boolean, 30, Toggle SFX"
 
 LevelFuncs.Engine.Node.LightningArc = function(
-        source, 
-        dest, 
-        color, 
-        lifetime, 
-        amplitude, 
-        beamWidth, 
-        detail, 
-        smooth, 
-        endDrift, 
-        sourcelightBool, 
-        destlightBool, 
-        sound
+	source, 
+	dest, 
+	color, 
+	lifetime, 
+	amplitude, 
+	beamWidth, 
+	detail, 
+	smooth, 
+	endDrift, 
+	sourcelightBool, 
+	destlightBool, 
+	sound
 	)
 
 	local startingPoint = GetMoveableByName(source):GetPosition()
@@ -196,20 +196,23 @@ LevelFuncs.Engine.Node.LightningArc = function(
 		smooth, 
 		endDrift
 
-	)
+		)
 	
 		local sfxcheck
-			if sound == true then
+			if sound == true
+			then
 				TEN.Misc.PlaySound(197, startingPoint)
 			end
 
 		local sourceLightCheck 
-			if sourcelightBool == true then
+			if sourcelightBool == true
+			then
 				TEN.Effects.EmitLight(startingPoint, color, math.random(10, 20))
 			end
 
 		local destLightCheck 
-			if destlightBool == true then 
+			if destlightBool == true
+			then 
 				TEN.Effects.EmitLight(endingPoint, color, math.random(10, 20))
 			end
 end
@@ -224,26 +227,26 @@ end
 --!Arguments "NewLine, Boolean, 30, Toogle Lara Damage" , "Boolean, 33, Toggle Rumble", "Boolean, 33, Toggle SFX"
 
 LevelFuncs.Engine.Node.Shockwave = function(
-		pos, 
-		innerRadius, 
-		outerRadius, 
-		color, 
-		lifetime, 
-		speed, 
-		angle, 
-		hurtPlayer, 
-		rumble, 
-		sound
-		)
+	pos, 
+	innerRadius, 
+	outerRadius, 
+	color, 
+	lifetime, 
+	speed, 
+	angle, 
+	hurtPlayer, 
+	rumble, 
+	sound
+	)
 
 		local origin = GetMoveableByName(pos):GetPosition()
 		
 		local function earthquake()
-				TEN.Misc.MakeEarthquake(20)
-				TEN.Misc.Vibrate(20, 0.3)
+			TEN.Misc.MakeEarthquake(20)
+			TEN.Misc.Vibrate(20, 0.3)
 		end
 
-	TEN.Effects.EmitShockwave(
+		TEN.Effects.EmitShockwave(
 		origin, 
 		innerRadius, 
 		outerRadius, 
@@ -252,15 +255,17 @@ LevelFuncs.Engine.Node.Shockwave = function(
 		speed, 
 		angle, 
 		hurtPlayer
-	)
+		)
 
-	local Rumblecheck
-		if rumble == true then 
+		local Rumblecheck
+		if rumble == true
+		then 
 			earthquake()
 		end
 
-	local sfxcheck
-		if sound == true then
+		local sfxcheck
+		if sound == true
+		then
 			TEN.Misc.PlaySound(197, startingPoint)
 		end
 
@@ -276,27 +281,29 @@ end
 -- !Arguments "NewLine, Boolean, Add a random effect to the light? "
 
 LevelFuncs.Engine.Node.DynamicLightMesh = function(
-		moveable,
-		meshnumber,
-		lightcolor,
-		range,
-		randomcheck,
-		soundeffectcheck,
-		soundeffect
+	moveable,
+	meshnumber,
+	lightcolor,
+	range,
+	randomcheck,
+	soundeffectcheck,
+	soundeffect
 	)
 
-	local moveable = GetMoveableByName(moveable)
-	local moveablemeshpos = moveable:GetJointPosition(meshnumber)
+		local moveable = GetMoveableByName(moveable)
+		local moveablemeshpos = moveable:GetJointPosition(meshnumber)
 		
-	if randomcheck == false then 
-		TEN.Effects.EmitLight(moveablemeshpos, lightcolor, Range)
-	else 
-		TEN.Effects.EmitLight(moveablemeshpos, lightcolor, math.random((Range)/2, Range))
-	end
+		if randomcheck == false
+		then 
+			TEN.Effects.EmitLight(moveablemeshpos, lightcolor, Range)
+		else 
+			TEN.Effects.EmitLight(moveablemeshpos, lightcolor, math.random((Range)/2, Range))
+		end
 
-	if SoundEffectCheck == true then
-		TEN.Misc.PlaySound(soundeffect, moveablemeshpos)
-	end
+		if SoundEffectCheck == true
+		then
+			TEN.Misc.PlaySound(soundeffect, moveablemeshpos)
+		end
 	
 end
 
@@ -310,23 +317,26 @@ end
 -- !Arguments "NewLine, Boolean, Add a Random Effect to the light? "
 
 LevelFuncs.Engine.Node.DynamicLightStaticMesh = function(
-		static,
-		lightcolor,
-		range,
-		randomcheck,
-		soundeffectcheck,
-		soundeffect
-		)
+	static,
+	lightcolor,
+	range,
+	randomcheck,
+	soundeffectcheck,
+	soundeffect
+	)
 
 		local static = GetStaticByName(static)
 		local staticpos = static:GetPosition()
 	
-		if randomcheck == false then TEN.Effects.EmitLight(staticpos, lightcolor,range)
+		if randomcheck == false
+		then
+			TEN.Effects.EmitLight(staticpos, lightcolor,range)
 		else
 			TEN.Effects.EmitLight(staticpos, LightColor, math.random(range))
 		end
 		
-		if soundeffectcheck == true	then
+		if soundeffectcheck == true
+		then
 			TEN.Misc.PlaySound(soundeffect, staticpos)
 		end
 end
