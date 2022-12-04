@@ -20,6 +20,7 @@ WadTool:
   - Update pose animations to make Lara breath whilst posing.
   - Add placeholder detachable HK lasersight mesh.
   - Fix Lara animations 464, 466, and 472 which were missing sound effects.
+  - Fix Lara train death animation followed by Seth death animation.
 
 Version 1.6.1
 =============
