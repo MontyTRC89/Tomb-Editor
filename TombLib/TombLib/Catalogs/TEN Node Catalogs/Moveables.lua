@@ -338,6 +338,21 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	moveable:SetRotation(rotation)
 end
 
+-- !Name "Move moveable to another moveable position"
+-- !Section "Moveable parameters"
+-- !Description "Moves moveable to a position of another moveable, including rotation."
+-- !Arguments "NewLine, Moveables, Moveable to move"
+-- !Arguments "NewLine, Moveables, Moveable to get position and rotation from"
+
+LevelFuncs.Engine.Node.SetMoveablePositionToAnotherMoveable = function(destMoveable, srcMoveable)
+
+	local src = TEN.Objects.GetMoveableByName(srcMoveable)
+	local dest = TEN.Objects.GetMoveableByName(destMoveable)
+
+	dest:SetPosition(src:GetPosition())
+	dest:SetRotation(src:GetRotation())
+end
+
 -- !Name "Set moveable colour"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."

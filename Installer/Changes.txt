@@ -3,6 +3,7 @@ Version 1.6.2
 
 Tomb Editor:
  * Add SetEffect, SetCustomEffect, TestLaraVehicle and TestLaraTargeting node functions.
+ * Add node function to move one moveable to another.
  * Don't allow to export nodes if there are no nodes.
  * Fix texture border bleeding in TEN compiler.
  * Fix broken double-sided triangle textures in TEN compiler.
