@@ -257,7 +257,7 @@ namespace TombLib.Controls.VisualScripting
         protected override void OnBackColorChanged(EventArgs e)
         {
             base.OnBackColorChanged(e);
-            tabBoolean.BackColor = tableVec3.BackColor = BackColor;
+            tabBoolean.BackColor = tableVector3.BackColor = BackColor;
         }
 
         protected override void OnLocationChanged(EventArgs e)
