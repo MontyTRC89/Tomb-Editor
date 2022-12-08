@@ -256,8 +256,18 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnBackColorChanged(EventArgs e)
         {
+            // HACK: Force background color for reluctant controls.
+
             base.OnBackColorChanged(e);
             tabBoolean.BackColor = tableVector3.BackColor = BackColor;
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            // HACK: Force increased size for reluctant controls.
+
+            base.OnFontChanged(e);
+            nudNumerical.Font = tableVector3.Font = new Font(Font.Name, Font.Size + 0.25f);
         }
 
         protected override void OnLocationChanged(EventArgs e)
