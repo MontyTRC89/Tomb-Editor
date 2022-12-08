@@ -2,8 +2,13 @@ Version 1.6.2
 =============
 
 Tomb Editor:
- * Add SetEffect, SetCustomEffect, TestLaraVehicle and TestLaraTargeting node functions.
- * Add node function to move one moveable to another.
+ * Added node functions:
+  - PushKey - emulates a keypress.
+  - SetEffect, SetCustomEffect - assigns an effect to a moveable.
+  - TestLaraVehicle - checks if Lara is on a vehicle.
+  - TestLaraTargeting - checks if Lara is targeting any enemy.
+  - SetMoveablePositionToAnotherMoveable - moves one moveable to another moveable position.
+  
  * Don't allow to export nodes if there are no nodes.
  * Fix minor UI issues in node editor.
  * Fix texture border bleeding in TEN compiler.
