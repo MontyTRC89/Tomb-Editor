@@ -3,7 +3,8 @@ Version 1.6.2
 
 Tomb Editor:
  * Added node functions:
-  - PushKey - emulates a keypress.
+  - PushKey - emulates specified key push.
+  - ClearKey - blocks specified key from pushing.
   - SetEffect, SetCustomEffect - assigns an effect to a moveable.
   - TestLaraVehicle - checks if Lara is on a vehicle.
   - TestLaraTargeting - checks if Lara is targeting any enemy.
