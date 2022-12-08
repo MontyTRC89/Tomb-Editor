@@ -11,6 +11,7 @@ Tomb Editor:
   - SetMoveablePositionToAnotherMoveable - moves one moveable to another moveable position.
   
  * Don't allow to export nodes if there are no nodes.
+ * Filter out AI objects from moveable lists in node editor.
  * Fix minor UI issues in node editor.
  * Fix texture border bleeding in TEN compiler.
  * Fix broken double-sided triangle textures in TEN compiler.
