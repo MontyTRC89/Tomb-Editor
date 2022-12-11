@@ -2773,8 +2773,8 @@
 			<moveable id="25" name="LARA_WATER_MESH" description="Lara Water Mesh" use_body_from="8" t5m="LARA_WATER_MESH" hidden="true" />
 			<moveable id="26" name="LARA_PETROL_MESH" description="Lara Petrol Mesh" use_body_from="8" t5m="LARA_PETROL_MESH" hidden="true" />
 			<moveable id="27" name="LARA_DIRT_MESH" description="Lara Dirt Mesh" use_body_from="8" t5m="LARA_DIRT_MESH" hidden="true" />
-			<moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" t5m="CROWBAR_ANIM" hidden="true" />
-			<moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" t5m="TORCH_ANIM" hidden="true" />
+			<moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" t5m="LARA_CROWBAR_ANIM" hidden="true" />
+			<moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" t5m="LARA_TORCH_ANIM" hidden="true" />
 			<moveable id="30" name="HAIR" description="Hair" t5m="HAIR" hidden="true" />
 			<moveable id="31" name="MOTORBIKE" description="Motorbike" t5m="MOTORBIKE" essential="false" />
 			<moveable id="32" name="JEEP" description="Jeep" t5m="JEEP" essential="false" />
