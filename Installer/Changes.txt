@@ -8,6 +8,7 @@ Tomb Editor:
   - SetEffect, SetCustomEffect - assigns an effect to a moveable.
   - TestLaraVehicle - checks if Lara is on a vehicle.
   - TestLaraTargeting - checks if Lara is targeting any enemy.
+  - TestLaraTorchIsLit - checks if Lara holds a torch and it is lit.
   - SetMoveablePositionToAnotherMoveable - moves one moveable to another moveable position.
   
  * Don't allow to export nodes if there are no nodes.
@@ -27,6 +28,7 @@ WadTool:
  * TEN Base WAD:
   - Make Lara standing animation less wobbly.
   - Update pose animations to make Lara breath whilst posing.
+  - Update minecart animations to include death anim.
   - Add placeholder detachable HK lasersight mesh.
   - Fix Lara animations 464, 466, and 472 which were missing sound effects.
   - Fix Lara train death animation followed by Seth death animation.

@@ -138,6 +138,15 @@ LevelFuncs.Engine.Node.TestLaraWeaponType = function(value)
     return (TEN.Objects.Lara:GetWeaponType() == value)
 end
 
+-- !Name "If torch is in hand and lit..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Checks if Lara currently holds a torch and it is lit."
+
+LevelFuncs.Engine.Node.TestLaraTorchIsLit = function()
+    return TEN.Objects.Lara:TorchIsLit()
+end
+
 -- !Name "Set current weapon"
 -- !Section "Lara state"
 -- !Description "Sets weapon to selected one."
