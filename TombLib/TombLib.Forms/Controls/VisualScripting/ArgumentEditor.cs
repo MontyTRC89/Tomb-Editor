@@ -54,8 +54,11 @@ namespace TombLib.Controls.VisualScripting
             InitializeComponent();
             container.Visible = (LicenseManager.UsageMode == LicenseUsageMode.Runtime);
 
-            // HACK: Fix textbox UI height
+            // HACK: Fix textbox UI height.
             tbString.AutoSize = false;
+
+            // HACK: Force increased size for reluctant controls.
+            nudNumerical.Font = tableVector3.Font = new Font(Font.Name, Font.Size + 1.0f);
         }
 
         public void SetArgumentType(ArgumentLayout layout, NodeEditor editor)
@@ -251,7 +254,6 @@ namespace TombLib.Controls.VisualScripting
 
             using (var p = new Pen(Colors.GreySelection, 1))
                 e.Graphics.DrawRectangle(p, 0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
-
         }
 
         protected override void OnBackColorChanged(EventArgs e)
@@ -260,14 +262,6 @@ namespace TombLib.Controls.VisualScripting
 
             base.OnBackColorChanged(e);
             tabBoolean.BackColor = tableVector3.BackColor = BackColor;
-        }
-
-        protected override void OnFontChanged(EventArgs e)
-        {
-            // HACK: Force increased size for reluctant controls.
-
-            base.OnFontChanged(e);
-            nudNumerical.Font = tableVector3.Font = new Font(Font.Name, Font.Size + 0.25f);
         }
 
         protected override void OnLocationChanged(EventArgs e)
