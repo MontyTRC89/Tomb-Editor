@@ -46,6 +46,8 @@ LevelFuncs.Engine.Node.GenerateString = function(text, x, y, center, shadow, col
 	return TEN.Strings.DisplayString(text, rX, rY, color, false, options)
 end
 
+-- Helper function to split string using specified delimiter.
+
 LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
 
    if inputStr == nil then
@@ -58,4 +60,21 @@ LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
    end
    
    return t
+end
+
+-- Wrap angle value around 360
+
+LevelFuncs.Engine.Node.WrapRotation = function(source, value)
+
+	if (value == 0) then
+		return source
+	end
+
+	local rot = source + value
+	if (rot > 360) then
+		rot = rot - 360
+	elseif (rot < 0) then
+		rot = 360 + rot
+	end
+	return rot
 end

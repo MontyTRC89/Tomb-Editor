@@ -110,7 +110,7 @@ end
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh rotation."
 -- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Statics"
+-- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticRotation = function(operation, value, staticName)
 
@@ -118,14 +118,7 @@ LevelFuncs.Engine.Node.SetStaticRotation = function(operation, value, staticName
 	local rotation = stat:GetRotation();
 
 	if (operation == 0) then
-		local rot = rotation.y + value
-		if (rot > 360) then
-			rotation.y = rot - 360
-		elseif (rot < 0) then
-			rotation.y = 360 + rot
-		else
-			rotation.y = rotation.y + value
-		end
+		rotation.y = LevelFuncs.Engine.Node.WrapRotation(rotation.y, value)
 	else
 		rotation.y = value
 	end
