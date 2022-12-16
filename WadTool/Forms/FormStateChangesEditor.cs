@@ -261,7 +261,7 @@ namespace WadTool
                     }
                     else if (name == columnHighFrame.Name)
                     {
-                        limit = (Int16)(_editor.GetRealNumberOfFrames() - 1);
+                        limit = (Int16)(_editor.GetRealNumberOfFrames());
                     }
                 }
 
