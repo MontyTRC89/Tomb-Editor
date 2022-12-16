@@ -33,6 +33,9 @@ WadTool:
   - Add placeholder detachable HK lasersight mesh.
   - Fix Lara animations 464, 466, and 472 which were missing sound effects.
   - Fix Lara train death animation followed by Seth death animation.
+  
+TombIDE:
+ * Update TEN template to include font with extended character set.
 
 Version 1.6.1
 =============
