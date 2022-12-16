@@ -25,6 +25,7 @@ Tomb Editor:
 WadTool:
  * Automatically correct bounding boxes for standable objects when importing to TEN wad.
  * Fix main window right-click menus not working after visiting other windows.
+ * Fix state change editor clamping high frame to one frame less than frame count.
  * TEN Base WAD:
   - Make Lara standing animation less wobbly.
   - Update pose animations to make Lara breath whilst posing.
