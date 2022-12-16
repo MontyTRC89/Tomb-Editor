@@ -121,6 +121,7 @@ namespace TombLib.Controls.VisualScripting
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
         public int GridSize { get; set; } = 256;
+        public float GridOffset => GridSize / 64.0f;
         public int DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
         public bool LinksAsRopes { get; set; } = false;
         public bool ShowGrips { get; set; } = false;

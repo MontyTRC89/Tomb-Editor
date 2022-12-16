@@ -456,7 +456,14 @@ namespace TombEditor.Controls
             if (nodes.Count == 0)
                 return;
 
-            nodes.ForEach(n => nodeEditor.Nodes.Add(n.Clone()));
+            foreach (var node in nodes)
+            {
+                if (nodeEditor.Nodes.Any(n => n.ScreenPosition == node.ScreenPosition))
+                    node.ScreenPosition += new Vector2(nodeEditor.GridOffset, -nodeEditor.GridOffset);
+
+                nodeEditor.Nodes.Add(node.Clone());
+            }
+
             nodeEditor.UpdateVisibleNodes();
             nodeEditor.ShowNode(nodeEditor.Nodes.First());
         }
