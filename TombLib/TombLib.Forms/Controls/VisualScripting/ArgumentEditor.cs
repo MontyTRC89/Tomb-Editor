@@ -130,7 +130,8 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Rooms:
                     foreach (var item in editor.CachedRooms)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), TextExtensions.Quote(item.Name)));
+                        cbList.Items.Add(new ComboBoxItem(cbList.Items.Count.ToString() + ": " +
+                            item.ToString(), TextExtensions.Quote(item.Name)));
                     break;
                 case ArgumentType.SoundEffects:
                     foreach (var item in editor.CachedSoundInfos)

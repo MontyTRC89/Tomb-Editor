@@ -78,3 +78,14 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	end
 	return rot
 end
+
+LevelFuncs.Engine.Node.GetRoomFlag = function(value)
+{
+	if (value == 0) then return Objects.RoomFlagID.WATER end
+	if (value == 1) then return Objects.RoomFlagID.QUICKSAND end
+	if (value == 2) then return Objects.RoomFlagID.SKYBOX end
+	if (value == 3) then return Objects.RoomFlagID.WIND end
+	if (value == 4) then return Objects.RoomFlagID.COLD end
+	if (value == 5) then return Objects.RoomFlagID.DAMAGE end
+	if (value == 6) then return Objects.RoomFlagID.NOLENSFLARE end
+}
