@@ -5,6 +5,9 @@ Tomb Editor:
  * Offset pasted nodes if they land on same position.
  * Fix exception when trying to copy lua name to clipboard for objects without a name. 
 
+WadTool:
+ * Correct remapping of TR1-TR3 rollingballs' to Tomb Engine.
+ 
 Version 1.6.2
 =============
 

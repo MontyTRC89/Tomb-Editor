@@ -61,7 +61,7 @@
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
-			<moveable id="38" name="Boulder" essential="false" t5m="ROLLINGBALL" />
+			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="39" name="Dart" hidden="true" /> />
 			<moveable id="40" name="Wall-mounted dartgun" essential="false" t5m="DART_EMMITER" />
 			<moveable id="41" name="Door (opens upward)" essential="false" t5m="DOOR_TYPE9" />
@@ -718,7 +718,7 @@
 			<moveable id="57" name="Loose boards" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="58" name="Swinging sandbag / spiky ball" essential="false" t5m="SPIKEBALL" />
 			<moveable id="59" name="Spikes / Glass shards" essential="false" t5m="TEETH_SPIKES" />
-			<moveable id="60" name="Boulder" essential="false" t5m="ROLLINGBALL" />
+			<moveable id="60" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="61" name="Disk (like dart)" hidden="true" />
 			<moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" />
 			<moveable id="63" name="Drawbridge" essential="false" />
@@ -739,7 +739,7 @@
 			<moveable id="80" name="Rolling spindle" essential="false" t5m="ROLLING_SPINDLE" />
 			<moveable id="81" name="Wall-mounted knife blade" essential="false" t5m="WALL_MOUNTED_BLADE" />
 			<moveable id="82" name="Statue with knife blade" essential="false" t5m="STATUE_WITH_BLADE" />
-			<moveable id="83" name="Multiple boulders / snowballs" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="83" name="Multiple boulders / snowballs" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="84" name="Detachable icicles" essential="false" t5m="FALLING_CEILING" />
 			<moveable id="85" name="Spiky moveable wall" essential="false" t5m="SPIKY_WALL" />
 			<moveable id="86" name="Bounce pad" essential="false" t5m="SPRINGBOARD" />
@@ -755,7 +755,7 @@
 			<moveable id="98" name="Cutscene Object 2" t5m="ANIMATING102" />
 			<moveable id="99" name="Cutscene Object 3" t5m="ANIMATING103" />
 			<moveable id="100" name="Cutscene Object 4" t5m="ANIMATING104" />
-			<moveable id="101" name="Rolling storage drums" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="101" name="Rolling storage drums" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="102" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="103" name="Above-water switch" essential="false" t5m="SWITCH_TYPE3" />
 			<moveable id="104" name="Above-water/underwater switch" essential="false" t5m="SWITCH_TYPE4" />
@@ -1441,7 +1441,7 @@
 			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" t5m="WALL_MOUNTED_BLADE" />  
 			<moveable id="87" name="Spikes / Barbed wire" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="88" name="Boulder / Barrel" essential="false" t5m="CLASSIC_ROLLINGBALL" />
-			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" /> 
+			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" t5m="CLASSIC_ROLLINGBALL" /> 
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="MOVING_BLADE" />
