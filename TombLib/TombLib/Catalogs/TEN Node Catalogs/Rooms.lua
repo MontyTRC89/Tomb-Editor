@@ -45,12 +45,12 @@ LevelFuncs.Engine.Node.TestRoomTag = function(roomName, tag)
 	return TEN.Objects.GetRoomByName(roomName):IsTagPresent(tag)
 end
 
--- !Name "Set room flag"
+-- !Name "Set property flag for a room"
 -- !Section "Rooms"
--- !Description "Sets or unsets selected room flag."
+-- !Description "Sets or unsets selected room property flag.\nWater and Quicksand properties can't be combined.'"
 -- !Arguments "NewLine, Rooms, 70"
 -- !Arguments "Enumeration, [ Water | Quicksand | Skybox | Wind | Cold | Damage | No lensflare ], 25, Flag type"
--- !Arguments "Boolean, , 5"
+-- !Arguments "Boolean, 5"
 
 LevelFuncs.Engine.Node.SetRoomFlag = function(roomName, flag, value)
 	
@@ -58,14 +58,46 @@ LevelFuncs.Engine.Node.SetRoomFlag = function(roomName, flag, value)
 	TEN.Objects.GetRoomByName(roomName):SetFlag(flagIndex, value)
 end
 
--- !Name "Set room reverb type"
+-- !Name "Set property flag for all rooms by tag"
+-- !Section "Rooms"
+-- !Description "Sets property flag for all rooms with specified tag."
+-- !Arguments "NewLine, String, 70, Tag to search for"
+-- !Arguments "Enumeration, [ Water | Quicksand | Skybox | Wind | Cold | Damage | No lensflare ], 25, Flag type"
+-- !Arguments "Boolean, 5"
+
+LevelFuncs.Engine.Node.SetRoomFlagByTag = function(tag, flag, value)
+
+	local flagIndex = LevelFuncs.Engine.Node.GetRoomFlag(flag)
+    local list = TEN.Objects.GetRoomsByTag(tag)
+
+    for k, room in pairs(list) do
+        room:SetFlag(flagIndex, value)
+    end
+end
+
+-- !Name "Set reverb type for a room"
 -- !Section "Rooms"
 -- !Description "Sets selected room reverb type to specified."
 -- !Arguments "NewLine, Rooms, 75"
 -- !Arguments "Enumeration, [ None | Small | Medium | Large | Pipe ], 25, Reverb type"
 
 LevelFuncs.Engine.Node.SetRoomReverbType = function(roomName, reverbType)
-	return TEN.Objects.GetRoomByName(roomName):SetReverbType(reverbType)
+	TEN.Objects.GetRoomByName(roomName):SetReverbType(reverbType)
+end
+
+-- !Name "Set reverb type for all rooms by tag"
+-- !Section "Rooms"
+-- !Description "Sets reverb type to specified for all rooms with specified tag."
+-- !Arguments "NewLine, String, 75, Tag to search for"
+-- !Arguments "Enumeration, [ None | Small | Medium | Large | Pipe ], 25, Reverb type"
+
+LevelFuncs.Engine.Node.SetRoomReverbTypeByTag = function(tag, reverbType)
+
+    local list = TEN.Objects.GetRoomsByTag(tag)
+
+    for k, room in pairs(list) do
+        room:SetReverbType(reverbType)
+    end
 end
 
 -- !Name "Toggle flipmap"
