@@ -3,7 +3,7 @@ Version 1.6.3
 
 Tomb Editor:
  * Offset pasted nodes if they land on same position.
- 
+ * Fix exception when trying to copy lua name to clipboard for objects without a name. 
 
 Version 1.6.2
 =============

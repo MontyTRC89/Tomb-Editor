@@ -127,6 +127,10 @@ namespace TombEditor.Controls.ContextMenus
             {
                 Items.Add(new ToolStripMenuItem("Copy Lua name to clipboard", null, (o, e) =>
                 {
+                    var scriptObj = targetObject as PositionAndScriptBasedObjectInstance;
+                    if (string.IsNullOrEmpty(scriptObj.LuaName))
+                        scriptObj.AllocateNewLuaName();
+
                     Clipboard.SetText((targetObject as PositionAndScriptBasedObjectInstance).LuaName);
                 }));
             }
