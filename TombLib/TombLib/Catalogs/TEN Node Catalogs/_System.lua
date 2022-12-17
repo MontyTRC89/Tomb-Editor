@@ -79,8 +79,10 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	return rot
 end
 
+-- Convert UI enum to room flag ID enum
+
 LevelFuncs.Engine.Node.GetRoomFlag = function(value)
-{
+
 	if (value == 0) then return Objects.RoomFlagID.WATER end
 	if (value == 1) then return Objects.RoomFlagID.QUICKSAND end
 	if (value == 2) then return Objects.RoomFlagID.SKYBOX end
@@ -88,4 +90,6 @@ LevelFuncs.Engine.Node.GetRoomFlag = function(value)
 	if (value == 4) then return Objects.RoomFlagID.COLD end
 	if (value == 5) then return Objects.RoomFlagID.DAMAGE end
 	if (value == 6) then return Objects.RoomFlagID.NOLENSFLARE end
-}
+
+	return 0;
+end
