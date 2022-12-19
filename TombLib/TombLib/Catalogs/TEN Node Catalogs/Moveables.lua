@@ -51,6 +51,19 @@ LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationI
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
+-- !Name "If frame number of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's frame number is currently within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 74"
+-- !Arguments "Numerical, 13, [ 0 | 9999 ], Lower frame bound" "Numerical, 13, [ 0 | 9999 ], Upper frame bound"
+
+LevelFuncs.Engine.Node.TestMoveableFrameNumber = function(moveableName, lower, upper)
+	local frameNumber = TEN.Objects.GetMoveableByName(moveableName):GetFrame()
+
+	return (frameNumber >= lower and frameNumber <= upper)
+end
+
 -- !Name "If state of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current state is the one specified."
@@ -315,7 +328,7 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable rotation."
 -- !Arguments "Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ 0 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
+-- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Moveables"
 
 LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveableName)
 
@@ -323,19 +336,31 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	local rotation = moveable:GetRotation();
 
 	if (operation == 0) then
-		local rot = rotation.y + value
-		if (rot > 360) then
-			rotation.y = rot - 360
-		elseif (rot < 0) then
-			rotation.y = 360 + rot
-		else
-			rotation.y = rotation.y + value
-		end
+		rotation.y = LevelFuncs.Engine.Node.WrapRotation(rotation.y, value)
 	else
 		rotation.y = value
 	end
 
 	moveable:SetRotation(rotation)
+end
+
+-- !Name "Move moveable to another moveable"
+-- !Section "Moveable parameters"
+-- !Description "Moves moveable to a position of another moveable."
+-- !Arguments "25, Boolean, With rotation"
+-- !Arguments "NewLine, Moveables, Moveable to move"
+-- !Arguments "NewLine, Moveables, Moveable to get position and rotation from"
+
+LevelFuncs.Engine.Node.SetMoveablePositionToAnotherMoveable = function(rotate, destMoveable, srcMoveable)
+
+	local src = TEN.Objects.GetMoveableByName(srcMoveable)
+	local dest = TEN.Objects.GetMoveableByName(destMoveable)
+
+	dest:SetPosition(src:GetPosition())
+
+	if (rotate == true) then
+		dest:SetRotation(src:GetRotation())
+	end
 end
 
 -- !Name "Set moveable colour"
@@ -370,4 +395,47 @@ end
 LevelFuncs.Engine.Node.SwapMoveableMesh = function(dest, destIndex, srcSlot, srcIndex)
 	
 	TEN.Objects.GetMoveableByName(dest):SwapMesh(destIndex, srcSlot, srcIndex)
+end
+
+-- !Name "If moveable has effect..."
+-- !Section "Moveable state"
+-- !Conditional "True"
+-- !Description "Checks if moveable currently has an effect attached."
+-- !Arguments "Enumeration, 40, [ Fire | Sparks | Smoke | Electric ignite | Red ignite | Custom ], Effect type to compare"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+LevelFuncs.Engine.Node.TestMoveableEffect = function(effectID, moveableName)
+
+	local effect = TEN.Objects.GetMoveableByName(moveableName):GetEffect()
+
+	if (effect == 0) then
+		return false
+	else
+		return effectID == effect - 1
+	end
+end
+
+-- !Name "Set moveable effect"
+-- !Section "Moveable state"
+-- !Description "Assigns specific effect to a moveable."
+-- !Arguments "Enumeration, 30, [ Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
+-- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+
+LevelFuncs.Engine.Node.SetMoveableEffect = function(effectID, timeout, moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):SetEffect(effectID + 1, timeout)
+end
+
+-- !Name "Set custom moveable effect"
+-- !Section "Moveable state"
+-- !Description "Assigns custom colored burn effect to a moveable."
+-- !Arguments "Color, 10, Effect primary colour" 
+-- !Arguments "Color, 10, Effect secondary colour" 
+-- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+
+
+LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
+    TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
 end

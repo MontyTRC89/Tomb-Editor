@@ -121,6 +121,7 @@ namespace TombLib.Controls.VisualScripting
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
         public int GridSize { get; set; } = 256;
+        public float GridOffset => GridSize / 64.0f;
         public int DefaultNodeWidth { get; set; } = TriggerNode.DefaultSize;
         public bool LinksAsRopes { get; set; } = false;
         public bool ShowGrips { get; set; } = false;
@@ -212,7 +213,8 @@ namespace TombLib.Controls.VisualScripting
         {
             var allObjects = level.GetAllObjects();
 
-            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
+                                    !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
             _cachedStatics      = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedCameras      = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
             _cachedSinks        = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();

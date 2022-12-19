@@ -34,7 +34,7 @@
             this.tabNumerical = new System.Windows.Forms.TabPage();
             this.nudNumerical = new DarkUI.Controls.DarkNumericUpDown();
             this.tabVector3 = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableVector3 = new System.Windows.Forms.TableLayoutPanel();
             this.nudVector3Z = new DarkUI.Controls.DarkNumericUpDown();
             this.nudVector3Y = new DarkUI.Controls.DarkNumericUpDown();
             this.nudVector3X = new DarkUI.Controls.DarkNumericUpDown();
@@ -53,7 +53,7 @@
             this.tabNumerical.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).BeginInit();
             this.tabVector3.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableVector3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).BeginInit();
@@ -141,7 +141,7 @@
             // 
             // tabVector3
             // 
-            this.tabVector3.Controls.Add(this.tableLayoutPanel1);
+            this.tabVector3.Controls.Add(this.tableVector3);
             this.tabVector3.Location = new System.Drawing.Point(4, 22);
             this.tabVector3.Margin = new System.Windows.Forms.Padding(1);
             this.tabVector3.Name = "tabVector3";
@@ -150,23 +150,23 @@
             this.tabVector3.Text = "Vector3";
             this.tabVector3.UseVisualStyleBackColor = true;
             // 
-            // tableLayoutPanel1
+            // tableVector3
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.Controls.Add(this.nudVector3Z, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.nudVector3Y, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.nudVector3X, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 23);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tableVector3.ColumnCount = 3;
+            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableVector3.Controls.Add(this.nudVector3Z, 2, 0);
+            this.tableVector3.Controls.Add(this.nudVector3Y, 1, 0);
+            this.tableVector3.Controls.Add(this.nudVector3X, 0, 0);
+            this.tableVector3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableVector3.Location = new System.Drawing.Point(0, 0);
+            this.tableVector3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableVector3.Name = "tableVector3";
+            this.tableVector3.RowCount = 1;
+            this.tableVector3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableVector3.Size = new System.Drawing.Size(430, 23);
+            this.tableVector3.TabIndex = 0;
             // 
             // nudVector3Z
             // 
@@ -371,7 +371,7 @@
             this.tabNumerical.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).EndInit();
             this.tabVector3.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableVector3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3Z)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3Y)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).EndInit();
@@ -395,7 +395,7 @@
         private System.Windows.Forms.TabPage tabColor;
         private System.Windows.Forms.TabPage tabList;
         private DarkUI.Controls.DarkNumericUpDown nudNumerical;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableVector3;
         private DarkUI.Controls.DarkNumericUpDown nudVector3X;
         private DarkUI.Controls.DarkNumericUpDown nudVector3Z;
         private DarkUI.Controls.DarkNumericUpDown nudVector3Y;

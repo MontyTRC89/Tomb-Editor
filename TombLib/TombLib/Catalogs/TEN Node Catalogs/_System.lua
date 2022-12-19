@@ -46,6 +46,8 @@ LevelFuncs.Engine.Node.GenerateString = function(text, x, y, center, shadow, col
 	return TEN.Strings.DisplayString(text, rX, rY, color, false, options)
 end
 
+-- Helper function to split string using specified delimiter.
+
 LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
 
    if inputStr == nil then
@@ -58,6 +60,39 @@ LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
    end
    
    return t
+end
+
+-- Wrap angle value around 360
+
+LevelFuncs.Engine.Node.WrapRotation = function(source, value)
+
+	if (value == 0) then
+		return source
+	end
+
+	local rot = source + value
+	if (rot > 360) then
+		rot = rot - 360
+	elseif (rot < 0) then
+		rot = 360 + rot
+	end
+	return rot
+end
+
+-- Convert UI enum to room flag ID enum
+
+LevelFuncs.Engine.Node.GetRoomFlag = function(value)
+
+	if (value == 0) then return Objects.RoomFlagID.WATER end
+	if (value == 1) then return Objects.RoomFlagID.QUICKSAND end
+	if (value == 2) then return Objects.RoomFlagID.SKYBOX end
+	if (value == 3) then return Objects.RoomFlagID.WIND end
+	if (value == 4) then return Objects.RoomFlagID.COLD end
+	if (value == 5) then return Objects.RoomFlagID.DAMAGE end
+	if (value == 6) then return Objects.RoomFlagID.NOLENSFLARE end
+
+	return 0;
+
 end
 
 -- Helper function for converting UI blend mode enum to real enum.
@@ -89,4 +124,3 @@ LevelFuncs.Engine.Node.GetBlendMode = function(index)
 	end
 
 	return blendID
-end

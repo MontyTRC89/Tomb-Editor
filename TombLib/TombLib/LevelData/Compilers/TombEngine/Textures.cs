@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
@@ -187,6 +188,79 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             return final;
+        }
+
+        void WriteTextureData(BinaryWriterEx writer)
+        {
+            ReportProgress(90, "Writing texture data...");
+
+            WriteAtlas(writer, _textureInfoManager.RoomsAtlas);
+            WriteAtlas(writer, _textureInfoManager.MoveablesAtlas);
+            WriteAtlas(writer, _textureInfoManager.StaticsAtlas);
+            WriteAtlas(writer, _textureInfoManager.AnimatedAtlas);
+
+            // Sprites textures
+            writer.Write(_spritesTexturesPages.Count);
+            foreach (var atlas in _spritesTexturesPages)
+            {
+                writer.Write(atlas.Width);
+                writer.Write(atlas.Height);
+                using (var ms = new MemoryStream())
+                {
+                    using (var bmp = atlas.ToBitmap())
+                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    var output = RemoveColorChunks(ms);
+                    writer.Write((int)output.Length);
+                    writer.Write(output.ToArray());
+                }
+            }
+
+            // Sky texture
+            var sky = GetSkyTexture();
+            using (var ms = new MemoryStream())
+            {
+                using (var bmp = sky.ToBitmap())
+                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                writer.Write(sky.Width);
+                writer.Write(sky.Height);
+                var output = RemoveColorChunks(ms);
+                writer.Write((int)output.Length);
+                writer.Write(output.ToArray());
+            }
+        }
+
+        static void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
+        {
+            writer.Write(atlasList.Count);
+            foreach (var atlas in atlasList)
+            {
+                writer.Write(atlas.ColorMap.Width);
+                writer.Write(atlas.ColorMap.Height);
+
+                using (var ms = new MemoryStream())
+                {
+                    using (var bmp = atlas.ColorMap.ToBitmap())
+                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                    var output = RemoveColorChunks(ms);
+                    writer.Write((int)output.Length);
+                    writer.Write(output.ToArray());
+                }
+
+                writer.Write(atlas.HasNormalMap);
+                if (!atlas.HasNormalMap)
+                    continue;
+
+                using (var ms = new MemoryStream())
+                {
+                    using (var bmp = atlas.NormalMap.ToBitmap())
+                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                    var output = RemoveColorChunks(ms);
+                    writer.Write((int)output.Length);
+                    writer.Write(output.ToArray());
+                }
+            }
         }
     }
 }

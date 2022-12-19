@@ -133,7 +133,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     continue;
                 }
 
-                int flags = instance.Room.AlternateGroup;
+                int flags = 0;
+                if (instance.Room.AlternateGroup >= 0)
+                    flags = instance.Room.AlternateGroup;
 
                 switch (instance.PlayMode)
                 {

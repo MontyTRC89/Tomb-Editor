@@ -331,7 +331,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
                                         }
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                          (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -362,7 +362,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
                                                         (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -372,7 +372,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror(true);
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -522,7 +522,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 }
                                 else
                                 {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode == BlendMode.AlphaBlend);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
                                     var face = poly.IsTriangle ?
                                         result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
                                         result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
@@ -671,7 +671,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         texture.Mirror(true);
                                     }
 
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                     var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(tri);

@@ -102,24 +102,6 @@ LevelFuncs.Engine.Node.ModifyLaraWet = function(operation, value)
 	end
 end
 
--- !Name "If Lara is on fire..."
--- !Section "Lara state"
--- !Conditional "True"
--- !Description "Checks if Lara is currently on fire."
-
-LevelFuncs.Engine.Node.TestLaraOnFire = function(operator, value)
-    return TEN.Objects.Lara:GetOnFire()
-end
-
--- !Name "Set Lara on fire"
--- !Section "Lara state"
--- !Description "Sets or unsets Lara on fire."
--- !Arguments "Boolean, 20, Fire is on"
-
-LevelFuncs.Engine.Node.SetLaraOnFire = function(value)
-    return TEN.Objects.Lara:SetOnFire(value)
-end
-
 -- !Name "Undraw weapon"
 -- !Section "Lara state"
 -- !Description "Undraws any currently selected weapon."
@@ -156,6 +138,15 @@ LevelFuncs.Engine.Node.TestLaraWeaponType = function(value)
     return (TEN.Objects.Lara:GetWeaponType() == value)
 end
 
+-- !Name "If torch is in hand and lit..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Checks if Lara currently holds a torch and it is lit."
+
+LevelFuncs.Engine.Node.TestLaraTorchIsLit = function()
+    return TEN.Objects.Lara:TorchIsLit()
+end
+
 -- !Name "Set current weapon"
 -- !Section "Lara state"
 -- !Description "Sets weapon to selected one."
@@ -164,4 +155,22 @@ end
 
 LevelFuncs.Engine.Node.SetLaraWeaponType = function(value, draw)
     TEN.Objects.Lara:SetWeaponType(value, draw)
+end
+
+-- !Name "If Lara is on a vehicle..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Checks if Lara is currently mounting a vehicle."
+
+LevelFuncs.Engine.Node.TestLaraVehicle = function()
+    return TEN.Objects.Lara:GetVehicle() ~= nil
+end
+
+-- !Name "If Lara is targeting enemy..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Checks if Lara is currently targeting an enemy."
+
+LevelFuncs.Engine.Node.TestLaraTargeting = function()
+    return TEN.Objects.Lara:GetTarget() ~= nil
 end

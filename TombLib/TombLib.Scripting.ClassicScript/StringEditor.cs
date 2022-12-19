@@ -364,7 +364,7 @@ namespace TombLib.Scripting.ClassicScript
 				{
 					short id = short.Parse(strings[i].Split(':').First());
 					string hex = ContentReader.GetShortHex(id, 3);
-					string @string = Regex.Replace(strings[i], @"^\d+:\s*", string.Empty);
+					string @string = Regex.Replace(strings[i], @"^\d+:", string.Empty).TrimStart(' ');
 
 					dataGrid.Rows.Add(id, hex, @string);
 

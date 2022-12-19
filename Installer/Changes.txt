@@ -1,15 +1,60 @@
+Version 1.6.3
+=============
+
+Tomb Editor:
+ * Add several node functions for room scripting.
+ * Add TestMoveableFrameNumber node function for moveables.
+ * Offset pasted nodes if they land on same position.
+ * Fix exception when trying to copy lua name to clipboard for objects without a name.
+ * Fix sound sources not properly compiled for TEN.
+ 
+ * Added node functions:
+	- Emit Particles from a static, moveable or and mesh.
+	- Emit dynamic light static, moveable or and mesh.
+	- Emit Lightning Arc effect
+	- Emit Shockwave effect
+
+WadTool:
+ * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
+ 
 Version 1.6.2
 =============
 
 Tomb Editor:
+ * Added node functions:
+  - PushKey - emulates specified key push.
+  - ClearKey - blocks specified key from pushing.
+  - SetEffect, SetCustomEffect - assigns an effect to a moveable.
+  - TestLaraVehicle - checks if Lara is on a vehicle.
+  - TestLaraTargeting - checks if Lara is targeting any enemy.
+  - TestLaraTorchIsLit - checks if Lara holds a torch and it is lit.
+  - SetMoveablePositionToAnotherMoveable - moves one moveable to another moveable position.
+  
+ * Don't allow to export nodes if there are no nodes.
+ * Filter out AI objects from moveable lists in node editor.
+ * Fix minor UI issues in node editor.
+ * Fix texture border bleeding in TEN compiler.
+ * Fix broken double-sided triangle textures in TEN compiler.
+ * Fix several memory leaks related to texture conversion.
  * Fix some objects not linking to triggers in TEN compiler.
- * New Special Effect nodes added to Emit Particles and/or Dynamic Lights From A Moveable, Static and Mesh.
- * New Special Effects nodes added to Emit Lightning Arc.
- * New Special Effects nodes added to Emit Shockwave.
-
+ * Fix rename object dialog locking up editor when switching to other app.
+ * Fix possible exceptions with gizmo assigned to an object about to be deleted.
+ * Fix possible exceptions after using context menus.
 
 WadTool:
- * Fix Lara animations 464, 466, and 472 which were missing sound effects.
+ * Automatically correct bounding boxes for standable objects when importing to TEN wad.
+ * Fix main window right-click menus not working after visiting other windows.
+ * Fix state change editor clamping high frame to one frame less than frame count.
+ * TEN Base WAD:
+  - Make Lara standing animation less wobbly.
+  - Update pose animations to make Lara breath whilst posing.
+  - Update minecart animations to include death anim.
+  - Add placeholder detachable HK lasersight mesh.
+  - Fix Lara animations 464, 466, and 472 which were missing sound effects.
+  - Fix Lara train death animation followed by Seth death animation.
+  
+TombIDE:
+ * Update TEN template to include font with extended character set.
 
 Version 1.6.1
 =============
