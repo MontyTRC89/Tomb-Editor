@@ -100,31 +100,6 @@ LevelFuncs.Engine.Node.SetRoomReverbTypeByTag = function(tag, reverbType)
     end
 end
 
--- !Name "Set ambient light colour for a room"
--- !Section "Rooms"
--- !Description "Sets selected room ambient light colour to specified."
--- !Arguments "NewLine, Rooms, 80"
--- !Arguments "Color, 20, Ambient light colour" 
-
-LevelFuncs.Engine.Node.SetRoomAmbientLight = function(roomName, colour)
-	TEN.Objects.GetRoomByName(roomName):SetAmbientLight(colour)
-end
-
--- !Name "Set ambient light colour for all rooms by tag"
--- !Section "Rooms"
--- !Description "Sets ambient light colour to specified for all rooms with specified tag."
--- !Arguments "NewLine, String, 80, Tag to search for"
--- !Arguments "Color, 20, Ambient light colour" 
-
-LevelFuncs.Engine.Node.SetRoomAmbientLightByTag = function(tag, colour)
-
-    local list = TEN.Objects.GetRoomsByTag(tag)
-
-    for k, room in pairs(list) do
-        room:SetAmbientLight(colour)
-    end
-end
-
 -- !Name "Toggle flipmap"
 -- !Section "Rooms"
 -- !Description "Sets specified flipmap number, if it's not set, or unsets it if it is."
