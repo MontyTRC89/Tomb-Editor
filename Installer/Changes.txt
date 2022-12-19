@@ -3,6 +3,7 @@ Version 1.6.3
 
 Tomb Editor:
  * Add several node functions for room scripting.
+ * Add TestMoveableFrameNumber node function for moveables.
  * Offset pasted nodes if they land on same position.
  * Fix exception when trying to copy lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.

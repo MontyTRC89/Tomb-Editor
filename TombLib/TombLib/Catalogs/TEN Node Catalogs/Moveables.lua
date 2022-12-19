@@ -51,6 +51,19 @@ LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationI
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
+-- !Name "If frame number of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's frame number is currently within specified range."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, 74"
+-- !Arguments "Numerical, 13, [ 0 | 9999 ], Lower frame bound" "Numerical, 13, [ 0 | 9999 ], Upper frame bound"
+
+LevelFuncs.Engine.Node.TestMoveableFrameNumber = function(moveableName, lower, upper)
+	local frameNumber = TEN.Objects.GetMoveableByName(moveableName):GetFrame()
+
+	return (frameNumber >= lower and frameNumber <= upper)
+end
+
 -- !Name "If state of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current state is the one specified."
