@@ -9,10 +9,10 @@ Tomb Editor:
  * Fix sound sources not properly compiled for TEN.
  
  * Added node functions:
-	- Emit Particles from a static, moveable or and mesh.
+	- Emit particles from a static, moveable or and mesh.
 	- Emit dynamic light static, moveable or and mesh.
-	- Emit Lightning Arc effect
-	- Emit Shockwave effect
+	- Emit lightning arc effect.
+	- Emit shockwave effect.
 
 WadTool:
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
