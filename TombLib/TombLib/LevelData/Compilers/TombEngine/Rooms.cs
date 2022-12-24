@@ -167,7 +167,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
-                newRoom.Flags |= 0x0010;
+                newRoom.Flags |= 0x0800;
             if (room.Properties.FlagCold)
                 newRoom.Flags |= 0x1000;
             if (room.Properties.FlagNoLensflare)
