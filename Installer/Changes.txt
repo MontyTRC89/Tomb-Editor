@@ -7,6 +7,7 @@ Tomb Editor:
  * Offset pasted nodes if they land on same position.
  * Fix exception when trying to copy lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.
+ * Fix game executable path field not displaying properly for TEN target in level settings.
 
 WadTool:
  * Fix state ID list not properly selecting states with similar names.
