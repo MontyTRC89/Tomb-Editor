@@ -194,9 +194,9 @@
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabGame.SuspendLayout();
+            this.panelLuaPath.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelScripts.SuspendLayout();
-            this.panelLuaPath.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -599,8 +599,8 @@
             // tabGame
             // 
             this.tabGame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabGame.Controls.Add(this.panelLuaPath);
             this.tabGame.Controls.Add(this.panel3);
+            this.tabGame.Controls.Add(this.panelLuaPath);
             this.tabGame.Controls.Add(this.panelScripts);
             this.tabGame.Controls.Add(this.panel1);
             this.tabGame.Controls.Add(this.panel2);
@@ -881,6 +881,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureFileDataGridViewControls.Enabled = false;
             this.textureFileDataGridViewControls.Location = new System.Drawing.Point(751, 32);
+            this.textureFileDataGridViewControls.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textureFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.textureFileDataGridViewControls.Name = "textureFileDataGridViewControls";
             this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 467);
@@ -1200,6 +1201,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.staticMeshMergeDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.staticMeshMergeDataGridView.ColumnHeadersHeight = 17;
+            this.staticMeshMergeDataGridView.ColumnHeadersHeight = 19;
             this.staticMeshMergeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colMeshName,
             this.colMergeStatics,
@@ -1284,6 +1286,7 @@
             this.darkLabel17.Location = new System.Drawing.Point(3, 3);
             this.darkLabel17.Name = "darkLabel17";
             this.darkLabel17.Size = new System.Drawing.Size(386, 13);
+            this.darkLabel17.Size = new System.Drawing.Size(388, 13);
             this.darkLabel17.TabIndex = 0;
             this.darkLabel17.Text = "Static meshes which should be automatically merged with room geometry:";
             // 
@@ -2228,12 +2231,12 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabGame.ResumeLayout(false);
+            this.panelLuaPath.ResumeLayout(false);
+            this.panelLuaPath.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panelScripts.ResumeLayout(false);
             this.panelScripts.PerformLayout();
-            this.panelLuaPath.ResumeLayout(false);
-            this.panelLuaPath.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
