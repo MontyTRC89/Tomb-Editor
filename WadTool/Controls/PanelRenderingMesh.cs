@@ -770,7 +770,7 @@ namespace WadTool.Controls
             if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
                 // Warp cursor
-                var delta = WarpMouseCursor(e, _lastMousePosition);
+                var delta = WarpMouseCursor(e.Location, _lastMousePosition);
 
                 if (e.Button == MouseButtons.Right)
                 {
