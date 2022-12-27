@@ -64,6 +64,5 @@ namespace TombEditor.Controls.Panel3D
             => AnimateCamera(Camera.Target, newPos, new Vector2(Camera.RotationX, Camera.RotationY), newRot, Camera.Distance, newDist, speed);
         private void AnimateCamera(Vector3 newPos, float speed = 0.5f)
             => AnimateCamera(newPos, new Vector2(Camera.RotationX, Camera.RotationY), Camera.Distance, speed);
-
     }
 }
