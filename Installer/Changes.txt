@@ -12,6 +12,7 @@ Tomb Editor:
 WadTool:
  * Fix state ID list not properly selecting states with similar names.
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
+ * Added animation names to ID_SWAT and ID_GUARD
  
 Version 1.6.2
 =============
