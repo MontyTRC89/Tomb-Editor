@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Numerics;
 using TombLib.LevelData;
 using TombLib;
 using TombLib.Rendering;
-using System.Numerics;
 
 namespace TombEditor.Controls.Panel3D
 {

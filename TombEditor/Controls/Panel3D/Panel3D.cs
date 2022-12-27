@@ -1,24 +1,20 @@
-using DarkUI.Controls;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
 using TombLib.Controls;
-using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor.Controls.Panel3D
 {
