@@ -6169,7 +6169,7 @@
 			<moveable id="366" name="ELECTRICAL_CABLES" />
 			<moveable id="367" name="BURNING_FLOOR" />
 			<moveable id="368" name="DARTS" />
-			<moveable id="369" name="DART_EMITTER" />
+			<moveable id="369" name="DART_EMITTER" freeRot="true" />
 			<moveable id="370" name="HOMING_DART_EMITTER" />
 			<moveable id="371" name="FALLING_CEILING" />
 			<moveable id="372" name="FALLING_BLOCK" />
