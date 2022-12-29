@@ -4,6 +4,7 @@ Version 1.6.3
 Tomb Editor:
  * Add several node functions for room scripting.
  * Add TestMoveableFrameNumber node function for moveables.
+ * Allow free axis rotation for dart emitter object in TEN projects.
  * Offset pasted nodes if they land on same position.
  * Fix exception when trying to copy lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.
@@ -12,6 +13,7 @@ Tomb Editor:
 WadTool:
  * Fix state ID list not properly selecting states with similar names.
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
+ * Added animation names to ID_SWAT and ID_GUARD.
  
 Version 1.6.2
 =============
