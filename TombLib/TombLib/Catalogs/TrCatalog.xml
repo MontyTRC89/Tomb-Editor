@@ -1408,7 +1408,7 @@
 			<moveable id="46" name="Brute mutant (with claw)" essential="false" /> 
 			<moveable id="47" name="Tinnos wasp respawn point" essential="false" />
 			<moveable id="48" name="Raptor respawn point" />
-			<moveable id="49" name="Willardspider" essential="false"/> 
+			<moveable id="49" name="Willardspider" essential="false" t5m="WILLARD" /> 
 			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" t5m="FLAMETHROWER_BADDY" /> 
 			<moveable id="51" name="London goon" essential="false" t5m="SAS_CAIRO"/> 
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
@@ -6073,7 +6073,7 @@
 			<moveable id="243" name="SWORD_GUARDIAN_STATUE" />
 			<moveable id="244" name="SHIVA" />
 			<moveable id="245" name="SHIVA_STATUE" />
-			<moveable id="246" name="TRIBEBOSS" />
+			<moveable id="246" name="WILLARD" />
 			<moveable id="247" name="CIVVY" />
 			<moveable id="248" name="MUTANT2" />
 			<moveable id="249" name="LIZARD" />
