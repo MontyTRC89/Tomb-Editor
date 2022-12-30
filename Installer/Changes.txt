@@ -11,6 +11,8 @@ Tomb Editor:
  * Fix game executable path field not displaying properly for TEN target in level settings.
 
 WadTool:
+ * Added Ctrl+I shortcut in animation editor to interpolate frames.
+ * Use timeline selection size as a default value for interpolated frame count.
  * Fix state ID list not properly selecting states with similar names.
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
  * Added animation names to ID_SWAT and ID_GUARD.
