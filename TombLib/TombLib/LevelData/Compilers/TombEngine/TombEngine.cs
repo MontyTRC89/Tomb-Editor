@@ -181,8 +181,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Normal);
                 for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone5_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
                 for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
@@ -192,8 +190,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(_zones[i].GroundZone3_Alternate);
                 for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone5_Alternate);
                 for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
