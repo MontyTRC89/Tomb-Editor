@@ -17,6 +17,10 @@ WadTool:
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
  * Added animation names to ID_SWAT and ID_GUARD.
  
+TombIDE:
+ * Update Tomb1Main preset to 2.12.
+ * Update TR3 preset to include tomb3 project.
+ 
 Version 1.6.2
 =============
 
