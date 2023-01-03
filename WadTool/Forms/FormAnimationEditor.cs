@@ -1419,7 +1419,9 @@ namespace WadTool
             if (!ValidAndSelected()) return;
 
             if (numFrames < 0)
-                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:") { Width = 300 })
+            {
+                var selection = MathC.Clamp((timeline.Selection.Y - timeline.Selection.X - 1), 0, int.MaxValue).ToString();
+                using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:", selection) { Width = 300 })
                 {
                     if (inputBox.ShowDialog(this) == DialogResult.Cancel)
                         return;
@@ -1427,6 +1429,7 @@ namespace WadTool
                     if (!int.TryParse(inputBox.Result, out numFrames))
                         numFrames = 3; // Default value
                 }
+            }
             else if (numFrames == 0)
             {
                 popup.ShowError(panelRendering, "Interpolation requires at least 1 frame to insert");
@@ -2535,6 +2538,7 @@ namespace WadTool
                 case (Keys.Control | Keys.X): CutFrames(); break;
                 case (Keys.Control | Keys.C): CopyFrames(); break;
                 case (Keys.Control | Keys.V): PasteFrames(); break;
+                case (Keys.Control | Keys.I): InterpolateFrames(); break;
                 case (Keys.Control | Keys.S): SaveChanges(); break;
                 case (Keys.Control | Keys.Z): _editor.Tool.UndoManager.Undo(); break;
                 case (Keys.Control | Keys.Y): _editor.Tool.UndoManager.Redo(); break;
