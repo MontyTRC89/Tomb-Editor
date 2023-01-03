@@ -430,23 +430,23 @@ namespace TombLib.LevelData.Compilers
                         trigger1 |= 0x09 << 8;
                         break;
                     case TriggerType.HeavySwitch:
-                        trigger1 |= 0x0a << 8;
+                        trigger1 |= 0x0A << 8;
                         break;
                     case TriggerType.HeavyAntitrigger:
-                        trigger1 |= 0x0b << 8;
+                        trigger1 |= 0x0B << 8;
                         break;
                     case TriggerType.Monkey:
                     case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
-                        trigger1 |= 0x0c << 8;
+                        trigger1 |= 0x0C << 8;
                         break;
                     case TriggerType.Skeleton:
-                        trigger1 |= 0x0d << 8;
+                        trigger1 |= 0x0D << 8;
                         break;
                     case TriggerType.TightRope:
-                        trigger1 |= 0x0e << 8;
+                        trigger1 |= 0x0E << 8;
                         break;
                     case TriggerType.Crawl:
-                        trigger1 |= 0x0f << 8;
+                        trigger1 |= 0x0F << 8;
                         break;
                     case TriggerType.Climb:
                         trigger1 |= 0x10 << 8;

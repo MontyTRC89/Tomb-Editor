@@ -119,8 +119,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                writer.WriteBlockArray(new byte[] { 0x53, 0x50, 0x52, 0x00 });
-
                 writer.Write((uint)_spriteTextures.Count);
                 writer.WriteBlockArray(_spriteTextures);
 

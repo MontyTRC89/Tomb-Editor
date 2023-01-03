@@ -32,7 +32,8 @@ namespace TombLib.NG
         WadSlots, // WAD-SLOTS
         StaticsSlots, // STATIC_SLOTS
         LaraStartPosOcb, // LARA_POS_OCB
-        LuaFunctions
+        EventSets,
+        EventTypes
     }
 
     public struct NgLinearParameter
@@ -201,7 +202,7 @@ namespace TombLib.NG
                     return parameter is FlybyCameraInstance;
                 case NgParameterKind.Rooms255:
                     return parameter is Room;
-                case NgParameterKind.LuaFunctions:
+                case NgParameterKind.EventSets:
                     return parameter is TriggerParameterString;
 
                 default:
@@ -335,17 +336,19 @@ namespace TombLib.NG
                         .OfType<MoveableInstance>().Where(obj => obj.WadObjectId.TypeId == 406) // Lara start pos
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
 
-                case NgParameterKind.LuaFunctions:
-                    string path = level.Settings.MakeAbsolute(level.Settings.TenLuaScriptFile);
-                    var functions = ScriptingUtils.GetAllFunctionNames(path);
-                    if (functions != null)
-                    {
-                        return functions.Select(f => new TriggerParameterString(f));
-                    }
+                case NgParameterKind.EventSets:
+                    if (level.Settings.EventSets.Count > 0)
+                        return level.Settings.EventSets.Select(e => new TriggerParameterString(e.Name));
                     else
-                    {
                         return null;
-                    }
+
+                case NgParameterKind.EventTypes:
+                    return new List<TriggerParameterUshort>()
+                    {
+                        new TriggerParameterUshort(0, "On enter"),
+                        new TriggerParameterUshort(1, "On inside"),
+                        new TriggerParameterUshort(2, "On leave"),
+                    };
 
                 default:
                     throw new ArgumentException("Unknown NgListKind \"" + Kind + "\"");

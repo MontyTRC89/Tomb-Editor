@@ -1,3 +1,9 @@
+Version 1.6.4
+=============
+
+* Add an option to activate lua or node events as actions for legacy triggers.
+
+
 Version 1.6.3
 =============
 
