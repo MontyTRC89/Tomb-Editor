@@ -6,6 +6,7 @@ Tomb Editor:
 
 WadTool:
  * Play sound preview on animation editor timeline scrubbling.
+ * Fix sound previews not playing for TEN right footprint flipeffect.
  * TEN Base WAD:
  - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
  - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
