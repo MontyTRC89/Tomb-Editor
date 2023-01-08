@@ -5,6 +5,7 @@ Tomb Editor:
 * Add an option to activate lua or node events as actions for legacy triggers.
 
 WadTool:
+ * Play sound preview on animation editor timeline scrubbling.
  * TEN Base WAD:
  - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
  - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
