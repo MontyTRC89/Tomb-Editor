@@ -54,8 +54,11 @@ namespace TombLib.Controls.VisualScripting
             InitializeComponent();
             container.Visible = (LicenseManager.UsageMode == LicenseUsageMode.Runtime);
 
-            // HACK: Fix textbox UI height
+            // HACK: Fix textbox UI height.
             tbString.AutoSize = false;
+
+            // HACK: Force increased size for reluctant controls.
+            nudNumerical.Font = tableVector3.Font = new Font(Font.Name, Font.Size + 1.0f);
         }
 
         public void SetArgumentType(ArgumentLayout layout, NodeEditor editor)
@@ -127,7 +130,8 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.Rooms:
                     foreach (var item in editor.CachedRooms)
-                        cbList.Items.Add(new ComboBoxItem(item.ToString(), TextExtensions.Quote(item.Name)));
+                        cbList.Items.Add(new ComboBoxItem(cbList.Items.Count.ToString() + ": " +
+                            item.ToString(), TextExtensions.Quote(item.Name)));
                     break;
                 case ArgumentType.SoundEffects:
                     foreach (var item in editor.CachedSoundInfos)
@@ -251,13 +255,14 @@ namespace TombLib.Controls.VisualScripting
 
             using (var p = new Pen(Colors.GreySelection, 1))
                 e.Graphics.DrawRectangle(p, 0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
-
         }
 
         protected override void OnBackColorChanged(EventArgs e)
         {
+            // HACK: Force background color for reluctant controls.
+
             base.OnBackColorChanged(e);
-            tabBoolean.BackColor = BackColor;
+            tabBoolean.BackColor = tableVector3.BackColor = BackColor;
         }
 
         protected override void OnLocationChanged(EventArgs e)

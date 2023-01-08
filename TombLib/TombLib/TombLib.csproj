@@ -61,6 +61,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Catalogs\TEN Node Catalogs\Lara.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Volumes.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\_System.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

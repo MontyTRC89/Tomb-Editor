@@ -140,12 +140,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
-                AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                AlternateGroup = (byte)(room.Alternated /*&& room.AlternateRoom != null*/ ? room.AlternateGroup : 0),
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomsRemappingDictionary[room.AlternateRoom] : -1,
+                AlternateGroup = room.Alternated ? room.AlternateGroup : -1,
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                ReverbInfo = (byte)room.Properties.Reverberation,
+                ReverbInfo = room.Properties.Reverberation,
                 Flags = 0x40
             };
 
@@ -167,7 +167,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
-                newRoom.Flags |= 0x0010;
+                newRoom.Flags |= 0x0800;
             if (room.Properties.FlagCold)
                 newRoom.Flags |= 0x1000;
             if (room.Properties.FlagNoLensflare)
@@ -331,7 +331,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
                                         }
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                          (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -362,7 +362,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
-                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
                                                         (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
@@ -372,7 +372,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror(true);
-                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode == BlendMode.AlphaBlend);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
@@ -522,7 +522,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 }
                                 else
                                 {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode == BlendMode.AlphaBlend);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
                                     var face = poly.IsTriangle ?
                                         result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
                                         result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
@@ -671,7 +671,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         texture.Mirror(true);
                                     }
 
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode == BlendMode.AlphaBlend);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                     var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(tri);
@@ -1102,6 +1102,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         throw new ApplicationException("Unknown PortalDirection");
                 }
             }
+
+            MergePortals(newRoom);
         }
 
         private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, BlockEdge[] relevantEdges, BlockEdge[] oppositeRelevantEdges)
@@ -1259,7 +1261,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                 Vertices = portalVertices,
-                Normal = normal
+                Normal = normal,
+                Direction = portal.Direction
             });
         }
 
@@ -1306,6 +1309,84 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Add new portal plane
             portalPlanes.Add(portalPlane);
             portalAreas.Add(new RectangleInt2(x, z, x, z));
+        }
+
+        private void MergePortals(TombEngineRoom room)
+        {
+            List<TombEnginePortal> mergedPortals = new List<TombEnginePortal>();
+
+            foreach (TombEnginePortal portalToMerge in room.Portals)
+            {
+                bool found = false;
+
+                foreach (TombEnginePortal mergedPortal in mergedPortals)
+                {
+                    if (portalToMerge.AdjoiningRoom == mergedPortal.AdjoiningRoom &&
+                        portalToMerge.Direction == mergedPortal.Direction)
+                    {
+                        int xMin = Math.Min(portalToMerge.Vertices.Min(v => v.X), mergedPortal.Vertices.Min(v => v.X));
+                        int yTop = Math.Min(portalToMerge.Vertices.Min(v => v.Y), mergedPortal.Vertices.Min(v => v.Y));
+                        int zMin = Math.Min(portalToMerge.Vertices.Min(v => v.Z), mergedPortal.Vertices.Min(v => v.Z));
+                        int xMax = Math.Max(portalToMerge.Vertices.Max(v => v.X), mergedPortal.Vertices.Max(v => v.X));
+                        int yBottom = Math.Max(portalToMerge.Vertices.Max(v => v.Y), mergedPortal.Vertices.Max(v => v.Y));
+                        int zMax = Math.Max(portalToMerge.Vertices.Max(v => v.Z), mergedPortal.Vertices.Max(v => v.Z));
+
+                        found = true;
+
+                        switch (portalToMerge.Direction)
+                        {
+                            case PortalDirection.WallPositiveX:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMax);
+                                break;
+
+                            case PortalDirection.WallNegativeX:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMin);
+                                break;
+
+                            case PortalDirection.WallPositiveZ:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMax);
+                                break;
+
+                            case PortalDirection.WallNegativeZ:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMin);
+                                break;
+
+                            case PortalDirection.Floor:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yBottom, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMin);
+                                break;
+
+                            case PortalDirection.Ceiling:
+                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yTop, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yTop, zMax);
+                                break;
+                        }
+                    }
+                }
+
+                if (!found)
+                {
+                    mergedPortals.Add(portalToMerge);
+                }
+            }
+
+            room.Portals = mergedPortals;
         }
 
         private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, bool isCeiling)
@@ -1416,7 +1497,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
-                    Normal = normal
+                    Normal = normal,
+                    Direction = isCeiling ? PortalDirection.Ceiling : PortalDirection.Floor
                 });
             }
         }

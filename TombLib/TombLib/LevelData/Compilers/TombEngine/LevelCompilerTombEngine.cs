@@ -133,21 +133,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     continue;
                 }
 
-                ushort flags = 0;
+                int flags = 0;
+                if (instance.Room.AlternateGroup >= 0)
+                    flags = instance.Room.AlternateGroup;
 
                 switch (instance.PlayMode)
                 {
                     case SoundSourcePlayMode.Automatic:
-                        flags = instance.Room.Alternated ? (instance.Room.IsAlternate ? (ushort)0x40 : (ushort)0x80) : (ushort)0xC0;
+                        flags |= instance.Room.Alternated ? (instance.Room.IsAlternate ? (ushort)0x2000 : (ushort)0x4000) : (ushort)0x8000;
                         break;
                     case SoundSourcePlayMode.Always:
-                        flags = 0xC0;
+                        flags |= 0x8000;
                         break;
                     case SoundSourcePlayMode.OnlyInBaseRoom:
-                        flags = 0x80;
+                        flags |= 0x4000;
                         break;
                     case SoundSourcePlayMode.OnlyInAlternateRoom:
-                        flags = 0x40;
+                        flags |= 0x2000;
                         break;
                 }
 

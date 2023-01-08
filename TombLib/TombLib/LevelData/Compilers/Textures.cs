@@ -378,44 +378,47 @@ namespace TombLib.LevelData.Compilers
             var quantizer = new OctreeQuantizer();
             quantizer.Clear();
 
-            // Create temporary bitmap out of texture data
-            var bitmap = ImageC.FromByteArray(textureData, 256, textureData.Length / 4 / 256).ToBitmap();
-            ((Image)bitmap).AddColorsToQuantizer(quantizer);
-
-            // Get palette and merge with predefined colors
-            var newPalette = predefinedColors.Concat(quantizer.GetPalette(colorCount)).ToList();
-            
             // Put palette indices into texture data array
             var result = new byte[textureData.Length / 4];
-            for (int x = 0; x < 256; x++)
-                for (int y = 0; y < pixelCount / 256; y++)
-                {
-                    var current = bitmap.GetPixel(x, y);
-                    int paletteIndex;
 
-                    if (current.A == 0)
-                        paletteIndex = 0;
-                    else
-                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + offset;
-
-                    result[y * 256 + x] = (byte)paletteIndex;
-                }
-
-            // Convert system palette to TR palette
-            palette = new tr_color[256];
-            for (int i = 0; i < palette.Length; i++)
+            // Create temporary bitmap out of texture data
+            using (var bitmap = ImageC.FromByteArray(textureData, 256, textureData.Length / 4 / 256).ToBitmap())
             {
-                if (i < offset)
+                ((Image)bitmap).AddColorsToQuantizer(quantizer);
+
+                // Get palette and merge with predefined colors
+                var newPalette = predefinedColors.Concat(quantizer.GetPalette(colorCount)).ToList();
+
+                for (int x = 0; x < 256; x++)
+                    for (int y = 0; y < pixelCount / 256; y++)
+                    {
+                        var current = bitmap.GetPixel(x, y);
+                        int paletteIndex;
+
+                        if (current.A == 0)
+                            paletteIndex = 0;
+                        else
+                            paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + offset;
+
+                        result[y * 256 + x] = (byte)paletteIndex;
+                    }
+
+                // Convert system palette to TR palette
+                palette = new tr_color[256];
+                for (int i = 0; i < palette.Length; i++)
                 {
-                    palette[i].Red   = newPalette[i].R;
-                    palette[i].Green = newPalette[i].G;
-                    palette[i].Blue  = newPalette[i].B;
-                }
-                else if (i < newPalette.Count)
-                {
-                    palette[i].Red   = (byte)(newPalette[i].R / 4);
-                    palette[i].Green = (byte)(newPalette[i].G / 4);
-                    palette[i].Blue  = (byte)(newPalette[i].B / 4);
+                    if (i < offset)
+                    {
+                        palette[i].Red = newPalette[i].R;
+                        palette[i].Green = newPalette[i].G;
+                        palette[i].Blue = newPalette[i].B;
+                    }
+                    else if (i < newPalette.Count)
+                    {
+                        palette[i].Red = (byte)(newPalette[i].R / 4);
+                        palette[i].Green = (byte)(newPalette[i].G / 4);
+                        palette[i].Blue = (byte)(newPalette[i].B / 4);
+                    }
                 }
             }
 

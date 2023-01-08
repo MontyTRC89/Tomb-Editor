@@ -189,6 +189,8 @@ namespace TombEditor.Controls
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
 
+            butExport.Enabled = nodeEditor.Nodes.Count > 0;
+
             butUnassign.Visible = rbLevelScript.Checked;
         }
 
@@ -454,7 +456,14 @@ namespace TombEditor.Controls
             if (nodes.Count == 0)
                 return;
 
-            nodes.ForEach(n => nodeEditor.Nodes.Add(n.Clone()));
+            foreach (var node in nodes)
+            {
+                if (nodeEditor.Nodes.Any(n => n.ScreenPosition == node.ScreenPosition))
+                    node.ScreenPosition += new Vector2(nodeEditor.GridOffset, -nodeEditor.GridOffset);
+
+                nodeEditor.Nodes.Add(node.Clone());
+            }
+
             nodeEditor.UpdateVisibleNodes();
             nodeEditor.ShowNode(nodeEditor.Nodes.First());
         }
@@ -526,7 +535,12 @@ namespace TombEditor.Controls
 
         private void butExport_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction"));
+            var exportedNodes = ScriptingUtils.ParseNodes(nodeEditor.Nodes, "ExportedNodeFunction");
+
+            if (string.IsNullOrEmpty(exportedNodes))
+                return;
+
+            Clipboard.SetText(exportedNodes);
             _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
         }
     }

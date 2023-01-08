@@ -61,12 +61,12 @@
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
-			<moveable id="38" name="Boulder" essential="false" t5m="ROLLINGBALL" />
+			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="39" name="Dart" hidden="true" /> />
 			<moveable id="40" name="Wall-mounted dartgun" essential="false" t5m="DART_EMMITER" />
 			<moveable id="41" name="Door (opens upward)" essential="false" t5m="DOOR_TYPE9" />
 			<moveable id="42" name="Slamming doors" essential="false" t5m="SLICER_DICER" />
-			<moveable id="43" name="Sword of Damocles" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="43" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
 			<moveable id="44" name="Thor's hammer's handle" essential="false" t5m="ANIMATING110" />
 			<moveable id="45" name="Thor's hammer's block" essential="false" t5m="ROLLINGBALL" />
 			<moveable id="46" name="Lightning ball / Some kind of box?" essential="false" t5m="ANIMATING34" />
@@ -718,7 +718,7 @@
 			<moveable id="57" name="Loose boards" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="58" name="Swinging sandbag / spiky ball" essential="false" t5m="SPIKEBALL" />
 			<moveable id="59" name="Spikes / Glass shards" essential="false" t5m="TEETH_SPIKES" />
-			<moveable id="60" name="Boulder" essential="false" t5m="ROLLINGBALL" />
+			<moveable id="60" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="61" name="Disk (like dart)" hidden="true" />
 			<moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" />
 			<moveable id="63" name="Drawbridge" essential="false" />
@@ -739,7 +739,7 @@
 			<moveable id="80" name="Rolling spindle" essential="false" t5m="ROLLING_SPINDLE" />
 			<moveable id="81" name="Wall-mounted knife blade" essential="false" t5m="WALL_MOUNTED_BLADE" />
 			<moveable id="82" name="Statue with knife blade" essential="false" t5m="STATUE_WITH_BLADE" />
-			<moveable id="83" name="Multiple boulders / snowballs" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="83" name="Multiple boulders / snowballs" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="84" name="Detachable icicles" essential="false" t5m="FALLING_CEILING" />
 			<moveable id="85" name="Spiky moveable wall" essential="false" t5m="SPIKY_WALL" />
 			<moveable id="86" name="Bounce pad" essential="false" t5m="SPRINGBOARD" />
@@ -755,7 +755,7 @@
 			<moveable id="98" name="Cutscene Object 2" t5m="ANIMATING102" />
 			<moveable id="99" name="Cutscene Object 3" t5m="ANIMATING103" />
 			<moveable id="100" name="Cutscene Object 4" t5m="ANIMATING104" />
-			<moveable id="101" name="Rolling storage drums" essential="false" t5m="ROLLINGBARREL" />
+			<moveable id="101" name="Rolling storage drums" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="102" name="Zipline handle" essential="false" t5m="ZIPLINE_HANDLE" />
 			<moveable id="103" name="Above-water switch" essential="false" t5m="SWITCH_TYPE3" />
 			<moveable id="104" name="Above-water/underwater switch" essential="false" t5m="SWITCH_TYPE4" />
@@ -1441,7 +1441,7 @@
 			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" t5m="WALL_MOUNTED_BLADE" />  
 			<moveable id="87" name="Spikes / Barbed wire" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="88" name="Boulder / Barrel" essential="false" t5m="CLASSIC_ROLLINGBALL" />
-			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" /> 
+			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" t5m="CLASSIC_ROLLINGBALL" /> 
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="MOVING_BLADE" />
@@ -2773,8 +2773,8 @@
 			<moveable id="25" name="LARA_WATER_MESH" description="Lara Water Mesh" use_body_from="8" t5m="LARA_WATER_MESH" hidden="true" />
 			<moveable id="26" name="LARA_PETROL_MESH" description="Lara Petrol Mesh" use_body_from="8" t5m="LARA_PETROL_MESH" hidden="true" />
 			<moveable id="27" name="LARA_DIRT_MESH" description="Lara Dirt Mesh" use_body_from="8" t5m="LARA_DIRT_MESH" hidden="true" />
-			<moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" t5m="CROWBAR_ANIM" hidden="true" />
-			<moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" t5m="TORCH_ANIM" hidden="true" />
+			<moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" t5m="LARA_CROWBAR_ANIM" hidden="true" />
+			<moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" t5m="LARA_TORCH_ANIM" hidden="true" />
 			<moveable id="30" name="HAIR" description="Hair" t5m="HAIR" hidden="true" />
 			<moveable id="31" name="MOTORBIKE" description="Motorbike" t5m="MOTORBIKE" essential="false" />
 			<moveable id="32" name="JEEP" description="Jeep" t5m="JEEP" essential="false" />
@@ -4891,7 +4891,7 @@
 			<moveable id="62" name="Roman statue_mip" hidden="true" />
 			<moveable id="63" name="Small dragon" y_adjust="2" t5m="HYDRA" />
 			<moveable id="64" name="Small dragon_mip" y_adjust="2" hidden="true" />
-			<moveable id="65" name="Laser head" t5m="LASER_HEAD" />
+			<moveable id="65" name="Laser head" t5m="LASERHEAD" />
 			<moveable id="66" name="Laser head_mip" hidden="true" />
 			<moveable id="67" name="Cyborg" y_adjust="0.030" t5m="CYBORG" />
 			<moveable id="68" name="Cyborg_mip" t5m="CYBORG_MIP" hidden="true" />
@@ -5736,33 +5736,6 @@
 			<anim item="0" id="472" name="LOOT_CHEST" />
 			<anim item="0" id="473" name="LADDER_TO_CROUCH" />
 
-			<!-- HUSKIE -->
-			<anim item="130" id="0" name="STOP_TO_SLEEP" />
-			<anim item="130" id="1" name="SLEEP_TO_STOP" />
-			<anim item="130" id="2" name="STOP_TO_WALK" />
-			<anim item="130" id="3" name="WALK" />
-			<anim item="130" id="4" name="WALK_TO_STALK" />
-			<anim item="130" id="5" name="STALK" />
-			<anim item="130" id="6" name="STALK_TO_RUN" />
-			<anim item="130" id="7" name="RUN" />
-			<anim item="130" id="8" name="STOP" />
-			<anim item="130" id="9" name="RUN_ATTACK" />
-			<anim item="130" id="10" name="CROUCH_TO_STALK" />
-			<anim item="130" id="11" name="STALK_TO_CROUCH_START" />
-			<anim item="130" id="12" name="STALK_TO_CROUCH_END" />
-			<anim item="130" id="13" name="CROUCH_TO_RUN" />
-			<anim item="130" id="14" name="CROUCH" />
-			<anim item="130" id="15" name="RUN_TO_CROUCH" />
-			<anim item="130" id="16" name="HOWL" />
-			<anim item="130" id="17" name="STOP_TO_CROUCH" />
-			<anim item="130" id="18" name="RUN_TURN" />
-			<anim item="130" id="19" name="WALK_TO_STOP" />
-			<anim item="130" id="20" name="DEATH_SIDE" />
-			<anim item="130" id="21" name="DEATH_180" />
-			<anim item="130" id="22" name="DEATH_BACK" />
-			<anim item="130" id="23" name="CROUCH_ATTACK" />
-			<anim item="130" id="24" name="CROUCH_TO_STOP" />
-
 			<!-- Cyborg -->
 			<anim item="67" id="0" name="WALK" />
 			<anim item="67" id="1" name="RUN" />
@@ -5836,9 +5809,34 @@
 			<anim item="67" id="69" name="ELECTROCUTION_DEATH" />
 			<anim item="67" id="70" name="FALLBACK_DEATH" />
 			<anim item="67" id="71" name="DEATH_END" />
-		</animations>
 			
-		
+			<!-- HUSKIE -->
+			<anim item="130" id="0" name="STOP_TO_SLEEP" />
+			<anim item="130" id="1" name="SLEEP_TO_STOP" />
+			<anim item="130" id="2" name="STOP_TO_WALK" />
+			<anim item="130" id="3" name="WALK" />
+			<anim item="130" id="4" name="WALK_TO_STALK" />
+			<anim item="130" id="5" name="STALK" />
+			<anim item="130" id="6" name="STALK_TO_RUN" />
+			<anim item="130" id="7" name="RUN" />
+			<anim item="130" id="8" name="STOP" />
+			<anim item="130" id="9" name="RUN_ATTACK" />
+			<anim item="130" id="10" name="CROUCH_TO_STALK" />
+			<anim item="130" id="11" name="STALK_TO_CROUCH_START" />
+			<anim item="130" id="12" name="STALK_TO_CROUCH_END" />
+			<anim item="130" id="13" name="CROUCH_TO_RUN" />
+			<anim item="130" id="14" name="CROUCH" />
+			<anim item="130" id="15" name="RUN_TO_CROUCH" />
+			<anim item="130" id="16" name="HOWL" />
+			<anim item="130" id="17" name="STOP_TO_CROUCH" />
+			<anim item="130" id="18" name="RUN_TURN" />
+			<anim item="130" id="19" name="WALK_TO_STOP" />
+			<anim item="130" id="20" name="DEATH_SIDE" />
+			<anim item="130" id="21" name="DEATH_180" />
+			<anim item="130" id="22" name="DEATH_BACK" />
+			<anim item="130" id="23" name="CROUCH_ATTACK" />
+			<anim item="130" id="24" name="CROUCH_TO_STOP" />
+		</animations>
 		<states>
 			<!-- LARA -->
 			<state item="0" id="119" name="TIGHTROPE_IDLE" />
@@ -6171,7 +6169,7 @@
 			<moveable id="366" name="ELECTRICAL_CABLES" />
 			<moveable id="367" name="BURNING_FLOOR" />
 			<moveable id="368" name="DARTS" />
-			<moveable id="369" name="DART_EMITTER" />
+			<moveable id="369" name="DART_EMITTER" freeRot="true" />
 			<moveable id="370" name="HOMING_DART_EMITTER" />
 			<moveable id="371" name="FALLING_CEILING" />
 			<moveable id="372" name="FALLING_BLOCK" />
@@ -6249,6 +6247,7 @@
 			<moveable id="444" name="PUSHABLE_OBJECT_CLIMBABLE10" />
 			<moveable id="445" name="TRAIN" />
 			<moveable id="446" name="EXPLOSION" />
+			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
@@ -6848,6 +6847,18 @@
 			<moveable id="1406" name="PANEL_HALF_BORDER2" />
 			<moveable id="1407" name="PANEL_MIDDLE_CORNER" />
 		</moveables>
+		<statics>
+			<static id="50" name="SHATTER0" shatter="true" />
+			<static id="51" name="SHATTER1" shatter="true" />
+			<static id="52" name="SHATTER2" shatter="true" />
+			<static id="53" name="SHATTER3" shatter="true" />
+			<static id="54" name="SHATTER4" shatter="true" />
+			<static id="55" name="SHATTER5" shatter="true" />
+			<static id="56" name="SHATTER6" shatter="true" />
+			<static id="57" name="SHATTER7" shatter="true" />
+			<static id="58" name="SHATTER8" shatter="true" />
+			<static id="59" name="SHATTER9" shatter="true" />
+		</statics>
 		<sprite_sequences>
 			<sprite_sequence id="1353" name="SKY_GRAPHICS" />
 			<sprite_sequence id="1354" name="DEFAULT_SPRITES" />
@@ -8033,7 +8044,138 @@
 			<anim item="1" id="11" name="GONG_STRIKE" />
 			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
-			<!--Shiva-->
+			
+			<!-- SWAT -->
+			<anim item="184" id="0" name = "IDLE" />
+			<anim item="184" id="1" name = "TURN 180 PART 1" />
+			<anim item="184" id="2" name = "SINGLE FIRE ATTACK" />
+			<anim item="184" id="3" name = "AIM" />
+			<anim item="184" id="4" name = "START WALK" />
+			<anim item="184" id="5" name = "WALK FORWARD" />
+			<anim item="184" id="6" name = "WALK FORWARD TO IDLE" />
+			<anim item="184" id="7" name = "WALK FORWARD TO AIM" />
+			<anim item="184" id="8" name = "AIM TO WALK" />
+			<anim item="184" id="9" name = "AIM TO STOP" />
+			<anim item="184" id="10" name = "STOP TO AIM" />
+			<anim item="184" id="11" name = "DEATH 1" />
+			<anim item="184" id="12" name = "RUN FORWARD" />
+			<anim item="184" id="13" name = "AIM TO RUN" />
+			<anim item="184" id="14" name = "RUN FORWARD TO AIM" />
+			<anim item="184" id="15" name = "RUN FORWARD TO WALK" />
+			<anim item="184" id="16" name = "DEATH 2" />
+			<anim item="184" id="17" name = "WALK FORWARD TO RUN" />
+			<anim item="184" id="18" name = "STOP TO RUN" />
+			<anim item="184" id="19" name = "CROUCH AIM HAND UP START" />
+			<anim item="184" id="20" name = "CROUCH AIM HAND UP" />
+			<anim item="184" id="21" name = "CROUCH HAND UP SINGLE SHOOT" />
+			<anim item="184" id="22" name = "CROUCH HAND UP TO IDLE 3" />
+			<anim item="184" id="23" name = "RELOAD" />
+			<anim item="184" id="24" name = "THROW GRENADE" />
+			<anim item="184" id="25" name = "OPEN DOOR KICK" />
+			<anim item="184" id="26" name = "ROPE DOWN FAST" />
+			<anim item="184" id="27" name = "ROPE DOWN FAST TO AIM FRONT" />
+			<anim item="184" id="28" name = "ROPE DOWN" />
+			<anim item="184" id="29" name = "ROPE TO AIM" />
+			<anim item="184" id="30" name = "SLEEPING" />
+			<anim item="184" id="31" name = "SLEEPING TO AIM" />
+			<anim item="184" id="32" name = "WAITING ON WALL" />
+			<anim item="184" id="33" name = "WAITING ON WALL TO IDLE" />
+			<anim item="184" id="34" name = "UNKNOWN" />
+			<anim item="184" id="35" name = "VAULT 2 STEPS UP" />
+			<anim item="184" id="36" name = "VAULT 3 STEPS UP" />
+			<anim item="184" id="37" name = "VAULT 4 STEPS UP" />
+			<anim item="184" id="38" name = "VAULT 4 STEPS DOWN" />
+			<anim item="184" id="39" name = "VAULT 3 STEPS DOWN" />
+			<anim item="184" id="40" name = "VAULT 2 STEPS DOWN" />
+			<anim item="184" id="41" name = "JUMP 1 BLOCK" />
+			<anim item="184" id="42" name = "JUMP END" />
+			<anim item="184" id="43" name = "JUMP 2 BLOCKS" />
+			<anim item="184" id="44" name = "HUNT WALK FORWARD" />
+			<anim item="184" id="45" name = "HUNT" />
+			<anim item="184" id="46" name = "HUNT TO IDLE" />
+			<anim item="184" id="47" name = "STOP TO HUNT" />
+			<anim item="184" id="48" name = "TURN 180 PART 2" />
+			<anim item="184" id="49" name = "JUMP START" />
+			<anim item="184" id="50" name = "STOP TO CROUCH AIM HAND DOWN" />
+			<anim item="184" id="51" name = "CROUCH AIM HAND DOWN" />
+			<anim item="184" id="52" name = "CROUCH HAND DOWN SHOOT FAST" />
+			<anim item="184" id="53" name = "CROUCH HAND DOWN TO IDLE" />
+			<anim item="184" id="54" name = "RAPID FIRE ATTACK" />
+			<anim item="184" id="55" name = "INSERT CODE" />
+			<anim item="184" id="56" name = "USE KEYPAD" />
+			<anim item="184" id="57" name = "USE COMPUTER START" />
+			<anim item="184" id="58" name = "USE COMPUTER" />
+			<anim item="184" id="59" name = "USE COMPUTER TO IDLE" />
+			<anim item="184" id="60" name = "SURRENDER START" />
+			<anim item="184" id="61" name = "SURRENDER" />
+			<anim item="184" id="62" name = "SURRENDER TO IDLE" />
+			
+			<!-- GUARD -->
+			<anim item="186" id="0" name = "IDLE" />
+			<anim item="186" id="1" name = "TURN 180 PART 1" />
+			<anim item="186" id="2" name = "SINGLE FIRE ATTACK" />
+			<anim item="186" id="3" name = "AIM" />
+			<anim item="186" id="4" name = "START WALK" />
+			<anim item="186" id="5" name = "WALK FORWARD" />
+			<anim item="186" id="6" name = "WALK FORWARD TO IDLE" />
+			<anim item="186" id="7" name = "WALK FORWARD TO AIM" />
+			<anim item="186" id="8" name = "AIM TO WALK" />
+			<anim item="186" id="9" name = "AIM TO STOP" />
+			<anim item="186" id="10" name = "STOP TO AIM" />
+			<anim item="186" id="11" name = "DEATH 1" />
+			<anim item="186" id="12" name = "RUN FORWARD" />
+			<anim item="186" id="13" name = "AIM TO RUN" />
+			<anim item="186" id="14" name = "RUN FORWARD TO AIM" />
+			<anim item="186" id="15" name = "RUN FORWARD TO WALK" />
+			<anim item="186" id="16" name = "DEATH 2" />
+			<anim item="186" id="17" name = "WALK FORWARD TO RUN" />
+			<anim item="186" id="18" name = "STOP TO RUN" />
+			<anim item="186" id="19" name = "CROUCH AIM HAND UP START" />
+			<anim item="186" id="20" name = "CROUCH AIM HAND UP" />
+			<anim item="186" id="21" name = "CROUCH HAND UP SINGLE SHOOT" />
+			<anim item="186" id="22" name = "CROUCH HAND UP TO IDLE 3" />
+			<anim item="186" id="23" name = "RELOAD" />
+			<anim item="186" id="24" name = "THROW GRENADE" />
+			<anim item="186" id="25" name = "OPEN DOOR KICK" />
+			<anim item="186" id="26" name = "ROPE DOWN FAST" />
+			<anim item="186" id="27" name = "ROPE DOWN FAST TO AIM FRONT" />
+			<anim item="186" id="28" name = "ROPE DOWN" />
+			<anim item="186" id="29" name = "ROPE TO AIM" />
+			<anim item="186" id="30" name = "SLEEPING" />
+			<anim item="186" id="31" name = "SLEEPING TO AIM" />
+			<anim item="186" id="32" name = "WAITING ON WALL" />
+			<anim item="186" id="33" name = "WAITING ON WALL TO IDLE" />
+			<anim item="186" id="34" name = "UNKNOWN" />
+			<anim item="186" id="35" name = "VAULT 2 STEPS UP" />
+			<anim item="186" id="36" name = "VAULT 3 STEPS UP" />
+			<anim item="186" id="37" name = "VAULT 4 STEPS UP" />
+			<anim item="186" id="38" name = "VAULT 4 STEPS DOWN" />
+			<anim item="186" id="39" name = "VAULT 3 STEPS DOWN" />
+			<anim item="186" id="40" name = "VAULT 2 STEPS DOWN" />
+			<anim item="186" id="41" name = "JUMP 1 BLOCK" />
+			<anim item="186" id="42" name = "JUMP END" />
+			<anim item="186" id="43" name = "JUMP 2 BLOCKS" />
+			<anim item="186" id="44" name = "HUNT WALK FORWARD" />
+			<anim item="186" id="45" name = "HUNT" />
+			<anim item="186" id="46" name = "HUNT TO IDLE" />
+			<anim item="186" id="47" name = "STOP TO HUNT" />
+			<anim item="186" id="48" name = "TURN 180 PART 2" />
+			<anim item="186" id="49" name = "JUMP START" />
+			<anim item="186" id="50" name = "STOP TO CROUCH AIM HAND DOWN" />
+			<anim item="186" id="51" name = "CROUCH AIM HAND DOWN" />
+			<anim item="186" id="52" name = "CROUCH HAND DOWN SHOOT FAST" />
+			<anim item="186" id="53" name = "CROUCH HAND DOWN TO IDLE" />
+			<anim item="186" id="54" name = "RAPID FIRE ATTACK" />
+			<anim item="186" id="55" name = "INSERT CODE" />
+			<anim item="186" id="56" name = "USE KEYPAD" />
+			<anim item="186" id="57" name = "USE COMPUTER START" />
+			<anim item="186" id="58" name = "USE COMPUTER" />
+			<anim item="186" id="59" name = "USE COMPUTER TO IDLE" />
+			<anim item="186" id="60" name = "SURRENDER START" />
+			<anim item="186" id="61" name = "SURRENDER" />
+			<anim item="186" id="62" name = "SURRENDER TO IDLE" />
+			
+			<!--SHIVA-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
 			<anim item="244" id="2" name="WALK_TO_IDLE_RIGHT" />
@@ -8056,7 +8198,7 @@
 			<anim item="244" id="19" name="ATTACK" />
 			<anim item="244" id="20" name="WALK_BACK_LEFT" />
 			<anim item="244" id="21" name="WALK_BACK_RIGHT" />
-			<anim item="244" id="22" name="DEATH" />	  	
+			<anim item="244" id="22" name="DEATH" />	
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -8095,8 +8237,8 @@
 			<state item="0" id="171" name="CROUCH_TURN_180" />
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
-		
-			<!-- Shiva -->
+			
+			<!-- SHIVA -->
 			<state item="244" id="0" name="IDLE "/>
 			<state item="244" id="1" name="WALK_FORWARD "/>
 			<state item="244" id="2" name="GUARD_IDLE "/>

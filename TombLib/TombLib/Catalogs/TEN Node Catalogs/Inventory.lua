@@ -32,7 +32,7 @@ end
 -- !Conditional "True"
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
 
-LevelFuncs.Engine.Node.TestInventoryItem = function(item, operand, count)
+LevelFuncs.Engine.Node.TestInventoryItem = function(item)
     return (TEN.Inventory.GetItemCount(item) > 0)
 end
 
@@ -44,6 +44,6 @@ end
 -- !Arguments "CompareOperator, 29, Kind of check"
 -- !Arguments "Numerical, 13, Inventory item count, [ 0 | 1000 ]"
 
-LevelFuncs.Engine.Node.TestInventoryItemCount = function(item, operand, count)
-    return LevelFuncs.Engine.Node.CompareValue(TEN.Inventory.GetItemCount(item), count, operand)
+LevelFuncs.Engine.Node.TestInventoryItemCount = function(item, operator, count)
+    return LevelFuncs.Engine.Node.CompareValue(TEN.Inventory.GetItemCount(item), count, operator)
 end

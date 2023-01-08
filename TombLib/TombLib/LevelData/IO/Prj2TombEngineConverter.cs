@@ -209,7 +209,11 @@ namespace TombLib.LevelData.IO
 
             // Fix bridge collisions
 
-            if (newSlotName.ToLower().Contains("BRIDGE"))
+            if (newSlotName.Contains("BRIDGE") ||
+                newSlotName.Contains("TRAPDOOR") ||
+                newSlotName.Contains("RAISING_BLOCK") ||
+                newSlotName.Contains("TWOBLOCK_PLATFORM") ||
+                (newSlotName.Contains("PUSHABLE") && sourceVersion <= TRVersion.Game.TR3))
             {
                 progressReporter?.ReportInfo("    Adjusting bridge bounds for " + newSlotName);
 

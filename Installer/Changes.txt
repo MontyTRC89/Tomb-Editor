@@ -1,12 +1,97 @@
+Version 1.6.4
+=============
+
+Tomb Editor:
+* Add an option to activate lua or node events as actions for legacy triggers.
+
+WadTool:
+ * Play sound preview on animation editor timeline scrubbling.
+ * TEN Base WAD:
+ - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
+ - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
+ - Added ID_SAS_CAIRO.
+ - Bugfix for ID_SAS_CAIRO which prevented it from coming out of the "blinded" animation if player uses a flash grenade.
+ - Added ID_DART as a real mesh instead of a particle.
+ - Fixed bug where ID_LASERSIGHT was not present.
+ 
+SoundTool:
+ * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound. 
+ 
+ 
+Version 1.6.3
+=============
+
+Tomb Editor:
+ * Add several node functions for room scripting.
+ * Add TestMoveableFrameNumber node function for moveables.
+ * Allow free axis rotation for dart emitter object in TEN projects.
+ * Offset pasted nodes if they land on same position.
+ * Fix exception when trying to copy lua name to clipboard for objects without a name.
+ * Fix sound sources not properly compiled for TEN.
+ * Fix game executable path field not displaying properly for TEN target in level settings.
+
+WadTool:
+ * Added Ctrl+I shortcut in animation editor to interpolate frames.
+ * Use timeline selection size as a default value for interpolated frame count.
+ * Fix state ID list not properly selecting states with similar names.
+ * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
+ * Added animation names to ID_SWAT and ID_GUARD.
+ 
+TombIDE:
+ * Update Tomb1Main preset to 2.12.
+ * Update TR3 preset to include tomb3 project.
+ 
+Version 1.6.2
+=============
+
+Tomb Editor:
+ * Added node functions:
+  - PushKey - emulates specified key push.
+  - ClearKey - blocks specified key from pushing.
+  - SetEffect, SetCustomEffect - assigns an effect to a moveable.
+  - TestLaraVehicle - checks if Lara is on a vehicle.
+  - TestLaraTargeting - checks if Lara is targeting any enemy.
+  - TestLaraTorchIsLit - checks if Lara holds a torch and it is lit.
+  - SetMoveablePositionToAnotherMoveable - moves one moveable to another moveable position.
+  
+ * Don't allow to export nodes if there are no nodes.
+ * Filter out AI objects from moveable lists in node editor.
+ * Fix minor UI issues in node editor.
+ * Fix texture border bleeding in TEN compiler.
+ * Fix broken double-sided triangle textures in TEN compiler.
+ * Fix several memory leaks related to texture conversion.
+ * Fix some objects not linking to triggers in TEN compiler.
+ * Fix rename object dialog locking up editor when switching to other app.
+ * Fix possible exceptions with gizmo assigned to an object about to be deleted.
+ * Fix possible exceptions after using context menus.
+
+WadTool:
+ * Automatically correct bounding boxes for standable objects when importing to TEN wad.
+ * Fix main window right-click menus not working after visiting other windows.
+ * Fix state change editor clamping high frame to one frame less than frame count.
+ * TEN Base WAD:
+  - Make Lara standing animation less wobbly.
+  - Update pose animations to make Lara breath whilst posing.
+  - Update minecart animations to include death anim.
+  - Add placeholder detachable HK lasersight mesh.
+  - Fix Lara animations 464, 466, and 472 which were missing sound effects.
+  - Fix Lara train death animation followed by Seth death animation.
+  
+TombIDE:
+ * Update TEN template to include font with extended character set.
+
 Version 1.6.1
 =============
 
 Tomb Editor:
- * Fix exception when selecting animation sets with unsupported animation type.
+ * Add SwapMoveableMesh, RunLuaScript and RunConditionalLuaScript node functions.
+ * Add a group of Lara object node functions.
+ * Use shatter attribute in trcatalog.xml to apply static shatter property in TEN.
+ * Fix exception when selecting animated textures with unsupported animation type.
  * Fix exception when pushing Ctrl+V in newly opened node editor.
+ * Fix objects occasionally not doing drag-n-drop into node editor.
  * Fix level script functions not parsing properly in some cases.
  * Fix sound info chance value packing for TR1-TR3.
- * Add RunLuaScript and RunConditionalLuaScript node functions.
  
 WadTool:
  * Added missing state names for the new Lara's TEN animations.

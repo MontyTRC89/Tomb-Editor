@@ -341,15 +341,34 @@ namespace TombLib.Wad.Catalog
             ItemState entry = new ItemState();
             Games.TryGetValue(version.Native(), out game);
 
-            if (game != null)
-                entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
-
-            if (entry.Name == null)
+            foreach (bool precise in new[] { true, false })
             {
-                foreach (KeyValuePair<TRVersion.Game, Game> otherGame in Games.Where(g => g.Key <= version.Native()))
+                if (game != null)
                 {
-                    entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
-                    if (entry.Name != null)
+                    var sortedStates = game.States.Where(item => item.Item == objectId).OrderBy(item => item.State);
+
+                    if (precise)
+                        entry = sortedStates.FirstOrDefault(item => item.Name.ToLower().Equals(stateName.ToLower()));
+                    else
+                        entry = sortedStates.FirstOrDefault(item => item.Name.ToLower().Contains(stateName.ToLower()));
+
+                    if (!string.IsNullOrEmpty(entry.Name))
+                        break;
+
+                    foreach (KeyValuePair<TRVersion.Game, Game> otherGame in Games.Where(g => g.Key <= version.Native()))
+                    {
+                        sortedStates = otherGame.Value.States.Where(item => item.Item == objectId).OrderBy(item => item.State);
+
+                        if (precise)
+                            entry = sortedStates.FirstOrDefault(item => item.Name.ToLower().Equals(stateName.ToLower()));
+                        else
+                            entry = sortedStates.FirstOrDefault(item => item.Name.ToLower().Contains(stateName.ToLower()));
+
+                        if (!string.IsNullOrEmpty(entry.Name))
+                            break;
+                    }
+
+                    if (!string.IsNullOrEmpty(entry.Name))
                         break;
                 }
             }

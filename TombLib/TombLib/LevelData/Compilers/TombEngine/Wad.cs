@@ -60,9 +60,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var poly = oldMesh.Polys[j];
 
-                // Very quirky way to identify 1st face of a waterfall in TR4-TR5 wads.
-                bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
-
                 // Check if we should merge object and room textures in same texture tiles.
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
                 
@@ -76,7 +73,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (doubleSided)
                         texture.Mirror(poly.IsTriangle);
-                    var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, texture.BlendMode);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
@@ -500,7 +497,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
                 // TODO! replace with customizable data from trcatalog, properties, etc?
-                if (oldStaticMesh.ToString().ToLower().Contains("shatter"))
+                if (TrCatalog.IsStaticShatterable(TRVersion.Game.TombEngine, oldStaticMesh.Id.TypeId))
                     newStaticMesh.ShatterType = (short)ShatterType.Fragment;
                 else
                     newStaticMesh.ShatterType = (short)ShatterType.None;

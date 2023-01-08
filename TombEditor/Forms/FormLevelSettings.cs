@@ -275,6 +275,7 @@ namespace TombEditor.Forms
             public override int GetHashCode() => _hashCode;
         }
 
+        private readonly int _scriptPathPanelSize;
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
         private readonly Color _columnMessageCorrectColor;
@@ -307,7 +308,8 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
-            // Remember colors
+            // Remember colors and sizes
+            _scriptPathPanelSize = panelScripts.Height;
             _correctColor = gameLevelFilePathTxt.BackColor;
             _wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
             _columnMessageCorrectColor = objectFileDataGridView.BackColor.MixWith(Color.LimeGreen, 0.55);
@@ -665,7 +667,7 @@ namespace TombEditor.Forms
             // Hide version-specific controls
             // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == Game.TRNG);
-            panelScripts.Visible = currentVersionToCheck;
+            panelScripts.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
                 string scriptPath = _levelSettings.MakeAbsolute(_levelSettings.ScriptDirectory);
@@ -690,7 +692,7 @@ namespace TombEditor.Forms
 
             // TombEngine
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TombEngine);
-            panelLuaPath.Visible = currentVersionToCheck;
+            panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
                 tbLuaPath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile)) ? _correctColor : _wrongColor;
