@@ -18,7 +18,7 @@ namespace TombLib.Wad
         private static Random _rng = new Random();
 
         private static int[] _indices = new int[maxChannels];
-        private static WaveOut[] _channels = new WaveOut[maxChannels];
+        private static WaveOutEvent[] _channels = new WaveOutEvent[maxChannels];
 
         static WadSoundPlayer()
         {
@@ -174,7 +174,7 @@ namespace TombLib.Wad
                 sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
                 
                 // Play
-                _channels[channel] = disposables.AddAndReturn(new WaveOut());
+                _channels[channel] = disposables.AddAndReturn(new WaveOutEvent() { DeviceNumber = -1 });
                 _channels[channel].Init(sampleStream);
                 _channels[channel].PlaybackStopped += (s, e) =>
                 {
