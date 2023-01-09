@@ -18,7 +18,7 @@ namespace TombLib.Wad
         private static Random _rng = new Random();
 
         private static int[] _indices = new int[maxChannels];
-        private static WaveOut[] _channels = new WaveOut[maxChannels];
+        private static WaveOutEvent[] _channels = new WaveOutEvent[maxChannels];
 
         static WadSoundPlayer()
         {
@@ -173,9 +173,22 @@ namespace TombLib.Wad
                 int latencyInSamples = (sampleStream.WaveFormat.SampleRate * latencyInMilliseconds * 2) / 1000;
                 sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
                 
+                // Initialize
+                // HACK: In some user setups, default device (-1) is incorrectly identified by NAudio and results in exception.
+                // Try to fall back to first available device if default device throws an exception.
+
+                _channels[channel] = disposables.AddAndReturn(new WaveOutEvent());
+                try
+                {
+                    _channels[channel].Init(sampleStream);
+                }
+                catch
+                {
+                    _channels[channel].DeviceNumber = 0;
+                    _channels[channel].Init(sampleStream);
+                }
+
                 // Play
-                _channels[channel] = disposables.AddAndReturn(new WaveOut());
-                _channels[channel].Init(sampleStream);
                 _channels[channel].PlaybackStopped += (s, e) =>
                 {
                     foreach (IDisposable disposable in disposables)

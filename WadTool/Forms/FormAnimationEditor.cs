@@ -546,6 +546,7 @@ namespace WadTool
                 panelRendering.Invalidate();
                 OnKeyframesListChanged();
                 UpdateTransformUI();
+                PreviewSounds();
             }
         }
 
@@ -2006,6 +2007,82 @@ namespace WadTool
                 popup.ShowInfo(panelRendering, "Successfully exported " + exportCount + " animations.");
         }
 
+        private void PreviewSounds()
+        {
+            if (!_editor.Tool.Configuration.AnimationEditor_SoundPreview || _editor.Tool.ReferenceLevel == null)
+                return;
+
+            // This counter is used to randomize material index every 3 seconds of playback.
+            _overallPlaybackCount++;
+
+            if (_overallPlaybackCount > _materialIndexSwitchInterval)
+            {
+                _overallPlaybackCount = 0;
+
+                var listOfMaterialSounds = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
+
+                if (listOfMaterialSounds.Count > 1)
+                    while (true)
+                    {
+                        var newMaterialIndex = (new Random()).Next(0, listOfMaterialSounds.Count() - 1);
+                        if (listOfMaterialSounds.Count == 1 || newMaterialIndex != _currentMaterialIndex)
+                        {
+                            _currentMaterialIndex = listOfMaterialSounds[newMaterialIndex].Id;
+                            break;
+                        }
+                    }
+            }
+
+            foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
+            {
+                int idToPlay = -1;
+                var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+
+                if (ac.Type == WadAnimCommandType.PlaySound)
+                {
+                    idToPlay = ac.Parameter2 & 0x3FFF;
+                }
+                else if (ac.Type == WadAnimCommandType.FlipEffect &&
+                         previewType == SoundPreviewType.LandWithMaterial &&
+                         _editor.Wad.GameVersion >= TRVersion.Game.TR3)
+                {
+                    var flipID = (ac.Parameter2 & 0x3FFF);
+                    if (flipID == 32 || flipID == 33)
+                        idToPlay = _currentMaterialIndex;
+                }
+
+                if (idToPlay != -1 && ac.Parameter1 == _frameCount)
+                {
+                    int sfx_type = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xC000;
+
+                    // Don't play footprint FX sounds in water
+                    if (ac.Type == WadAnimCommandType.FlipEffect && previewType == SoundPreviewType.Water) continue;
+
+                    // Don't play water sounds not in water and vice versa
+                    if (sfx_type == 0x8000 && previewType != SoundPreviewType.Water) continue;
+                    if (sfx_type == 0x4000 && previewType == SoundPreviewType.Water) continue;
+
+                    var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
+                    if (soundInfo != null)
+                    {
+                        if (!_editor.Tool.ReferenceLevel.Settings.SelectedSounds.Contains(idToPlay))
+                            popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " is disabled in level settings.");
+                        else
+                            try
+                            {
+                                WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo);
+                            }
+                            catch (Exception exc)
+                            {
+                                popup.ShowWarning(panelRendering, "Unable to play sound info " + idToPlay + ". Exception: \n" + exc.Message);
+                            }
+                    }
+                    else
+                        popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " missing in reference project");
+                }
+            }
+        }
+
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _editor.Tool.Configuration.AnimationEditor_ShowGrid = !_editor.Tool.Configuration.AnimationEditor_ShowGrid;
@@ -2371,71 +2448,6 @@ namespace WadTool
             }
 
             UpdateStatusLabel();
-
-            // Preview sounds
-            if (_editor.Tool.Configuration.AnimationEditor_SoundPreview && _editor.Tool.ReferenceLevel != null)
-            {
-                // This additional counter is used to randomize material index every 3 seconds of playback
-                _overallPlaybackCount++;
-                if (_overallPlaybackCount > _materialIndexSwitchInterval)
-                {
-                    _overallPlaybackCount = 0;
-
-                    var listOfMaterialSounds = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
-
-                    if (listOfMaterialSounds.Count > 1)
-                        while (true)
-                        {
-                            var newMaterialIndex = (new Random()).Next(0, listOfMaterialSounds.Count() - 1);
-                            if (listOfMaterialSounds.Count == 1 || newMaterialIndex != _currentMaterialIndex)
-                            {
-                                _currentMaterialIndex = listOfMaterialSounds[newMaterialIndex].Id;
-                                break;
-                            }
-                        }
-                }
-
-                foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
-                {
-                    int idToPlay = -1;
-                    var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
-
-                    if (ac.Type == WadAnimCommandType.PlaySound)
-                        idToPlay = ac.Parameter2 & 0x3FFF;
-                    else if (previewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
-                        idToPlay = _currentMaterialIndex;
-
-                    if (idToPlay != -1 && ac.Parameter1 == _frameCount)
-                    {
-                        int sfx_type = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xC000;
-
-                        // Don't play footprint FX sounds in water
-                        if (ac.Type == WadAnimCommandType.FlipEffect && previewType == SoundPreviewType.Water) continue;
-
-                        // Don't play water sounds not in water and vice versa
-                        if (sfx_type == 0x8000 && previewType != SoundPreviewType.Water) continue;
-                        if (sfx_type == 0x4000 && previewType == SoundPreviewType.Water) continue;
-
-                        var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
-                        if (soundInfo != null)
-                        {
-                            if (!_editor.Tool.ReferenceLevel.Settings.SelectedSounds.Contains(idToPlay))
-                                popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " is disabled in level settings.");
-                            else
-                                try
-                                {
-                                    WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo);
-                                }
-                                catch (Exception exc)
-                                {
-                                    popup.ShowWarning(panelRendering, "Unable to play sound info " + idToPlay + ". Exception: \n" + exc.Message);
-                                }
-                        }
-                        else
-                            popup.ShowWarning(panelRendering, "Sound info " + idToPlay + " missing in reference project");
-                    }
-                }
-            }
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)

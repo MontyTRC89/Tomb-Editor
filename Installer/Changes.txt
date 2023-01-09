@@ -2,9 +2,14 @@ Version 1.6.4
 =============
 
 Tomb Editor:
-* Add an option to activate lua or node events as actions for legacy triggers.
+ * Add an option to activate lua or node events as actions for legacy triggers.
+ * Extend pathfinding data over slopes for flying enemies in TEN levels.
+ * Fix possible issues with pathfinding on extended heights.
 
 WadTool:
+ * Play sound preview on animation editor timeline scrubbling.
+ * Fix sound previews not working if default sound device is incorrect in Windows settings.
+ * Fix sound previews not playing for TEN right footprint flipeffect.
  * TEN Base WAD:
  - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
  - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
