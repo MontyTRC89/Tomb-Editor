@@ -252,9 +252,13 @@ namespace TombLib.GeometryIO.Importers
                 if (_settings.SortByName)
                     meshNameList = meshNameList.OrderBy(s => s, new CustomComparer<string>(NaturalComparer.Do)).ToList();
 
+                // Determine amount of animation channels
+                var maxChannelCount = scene.Animations
+                    .Max(a => a.NodeAnimationChannels.Where(c => meshNameList.Contains(c.NodeName)).Count());
+
                 // Loop through all animations and add appropriate ones.
                 // Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.
-                if (scene.MeshCount <= 0 || scene.MeshCount != meshNameList.Count)
+                if (maxChannelCount <= 0 || maxChannelCount != meshNameList.Count)
                     logger.Warn("Actual number of meshes doesn't correspond to mesh list. Animations won't be imported.");
                 else
                 {
@@ -299,7 +303,7 @@ namespace TombLib.GeometryIO.Importers
                         }
 
                         IOAnimation ioAnim = new IOAnimation(string.IsNullOrEmpty(anim.Name) ? "Imported animation " + i : anim.Name,
-                                                             scene.MeshCount);
+                                                             maxChannelCount);
 
                         // Precreate frames and set them to identity
                         for (int j = 0; j < frameCount; j++)
@@ -310,7 +314,7 @@ namespace TombLib.GeometryIO.Importers
                         // returns wrong amount of angles during enumeration with Enumerable.Repeat.
                         foreach (var frame in ioAnim.Frames)
                         {
-                            var angleList = Enumerable.Repeat(Vector3.Zero, scene.MeshCount);
+                            var angleList = Enumerable.Repeat(Vector3.Zero, maxChannelCount);
                             frame.Angles.AddRange(angleList);
                         }
 
