@@ -645,6 +645,11 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = firstObject;
             }
+            else if (firstObject is VolumeInstance && _editor.Level.IsTombEngine)
+            {
+                trigger.TargetType = TriggerTargetType.EventSet;
+                trigger.Target = new TriggerParameterString((firstObject as VolumeInstance).EventSet.Name);
+            }
             else if (firstObject is StaticInstance && _editor.Level.IsNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;

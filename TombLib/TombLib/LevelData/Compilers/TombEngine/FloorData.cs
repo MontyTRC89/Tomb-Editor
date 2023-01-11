@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using TombLib.NG;
-using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
+        private const ushort _fdFunctionMask = 0x03FF;
+        private const ushort _fdOneShotBit = 0x0100;
+        private const ushort _fdEndBit = 0x8000;
+
         private void BuildFloorData()
         {
             ReportProgress(53, "Building floordata");
@@ -246,7 +249,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
 
                 // Write bitmask
-                triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
+                triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1F) << 9);
 
                 result.Add(trigger1);
                 result.Add(triggerSetup);
@@ -256,83 +259,52 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     ushort trigger2 = 0;
                     ushort trigger3 = 0;
 
+                    ushort func = (ushort)((ushort)trigger.TargetType << 10);
+
                     switch (trigger.TargetType)
                     {
                         case TriggerTargetType.Object:
-                            // Trigger for object
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
+                        case TriggerTargetType.Sink:
+                        case TriggerTargetType.FlipMap:
+                        case TriggerTargetType.FlipOn:
+                        case TriggerTargetType.FlipOff:
+                        case TriggerTargetType.Target:
+                        case TriggerTargetType.FinishLevel:
+                        case TriggerTargetType.PlayAudio:
+                        case TriggerTargetType.FlipEffect:
+                        case TriggerTargetType.Secret:
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, _fdFunctionMask) | func);
                             result.Add(trigger2);
                             break;
+
                         case TriggerTargetType.Camera:
                             // Trigger for camera
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, _fdFunctionMask) | func);
                             result.Add(trigger2);
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                             result.Add(trigger3);
                             break;
-                        case TriggerTargetType.Sink:
-                            // Trigger for sink
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FlipMap:
-                            // Trigger for flip map
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FlipOn:
-                            // Trigger for flip map on
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FlipOff:
-                            // Trigger for flip map off
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.Target:
-                            // Trigger for look at item
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FinishLevel:
-                            // Trigger for finish level
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.PlayAudio:
-                            // Trigger for play soundtrack
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.FlipEffect:
-                            // Trigger for flip effect
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
-                            result.Add(trigger2);
-                            break;
-                        case TriggerTargetType.Secret:
-                            // Trigger for secret found
-                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
-                            result.Add(trigger2);
-                            break;
+
                         case TriggerTargetType.FlyByCamera:
                             // Trigger for fly by
                             if (!(trigger.Target is FlybyCameraInstance))
                                 throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
+
                             var flyByCamera = (FlybyCameraInstance)trigger.Target;
-                            trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
+                            trigger2 = (ushort)(flyByCamera.Sequence & _fdFunctionMask | func);
                             result.Add(trigger2);
 
-                            trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
+                            trigger2 = (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
                             result.Add(trigger2);
                             break;
-                        case TriggerTargetType.LuaScript:
+
+                        case TriggerTargetType.EventSet:
                             // Trigger for LUA script
                             if (!(trigger.Target is TriggerParameterString))
                             {
-                                throw new Exception("A LUA Script trigger must reference an event set! ('" + trigger + "')");
+                                throw new Exception("A LUA Script trigger must reference an event set name! ('" + trigger + "')");
                             }
 
                             string setName = (trigger.Target as TriggerParameterString).Value;
@@ -342,11 +314,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 continue;
                             }
 
-                            trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & 0x3ff | (16 << 10));
+                            trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
                             result.Add(trigger2);
-                            
-                            trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
-                            result.Add(trigger2);
+
+                            trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xFF);
+                            trigger3 = (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
+                            result.Add(trigger3);
 
                             break;
 
@@ -355,7 +328,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                result[result.Count - 1] |= 0x8000; // End of the action list
+                result[result.Count - 1] |= _fdEndBit; // End of the action list
             }
 
             return result;
