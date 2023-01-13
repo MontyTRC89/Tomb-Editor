@@ -274,8 +274,8 @@ namespace TombLib.Wad
                 {
                     chunkIO.ReadChunks((id3, chunkSize3) =>
                     {
-                        if (id3 == Wad2Chunks.MeshQuad ||
-                            id3 == Wad2Chunks.MeshTriangle)
+                        if (id3 == Wad2Chunks.MeshQuad  || id3 == Wad2Chunks.MeshTriangle ||
+                            id3 == Wad2Chunks.MeshQuad2 || id3 == Wad2Chunks.MeshTriangle2)
                         {
                             var polygon = new WadPolygon();
                             polygon.Shape = id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle;
@@ -288,6 +288,13 @@ namespace TombLib.Wad
 
                             TextureArea textureArea = new TextureArea();
                             textureArea.Texture = textures[LEB128.ReadInt(chunkIO.Raw)];
+
+                            if (id3 == Wad2Chunks.MeshQuad2 || id3 == Wad2Chunks.MeshTriangle2)
+                            {
+                                textureArea.ParentArea.Start = chunkIO.Raw.ReadVector2();
+                                textureArea.ParentArea.End = chunkIO.Raw.ReadVector2();
+                            }
+
                             textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
