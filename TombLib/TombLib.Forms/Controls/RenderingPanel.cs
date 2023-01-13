@@ -35,17 +35,17 @@ namespace TombLib.Controls
             }
         }
 
-        public Vector2 Delta(MouseEventArgs e, Point previousMousePosition)
+        public Vector2 Delta(Point currentPosition, Point previousMousePosition)
         {
-             return new Vector2((e.X - previousMousePosition.X) / (float)Height,
-                                (e.Y - previousMousePosition.Y) / (float)Height);
+             return new Vector2((currentPosition.X - previousMousePosition.X) / (float)Height,
+                                (currentPosition.Y - previousMousePosition.Y) / (float)Height);
         }
 
-        public Vector2 WarpMouseCursor(MouseEventArgs e, Point previousMousePosition)
+        public Vector2 WarpMouseCursor(Point currentPosition, Point previousMousePosition)
         {
             // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-            var coordinate = e.Location;
-            var delta = Delta(e, previousMousePosition);
+            var coordinate = currentPosition;
+            var delta = Delta(currentPosition, previousMousePosition);
 
             if (coordinate.X <= 0)
                 Cursor.Position = new Point(Cursor.Position.X + Width - 2, Cursor.Position.Y);
