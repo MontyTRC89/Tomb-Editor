@@ -640,7 +640,7 @@
             // 
             this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameExecutableFilePathBut.Checked = false;
-            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(677, 25);
+            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(677, 23);
             this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
             this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameExecutableFilePathBut.TabIndex = 3;
@@ -650,7 +650,7 @@
             // darkLabel3
             // 
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 5);
+            this.darkLabel3.Location = new System.Drawing.Point(0, 2);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(439, 17);
             this.darkLabel3.TabIndex = 1;
@@ -660,7 +660,7 @@
             // 
             this.gameExecutableFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 25);
+            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 23);
             this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
             this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(652, 22);
             this.gameExecutableFilePathTxt.TabIndex = 2;

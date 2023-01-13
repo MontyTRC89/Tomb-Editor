@@ -62,7 +62,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                                 if (adjoiningBlock != null)
                                                 {
-                                                    sector.FloorCollision.Portals[0] = _roomsRemappingDictionary[adjoiningRoom];
+                                                    sector.FloorCollision.Portals[0] = _roomRemapping[adjoiningRoom];
                                                     sector.FloorCollision.Portals[1] = sector.FloorCollision.Portals[0];
                                                     floorPortalAssigned = true;
                                                 }
@@ -80,7 +80,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                                 if (adjoiningBlock != null)
                                                 {
-                                                    sector.CeilingCollision.Portals[0] = _roomsRemappingDictionary[adjoiningRoom];
+                                                    sector.CeilingCollision.Portals[0] = _roomRemapping[adjoiningRoom];
                                                     sector.CeilingCollision.Portals[1] = sector.CeilingCollision.Portals[0];
                                                     ceilingPortalAssigned = true;
                                                 }
@@ -105,7 +105,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                             if (adjoiningBlock != null && (adjoiningBlock.Type != BlockType.BorderWall || adjoiningBlock.WallPortal != null && adjoiningBlock.WallPortal.Opacity != PortalOpacity.SolidFaces))
                                             {
-                                                sector.WallPortal = _roomsRemappingDictionary[adjoiningRoom];
+                                                sector.WallPortal = _roomRemapping[adjoiningRoom];
                                                 break;
                                             }
                                         }
@@ -114,7 +114,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
                             else
                             {
-                                sector.WallPortal = _roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
+                                sector.WallPortal = _roomRemapping[block.WallPortal.AdjoiningRoom];
                             }
 
                             sector.FloorCollision.Planes[0].Z = -room.Position.Y;
@@ -340,7 +340,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (parameter == null)
                 index = 0;
             else if (parameter is Room)
-                index = _roomsRemappingDictionary[(Room)parameter];
+                index = _roomRemapping[(Room)parameter];
             else if (parameter is ObjectInstance)
             {
                 if (parameter is MoveableInstance)
@@ -518,14 +518,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (shape.SplitWallFirst)
                     {
                         if (portal != null)
-                            newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0].Z = -float.MaxValue;
                     }
                     else
                     {
                         if (shape.SplitPortalFirst)
-                            newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
                                 new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
@@ -537,14 +537,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (shape.SplitWallSecond)
                     {
                         if (portal != null)
-                            newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1].Z = -float.MaxValue;
                     }
                     else
                     {
                         if (shape.SplitPortalSecond)
-                            newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
                             new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
@@ -560,14 +560,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (shape.SplitWallSecond)
                     {
                         if (portal != null)
-                            newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0].Z = -float.MaxValue;
                     }
                     else
                     {
                         if (shape.SplitPortalSecond)
-                            newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
                             new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
@@ -578,14 +578,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (shape.SplitWallFirst)
                     {
                         if (portal != null)
-                            newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1].Z = -float.MaxValue;
                     }
                     else
                     {
                         if (shape.SplitPortalFirst)
-                            newCollision.Portals[1] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
                           new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
@@ -599,7 +599,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 if (shape.SplitPortalFirst && shape.SplitPortalSecond)
                 {
-                    newCollision.Portals[0] = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                    newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
                     newCollision.Portals[1] = newCollision.Portals[0];
                 }
 

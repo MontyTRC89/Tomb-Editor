@@ -222,7 +222,7 @@ namespace TombLib.LevelData.Compilers
                                 if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                                 { // Only if the portal is not a Toggle Opacity 1
                                     newEntry.Add(0x8001);
-                                    newEntry.Add((ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom]);
+                                    newEntry.Add((ushort)_roomRemapping[block.WallPortal.AdjoiningRoom]);
                                 }
                             }
                             else if (isWallWithCeilingPortal != null)
@@ -234,7 +234,7 @@ namespace TombLib.LevelData.Compilers
                                 sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
 
                                 newEntry.Add(0x8001);
-                                newEntry.Add((ushort)_roomsRemappingDictionary[isWallWithCeilingPortal]);
+                                newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
                             }
                         }
                         else
@@ -255,7 +255,7 @@ namespace TombLib.LevelData.Compilers
                             if (floorPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.FloorPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomRemapping[portal.AdjoiningRoom];
                                 if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
@@ -273,7 +273,7 @@ namespace TombLib.LevelData.Compilers
                             if (ceilingPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.CeilingPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomRemapping[portal.AdjoiningRoom];
                                 if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
@@ -634,7 +634,7 @@ namespace TombLib.LevelData.Compilers
             if (parameter == null)
                 index = 0;
             else if (parameter is Room)
-                index = _roomsRemappingDictionary[(Room)parameter];
+                index = _roomRemapping[(Room)parameter];
             else if (parameter is ObjectInstance)
             {
                 if (parameter is MoveableInstance)
