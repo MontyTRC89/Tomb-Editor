@@ -140,6 +140,11 @@ namespace TombLib.Utils
             return new ImageC(width, height, new byte[width * height * PixelSize]);
         }
 
+        public Rectangle2 GetRect()
+        {
+            return new Rectangle2(0, 0, Width - 1, Height - 1);
+        }
+
         public ColorC Get(int i)
         {
             int index = i * PixelSize;
