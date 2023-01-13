@@ -65,22 +65,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var zoneTypes = Enum.GetValues(typeof(ZoneType));
 
             // Create zones
-            foreach (int flipped in new[] { 0, 1 })
+            foreach (bool flipped in new[] { false, true })
             {
+                int group = Convert.ToInt32(flipped);
                 var zoneCount = Enumerable.Repeat(1, zoneTypes.Length).ToArray();
 
                 for (var i = 0; i < _zones.Count; i++)
                 {
                     foreach (var zoneType in (ZoneType[])zoneTypes)
                     {
-                        if (_zones[i].Zones[flipped][(int)zoneType] == int.MaxValue)
+                        if (_zones[i].Zones[group][(int)zoneType] == int.MaxValue)
                         {
-                            _zones[i].Zones[flipped][(int)zoneType] = zoneCount[(int)zoneType];
+                            _zones[i].Zones[group][(int)zoneType] = zoneCount[(int)zoneType];
 
-                            foreach (var box in GetAllReachableBoxes(i, zoneType, flipped != 0))
+                            foreach (var box in GetAllReachableBoxes(i, zoneType, flipped))
                             {
-                                if (_zones[box].Zones[flipped][(int)zoneType] == int.MaxValue)
-                                    _zones[box].Zones[flipped][(int)zoneType] = zoneCount[(int)zoneType];
+                                if (_zones[box].Zones[group][(int)zoneType] == int.MaxValue)
+                                    _zones[box].Zones[group][(int)zoneType] = zoneCount[(int)zoneType];
                             }
 
                             zoneCount[(int)zoneType]++;
