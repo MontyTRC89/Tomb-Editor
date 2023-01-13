@@ -185,7 +185,7 @@
             this.uvMap_column.Name = "uvMap_column";
             this.uvMap_column.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.uvMap_column.ToolTipText = "Use UV mapping";
-            this.uvMap_column.Width = 44;
+            this.uvMap_column.Width = 55;
             // 
             // flipUV_Vcolumn
             // 
