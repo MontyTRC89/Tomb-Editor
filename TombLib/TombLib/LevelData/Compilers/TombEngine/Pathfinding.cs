@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        private enum ZoneType
+        public enum ZoneType
         {
-            None,
             Skeleton,
             Basic,
             Water,
@@ -42,7 +42,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Convert boxes to TR format
             _boxes = new List<TombEngineBox>();
-            _zones = new List<TombEngineZone>();
+            _zones = new List<TombEngineZoneGroup>();
+
             for (var i = 0; i < dec_boxes.Count; i++)
             {
                 var box = new TombEngineBox()
@@ -57,168 +58,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 };
                 _boxes.Add(box);
 
-                var zone = new TombEngineZone()
-                {
-                    GroundZone1_Normal = int.MaxValue,
-                    GroundZone2_Normal = int.MaxValue,
-                    GroundZone3_Normal = int.MaxValue,
-                    GroundZone4_Normal = int.MaxValue,
-                    FlyZone_Normal = int.MaxValue,
-                    GroundZone1_Alternate = int.MaxValue,
-                    GroundZone2_Alternate = int.MaxValue,
-                    GroundZone3_Alternate = int.MaxValue,
-                    GroundZone4_Alternate = int.MaxValue,
-                    FlyZone_Alternate = int.MaxValue
-                };
+                var zone = new TombEngineZoneGroup();
                 _zones.Add(zone);
             }
 
+            var zoneTypes = Enum.GetValues(typeof(ZoneType));
+
             // Create zones
-            int groundZone1 = 1;
-            int groundZone2 = 1;
-            int groundZone3 = 1;
-            int groundZone4 = 1;
-            int flyZone = 1;
-
-            for (var i = 0; i < _zones.Count; i++)
+            foreach (int flipped in new[] { 0, 1 })
             {
-                // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Normal == int.MaxValue)
+                var zoneCount = Enumerable.Repeat(1, zoneTypes.Length).ToArray();
+
+                for (var i = 0; i < _zones.Count; i++)
                 {
-                    _zones[i].GroundZone1_Normal = groundZone1;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Skeleton, false))
+                    foreach (var zoneType in (ZoneType[])zoneTypes)
                     {
-                        if (_zones[box].GroundZone1_Normal == int.MaxValue) _zones[box].GroundZone1_Normal = groundZone1;
+                        if (_zones[i].Zones[flipped][(int)zoneType] == int.MaxValue)
+                        {
+                            _zones[i].Zones[flipped][(int)zoneType] = zoneCount[(int)zoneType];
+
+                            foreach (var box in GetAllReachableBoxes(i, zoneType, flipped != 0))
+                            {
+                                if (_zones[box].Zones[flipped][(int)zoneType] == int.MaxValue)
+                                    _zones[box].Zones[flipped][(int)zoneType] = zoneCount[(int)zoneType];
+                            }
+
+                            zoneCount[(int)zoneType]++;
+                        }
                     }
-
-                    groundZone1++;
-                }
-
-                // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Normal == int.MaxValue)
-                {
-                    _zones[i].GroundZone2_Normal = groundZone2;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Basic, false))
-                    {
-                        if (_zones[box].GroundZone2_Normal == int.MaxValue) _zones[box].GroundZone2_Normal = groundZone2;
-                    }
-
-                    groundZone2++;
-                }
-
-                // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Normal == int.MaxValue)
-                {
-                    _zones[i].GroundZone3_Normal = groundZone3;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Water, false))
-                    {
-                        if (_zones[box].GroundZone3_Normal == int.MaxValue) _zones[box].GroundZone3_Normal = groundZone3;
-                    }
-
-                    groundZone3++;
-                }
-
-                // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Normal == int.MaxValue)
-                {
-                    _zones[i].GroundZone4_Normal = groundZone4;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Human, false))
-                    {
-                        if (_zones[box].GroundZone4_Normal == int.MaxValue) _zones[box].GroundZone4_Normal = groundZone4;
-                    }
-
-                    groundZone4++;
-                }
-
-                // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Normal == int.MaxValue)
-                {
-                    _zones[i].FlyZone_Normal = flyZone;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Flyer, false))
-                    {
-                        if (_zones[box].FlyZone_Normal == int.MaxValue) _zones[box].FlyZone_Normal = flyZone;
-                    }
-
-                    flyZone++;
-                }
-            }
-
-            // Flipped rooms------------------------------------------
-            int aGroundZone1 = 1;
-            int aGroundZone2 = 1;
-            int aGroundZone3 = 1;
-            int aGroundZone4 = 1;
-            int aFlyZone = 1;
-            for (var i = 0; i < _zones.Count; i++)
-            {
-                // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Alternate == int.MaxValue)
-                {
-                    _zones[i].GroundZone1_Alternate = aGroundZone1;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Skeleton, true))
-                    {
-                        if (_zones[box].GroundZone1_Alternate == int.MaxValue) _zones[box].GroundZone1_Alternate = aGroundZone1;
-                    }
-
-                    aGroundZone1++;
-                }
-
-                // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Alternate == int.MaxValue)
-                {
-                    _zones[i].GroundZone2_Alternate = aGroundZone2;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Basic, true))
-                    {
-                        if (_zones[box].GroundZone2_Alternate == int.MaxValue) _zones[box].GroundZone2_Alternate = aGroundZone2;
-                    }
-
-                    aGroundZone2++;
-                }
-
-                // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Alternate == int.MaxValue)
-                {
-                    _zones[i].GroundZone3_Alternate = aGroundZone3;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Water, true))
-                    {
-                        if (_zones[box].GroundZone3_Alternate == int.MaxValue) _zones[box].GroundZone3_Alternate = aGroundZone3;
-                    }
-
-                    aGroundZone3++;
-                }
-
-                // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Alternate == int.MaxValue)
-                {
-                    _zones[i].GroundZone4_Alternate = aGroundZone4;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Human, true))
-                    {
-                        if (_zones[box].GroundZone4_Alternate == int.MaxValue) _zones[box].GroundZone4_Alternate = aGroundZone4;
-                    }
-
-                    aGroundZone4++;
-                }
-
-                // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Alternate == int.MaxValue)
-                {
-                    _zones[i].FlyZone_Alternate = aFlyZone;
-
-                    foreach (var box in GetAllReachableBoxes(i, ZoneType.Flyer, true))
-                    {
-                        if (_zones[box].FlyZone_Alternate == int.MaxValue) _zones[box].FlyZone_Alternate = aFlyZone;
-                    }
-
-                    aFlyZone++;
                 }
             }
 

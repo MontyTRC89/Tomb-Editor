@@ -509,18 +509,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngineZone
+    public class TombEngineZoneGroup
     {
-        public int GroundZone1_Normal;
-        public int GroundZone2_Normal;
-        public int GroundZone3_Normal;
-        public int GroundZone4_Normal;
-        public int FlyZone_Normal;
-        public int GroundZone1_Alternate;
-        public int GroundZone2_Alternate;
-        public int GroundZone3_Alternate;
-        public int GroundZone4_Alternate;
-        public int FlyZone_Alternate;
+        public int[][] Zones  = new int[2][];
+
+        public TombEngineZoneGroup()
+        {
+            foreach (int flipped in new[] { 0, 1 })
+            {
+                Zones[flipped] = new int[Enum.GetValues(typeof(LevelCompilerTombEngine.ZoneType)).Length];
+                Array.Fill(Zones[flipped], int.MaxValue);
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

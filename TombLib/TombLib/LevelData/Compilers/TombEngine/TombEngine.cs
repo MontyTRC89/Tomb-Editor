@@ -170,26 +170,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write((uint)_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone1_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone2_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].FlyZone_Normal);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _boxes.Count; i++)
-                    writer.Write(_zones[i].FlyZone_Alternate);
+                int zoneCount = Enum.GetValues(typeof(ZoneType)).Length;
+                //writer.Write(zoneCount); // TODO: Unblock when zone_count_reader branch is merged on TEN repo.
+
+                foreach (int flipped in new[] { 0, 1 })
+                    for (int i = 0; i < zoneCount; i++)
+                        _zones.ForEach(z => writer.Write(z.Zones[flipped][i]));
 
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);

@@ -33,7 +33,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<TombEngineSoundSource> _soundSources = new List<TombEngineSoundSource>();
         private List<TombEngineBox> _boxes = new List<TombEngineBox>();
         private List<TombEngineOverlap> _overlaps = new List<TombEngineOverlap>();
-        private List<TombEngineZone> _zones = new List<TombEngineZone>();
+        private List<TombEngineZoneGroup> _zones = new List<TombEngineZoneGroup>();
 
         private readonly List<TombEngineItem> _items = new List<TombEngineItem>();
         private List<TombEngineAiItem> _aiItems = new List<TombEngineAiItem>();
