@@ -6,6 +6,7 @@ Tomb Editor:
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights.
  * Fix variable comparer nodes not working correctly without initialized variable.
+ * Fix incorrect light interpolation between rooms with non-traversable portals.
 
 WadTool:
  * Increase compatibility with imported animations with inconsistent bone and mesh setups.
