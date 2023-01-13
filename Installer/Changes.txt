@@ -14,12 +14,8 @@ WadTool:
  * Fix sound previews not working if default sound device is incorrect in Windows settings.
  * Fix sound previews not playing for TEN right footprint flipeffect.
  * TEN Base WAD:
- - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
- - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
- - Added ID_SAS_CAIRO.
- - Bugfix for ID_SAS_CAIRO which prevented it from coming out of the "blinded" animation if player uses a flash grenade.
- - Added ID_DART as a real mesh instead of a particle.
- - Fixed bug where ID_LASERSIGHT was not present.
+   - Added ID_DART as a real mesh instead of a particle.
+   - Fixed bug where ID_LASERSIGHT was not present.
  
 SoundTool:
  * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound. 
