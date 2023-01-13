@@ -28,6 +28,7 @@
             this.flipXColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.flipYColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.flipZColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.uvMap_column = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.flipUV_Vcolumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.invertFacesColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -53,6 +54,7 @@
             this.flipXColumn,
             this.flipYColumn,
             this.flipZColumn,
+            this.uvMap_column,
             this.flipUV_Vcolumn,
             this.invertFacesColumn});
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
@@ -176,6 +178,15 @@
             this.flipZColumn.ToolTipText = "Invert Z axis";
             this.flipZColumn.Width = 22;
             // 
+            // uvMap_column
+            // 
+            this.uvMap_column.DataPropertyName = "MappedUV";
+            this.uvMap_column.HeaderText = "UV Map";
+            this.uvMap_column.Name = "uvMap_column";
+            this.uvMap_column.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.uvMap_column.ToolTipText = "Use UV mapping";
+            this.uvMap_column.Width = 44;
+            // 
             // flipUV_Vcolumn
             // 
             this.flipUV_Vcolumn.DataPropertyName = "FlipUV_V";
@@ -221,6 +232,7 @@
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipXColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipYColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipZColumn;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn uvMap_column;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipUV_Vcolumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn invertFacesColumn;
     }
