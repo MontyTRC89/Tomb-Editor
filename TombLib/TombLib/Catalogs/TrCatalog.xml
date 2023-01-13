@@ -680,7 +680,7 @@
 			<moveable id="17" name="Masked goon (white mask, vest)" essential="false" t5m="GOON_SILENCER2" />
 			<moveable id="18" name="Masked goon (black mask)" essential="false" t5m="GOON_SILENCER3" />
 			<moveable id="19" name="Knifethrower" essential="false" t5m="KNIFETHROWER" />
-			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_SHOTGUN" />
+			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_DUAL_REVOLVER" />
 			<moveable id="21" name="Rat" essential="false" t5m="RAT" />
 			<moveable id="22" name="Dragon (front)" show_with="23" essential="false" t5m="DRAGON_FRONT" />
 			<moveable id="23" name="Dragon (back)" show_with="22" essential="false" t5m="DRAGON_BACK" />
