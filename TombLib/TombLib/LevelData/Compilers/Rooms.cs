@@ -16,6 +16,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<ShadeMatchSignature, uint> _vertexColors;
+        private readonly Dictionary<tr_room_portal, PortalInstance> _portalRemapping = new Dictionary<tr_room_portal, PortalInstance>();
 
         private void BuildRooms()
         {
@@ -1511,12 +1512,15 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Create portal
-            outPortals.Add(new tr_room_portal
+            var portalToAdd = new tr_room_portal
             {
                 AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                 Vertices = portalVertices,
                 Normal = normal
-            });
+            };
+
+            _portalRemapping.TryAdd(portalToAdd, portal);
+            outPortals.Add(portalToAdd);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1668,12 +1672,14 @@ namespace TombLib.LevelData.Compilers
                     normal = new tr_vertex((short)(normal.X / 2), (short)(normal.Y / 2), (short)(normal.Z / 2));
 
                 // Add portal
-                outPortals.Add(new tr_room_portal
+                var portalToAdd = new tr_room_portal
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
                     Normal = normal
-                });
+                };
+                _portalRemapping.TryAdd(portalToAdd, portal);
+				outPortals.Add(portalToAdd);
             }
         }
 
@@ -1685,6 +1691,11 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var p in room.Portals)
             {
+                if(_portalRemapping.ContainsKey(p))
+                {
+                    if (_portalRemapping[p].Opacity != PortalOpacity.None)
+                        continue;
+                }
                 var otherRoom = roomList[p.AdjoiningRoom];
 
                 // Here we must decide if match or not, basing on flipped flag.
