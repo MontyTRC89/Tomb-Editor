@@ -630,6 +630,30 @@ namespace WadTool
 
             int counter = 0;
 
+            Action<WadMesh> convertUVMapping = (WadMesh mesh) =>
+            {
+                if (mesh.Polys.Count == 0)
+                    return;
+
+                var area = new Rectangle2(0, 0, mesh.Polys[0].Texture.Texture.Image.Width, mesh.Polys[0].Texture.Texture.Image.Height);
+                if (mesh.Polys.All(p => p.Texture.ParentArea == area))
+                    return;
+
+                for (int i = 0; i < mesh.Polys.Count; i++)
+                {
+                    var poly = mesh.Polys[i];
+
+                    if (uvMapped)
+                        poly.Texture.SetParentArea(tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine ? 4096 : 256);
+                    else
+                        poly.Texture.ClearParentArea();
+
+                    mesh.Polys[i] = poly;
+                }
+
+                counter++;
+            };
+
             foreach (var o in objects)
             {
                 var obj = tool.DestinationWad.TryGet(o);
@@ -638,46 +662,11 @@ namespace WadTool
 
                 if (obj is WadMoveable)
                 {
-                    foreach (var mesh in (obj as WadMoveable).Meshes)
-                    {
-                        if (mesh.Polys.Count == 0)
-                            continue;
-
-                        for (int i = 0; i < mesh.Polys.Count; i++)
-                        {
-                            var poly = mesh.Polys[i];
-
-                            if (uvMapped)
-                                poly.Texture.SetParentArea(tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine ? 4096 : 256);
-                            else
-                                poly.Texture.ClearParentArea();
-
-                            mesh.Polys[i] = poly;
-                        }
-
-                        counter++;
-                    }
+                    (obj as WadMoveable).Meshes.ForEach(m => convertUVMapping(m));
                 }
                 else if (obj is WadStatic)
                 {
-                    var mesh = (obj as WadStatic).Mesh;
-
-                    if (mesh.Polys.Count == 0)
-                        continue;
-
-                    for (int i = 0; i < mesh.Polys.Count; i++)
-                    {
-                        var poly = mesh.Polys[i];
-
-                        if (uvMapped)
-                            poly.Texture.SetParentArea(tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine ? 4096 : 256);
-                        else
-                            poly.Texture.ClearParentArea();
-
-                        mesh.Polys[i] = poly;
-                    }
-
-                    counter++;
+                    convertUVMapping((obj as WadStatic).Mesh);
                 }
             }
 
