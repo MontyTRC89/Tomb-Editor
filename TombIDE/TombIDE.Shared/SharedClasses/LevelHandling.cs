@@ -81,16 +81,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"{level.DataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"",
 					"",
 					$"Flow.AddLevel({level.DataFileName})",
-					$"	{level.DataFileName} = {{",
-					$"		\"{level.Name}\",",
-					"		\"\",",
-					"		\"\",",
-					"		\"\",",
-					"		\"\",",
-					"		\"\",",
-					"		\"\",",
-					"		\"\"",
-					"	}"
+					$"	{level.DataFileName} = {{ \"{level.Name}\" }}"
 				};
 			}
 

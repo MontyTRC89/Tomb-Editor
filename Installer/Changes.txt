@@ -22,8 +22,10 @@ WadTool:
    - Fixed bug where ID_LASERSIGHT was not present.
  
 SoundTool:
- * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound. 
+ * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound.
  
+TombIDE:
+ * Don't generate empty strings for TEN projects in TIDE script editor.
  
 Version 1.6.3
 =============
