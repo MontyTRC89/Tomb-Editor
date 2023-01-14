@@ -320,8 +320,10 @@ namespace WadTool
                 treeDestWad.ContextMenuStrip = null;
 
             // Update menus
-            convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Enabled =
-            convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Enabled = treeDestWad.SelectedWadObjectIds.Count() > 0;
+            convertSelectionToDynamicLightingToolStripMenuItem.Enabled =
+            convertSelectionToStaticLightingToolStripMenuItem.Enabled =
+            convertToUVMappedToolStripMenuItem.Enabled = 
+            convertToTiledToolStripMenuItem.Enabled = treeDestWad.SelectedWadObjectIds.Count() > 0;
         }
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
@@ -675,6 +677,16 @@ namespace WadTool
         private void convertSelectedObjectsLightTypeToStaticToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.ConvertSelectedObjectLighting(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), WadMeshLightingType.VertexColors);
+        }
+
+        private void convertToUVMappedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ConvertSelectedObjectUVMapping(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), true);
+        }
+
+        private void convertToTiledToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ConvertSelectedObjectUVMapping(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), false);
         }
     }
 }

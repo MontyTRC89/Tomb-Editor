@@ -555,6 +555,20 @@ namespace TombLib.Utils
             return result;
         }
 
+        public bool SetParentArea(int maxTextureSize = int.MaxValue)
+        {
+            if (Texture.Image.Width > maxTextureSize || Texture.Image.Height > maxTextureSize)
+                return false;
+
+            ParentArea = Texture.Image.GetRect();
+            return true;
+        }
+
+        public void ClearParentArea()
+        {
+            ParentArea = Rectangle2.Zero;
+        }
+
         public float TriangleArea => MathC.CalculateArea(TexCoord0, TexCoord1, TexCoord2);
         public float QuadArea => MathC.CalculateArea(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
     }

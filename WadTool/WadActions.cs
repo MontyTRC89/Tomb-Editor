@@ -623,6 +623,74 @@ namespace WadTool
             return dest;
         }
 
+        public static void ConvertSelectedObjectUVMapping(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects, bool uvMapped)
+        {
+            if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)
+                return;
+
+            int counter = 0;
+
+            foreach (var o in objects)
+            {
+                var obj = tool.DestinationWad.TryGet(o);
+                if (obj == null)
+                    continue;
+
+                if (obj is WadMoveable)
+                {
+                    foreach (var mesh in (obj as WadMoveable).Meshes)
+                    {
+                        if (mesh.Polys.Count == 0)
+                            continue;
+
+                        for (int i = 0; i < mesh.Polys.Count; i++)
+                        {
+                            var poly = mesh.Polys[i];
+
+                            if (uvMapped)
+                                poly.Texture.SetParentArea(tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine ? 4096 : 256);
+                            else
+                                poly.Texture.ClearParentArea();
+
+                            mesh.Polys[i] = poly;
+                        }
+
+                        counter++;
+                    }
+                }
+                else if (obj is WadStatic)
+                {
+                    var mesh = (obj as WadStatic).Mesh;
+
+                    if (mesh.Polys.Count == 0)
+                        continue;
+
+                    for (int i = 0; i < mesh.Polys.Count; i++)
+                    {
+                        var poly = mesh.Polys[i];
+
+                        if (uvMapped)
+                            poly.Texture.SetParentArea(tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine ? 4096 : 256);
+                        else
+                            poly.Texture.ClearParentArea();
+
+                        mesh.Polys[i] = poly;
+                    }
+
+                    counter++;
+                }
+            }
+
+            if (counter == 0)
+            {
+                tool.SendMessage("There was no mesh data in selected objects.\nNothing was done.", PopupType.Info);
+                return;
+            }
+
+            tool.WadChanged(WadArea.Destination);
+            tool.SendMessage(counter + " mesh" + (counter > 1 ? "es were" : " was") + " converted to " + (uvMapped ? "UV-mapped" : "tiled") + " texture mapping mode.", PopupType.Info);
+        }
+
         public static void ConvertSelectedObjectLighting(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects, WadMeshLightingType type)
         {
             if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)

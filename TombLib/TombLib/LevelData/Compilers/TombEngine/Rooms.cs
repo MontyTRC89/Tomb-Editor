@@ -660,7 +660,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     texture.TexCoord3 = texture.TexCoord2;
 
                                     if (geometry.Model.Info.MappedUV)
-                                        texture.ParentArea = texture.Texture.Image.GetRect();
+                                        texture.SetParentArea(4096);
 
                                     texture.ClampToBounds();
 

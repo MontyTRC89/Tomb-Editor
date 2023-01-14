@@ -36,11 +36,16 @@
             this.newMoveableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newSpriteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertSelectionToStaticLightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertSelectionToDynamicLightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertToUVMappedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertToTiledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.meshEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertDestinationWadToTombEngineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,7 +110,6 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip.SuspendLayout();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
@@ -151,6 +155,7 @@
             this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.createToolStripMenuItem,
+            this.selectionToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.debugToolStripMenuItem});
@@ -340,15 +345,81 @@
             this.newSpriteSequenceToolStripMenuItem.Text = "New sprite sequence";
             this.newSpriteSequenceToolStripMenuItem.Click += new System.EventHandler(this.newSpriteSequenceToolStripMenuItem_Click);
             // 
+            // selectionToolStripMenuItem
+            // 
+            this.selectionToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lightingToolStripMenuItem,
+            this.texturesToolStripMenuItem});
+            this.selectionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.selectionToolStripMenuItem.Text = "Selection";
+            // 
+            // lightingToolStripMenuItem
+            // 
+            this.lightingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.lightingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.convertSelectionToStaticLightingToolStripMenuItem,
+            this.convertSelectionToDynamicLightingToolStripMenuItem});
+            this.lightingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lightingToolStripMenuItem.Name = "lightingToolStripMenuItem";
+            this.lightingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lightingToolStripMenuItem.Text = "Lighting";
+            // 
+            // convertSelectionToStaticLightingToolStripMenuItem
+            // 
+            this.convertSelectionToStaticLightingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertSelectionToStaticLightingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertSelectionToStaticLightingToolStripMenuItem.Name = "convertSelectionToStaticLightingToolStripMenuItem";
+            this.convertSelectionToStaticLightingToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.convertSelectionToStaticLightingToolStripMenuItem.Text = "Convert to static";
+            this.convertSelectionToStaticLightingToolStripMenuItem.Click += new System.EventHandler(this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem_Click);
+            // 
+            // convertSelectionToDynamicLightingToolStripMenuItem
+            // 
+            this.convertSelectionToDynamicLightingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertSelectionToDynamicLightingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertSelectionToDynamicLightingToolStripMenuItem.Name = "convertSelectionToDynamicLightingToolStripMenuItem";
+            this.convertSelectionToDynamicLightingToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.convertSelectionToDynamicLightingToolStripMenuItem.Text = "Convert to dynamic";
+            this.convertSelectionToDynamicLightingToolStripMenuItem.Click += new System.EventHandler(this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem_Click);
+            // 
+            // texturesToolStripMenuItem
+            // 
+            this.texturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.texturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.convertToTiledToolStripMenuItem,
+            this.convertToUVMappedToolStripMenuItem});
+            this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.texturesToolStripMenuItem.Text = "Textures";
+            // 
+            // convertToUVMappedToolStripMenuItem
+            // 
+            this.convertToUVMappedToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertToUVMappedToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertToUVMappedToolStripMenuItem.Name = "convertToUVMappedToolStripMenuItem";
+            this.convertToUVMappedToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.convertToUVMappedToolStripMenuItem.Text = "Convert to UV-mapped";
+            this.convertToUVMappedToolStripMenuItem.Click += new System.EventHandler(this.convertToUVMappedToolStripMenuItem_Click);
+            // 
+            // convertToTiledToolStripMenuItem
+            // 
+            this.convertToTiledToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertToTiledToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertToTiledToolStripMenuItem.Name = "convertToTiledToolStripMenuItem";
+            this.convertToTiledToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.convertToTiledToolStripMenuItem.Text = "Convert to tiled";
+            this.convertToTiledToolStripMenuItem.Click += new System.EventHandler(this.convertToTiledToolStripMenuItem_Click);
+            // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.meshEditorToolStripMenuItem,
-            this.toolStripSeparator4,
             this.convertDestinationWadToTombEngineToolStripMenuItem,
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem,
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem,
             this.toolStripSeparator2,
             this.optionsToolStripMenuItem1});
             this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -361,7 +432,7 @@
             this.meshEditorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.meshEditorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.meshEditorToolStripMenuItem.Name = "meshEditorToolStripMenuItem";
-            this.meshEditorToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
+            this.meshEditorToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.meshEditorToolStripMenuItem.Text = "Mesh editor...";
             this.meshEditorToolStripMenuItem.Click += new System.EventHandler(this.meshEditorToolStripMenuItem_Click);
             // 
@@ -370,27 +441,9 @@
             this.convertDestinationWadToTombEngineToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.convertDestinationWadToTombEngineToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.convertDestinationWadToTombEngineToolStripMenuItem.Name = "convertDestinationWadToTombEngineToolStripMenuItem";
-            this.convertDestinationWadToTombEngineToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
+            this.convertDestinationWadToTombEngineToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.convertDestinationWadToTombEngineToolStripMenuItem.Text = "Convert wad to TombEngine...";
             this.convertDestinationWadToTombEngineToolStripMenuItem.Click += new System.EventHandler(this.convertDestinationToTombEngineToolStripMenuItem_Click);
-            // 
-            // convertSelectedObjectsLightTypeToDynamicToolStripMenuItem
-            // 
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Name = "convertSelectedObjectsLightTypeToDynamicToolStripMenuItem";
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Text = "Convert selection to dynamic lighting";
-            this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem.Click += new System.EventHandler(this.convertSelectedObjectsLightTypeToDynamicToolStripMenuItem_Click);
-            // 
-            // convertSelectedObjectsLightTypeToStaticToolStripMenuItem
-            // 
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Name = "convertSelectedObjectsLightTypeToStaticToolStripMenuItem";
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Text = "Convert selection to static lighting";
-            this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem.Click += new System.EventHandler(this.convertSelectedObjectsLightTypeToStaticToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -398,14 +451,14 @@
             this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(270, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(230, 6);
             // 
             // optionsToolStripMenuItem1
             // 
             this.optionsToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.optionsToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(273, 22);
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(233, 22);
             this.optionsToolStripMenuItem1.Text = "Options...";
             this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -759,7 +812,7 @@
             this.darkToolStrip4.AutoSize = false;
             this.darkToolStrip4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkToolStrip4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkToolStrip4.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.darkToolStrip4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.darkToolStrip4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip4.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.darkToolStrip4.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -836,7 +889,7 @@
             this.darkToolStrip3.AutoSize = false;
             this.darkToolStrip3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkToolStrip3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkToolStrip3.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.darkToolStrip3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.darkToolStrip3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip3.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.darkToolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -921,7 +974,7 @@
             this.darkToolStrip2.AutoSize = false;
             this.darkToolStrip2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkToolStrip2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkToolStrip2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.darkToolStrip2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.darkToolStrip2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.darkToolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1112,14 +1165,6 @@
             this.deleteObjectToolStripMenuItem.Text = "Delete object";
             this.deleteObjectToolStripMenuItem.Click += new System.EventHandler(this.deleteObjectToolStripMenuItem_Click);
             // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(270, 6);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1247,11 +1292,15 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editMeshToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem convertSelectedObjectsLightTypeToStaticToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem convertSelectedObjectsLightTypeToDynamicToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertDestinationWadToTombEngineToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem selectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lightingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertSelectionToStaticLightingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertSelectionToDynamicLightingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertToUVMappedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertToTiledToolStripMenuItem;
     }
 }
 
