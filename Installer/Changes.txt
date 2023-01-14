@@ -2,7 +2,7 @@ Version 1.6.4
 =============
 
 Tomb Editor:
- * Add an option to activate lua or node events as actions for legacy triggers.
+ * Add an option to use Lua or node events as actions for legacy triggers.
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights.
  * Fix variable comparer nodes not working correctly without initialized variable.
