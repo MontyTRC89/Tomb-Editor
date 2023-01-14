@@ -277,12 +277,14 @@ namespace TombLib.Wad
                         if (id3 == Wad2Chunks.MeshQuad  || id3 == Wad2Chunks.MeshTriangle ||
                             id3 == Wad2Chunks.MeshQuad2 || id3 == Wad2Chunks.MeshTriangle2)
                         {
+                            bool isQuad = (id3 == Wad2Chunks.MeshQuad || id3 == Wad2Chunks.MeshQuad2);
+
                             var polygon = new WadPolygon();
-                            polygon.Shape = id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle;
+                            polygon.Shape = isQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle;
                             polygon.Index0 = LEB128.ReadInt(chunkIO.Raw);
                             polygon.Index1 = LEB128.ReadInt(chunkIO.Raw);
                             polygon.Index2 = LEB128.ReadInt(chunkIO.Raw);
-                            if (id3 == Wad2Chunks.MeshQuad)
+                            if (isQuad)
                                 polygon.Index3 = LEB128.ReadInt(chunkIO.Raw);
                             polygon.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
 
@@ -298,7 +300,7 @@ namespace TombLib.Wad
                             textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
-                            if (id3 == Wad2Chunks.MeshQuad || id3 == Wad2Chunks.MeshQuad2)
+                            if (isQuad)
                                 textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
                             else
                                 textureArea.TexCoord3 = textureArea.TexCoord2;
