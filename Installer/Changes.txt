@@ -17,7 +17,7 @@ WadTool:
  * TEN Base WAD:
    - Added new explosion sprite sequence by Gecko.
    - Added ID_DART as a real mesh instead of a particle.
-   - Added Add Lara's death animation for the Willard Spider (LARA_EXTRA_ANIM).
+   - Added Lara's death animation for the Willard Spider (LARA_EXTRA_ANIM).
    - Fixed bug where ID_LASERSIGHT was not present.
  
 SoundTool:
