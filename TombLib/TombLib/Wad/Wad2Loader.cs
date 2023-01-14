@@ -298,7 +298,7 @@ namespace TombLib.Wad
                             textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
                             textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
-                            if (id3 == Wad2Chunks.MeshQuad)
+                            if (id3 == Wad2Chunks.MeshQuad || id3 == Wad2Chunks.MeshQuad2)
                                 textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
                             else
                                 textureArea.TexCoord3 = textureArea.TexCoord2;
