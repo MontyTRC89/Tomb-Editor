@@ -1400,7 +1400,7 @@
 			<moveable id="37" name="Mercenary" essential="false"  t5m="TROOPS"/>
 			<moveable id="38" name="Raptor hung by rope (fish bait)" essential="false" t5m="SHOOT_SWITCH2" />
 			<moveable id="39" name="RX-Tech guy in red jacket" essential="false" t5m="MP_WITH_GUN" /> 
-			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS_CAIRO" /> 
+			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="MP_WITH_LASERSIGHT" /> 
 			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
 			<moveable id="42" name="Crawler mutant" essential="false" /> 
 			<moveable id="44" name="Tinnos wasp" essential="false" /> 
@@ -1410,7 +1410,7 @@
 			<moveable id="48" name="Raptor respawn point" />
 			<moveable id="49" name="Willardspider" essential="false" t5m="WILLARD" /> 
 			<moveable id="50" name="RX-Tech flamethrower guy" essential="false" t5m="FLAMETHROWER_BADDY" /> 
-			<moveable id="51" name="London goon" essential="false" t5m="SAS_CAIRO"/> 
+			<moveable id="51" name="London goon" essential="false" t5m="MP_WITH_LASERSIGHT"/> 
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="56" name="London guard" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="57" name="Sophia Lee" essential="false" t5m="SOPHIA_LEE_BOSS"/>
@@ -1418,7 +1418,7 @@
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
 			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
-			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
+			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="MP_WITH_LASERSIGHT" /> 
 			<moveable id="64" name="Gun turret" essential="false" t5m="SENTRY_GUN"/>
 			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="66" name="Tripwire" essential="false" />
@@ -2840,9 +2840,9 @@
 			<moveable id="92" name="DOG_MIP" description="Dog Mip" hidden="true" />
 			<moveable id="93" name="HAMMERHEAD" description="Hammerhead" t5m="SHARK" essential="false" />
 			<moveable id="94" name="HAMMERHEAD_MIP" description="Hammerhead Mip" hidden="true" />
-			<moveable id="95" name="SAS" description="Sas" t5m="SAS_CAIRO" essential="false" />
+			<moveable id="95" name="SAS" description="Sas" t5m="SAS" essential="false" />
 			<moveable id="96" name="SAS_MIP" description="Sas Mip" hidden="true" />
-			<moveable id="97" name="SAS_DYING" description="Sas Dying" t5m="SAS_DYING" essential="false" />
+			<moveable id="97" name="SAS_DYING" description="Sas Dying" essential="false" />
 			<moveable id="98" name="SAS_DYING_MIP" description="Sas Dying Mip" hidden="true" />
 			<moveable id="99" name="SAS_CAPTAIN" description="Sas Captain" t5m="SAS_CAPTAIN" essential="false" />
 			<moveable id="100" name="SAS_CAPTAIN_MIP" description="Sas Captain Mip" hidden="true" />
@@ -6025,7 +6025,7 @@
 			<moveable id="173" name="MP_WITH_GUN" />
 			<moveable id="174" name="BADDY1" />
 			<moveable id="175" name="BADDY2" />
-			<moveable id="176" name="SAS_CAIRO" />
+			<moveable id="176" name="MP_WITH_LASERSIGHT" />
 			<moveable id="177" name="SAS_DYING" />
 			<moveable id="178" name="SAS_CAPTAIN" />
 			<moveable id="179" name="SAS_DRAG_BLOKE" />
