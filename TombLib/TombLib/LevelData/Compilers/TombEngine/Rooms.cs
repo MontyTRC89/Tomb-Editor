@@ -1520,7 +1520,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 if (_portalRemapping.ContainsKey(p))
                 {
-                    if (_portalRemapping[p].Opacity != PortalOpacity.None)
+                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
                         continue;
                 }
 

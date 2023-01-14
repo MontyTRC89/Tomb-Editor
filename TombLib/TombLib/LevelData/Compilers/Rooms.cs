@@ -1694,9 +1694,10 @@ namespace TombLib.LevelData.Compilers
             {
                 if (_portalRemapping.ContainsKey(p))
                 {
-                    if (_portalRemapping[p].Opacity != PortalOpacity.None)
+                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
                         continue;
                 }
+
                 var otherRoom = roomList[p.AdjoiningRoom];
 
                 // Here we must decide if match or not, basing on flipped flag.
