@@ -13,6 +13,7 @@ WadTool:
  * Play sound preview on animation editor timeline scrubbling.
  * Fix sound previews not working if default sound device is incorrect in Windows settings.
  * Fix sound previews not playing for TEN right footprint flipeffect.
+ * Fix flickering in main window if empty object is selected.
  * Fix incorrect parsing of TR5 objects which had unknown flags packed together with mesh radius.
  * TEN Base WAD:
    - Added new explosion sprite sequence by Gecko.
