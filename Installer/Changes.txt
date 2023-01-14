@@ -3,7 +3,6 @@ Version 1.6.4
 
 Tomb Editor:
  * Add an option for imported geometry to define whether it is UV-mapped or not.
- * Add an option to activate lua or node events as actions for legacy triggers.
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights.
  * Fix variable comparer nodes not working correctly without initialized variable.
@@ -15,9 +14,12 @@ WadTool:
  * Play sound preview on animation editor timeline scrubbling.
  * Fix sound previews not working if default sound device is incorrect in Windows settings.
  * Fix sound previews not playing for TEN right footprint flipeffect.
+ * Fix flickering in main window if empty object is selected.
  * Fix incorrect parsing of TR5 objects which had unknown flags packed together with mesh radius.
  * TEN Base WAD:
+   - Added new explosion sprite sequence by Gecko.
    - Added ID_DART as a real mesh instead of a particle.
+   - Added Lara's death animation for the Willard Spider (LARA_EXTRA_ANIM).
    - Fixed bug where ID_LASERSIGHT was not present.
  
 SoundTool:

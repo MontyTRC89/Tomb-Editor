@@ -680,7 +680,7 @@
 			<moveable id="17" name="Masked goon (white mask, vest)" essential="false" t5m="GOON_SILENCER2" />
 			<moveable id="18" name="Masked goon (black mask)" essential="false" t5m="GOON_SILENCER3" />
 			<moveable id="19" name="Knifethrower" essential="false" t5m="KNIFETHROWER" />
-			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_SHOTGUN" />
+			<moveable id="20" name="Shotgun goon" essential="false" t5m="WORKER_DUAL_REVOLVER" />
 			<moveable id="21" name="Rat" essential="false" t5m="RAT" />
 			<moveable id="22" name="Dragon (front)" show_with="23" essential="false" t5m="DRAGON_FRONT" />
 			<moveable id="23" name="Dragon (back)" show_with="22" essential="false" t5m="DRAGON_BACK" />
@@ -2483,7 +2483,22 @@
 			<anim item="70" id="20" name="WALK_BACK_LEFT" />
 			<anim item="70" id="21" name="WALK_BACK_RIGHT" />
 			<anim item="70" id="22" name="DEATH" />	
-
+			
+			<!--WILLARD-->
+			<anim item="49" id="0" name= "STOP" />
+			<anim item="49" id="1" name= "WALK_START" />
+			<anim item="49" id="2" name= "WALK" />
+			<anim item="49" id="3" name= "WALK_TO_STOP_LEFT" />
+			<anim item="49" id="4" name= "WALK_TO_STOP_RIGHT" />
+			<anim item="49" id="5" name= "STOP_ATTACK" />
+			<anim item="49" id="6" name= "KILL_LARA" />
+			<anim item="49" id="7" name= "STUN_START" />
+			<anim item="49" id="8" name= "STUN" />
+			<anim item="49" id="9" name= "STUN_TO_STOP" />
+			<anim item="49" id="10" name= "WALK_ATTACK_RIGHT" />
+			<anim item="49" id="11" name= "WALK_ATTACK_LEFT" />
+			<anim item="49" id="12" name= "JUMP_TURN_180" />
+			<anim item="49" id="13" name= "SHOOT" />
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -2595,7 +2610,20 @@
 			<state item="41" id="10" name="TURN" />
 			<state item="41" id="11" name="DEATH" />
 			<state item="41" id="12" name="CROUCH_ATTACK" />
-
+			
+			<!--WILLARD-->
+			<state item="49" id="0" name= "STOP" />
+			<state item="49" id="1" name= "WALK" />
+			<state item="49" id="2" name= "ATTACK" />
+			<state item="49" id="3" name= "KILL_LARA" />
+			<state item="49" id="4" name= "STUN_START" />
+			<state item="49" id="5" name= "STUN" />
+			<state item="49" id="6" name= "STUN_END" />
+			<state item="49" id="7" name= "WALK_ATTACK_RIGHT" />
+			<state item="49" id="8" name= "WALK_ATTACK_LEFT" />
+			<state item="49" id="9" name= "JUMP_TURN_180" />
+			<state item="49" id="10" name= "SHOOT" />
+			
 			<!-- 'Damned' stick-wielding goon -->
 			<state item="53" id="0" name="EMPTY" />
 			<state item="53" id="1" name="STOP" />
@@ -8044,6 +8072,8 @@
 			<anim item="1" id="11" name="GONG_STRIKE" />
 			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
+			<anim item="1" id="14" name="DEATH_SETH" />
+			<anim item="1" id="15" name="DEATH_WILLARD" />
 			
 			<!-- SWAT -->
 			<anim item="184" id="0" name = "IDLE" />
@@ -8198,7 +8228,23 @@
 			<anim item="244" id="19" name="ATTACK" />
 			<anim item="244" id="20" name="WALK_BACK_LEFT" />
 			<anim item="244" id="21" name="WALK_BACK_RIGHT" />
-			<anim item="244" id="22" name="DEATH" />	
+			<anim item="244" id="22" name="DEATH" />
+			
+			<!--WILLARD-->
+			<anim item="246" id="0" name= "STOP" />
+			<anim item="246" id="1" name= "WALK_START" />
+			<anim item="246" id="2" name= "WALK" />
+			<anim item="246" id="3" name= "WALK_TO_STOP_LEFT" />
+			<anim item="246" id="4" name= "WALK_TO_STOP_RIGHT" />
+			<anim item="246" id="5" name= "STOP_ATTACK" />
+			<anim item="246" id="6" name= "KILL_LARA" />
+			<anim item="246" id="7" name= "STUN_START" />
+			<anim item="246" id="8" name= "STUN" />
+			<anim item="246" id="9" name= "STUN_TO_STOP" />
+			<anim item="246" id="10" name= "WALK_ATTACK_RIGHT" />
+			<anim item="246" id="11" name= "WALK_ATTACK_LEFT" />
+			<anim item="246" id="12" name= "JUMP_TURN_180" />
+			<anim item="246" id="13" name= "SHOOT" />
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -8249,6 +8295,19 @@
 			<state item="244" id="7" name="ATTACK "/>
 			<state item="244" id="8" name="WALK_BACK "/>
 			<state item="244" id="9" name="DEATH "/>
+			
+			<!--WILLARD-->
+			<state item="246" id="0" name= "STOP" />
+			<state item="246" id="1" name= "WALK" />
+			<state item="246" id="2" name= "ATTACK" />
+			<state item="246" id="3" name= "KILL_LARA" />
+			<state item="246" id="4" name= "STUN_START" />
+			<state item="246" id="5" name= "STUN" />
+			<state item="246" id="6" name= "STUN_END" />
+			<state item="246" id="7" name= "WALK_ATTACK_RIGHT" />
+			<state item="246" id="8" name= "WALK_ATTACK_LEFT" />
+			<state item="246" id="9" name= "JUMP_TURN_180" />
+			<state item="246" id="10" name= "SHOOT" />
 		</states>
 	</game>
 </xml>
