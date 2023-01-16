@@ -63,14 +63,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
 
             // Add all sprites to the texture packer
-            var spriteAllocator = new Util.SpriteAllocator(_level.Settings.GameVersion == TRVersion.Game.TombEngine ? 2048 : 256);
+            var spriteAllocator = new TombEngineSpriteAllocator(4096);
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
                     spriteTextureIDs.Add(sprite.Texture.Hash, spriteAllocator.GetOrAllocateTextureID(sprite.Texture));
 
             // Pack textures
-            _spritesTexturesPages = new List<ImageC>(); //spriteAllocator.PackTextures();
+            _spritesTexturesPages = spriteAllocator.PackTextures();
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
@@ -89,33 +89,33 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var id = spriteTextureIDs[sprite.Texture.Hash];
                     if (id == -1)
                     {
-                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) + 
+                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) +
                             " in sequence #" + sequence.Id.TypeId + " wasn't added: size is too big or coordinates are invalid.");
                         continue;
                     }
 
-                    /*var packInfo = spriteAllocator.GetPackInfo(id);
-                 
-                    float x = packInfo.Pos.X / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
-                    float y = packInfo.Pos.Y / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
+                    var packInfo = spriteAllocator.GetPackInfo(id);
+
+                    int padding = 8;
+
+                    float x = (packInfo.Pos.X + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
+                    float y = (packInfo.Pos.Y + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
                     float w = (sprite.Texture.Image.Width - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
-                    float h = (sprite.Texture.Image.Height - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;*/
+                    float h = (sprite.Texture.Image.Height - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
 
                     var newTexture = new TombEngineSpriteTexture();
 
-                    newTexture.Tile = _spritesTexturesPages.Count; // packInfo.OutputTextureID;
-                    newTexture.X1 = 0.0f;
-                    newTexture.Y1 = 0.0f;
-                    newTexture.X2 = 1.0f;
-                    newTexture.Y2 = 0.0f;
-                    newTexture.X3 = 1.0f;
-                    newTexture.Y3 = 1.0f;
-                    newTexture.X4 = 0.0f;
-                    newTexture.Y4 = 1.0f;
+                    newTexture.Tile = packInfo.OutputTextureID;
+                    newTexture.X1 = x;
+                    newTexture.Y1 = y;
+                    newTexture.X2 = x + w;
+                    newTexture.Y2 = y;
+                    newTexture.X3 = x + w;
+                    newTexture.Y3 = y + h;
+                    newTexture.X4 = x;
+                    newTexture.Y4 = y + h;
 
-                    _spritesTexturesPages.Add(sprite.Texture.Image);
                     tempSprites.Add(newTexture);
-                    //sprite.Texture.Image.Save("F:\\sprite" + newTexture.Tile + ".png");
                 }
 
                 tempSequences.Add(newSequence);
@@ -124,6 +124,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _spriteSequences = tempSequences;
             _spriteTextures = tempSprites;
+
+#if DEBUG
+            int atlasSize = TombEngineTexInfoManager.AtlasSize;
+
+            for (int n = 0; n < _spritesTexturesPages.Count; n++)
+            {
+                using (var bmp = _spritesTexturesPages[n].ToBitmap())
+                {
+                    using (var g = System.Drawing.Graphics.FromImage(bmp))
+                    {
+                        foreach (var sprite in tempSprites)
+                        {
+                            var spriteBoundingBox = new System.Drawing.Rectangle(
+                                    (int)(sprite.X1 * _spritesTexturesPages[n].Width),
+                                    (int)(sprite.Y1 * _spritesTexturesPages[n].Height),
+                                    (int)((sprite.X2 - sprite.X1) * _spritesTexturesPages[n].Width),
+                                    (int)((sprite.Y3 - sprite.Y2) * _spritesTexturesPages[n].Height));
+                            g.DrawRectangle(System.Drawing.Pens.GreenYellow, spriteBoundingBox);
+                        }
+                        bmp.Save("OutputDebug\\SpritesAtlas" + n + ".png");
+                    }
+                }
+            }
+#endif 
         }
 
         static bool DoesTypeMatch(byte[] type, string value)
