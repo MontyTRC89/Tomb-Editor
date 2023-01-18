@@ -1,6 +1,10 @@
-﻿using NLog;
+﻿using BCnEncoder.Encoder;
+using BCnEncoder.Shared;
+using NLog;
+using Pfim;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -214,6 +218,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return final;
         }
 
+        private byte[] CompressTexture(ImageC i, CompressionFormat format)
+        {
+            using Image bitmap = i.ToBitmap();
+
+            BcEncoder encoder = new BcEncoder();
+
+            encoder.OutputOptions.GenerateMipMaps = true;
+            encoder.OutputOptions.Quality = CompressionQuality.Balanced;
+            encoder.OutputOptions.Format = format;
+            encoder.OutputOptions.FileFormat = OutputFileFormat.Dds;  
+
+            MemoryStream output = new MemoryStream();
+            encoder.EncodeToStream(i.ToByteArray(), i.Width,i.Height,PixelFormat.Bgra32, output);
+
+            return output.ToArray();    
+        }
+
         void WriteTextureData(BinaryWriterEx writer)
         {
             ReportProgress(90, "Writing texture data...");
@@ -231,9 +252,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(atlas.Height);
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    var output = RemoveColorChunks(ms);
+                    byte[] output = CompressTexture(atlas, CompressionFormat.Bc3);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -243,17 +262,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var sky = GetSkyTexture();
             using (var ms = new MemoryStream())
             {
-                using (var bmp = sky.ToBitmap())
-                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 writer.Write(sky.Width);
                 writer.Write(sky.Height);
-                var output = RemoveColorChunks(ms);
+                byte[] output = CompressTexture(sky, CompressionFormat.Bc3);
                 writer.Write((int)output.Length);
                 writer.Write(output.ToArray());
             }
         }
 
-        static void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
+        void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
         {
             writer.Write(atlasList.Count);
             foreach (var atlas in atlasList)
@@ -263,10 +280,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.ColorMap.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-                    var output = RemoveColorChunks(ms);
+                    byte[] output = CompressTexture(atlas.ColorMap, CompressionFormat.Bc3);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -277,10 +291,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.NormalMap.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-                    var output = RemoveColorChunks(ms);
+                    byte[] output = CompressTexture(atlas.NormalMap, CompressionFormat.Bc5);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
