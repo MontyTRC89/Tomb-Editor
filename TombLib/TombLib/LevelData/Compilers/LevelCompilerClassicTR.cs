@@ -246,7 +246,7 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    Room = (short)_roomsRemappingDictionary[instance.Room],
+                    Room = (short)_roomRemapping[instance.Room],
                     Flags = flags
                 });
             }
@@ -286,7 +286,7 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)Math.Round(-position.Y),
                     Z = (int)Math.Round(position.Z),
-                    Room = _roomsRemappingDictionary[instance.Room],
+                    Room = _roomRemapping[instance.Room],
                     FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
                     Roll = unchecked((short)rollTo65536),
                     Timer = (ushort)instance.Timer,
@@ -469,7 +469,7 @@ namespace TombLib.LevelData.Compilers
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                            Room = (ushort)_roomsRemappingDictionary[instance.Room],
+                            Room = (ushort)_roomRemapping[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
                             Flags = (ushort)(instance.CodeBits << 1)
@@ -503,7 +503,7 @@ namespace TombLib.LevelData.Compilers
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)realID),
-                            Room = (short)_roomsRemappingDictionary[instance.Room],
+                            Room = (short)_roomRemapping[instance.Room],
                             Angle = angleInt,
                             Intensity1 = color,
                             Ocb = isNewTR ? instance.Ocb : unchecked((short)color),

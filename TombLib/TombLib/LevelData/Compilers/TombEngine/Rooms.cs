@@ -12,8 +12,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
-        private readonly List<Room> _roomsUnmapping = new List<Room>();
+        private readonly Dictionary<Room, int> _roomRemapping = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<TombEnginePortal, PortalInstance> _portalRemapping = new Dictionary<TombEnginePortal, PortalInstance>();
+        private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 
@@ -29,13 +30,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var room in _level.ExistingRooms)
             {
-                _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
-                _roomsUnmapping.Add(room);
+                _roomRemapping.Add(room, _roomUnmapping.Count);
+                _roomUnmapping.Add(room);
             }
 
             _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
-            foreach (var room in _roomsRemappingDictionary.Keys)
+            foreach (var room in _roomRemapping.Keys)
                 _tempRooms.Add(room, BuildRoom(room));
 
             // Remove WaterScheme values for water rooms
@@ -52,7 +53,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
             });
 
-            ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
+            ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
 
             if (!_level.Settings.FastMode)
             {
@@ -140,7 +141,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
-                AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomsRemappingDictionary[room.AlternateRoom] : -1,
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomRemapping[room.AlternateRoom] : -1,
                 AlternateGroup = room.Alternated ? room.AlternateGroup : -1,
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
@@ -1257,13 +1258,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // Create portal
-            outPortals.Add(new TombEnginePortal
+            var portalToAdd = new TombEnginePortal
             {
-                AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
+                AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
                 Vertices = portalVertices,
                 Normal = normal,
                 Direction = portal.Direction
-            });
+            };
+
+            _portalRemapping.TryAdd(portalToAdd, portal);
+            outPortals.Add(portalToAdd);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1493,13 +1497,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     normal = new VectorInt3((int)(normal.X / 2), (int)(normal.Y / 2), (int)(normal.Z / 2));
 
                 // Add portal
-                outPortals.Add(new TombEnginePortal
+                var portalToAdd = new TombEnginePortal
                 {
-                    AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
+                    AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
                     Vertices = portalVertices,
                     Normal = normal,
                     Direction = isCeiling ? PortalDirection.Ceiling : PortalDirection.Floor
-                });
+                };
+
+                _portalRemapping.TryAdd(portalToAdd, portal);
+                outPortals.Add(portalToAdd);
             }
         }
 
@@ -1511,6 +1518,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var p in room.Portals)
             {
+                if (_portalRemapping.ContainsKey(p))
+                {
+                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
+                        continue;
+                }
+
                 var otherRoom = roomList[p.AdjoiningRoom];
 
                 // Here we must decide if match or not, basing on flipped flag.

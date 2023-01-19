@@ -123,7 +123,7 @@
     <Compile Update="Controls\Panel2DGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\PanelRendering3D.cs" />
+    <Compile Update="Controls\Panel3D\Panel3D.cs" />
     <Compile Update="Controls\PanelTextureMap.cs" />
   </ItemGroup>
   <ItemGroup>

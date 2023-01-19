@@ -151,19 +151,19 @@ namespace TombLib.LevelData.Compilers
                 if (_sortedRooms[i] == null)
                     writer.Write((short)-1);
                 else
-                    writer.Write((short)_roomsRemappingDictionary[_sortedRooms[i]]);
+                    writer.Write((short)_roomRemapping[_sortedRooms[i]]);
             }
         }
 
         private void WriteNgChunkExtraRoomFlags(BinaryWriter writer)
         {
-            writer.Write((ushort)(3 + _roomsUnmapping.Count * 4));
+            writer.Write((ushort)(3 + _roomUnmapping.Count * 4));
             writer.Write((ushort)0x8009);
 
-            writer.Write((ushort)_roomsUnmapping.Count);
-            for (var i = 0; i < _roomsUnmapping.Count; i++)
+            writer.Write((ushort)_roomUnmapping.Count);
+            for (var i = 0; i < _roomUnmapping.Count; i++)
             {
-                Room room = _roomsUnmapping[i];
+                Room room = _roomUnmapping[i];
                 var buffer = new byte[] { room.Properties.TypeStrength, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);
             }

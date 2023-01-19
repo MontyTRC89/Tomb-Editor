@@ -2042,10 +2042,13 @@ namespace WadTool
                 {
                     idToPlay = ac.Parameter2 & 0x3FFF;
                 }
-                else if (previewType == SoundPreviewType.LandWithMaterial && 
-                         ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
+                else if (ac.Type == WadAnimCommandType.FlipEffect &&
+                         previewType == SoundPreviewType.LandWithMaterial &&
+                         _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
-                    idToPlay = _currentMaterialIndex;
+                    var flipID = (ac.Parameter2 & 0x3FFF);
+                    if (flipID == 32 || flipID == 33)
+                        idToPlay = _currentMaterialIndex;
                 }
 
                 if (idToPlay != -1 && ac.Parameter1 == _frameCount)

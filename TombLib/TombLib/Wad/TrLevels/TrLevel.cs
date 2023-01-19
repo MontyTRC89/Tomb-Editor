@@ -343,7 +343,8 @@ namespace TombLib.Wad.TrLevels
                             var mesh = new tr_mesh();
 
                             mesh.Center = new tr_vertex(levelReader.ReadInt16(), levelReader.ReadInt16(), levelReader.ReadInt16());
-                            mesh.Radius = levelReader.ReadInt32();
+                            mesh.Radius = levelReader.ReadInt16();
+                            levelReader.ReadInt16(); // Unknown int16, used for some kind of flags?
                             numBytes += 10;
 
                             mesh.NumVertices = levelReader.ReadInt16();

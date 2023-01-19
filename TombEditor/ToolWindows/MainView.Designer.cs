@@ -1,4 +1,6 @@
-﻿namespace TombEditor.ToolWindows
+﻿using TombEditor.Controls.Panel3D;
+
+namespace TombEditor.ToolWindows
 {
     partial class MainView
     {
@@ -16,7 +18,7 @@
         private void InitializeComponent()
         {
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel3D = new TombEditor.Controls.Panel3D.Panel3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.panelStats = new System.Windows.Forms.Panel();
             this.tbStats = new TombEditor.Controls.RichTextLabel();
@@ -904,7 +906,7 @@
         private System.Windows.Forms.ToolStripButton butAddGhostBlock;
         private System.Windows.Forms.ToolStripButton butCompileLevel;
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
-        private TombEditor.Controls.PanelRendering3D panel3D;
+        private Panel3D panel3D;
         private TombEditor.Controls.Panel2DMap panel2DMap;
         private System.Windows.Forms.ToolStripButton butCenterCamera;
         private System.Windows.Forms.ToolStripDropDownButton butDrawObjects;

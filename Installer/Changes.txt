@@ -2,21 +2,30 @@ Version 1.6.4
 =============
 
 Tomb Editor:
-* Add an option to activate lua or node events as actions for legacy triggers.
+ * Add an option to use Lua or node events as actions for legacy triggers in TEN.
+ * Extend pathfinding data over slopes for flying enemies in TEN levels.
+ * Fix possible issues with pathfinding on extended heights in TEN levels.
+ * Fix variable comparer nodes not working correctly without initialized variable.
+ * Fix incorrect light interpolation between rooms with non-traversable portals.
 
 WadTool:
+ * Increase compatibility with imported animations with inconsistent bone and mesh setups.
  * Play sound preview on animation editor timeline scrubbling.
+ * Fix sound previews not working if default sound device is incorrect in Windows settings.
+ * Fix sound previews not playing for TEN right footprint flipeffect.
+ * Fix flickering in main window if empty object is selected.
+ * Fix incorrect parsing of TR5 objects which had unknown flags packed together with mesh radius.
  * TEN Base WAD:
- - Added ID_BOSS_SHOCKWAVE, ID_BOSS_EXPLOSION, ID_BOSS_SHIELD (Credit to LGG_Productions and TokyoSU).
- - Added ID_LASERHEAD, ID_LASERHEAD_TENTACLE, ID_LASERHEAD_BASE (TR5 Mini-Boss).
- - Added ID_SAS_CAIRO.
- - Bugfix for ID_SAS_CAIRO which prevented it from coming out of the "blinded" animation if player uses a flash grenade.
- - Added ID_DART as a real mesh instead of a particle.
- - Fixed bug where ID_LASERSIGHT was not present.
+   - Added new explosion sprite sequence by Gecko.
+   - Added ID_DART as a real mesh instead of a particle.
+   - Added Lara's death animation for the Willard Spider (LARA_EXTRA_ANIM).
+   - Fixed bug where ID_LASERSIGHT was not present.
  
 SoundTool:
- * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound. 
+ * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound.
  
+TombIDE:
+ * Don't generate empty strings for TEN projects in TIDE script editor.
  
 Version 1.6.3
 =============

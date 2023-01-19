@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
@@ -27,7 +28,12 @@ namespace TombLib.Controls
                     if (_currentObject != value) _currentFrame = 0;
                 }
                 else
-                    _animTimer.Enabled = AnimatePreview;
+                {
+                    var validObject = (((value as WadMoveable)?.Meshes.All(m => m.VertexPositions.Count > 0) ?? false) ||
+                                       ((value as WadStatic)?.Mesh.VertexPositions.Count > 0));
+
+                    _animTimer.Enabled = validObject && AnimatePreview;
+                }
 
                 _currentObject = value;
                 Invalidate();
