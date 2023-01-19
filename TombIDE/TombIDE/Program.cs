@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -21,7 +23,14 @@ namespace TombIDE
 			UpdateNGCompilerPaths();
 
 			Application.EnableVisualStyles();
-			//Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#if NET5_0
+			typeof(Control)
+				.GetRuntimeFields()
+				.FirstOrDefault(x => x.Name == "s_defaultFont")?
+				.SetValue(null, new Font("Segoe UI", 8.25F));
+#else
+            Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#endif
 			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.SetCompatibleTextRenderingDefault(false);
 

@@ -3,7 +3,10 @@ using DarkUI.Win32;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -33,8 +36,15 @@ namespace WadTool
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
                 Application.EnableVisualStyles();
-                //Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+#if NET5_0
+				typeof(Control)
+					.GetRuntimeFields()
+					.FirstOrDefault(x => x.Name == "s_defaultFont")?
+					.SetValue(null, new Font("Segoe UI", 8.25F));
+#else
+                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#endif
+				Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 Application.ThreadException += (sender, e) =>

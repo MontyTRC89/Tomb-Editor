@@ -1,6 +1,9 @@
 ﻿using MiniFileAssociation;
 using System;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -30,7 +33,14 @@ namespace FileAssociation
 		private static void OpenGUI()
 		{
 			Application.EnableVisualStyles();
-			//Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#if NET5_0
+			typeof(Control)
+				.GetRuntimeFields()
+				.FirstOrDefault(x => x.Name == "s_defaultFont")?
+				.SetValue(null, new Font("Segoe UI", 8.25F));
+#else
+            Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#endif
 			Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new FormMain());

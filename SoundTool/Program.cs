@@ -3,7 +3,10 @@ using DarkUI.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -66,8 +69,15 @@ namespace SoundTool
                 mutex.WaitOne(TimeSpan.Zero, true))
             {
                 Application.EnableVisualStyles();
-                //Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+#if NET5_0
+				typeof(Control)
+					.GetRuntimeFields()
+					.FirstOrDefault(x => x.Name == "s_defaultFont")?
+					.SetValue(null, new Font("Segoe UI", 8.25F));
+#else
+                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#endif
+				Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
 

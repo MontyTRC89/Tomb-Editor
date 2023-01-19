@@ -13,6 +13,9 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using System.Text;
+using System.Drawing;
+using System.Reflection;
+using System.Linq;
 
 namespace TombEditor
 {
@@ -64,7 +67,14 @@ namespace TombEditor
 
                     // Setup application
                     Application.EnableVisualStyles();
-                    //Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#if NET5_0
+                    typeof(Control)
+                        .GetRuntimeFields()
+                        .FirstOrDefault(x => x.Name == "s_defaultFont")?
+                        .SetValue(null, new Font("Segoe UI", 8.25F));
+#else
+                    Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+#endif
                     Application.SetHighDpiMode(HighDpiMode.SystemAware);
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
