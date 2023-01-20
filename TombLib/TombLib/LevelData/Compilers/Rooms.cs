@@ -540,7 +540,7 @@ namespace TombLib.LevelData.Compilers
                                 //Apply Shade factor
                                 color *= shade;
                             }
-                            var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
+                            var vertexColor = PackLightColor(color, _level.Settings);
                             var trVertex = new tr_room_vertex
                             {
                                 Position = new tr_vertex
@@ -549,8 +549,8 @@ namespace TombLib.LevelData.Compilers
                                     Y = (short)-(position.Y + room.WorldPos.Y),
                                     Z = (short)position.Z
                                 },
-                                Lighting1 = vertexColor,
-                                Lighting2 = vertexColor,
+                                Lighting1 = vertexColor.Item1,
+                                Lighting2 = vertexColor.Item2,
                                 Attributes = (ushort)lightingEffect
                             };
                             roomVertices.Add(trVertex);
@@ -654,27 +654,27 @@ namespace TombLib.LevelData.Compilers
                             // Pack the light according to chosen lighting model
                             if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                             {
-                                var color = PackLightColor(vertex.Color * geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(vertex.Color * geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128), _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128), _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.TintAsAmbient)
                             {
-                                var color = PackLightColor(geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else
                             {
-                                var color = PackLightColor(room.Properties.AmbientLight * geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(room.Properties.AmbientLight * geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
 
                             // HACK: Find a vertex with same coordinates and merge with it.
@@ -961,15 +961,15 @@ namespace TombLib.LevelData.Compilers
 
                         newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
 
-                        var spriteColor = PackLightColor(new Vector3(sprite.Color.Z, sprite.Color.Y, sprite.Color.X), _level.Settings.GameVersion);
+                        var spriteColor = PackLightColor(new Vector3(sprite.Color.Z, sprite.Color.Y, sprite.Color.X), _level.Settings);
 
                         roomVertices.Add(new tr_room_vertex()
                         { 
                             Position = new tr_vertex((short) (sprite.Position.X), 
                                                      (short)-(room.WorldPos.Y + sprite.Position.Y), 
                                                      (short) (sprite.Position.Z)),
-                            Lighting1 = spriteColor,
-                            Lighting2 = spriteColor
+                            Lighting1 = spriteColor.Item1,
+                            Lighting2 = spriteColor.Item2
                         });
                     }
 
@@ -1008,7 +1008,7 @@ namespace TombLib.LevelData.Compilers
                 _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
 
                 // Calculate color / intensity
-                var intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion);
+                var intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings).Item2;
 
                 // Resolve intensity2. It is used for TR2 only, also TRNG reuses this field for static OCB.
                 // For TR5, intensity2 must be set to 1 or static mesh won't be drawn.
@@ -1092,9 +1092,9 @@ namespace TombLib.LevelData.Compilers
                 trVertex.Color = PackColorTo32Bit(Color);
             else
             {
-                var color = PackLightColor(Color, room.Level.Settings.GameVersion);
-                trVertex.Lighting1 = color;
-                trVertex.Lighting2 = color;
+                var color = PackLightColor(Color, room.Level.Settings);
+                trVertex.Lighting1 = color.Item1;
+                trVertex.Lighting2 = color.Item2;
             }
 
             return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
@@ -1891,12 +1891,28 @@ namespace TombLib.LevelData.Compilers
                 }
         }
 
-        private static ushort PackLightColor(Vector3 color, TRVersion.Game version)
+        private static Tuple<ushort, ushort> PackLightColor(Vector3 color, LevelSettings settings)
         {
-            if (version >= TRVersion.Game.TR3)
-                return PackColorTo16Bit(color);
+            ushort packed1 = 0;
+            ushort packed2 = 0;
+
+            if (settings.GameVersion == TRVersion.Game.TRNG && settings.Room32BitLighting)
+            {
+                packed1 = PackColorTo24BitLow(color);
+                packed2 = PackColorTo24BitHigh(color);
+            }
+            else if (settings.GameVersion >= TRVersion.Game.TR3)
+            {
+                packed1 = PackColorTo16Bit(color);
+                packed2 = packed1;
+            }
             else
-                return PackColorTo13BitGreyscale(color);
+            {
+                packed1 = PackColorTo13BitGreyscale(color);
+                packed2 = packed1;
+            }
+
+            return new Tuple<ushort, ushort>(packed1, packed2);
         }
 
         private static ushort PackColorTo16Bit(Vector3 color)
@@ -1957,6 +1973,26 @@ namespace TombLib.LevelData.Compilers
             Vector3 e1 = v1 - v0;
             Vector3 e2 = v2 - v0;
             return Vector3.Normalize(Vector3.Cross(e1, e2));
+        }
+
+        private static ushort PackColorTo24BitHigh(Vector3 color)
+        {
+            tr_color result = PackColorTo24Bit(color);
+            ushort high = 0;
+            high |= (ushort)((result.Red >> 3) << 10);
+            high |= (ushort)((result.Green >> 3) << 5);
+            high |= (ushort)(result.Blue >> 3);
+            return high;
+        }
+
+        private static ushort PackColorTo24BitLow(Vector3 color)
+        {
+            tr_color result = PackColorTo24Bit(color);
+            ushort low = 0;
+            low |= (ushort)((result.Red & 0x7) << 6);
+            low |= (ushort)((result.Green & 0x7) << 3);
+            low |= (ushort)(result.Blue & 0x7);
+            return low;
         }
     }
 }

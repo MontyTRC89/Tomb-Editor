@@ -492,7 +492,7 @@ namespace TombLib.LevelData.Compilers
                             instanceColor = Vector3.One;
 
                         // Calculate TR color
-                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings.GameVersion);
+                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings).Item2;
 
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);
