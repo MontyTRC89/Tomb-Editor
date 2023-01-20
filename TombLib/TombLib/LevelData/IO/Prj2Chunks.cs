@@ -48,6 +48,7 @@ namespace TombLib.LevelData.IO
 		/**/public static readonly ChunkId RemoveUnusedObjects = ChunkId.FromString("TeRemoveUnusedObjects");
 		/**/public static readonly ChunkId EnableCustomSampleRate = ChunkId.FromString("TeEnableCustomSampleRate");
 		/**/public static readonly ChunkId CustomSampleRate = ChunkId.FromString("TeCustomSampleRate");
+        /**/public static readonly ChunkId Room32BitLighting = ChunkId.FromString("TeRoom32BitLighting");
 		/**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
         /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
         /**/public static readonly ChunkId SelectedSounds = ChunkId.FromString("TeSelectedSounds");

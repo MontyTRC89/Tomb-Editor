@@ -298,6 +298,8 @@ namespace TombLib.LevelData.IO
                     settings.EnableCustomSampleRate = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.CustomSampleRate)
                     settings.CustomSampleRate = chunkIO.ReadChunkInt(chunkSize);
+                else if (id == Prj2Chunks.Room32BitLighting)
+                    settings.Room32BitLighting = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
