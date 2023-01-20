@@ -653,6 +653,7 @@ namespace TombEditor.Forms
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
+            cbUse32BitLighting.Checked = _levelSettings.Room32BitLighting;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
@@ -683,6 +684,7 @@ namespace TombEditor.Forms
             currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
             GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
+            cbUse32BitLighting.Enabled = currentVersionToCheck;
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
@@ -1326,6 +1328,12 @@ namespace TombEditor.Forms
         private void cbDither16BitTextures_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.Dither16BitTextures = cbDither16BitTextures.Checked;
+            UpdateDialog();
+        }
+
+        private void cbUse32BitLighting_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.Room32BitLighting = cbUse32BitLighting.Checked;
             UpdateDialog();
         }
 
