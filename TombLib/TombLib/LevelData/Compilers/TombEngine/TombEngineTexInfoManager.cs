@@ -24,15 +24,10 @@ namespace TombLib.LevelData.Compilers
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const int AtlasSize = 4096;
-        public const int PageSize = AtlasSize;
-        public const int PagesPerRowInAtlas = AtlasSize / PageSize;
-        public const int PagesPerAtlas = PagesPerRowInAtlas * PagesPerRowInAtlas;
-
         private const int _noTexInfo = -1;
         private const int _dummyTexInfo = -2;
         private const int _minimumPadding = 1;
-        private const int _minimumTileSize = AtlasSize;
+        private const int _minimumTileSize = 4096;
         private const float _animTextureLookupMargin = 5.0f;
 
         // We need to keep level reference for padding and bumpmap references.
@@ -516,8 +511,8 @@ namespace TombLib.LevelData.Compilers
                     TexCoordFloat[i].Y /= (float)AtlasDimensions.Y;
 
                     // Pack coordinates into 2-byte set (whole and frac parts)
-                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * (float)(AtlasSize - 1))),
-                                                 (((int)Math.Truncate(coord.Y)) << 8) + (int)(Math.Floor(coord.Y % 1.0f * (float)(AtlasSize - 1))));
+                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * (float)(maxTextureSize - 1))),
+                                                 (((int)Math.Truncate(coord.Y)) << 8) + (int)(Math.Floor(coord.Y % 1.0f * (float)(maxTextureSize - 1))));
                 }
 
                 if (child.IsForTriangle)
@@ -545,7 +540,7 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                MaxTileSize = (ushort)AtlasSize;
+                MaxTileSize = (ushort)_minimumTileSize;
             }
 
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
@@ -1134,7 +1129,7 @@ namespace TombLib.LevelData.Compilers
 
                 currentPage++;
                 fitPage = currentPage;
-                texPackers.Add(new RectPackerTree(new VectorInt2(AtlasSize, AtlasSize)));
+                texPackers.Add(new RectPackerTree(new VectorInt2(MaxTileSize, MaxTileSize)));
                 pos = texPackers.Last().TryAdd(new VectorInt2(w, h));
 
             PackNextUsedTexture:
@@ -1499,7 +1494,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // In TombEngine, we pack textures in 4K pages and we can use big textures up to 256 pixels without bleeding
-            VectorInt2 atlasSize = new VectorInt2(AtlasSize, AtlasSize);
+            VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
             MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
@@ -1548,7 +1543,7 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildTextureInfos()
         {
-            float maxSize = (float)MaxTileSize - (1.0f / (float)(AtlasSize - 1));
+            float maxSize = (float)MaxTileSize - (1.0f / (float)(MaxTileSize - 1));
 
             _objectTextures = new SortedDictionary<int, ObjectTexture>();
 
