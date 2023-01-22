@@ -560,7 +560,9 @@ namespace TombLib.LevelData.Compilers.Util
             _progressReporter = progressReporter;
 
             if (maxTileSize > 0 && MathC.IsPowerOf2(maxTileSize))
+            {
                 MaxTileSize = (ushort)maxTileSize;
+            }
             else
             {
                 MaxTileSize = _minimumTileSize;

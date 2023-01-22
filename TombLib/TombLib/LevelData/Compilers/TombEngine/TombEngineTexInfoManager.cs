@@ -540,7 +540,9 @@ namespace TombLib.LevelData.Compilers
             _progressReporter = progressReporter;
 
             if (maxTileSize > 0 && MathC.IsPowerOf2(maxTileSize))
+            {
                 MaxTileSize = (ushort)maxTileSize;
+            }
             else
             {
                 MaxTileSize = (ushort)AtlasSize;
