@@ -658,6 +658,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
                                     texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                     texture.TexCoord3 = texture.TexCoord2;
+
+                                    if (geometry.Model.Info.MappedUV)
+                                        texture.SetParentArea(_limits[Limit.TexPageSize]);
+
                                     texture.ClampToBounds();
 
                                     var realBlendMode = texture.BlendMode;

@@ -72,7 +72,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
+            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);

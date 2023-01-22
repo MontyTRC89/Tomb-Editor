@@ -73,6 +73,7 @@ namespace TombLib.LevelData.IO
         /********/public static readonly ChunkId ImportedGeometryPosAxisFlags = ChunkId.FromString("TePosAxisFlags");
         /********/public static readonly ChunkId ImportedGeometryTexAxisFlags = ChunkId.FromString("TeTexAxisFlags");
         /********/public static readonly ChunkId ImportedGeometryInvertFaces = ChunkId.FromString("TeInvertFaces");
+        /********/public static readonly ChunkId ImportedGeometryMappedUV = ChunkId.FromString("TeMappedUV");
         /**/public static readonly ChunkId AnimatedTextureSets = ChunkId.FromString("TeAnimatedTextureSets");
         /******/public static readonly ChunkId AnimatedTextureSet = ChunkId.FromString("TeAnimatedTextureSet");
         /**********/public static readonly ChunkId AnimatedTextureSetName = ChunkId.FromString("TeAnimatedTextureSetName");

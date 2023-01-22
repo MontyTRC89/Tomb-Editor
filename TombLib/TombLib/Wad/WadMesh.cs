@@ -518,6 +518,10 @@ namespace TombLib.Wad
                         else
                         {
                             area.Texture = tmpSubmesh.Value.Material.Texture;
+
+                            if (settings.MappedUV)
+                                area.SetParentArea();
+
                             area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
                             area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
                             area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];

@@ -10,6 +10,7 @@ namespace TombLib.Wad.Catalog
     public enum Limit
     {
         TexPages,
+        TexPageSize,
         TexInfos,
         SoundBitsPerSample,
         SoundSampleRate,

@@ -257,6 +257,7 @@ namespace TombLib.LevelData.IO
                                 (importedGeometry.Info.FlipY ? 16 : 0) |
                                 (importedGeometry.Info.FlipZ ? 32 : 0));
                             chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryTexAxisFlags, importedGeometry.Info.FlipUV_V ? 4 : 0);
+                            chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryMappedUV, importedGeometry.Info.MappedUV);
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryInvertFaces, importedGeometry.Info.InvertFaces);
                             chunkIO.WriteChunkEnd();
                         }
