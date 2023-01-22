@@ -542,6 +542,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Add geometry imported objects
 
+                int maxTextureSize = TrCatalog.GetLimit(_level.Settings.GameVersion, Limit.TexPageSize);
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
@@ -660,7 +661,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     texture.TexCoord3 = texture.TexCoord2;
 
                                     if (geometry.Model.Info.MappedUV)
-                                        texture.SetParentArea(4096);
+                                        texture.SetParentArea(maxTextureSize);
 
                                     texture.ClampToBounds();
 
