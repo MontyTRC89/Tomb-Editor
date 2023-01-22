@@ -32,6 +32,7 @@
             this.cmbPresetList = new DarkUI.Controls.DarkComboBox();
             this.panelContents = new DarkUI.Controls.DarkSectionPanel();
             this.groupMisc = new DarkUI.Controls.DarkGroupBox();
+            this.cbPadPackedTextures = new DarkUI.Controls.DarkCheckBox();
             this.cbPackTextures = new DarkUI.Controls.DarkCheckBox();
             this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             this.cbImportBakedLight = new DarkUI.Controls.DarkCheckBox();
@@ -39,7 +40,7 @@
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
-            this.cbPadPackedTextures = new DarkUI.Controls.DarkCheckBox();
+            this.cbUVMap = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
             this.groupMisc.SuspendLayout();
@@ -172,7 +173,7 @@
             // 
             // cbPremultiplyUV
             // 
-            this.cbPremultiplyUV.Location = new System.Drawing.Point(6, 67);
+            this.cbPremultiplyUV.Location = new System.Drawing.Point(6, 90);
             this.cbPremultiplyUV.Name = "cbPremultiplyUV";
             this.cbPremultiplyUV.Size = new System.Drawing.Size(130, 17);
             this.cbPremultiplyUV.TabIndex = 11;
@@ -180,7 +181,7 @@
             // 
             // cbWrapUV
             // 
-            this.cbWrapUV.Location = new System.Drawing.Point(6, 44);
+            this.cbWrapUV.Location = new System.Drawing.Point(6, 67);
             this.cbWrapUV.Name = "cbWrapUV";
             this.cbWrapUV.Size = new System.Drawing.Size(130, 17);
             this.cbWrapUV.TabIndex = 10;
@@ -239,12 +240,21 @@
             this.groupMisc.Controls.Add(this.cbPackTextures);
             this.groupMisc.Controls.Add(this.cbSortByName);
             this.groupMisc.Controls.Add(this.cbImportBakedLight);
-            this.groupMisc.Location = new System.Drawing.Point(140, 101);
+            this.groupMisc.Location = new System.Drawing.Point(140, 125);
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size(155, 141);
+            this.groupMisc.Size = new System.Drawing.Size(155, 117);
             this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
+            // 
+            // cbPadPackedTextures
+            // 
+            this.cbPadPackedTextures.AutoSize = true;
+            this.cbPadPackedTextures.Location = new System.Drawing.Point(6, 67);
+            this.cbPadPackedTextures.Name = "cbPadPackedTextures";
+            this.cbPadPackedTextures.Size = new System.Drawing.Size(129, 17);
+            this.cbPadPackedTextures.TabIndex = 10;
+            this.cbPadPackedTextures.Text = "Pad packed textures";
             // 
             // cbPackTextures
             // 
@@ -275,12 +285,13 @@
             // 
             // groupTextures
             // 
+            this.groupTextures.Controls.Add(this.cbUVMap);
             this.groupTextures.Controls.Add(this.cbPremultiplyUV);
             this.groupTextures.Controls.Add(this.cbFlipUV_V);
             this.groupTextures.Controls.Add(this.cbWrapUV);
             this.groupTextures.Location = new System.Drawing.Point(140, 6);
             this.groupTextures.Name = "groupTextures";
-            this.groupTextures.Size = new System.Drawing.Size(155, 89);
+            this.groupTextures.Size = new System.Drawing.Size(155, 111);
             this.groupTextures.TabIndex = 8;
             this.groupTextures.TabStop = false;
             this.groupTextures.Text = "Texture mapping";
@@ -321,14 +332,13 @@
             this.cbInvertFaces.TabIndex = 6;
             this.cbInvertFaces.Text = "Invert faces";
             // 
-            // cbPadPackedTextures
+            // cbUVMap
             // 
-            this.cbPadPackedTextures.AutoSize = true;
-            this.cbPadPackedTextures.Location = new System.Drawing.Point(6, 67);
-            this.cbPadPackedTextures.Name = "cbPadPackedTextures";
-            this.cbPadPackedTextures.Size = new System.Drawing.Size(129, 17);
-            this.cbPadPackedTextures.TabIndex = 10;
-            this.cbPadPackedTextures.Text = "Pad packed textures";
+            this.cbUVMap.Location = new System.Drawing.Point(6, 44);
+            this.cbUVMap.Name = "cbUVMap";
+            this.cbUVMap.Size = new System.Drawing.Size(130, 17);
+            this.cbUVMap.TabIndex = 12;
+            this.cbUVMap.Text = "UV Mapped";
             // 
             // GeometryIOSettingsDialog
             // 
@@ -389,5 +399,6 @@
         private DarkUI.Controls.DarkCheckBox cbSortByName;
         private DarkUI.Controls.DarkCheckBox cbPackTextures;
         private DarkUI.Controls.DarkCheckBox cbPadPackedTextures;
+        private DarkUI.Controls.DarkCheckBox cbUVMap;
     }
 }

@@ -3,6 +3,7 @@
 	<game id="TR1">
 		<limits>
 			<limit name="TexPages" value="16" />
+			<limit name="TexPageSize" value="256" />
 			<limit name="TexInfos" value="1800" />
 			<limit name="SoundBitsPerSample" value="8" />
 			<limit name="SoundSampleRate" value="22050" />
@@ -5906,6 +5907,7 @@
 	<game id="TombEngine">
 		<limits>
 			<limit name="TexPages" value="32768" />
+			<limit name="TexPageSize" value="4096" />
 			<limit name="TexInfos" value="2147483647" />
 			<limit name="SoundBitsPerSample" value="16" />
 			<limit name="SoundSampleRate" value="22050" />
