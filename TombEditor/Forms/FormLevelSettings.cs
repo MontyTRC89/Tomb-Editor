@@ -653,6 +653,7 @@ namespace TombEditor.Forms
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
+            cbUse32BitLighting.Checked = _levelSettings.Room32BitLighting;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
@@ -667,6 +668,7 @@ namespace TombEditor.Forms
             // Hide version-specific controls
             // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == Game.TRNG);
+            cbUse32BitLighting.Enabled = currentVersionToCheck;
             panelScripts.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
@@ -1326,6 +1328,12 @@ namespace TombEditor.Forms
         private void cbDither16BitTextures_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.Dither16BitTextures = cbDither16BitTextures.Checked;
+            UpdateDialog();
+        }
+
+        private void cbUse32BitLighting_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.Room32BitLighting = cbUse32BitLighting.Checked;
             UpdateDialog();
         }
 
