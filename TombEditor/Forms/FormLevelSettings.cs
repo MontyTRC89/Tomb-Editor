@@ -668,6 +668,7 @@ namespace TombEditor.Forms
             // Hide version-specific controls
             // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == Game.TRNG);
+            cbUse32BitLighting.Enabled = currentVersionToCheck;
             panelScripts.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
@@ -684,7 +685,6 @@ namespace TombEditor.Forms
             currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
             GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
-            cbUse32BitLighting.Enabled = currentVersionToCheck;
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
