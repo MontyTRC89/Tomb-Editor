@@ -502,7 +502,7 @@ namespace TombEditor.Forms
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
             GameEnableQuickStartFeatureCheckBox.Checked = _levelSettings.GameEnableQuickStartFeature;
-            GameEnableExtraBlendingModesCheckBox.Checked = _levelSettings.GameEnableExtraBlendingModes ?? false;
+            cbEnableExtraBlendingModes.Checked = _levelSettings.GameEnableExtraBlendingModes ?? false;
             GameEnableExtraReverbPresetsCheckBox.Checked = _levelSettings.GameEnableExtraReverbPresets;
             comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
@@ -682,18 +682,20 @@ namespace TombEditor.Forms
             }
 
             // TR4 platform
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
             GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
 
             // TR5 platform
-            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
+            currentVersionToCheck = (_levelSettings.GameVersion == Game.TR5);
             cbSampleRate.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
 
             // TombEngine
-            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TombEngine);
+            currentVersionToCheck = (_levelSettings.GameVersion == Game.TombEngine);
+            cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
+            cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
@@ -702,12 +704,19 @@ namespace TombEditor.Forms
 
             // TR4 and TombEngine platforms
             currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
-            GameEnableExtraBlendingModesCheckBox.Visible = currentVersionToCheck;
+            cbEnableExtraBlendingModes.Visible = currentVersionToCheck;
+
+            // TR2-5 platforms
+            currentVersionToCheck = (_levelSettings.GameVersion > Game.TR1 && _levelSettings.GameVersion < Game.TombEngine);
+            cbDither16BitTextures.Enabled = currentVersionToCheck;
 
             // TR4 and above
-            currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
+            currentVersionToCheck = (_levelSettings.GameVersion >= Game.TR4);
             panelFont.Enabled = !currentVersionToCheck;
             panelSky.Enabled = !currentVersionToCheck;
+
+            // MAIN.SFX options
+            currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
             lblCatalogsPrompt.Text = _catalogsPromptBase + (currentVersionToCheck ? _catalogsPromptMSFX : _catalogsPromptNew);
             soundDataGridView.Visible = !currentVersionToCheck;
             soundDataGridViewControls.Visible = !currentVersionToCheck;
@@ -1220,9 +1229,9 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void GameEnableExtraBlendingModesCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void cbEnableExtraBlendingModes_CheckedChanged(object sender, EventArgs e)
         {
-            _levelSettings.GameEnableExtraBlendingModes = GameEnableExtraBlendingModesCheckBox.Checked;
+            _levelSettings.GameEnableExtraBlendingModes = cbEnableExtraBlendingModes.Checked;
             UpdateDialog();
         }
 

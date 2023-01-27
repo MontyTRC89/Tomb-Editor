@@ -21,7 +21,7 @@
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
-            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.cbEnableExtraBlendingModes = new DarkUI.Controls.DarkCheckBox();
             this.butAssignFromWads = new DarkUI.Controls.DarkButton();
             this.butRemoveMissing = new DarkUI.Controls.DarkButton();
             this.butAssignFromSoundSources = new DarkUI.Controls.DarkButton();
@@ -266,17 +266,17 @@
             this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
             this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
             // 
-            // GameEnableExtraBlendingModesCheckBox
+            // cbEnableExtraBlendingModes
             // 
-            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
-            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
-            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(168, 17);
-            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
-            this.GameEnableExtraBlendingModesCheckBox.Text = "Show extra blending modes";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
-            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
+            this.cbEnableExtraBlendingModes.AutoSize = true;
+            this.cbEnableExtraBlendingModes.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.cbEnableExtraBlendingModes.Location = new System.Drawing.Point(19, 53);
+            this.cbEnableExtraBlendingModes.Name = "cbEnableExtraBlendingModes";
+            this.cbEnableExtraBlendingModes.Size = new System.Drawing.Size(168, 17);
+            this.cbEnableExtraBlendingModes.TabIndex = 6;
+            this.cbEnableExtraBlendingModes.Text = "Show extra blending modes";
+            this.pathToolTip.SetToolTip(this.cbEnableExtraBlendingModes, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
+            this.cbEnableExtraBlendingModes.CheckedChanged += new System.EventHandler(this.cbEnableExtraBlendingModes_CheckedChanged);
             // 
             // butAssignFromWads
             // 
@@ -630,7 +630,7 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.GameEnableExtraReverbPresetsCheckBox);
-            this.panel3.Controls.Add(this.GameEnableExtraBlendingModesCheckBox);
+            this.panel3.Controls.Add(this.cbEnableExtraBlendingModes);
             this.panel3.Controls.Add(this.GameEnableQuickStartFeatureCheckBox);
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
@@ -2461,7 +2461,7 @@
         private DarkUI.Controls.DarkCheckBox cbRearrangeRooms;
 		private DarkUI.Controls.DarkCheckBox cbRemoveObjects;
         private DarkUI.Controls.DarkCheckBox GameEnableExtraReverbPresetsCheckBox;
-        private DarkUI.Controls.DarkCheckBox GameEnableExtraBlendingModesCheckBox;
+        private DarkUI.Controls.DarkCheckBox cbEnableExtraBlendingModes;
         private DarkUI.Controls.DarkCheckBox cbKeepSampleRate;
         private DarkUI.Controls.DarkComboBox cmbSampleRate;
         private System.Windows.Forms.Panel panelLuaPath;
