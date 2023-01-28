@@ -694,6 +694,7 @@ namespace TombEditor.Forms
 
             // TombEngine
             currentVersionToCheck = (_levelSettings.GameVersion == Game.TombEngine);
+            cbRearrangeRooms.Enabled = !currentVersionToCheck;
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
