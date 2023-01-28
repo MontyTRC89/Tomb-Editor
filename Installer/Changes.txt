@@ -4,6 +4,7 @@ Version 1.6.4
 Tomb Editor:
  * Add an option for imported geometry to define whether it is UV-mapped or not.
  * Add an option to use Lua or node events as actions for legacy triggers in TEN.
+ * Add an option to enable 32-bit lighting for TRNG to fix "rainbow bug" (requires FLEP patch).
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights in TEN levels.
  * Fix broken lua event sets which had non-alphanumerical characters in their name.
