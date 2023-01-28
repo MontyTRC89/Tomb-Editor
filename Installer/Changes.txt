@@ -6,6 +6,7 @@ Tomb Editor:
  * Add an option to use Lua or node events as actions for legacy triggers in TEN.
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights in TEN levels.
+ * Fix broken lua event sets which had non-alphanumerical characters in their name.
  * Fix variable comparer nodes not working correctly without initialized variable.
  * Fix incorrect light interpolation between rooms with non-traversable portals.
 
