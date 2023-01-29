@@ -130,12 +130,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _spriteTextures = tempSprites;
 
 #if DEBUG
-            int atlasSize = TombEngineTexInfoManager.AtlasSize;
-
             for (int n = 0; n < _spritesTexturesPages.Count; n++)
             {
                 using (var bmp = _spritesTexturesPages[n].ToBitmap())
                 {
+                    int atlasSize = bmp.Width;
+
                     using (var g = System.Drawing.Graphics.FromImage(bmp))
                     {
                         foreach (var sprite in tempSprites)
