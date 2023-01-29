@@ -23,6 +23,7 @@
         public bool FlipZ { get; set; } = true;
         public bool FlipUV_V { get; set; } = true;
         public float Scale { get; set; } = 1.0f;
+        public bool MappedUV { get; set; } = true;
         public bool WrapUV { get; set; } = true;
         public bool PremultiplyUV { get; set; } = true;
         public bool InvertFaces { get; set; } = false;

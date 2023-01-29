@@ -9,6 +9,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
+        private const ushort _fdTimerMask = 0x00FF;
         private const ushort _fdFunctionMask = 0x03FF;
         private const ushort _fdOneShotBit = 0x0100;
         private const ushort _fdEndBit = 0x8000;
@@ -244,7 +245,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     setupTrigger.TargetType == TriggerTargetType.FmvNg)
                     _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger target which is not supported in Tomb Engine.");
 
-                var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
+                var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, _fdTimerMask);
 
                 triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
 
@@ -257,7 +258,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 foreach (var trigger in triggers)
                 {
                     ushort trigger2 = 0;
-                    ushort trigger3 = 0;
 
                     ushort func = (ushort)((ushort)trigger.TargetType << 10);
 
@@ -281,10 +281,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             // Trigger for camera
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, _fdFunctionMask) | func);
                             result.Add(trigger2);
+
                             // Additional short
-                            trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
-                            trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-                            result.Add(trigger3);
+                            trigger2 = GetTriggerParameter(trigger.Timer, trigger, _fdTimerMask);
+                            trigger2 |= (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
+                            result.Add(trigger2);
                             break;
 
                         case TriggerTargetType.FlyByCamera:
@@ -317,9 +318,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
                             result.Add(trigger2);
 
-                            trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xFF);
-                            trigger3 = (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
-                            result.Add(trigger3);
+                            trigger2 = GetTriggerParameter(trigger.Timer, trigger, _fdTimerMask);
+                            trigger2 |= (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
+                            result.Add(trigger2);
 
                             break;
 

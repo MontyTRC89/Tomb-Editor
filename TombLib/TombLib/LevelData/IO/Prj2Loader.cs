@@ -298,6 +298,8 @@ namespace TombLib.LevelData.IO
                     settings.EnableCustomSampleRate = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.CustomSampleRate)
                     settings.CustomSampleRate = chunkIO.ReadChunkInt(chunkSize);
+                else if (id == Prj2Chunks.Room32BitLighting)
+                    settings.Room32BitLighting = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
@@ -458,6 +460,8 @@ namespace TombLib.LevelData.IO
                             }
                             else if (id3 == Prj2Chunks.ImportedGeometryInvertFaces)
                                 importedGeometryInfo.InvertFaces = chunkIO.ReadChunkBool(chunkSize3);
+                            else if (id3 == Prj2Chunks.ImportedGeometryMappedUV)
+                                importedGeometryInfo.MappedUV = chunkIO.ReadChunkBool(chunkSize3);
                             else
                                 return false;
                             return true;

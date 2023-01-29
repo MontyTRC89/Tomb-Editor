@@ -72,7 +72,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
+            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
@@ -492,7 +492,7 @@ namespace TombLib.LevelData.Compilers
                             instanceColor = Vector3.One;
 
                         // Calculate TR color
-                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings.GameVersion);
+                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings).Item2;
 
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);
