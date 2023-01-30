@@ -13688,7 +13688,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>697</Id>
-			<Name>TR3_Sofialee_Death_Part_1</Name>
+			<Name>TR3_SophiaLeigh_Death_Part_1</Name>
 			<Volume>80</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13699,7 +13699,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Death_Part_1_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Death_Part_1_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13707,7 +13707,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>698</Id>
-			<Name>TR3_Sofialee_Death_Part_2</Name>
+			<Name>TR3_SophiaLeigh_Death_Part_2</Name>
 			<Volume>80</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13718,7 +13718,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Death_Part_2_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Death_Part_2_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13726,7 +13726,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>699</Id>
-			<Name>TR3_Sofialee_Fire</Name>
+			<Name>TR3_SophiaLeigh_Fire</Name>
 			<Volume>99</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13737,7 +13737,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Fire_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Fire_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13745,7 +13745,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>700</Id>
-			<Name>TR3_Sofialee_Laugh</Name>
+			<Name>TR3_SophiaLeigh_Laugh</Name>
 			<Volume>80</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13756,7 +13756,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Laugh_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Laugh_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13764,7 +13764,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>701</Id>
-			<Name>TR3_Sofialee_Shooter</Name>
+			<Name>TR3_SophiaLeigh_Shooter</Name>
 			<Volume>99</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13775,7 +13775,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Shooter_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Shooter_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13783,7 +13783,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>702</Id>
-			<Name>TR3_Sofialee_Summon</Name>
+			<Name>TR3_SophiaLeigh_Summon</Name>
 			<Volume>80</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13794,7 +13794,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Summon_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Summon_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13802,7 +13802,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>703</Id>
-			<Name>TR3_Sofialee_Summon_Fail</Name>
+			<Name>TR3_SophiaLeigh_Summon_Fail</Name>
 			<Volume>90</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13813,7 +13813,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Summon_Fail_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Summon_Fail_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13821,7 +13821,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>704</Id>
-			<Name>TR3_Sofialee_Take_Hit</Name>
+			<Name>TR3_SophiaLeigh_Take_Hit</Name>
 			<Volume>80</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13832,7 +13832,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Take_Hit_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Take_Hit_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
@@ -13840,7 +13840,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>705</Id>
-			<Name>TR3_Sofialee_Vault</Name>
+			<Name>TR3_SophiaLeigh_Vault</Name>
 			<Volume>70</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -13851,7 +13851,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_Sofialee_Vault_01.wav</FileName>
+					<FileName>TR3_SophiaLeigh_Vault_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>
