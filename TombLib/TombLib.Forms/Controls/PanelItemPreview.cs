@@ -29,10 +29,7 @@ namespace TombLib.Controls
                 }
                 else
                 {
-                    var validObject = (((value as WadMoveable)?.Meshes.All(m => m.VertexPositions.Count > 0) ?? false) ||
-                                       ((value as WadStatic)?.Mesh.VertexPositions.Count > 0));
-
-                    _animTimer.Enabled = validObject && AnimatePreview;
+                    _animTimer.Enabled = ValidObject(value) && AnimatePreview;
                 }
 
                 _currentObject = value;
@@ -211,6 +208,33 @@ namespace TombLib.Controls
             _wadRenderer?.GarbageCollect();
         }
 
+        private bool ValidObject(IWadObject obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (obj is WadMoveable)
+            {
+                return (obj as WadMoveable).Meshes.Any(m => m.VertexPositions.Count > 0);
+            }
+            else if (obj is WadStatic)
+            {
+                return (obj as WadStatic).Mesh.VertexPositions.Count > 0;
+            }
+            else if (obj is WadSpriteSequence)
+            {
+                return (obj as WadSpriteSequence).Sprites.Count > 0;
+            }
+            else if (obj is ImportedGeometry)
+            {
+                return true; // Imported geometry is implicitly always valid, as null model won't import.
+            }
+            else
+            {
+                return false; // Invalid object.
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -230,6 +254,9 @@ namespace TombLib.Controls
 
         protected override void OnDraw()
         {
+            if (!ValidObject(_currentObject))
+                return;
+
             // To make sure things are in a defined state for legacy rendering...
             ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -458,6 +485,7 @@ namespace TombLib.Controls
                         Camera.Rotate(deltaX * NavigationSpeedMouseRotate,
                                      -deltaY * NavigationSpeedMouseRotate);
                 }
+
                 if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
                      e.Button == MouseButtons.Middle)
                     Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * NavigationSpeedMouseTranslate);
