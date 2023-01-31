@@ -1,3 +1,14 @@
+
+Version 1.6.5
+=============
+
+WadTool:
+
+ * Amended slot name for Sophia-Leigh in TEN. 
+
+TombIDE:
+ * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
+ 
 Version 1.6.4
 =============
 
