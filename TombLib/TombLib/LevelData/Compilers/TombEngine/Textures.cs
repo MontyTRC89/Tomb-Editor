@@ -225,12 +225,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
             BcEncoder encoder = new BcEncoder();
 
             encoder.OutputOptions.GenerateMipMaps = true;
-            encoder.OutputOptions.Quality = CompressionQuality.Balanced;
+            encoder.OutputOptions.Quality = CompressionQuality.BestQuality;
             encoder.OutputOptions.Format = format;
             encoder.OutputOptions.FileFormat = OutputFileFormat.Dds;  
 
             MemoryStream output = new MemoryStream();
-            encoder.EncodeToStream(i.ToByteArray(), i.Width,i.Height,PixelFormat.Bgra32, output);
+            encoder.EncodeToStream(i.ToByteArray(), i.Width, i.Height, PixelFormat.Bgra32, output);
 
             return output.ToArray();    
         }
