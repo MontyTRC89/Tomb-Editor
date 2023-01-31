@@ -1,9 +1,10 @@
-
 Version 1.6.5
 =============
 
-WadTool:
+Tomb Editor:
+ * Fix exception when trying to select floor below object out of room bounds.
 
+WadTool:
  * Amended slot name for Sophia-Leigh in TEN. 
 
 TombIDE:
