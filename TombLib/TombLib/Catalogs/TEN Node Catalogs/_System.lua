@@ -124,3 +124,5 @@ LevelFuncs.Engine.Node.GetBlendMode = function(index)
 	end
 
 	return blendID
+	
+	end
