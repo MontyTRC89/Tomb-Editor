@@ -1,21 +1,72 @@
+Version 1.6.5
+=============
+
+Tomb Editor:
+ * Fix exception when trying to select floor below object out of room bounds.
+
+WadTool:
+ * Amended slot name for Sophia-Leigh in TEN. 
+
+TombIDE:
+ * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
+ 
+Version 1.6.4
+=============
+
+Tomb Editor:
+ * Add an option for imported geometry to define whether it is UV-mapped or not.
+ * Add an option to use Lua or node events as actions for legacy triggers in TEN.
+ * Add an option to enable 32-bit lighting for TRNG to fix "rainbow bug" (requires FLEP patch).
+ * Extend pathfinding data over slopes for flying enemies in TEN levels.
+ * Fix possible issues with pathfinding on extended heights in TEN levels.
+ * Fix broken lua event sets which had non-alphanumerical characters in their name.
+ * Fix variable comparer nodes not working correctly without initialized variable.
+ * Fix incorrect light interpolation between rooms with non-traversable portals.
+
+WadTool:
+ * Add a new main window menu option to quickly convert objects between UV-mapped and tiled texture mode.
+ * Increase compatibility with imported animations with inconsistent bone and mesh setups.
+ * Play sound preview on animation editor timeline scrubbling.
+ * Fix sound previews not working if default sound device is incorrect in Windows settings.
+ * Fix sound previews not playing for TEN right footprint flipeffect.
+ * Fix flickering in main window if empty object is selected.
+ * Fix incorrect parsing of TR5 objects which had unknown flags packed together with mesh radius.
+ * TEN Base WAD:
+   - Added new explosion sprite sequence by Gecko.
+   - Added ID_DART as a real mesh instead of a particle.
+   - Added Lara's death animation for the Willard Spider (LARA_EXTRA_ANIM).
+   - Fixed bug where ID_LASERSIGHT was not present.
+ 
+SoundTool:
+ * Fixed incorrect sound bug in TR3_Override which changed Lara's "jump" sound into her "climbing" sound.
+ 
+TombIDE:
+ * Don't generate empty strings for TEN projects in TIDE script editor.
+ * Update Tomb1Main preset to 2.12.1.
+ * Update tomb3 preset to 1.5.0.
+ 
 Version 1.6.3
 =============
 
 Tomb Editor:
  * Add several node functions for room scripting.
  * Add TestMoveableFrameNumber node function for moveables.
+ * Allow free axis rotation for dart emitter object in TEN projects.
  * Offset pasted nodes if they land on same position.
  * Fix exception when trying to copy lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.
- 
- * Added node functions:
-	- Emit particles from a static, moveable or and mesh.
-	- Emit dynamic light static, moveable or and mesh.
-	- Emit lightning arc effect.
-	- Emit shockwave effect.
+ * Fix game executable path field not displaying properly for TEN target in level settings.
 
 WadTool:
+ * Added Ctrl+I shortcut in animation editor to interpolate frames.
+ * Use timeline selection size as a default value for interpolated frame count.
+ * Fix state ID list not properly selecting states with similar names.
  * Fix incorrect remapping of TR1-TR3 rollingballs to TEN.
+ * Added animation names to ID_SWAT and ID_GUARD.
+ 
+TombIDE:
+ * Update Tomb1Main preset to 2.12.
+ * Update TR3 preset to include tomb3 project.
  
 Version 1.6.2
 =============

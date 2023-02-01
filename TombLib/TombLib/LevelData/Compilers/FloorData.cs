@@ -222,7 +222,7 @@ namespace TombLib.LevelData.Compilers
                                 if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                                 { // Only if the portal is not a Toggle Opacity 1
                                     newEntry.Add(0x8001);
-                                    newEntry.Add((ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom]);
+                                    newEntry.Add((ushort)_roomRemapping[block.WallPortal.AdjoiningRoom]);
                                 }
                             }
                             else if (isWallWithCeilingPortal != null)
@@ -234,7 +234,7 @@ namespace TombLib.LevelData.Compilers
                                 sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
 
                                 newEntry.Add(0x8001);
-                                newEntry.Add((ushort)_roomsRemappingDictionary[isWallWithCeilingPortal]);
+                                newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
                             }
                         }
                         else
@@ -255,7 +255,7 @@ namespace TombLib.LevelData.Compilers
                             if (floorPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.FloorPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomRemapping[portal.AdjoiningRoom];
                                 if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
@@ -273,7 +273,7 @@ namespace TombLib.LevelData.Compilers
                             if (ceilingPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.CeilingPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomRemapping[portal.AdjoiningRoom];
                                 if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
@@ -430,23 +430,23 @@ namespace TombLib.LevelData.Compilers
                         trigger1 |= 0x09 << 8;
                         break;
                     case TriggerType.HeavySwitch:
-                        trigger1 |= 0x0a << 8;
+                        trigger1 |= 0x0A << 8;
                         break;
                     case TriggerType.HeavyAntitrigger:
-                        trigger1 |= 0x0b << 8;
+                        trigger1 |= 0x0B << 8;
                         break;
                     case TriggerType.Monkey:
                     case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
-                        trigger1 |= 0x0c << 8;
+                        trigger1 |= 0x0C << 8;
                         break;
                     case TriggerType.Skeleton:
-                        trigger1 |= 0x0d << 8;
+                        trigger1 |= 0x0D << 8;
                         break;
                     case TriggerType.TightRope:
-                        trigger1 |= 0x0e << 8;
+                        trigger1 |= 0x0E << 8;
                         break;
                     case TriggerType.Crawl:
-                        trigger1 |= 0x0f << 8;
+                        trigger1 |= 0x0F << 8;
                         break;
                     case TriggerType.Climb:
                         trigger1 |= 0x10 << 8;
@@ -634,7 +634,7 @@ namespace TombLib.LevelData.Compilers
             if (parameter == null)
                 index = 0;
             else if (parameter is Room)
-                index = _roomsRemappingDictionary[(Room)parameter];
+                index = _roomRemapping[(Room)parameter];
             else if (parameter is ObjectInstance)
             {
                 if (parameter is MoveableInstance)

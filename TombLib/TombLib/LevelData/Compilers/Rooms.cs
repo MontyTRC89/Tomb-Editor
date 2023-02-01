@@ -13,8 +13,9 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
-        private readonly List<Room> _roomsUnmapping = new List<Room>();
+        private readonly Dictionary<Room, int> _roomRemapping = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<tr_room_portal, PortalInstance> _portalRemapping = new Dictionary<tr_room_portal, PortalInstance>();
+        private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<ShadeMatchSignature, uint> _vertexColors;
 
         private void BuildRooms()
@@ -28,13 +29,13 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var room in _sortedRooms.Where(r => r != null))
             {
-                _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
-                _roomsUnmapping.Add(room);
+                _roomRemapping.Add(room, _roomUnmapping.Count);
+                _roomUnmapping.Add(room);
             }
 
             _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
-            foreach (var room in _roomsRemappingDictionary.Keys)
+            foreach (var room in _roomRemapping.Keys)
                 _tempRooms.Add(room, BuildRoom(room));
 
             // Remove WaterScheme values for water rooms
@@ -72,7 +73,7 @@ namespace TombLib.LevelData.Compilers
             }
 #endif
 
-            ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
+            ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
 
             if (!_level.Settings.FastMode)
             {
@@ -170,7 +171,7 @@ namespace TombLib.LevelData.Compilers
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
-                AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? (short)_roomRemapping[room.AlternateRoom] : (short)-1,
                 AlternateGroup = (byte)(room.Alternated ? room.AlternateGroup : 0),
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
@@ -540,7 +541,7 @@ namespace TombLib.LevelData.Compilers
                                 //Apply Shade factor
                                 color *= shade;
                             }
-                            var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
+                            var vertexColor = PackLightColor(color, _level.Settings);
                             var trVertex = new tr_room_vertex
                             {
                                 Position = new tr_vertex
@@ -549,8 +550,8 @@ namespace TombLib.LevelData.Compilers
                                     Y = (short)-(position.Y + room.WorldPos.Y),
                                     Z = (short)position.Z
                                 },
-                                Lighting1 = vertexColor,
-                                Lighting2 = vertexColor,
+                                Lighting1 = vertexColor.Item1,
+                                Lighting2 = vertexColor.Item2,
                                 Attributes = (ushort)lightingEffect
                             };
                             roomVertices.Add(trVertex);
@@ -654,27 +655,27 @@ namespace TombLib.LevelData.Compilers
                             // Pack the light according to chosen lighting model
                             if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                             {
-                                var color = PackLightColor(vertex.Color * geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(vertex.Color * geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128), _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128), _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.TintAsAmbient)
                             {
-                                var color = PackLightColor(geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
                             else
                             {
-                                var color = PackLightColor(room.Properties.AmbientLight * geometry.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = PackLightColor(room.Properties.AmbientLight * geometry.Color, _level.Settings);
+                                trVertex.Lighting1 = color.Item1;
+                                trVertex.Lighting2 = color.Item2;
                             }
 
                             // HACK: Find a vertex with same coordinates and merge with it.
@@ -721,6 +722,10 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
                                 texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
                                 texture.TexCoord3 = texture.TexCoord2;
+
+                                if (geometry.Model.Info.MappedUV)
+                                    texture.SetParentArea(_limits[Limit.TexPageSize]);
+
                                 texture.ClampToBounds();
 
                                 var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
@@ -961,15 +966,15 @@ namespace TombLib.LevelData.Compilers
 
                         newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
 
-                        var spriteColor = PackLightColor(new Vector3(sprite.Color.Z, sprite.Color.Y, sprite.Color.X), _level.Settings.GameVersion);
+                        var spriteColor = PackLightColor(new Vector3(sprite.Color.Z, sprite.Color.Y, sprite.Color.X), _level.Settings);
 
                         roomVertices.Add(new tr_room_vertex()
                         { 
                             Position = new tr_vertex((short) (sprite.Position.X), 
                                                      (short)-(room.WorldPos.Y + sprite.Position.Y), 
                                                      (short) (sprite.Position.Z)),
-                            Lighting1 = spriteColor,
-                            Lighting2 = spriteColor
+                            Lighting1 = spriteColor.Item1,
+                            Lighting2 = spriteColor.Item2
                         });
                     }
 
@@ -1008,7 +1013,7 @@ namespace TombLib.LevelData.Compilers
                 _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
 
                 // Calculate color / intensity
-                var intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion);
+                var intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings).Item2;
 
                 // Resolve intensity2. It is used for TR2 only, also TRNG reuses this field for static OCB.
                 // For TR5, intensity2 must be set to 1 or static mesh won't be drawn.
@@ -1092,9 +1097,9 @@ namespace TombLib.LevelData.Compilers
                 trVertex.Color = PackColorTo32Bit(Color);
             else
             {
-                var color = PackLightColor(Color, room.Level.Settings.GameVersion);
-                trVertex.Lighting1 = color;
-                trVertex.Lighting2 = color;
+                var color = PackLightColor(Color, room.Level.Settings);
+                trVertex.Lighting1 = color.Item1;
+                trVertex.Lighting2 = color.Item2;
             }
 
             return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
@@ -1246,7 +1251,7 @@ namespace TombLib.LevelData.Compilers
                     // Setup portals
                     if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
-                        sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
+                        sector.RoomBelow = (byte)_roomRemapping[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
                         aux.FloorPortal = block.FloorPortal;
                     }
@@ -1257,7 +1262,7 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
-                        sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
+                        sector.RoomAbove = (byte)_roomRemapping[block.CeilingPortal.AdjoiningRoom];
                     else
                         sector.RoomAbove = 255;
 
@@ -1511,12 +1516,15 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Create portal
-            outPortals.Add(new tr_room_portal
+            var portalToAdd = new tr_room_portal
             {
-                AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
+                AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
                 Vertices = portalVertices,
                 Normal = normal
-            });
+            };
+
+            _portalRemapping.TryAdd(portalToAdd, portal);
+            outPortals.Add(portalToAdd);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1668,12 +1676,15 @@ namespace TombLib.LevelData.Compilers
                     normal = new tr_vertex((short)(normal.X / 2), (short)(normal.Y / 2), (short)(normal.Z / 2));
 
                 // Add portal
-                outPortals.Add(new tr_room_portal
+                var portalToAdd = new tr_room_portal
                 {
-                    AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
+                    AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
                     Vertices = portalVertices,
                     Normal = normal
-                });
+                };
+
+                _portalRemapping.TryAdd(portalToAdd, portal);
+				outPortals.Add(portalToAdd);
             }
         }
 
@@ -1685,6 +1696,12 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var p in room.Portals)
             {
+                if (_portalRemapping.ContainsKey(p))
+                {
+                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
+                        continue;
+                }
+
                 var otherRoom = roomList[p.AdjoiningRoom];
 
                 // Here we must decide if match or not, basing on flipped flag.
@@ -1891,12 +1908,28 @@ namespace TombLib.LevelData.Compilers
                 }
         }
 
-        private static ushort PackLightColor(Vector3 color, TRVersion.Game version)
+        private static Tuple<ushort, ushort> PackLightColor(Vector3 color, LevelSettings settings)
         {
-            if (version >= TRVersion.Game.TR3)
-                return PackColorTo16Bit(color);
+            ushort packed1 = 0;
+            ushort packed2 = 0;
+
+            if (settings.GameVersion == TRVersion.Game.TRNG && settings.Room32BitLighting)
+            {
+                packed1 = PackColorTo24BitLow(color);
+                packed2 = PackColorTo24BitHigh(color);
+            }
+            else if (settings.GameVersion >= TRVersion.Game.TR3)
+            {
+                packed1 = PackColorTo16Bit(color);
+                packed2 = packed1;
+            }
             else
-                return PackColorTo13BitGreyscale(color);
+            {
+                packed1 = PackColorTo13BitGreyscale(color);
+                packed2 = packed1;
+            }
+
+            return new Tuple<ushort, ushort>(packed1, packed2);
         }
 
         private static ushort PackColorTo16Bit(Vector3 color)
@@ -1957,6 +1990,26 @@ namespace TombLib.LevelData.Compilers
             Vector3 e1 = v1 - v0;
             Vector3 e2 = v2 - v0;
             return Vector3.Normalize(Vector3.Cross(e1, e2));
+        }
+
+        private static ushort PackColorTo24BitHigh(Vector3 color)
+        {
+            tr_color result = PackColorTo24Bit(color);
+            ushort high = 0;
+            high |= (ushort)((result.Red >> 3) << 10);
+            high |= (ushort)((result.Green >> 3) << 5);
+            high |= (ushort)(result.Blue >> 3);
+            return high;
+        }
+
+        private static ushort PackColorTo24BitLow(Vector3 color)
+        {
+            tr_color result = PackColorTo24Bit(color);
+            ushort low = 0;
+            low |= (ushort)((result.Red & 0x7) << 6);
+            low |= (ushort)((result.Green & 0x7) << 3);
+            low |= (ushort)(result.Blue & 0x7);
+            return low;
         }
     }
 }

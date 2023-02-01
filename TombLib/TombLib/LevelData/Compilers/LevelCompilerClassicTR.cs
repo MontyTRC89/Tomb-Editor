@@ -72,7 +72,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
-            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
+            _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
@@ -246,7 +246,7 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    Room = (short)_roomsRemappingDictionary[instance.Room],
+                    Room = (short)_roomRemapping[instance.Room],
                     Flags = flags
                 });
             }
@@ -286,7 +286,7 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)Math.Round(-position.Y),
                     Z = (int)Math.Round(position.Z),
-                    Room = _roomsRemappingDictionary[instance.Room],
+                    Room = _roomRemapping[instance.Room],
                     FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
                     Roll = unchecked((short)rollTo65536),
                     Timer = (ushort)instance.Timer,
@@ -469,7 +469,7 @@ namespace TombLib.LevelData.Compilers
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                            Room = (ushort)_roomsRemappingDictionary[instance.Room],
+                            Room = (ushort)_roomRemapping[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
                             Flags = (ushort)(instance.CodeBits << 1)
@@ -492,7 +492,7 @@ namespace TombLib.LevelData.Compilers
                             instanceColor = Vector3.One;
 
                         // Calculate TR color
-                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings.GameVersion);
+                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings).Item2;
 
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);
@@ -503,7 +503,7 @@ namespace TombLib.LevelData.Compilers
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
                             ObjectID = checked((ushort)realID),
-                            Room = (short)_roomsRemappingDictionary[instance.Room],
+                            Room = (short)_roomRemapping[instance.Room],
                             Angle = angleInt,
                             Intensity1 = color,
                             Ocb = isNewTR ? instance.Ocb : unchecked((short)color),

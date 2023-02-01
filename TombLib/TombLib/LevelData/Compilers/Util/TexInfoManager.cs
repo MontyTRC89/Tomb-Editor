@@ -560,7 +560,9 @@ namespace TombLib.LevelData.Compilers.Util
             _progressReporter = progressReporter;
 
             if (maxTileSize > 0 && MathC.IsPowerOf2(maxTileSize))
+            {
                 MaxTileSize = (ushort)maxTileSize;
+            }
             else
             {
                 MaxTileSize = _minimumTileSize;
@@ -770,10 +772,19 @@ namespace TombLib.LevelData.Compilers.Util
             if (_dataHasBeenLaidOut)
                 throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
 
-            if (isForTriangle && texture.TriangleCoordsOutOfBounds || !isForTriangle && texture.QuadCoordsOutOfBounds)
+            if ((isForTriangle && texture.TriangleCoordsOutOfBounds) || (!isForTriangle && texture.QuadCoordsOutOfBounds))
             {
-                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
+                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + 
+                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
                 return new Result();
+            }
+
+            if (texture.ParentArea.Width > MaxTileSize || texture.ParentArea.Height > MaxTileSize)
+            {
+                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + 
+                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") has incorrect parent area which has been reset. " + 
+                    "Possibly UV-mapped mesh with texture bigger than " + MaxTileSize + " in size.");
+                texture.ParentArea = Rectangle2.Zero;
             }
 
             // Only try to remap animated textures if fast mode is disabled

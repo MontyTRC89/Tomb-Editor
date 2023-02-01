@@ -2,25 +2,6 @@
 <WadSounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<SoundInfos>
 		<WadSoundInfo>
-			<Id>0</Id>
-			<Name>TR3_LARA_JUMP</Name>
-			<Volume>50</Volume>
-			<RangeInSectors>13</RangeInSectors>
-			<Chance>50</Chance>
-			<PitchFactor>10</PitchFactor>
-			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>true</RandomizePitch>
-			<RandomizeVolume>true</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples>
-				<WadSample>
-					<FileName>TR3_LARA_JUMP_01.wav</FileName>
-				</WadSample>
-			</Samples>
-			<Global>false</Global>
-			<Indexed>true</Indexed>
-		</WadSoundInfo>
-		<WadSoundInfo>
 			<Id>1</Id>
 			<Name>TR3_LARA_CLIMB2</Name>
 			<Volume>70</Volume>
@@ -98,7 +79,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>29</Id>
-			<Name>TR3_LARA_CLIMB3</Name>
+			<Name>TR3_LARA_JUMP</Name>
 			<Volume>50</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>50</Chance>
@@ -109,7 +90,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR3_LARA_CLIMB3_01.wav</FileName>
+					<FileName>TR3_LARA_JUMP_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>false</Global>

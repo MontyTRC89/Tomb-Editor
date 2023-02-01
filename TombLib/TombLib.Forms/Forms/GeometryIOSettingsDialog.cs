@@ -125,6 +125,7 @@ namespace TombLib.Forms
             cbSwapYZ.Checked = settings.SwapYZ;
             cbFlipUV_V.Checked = settings.FlipUV_V;
             cbPremultiplyUV.Checked = settings.PremultiplyUV;
+            cbUVMap.Checked = settings.MappedUV;
             cbWrapUV.Checked = settings.WrapUV;
             nmScale.Value = (decimal)settings.Scale;
             cbInvertFaces.Checked = settings.InvertFaces;
@@ -144,6 +145,7 @@ namespace TombLib.Forms
             Settings.SwapYZ = cbSwapYZ.Checked;
             Settings.FlipUV_V = cbFlipUV_V.Checked;
             Settings.PremultiplyUV = cbPremultiplyUV.Checked;
+            Settings.MappedUV = cbUVMap.Checked;
             Settings.WrapUV = cbWrapUV.Checked;
             Settings.Scale = (float)nmScale.Value;
             Settings.InvertFaces = cbInvertFaces.Checked;
@@ -183,6 +185,7 @@ namespace TombLib.Forms
             cbSwapYZ.CheckedChanged += ModifiedPresetEvent;
             cbFlipUV_V.CheckedChanged += ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged += ModifiedPresetEvent;
+            cbUVMap.CheckedChanged += ModifiedPresetEvent;
             cbWrapUV.CheckedChanged += ModifiedPresetEvent;
             nmScale.ValueChanged += ModifiedPresetEvent;
 
@@ -202,6 +205,7 @@ namespace TombLib.Forms
             cbSwapYZ.CheckedChanged -= ModifiedPresetEvent;
             cbFlipUV_V.CheckedChanged -= ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged -= ModifiedPresetEvent;
+            cbUVMap.CheckedChanged -= ModifiedPresetEvent;
             cbWrapUV.CheckedChanged -= ModifiedPresetEvent;
             nmScale.ValueChanged -= ModifiedPresetEvent;
 

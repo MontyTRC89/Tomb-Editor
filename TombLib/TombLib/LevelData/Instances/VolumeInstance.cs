@@ -92,7 +92,7 @@ namespace TombLib.LevelData
 
             var trimmedName = LuaSyntax.ReservedFunctionPrefix + 
                               eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
-                              Regex.Replace(belongedSet.Name, @"\s", string.Empty);
+                              Regex.Replace(belongedSet.Name, "[^A-Za-z0-9]", string.Empty);
 
             if (this == belongedSet.OnInside)
                 return trimmedName + "_OnInside";

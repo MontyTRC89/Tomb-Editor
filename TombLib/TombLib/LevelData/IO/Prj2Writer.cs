@@ -166,6 +166,7 @@ namespace TombLib.LevelData.IO
 				chunkIO.WriteChunkBool(Prj2Chunks.RemoveUnusedObjects, settings.RemoveUnusedObjects);
                 chunkIO.WriteChunkBool(Prj2Chunks.EnableCustomSampleRate, settings.EnableCustomSampleRate);
                 chunkIO.WriteChunkInt(Prj2Chunks.CustomSampleRate, settings.CustomSampleRate);
+                chunkIO.WriteChunkBool(Prj2Chunks.Room32BitLighting, settings.Room32BitLighting);
                 chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
@@ -256,6 +257,7 @@ namespace TombLib.LevelData.IO
                                 (importedGeometry.Info.FlipY ? 16 : 0) |
                                 (importedGeometry.Info.FlipZ ? 32 : 0));
                             chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryTexAxisFlags, importedGeometry.Info.FlipUV_V ? 4 : 0);
+                            chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryMappedUV, importedGeometry.Info.MappedUV);
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryInvertFaces, importedGeometry.Info.InvertFaces);
                             chunkIO.WriteChunkEnd();
                         }

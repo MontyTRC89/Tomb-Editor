@@ -7,7 +7,7 @@
 
 LevelFuncs.Engine.Node.TestLevelVariable = function(varName, operator, value)
     if (LevelVars[varName] == nil) then
-        return false
+        return LevelFuncs.Engine.Node.CompareValue(0, value, operator)
     else
         return LevelFuncs.Engine.Node.CompareValue(LevelVars[varName], value, operator)
     end
@@ -52,7 +52,7 @@ end
 
 LevelFuncs.Engine.Node.TestGameVariable = function(varName, operator, value)
     if (GameVars[varName] == nil) then
-        return false
+        return LevelFuncs.Engine.Node.CompareValue(0, value, operator)
     else
         return LevelFuncs.Engine.Node.CompareValue(GameVars[varName], value, operator)
     end
