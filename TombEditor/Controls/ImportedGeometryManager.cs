@@ -84,6 +84,12 @@ namespace TombEditor.Controls
                 set { Set((ref ImportedGeometryInfo info) => info.FlipZ = value); }
             }
 
+            public bool MappedUV
+            {
+                get { return Object.Info.MappedUV; }
+                set { Set((ref ImportedGeometryInfo info) => info.MappedUV = value); }
+            }
+
             public bool FlipUV_V
             {
                 get { return Object.Info.FlipUV_V; }

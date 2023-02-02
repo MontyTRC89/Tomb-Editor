@@ -203,6 +203,7 @@ namespace TombLib.LevelData
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
         public LightQuality DefaultLightQuality { get; set; } = LightQuality.Low;
         public bool OverrideIndividualLightQualitySettings { get; set; } = false;
+        public bool Room32BitLighting { get; set; } = false;
 
         // Compiler options
         public bool RearrangeVerticalRooms { get; set; } = true;

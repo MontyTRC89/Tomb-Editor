@@ -86,10 +86,6 @@ namespace TombEditor.Controls.Panel3D
 
             bool redrawWindow = false;
 
-            // Hover effect on gizmo
-            if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y))))
-                redrawWindow = true;
-
             switch (button)
             {
                 case MouseButtons.Left:
@@ -107,6 +103,12 @@ namespace TombEditor.Controls.Panel3D
                 default:
                     redrawWindow = OnMouseMovedNone(location);
                     break;
+            }
+
+            if (!redrawWindow)
+            {
+                // Hover effect on gizmo
+                redrawWindow = _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y)));
             }
 
             if (redrawWindow)

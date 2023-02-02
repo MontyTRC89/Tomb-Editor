@@ -3,6 +3,7 @@
 	<game id="TR1">
 		<limits>
 			<limit name="TexPages" value="16" />
+			<limit name="TexPageSize" value="256" />
 			<limit name="TexInfos" value="1800" />
 			<limit name="SoundBitsPerSample" value="8" />
 			<limit name="SoundSampleRate" value="22050" />
@@ -1413,7 +1414,7 @@
 			<moveable id="51" name="London goon" essential="false" t5m="SAS_CAIRO"/> 
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="56" name="London guard" essential="false" t5m="MP_WITH_GUN" /> 
-			<moveable id="57" name="Sophia Lee" essential="false" t5m="SOPHIA_LEE_BOSS"/>
+			<moveable id="57" name="Sophia-Leigh" essential="false" t5m="SOPHIA_LEIGH_BOSS"/>
 			<moveable id="58" name="Thames Wharf machine" essential="false" /> 
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
@@ -2336,7 +2337,7 @@
 			<anim item="56" id="35" name="CROUCH_STEP" />
 			<anim item="56" id="36" name="CROUCH_TO_STAND" />
 
-			<!-- Sophie Lee -->
+			<!-- Sophia-Leigh -->
 			<anim item="57" id="0" name="WALK" />
 			<anim item="57" id="1" name="SUMMON_START" />
 			<anim item="57" id="2" name="SUMMON" />
@@ -2665,7 +2666,7 @@
 			<state item="56" id="19" name="CROUCH_STEP" />
 			<state item="56" id="19" name="CROUCH_TO_STAND" />
 
-			<!-- Sophia Lee -->
+			<!-- Sophia Leigh -->
 			<state item="57" id="0" name="EMPTY" />
 			<state item="57" id="1" name="STOP" />
 			<state item="57" id="2" name="WALK" />
@@ -5906,6 +5907,7 @@
 	<game id="TombEngine">
 		<limits>
 			<limit name="TexPages" value="32768" />
+			<limit name="TexPageSize" value="4096" />
 			<limit name="TexInfos" value="2147483647" />
 			<limit name="SoundBitsPerSample" value="16" />
 			<limit name="SoundSampleRate" value="22050" />
@@ -6108,7 +6110,7 @@
 			<moveable id="250" name="TONY_BOSS" />
 			<moveable id="251" name="TONY_BOSS_FLAME" />
 			<moveable id="252" name="PUNA_BOSS" />
-			<moveable id="253" name="SOPHIA_LEE_BOSS" />
+			<moveable id="253" name="SOPHIA_LEIGH_BOSS" />
 			<moveable id="254" name="LASER_BOLT" />
 			<moveable id="255" name="SKELETON" />
 			<moveable id="256" name="MUMMY" />
@@ -7609,15 +7611,15 @@
 			<sound id="694" name="TR3_PUNA_BOSS_SHOOT" t5m="694" />
 			<sound id="695" name="TR3_PUNA_BOSS_TAKE_HIT" t5m="695" />
 			<sound id="696" name="TR3_PUNA_BOSS_TURN_CHAIR" t5m="696" />
-			<sound id="697" name="TR3_SOFIALEE_DEATH_PART_1" t5m="697" />
-			<sound id="698" name="TR3_SOFIALEE_DEATH_PART_2" t5m="698" />
-			<sound id="699" name="TR3_SOFIALEE_FIRE" t5m="699" />
-			<sound id="700" name="TR3_SOFIALEE_LAUGH" t5m="700" />
-			<sound id="701" name="TR3_SOFIALEE_SHOOTER" t5m="701" />
-			<sound id="702" name="TR3_SOFIALEE_SUMMON" t5m="702" />
-			<sound id="703" name="TR3_SOFIALEE_SUMMON_FAIL" t5m="703" />
-			<sound id="704" name="TR3_SOFIALEE_TAKE_HIT" t5m="704" />
-			<sound id="705" name="TR3_SOFIALEE_VAULT" t5m="705" />
+			<sound id="697" name="TR3_SOFIALEIGH_DEATH_PART_1" t5m="697" />
+			<sound id="698" name="TR3_SOFIALEIGH_DEATH_PART_2" t5m="698" />
+			<sound id="699" name="TR3_SOFIALEIGH_FIRE" t5m="699" />
+			<sound id="700" name="TR3_SOFIALEIGH_LAUGH" t5m="700" />
+			<sound id="701" name="TR3_SOFIALEIGH_SHOOTER" t5m="701" />
+			<sound id="702" name="TR3_SOFIALEIGH_SUMMON" t5m="702" />
+			<sound id="703" name="TR3_SOFIALEIGH_SUMMON_FAIL" t5m="703" />
+			<sound id="704" name="TR3_SOFIALEIGH_TAKE_HIT" t5m="704" />
+			<sound id="705" name="TR3_SOFIALEIGH_VAULT" t5m="705" />
 			<sound id="706" name="TR3_WILLARD_ATTACK" t5m="706" />
 			<sound id="707" name="TR3_WILLARD_FIRE_CHARGE" t5m="707" />
 			<sound id="708" name="TR3_WILLARD_FIRE_SHOOT" t5m="708" />

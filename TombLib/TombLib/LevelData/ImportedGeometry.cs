@@ -114,7 +114,7 @@ namespace TombLib.LevelData
 
     public struct ImportedGeometryInfo
     {
-        public static readonly ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
+        public static readonly ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, MappedUV = true, FlipUV_V = true };
 
         public string Name { get; set; }
         public string Path { get; set; }
@@ -126,6 +126,7 @@ namespace TombLib.LevelData
         public bool FlipX { get; set; }
         public bool FlipY { get; set; }
         public bool FlipZ { get; set; }
+        public bool MappedUV { get; set; }
         public bool FlipUV_V { get; set; }
         public bool InvertFaces { get; set; }
 
@@ -141,6 +142,7 @@ namespace TombLib.LevelData
             FlipX = settings.FlipX;
             FlipY = settings.FlipY;
             FlipZ = settings.FlipZ;
+            MappedUV = settings.MappedUV;
             FlipUV_V = settings.FlipUV_V;
         }
     }

@@ -200,7 +200,7 @@ namespace TombLib.Wad
                     {
                         bool isQuad = poly.Shape == WadPolygonShape.Quad;
 
-                        chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
+                        chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad2 : Wad2Chunks.MeshTriangle2, () =>
                         {
                             LEB128.Write(chunkIO.Raw, poly.Index0);
                             LEB128.Write(chunkIO.Raw, poly.Index1);
@@ -210,6 +210,10 @@ namespace TombLib.Wad
                             LEB128.Write(chunkIO.Raw, poly.ShineStrength);
 
                             LEB128.Write(chunkIO.Raw, textureTable.IndexOf(poly.Texture.Texture as WadTexture));
+
+                            chunkIO.Raw.Write(poly.Texture.ParentArea.Start);
+                            chunkIO.Raw.Write(poly.Texture.ParentArea.End);
+
                             chunkIO.Raw.Write(poly.Texture.TexCoord0);
                             chunkIO.Raw.Write(poly.Texture.TexCoord1);
                             chunkIO.Raw.Write(poly.Texture.TexCoord2);

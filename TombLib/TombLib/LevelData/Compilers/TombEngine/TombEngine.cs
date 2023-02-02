@@ -171,7 +171,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.WriteBlockArray(_overlaps);
 
                 int zoneCount = Enum.GetValues(typeof(ZoneType)).Length;
-                //writer.Write(zoneCount); // TODO: Unblock when zone_count_reader branch is merged on TEN repo.
+                writer.Write(zoneCount);
 
                 foreach (int flipped in new[] { 0, 1 })
                     for (int i = 0; i < zoneCount; i++)

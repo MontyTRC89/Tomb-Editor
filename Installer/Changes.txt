@@ -1,14 +1,30 @@
+Version 1.6.5
+=============
+
+Tomb Editor:
+ * Fix exception when trying to select floor below object out of room bounds.
+
+WadTool:
+ * Amended slot name for Sophia-Leigh in TEN. 
+
+TombIDE:
+ * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
+ 
 Version 1.6.4
 =============
 
 Tomb Editor:
+ * Add an option for imported geometry to define whether it is UV-mapped or not.
  * Add an option to use Lua or node events as actions for legacy triggers in TEN.
+ * Add an option to enable 32-bit lighting for TRNG to fix "rainbow bug" (requires FLEP patch).
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights in TEN levels.
+ * Fix broken lua event sets which had non-alphanumerical characters in their name.
  * Fix variable comparer nodes not working correctly without initialized variable.
  * Fix incorrect light interpolation between rooms with non-traversable portals.
 
 WadTool:
+ * Add a new main window menu option to quickly convert objects between UV-mapped and tiled texture mode.
  * Increase compatibility with imported animations with inconsistent bone and mesh setups.
  * Play sound preview on animation editor timeline scrubbling.
  * Fix sound previews not working if default sound device is incorrect in Windows settings.
@@ -26,6 +42,8 @@ SoundTool:
  
 TombIDE:
  * Don't generate empty strings for TEN projects in TIDE script editor.
+ * Update Tomb1Main preset to 2.12.1.
+ * Update tomb3 preset to 1.5.0.
  
 Version 1.6.3
 =============
