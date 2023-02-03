@@ -40,7 +40,7 @@ LevelFuncs.Engine.Node.MoveableParticleEmitter = function(
         rotation, 
         startColor, 
         endColor, 
-        blendID, 
+        blendMode, 
         startSize, 
         endSize, 
         life, 
@@ -191,7 +191,7 @@ LevelFuncs.Engine.Node.Shockwave = function(
 		local origin = GetMoveableByName(pos):GetPosition()
 		
 		local function earthquake()
-			TEN.Misc.MakeEarthquake(20)
+			TEN.Effects.MakeEarthquake(20)
 			TEN.Misc.Vibrate(20, 0.3)
 		end
 
