@@ -21,7 +21,7 @@ LevelFuncs.Engine.Node.MoveableParticleEmitter = function(
     rotation, 
     startColor, 
     endColor, 
-    blendMode, 
+    blendID, 
     startSize, 
     endSize, 
     life, 
@@ -30,7 +30,7 @@ LevelFuncs.Engine.Node.MoveableParticleEmitter = function(
 )
 
     local pos = GetMoveableByName(moveable):GetPosition()
-    local blendID = LevelFuncs.Engine.Node.GetBlendMode(blendMode)
+    local blendMode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
     TEN.Effects.EmitParticle(
         pos, 
@@ -54,7 +54,8 @@ end
 --!Section "Particles"
 --!Conditional "False"
 --!Description "Emit particles from a specified mesh.\nThis effect is drawn every frame."
---!Arguments "NewLine, Moveables, 70, Choose the moveable where the particles will spawn from." "Numerical, 30, [0 | 100], Mesh Number.\nThis can be found in Wadtool in the Animation Editor"
+--!Arguments "NewLine, Moveables, 70, Choose the moveable where the particles will spawn from." 
+--!Arguments "Numerical, 30, [0 | 100], Mesh Number.\nThis can be found in Wadtool in the Animation Editor"
 --!Arguments "NewLine, Vector3, 100, [-32000 | 32000], Velocity X Y Z\n Please note that the Y value is inversed. Positive values are down and negative is up"
 --!Arguments "NewLine, Numerical, 100, [0 | 31], Choose sprite for emitter.\nSprites are based on the DEFAULT_SPRITES slot in Wadtool\n0 = Flame Emitter\n1 = Underwater blood\n2 = Waterfall\n3 = Mist\n4 = Splash Ring 1\n5 = Splash Ring 2\n6 = Splash Ring 3\n7 = Splash Ring 4\n8 = Water Splash\n9 = Water Ring\n11 = Specular\n13 = Underwater Bubble\n14 = Underwater Dust\n15 = Blood\n28 = Lightning\n29 = Lensflare Ring\n30 = Lensflare Ring 2 \n31 = Lensflare Sundisc\n32 = Lensflare Bright Spark"
 --!Arguments "NewLine, 100, [-32768 |  32767], Gravity X Y\n Please note that the Y value is inversed. Positive values are down and negative is up"
@@ -84,7 +85,7 @@ LevelFuncs.Engine.Node.MeshParticleEmitter=function(
 	)
 
     local pos = GetMoveableByName(activator):GetJointPosition(meshnum)
-	local blendID = LevelFuncs.Engine.Node.GetBlendMode(blendMode)
+	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
 
     TEN.Effects.EmitParticle(
@@ -95,7 +96,7 @@ LevelFuncs.Engine.Node.MeshParticleEmitter=function(
 		rotation, 
 		startColor, 
 		endColor, 
-		blendID, 
+		blendmode, 
 		startSize, 
 		endSize, 
 		life, 
