@@ -125,21 +125,41 @@ LevelFuncs.Engine.Node.LightningArc = function(
 	detail, 
 	smooth, 
 	endDrift, 
-	sourcelightBool, 
-	destlightBool, 
+	sourcelight, 
+	destlight, 
 	sound
 	)
-
-	local startingPoint = GetMoveableByName(source):GetPosition()
-	local endingPoint = GetMoveableByName(dest):GetPosition()
 	
+	local randomiserX = math.random(-64,64)
+	local randomiserZ = math.random(-256,256)
+	
+    local entity = GetMoveableByName(source)
+	
+    local startingpoint = entity:GetPosition()
+		startingpoint.x = startingpoint.x - randomiserX
+		startingpoint.y = startingpoint.y - 64
+		startingpoint.z = startingpoint.z - randomiserZ 		
+
+		
+    local endingpoint = GetMoveableByName(dest):GetPosition()
+		endingpoint.x = endingpoint.x - randomiserX
+		endingpoint.y = endingpoint.y - 64
+		endingpoint.z = endingpoint.z - randomiserZ 
+	
+	local endingpoint = GetMoveableByName(dest):GetPosition()
+	
+	local beamrandom = math.random((beamWidth-10),(beamWidth+10))
+	local amprandom =  math.random((amplitude-10),(amplitude+10))
+	
+	print(beamrandom, amprandom)
+
 	TEN.Effects.EmitLightningArc(
-		startingPoint, 
-		endingPoint, 
+		startingpoint,
+		endingpoint, 
 		color, 
 		lifetime, 
-		amplitude, 
-		beamWidth, 
+		amprandom, 
+		beamrandom,
 		detail, 
 		smooth, 
 		endDrift
@@ -149,19 +169,19 @@ LevelFuncs.Engine.Node.LightningArc = function(
 		local sfxcheck
 			if sound == true
 			then
-				TEN.Misc.PlaySound(197, startingPoint)
+				TEN.Misc.PlaySound(197, startingpoint)
 			end
 
 		local sourceLightCheck 
-			if sourcelightBool == true
+			if sourcelight == true
 			then
-				TEN.Effects.EmitLight(startingPoint, color, math.random(10, 20))
+				TEN.Effects.EmitLight(startingpoint, color, math.random(1,10))
 			end
 
 		local destLightCheck 
-			if destlightBool == true
+			if destlight == true
 			then 
-				TEN.Effects.EmitLight(endingPoint, color, math.random(10, 20))
+				TEN.Effects.EmitLight(endingpoint, color, math.random(1,10))
 			end
 end
 
@@ -172,7 +192,7 @@ end
 --!Arguments "NewLine, Number, 50, [ 0 | 10400 | 0 ], Inner Radius" "Number, 50, [0|10400|0], Outer Radius."
 --!Arguments "NewLine, Color, 100, Color of shockwave effect"
 --!Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)" , "Number, 33, [ 0 | 500 | 0 ], Speed" , "Number, 33, [ -360 | 360 |0 ], Angle around the X axis"
---!Arguments "NewLine, Boolean, 30, Toogle Lara Damage" , "Boolean, 33, Toggle Rumble", "Boolean, 33, Toggle SFX"
+--!Arguments "NewLine, Boolean, 50, Toogle Lara Damage" , "Boolean, 50, Toggle Rumble"
 
 	LevelFuncs.Engine.Node.Shockwave = function(
 		pos, 
@@ -183,11 +203,11 @@ end
 		speed, 
 		angle, 
 		hurtPlayer, 
-		rumble, 
-		sound
+		rumble
 		)
 
-			local origin = GetMoveableByName(pos):GetPosition()
+			local origin = GetMoveableByName(pos):GetPosition() 
+				print(pos.y)
 			
 			local function earthquake()
 				TEN.Effects.MakeEarthquake(20)
@@ -214,7 +234,7 @@ end
 			local sfxcheck
 			if sound == true
 			then
-				TEN.Misc.PlaySound(197, startingPoint)
+				TEN.Misc.PlaySound(197, startingpoint)
 			end
 
 	end
