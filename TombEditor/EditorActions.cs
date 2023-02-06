@@ -4588,6 +4588,13 @@ namespace TombEditor
         {
             VectorInt2 relPos;
             var pair = instance.Room.ProbeLowestBlock(instance.SectorPosition, true, out relPos);
+
+            if (pair.Room == null)
+            {
+                _editor.SendMessage("Current object position is out of room bounds.", PopupType.Error);
+                return;
+            }
+
             _editor.SelectedRoom = pair.Room;
             _editor.SelectedSectors = new SectorSelection { Area = new RectangleInt2(relPos) };
         }
