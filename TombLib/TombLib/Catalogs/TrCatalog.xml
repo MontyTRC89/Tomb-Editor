@@ -1415,7 +1415,7 @@
 			<moveable id="53" name="'Damned' stick-wielding goon" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="56" name="London guard" essential="false" t5m="MP_WITH_GUN" /> 
 			<moveable id="57" name="Sophia-Leigh" essential="false" t5m="SOPHIA_LEIGH_BOSS"/>
-			<moveable id="58" name="Thames Wharf machine" essential="false" /> 
+			<moveable id="58" name="Thames Wharf machine" essential="false" t5m="ELECTRIC_CLEANER" /> 
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
 			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
@@ -6278,6 +6278,7 @@
 			<moveable id="445" name="TRAIN" />
 			<moveable id="446" name="EXPLOSION" />
 			<moveable id="447" name="DAMOCLES_SWORD" />
+			<moveable id="448" name="ELECTRIC_CLEANER" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
