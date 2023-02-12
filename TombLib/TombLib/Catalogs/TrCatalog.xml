@@ -6511,6 +6511,7 @@
 			<moveable id="753" name="CLOCKWORK_BEETLE" />
 			<moveable id="754" name="CLOCKWORK_BEETLE_COMBO1" />
 			<moveable id="755" name="CLOCKWORK_BEETLE_COMBO2" />
+			<moveable id="756" name="MINECART_SWITCH" />
 			<moveable id="800" name="SWITCH_TYPE1" />
 			<moveable id="801" name="SWITCH_TYPE2" />
 			<moveable id="802" name="SWITCH_TYPE3" />
