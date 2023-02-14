@@ -8075,7 +8075,12 @@
 			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<anim item="1" id="14" name="DEATH_SETH" />
-			<anim item="1" id="15" name="DEATH_WILLARD" />
+			
+			<!--COMPSOGNATHUS -->
+			<anim item="113" id="0" name="IDLE" />
+			<anim item="113" id="1" name= "RUN" />
+			<anim item="113" id="2" name= "JUMP_ATTACK" />
+			<anim item="113" id="3" name= "ATTACK" />	 
 			
 			<!-- SWAT -->
 			<anim item="184" id="0" name = "IDLE" />
@@ -8285,6 +8290,12 @@
 			<state item="0" id="171" name="CROUCH_TURN_180" />
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
+			
+			<!--COMPSOGNATHUS -->
+			<state item="113" id="0" name="IDLE" />
+			<state item="113" id="1" name="RUN" />
+			<state item="113" id="2" name="JUMP_ATTACK" />
+			<state item="113" id="3" name="ATTACK" />	 
 			
 			<!-- SHIVA -->
 			<state item="244" id="0" name="IDLE "/>
