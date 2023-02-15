@@ -439,3 +439,16 @@ end
 LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
     TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
 end
+
+-- !Name "Attach camera to moveable"
+-- !Section "Moveable state"
+-- !Conditional "False"
+-- !Description "Attach game camera to a specific moveable."
+-- !Arguments "NewLine, Moveables , 70, Source moveable" , "Numerical , 30 , [ 0 | 50 ] , Mesh number of source moveable to attach camera target to"
+-- !Arguments "NewLine, Moveables , 70, Target moveable" , "Numerical , 30 , [ 0 | 50 ] , Mesh number of target moveable to attach camera target to"
+
+LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target , targetMesh)
+    local sourcePos = TEN.Objects.GetMoveableByName(source)
+    local targetPos = TEN.Objects.GetMoveableByName(target)
+    sourcePos:AttachObjCamera(sourceMesh, targetPos, targetMesh)
+end
