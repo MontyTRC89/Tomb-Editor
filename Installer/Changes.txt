@@ -5,6 +5,7 @@ Tomb Editor:
  * Fix exception when trying to select floor below object out of room bounds.
 
 WadTool:
+ * Fix sound previews not working for interpolated frames.
  * Amended slot name for Sophia-Leigh in TEN. 
 
 TombIDE:
