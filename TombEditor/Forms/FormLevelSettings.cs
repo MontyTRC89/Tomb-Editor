@@ -689,7 +689,7 @@ namespace TombEditor.Forms
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == Game.TR5);
-            cbSampleRate.Visible = currentVersionToCheck;
+            panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
 

@@ -167,7 +167,7 @@
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
             this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
-            this.cbSampleRate = new System.Windows.Forms.Panel();
+            this.panelTr5LaraType = new System.Windows.Forms.Panel();
             this.comboLaraType = new DarkUI.Controls.DarkComboBox();
             this.lblLaraType = new DarkUI.Controls.DarkLabel();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -223,7 +223,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabMisc.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
-            this.cbSampleRate.SuspendLayout();
+            this.panelTr5LaraType.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             this.tabPaths.SuspendLayout();
@@ -1942,7 +1942,7 @@
             // 
             this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabMisc.Controls.Add(this.panelTr5Weather);
-            this.tabMisc.Controls.Add(this.cbSampleRate);
+            this.tabMisc.Controls.Add(this.panelTr5LaraType);
             this.tabMisc.Controls.Add(this.panel6);
             this.tabMisc.Controls.Add(this.panel12);
             this.tabMisc.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -1982,15 +1982,15 @@
             this.lblTr5Weather.TabIndex = 3;
             this.lblTr5Weather.Text = "TR5 weather:";
             // 
-            // cbSampleRate
+            // panelTr5LaraType
             // 
-            this.cbSampleRate.Controls.Add(this.comboLaraType);
-            this.cbSampleRate.Controls.Add(this.lblLaraType);
-            this.cbSampleRate.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSampleRate.Location = new System.Drawing.Point(0, 364);
-            this.cbSampleRate.Name = "cbSampleRate";
-            this.cbSampleRate.Size = new System.Drawing.Size(778, 51);
-            this.cbSampleRate.TabIndex = 96;
+            this.panelTr5LaraType.Controls.Add(this.comboLaraType);
+            this.panelTr5LaraType.Controls.Add(this.lblLaraType);
+            this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 364);
+            this.panelTr5LaraType.Name = "panelTr5LaraType";
+            this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
+            this.panelTr5LaraType.TabIndex = 96;
             // 
             // comboLaraType
             // 
@@ -2303,7 +2303,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabMisc.ResumeLayout(false);
             this.panelTr5Weather.ResumeLayout(false);
-            this.cbSampleRate.ResumeLayout(false);
+            this.panelTr5LaraType.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
@@ -2384,7 +2384,7 @@
         private System.Windows.Forms.Panel panelTr5Weather;
         private DarkUI.Controls.DarkComboBox comboTr5Weather;
         private DarkUI.Controls.DarkLabel lblTr5Weather;
-        private System.Windows.Forms.Panel cbSampleRate;
+        private System.Windows.Forms.Panel panelTr5LaraType;
         private DarkUI.Controls.DarkComboBox comboLaraType;
         private DarkUI.Controls.DarkLabel lblLaraType;
         private System.Windows.Forms.Panel panel6;
