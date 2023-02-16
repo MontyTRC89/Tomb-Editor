@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TombIDE.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
@@ -16,7 +17,55 @@ namespace TombIDE
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+			var ideConfiguration = IDEConfiguration.Load();
+			var availableProjects = XmlHandling.GetProjectsFromXml().ToList();
+
+			var idex = new IDE(ideConfiguration, availableProjects);
+
+			var app = new System.Windows.Application();
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/Colors.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkButton.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkCheckBox.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkComboBox.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkRadioButton.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkScrollViewer.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkTextBox.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("/Styles/DarkDataGrid.xaml", UriKind.RelativeOrAbsolute)
+			});
+
+			app.Run(new StartWindow(idex));
+
+			return;
 
 			UpdateNGCompilerPaths();
 
@@ -25,8 +74,8 @@ namespace TombIDE
 			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			var ideConfiguration = IDEConfiguration.Load();
-			var availableProjects = XmlHandling.GetProjectsFromXml().ToList();
+			ideConfiguration = IDEConfiguration.Load();
+			availableProjects = XmlHandling.GetProjectsFromXml().ToList();
 
 			using (var ide = new IDE(ideConfiguration, availableProjects))
 			{
