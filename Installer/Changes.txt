@@ -3,6 +3,7 @@ Version 1.6.5
 
 Tomb Editor:
  * Fix exception when trying to select floor below object out of room bounds.
+ * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
 
 WadTool:
  * Fix sound previews not working for interpolated frames.
