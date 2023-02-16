@@ -209,6 +209,7 @@ namespace TombLib.LevelData
         public bool RearrangeVerticalRooms { get; set; } = true;
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
+        public bool CompressTextures { get; set; } = false;
         public bool Dither16BitTextures { get; set; } = true;
         public bool RemapAnimatedTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
