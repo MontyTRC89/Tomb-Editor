@@ -5925,7 +5925,7 @@
 			<limit name="RoomDimensions" value="2147483647" />
 			<limit name="RoomMaxCount" value="2147483647" />
 			<limit name="RoomSafeCount" value="2147483647" />
-			<limit name="FloorHeight" value="127" />
+			<limit name="FloorHeight" value="1024" />
 			<limit name="WorldDimensions" value="400" />
 		</limits>
 		<moveables>
