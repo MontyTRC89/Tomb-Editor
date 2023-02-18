@@ -15,7 +15,6 @@ WadTool:
    - Addition of dedicated slot "ID_MINECART_SWITCH" for the minecart vehicle.
    - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS.
   
-  
 TombIDE:
  * Amended the TEN preset with the sound file corrections for Sophia Leigh. 
  
