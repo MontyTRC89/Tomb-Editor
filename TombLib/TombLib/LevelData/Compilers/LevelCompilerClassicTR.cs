@@ -124,7 +124,7 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr4();
                     break;
                 case TRVersion.Game.TRNG:
-                    WriteLevelTr4(GetTRNGVersion());
+                    WriteLevelTr4(DetectTRNGVersion());
                     break;
                 case TRVersion.Game.TR5:
                     WriteLevelTr5();
@@ -532,20 +532,20 @@ namespace TombLib.LevelData.Compilers
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
         }
 
-
-        public string GetTRNGVersion()
+        public string DetectTRNGVersion()
         {
             var buffer = PathC.GetDirectoryNameTry(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)) + "\\Tomb_NextGeneration.dll";
             if (File.Exists(buffer))
             {
-                buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion;
+                buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion.Replace(",", ".").Replace(" ", string.Empty);
                 _progressReporter.ReportInfo("TRNG found, version is " + buffer);
             }
             else
             {
-                buffer = "1,3,0,6";
+                buffer = "1.3.0.6";
                 _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
             }
+
             return buffer;
         }
 

@@ -297,12 +297,17 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgVersion(BinaryWriter writer, string version)
         {
             // Parse NGLE version string
-            var verChunks = version.Split(',');
+            var verChunks = version.Split('.');
 
             for (int i = 0; i < 4; i++)
             {
                 ushort number = 0;
-                if(i < verChunks.Length) ushort.TryParse(verChunks[i], out number);
+
+                if (i < verChunks.Length)
+                {
+                    ushort.TryParse(verChunks[i], out number);
+                }
+
                 writer.Write(number);
             }
 
