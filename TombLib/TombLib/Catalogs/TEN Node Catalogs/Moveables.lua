@@ -444,14 +444,15 @@ end
 -- !Section "Moveable state"
 -- !Conditional "False"
 -- !Description "Attach game camera to a specific moveable."
--- !Arguments "NewLine, Moveables, 80, Moveable to focus camera position on"
--- !Arguments "Numerical, 20, [ 0 | 50 ], Mesh number of moveable to focus camera position on"
--- !Arguments "NewLine, Moveables, 80, Moveable to move camera to" "Numerical, 20, [ 0 | 50 ], Mesh number of moveable to move camera to"
+-- !Arguments "NewLine, Moveables, 50, Moveable to focus camera position on" "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to focus camera position on" "Boolean, 25, Set invisible"
+-- !Arguments "NewLine, Moveables, 50, Moveable to move camera to" "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to move camera to" "Boolean, 25, Set invisible"
 
 LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target , targetMesh)
     local sourcePos = GetMoveableByName(source)
     local targetPos = GetMoveableByName(target)
-    targetPos:AttachObjCamera(sourceMesh, sourcePos, targetMesh)
+    targetPos:AttachObjCamera(targetMesh, sourcePos, sourceMesh)
+
+end
 
 end
 
@@ -463,8 +464,6 @@ end
 
 LevelFuncs.Engine.Node.ResetObjCam = function(resetCam)
 	local resetLaraCam
-			if resetCam == true
-			then
-				 ResetObjCamera()
+			if (resetCam == true) then ResetObjCamera()
 	end
 end
