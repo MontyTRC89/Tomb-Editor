@@ -4,6 +4,7 @@ Version 1.6.5
 Tomb Editor:
  * Extend 2D map depth bar range for TEN target.
  * Detect TEN version when building a level and throw a warning if target editor version does not match.
+ * Initialize nonexistent lua variables in nodes as initial value for assignment operations.
  * Fix exception when trying to select floor below object out of room bounds.
  * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
 
