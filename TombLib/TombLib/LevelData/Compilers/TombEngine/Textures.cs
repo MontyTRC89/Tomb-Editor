@@ -218,7 +218,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return final;
         }
 
-        private byte[] CompressTexture(ImageC i, CompressionFormat format)
+        private byte[] GetUncompressedTexture(ImageC i)
+        {
+            MemoryStream output = new MemoryStream();
+            i.Save(output, System.Drawing.Imaging.ImageFormat.Png);
+            return output.ToArray();
+        }
+
+        private byte[] GetCompressedTexture(ImageC i, CompressionFormat format)
         {
             using Image bitmap = i.ToBitmap();
 
@@ -252,7 +259,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(atlas.Height);
                 using (var ms = new MemoryStream())
                 {
-                    byte[] output = CompressTexture(atlas, CompressionFormat.Bc3);
+                    byte[] output = 
+                        _level.Settings.CompressTextures ? 
+                        GetCompressedTexture(atlas, CompressionFormat.Bc3) : 
+                        GetUncompressedTexture(atlas);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -264,7 +274,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(sky.Width);
                 writer.Write(sky.Height);
-                byte[] output = CompressTexture(sky, CompressionFormat.Bc3);
+                byte[] output =
+                    _level.Settings.CompressTextures ?
+                    GetCompressedTexture(sky, CompressionFormat.Bc3) :
+                    GetUncompressedTexture(sky);
                 writer.Write((int)output.Length);
                 writer.Write(output.ToArray());
             }
@@ -280,7 +293,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    byte[] output = CompressTexture(atlas.ColorMap, CompressionFormat.Bc3);
+                    byte[] output =
+                        _level.Settings.CompressTextures ?
+                        GetCompressedTexture(atlas.ColorMap, CompressionFormat.Bc3) :
+                        GetUncompressedTexture(atlas.ColorMap);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -291,7 +307,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    byte[] output = CompressTexture(atlas.NormalMap, CompressionFormat.Bc5);
+                    byte[] output =
+                        _level.Settings.CompressTextures ?
+                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
+                        GetUncompressedTexture(atlas.NormalMap);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
