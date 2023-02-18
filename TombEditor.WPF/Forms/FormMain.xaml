@@ -1,0 +1,175 @@
+﻿<Window
+	x:Class="TombEditor.WPF.Forms.FormMain"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Title="Tomb Editor"
+	Width="800"
+	Height="450"
+	WindowState="Maximized"
+	mc:Ignorable="d">
+	<Grid x:Name="layoutRoot">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Menu Grid.Row="0">
+			<MenuItem Header="File">
+				<MenuItem Header="New level" />
+				<MenuItem Header="Open existing level..." />
+				<MenuItem Header="Open recent" />
+				<MenuItem Header="Save level" />
+				<MenuItem Header="Save level as..." />
+				<Separator />
+				<MenuItem Header="Import TRLE level..." />
+				<MenuItem Header="Convert level to TombEngine..." />
+				<Separator />
+				<MenuItem Header="Build level and play" />
+				<MenuItem Header="Build level" />
+				<Separator />
+				<MenuItem Header="Quit editor" />
+			</MenuItem>
+			<MenuItem Header="Edit">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="View">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="Rooms">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="Items">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="Textures">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="Transform">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+			<MenuItem Header="Tools">
+				<MenuItem Click="OnShowWinformsWindow" Header="WinForms Window" />
+				<MenuItem Click="OnShowToolWindow1" Header="Tool Window1" />
+				<MenuItem Click="OnNewFloatingWindow" Header="New floating window" />
+			</MenuItem>
+			<MenuItem Header="Window">
+				<MenuItem Header="Save">
+					<MenuItem Click="OnSaveLayout" Header="Layout_1" />
+					<MenuItem Click="OnSaveLayout" Header="Layout_2" />
+					<MenuItem Click="OnSaveLayout" Header="Layout_3" />
+					<MenuItem Click="OnSaveLayout" Header="Layout_4" />
+				</MenuItem>
+				<MenuItem Header="Load">
+					<MenuItem Click="OnLoadLayout" Header="Layout_1" />
+					<MenuItem Click="OnLoadLayout" Header="Layout_2" />
+					<MenuItem Click="OnLoadLayout" Header="Layout_3" />
+					<MenuItem Click="OnLoadLayout" Header="Layout_4" />
+				</MenuItem>
+				<MenuItem Click="OnDumpToConsole" Header="Dump To Console" />
+				<MenuItem Click="OnUnloadManager" Header="Unload Manager" />
+				<MenuItem Click="OnLoadManager" Header="Load Manager" />
+				<MenuItem Click="OnShowHeader" Header="Show header" />
+			</MenuItem>
+			<MenuItem Header="Help">
+				<MenuItem Command="Undo" />
+			</MenuItem>
+		</Menu>
+
+		<DockingManager
+			x:Name="dockManager"
+			Grid.Row="1"
+			GridSplitterHeight="2"
+			GridSplitterWidth="2">
+			<DockingManager.Theme>
+				<Vs2013DarkTheme />
+			</DockingManager.Theme>
+			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
+				<LayoutPanel Orientation="Horizontal">
+					<LayoutAnchorablePaneGroup DockWidth="300" Orientation="Vertical">
+						<LayoutAnchorablePane DockMinHeight="278">
+							<LayoutAnchorable
+								x:Name="SectorOptions"
+								Title="Sector Options"
+								ContentId="SectorOptions" />
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockMinHeight="226">
+							<LayoutAnchorable
+								x:Name="RoomOptions"
+								Title="Room Options"
+								ContentId="RoomOptions" />
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockMinHeight="250">
+							<LayoutAnchorable
+								x:Name="Items"
+								Title="Items"
+								ContentId="Items" />
+							<LayoutAnchorable
+								x:Name="ImportedGeometry"
+								Title="Imported Geometry"
+								ContentId="ImportedGeometry" />
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane>
+							<LayoutAnchorable
+								x:Name="Triggers"
+								Title="Triggers"
+								ContentId="Triggers" />
+							<LayoutAnchorable
+								x:Name="ObjectsInRoom"
+								Title="Objects in Room"
+								ContentId="ObjectsInRoom" />
+						</LayoutAnchorablePane>
+					</LayoutAnchorablePaneGroup>
+
+					<LayoutPanel Orientation="Vertical">
+						<LayoutDocumentPane ShowHeader="False">
+							<LayoutDocument x:Name="MainView">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToolBar>
+										<Button>2D</Button>
+										<Button>3D</Button>
+									</ToolBar>
+									<Rectangle Grid.Row="1" Fill="Black" />
+									<TextBlock Grid.Row="2" TextWrapping="Wrap">
+										Rooms: 1 Objects: 0 / 0 Statics: 0 / 0 Triggers: 0 / 0 Lights: 0 / 0 Cameras: 0 / 0 Flybys: 0 / 0<LineBreak />
+										Room vertices / faces: 0 / 0 Last level output: compile level</TextBlock>
+								</Grid>
+							</LayoutDocument>
+						</LayoutDocumentPane>
+
+						<LayoutAnchorablePaneGroup DockHeight="150" Orientation="Horizontal">
+							<LayoutAnchorablePane DockMinWidth="370" FloatingWidth="370">
+								<LayoutAnchorable
+									x:Name="Lighting"
+									Title="Lighting"
+									ContentId="Lighting" />
+							</LayoutAnchorablePane>
+							<LayoutAnchorablePane>
+								<LayoutAnchorable
+									x:Name="Palette"
+									Title="Palette"
+									ContentId="Palette" />
+							</LayoutAnchorablePane>
+						</LayoutAnchorablePaneGroup>
+					</LayoutPanel>
+
+					<LayoutAnchorablePane DockWidth="300">
+						<LayoutAnchorable
+							x:Name="Texturing"
+							Title="Texturing"
+							ContentId="Texturing" />
+					</LayoutAnchorablePane>
+				</LayoutPanel>
+			</LayoutRoot>
+		</DockingManager>
+		<StatusBar Grid.Row="2">
+			<TextBlock Text="Selected room: Name = Room 0 | Size = 18 x 18 | Pos = (0,0,0) | Floor = 0 | Ceiling = 12" />
+		</StatusBar>
+	</Grid>
+</Window>

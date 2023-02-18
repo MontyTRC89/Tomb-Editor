@@ -1,0 +1,80 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Style TargetType="{x:Type CheckBox}">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="{DynamicResource LightestBackground}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource ThemeBorderThickness}" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="Padding" Value="4,0,0,0" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type CheckBox}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Border
+							x:Name="PART_Border"
+							Width="13"
+							Height="13"
+							VerticalAlignment="Center"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+							<DockPanel>
+								<Path
+									x:Name="PART_CheckMark"
+									Width="10"
+									Height="8"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Data="M 1145.607177734375,430 C1145.607177734375,430 1141.449951171875,435.0772705078125 1141.449951171875,435.0772705078125 1141.449951171875,435.0772705078125 1139.232177734375,433.0999755859375 1139.232177734375,433.0999755859375 1139.232177734375,433.0999755859375 1138,434.5538330078125 1138,434.5538330078125 1138,434.5538330078125 1141.482177734375,438 1141.482177734375,438 1141.482177734375,438 1141.96875,437.9375 1141.96875,437.9375 1141.96875,437.9375 1147,431.34619140625 1147,431.34619140625 1147,431.34619140625 1145.607177734375,430 1145.607177734375,430 z"
+									Fill="{DynamicResource LightestBackground}"
+									Stretch="Uniform"
+									Visibility="Hidden" />
+								<Rectangle
+									x:Name="PART_IndeterminateMark"
+									Width="10"
+									Height="10"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Fill="{DynamicResource LightestBackground}"
+									Stretch="Uniform"
+									Visibility="Hidden" />
+							</DockPanel>
+						</Border>
+						<ContentPresenter
+							x:Name="PART_ContentPresenter"
+							Grid.Column="1"
+							Margin="{TemplateBinding Padding}"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Content="{TemplateBinding Content}"
+							ContentTemplate="{TemplateBinding ContentTemplate}"
+							RecognizesAccessKey="True" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource BlueHighlight}" />
+							<Setter TargetName="PART_CheckMark" Property="Fill" Value="{DynamicResource BlueSelection}" />
+							<Setter TargetName="PART_IndeterminateMark" Property="Fill" Value="{DynamicResource BlueSelection}" />
+						</Trigger>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="PART_CheckMark" Property="Visibility" Value="Visible" />
+						</Trigger>
+						<Trigger Property="IsChecked" Value="{x:Null}">
+							<Setter TargetName="PART_IndeterminateMark" Property="Visibility" Value="Visible" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="Transparent" />
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource GreyHighlight}" />
+							<Setter Property="Foreground" Value="{DynamicResource DisabledText}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>

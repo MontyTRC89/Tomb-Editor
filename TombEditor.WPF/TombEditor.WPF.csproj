@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TombEditor\TombEditor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AvalonDock.Themes.VS2013">
+      <HintPath>..\Libs\AvalonDock.Themes.VS2013.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ToolWindows\ImportedGeometryBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\ItemBrowser.cs" />
+    <Compile Update="ToolWindows\Lighting.cs" />
+    <Compile Update="ToolWindows\MainView.cs" />
+    <Compile Update="ToolWindows\ObjectList.cs" />
+    <Compile Update="ToolWindows\Palette.cs" />
+    <Compile Update="ToolWindows\RoomOptions.cs" />
+    <Compile Update="ToolWindows\SectorOptions.cs" />
+    <Compile Update="ToolWindows\TexturePanel.cs" />
+    <Compile Update="ToolWindows\ToolPalette.cs" />
+    <Compile Update="ToolWindows\ToolPaletteFloating.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\TriggerList.cs" />
+  </ItemGroup>
+
+</Project>
