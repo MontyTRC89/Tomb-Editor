@@ -2,6 +2,7 @@ Version 1.6.5
 =============
 
 Tomb Editor:
+ * Extend 2D map depth bar range for TEN target.
  * Fix exception when trying to select floor below object out of room bounds.
  * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
 
@@ -9,6 +10,11 @@ WadTool:
  * Fix sound previews not working for interpolated frames.
  * Amended slot name for Sophia-Leigh in TEN. 
 
+ * TEN Base WAD:
+   - Addition of dedicated slot "ID_MINECART_SWITCH" for the minecart vehicle.
+   - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS
+  
+  
 TombIDE:
  * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
  

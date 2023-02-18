@@ -5925,7 +5925,7 @@
 			<limit name="RoomDimensions" value="2147483647" />
 			<limit name="RoomMaxCount" value="2147483647" />
 			<limit name="RoomSafeCount" value="2147483647" />
-			<limit name="FloorHeight" value="127" />
+			<limit name="FloorHeight" value="1024" />
 			<limit name="WorldDimensions" value="400" />
 		</limits>
 		<moveables>
@@ -6542,6 +6542,7 @@
 			<moveable id="829" name="CROWBAR_SWITCH" />
 			<moveable id="830" name="PULLEY" />
 			<moveable id="831" name="CROWDOVE_SWITCH" />
+			<moveable id="832" name="MINECART_SWITCH" />
 			<moveable id="850" name="DOOR_TYPE1" />
 			<moveable id="851" name="DOOR_TYPE2" />
 			<moveable id="852" name="DOOR_TYPE3" />

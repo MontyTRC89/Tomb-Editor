@@ -140,6 +140,11 @@ namespace TombEditor.Controls
             {
                 var newSize = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.WorldDimensions);
                 _mapSize = newSize > 0 ? newSize : 100;
+
+                var floorHeight = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.FloorHeight);
+                _depthBar.MinDepth = -floorHeight;
+                _depthBar.MaxDepth =  floorHeight;
+
                 Invalidate();
             }
 
@@ -391,7 +396,7 @@ namespace TombEditor.Controls
 
             // Update depth bar...
             _depthBar.MouseMove(e, Size);
-            RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
+            RectangleF area = _depthBar.groupGetArea(_depthBar.GetBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
             Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X), (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right), (int)Math.Ceiling(area.Bottom)));
 
             switch (e.Button)
@@ -576,7 +581,7 @@ namespace TombEditor.Controls
                     return;
                 }
 
-                RectangleF barArea = _depthBar.getBarArea(Size);
+                RectangleF barArea = _depthBar.GetBarArea(Size);
                 RectangleF barAreaWithSpace = new RectangleF(barArea.X - 1, barArea.Y, barArea.Width, barArea.Height);
 
                 // Draw 2d map if necessary and not occluded by 2d bar
