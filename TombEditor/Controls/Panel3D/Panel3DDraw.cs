@@ -1569,6 +1569,30 @@ namespace TombEditor.Controls.Panel3D
 
             _watch.Restart();
 
+            // Select light mode (0 = 32-bit, 1 = 16-bit, 2 = monochrome)
+            int lightMode = 0;
+            switch (_editor.Level.Settings.GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
+                    lightMode = 2;
+                    break;
+
+                case TRVersion.Game.TR3:
+                case TRVersion.Game.TR4:
+                    lightMode = 1;
+                    break;
+
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TombEngine:
+                    lightMode = 0;
+                    break;
+
+                case TRVersion.Game.TRNG:
+                    lightMode = _editor.Level.Settings.Room32BitLighting ? 0 : 1;
+                    break;                
+            }
+
             // New rendering setup
             _viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             _renderingStateBuffer.Set(new RenderingState
@@ -1579,8 +1603,7 @@ namespace TombEditor.Controls.Panel3D
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
-                LightMode = _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 ?
-                            _editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5 ? 1 : 0 : 2
+                LightMode = lightMode
             });
 
             var renderArgs = new RenderingDrawingRoom.RenderArgs
