@@ -101,25 +101,21 @@ LevelFuncs.Engine.Node.GetBlendMode = function(index)
 
 	local blendID = TEN.Effects.BlendID.OPAQUE
 
-	if index == 0 then
+	if (index == 0) then
 		blendID = TEN.Effects.BlendID.OPAQUE
-	elseif index == 1 then
+	elseif (index == 1) then
 		blendID = TEN.Effects.BlendID.ALPHATEST
-	elseif index == 2 then
+	elseif (index == 2) then
 		blendID = TEN.Effects.BlendID.ADDITIVE
-	elseif index == 3 then
-		blendID = TEN.Effects.BlendID.NOZTEST
-	elseif index == 4 then
+	elseif (index == 3) then
 		blendID = TEN.Effects.BlendID.SUBTRACTIVE
-	elseif index == 5 then
-		blendID = TEN.Effects.BlendID.WIREFRAME
-	elseif index == 6 then
+	elseif (index == 4) then
 		blendID = TEN.Effects.BlendID.EXCLUDE
-	elseif index == 7 then
+	elseif (index == 5) then
 		blendID = TEN.Effects.BlendID.SCREEN
-	elseif index == 8 then
+	elseif (index == 6) then
 		blendID = TEN.Effects.BlendID.LIGHTEN
-	elseif index == 9 then
+	elseif (index == 7) then
 		blendID = TEN.Effects.BlendID.ALPHABLEND 
 	end
 

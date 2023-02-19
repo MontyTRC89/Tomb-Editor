@@ -430,8 +430,8 @@ end
 -- !Name "Set custom moveable effect"
 -- !Section "Moveable state"
 -- !Description "Assigns custom colored burn effect to a moveable."
--- !Arguments "Color, 10, Effect primary colour" 
--- !Arguments "Color, 10, Effect secondary colour" 
+-- !Arguments "Color, 10, Effect primary colour." 
+-- !Arguments "Color, 10, Effect secondary colour." 
 -- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
@@ -442,28 +442,22 @@ end
 
 -- !Name "Attach camera to moveable"
 -- !Section "Moveable state"
--- !Conditional "False"
 -- !Description "Attach game camera to a specific moveable."
--- !Arguments "NewLine, Moveables, 50, Moveable to focus camera position on" "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to focus camera position on" "Boolean, 25, Set invisible"
--- !Arguments "NewLine, Moveables, 50, Moveable to move camera to" "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to move camera to" "Boolean, 25, Set invisible"
+-- !Arguments "NewLine, Moveables, 50, Moveable to focus camera position on." "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to focus camera position on."
+-- !Arguments "NewLine, Moveables, 50, Moveable to move camera to" "Numerical, 25, [ 0 | 50 ], Mesh number of moveable to move camera to"
 
-LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target , targetMesh)
-    local sourcePos = GetMoveableByName(source)
+LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target, targetMesh)
+    
+	local sourcePos = GetMoveableByName(source)
     local targetPos = GetMoveableByName(target)
+
     targetPos:AttachObjCamera(targetMesh, sourcePos, sourceMesh)
-
-end
-
 end
 
 -- !Name "Reset camera to behind Lara"
 -- !Section "Moveable state"
--- !Conditional "False"
--- !Description "Reset camera if target has been modified"
--- !Arguments "NewLine, Boolean , 100, Reset camera"
+-- !Description "Reset camera if target has been modified."
 
-LevelFuncs.Engine.Node.ResetObjCam = function(resetCam)
-	local resetLaraCam
-			if (resetCam == true) then ResetObjCamera()
-	end
+LevelFuncs.Engine.Node.ResetObjCam = function()
+	ResetObjCamera()
 end
