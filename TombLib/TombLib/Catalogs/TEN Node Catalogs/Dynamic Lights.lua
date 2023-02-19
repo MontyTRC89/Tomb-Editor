@@ -19,7 +19,6 @@ end
 LevelFuncs.Engine.Node.StaticLight = function(static,lightcolor,range)
 
 	local entity = TEN.Objects.GetStaticByName(static):GetPosition()
-	
 	TEN.Effects.EmitLight(entity, lightcolor, range)
 end
 

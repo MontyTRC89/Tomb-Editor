@@ -49,15 +49,13 @@ LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, am
 	local beamRandom = math.random((beamWidth-10),(beamWidth+10))
 	local ampRandom =  math.random((amplitude-10),(amplitude+10))
 	
-	local sourceLightCheck 
-		if (sourcelight == true) then
-			TEN.Effects.EmitLight(startingpoint, color, math.random( 1, 10 ))
-		end
+	if (sourcelight == true) then
+		TEN.Effects.EmitLight(startingpoint, color, math.random( 1, 10 ))
+	end
 
-	local destLightCheck 
-		if (destlight == true) then 
-			TEN.Effects.EmitLight(endingpoint, color, math.random( 1, 10 ))
-		end
+	if (destlight == true) then 
+		TEN.Effects.EmitLight(endingpoint, color, math.random( 1, 10 ))
+	end
 
 	TEN.Effects.EmitLightningArc(startingpoint, endingpoint, color, lifetime, ampRandom, beamRandom, detail, smooth, endDrift)
 end
@@ -71,7 +69,7 @@ end
 -- !Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)." "Number, 33, [ 0 | 500 | 0 ], Speed." "Number, 33, [ -360 | 360 |0 ], X axis rotation."
 -- !Arguments "NewLine, Boolean, 50, Damage." "Boolean, 50, Randomise spawn point."
 
-	LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadius, color, lifetime, speed, angle, damage, randomSpawn)
+LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadius, color, lifetime, speed, angle, damage, randomSpawn)
 			
 	local randomiser = math.random( 1, 14)
 	local radiusInVar =  innerRadius + math.random( 1, 3)
@@ -79,10 +77,10 @@ end
 	local randomMesh = math.random( 0, 14)
 
 	if (randomSpawn == true) then
-			local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(randomMesh)
-			TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
-		else
-			local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(meshnum)
-			TEN.Effects.EmitShockwave(origin, radiusInnerVar, radiusOutVar, color, lifetime, speed, angle, damage)
-		end
+		local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(randomMesh)
+		TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
+	else
+		local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(meshnum)
+		TEN.Effects.EmitShockwave(origin, radiusInnerVar, radiusOutVar, color, lifetime, speed, angle, damage)
 	end
+end
