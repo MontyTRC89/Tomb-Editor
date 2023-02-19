@@ -4,10 +4,10 @@
 -- !Arguments "NewLine, Moveables, 70, Select moveable to attach light to." , "Numerical, [ 0 | 100 | 0 ] , 30, Select mesh number of moveable. \n This can be found in the Animation Editor within Wadtool."
 -- !Arguments "NewLine, Color, 70, Color of light." "Numerical, [ 0 | 100 | 0 ], 30, Light radius (in sectors)."
 
-LevelFuncs.Engine.Node.MoveableLight = function(moveable, meshnumber, lightcolor)
+LevelFuncs.Engine.Node.MoveableLight = function(moveable, meshnumber, lightcolor, range)
 
-	local entity = TEN.Objects.GetMoveableByName(moveable):GetJointPositio(meshnumber)
-	TEN.Effects.EmitLight(entity, lightcolor, range)	
+	local entity = TEN.Objects.GetMoveableByName(moveable):GetJointPosition(meshnumber)
+	TEN.Effects.EmitLight(entity, lightcolor, range)
 end
 
 -- !Name "Add dynamic light to static"

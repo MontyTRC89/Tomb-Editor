@@ -3,7 +3,7 @@
 -- !Description "Emit particles from a moveable"
 -- !Arguments "NewLine, Moveables, 70, The moveable particles will spawn from." "Numerical, 30, [ 0 | 100], Mesh number."
 -- !Arguments "NewLine, Vector3, 100, [ -32000 | 32000 ], Velocity X Y Z."
--- !Arguments "NewLine, Numerical, 33, [ 0 | 31 | 0 ], For sprite number, refer to base wad DEFAULT_SPRITES sequence in WadTool."
+-- !Arguments "NewLine, Numerical, 33, [ 0 | 31 | 0 ], For sprite number refer to base wad DEFAULT_SPRITES sequence in WadTool."
 -- !Arguments "Numerical, 33, [ -32768 | 32767 | 0 ], Gravity." "Numerical, 33, [ -32000 | 32000 | 1 ], Rotation." 
 -- !Arguments "NewLine, Color, 50, Start color.", "Color, 50, End color."
 -- !Arguments "NewLine, Enumeration, 100, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
