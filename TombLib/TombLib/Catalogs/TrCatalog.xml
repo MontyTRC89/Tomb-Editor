@@ -1418,7 +1418,7 @@
 			<moveable id="58" name="Thames Wharf machine" essential="false" t5m="ELECTRIC_CLEANER" /> 
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
-			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
+			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVY" />
 			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
 			<moveable id="64" name="Gun turret" essential="false" t5m="SENTRY_GUN"/>
 			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
@@ -6096,7 +6096,6 @@
 			<moveable id="236" name="SPHERE_OF_DOOM" />
 			<moveable id="237" name="SPHERE_OF_DOOM2" />
 			<moveable id="238" name="SPHERE_OF_DOOM3" />
-			<moveable id="239" name="CIVVIE" />
 			<moveable id="240" name="SPEAR_GUARDIAN" />
 			<moveable id="241" name="SPEAR_GUARDIAN_STATUE" />
 			<moveable id="242" name="SWORD_GUARDIAN" />
