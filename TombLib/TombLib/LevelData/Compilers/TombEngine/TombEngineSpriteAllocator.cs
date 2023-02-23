@@ -13,7 +13,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     internal class TombEngineSpriteAllocator
     {
-        private int _pageSize;
+        private int _atlasSize;
 
         // Typical level textures are to big to use them directly
         // Therefore the texture can be cut into pieces of 256² maximum size.
@@ -52,11 +52,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             public ushort OutputTextureID;
             public VectorInt2 Pos;
-            public void TransformTexCoord(ref ushort TexCoordX, ref ushort TexCoordY)
-            {
-                TexCoordX += (ushort)(4096 * Pos.X);
-                TexCoordY += (ushort)(4096 * Pos.Y);
-            }
         }
 
         private struct TextureComparer : IComparer<int>
@@ -88,9 +83,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly Dictionary<Hash, Texture> _hashedTextures = new Dictionary<Hash, Texture>();
         private Result[] _usedTexturePackInfos;
 
-        public TombEngineSpriteAllocator(int pageSize = 2048)
+        public TombEngineSpriteAllocator(int atlasSize = 4096)
         {
-            _pageSize = pageSize;
+            _atlasSize = atlasSize;
         }
 
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
@@ -100,7 +95,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             if (texture.Area.X0 < 0 || texture.Area.Y0 < 0 || texture.Area.X1 < 0 || texture.Area.Y1 < 0)
                 return -1; // Negative texture coordinates found!
-            if (texture.Area.Width > _pageSize || texture.Area.Height > _pageSize)
+            if (texture.Area.Width > _atlasSize || texture.Area.Height > _atlasSize)
                 return -1; // Texture page too big!
 
             // Deduplicate hashed textures
@@ -209,9 +204,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 done = true;
 
-                foreach (int UsedTextureIndex in usedTexturesProcessingOrder)
+                foreach (int usedTextureIndex in usedTexturesProcessingOrder)
                 {
-                    TextureView usedTexture = _usedTextures[UsedTextureIndex];
+                    TextureView usedTexture = _usedTextures[usedTextureIndex];
 
                     // Get the size of the quad surrounding texture area, typically should be the texture area itself
                     int w = (int)(usedTexture.Area.Width);
@@ -223,8 +218,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     int lP = padding;
                     int rP = padding;
 
-                    int horizontalPaddingSpace = 4096 - w;
-                    int verticalPaddingSpace = 4096 - h;
+                    int horizontalPaddingSpace = _atlasSize - w;
+                    int verticalPaddingSpace = _atlasSize - h;
 
                     // If hor/ver padding won't fully fit, get existing space and calculate padding out of it
                     if (verticalPaddingSpace < tP + bP)
@@ -247,7 +242,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (pos.HasValue)
                     {
                         usedTexture.Position = pos.Value;
-                        _usedTextures[UsedTextureIndex] = usedTexture;  
+                        _usedTextures[usedTextureIndex] = usedTexture;  
                     }
                     else
                     {
@@ -264,7 +259,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             List<ImageC> resultingTextures = new List<ImageC>();
             _usedTexturePackInfos = new Result[_usedTextures.Count];
 
-            for (int i=0;i<_usedTextures.Count;i++)
+            for (int i = 0; i < _usedTextures.Count; i++)
             {
                 var texture = _usedTextures[i];
                 resultingTexture.CopyFrom(texture.Position.X + padding, texture.Position.Y + padding,

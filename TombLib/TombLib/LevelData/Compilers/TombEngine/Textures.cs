@@ -10,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -67,7 +68,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
 
             // Add all sprites to the texture packer
-            var spriteAllocator = new TombEngineSpriteAllocator(4096);
+            var spriteAllocator = new TombEngineSpriteAllocator(_limits[Limit.TexPageSize]);
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
