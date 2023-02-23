@@ -3,20 +3,20 @@ Version 1.6.5
 
 Tomb Editor:
  * Extend 2D map depth bar range for TEN target.
+ * Detect TEN version when building a level and throw a warning if target editor version does not match.
+ * Initialize nonexistent Lua variables in nodes as initial value for assignment operations.
  * Fix exception when trying to select floor below object out of room bounds.
  * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
 
 WadTool:
  * Fix sound previews not working for interpolated frames.
- * Amended slot name for Sophia-Leigh in TEN. 
-
+ * Amended slot name for Sophia Leigh in TEN.
  * TEN Base WAD:
    - Addition of dedicated slot "ID_MINECART_SWITCH" for the minecart vehicle.
-   - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS
-  
+   - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS.
   
 TombIDE:
- * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
+ * Amended the TEN preset with the sound file corrections for Sophia Leigh. 
  
 Version 1.6.4
 =============
@@ -27,7 +27,7 @@ Tomb Editor:
  * Add an option to enable 32-bit lighting for TRNG to fix "rainbow bug" (requires FLEP patch).
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights in TEN levels.
- * Fix broken lua event sets which had non-alphanumerical characters in their name.
+ * Fix broken Lua event sets which had non-alphanumerical characters in their name.
  * Fix variable comparer nodes not working correctly without initialized variable.
  * Fix incorrect light interpolation between rooms with non-traversable portals.
 
@@ -61,7 +61,7 @@ Tomb Editor:
  * Add TestMoveableFrameNumber node function for moveables.
  * Allow free axis rotation for dart emitter object in TEN projects.
  * Offset pasted nodes if they land on same position.
- * Fix exception when trying to copy lua name to clipboard for objects without a name.
+ * Fix exception when trying to copy Lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.
  * Fix game executable path field not displaying properly for TEN target in level settings.
 
