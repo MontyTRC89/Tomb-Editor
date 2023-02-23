@@ -222,6 +222,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             MemoryStream output = new MemoryStream();
             i.Save(output, System.Drawing.Imaging.ImageFormat.Png);
+            output = RemoveColorChunks(output);
             return output.ToArray();
         }
 
