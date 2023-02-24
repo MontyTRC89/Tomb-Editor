@@ -231,7 +231,7 @@ namespace TombLib.LevelData.Compilers
                 WriteSoundData(writer);
 
                 // Write NG header
-                if (!string.IsNullOrEmpty(ngVersion))
+                if(!string.IsNullOrEmpty(ngVersion))
                 {
                     ReportProgress(98, "Writing NG header");
                     WriteNgHeader(writer, ngVersion);
