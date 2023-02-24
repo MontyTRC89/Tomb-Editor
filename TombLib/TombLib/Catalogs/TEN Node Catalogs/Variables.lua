@@ -22,9 +22,13 @@ end
 -- !Arguments "Numerical, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyLevelVariable = function(varName, operator, operand)
-    if (LevelVars[varName] == nil) then
-        print("Level variable " .. varName .. " did not exist and was initialized as 0.")
-        LevelVars[varName] = 0
+    if (LevelVars[varName] == nil) then	
+		if (operator == 4) then
+			LevelVars[varName] = operand
+		else
+			LevelVars[varName] = 0
+		end		
+        print("Level variable " .. varName .. " did not exist and was initialized as " .. LevelVars[varName] .. ".")
     end
 
     LevelVars[varName] = LevelFuncs.Engine.Node.ModifyValue(operand, LevelVars[varName], operator)
@@ -67,9 +71,13 @@ end
 -- !Arguments "Numerical, [ -65536 | 65535 | 2 ], Variable value"
 
 LevelFuncs.Engine.Node.ModifyGameVariable = function(varName, operator, operand)
-    if (GameVars[varName] == nil) then
-        print("Game variable " .. varName .. " did not exist and was initialized as 0.")
-        GameVars[varName] = 0
+    if (GameVars[varName] == nil) then	
+		if (operator == 4) then
+			GameVars[varName] = operand
+		else
+			GameVars[varName] = 0
+		end		
+        print("Game variable " .. varName .. " did not exist and was initialized as " .. GameVars[varName] .. ".")
     end
 
     GameVars[varName] = LevelFuncs.Engine.Node.ModifyValue(operand, GameVars[varName], operator)
