@@ -15,7 +15,7 @@ end
 
 LevelFuncs.Engine.Node.ResetObjCam = function()
 	ResetObjCamera()
-    SetFOV(80)
+	SetFOV(80)
 end
 
 -- !Name "Modify position of a camera"
