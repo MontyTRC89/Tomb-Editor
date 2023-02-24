@@ -453,11 +453,3 @@ LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, tar
 
     targetPos:AttachObjCamera(targetMesh, sourcePos, sourceMesh)
 end
-
--- !Name "Reset camera to behind Lara"
--- !Section "Moveable state"
--- !Description "Reset camera if target has been modified."
-
-LevelFuncs.Engine.Node.ResetObjCam = function()
-	ResetObjCamera()
-end
