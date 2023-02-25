@@ -75,7 +75,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     spriteTextureIDs.Add(sprite.Texture.Hash, spriteAllocator.GetOrAllocateTextureID(sprite.Texture));
 
             // Pack textures
-            _spritesTexturesPages = spriteAllocator.PackTextures();
+            _spritesTexturesPages = spriteAllocator.PackTextures(_level.Settings);
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
