@@ -1,18 +1,14 @@
-﻿using Pfim;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
     internal class TombEngineSpriteAllocator
     {
+        private const int _atlasStride = 256;
         private int _atlasSize;
 
         // Typical level textures are to big to use them directly
@@ -181,22 +177,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        public List<ImageC> PackTextures()
+        public List<ImageC> PackTextures(LevelSettings settings)
         {
             // Increase dynamically the atlas size for fitting all sprites without wasting space.
             // For now just one atlas, in the future we can have many atlases.
 
-            int padding = 8;
-
-            //Sort textures for packing order...
+            // Sort textures for packing order...
             int[] usedTexturesProcessingOrder = new int[_usedTextures.Count];
             for (int i = 0; i < _usedTextures.Count; ++i)
                 usedTexturesProcessingOrder[i] = i;
             Array.Sort(usedTexturesProcessingOrder, new TextureComparer { _usedTextures = _usedTextures });
 
             bool done;
-            int atlasWidth = 256;
-            int atlasHeight = 256;
+            int atlasWidth = _atlasStride;
+            int atlasHeight = _atlasStride;
 
             do
             {
@@ -213,10 +207,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     int h = (int)(usedTexture.Area.Height);
 
                     // Calculate adaptive padding at all sides
-                    int tP = padding;
-                    int bP = padding;
-                    int lP = padding;
-                    int rP = padding;
+                    int tP = settings.TexturePadding;
+                    int bP = settings.TexturePadding;
+                    int lP = settings.TexturePadding;
+                    int rP = settings.TexturePadding;
 
                     int horizontalPaddingSpace = _atlasSize - w;
                     int verticalPaddingSpace = _atlasSize - h;
@@ -228,7 +222,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         bP = verticalPaddingSpace - tP;
                     }
 
-                    if (horizontalPaddingSpace < padding * 2)
+                    if (horizontalPaddingSpace < settings.TexturePadding * 2)
                     {
                         lP = horizontalPaddingSpace / 2;
                         rP = horizontalPaddingSpace - lP;
@@ -247,8 +241,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                     {
                         done = false;
-                        atlasWidth += 256;
-                        atlasHeight += 256;
+                        atlasWidth += _atlasStride;
+                        atlasHeight += _atlasStride;
                         break;
                     }
                 }
@@ -262,14 +256,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < _usedTextures.Count; i++)
             {
                 var texture = _usedTextures[i];
-                resultingTexture.CopyFrom(texture.Position.X + padding, texture.Position.Y + padding,
+                resultingTexture.CopyFrom(texture.Position.X + settings.TexturePadding, texture.Position.Y + settings.TexturePadding,
                    texture.Texture.Image, texture.Area.X0, texture.Area.Y0, texture.Area.Width, texture.Area.Height);
                 _usedTexturePackInfos[i] = new Result
                 {
                     OutputTextureID = 0,
                     Pos = texture.Position
                 };
-                AddPadding(texture.Position, texture.Texture.Image, resultingTexture, 0, padding);
+                AddPadding(texture.Position, texture.Texture.Image, resultingTexture, 0, settings.TexturePadding);
             }
 
             resultingTextures.Add(resultingTexture);

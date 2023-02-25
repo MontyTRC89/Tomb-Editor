@@ -101,7 +101,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     var packInfo = spriteAllocator.GetPackInfo(id);
 
-                    int padding = 8;
+                    int padding = _level.Settings.TexturePadding;
 
                     float x = (packInfo.Pos.X + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
                     float y = (packInfo.Pos.Y + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
