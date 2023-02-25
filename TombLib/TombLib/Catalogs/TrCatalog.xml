@@ -8286,6 +8286,26 @@
 			<anim item="247" id="29" name="CLIMB_3CLICKS" />
 			<anim item="247" id="31" name="FALL_4CLICKS" />
 			<anim item="247" id="31" name="RUN_TO_WALK_RIGHT" />
+			
+			<!-- IMP -->			
+			<anim item="283" id="0" name="WALK" />
+			<anim item="283" id="1" name="IDLE" />
+			<anim item="283" id="2" name="RUN" />
+			<anim item="283" id="3" name="ATTACK" />
+			<anim item="283" id="4" name="CRY" />
+			<anim item="283" id="5" name="JUMP_ATTACK" />
+			<anim item="283" id="6" name="SCARED_RUN_AWAY" />
+			<anim item="283" id="7" name="CLIMB_UP" />
+			<anim item="283" id="8" name="BARREL_ROLL" />
+			<anim item="283" id="9" name="FALL_BACKWARDS" />
+			<anim item="283" id="10" name="FALL_FORWARD" />
+			<anim item="283" id="11" name="LEFT_FOOT_START_WALK" />
+			<anim item="283" id="12" name="RIGHT_FOOT_START_WALK"  />
+			<anim item="283" id="13" name="SLOW_TO_WAIT_LEFT"  />
+			<anim item="283" id="14" name="SLOW_TO_WAIT_RIGHT" /> 
+			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
+			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
+			<anim item="283" id="17" name="THROW_ROCK" />
 
 		</animations>
 		<states>
@@ -8326,7 +8346,7 @@
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
 			
-			<!--COMPSOGNATHUS -->
+			<!-- COMPSOGNATHUS -->
 			<state item="113" id="0" name="IDLE" />
 			<state item="113" id="1" name="RUN" />
 			<state item="113" id="2" name="JUMP_ATTACK" />
@@ -8344,7 +8364,7 @@
 			<state item="244" id="8" name="WALK_BACK "/>
 			<state item="244" id="9" name="DEATH "/>
 			
-			<!--WILLARD-->
+			<!-- WILLARD -->
 			<state item="246" id="0" name= "STOP" />
 			<state item="246" id="1" name= "WALK" />
 			<state item="246" id="2" name= "ATTACK" />
@@ -8357,7 +8377,7 @@
 			<state item="246" id="9" name= "JUMP_TURN_180" />
 			<state item="246" id="10" name= "SHOOT" />
 
-			<!--CIVVY-->
+			<!-- CIVVY -->
 			<state item="247" id="1" name= "IDLE" />
 			<state item="247" id="2" name= "WALK" />
 			<state item="247" id="3" name= "ATTACK_WALKING_PUNCH" />
@@ -8373,7 +8393,19 @@
 			<state item="247" id="13" name= "CLIMB_3CLICKS" />
 			<state item="247" id="14" name= "CLIMB_4CLICKS" />
 			<state item="247" id="15" name= "FALL_4CLICKS" />
-
+			
+			<!-- IMP -->			
+			<state item="283" id="0" name= "WALK" />
+			<state item="283" id="1" name= "IDLE" />
+			<state item="283" id="2" name= "RUN" />
+			<state item="283" id="3" name= "SWIPE_ATTACK" />
+			<state item="283" id="5" name= "JUMP_ATTACK" />
+			<state item="283" id="6" name= "SCARED" />
+			<state item="283" id="7" name= "START_CLIMB" />
+			<state item="283" id="8" name= "START_ROLL" />
+			<state item="283" id="9" name= "DEATH" />
+			<state item="283" id="11" name= "THROW_STONES" />
+			
 		</states>
 	</game>
 </xml>
