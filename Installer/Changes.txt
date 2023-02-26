@@ -12,6 +12,7 @@ WadTool:
  * Fix sound previews not working for interpolated frames.
  * Amended slot name for Sophia Leigh in TEN.
  * TEN Base WAD:
+   - Addition of ID_BURNING_TORCH_ITEM and fix default hand mesh.
    - Addition of dedicated slot ID_MINECART_SWITCH for the minecart vehicle.
    - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS.
   
