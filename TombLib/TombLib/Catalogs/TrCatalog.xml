@@ -5909,8 +5909,8 @@
 			<limit name="TexPages" value="32768" />
 			<limit name="TexPageSize" value="4096" />
 			<limit name="TexInfos" value="2147483647" />
-			<limit name="SoundBitsPerSample" value="16" />
-			<limit name="SoundSampleRate" value="22050" />
+			<limit name="SoundBitsPerSample" value="32" />
+			<limit name="SoundSampleRate" value="44100" />
 			<limit name="SoundSampleSize" value="32768" />
 			<limit name="SoundSampleCount" value="32768" />
 			<limit name="SoundMapSize" value="4096" />
