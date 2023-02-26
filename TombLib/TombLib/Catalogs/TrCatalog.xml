@@ -1418,7 +1418,7 @@
 			<moveable id="58" name="Thames Wharf machine" essential="false" t5m="ELECTRIC_CLEANER" /> 
 			<moveable id="60" name="MP with stick" essential="false" t5m="MP_WITH_STICK" />
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
-			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVIE" />
+			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVY" />
 			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
 			<moveable id="64" name="Gun turret" essential="false" t5m="SENTRY_GUN"/>
 			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
@@ -6096,7 +6096,6 @@
 			<moveable id="236" name="SPHERE_OF_DOOM" />
 			<moveable id="237" name="SPHERE_OF_DOOM2" />
 			<moveable id="238" name="SPHERE_OF_DOOM3" />
-			<moveable id="239" name="CIVVIE" />
 			<moveable id="240" name="SPEAR_GUARDIAN" />
 			<moveable id="241" name="SPEAR_GUARDIAN_STATUE" />
 			<moveable id="242" name="SWORD_GUARDIAN" />
@@ -8253,6 +8252,61 @@
 			<anim item="246" id="11" name= "WALK_ATTACK_LEFT" />
 			<anim item="246" id="12" name= "JUMP_TURN_180" />
 			<anim item="246" id="13" name= "SHOOT" />
+
+			<!--CIVVY-->
+			<anim item="247" id="0" name="WALK" />
+			<anim item="247" id="1" name="WALKING_PUNCH_PREPARE" />
+			<anim item="247" id="2" name="WALKING_PUNCH_TO_IDLE" />
+			<anim item="247" id="3" name="WALKING_PUNCH_TO_WALK" />
+			<anim item="247" id="4" name="WALKING_PUNCH_ATTACK" />
+			<anim item="247" id="5" name="IDLE_TO_WALK" />
+			<anim item="247" id="6" name="IDLE" />
+			<anim item="247" id="7" name="WALKING_PUNCH_CANCEL" />
+			<anim item="247" id="8" name="WALK_TO_IDLE_LEFT" />
+			<anim item="247" id="9" name="CLOSE_PUNCH_CANCEL" />
+			<anim item="247" id="10" name="CLOSE_PUNCH_PREPARE" />
+			<anim item="247" id="11" name="FAR_PUNCH_CANCEL" />
+			<anim item="247" id="12" name="FAR_PUNCH_PREPARE" />
+			<anim item="247" id="13" name="CLOSE_PUNCH_TO_IDLE" />
+			<anim item="247" id="14" name="FAR_PUNCH_TO_IDLE" />
+			<anim item="247" id="15" name="FAR_PUNCH_TO_WALK" />
+			<anim item="247" id="16" name="CLOSE_PUNCH_ATTACK" />
+			<anim item="247" id="17" name="FAR_PUNCH_ATTACK" />
+			<anim item="247" id="18" name="IDLE_TO_WAIT" />
+			<anim item="247" id="19" name="WAIT_TO_IDLE" />
+			<anim item="247" id="20" name="WAIT" />
+			<anim item="247" id="21" name="RUN" />
+			<anim item="247" id="22" name="WALK_TO_RUN" />
+			<anim item="247" id="23" name="RUN_TO_WALK_LEFT" />
+			<anim item="247" id="24" name="RUN_TO_IDLE" />
+			<anim item="247" id="25" name="IDLE_TO_RUN" />
+			<anim item="247" id="26" name="DEATH" />
+			<anim item="247" id="27" name="CLIMB_4CLICKS" />
+			<anim item="247" id="28" name="CLIMB_2CLICKS" />
+			<anim item="247" id="29" name="CLIMB_3CLICKS" />
+			<anim item="247" id="31" name="FALL_4CLICKS" />
+			<anim item="247" id="31" name="RUN_TO_WALK_RIGHT" />
+			
+			<!-- IMP -->			
+			<anim item="283" id="0" name="WALK" />
+			<anim item="283" id="1" name="IDLE" />
+			<anim item="283" id="2" name="RUN" />
+			<anim item="283" id="3" name="ATTACK" />
+			<anim item="283" id="4" name="CRY" />
+			<anim item="283" id="5" name="JUMP_ATTACK" />
+			<anim item="283" id="6" name="SCARED_RUN_AWAY" />
+			<anim item="283" id="7" name="CLIMB_UP" />
+			<anim item="283" id="8" name="BARREL_ROLL" />
+			<anim item="283" id="9" name="FALL_BACKWARDS" />
+			<anim item="283" id="10" name="FALL_FORWARD" />
+			<anim item="283" id="11" name="LEFT_FOOT_START_WALK" />
+			<anim item="283" id="12" name="RIGHT_FOOT_START_WALK"  />
+			<anim item="283" id="13" name="SLOW_TO_WAIT_LEFT"  />
+			<anim item="283" id="14" name="SLOW_TO_WAIT_RIGHT" /> 
+			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
+			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
+			<anim item="283" id="17" name="THROW_ROCK" />
+
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -8292,7 +8346,7 @@
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
 			
-			<!--COMPSOGNATHUS -->
+			<!-- COMPSOGNATHUS -->
 			<state item="113" id="0" name="IDLE" />
 			<state item="113" id="1" name="RUN" />
 			<state item="113" id="2" name="JUMP_ATTACK" />
@@ -8310,7 +8364,7 @@
 			<state item="244" id="8" name="WALK_BACK "/>
 			<state item="244" id="9" name="DEATH "/>
 			
-			<!--WILLARD-->
+			<!-- WILLARD -->
 			<state item="246" id="0" name= "STOP" />
 			<state item="246" id="1" name= "WALK" />
 			<state item="246" id="2" name= "ATTACK" />
@@ -8322,6 +8376,36 @@
 			<state item="246" id="8" name= "WALK_ATTACK_LEFT" />
 			<state item="246" id="9" name= "JUMP_TURN_180" />
 			<state item="246" id="10" name= "SHOOT" />
+
+			<!-- CIVVY -->
+			<state item="247" id="1" name= "IDLE" />
+			<state item="247" id="2" name= "WALK" />
+			<state item="247" id="3" name= "ATTACK_WALKING_PUNCH" />
+			<state item="247" id="4" name= "AIM_WALKING_PUNCH" />
+			<state item="247" id="5" name= "WAIT" />
+			<state item="247" id="6" name= "AIM_FAR_PUNCH" />
+			<state item="247" id="7" name= "AIM_CLOSE_PUNCH" />
+			<state item="247" id="8" name= "ATTACK_FAR_PUNCH" />
+			<state item="247" id="9" name= "ATTACK_CLOSE_PUNCH" />
+			<state item="247" id="10" name= "RUN" />
+			<state item="247" id="11" name= "DEATH" />
+			<state item="247" id="12" name= "CLIMB_2CLICKS" />
+			<state item="247" id="13" name= "CLIMB_3CLICKS" />
+			<state item="247" id="14" name= "CLIMB_4CLICKS" />
+			<state item="247" id="15" name= "FALL_4CLICKS" />
+			
+			<!-- IMP -->			
+			<state item="283" id="0" name= "WALK" />
+			<state item="283" id="1" name= "IDLE" />
+			<state item="283" id="2" name= "RUN" />
+			<state item="283" id="3" name= "SWIPE_ATTACK" />
+			<state item="283" id="5" name= "JUMP_ATTACK" />
+			<state item="283" id="6" name= "SCARED" />
+			<state item="283" id="7" name= "START_CLIMB" />
+			<state item="283" id="8" name= "START_ROLL" />
+			<state item="283" id="9" name= "DEATH" />
+			<state item="283" id="11" name= "THROW_STONES" />
+			
 		</states>
 	</game>
 </xml>
