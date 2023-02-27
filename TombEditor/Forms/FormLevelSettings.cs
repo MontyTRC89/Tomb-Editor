@@ -714,8 +714,8 @@ namespace TombEditor.Forms
 
             // TR4 and above
             currentVersionToCheck = (_levelSettings.GameVersion >= Game.TR4);
-            panelFont.Enabled = !currentVersionToCheck;
-            panelSky.Enabled = !currentVersionToCheck;
+            panelFont.Enabled = currentVersionToCheck;
+            panelSky.Enabled = currentVersionToCheck;
 
             // MAIN.SFX options
             currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
