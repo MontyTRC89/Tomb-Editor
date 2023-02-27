@@ -534,6 +534,11 @@ namespace TombLib.Utils
             }
         }
 
+        public void Save(Stream stream, ImageFormat format)
+        {
+            GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, format));
+        }
+
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation
         // The returned Bitmap must be Dispose()ed.
         public Bitmap ToBitmap()
