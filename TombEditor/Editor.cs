@@ -68,8 +68,8 @@ namespace TombEditor
 
         public class LevelChangedEvent : IEditorPropertyChangedEvent
         {
-            public Level Previous { get; internal set; }
-            public Level Current { get; internal set; }
+            public Level Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public Level Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
 
         private Level _level;
@@ -121,8 +121,8 @@ namespace TombEditor
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
-            public IEditorAction Previous { get; internal set; }
-            public IEditorAction Current { get; internal set; }
+            public IEditorAction Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public IEditorAction Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private IEditorAction _action;
         public IEditorAction Action
@@ -142,8 +142,8 @@ namespace TombEditor
 
         public class ChosenItemChangedEvent : IEditorPropertyChangedEvent
         {
-            public ItemType? Previous { get; internal set; }
-            public ItemType? Current { get; internal set; }
+            public ItemType? Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ItemType? Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private ItemType? _chosenItem;
         public ItemType? ChosenItem
@@ -161,8 +161,8 @@ namespace TombEditor
 
         public class ChosenImportedGeometryChangedEvent : IEditorPropertyChangedEvent
         {
-            public ImportedGeometry Previous { get; internal set; }
-            public ImportedGeometry Current { get; internal set; }
+            public ImportedGeometry Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ImportedGeometry Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private ImportedGeometry _chosenImportedGeometry = null;
         public ImportedGeometry ChosenImportedGeometry
@@ -180,8 +180,8 @@ namespace TombEditor
 
         public class ModeChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorMode Previous { get; internal set; }
-            public EditorMode Current { get; internal set; }
+            public EditorMode Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public EditorMode Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private EditorMode _mode = EditorMode.Geometry;
         public EditorMode Mode
@@ -199,8 +199,8 @@ namespace TombEditor
 
         public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorTool Previous { get; internal set; }
-            public EditorTool Current { get; internal set; }
+            public EditorTool Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public EditorTool Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private EditorTool _tool = new EditorTool();
         public EditorTool Tool
@@ -222,8 +222,8 @@ namespace TombEditor
 
         public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
-            public IReadOnlyList<Room> Previous { get; internal set; }
-            public IReadOnlyList<Room> Current { get; internal set; }
+            public IReadOnlyList<Room> Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public IReadOnlyList<Room> Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private Room[] _selectedRooms;
         public IReadOnlyList<Room> SelectedRooms
@@ -312,8 +312,8 @@ namespace TombEditor
 
         public class SelectedObjectChangedEvent : IEditorPropertyChangedEvent
         {
-            public ObjectInstance Previous { get; internal set; }
-            public ObjectInstance Current { get; internal set; }
+            public ObjectInstance Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ObjectInstance Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private ObjectInstance _selectedObject;
         public ObjectInstance SelectedObject
@@ -344,8 +344,8 @@ namespace TombEditor
 
         public class SelectedSectorsChangedEvent : IEditorPropertyChangedEvent
         {
-            public SectorSelection Previous { get; internal set; }
-            public SectorSelection Current { get; internal set; }
+            public SectorSelection Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public SectorSelection Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private SectorSelection _selectedSectors = SectorSelection.None;
         public SectorSelection SelectedSectors
@@ -366,8 +366,8 @@ namespace TombEditor
 
         public class HighlightedSectorChangedEvent : IEditorPropertyChangedEvent
         {
-            public SectorSelection Previous { get; internal set; }
-            public SectorSelection Current { get; internal set; }
+            public SectorSelection Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public SectorSelection Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private SectorSelection _highlightedSectors = SectorSelection.None;
         public SectorSelection HighlightedSectors
@@ -385,8 +385,8 @@ namespace TombEditor
 
         public class SelectedTexturesChangedEvent : IEditorPropertyChangedEvent
         {
-            public TextureArea Previous { get; internal set; }
-            public TextureArea Current { get; internal set; }
+            public TextureArea Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public TextureArea Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private TextureArea _selectedTexture = TextureArea.None;
         public TextureArea SelectedTexture
@@ -404,10 +404,10 @@ namespace TombEditor
 
         public class ConfigurationChangedEvent : IEditorPropertyChangedEvent
         {
-            public bool UpdateLayout { get; internal set; } = false;
-            public bool UpdateKeyboardShortcuts { get; internal set; } = false;
-            public bool UpdateToolbarLayout { get; internal set; } = false;
-            public bool Save { get; internal set; } = false;
+            public bool UpdateLayout { get; set; } // !!! --- USED TO BE internal --- !!! = false;
+            public bool UpdateKeyboardShortcuts { get; set; } // !!! --- USED TO BE internal --- !!! = false;
+            public bool UpdateToolbarLayout { get; set; } // !!! --- USED TO BE internal --- !!! = false;
+            public bool Save { get; set; } // !!! --- USED TO BE internal --- !!! = false;
         }
         private Configuration _configuration;
         public Configuration Configuration
@@ -425,8 +425,8 @@ namespace TombEditor
 
         public class BookmarkedObjectChanged : IEditorPropertyChangedEvent
         {
-            public ObjectInstance Previous { get; internal set; }
-            public ObjectInstance Current { get; internal set; }
+            public ObjectInstance Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ObjectInstance Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         private ObjectInstance _bookmarkedObject = null;
         public ObjectInstance BookmarkedObject
@@ -452,8 +452,8 @@ namespace TombEditor
 
         public class HasUnsavedChangesChangedEvent : IEditorPropertyChangedEvent
         {
-            public bool Previous { get; internal set; }
-            public bool Current { get; internal set; }
+            public bool Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+            public bool Current { get; set; } // !!! --- USED TO BE internal --- !!!
         }
 
         private bool _hasUnsavedChanges;
@@ -563,7 +563,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomTextureChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void RoomTextureChange(Room room)
         {
@@ -575,7 +575,7 @@ namespace TombEditor
         // Textures, room properties like reverbration, objects changed, ...
         public class RoomGeometryChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void RoomGeometryChange(Room room)
         {
@@ -585,7 +585,7 @@ namespace TombEditor
         // This is invoked when room pos is changed.
         public class RoomPositionChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void RoomPositionChange(Room room)
         {
@@ -611,7 +611,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void RoomPropertiesChange(Room room)
         {
@@ -624,7 +624,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void RoomSectorPropertiesChange(Room room)
         {
@@ -637,9 +637,9 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what object changed.
         public class ObjectChangedEvent : IEditorObjectChangedEvent
         {
-            public Room Room { get; internal set; }
-            public ObjectInstance Object { get; internal set; }
-            public ObjectChangeType ChangeType { get; internal set; }
+            public Room Room { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ObjectInstance Object { get; set; } // !!! --- USED TO BE internal --- !!!
+            public ObjectChangeType ChangeType { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void ObjectChange(ObjectInstance @object, ObjectChangeType changeType)
         {
@@ -732,7 +732,7 @@ namespace TombEditor
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
         {
-            public TextureArea Texture { get; internal set; }
+            public TextureArea Texture { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void SelectTextureAndCenterView(TextureArea texture)
         {
@@ -742,7 +742,7 @@ namespace TombEditor
         // Select different texture set
         public class SelectedLevelTextureChangedSetEvent : IEditorEvent
         {
-            public LevelTexture Texture { get; internal set; }
+            public LevelTexture Texture { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void SelectedLevelTextureChanged(LevelTexture texture)
         {
@@ -752,9 +752,9 @@ namespace TombEditor
         // Send message
         public class MessageEvent : IEditorEvent
         {
-            public bool ForceInMainWindow { get; internal set; }
-            public string Message { get; internal set; }
-            public PopupType Type { get; internal set; }
+            public bool ForceInMainWindow { get; set; } // !!! --- USED TO BE internal --- !!!
+            public string Message { get; set; } // !!! --- USED TO BE internal --- !!!
+            public PopupType Type { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void SendMessage(string message = "", PopupType type = PopupType.None, bool force = false)
         {
@@ -779,7 +779,7 @@ namespace TombEditor
         // Dock content change event
         public class ToolWindowToggleEvent : IEditorEvent
         {
-            public Type ContentType { get; internal set; }
+            public Type ContentType { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void ToggleToolWindow(Type contentType)
         {
@@ -789,7 +789,7 @@ namespace TombEditor
         // Default control engage event
         public class DefaultControlActivationEvent : IEditorEvent
         {
-            public string ContainerName { get; internal set; }
+            public string ContainerName { get; set; } // !!! --- USED TO BE internal --- !!!
         }
         public void ActivateDefaultControl(string containerName)
         {
@@ -1281,10 +1281,10 @@ namespace TombEditor
 
         public class LevelCompilationCompletedEvent : IEditorEvent
         {
-            public int BoxCount { get; internal set; }
-            public int OverlapCount { get; internal set; }
-            public int TextureCount { get; internal set; }
-            public String InfoString { get;internal set; }
+            public int BoxCount { get; set; } // !!! --- USED TO BE internal --- !!!
+            public int OverlapCount { get; set; } // !!! --- USED TO BE internal --- !!!
+            public int TextureCount { get; set; } // !!! --- USED TO BE internal --- !!!
+            public String InfoString { get;set; } // !!! --- USED TO BE internal --- !!!
         }
 
         // Auto saving

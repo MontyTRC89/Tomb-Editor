@@ -5,7 +5,8 @@
 		<Setter Property="BorderThickness" Value="{DynamicResource ThemeBorderThickness}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="Padding" Value="4" />
+		<Setter Property="Padding" Value="3" />
+		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -15,13 +16,15 @@
 						Padding="{TemplateBinding Padding}"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}">
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="True">
 						<ContentPresenter
 							x:Name="PART_ContentPresenter"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 							Content="{TemplateBinding Content}"
 							ContentTemplate="{TemplateBinding ContentTemplate}"
+							Focusable="False"
 							RecognizesAccessKey="True" />
 					</Border>
 					<ControlTemplate.Triggers>

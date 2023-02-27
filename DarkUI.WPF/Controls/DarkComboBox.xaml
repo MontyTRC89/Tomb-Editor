@@ -4,6 +4,7 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 		<Setter Property="OverridesDefaultStyle" Value="true" />
+		<Setter Property="Height" Value="24" />
 		<Setter Property="IsTabStop" Value="false" />
 		<Setter Property="Focusable" Value="false" />
 		<Setter Property="ClickMode" Value="Press" />

@@ -150,39 +150,4 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Page Update="Styles\Colors.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkButton.xaml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkCheckBox.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkComboBox.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkRadioButton.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkScrollViewer.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Styles\DarkTextBox.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-  </ItemGroup>
 </Project>

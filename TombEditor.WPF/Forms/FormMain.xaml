@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
 	Title="Tomb Editor"
 	Width="800"
 	Height="450"
@@ -77,11 +78,7 @@
 			</MenuItem>
 		</Menu>
 
-		<DockingManager
-			x:Name="dockManager"
-			Grid.Row="1"
-			GridSplitterHeight="2"
-			GridSplitterWidth="2">
+		<DockingManager x:Name="dockManager" Grid.Row="1">
 			<DockingManager.Theme>
 				<Vs2013DarkTheme />
 			</DockingManager.Theme>
@@ -89,36 +86,30 @@
 				<LayoutPanel Orientation="Horizontal">
 					<LayoutAnchorablePaneGroup DockWidth="300" Orientation="Vertical">
 						<LayoutAnchorablePane DockMinHeight="278">
-							<LayoutAnchorable
-								x:Name="SectorOptions"
-								Title="Sector Options"
-								ContentId="SectorOptions" />
+							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
+								<toolwindows:SectorOptions x:Name="SectorOptions" />
+							</LayoutAnchorable>
 						</LayoutAnchorablePane>
 						<LayoutAnchorablePane DockMinHeight="226">
-							<LayoutAnchorable
-								x:Name="RoomOptions"
-								Title="Room Options"
-								ContentId="RoomOptions" />
+							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
+								<toolwindows:RoomOptions x:Name="RoomOptions" />
+							</LayoutAnchorable>
 						</LayoutAnchorablePane>
 						<LayoutAnchorablePane DockMinHeight="250">
-							<LayoutAnchorable
-								x:Name="Items"
-								Title="Items"
-								ContentId="Items" />
-							<LayoutAnchorable
-								x:Name="ImportedGeometry"
-								Title="Imported Geometry"
-								ContentId="ImportedGeometry" />
+							<LayoutAnchorable Title="Items" ContentId="Items">
+								<toolwindows:ItemBrowser x:Name="Items" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Imported Geometry" ContentId="ImportedGeometry">
+								<toolwindows:ImportedGeometryBrowser x:Name="ImportedGeometry" />
+							</LayoutAnchorable>
 						</LayoutAnchorablePane>
 						<LayoutAnchorablePane>
-							<LayoutAnchorable
-								x:Name="Triggers"
-								Title="Triggers"
-								ContentId="Triggers" />
-							<LayoutAnchorable
-								x:Name="ObjectsInRoom"
-								Title="Objects in Room"
-								ContentId="ObjectsInRoom" />
+							<LayoutAnchorable Title="Triggers" ContentId="Triggers">
+								<toolwindows:TriggerList x:Name="Triggers" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Objects in Room" ContentId="ObjectsInRoom">
+								<toolwindows:ObjectList x:Name="ObjectsInRoom" />
+							</LayoutAnchorable>
 						</LayoutAnchorablePane>
 					</LayoutAnchorablePaneGroup>
 
@@ -145,25 +136,22 @@
 
 						<LayoutAnchorablePaneGroup DockHeight="150" Orientation="Horizontal">
 							<LayoutAnchorablePane DockMinWidth="370" FloatingWidth="370">
-								<LayoutAnchorable
-									x:Name="Lighting"
-									Title="Lighting"
-									ContentId="Lighting" />
+								<LayoutAnchorable Title="Lighting" ContentId="Lighting">
+									<toolwindows:Lighting x:Name="Lighting" />
+								</LayoutAnchorable>
 							</LayoutAnchorablePane>
 							<LayoutAnchorablePane>
-								<LayoutAnchorable
-									x:Name="Palette"
-									Title="Palette"
-									ContentId="Palette" />
+								<LayoutAnchorable Title="Palette" ContentId="Palette">
+									<toolwindows:Palette x:Name="Palette" />
+								</LayoutAnchorable>
 							</LayoutAnchorablePane>
 						</LayoutAnchorablePaneGroup>
 					</LayoutPanel>
 
 					<LayoutAnchorablePane DockWidth="300">
-						<LayoutAnchorable
-							x:Name="Texturing"
-							Title="Texturing"
-							ContentId="Texturing" />
+						<LayoutAnchorable Title="Texturing" ContentId="Texturing">
+							<toolwindows:TexturePanel x:Name="Texturing" />
+						</LayoutAnchorable>
 					</LayoutAnchorablePane>
 				</LayoutPanel>
 			</LayoutRoot>

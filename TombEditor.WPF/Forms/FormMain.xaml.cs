@@ -1,28 +1,18 @@
-﻿using AvalonDock.Layout.Serialization;
+﻿using AvalonDock;
 using AvalonDock.Layout;
-using AvalonDock;
+using AvalonDock.Layout.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using System.Windows.Forms.Integration;
-using TombEditor.WPF.ToolWindows;
 
 namespace TombEditor.WPF.Forms;
+
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
@@ -31,67 +21,7 @@ public partial class FormMain : Window
 	public FormMain()
 	{
 		InitializeComponent();
-		DispatcherTimer timer = new DispatcherTimer();
-		Random rnd = new Random();
-		timer.Interval = TimeSpan.FromSeconds(1.0);
-		timer.Tick += (s, e) =>
-		{
-			TestTimer++;
-
-			TestBackground = new SolidColorBrush(Color.FromRgb(
-				(byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255)));
-
-			FocusedElement = Keyboard.FocusedElement == null ? string.Empty : Keyboard.FocusedElement.ToString();
-			//Debug.WriteLine(string.Format("ActiveContent = {0}", dockManager.ActiveContent));
-
-		};
-		timer.Start();
-
-		this.DataContext = this;
-
-		Loaded += FormMain_Loaded;
-	}
-
-	private void FormMain_Loaded(object sender, RoutedEventArgs e)
-	{
-		var sectorOptions = new SectorOptions();
-		var roomOptions = new RoomOptions();
-
-		var itemBrowser = new ItemBrowser();
-		var importedGeometryBrowser = new ImportedGeometryBrowser();
-
-		var triggerList = new TriggerList();
-		var objectList = new ObjectList();
-
-		var lighting = new Lighting();
-		var palette = new Palette();
-
-		var texturePanel = new TexturePanel();
-
-		//var mainView = new MainView();
-
-		var sectorOptionsHost = new WindowsFormsHost { Child = sectorOptions };
-		var roomOptionsHost = new WindowsFormsHost { Child = roomOptions };
-		var itemBrowserHost = new WindowsFormsHost { Child = itemBrowser };
-		var importedGeometryBrowserHost = new WindowsFormsHost { Child = importedGeometryBrowser };
-		var triggerListHost = new WindowsFormsHost { Child = triggerList };
-		var objectListHost = new WindowsFormsHost { Child = objectList };
-		var lightingHost = new WindowsFormsHost { Child = lighting };
-		var paletteHost = new WindowsFormsHost { Child = palette };
-		var texturePanelHost = new WindowsFormsHost { Child = texturePanel };
-
-		//var mainViewHost = new WindowsFormsHost { Child = mainView };
-
-		SectorOptions.Content = sectorOptionsHost;
-		RoomOptions.Content = roomOptionsHost;
-		Items.Content = itemBrowserHost;
-		ImportedGeometry.Content = importedGeometryBrowserHost;
-		Triggers.Content = triggerListHost;
-		ObjectsInRoom.Content = objectListHost;
-		Lighting.Content = lightingHost;
-		Palette.Content = paletteHost;
-		Texturing.Content = texturePanelHost;
-		//MainView.Content = mainViewHost;
+		DataContext = this;
 	}
 
 	#region TestTimer
@@ -104,7 +34,7 @@ public partial class FormMain : Window
 			new FrameworkPropertyMetadata((int)0));
 
 	/// <summary>
-	/// Gets or sets the TestTimer property.  This dependency property 
+	/// Gets or sets the TestTimer property.  This dependency property
 	/// indicates a test timer that elapses evry one second (just for binding test).
 	/// </summary>
 	public int TestTimer
@@ -113,7 +43,7 @@ public partial class FormMain : Window
 		set => SetValue(TestTimerProperty, value);
 	}
 
-	#endregion
+	#endregion TestTimer
 
 	#region TestBackground
 
@@ -125,7 +55,7 @@ public partial class FormMain : Window
 			new FrameworkPropertyMetadata((Brush)null));
 
 	/// <summary>
-	/// Gets or sets the TestBackground property.  This dependency property 
+	/// Gets or sets the TestBackground property.  This dependency property
 	/// indicates a randomly changing brush (just for testing).
 	/// </summary>
 	public Brush TestBackground
@@ -134,7 +64,7 @@ public partial class FormMain : Window
 		set => SetValue(TestBackgroundProperty, value);
 	}
 
-	#endregion
+	#endregion TestBackground
 
 	#region FocusedElement
 
@@ -146,7 +76,7 @@ public partial class FormMain : Window
 			new FrameworkPropertyMetadata((IInputElement)null));
 
 	/// <summary>
-	/// Gets or sets the FocusedElement property.  This dependency property 
+	/// Gets or sets the FocusedElement property.  This dependency property
 	/// indicates ....
 	/// </summary>
 	public string FocusedElement
@@ -155,7 +85,16 @@ public partial class FormMain : Window
 		set => SetValue(FocusedElementProperty, value);
 	}
 
-	#endregion
+	public System.Windows.Forms.NativeWindow NativeWindow
+	{
+		get
+		{
+			IntPtr hwnd = new WindowInteropHelper(this).Handle;
+			return System.Windows.Forms.NativeWindow.FromHandle(hwnd);
+		}
+	}
+
+	#endregion FocusedElement
 
 	private void OnLayoutRootPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 	{
@@ -229,7 +168,6 @@ public partial class FormMain : Window
 		}
 
 		leftAnchorGroup.Children.Add(new LayoutAnchorable() { Title = "New Anchorable" });
-
 	}
 
 	private void OnShowToolWindow1(object sender, RoutedEventArgs e)
