@@ -290,7 +290,9 @@ namespace TombLib.LevelData.IO
                     settings.RemapAnimatedTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
-				else if (id == Prj2Chunks.RearrangeRooms)
+                else if (id == Prj2Chunks.TextureCompression)
+                    settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.RearrangeRooms)
 					settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
 				else if (id == Prj2Chunks.RemoveUnusedObjects)
 					settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);

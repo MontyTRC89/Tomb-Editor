@@ -2,6 +2,7 @@ Version 1.6.5
 =============
 
 Tomb Editor:
+ * Add an option to level settings to apply DirectX texture compression for TEN target.
  * Extend 2D map depth bar range for TEN target.
  * Detect TEN version when building a level and throw a warning if target editor version does not match.
  * Initialize nonexistent Lua variables in nodes as initial value for assignment operations.

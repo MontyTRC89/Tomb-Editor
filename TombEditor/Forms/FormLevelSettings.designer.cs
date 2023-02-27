@@ -41,6 +41,7 @@
             this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.cbUse32BitLighting = new DarkUI.Controls.DarkCheckBox();
+            this.cbCompressTextures = new DarkUI.Controls.DarkCheckBox();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -166,7 +167,7 @@
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
             this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
-            this.cbSampleRate = new System.Windows.Forms.Panel();
+            this.panelTr5LaraType = new System.Windows.Forms.Panel();
             this.comboLaraType = new DarkUI.Controls.DarkComboBox();
             this.lblLaraType = new DarkUI.Controls.DarkLabel();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -222,7 +223,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabMisc.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
-            this.cbSampleRate.SuspendLayout();
+            this.panelTr5LaraType.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             this.tabPaths.SuspendLayout();
@@ -383,7 +384,7 @@
             // cbKeepSampleRate
             // 
             this.cbKeepSampleRate.AutoSize = true;
-            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 258);
+            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 281);
             this.cbKeepSampleRate.Name = "cbKeepSampleRate";
             this.cbKeepSampleRate.Size = new System.Drawing.Size(208, 17);
             this.cbKeepSampleRate.TabIndex = 114;
@@ -396,7 +397,7 @@
             // cbRemoveObjects
             // 
             this.cbRemoveObjects.AutoSize = true;
-            this.cbRemoveObjects.Location = new System.Drawing.Point(3, 235);
+            this.cbRemoveObjects.Location = new System.Drawing.Point(3, 258);
             this.cbRemoveObjects.Name = "cbRemoveObjects";
             this.cbRemoveObjects.Size = new System.Drawing.Size(253, 17);
             this.cbRemoveObjects.TabIndex = 112;
@@ -409,7 +410,7 @@
             // cbRearrangeRooms
             // 
             this.cbRearrangeRooms.AutoSize = true;
-            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 212);
+            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 235);
             this.cbRearrangeRooms.Name = "cbRearrangeRooms";
             this.cbRearrangeRooms.Size = new System.Drawing.Size(280, 17);
             this.cbRearrangeRooms.TabIndex = 111;
@@ -423,7 +424,7 @@
             // cbRemapAnimTextures
             // 
             this.cbRemapAnimTextures.AutoSize = true;
-            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 189);
+            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 212);
             this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
             this.cbRemapAnimTextures.Size = new System.Drawing.Size(397, 17);
             this.cbRemapAnimTextures.TabIndex = 110;
@@ -526,6 +527,19 @@
         "equires specific FLEP patch to be activated, otherwise lighting will not look co" +
         "rrect.");
             this.cbUse32BitLighting.CheckedChanged += new System.EventHandler(this.cbUse32BitLighting_CheckedChanged);
+            // 
+            // cbCompressTextures
+            // 
+            this.cbCompressTextures.AutoSize = true;
+            this.cbCompressTextures.Location = new System.Drawing.Point(3, 189);
+            this.cbCompressTextures.Name = "cbCompressTextures";
+            this.cbCompressTextures.Size = new System.Drawing.Size(120, 17);
+            this.cbCompressTextures.TabIndex = 117;
+            this.cbCompressTextures.Tag = "";
+            this.cbCompressTextures.Text = "Compress textures";
+            this.pathToolTip.SetToolTip(this.cbCompressTextures, "Use DirectX texture compression for all level textures.\r\nUse with caution, as it " +
+        "may cause artifacts on a legacy small texture fragments.");
+            this.cbCompressTextures.CheckedChanged += new System.EventHandler(this.cbCompressTextures_CheckedChanged);
             // 
             // optionsList
             // 
@@ -1928,7 +1942,7 @@
             // 
             this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabMisc.Controls.Add(this.panelTr5Weather);
-            this.tabMisc.Controls.Add(this.cbSampleRate);
+            this.tabMisc.Controls.Add(this.panelTr5LaraType);
             this.tabMisc.Controls.Add(this.panel6);
             this.tabMisc.Controls.Add(this.panel12);
             this.tabMisc.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -1943,7 +1957,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 398);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 415);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1968,15 +1982,15 @@
             this.lblTr5Weather.TabIndex = 3;
             this.lblTr5Weather.Text = "TR5 weather:";
             // 
-            // cbSampleRate
+            // panelTr5LaraType
             // 
-            this.cbSampleRate.Controls.Add(this.comboLaraType);
-            this.cbSampleRate.Controls.Add(this.lblLaraType);
-            this.cbSampleRate.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSampleRate.Location = new System.Drawing.Point(0, 347);
-            this.cbSampleRate.Name = "cbSampleRate";
-            this.cbSampleRate.Size = new System.Drawing.Size(778, 51);
-            this.cbSampleRate.TabIndex = 96;
+            this.panelTr5LaraType.Controls.Add(this.comboLaraType);
+            this.panelTr5LaraType.Controls.Add(this.lblLaraType);
+            this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 364);
+            this.panelTr5LaraType.Name = "panelTr5LaraType";
+            this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
+            this.panelTr5LaraType.TabIndex = 96;
             // 
             // comboLaraType
             // 
@@ -2004,7 +2018,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 295);
+            this.panel6.Location = new System.Drawing.Point(0, 312);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -2041,6 +2055,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbCompressTextures);
             this.panel12.Controls.Add(this.cbUse32BitLighting);
             this.panel12.Controls.Add(this.cmbSampleRate);
             this.panel12.Controls.Add(this.cbKeepSampleRate);
@@ -2061,7 +2076,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 295);
+            this.panel12.Size = new System.Drawing.Size(778, 312);
             this.panel12.TabIndex = 91;
             // 
             // cmbSampleRate
@@ -2072,7 +2087,7 @@
             "22050",
             "44100",
             "48000"});
-            this.cmbSampleRate.Location = new System.Drawing.Point(215, 256);
+            this.cmbSampleRate.Location = new System.Drawing.Point(215, 279);
             this.cmbSampleRate.Name = "cmbSampleRate";
             this.cmbSampleRate.Size = new System.Drawing.Size(81, 23);
             this.cmbSampleRate.TabIndex = 115;
@@ -2288,7 +2303,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabMisc.ResumeLayout(false);
             this.panelTr5Weather.ResumeLayout(false);
-            this.cbSampleRate.ResumeLayout(false);
+            this.panelTr5LaraType.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
@@ -2369,7 +2384,7 @@
         private System.Windows.Forms.Panel panelTr5Weather;
         private DarkUI.Controls.DarkComboBox comboTr5Weather;
         private DarkUI.Controls.DarkLabel lblTr5Weather;
-        private System.Windows.Forms.Panel cbSampleRate;
+        private System.Windows.Forms.Panel panelTr5LaraType;
         private DarkUI.Controls.DarkComboBox comboLaraType;
         private DarkUI.Controls.DarkLabel lblLaraType;
         private System.Windows.Forms.Panel panel6;
@@ -2473,5 +2488,6 @@
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkTextBox tbScriptPath;
         private DarkUI.Controls.DarkCheckBox cbUse32BitLighting;
+        private DarkUI.Controls.DarkCheckBox cbCompressTextures;
     }
 }

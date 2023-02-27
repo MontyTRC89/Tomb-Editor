@@ -1219,7 +1219,6 @@ namespace TombLib.LevelData.Compilers
             return new VectorInt2(atlasWidth, atlasHeight);
         }
 
-
         private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
@@ -1540,7 +1539,6 @@ namespace TombLib.LevelData.Compilers
         }
 
         // Compiles all final texture infos into final list to be written into level file.
-
         private void BuildTextureInfos()
         {
             float maxSize = (float)MaxTileSize - (1.0f / (float)(MaxTileSize - 1));
