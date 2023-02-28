@@ -124,7 +124,7 @@
 			<Popup
 				x:Name="PART_Popup"
 				Grid.ColumnSpan="2"
-				Width="{TemplateBinding Width}"
+				Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"
 				Margin="1"
 				AllowsTransparency="true"
 				IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"

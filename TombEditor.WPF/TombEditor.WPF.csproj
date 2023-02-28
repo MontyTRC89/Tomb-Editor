@@ -191,9 +191,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AvalonDock.Themes.VS2013">
-      <HintPath>..\Libs\AvalonDock.Themes.VS2013.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
     </Reference>

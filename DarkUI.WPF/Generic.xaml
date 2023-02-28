@@ -1,13 +1,22 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="Controls/ColorPickerButton.xaml" />
 		<ResourceDictionary Source="Colors/Dark.xaml" />
+		<ResourceDictionary Source="Controls/DarkWindow.xaml" />
 		<ResourceDictionary Source="Controls/DarkButton.xaml" />
 		<ResourceDictionary Source="Controls/DarkCheckBox.xaml" />
 		<ResourceDictionary Source="Controls/DarkComboBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkRadioButton.xaml" />
-		<ResourceDictionary Source="Controls/DarkTextBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkScrollViewer.xaml" />
+		<ResourceDictionary Source="Controls/DarkMenu.xaml" />
 		<ResourceDictionary Source="Controls/DarkNumericUpDown.xaml" />
+		<ResourceDictionary Source="Controls/DarkRadioButton.xaml" />
+		<ResourceDictionary Source="Controls/DarkScrollViewer.xaml" />
 		<ResourceDictionary Source="Controls/DarkTextBlock.xaml" />
+		<ResourceDictionary Source="Controls/DarkTextBox.xaml" />
+		<ResourceDictionary Source="Controls/DarkToggleButton.xaml" />
+		<ResourceDictionary Source="Controls/DarkToolBar.xaml" />
+		<ResourceDictionary Source="Controls/DarkGroupBox.xaml" />
+		<ResourceDictionary Source="Controls/DarkListView.xaml" />
+
+		<ResourceDictionary Source="Controls/DarkAvalonDock.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

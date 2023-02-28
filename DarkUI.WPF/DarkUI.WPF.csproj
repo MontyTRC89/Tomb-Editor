@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.71.2" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
   </ItemGroup>
 
@@ -15,6 +17,9 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\DarkToggleButton.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
     <Page Update="Controls\DarkButton.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

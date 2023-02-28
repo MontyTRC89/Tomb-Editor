@@ -1,6 +1,7 @@
 ﻿using AvalonDock;
 using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
+using DarkUI.WPF.Controls;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -238,4 +239,9 @@ public partial class FormMain : Window
 		anchorable.AddToLayout(dockManager, AnchorableShowStrategy.Most);
 		anchorable.Float();
 	}
+
+	private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
+	{
+		MessageBox.Show(this, (sender as ColorPickerButton).SelectedColor.ToString());
+    }
 }

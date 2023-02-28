@@ -1,25 +1,51 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<SolidColorBrush x:Key="ActiveControl">#9FB2C4</SolidColorBrush>
-	<SolidColorBrush x:Key="BlueBackground">#424D5F</SolidColorBrush>
-	<SolidColorBrush x:Key="BlueHighlight">#6897BB</SolidColorBrush>
-	<SolidColorBrush x:Key="BlueSelection">#4B6EAF</SolidColorBrush>
-	<SolidColorBrush x:Key="DarkBackground">#2B2B2B</SolidColorBrush>
-	<SolidColorBrush x:Key="DarkBlueBackground">#343942</SolidColorBrush>
-	<SolidColorBrush x:Key="DarkBlueBorder">#333D4E</SolidColorBrush>
-	<SolidColorBrush x:Key="DarkBorder">#333333</SolidColorBrush>
-	<SolidColorBrush x:Key="DarkGreySelection">#525252</SolidColorBrush>
-	<SolidColorBrush x:Key="DisabledText">#999999</SolidColorBrush>
-	<SolidColorBrush x:Key="GreyBackground">#3C3F41</SolidColorBrush>
-	<SolidColorBrush x:Key="GreyHighlight">#7A8084</SolidColorBrush>
-	<SolidColorBrush x:Key="GreySelection">#5C5C5C</SolidColorBrush>
-	<SolidColorBrush x:Key="HeaderBackground">#393C3E</SolidColorBrush>
-	<SolidColorBrush x:Key="LightBackground">#45494A</SolidColorBrush>
-	<SolidColorBrush x:Key="LightBlueBorder">#566172</SolidColorBrush>
-	<SolidColorBrush x:Key="LightBorder">#515151</SolidColorBrush>
-	<SolidColorBrush x:Key="LighterBackground">#5F6566</SolidColorBrush>
-	<SolidColorBrush x:Key="LightestBackground">#B2B2B2</SolidColorBrush>
-	<SolidColorBrush x:Key="LightText">#DCDCDC</SolidColorBrush>
-	<SolidColorBrush x:Key="MediumBackground">#313335</SolidColorBrush>
+	<Color x:Key="ActiveControlColor">#9FB2C4</Color>
+	<Color x:Key="BlueBackgroundColor">#424D5F</Color>
+	<Color x:Key="BlueHighlightColor">#6897BB</Color>
+	<Color x:Key="BlueSelectionColor">#4B6EAF</Color>
+	<Color x:Key="DarkBackgroundColor">#2B2B2B</Color>
+	<Color x:Key="DarkBlueBackgroundColor">#343942</Color>
+	<Color x:Key="DarkBlueBorderColor">#333D4E</Color>
+	<Color x:Key="DarkBorderColor">#333333</Color>
+	<Color x:Key="DarkGreySelectionColor">#525252</Color>
+	<Color x:Key="DisabledTextColor">#999999</Color>
+	<Color x:Key="GreyBackgroundColor">#3C3F41</Color>
+	<Color x:Key="GreyHighlightColor">#7A8084</Color>
+	<Color x:Key="GreySelectionColor">#5C5C5C</Color>
+	<Color x:Key="HeaderBackgroundColor">#393C3E</Color>
+	<Color x:Key="LightBackgroundColor">#45494A</Color>
+	<Color x:Key="LightBlueBorderColor">#566172</Color>
+	<Color x:Key="LightBorderColor">#515151</Color>
+	<Color x:Key="LighterBackgroundColor">#5F6566</Color>
+	<Color x:Key="LightestBackgroundColor">#B2B2B2</Color>
+	<Color x:Key="LightTextColor">#DCDCDC</Color>
+	<Color x:Key="MediumBackgroundColor">#313335</Color>
+	<Color x:Key="HighlightBaseColor">#6897BB</Color>
+	<Color x:Key="HighlightFillColor">#454469</Color>
+
+	<SolidColorBrush x:Key="ActiveControl" Color="{DynamicResource ActiveControlColor}" />
+	<SolidColorBrush x:Key="BlueBackground" Color="{DynamicResource BlueBackgroundColor}" />
+	<SolidColorBrush x:Key="BlueHighlight" Color="{DynamicResource BlueHighlightColor}" />
+	<SolidColorBrush x:Key="BlueSelection" Color="{DynamicResource BlueSelectionColor}" />
+	<SolidColorBrush x:Key="DarkBackground" Color="{DynamicResource DarkBackgroundColor}" />
+	<SolidColorBrush x:Key="DarkBlueBackground" Color="{DynamicResource DarkBlueBackgroundColor}" />
+	<SolidColorBrush x:Key="DarkBlueBorder" Color="{DynamicResource DarkBlueBorderColor}" />
+	<SolidColorBrush x:Key="DarkBorder" Color="{DynamicResource DarkBorderColor}" />
+	<SolidColorBrush x:Key="DarkGreySelection" Color="{DynamicResource DarkGreySelectionColor}" />
+	<SolidColorBrush x:Key="DisabledText" Color="{DynamicResource DisabledTextColor}" />
+	<SolidColorBrush x:Key="GreyBackground" Color="{DynamicResource GreyBackgroundColor}" />
+	<SolidColorBrush x:Key="GreyHighlight" Color="{DynamicResource GreyHighlightColor}" />
+	<SolidColorBrush x:Key="GreySelection" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="HeaderBackground" Color="{DynamicResource HeaderBackgroundColor}" />
+	<SolidColorBrush x:Key="LightBackground" Color="{DynamicResource LightBackgroundColor}" />
+	<SolidColorBrush x:Key="LightBlueBorder" Color="{DynamicResource LightBlueBorderColor}" />
+	<SolidColorBrush x:Key="LightBorder" Color="{DynamicResource LightBorderColor}" />
+	<SolidColorBrush x:Key="LighterBackground" Color="{DynamicResource LighterBackgroundColor}" />
+	<SolidColorBrush x:Key="LightestBackground" Color="{DynamicResource LightestBackgroundColor}" />
+	<SolidColorBrush x:Key="LightText" Color="{DynamicResource LightTextColor}" />
+	<SolidColorBrush x:Key="MediumBackground" Color="{DynamicResource MediumBackgroundColor}" />
+	<SolidColorBrush x:Key="HighlightBase" Color="{DynamicResource HighlightBaseColor}" />
+	<SolidColorBrush x:Key="HighlightFill" Color="{DynamicResource HighlightFillColor}" />
 
 	<Thickness x:Key="ThemeBorderThickness">1</Thickness>
 </ResourceDictionary>

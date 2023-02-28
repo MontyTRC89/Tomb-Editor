@@ -25,28 +25,27 @@
 			</Grid.RowDefinitions>
 
 			<sg:SpacedGrid ColumnSpacing="5" RowSpacing="5">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<ComboBox HorizontalAlignment="Stretch">
-					<ComboBoxItem>Point</ComboBoxItem>
-				</ComboBox>
+				<sg:SpacedGrid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
 
-				<Button Grid.Column="1">
-					<Image Width="16" Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
-				</Button>
+					<ComboBox>
+						<ComboBoxItem>Point</ComboBoxItem>
+					</ComboBox>
 
-				<ComboBox
-					Grid.Row="1"
-					Grid.ColumnSpan="2"
-					SelectedIndex="1">
+					<Button Grid.Column="1">
+						<Image Width="16" Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</Button>
+				</sg:SpacedGrid>
+
+				<ComboBox Grid.Row="1" Grid.ColumnSpan="2">
 					<ComboBoxItem>Default quality</ComboBoxItem>
 				</ComboBox>
 			</sg:SpacedGrid>

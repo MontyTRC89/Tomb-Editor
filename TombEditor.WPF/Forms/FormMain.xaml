@@ -2,21 +2,29 @@
 	x:Class="TombEditor.WPF.Forms.FormMain"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.Controls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
 	Title="Tomb Editor"
 	Width="800"
 	Height="450"
+	Background="{DynamicResource GreyBackground}"
+	Style="{DynamicResource CustomWindowStyle}"
 	WindowState="Maximized"
 	mc:Ignorable="d">
 	<Grid x:Name="layoutRoot">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Menu Grid.Row="0">
+		<Menu
+			Grid.Row="0"
+			Height="20"
+			Padding="0,2,0,0"
+			Background="{DynamicResource GreyBackground}"
+			Foreground="{DynamicResource LightText}">
 			<MenuItem Header="File">
 				<MenuItem Header="New level" />
 				<MenuItem Header="Open existing level..." />
@@ -78,10 +86,26 @@
 			</MenuItem>
 		</Menu>
 
-		<DockingManager x:Name="dockManager" Grid.Row="1">
-			<DockingManager.Theme>
-				<Vs2013DarkTheme />
-			</DockingManager.Theme>
+		<GroupBox
+			Grid.Row="1"
+			Width="200"
+			Height="200"
+			Margin="10"
+			Padding="10"
+			Header="DarkUI smells">
+			<ListView>
+				<ListBoxItem>
+					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="Black" />
+				</ListBoxItem>
+				<ListBoxItem>
+					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="LightBlue" />
+				</ListBoxItem>
+				<ListBoxItem>
+					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="Gray" />
+				</ListBoxItem>
+			</ListView>
+		</GroupBox>
+		<DockingManager x:Name="dockManager" Grid.Row="0">
 			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
 				<LayoutPanel Orientation="Horizontal">
 					<LayoutAnchorablePaneGroup DockWidth="300" Orientation="Vertical">
@@ -156,7 +180,10 @@
 				</LayoutPanel>
 			</LayoutRoot>
 		</DockingManager>
-		<StatusBar Grid.Row="2">
+		<StatusBar
+			Grid.Row="2"
+			Background="{DynamicResource GreyBackground}"
+			Foreground="{DynamicResource LightText}">
 			<TextBlock Text="Selected room: Name = Room 0 | Size = 18 x 18 | Pos = (0,0,0) | Floor = 0 | Ceiling = 12" />
 		</StatusBar>
 	</Grid>
