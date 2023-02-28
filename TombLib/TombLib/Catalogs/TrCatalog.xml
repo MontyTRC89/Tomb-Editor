@@ -6147,11 +6147,8 @@
 			<moveable id="289" name="LAGOON_WITCH" />
 			<moveable id="290" name="BOSS_SHIELD" />
 			<moveable id="291" name="BOSS_EXPLOSION_SHOCKWAVE" />
-			<moveable id="292" name="BOSS_EXPLOSION_RING" />
-			<moveable id="292" name="BOSS_EXPLOSION_RING" />
-			
-			<moveable id="294" name="WASP_MUTANT" />
-			
+			<moveable id="292" name="BOSS_EXPLOSION_RING" />	
+			<moveable id="294" name="WASP_MUTANT" />			
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
 			<moveable id="322" name="DISK_SHOOTER" />
