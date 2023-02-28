@@ -2,7 +2,7 @@
 	<Style TargetType="{x:Type TextBox}">
 		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
-		<Setter Property="BorderThickness" Value="{DynamicResource ThemeBorderThickness}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}" />
 		<Setter Property="CaretBrush" Value="{DynamicResource LightText}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 		<Setter Property="Padding" Value="2" />

@@ -47,5 +47,16 @@
 	<SolidColorBrush x:Key="HighlightBase" Color="{DynamicResource HighlightBaseColor}" />
 	<SolidColorBrush x:Key="HighlightFill" Color="{DynamicResource HighlightFillColor}" />
 
-	<Thickness x:Key="ThemeBorderThickness">1</Thickness>
+	<Thickness x:Key="DefaultBorderThickness">1</Thickness>
+
+	<Thickness x:Key="DefaultMargin">4</Thickness>
+	<Thickness x:Key="LargeMargin">8</Thickness>
+	<Thickness x:Key="JumboMargin">16</Thickness>
+
+	<Thickness x:Key="DefaultPadding">4</Thickness>
+	<Thickness x:Key="LargePadding">8</Thickness>
+	<Thickness x:Key="JumboPadding">16</Thickness>
+
+	<Thickness x:Key="DefaultColumnSpacing">4</Thickness>
+	<Thickness x:Key="DefaultRowSpacing">4</Thickness>
 </ResourceDictionary>
