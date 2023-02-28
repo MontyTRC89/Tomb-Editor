@@ -66,7 +66,7 @@
 			<moveable id="39" name="Dart" hidden="true" /> />
 			<moveable id="40" name="Wall-mounted dartgun" essential="false" t5m="DART_EMMITER" />
 			<moveable id="41" name="Door (opens upward)" essential="false" t5m="DOOR_TYPE9" />
-			<moveable id="42" name="Slamming doors" essential="false" t5m="SLICER_DICER" />
+			<moveable id="42" name="Slamming doors" essential="false" t5m="TEETH_SPIKE_DOOR" />
 			<moveable id="43" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
 			<moveable id="44" name="Thor's hammer's handle" essential="false" t5m="ANIMATING110" />
 			<moveable id="45" name="Thor's hammer's block" essential="false" t5m="ROLLINGBALL" />
@@ -6277,6 +6277,7 @@
 			<moveable id="446" name="EXPLOSION" />
 			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="448" name="ELECTRIC_CLEANER" />
+			<moveable id="449" name="TEETH_SPIKE_DOOR" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
