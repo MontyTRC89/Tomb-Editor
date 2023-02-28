@@ -15,8 +15,8 @@
 	mc:Ignorable="d">
 	<Grid x:Name="layoutRoot">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Menu
@@ -86,26 +86,7 @@
 			</MenuItem>
 		</Menu>
 
-		<GroupBox
-			Grid.Row="1"
-			Width="200"
-			Height="200"
-			Margin="10"
-			Padding="10"
-			Header="DarkUI smells">
-			<ListView>
-				<ListBoxItem>
-					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="Black" />
-				</ListBoxItem>
-				<ListBoxItem>
-					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="LightBlue" />
-				</ListBoxItem>
-				<ListBoxItem>
-					<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="Gray" />
-				</ListBoxItem>
-			</ListView>
-		</GroupBox>
-		<DockingManager x:Name="dockManager" Grid.Row="0">
+		<DockingManager x:Name="dockManager" Grid.Row="1">
 			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
 				<LayoutPanel Orientation="Horizontal">
 					<LayoutAnchorablePaneGroup DockWidth="300" Orientation="Vertical">

@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style x:Key="CustomWindowStyle" TargetType="{x:Type Window}">
 		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource LightBorder}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource BlueBackground}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
@@ -64,14 +64,14 @@
 										<Button
 											x:Name="btnMinimize"
 											Width="40"
-											VerticalContentAlignment="Bottom"
+											VerticalAlignment="Stretch"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="Minimize_Event"
 											WindowChrome.IsHitTestVisibleInChrome="True">
 											<Rectangle
-												Width="10"
-												Margin="1,-24,0,0"
+												Width="12"
+												Margin="0"
 												VerticalAlignment="Center"
 												Stroke="{DynamicResource LightText}"
 												StrokeThickness="2" />
@@ -80,6 +80,7 @@
 										<Button
 											x:Name="btnRestore"
 											Width="40"
+											VerticalAlignment="Stretch"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="AutoMinimize_Event"
@@ -94,6 +95,7 @@
 										<Button
 											x:Name="btnClose"
 											Width="40"
+											VerticalAlignment="Stretch"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="CloseWindow_Event"
