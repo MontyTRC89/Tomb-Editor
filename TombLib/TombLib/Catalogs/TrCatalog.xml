@@ -8310,6 +8310,17 @@
 			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
 			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
 			<anim item="283" id="17" name="THROW_ROCK" />
+			
+			<!-- WASP_MUTANT -->
+			<anim item="294" id="0" name= "FLY_IDLE" />
+			<anim item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+			<anim item="294" id="2" name= "IDLE" />
+			<anim item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+			<anim item="294" id="4" name= "ATTACK" />
+			<anim item="294" id="5" name= "FALL" />
+			<anim item="294" id="6" name= "DEATH" />
+			<anim item="294" id="7" name= "FLY_FORWARD" />
+
 
 		</animations>
 		<states>
@@ -8409,6 +8420,16 @@
 			<state item="283" id="8" name= "START_ROLL" />
 			<state item="283" id="9" name= "DEATH" />
 			<state item="283" id="11" name= "THROW_STONES" />
+			
+			<!-- WASP_MUTANT -->
+			<state item="294" id="0" name= "FLY_IDLE" />
+			<state item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+			<state item="294" id="2" name= "IDLE" />
+			<state item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+			<state item="294" id="4" name= "ATTACK" />
+			<state item="294" id="5" name= "FALL" />
+			<state item="294" id="6" name= "DEATH" />
+			<state item="294" id="7" name= "FLY_FORWARD" />
 			
 		</states>
 	</game>
