@@ -22456,5 +22456,43 @@
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1143</Id>
+			<Name>TR1_SLAMDOOR_OPEN</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>8</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>TR1_SLAMDOOR_OPEN_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1144</Id>
+			<Name>TR1_SLAMDOOR_CLOSE</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>8</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>TR1_SLAMDOOR_CLOSE_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
 	</SoundInfos>
 </WadSounds>

@@ -336,8 +336,8 @@
 			<sound id="124" name="ATLANTEAN_BALL" t5m="428" />
 			<sound id="125" name="ATLANTEAN_WINGS" t5m="429" />
 			<sound id="126" name="ATLANTEAN_WING_FEET" t5m="430" />
-			<sound id="127" name="SLAMDOOR_CLOSE" t5m="127" />
-			<sound id="128" name="SLAMDOOR_OPEN" t5m="128" />
+			<sound id="127" name="SLAMDOOR_CLOSE" t5m="1144" />
+			<sound id="128" name="SLAMDOOR_OPEN" t5m="1143" />
 			<sound id="129" name="SKATEBOARD_MOVE" t5m="446" />
 			<sound id="130" name="SKATEBOARD_STOP" t5m="447" />
 			<sound id="131" name="SKATEBOARD_SHOOT" t5m="448" />
@@ -8057,7 +8057,9 @@
 			<sound id="1139" name="TR5_STONE_SCRAPE_FAST" t5m="1139" />
 			<sound id="1140" name="TR5_LOW_RUMBLE" t5m="1140" />
 			<sound id="1141" name="TR5_FLOOR_METAL_OPEN" t5m="1141"	/>
-			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142"/>
+			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142" />
+			<sound id="1143" name="TR1_SLAMDOOR_OPEN" t5m="1143" />
+			<sound id="1144" name="TR1_SLAMDOOR_CLOSE" t5m="1144" />
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
