@@ -134,7 +134,7 @@
 											StrokeThickness="2" />
 										<Rectangle
 											Margin="0,4,4,0"
-											Fill="{DynamicResource LightBorder}"
+											Fill="{DynamicResource BlueBackground}"
 											Stroke="{DynamicResource LightText}"
 											StrokeThickness="2" />
 									</Grid>

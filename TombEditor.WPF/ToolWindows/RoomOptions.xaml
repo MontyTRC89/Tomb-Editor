@@ -26,13 +26,13 @@
 			</Style>
 		</Grid.Resources>
 
-		<sg:SpacedGrid ColumnSpacing="5">
+		<sg:SpacedGrid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<sg:SpacedGrid ColumnSpacing="5" RowSpacing="5">
+			<sg:SpacedGrid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -57,10 +57,7 @@
 						Tag="SetRoomTags" />
 				</sg:SpacedGrid>
 
-				<sg:SpacedGrid
-					Grid.Row="2"
-					ColumnSpacing="5"
-					RowSpacing="0">
+				<sg:SpacedGrid Grid.Row="2" RowSpacing="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
 						<ColumnDefinition Width="55" />
@@ -112,11 +109,7 @@
 					</ComboBox>
 				</sg:SpacedGrid>
 
-				<sg:SpacedGrid
-					Grid.Row="3"
-					Margin="0,3,0,0"
-					ColumnSpacing="5"
-					RowSpacing="5">
+				<sg:SpacedGrid Grid.Row="3" Margin="0,3,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
 						<ColumnDefinition />
@@ -164,7 +157,7 @@
 						Tag="SetRoomNoLensflare" />
 				</sg:SpacedGrid>
 
-				<sg:SpacedGrid Grid.Row="4" ColumnSpacing="5">
+				<sg:SpacedGrid Grid.Row="4">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="60" />
 						<ColumnDefinition Width="70" />
@@ -177,10 +170,7 @@
 				</sg:SpacedGrid>
 			</sg:SpacedGrid>
 
-			<sg:SpacedGrid
-				Grid.Column="1"
-				ColumnSpacing="5"
-				RowSpacing="5">
+			<sg:SpacedGrid Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -270,7 +260,7 @@
 			</sg:SpacedGrid>
 		</sg:SpacedGrid>
 
-		<sg:SpacedGrid Grid.Row="1" ColumnSpacing="5">
+		<sg:SpacedGrid Grid.Row="1">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="60" />
 				<ColumnDefinition Width="70" />

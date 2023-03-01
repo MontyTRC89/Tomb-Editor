@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:aero="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 	<Style TargetType="{x:Type ToolBarTray}">
-		<Setter Property="Background" Value="{DynamicResource ToolBarTrayBackground}" />
+		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
 	</Style>
 
 	<Style x:Key="ToolBarVerticalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
@@ -19,7 +19,6 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						CornerRadius="0,0,3,3"
 						SnapsToDevicePixels="true">
 						<Canvas
 							Width="7"
@@ -63,7 +62,6 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						CornerRadius="0,3,3,0"
 						SnapsToDevicePixels="true">
 						<Canvas
 							Width="6"
@@ -117,8 +115,8 @@
 									ViewportUnits="Absolute">
 									<DrawingBrush.Drawing>
 										<DrawingGroup>
-											<GeometryDrawing Brush="{DynamicResource ToolBarGripperBackground}" Geometry="M 1 1 L 1 3 L 3 3 L 3 1 z" />
-											<GeometryDrawing Brush="{DynamicResource ToolBarGripper}" Geometry="M 0 0 L 0 2 L 2 2 L 2 0 z" />
+											<GeometryDrawing Brush="{DynamicResource LightBorder}" Geometry="M 1 1 L 1 3 L 3 3 L 3 1 z" />
+											<GeometryDrawing Brush="{DynamicResource LightText}" Geometry="M 0 0 L 0 2 L 2 2 L 2 0 z" />
 										</DrawingGroup>
 									</DrawingBrush.Drawing>
 								</DrawingBrush>
@@ -136,7 +134,6 @@
 	</Style>
 	<Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
 		<Setter Property="Margin" Value="0,0,11,0" />
-		<Setter Property="CornerRadius" Value="3,3,3,3" />
 		<Style.Triggers>
 			<DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
 				<Setter Property="CornerRadius" Value="0,0,0,0" />
@@ -145,9 +142,9 @@
 	</Style>
 	<Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
 		<Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
-		<Setter Property="Background" Value="{DynamicResource Button.Static.Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Button.Static.Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Button.Static.Foreground}" />
+		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource LightBorder}" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
@@ -192,14 +189,105 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Style
-		x:Key="{x:Static ToolBar.ButtonStyleKey}"
-		BasedOn="{StaticResource {x:Type Button}}"
-		TargetType="{x:Type Button}" />
-	<Style
-		x:Key="{x:Static ToolBar.ToggleButtonStyleKey}"
-		BasedOn="{StaticResource {x:Type ToggleButton}}"
-		TargetType="{x:Type ToggleButton}" />
+	<Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="{x:Type Button}">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="Padding" Value="4" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border
+						x:Name="PART_Border"
+						Padding="{TemplateBinding Padding}"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="True">
+						<ContentPresenter
+							x:Name="PART_ContentPresenter"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Content="{TemplateBinding Content}"
+							ContentTemplate="{TemplateBinding ContentTemplate}"
+							Focusable="False"
+							RecognizesAccessKey="True" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource LighterBackground}" />
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource LighterBackground}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkGreySelection}" />
+							<Setter Property="Foreground" Value="{DynamicResource DisabledText}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="{x:Type ToggleButton}">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Padding" Value="4" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<Border
+						x:Name="PART_Border"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="True">
+						<ContentPresenter
+							x:Name="PART_ContentPresenter"
+							Margin="{TemplateBinding Padding}"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Focusable="False"
+							RecognizesAccessKey="True"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="Button.IsDefaulted" Value="True">
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource BlueBackground}" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource LighterBackground}" />
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource LighterBackground}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkGreySelection}" />
+							<Setter Property="Foreground" Value="{DynamicResource DisabledText}" />
+						</Trigger>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource HighlightFill}" />
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource HighlightBase}" />
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource GreyHighlight}" />
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<Style
 		x:Key="{x:Static ToolBar.CheckBoxStyleKey}"
 		BasedOn="{StaticResource {x:Type CheckBox}}"
@@ -209,11 +297,11 @@
 		BasedOn="{StaticResource {x:Type RadioButton}}"
 		TargetType="{x:Type RadioButton}" />
 	<Style TargetType="{x:Type ToolBar}">
-		<Setter Property="Background" Value="{DynamicResource ToolBarHorizontalBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource ToolBarHorizontalBorder}" />
+		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource LightBorder}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{DynamicResource AREghZyBrush.Foreground.Static}" />
-		<Setter Property="Padding" Value="2,1,1,1" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="Padding" Value="3,1,1,1" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToolBar}">
@@ -240,8 +328,8 @@
 								<aero:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
 									<Border
 										x:Name="ToolBarSubMenuBorder"
-										Background="{DynamicResource ToolBarSubMenuBackground}"
-										BorderBrush="{DynamicResource ToolBarMenuBorder}"
+										Background="{DynamicResource GreyBackground}"
+										BorderBrush="{DynamicResource LightBorder}"
 										BorderThickness="1"
 										RenderOptions.ClearTypeHint="Enabled">
 										<ToolBarOverflowPanel
@@ -316,7 +404,7 @@
 							<Setter TargetName="OverflowGrid" Property="VerticalAlignment" Value="Bottom" />
 							<Setter TargetName="OverflowPopup" Property="Placement" Value="Right" />
 							<Setter TargetName="MainPanelBorder" Property="Margin" Value="0,0,0,11" />
-							<Setter Property="Background" Value="{DynamicResource ToolBarVerticalBackground}" />
+							<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
 						</Trigger>
 						<Trigger Property="IsEnabled" Value="false">
 							<Setter Property="Foreground" Value="{DynamicResource AREghZyBrush.Foreground.Disabled}" />
