@@ -6,7 +6,7 @@
 	xmlns:themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit.NET5"
 	xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit.NET5">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="pack://application:,,,/Xceed.Wpf.Toolkit.NET5;component/Themes/Generic/Glyphs.xaml" />
+		<ResourceDictionary Source="/Xceed.Wpf.Toolkit.NET5;component/Themes/Generic/Glyphs.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<conv:InverseBoolConverter x:Key="InverseBoolConverter" />
