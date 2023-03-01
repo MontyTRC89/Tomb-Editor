@@ -4,9 +4,749 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:TombEditor.WPF.Forms"
+	xmlns:vm="clr-namespace:TombEditor.WPF.ViewModels"
+	xmlns:sc="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:controls="clr-namespace:DarkUI.WPF.Controls;assembly=DarkUI.WPF"
 	Title="FormOptions"
-	Width="800"
-	Height="450"
+	Width="620"
+	Height="400"
 	Background="#3C3F41"
-	mc:Ignorable="d" />
+	mc:Ignorable="d"
+	d:DataContext="{d:DesignInstance Type=vm:OptionsViewModel, IsDesignTimeCreatable=False}" 
+	Style="{Binding CustomWindowStyle}">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml"/>
+				<ResourceDictionary>
+					<sys:Single x:Key="InputWidth">75</sys:Single>
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<TabControl BorderBrush="Transparent" SelectedIndex="{Binding ElementName=TabSelection,Path=SelectedIndex,Mode=OneWay}" x:Name="SelectedOption" Grid.Column="1">
+			<TabItem Header="General" Visibility="Collapsed">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<GroupBox Header="Autosave">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<CheckBox IsChecked="{Binding IsAutoSaveEnabled}" DockPanel.Dock="Left"/>
+									<Label DockPanel.Dock="Right" Content="Enable autosave"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1" HorizontalAlignment="Stretch">
+									<Label HorizontalAlignment="Left"  Content="Autosave interval, in seconds"/>
+									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2" HorizontalAlignment="Stretch">
+									<Label HorizontalAlignment="Left"  Content="Date-time format"/>
+									<TextBox Width="100" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<CheckBox Grid.Row="3" DockPanel.Dock="Left" Content="Put date first in autosave name"/>
+								<DockPanel Grid.Row="4">
+									<CheckBox DockPanel.Dock="Left" Content="Cleanup autosaves when amount is reached:"/>
+									<xctk:IntegerUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75" VerticalAlignment="Stretch"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="System">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<CheckBox Grid.Row="0" Content="Allow multiple instances"/>
+								<CheckBox Grid.Row="1" Content="Open last project on editor start-up"/>
+								<CheckBox Grid.Row="2" Content="Reload resources automatically when changed"/>
+								<DockPanel Grid.Row="3">
+									<Label Content="Undo / redo depth :"/>
+									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="Defaults">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel>
+									<Label Content="Default game version for new projects:"/>
+									<ComboBox Width="75" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Default new room size (with border walls) :"/>
+									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<CheckBox Grid.Row="2" Content="Grid border walls in new rooms"/>
+								<CheckBox Grid.Row="3"  Content="Respect T4Larson's mousepatch flyby handling on PRJ import"/>
+								<CheckBox Grid.Row="4" Content="Use half-pixel UV correction on PRJ import"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="Misc">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<CheckBox Grid.Row="0" DockPanel.Dock="Left" Content="Enable logging"/>
+								<DockPanel Grid.Row="1" HorizontalAlignment="Stretch">
+									<Label HorizontalAlignment="Left"  Content="Number of daily log files in history"/>
+									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Header="User interface" Visibility="Collapsed">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox Header="General">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<CheckBox Grid.Row="0" Content="Warn before deleting objects"/>
+								<CheckBox Grid.Row="1" Content="Non-intrusive message when trying to move locked room"/>
+								<CheckBox Grid.Row="2" Content="Discard selection on editor mode switch"/>
+								<CheckBox Grid.Row="3" Content="Autoswitch block coloring on property hover"/>
+								<CheckBox Grid.Row="4" Content="Apply sector flags to bottom room through portals"/>
+								<CheckBox Grid.Row="5" Content="Set or unset selected area's sector flags at once"/>
+								<CheckBox Grid.Row="6">Autofill "Key", "Switch" and "Dummy" trigger types</CheckBox>
+								<CheckBox Grid.Row="7" Content="Automatically enable skybox if invisible texture is applied"/>
+								<CheckBox Grid.Row="8" Content="Add descriptions for autogenerated rooms"/>
+								<CheckBox Grid.Row="9" Content="Automatically pick selected object color to palette"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="Color scheme">
+							<sc:SpacedGrid Width="350">
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<Grid Grid.Row="0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="UI brightness (requires restart):"/>
+									<xctk:IntegerUpDown Grid.Column="1" Width="75"/>
+								</Grid>
+								<Grid Grid.Row="1">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="Color scheme preset:"/>
+									<ComboBox Grid.Column="1" Width="75"/>
+								</Grid>
+								<Grid Grid.Row="2">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="UI button highlight:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="3">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="Selection:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="4">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="3D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="5">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="6">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="7">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="8">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="9">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="10">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="11">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="13">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="14">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="15">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="16">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="17">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="18">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="19">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="20">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="21">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="22">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="23">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="24">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="25">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="26">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D background:"/>
+									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Visibility="Collapsed" Header="3D window">
+				<ScrollViewer>
+					<StackPanel Orientation="Vertical">
+						<GroupBox Header="Rendering">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<CheckBox Grid.Row="0" Content="Use antialiasing (requires restart)"/>
+								<CheckBox Grid.Row="1" Content="Use real Light Quality for preview"/>
+								<CheckBox Grid.Row="2" Content="Allow texturing in Lighting mode"/>
+								<CheckBox Grid.Row="3" Content="Show room bounds rectangle"/>
+								<CheckBox Grid.Row="4" Content="Allow selection in any room"/>
+								<CheckBox Grid.Row="5" Content="Automatically switch current room on mouse action"/>
+								<CheckBox Grid.Row="6" Content="Automatically bookmark selected object"/>
+								<CheckBox Grid.Row="7" Content="Use winroomedit cardinal direction hints"/>
+								<CheckBox Grid.Row="8" Content="Use flat icons for service objects"/>
+								<CheckBox Grid.Row="9" Content="Show FPS"/>
+								<CheckBox Grid.Row="10" Content="Reset camera on room switch"/>
+								<CheckBox Grid.Row="11" Content="Animate ghost block unfolding"/>
+								<Grid Grid.Row="12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="Animate camera on:"/>
+									<CheckBox Grid.Column="1" Content="Relocation"/>
+									<CheckBox Grid.Column="2" Content="Room switch"/>
+									<CheckBox Grid.Column="3" Content="Reset"/>
+								</Grid>
+								<DockPanel Grid.Row="13">
+									<Label Content="Field of view:"/>
+									<xctk:SingleUpDown Minimum="10" Maximum="179" DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="14">
+									<Label Content="Maximum portal room depth in 'Draw portals' mode:"/>
+									<xctk:IntegerUpDown DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="15">
+									<Label Content="Block outline width:"/>
+									<xctk:IntegerUpDown DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="Text">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<Grid Grid.Row="0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="100"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" DockPanel.Dock="Left" Content="Font (requires restart):"/>
+									<ComboBox Grid.Column="1"/>
+									<CheckBox Grid.Column="2" Content="Bold"/>
+								</Grid>
+								<DockPanel Grid.Row="1">
+									<Label Content="Font size (requires restart):" DockPanel.Dock="Left"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" Width="75"/>
+								</DockPanel>
+								<CheckBox Grid.Row="2" Content="Draw dark rectangular text overlay"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			
+			<TabItem Visibility="Collapsed" Header="3D controls">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox Header="Keyboard controls">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Keyboard zoom speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Keyboard rotation speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="Mouse controls">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Mouse wheel zoom speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Mouse drag zoom speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Mouse move speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Mouse rotation speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Mouse drag tools sensitivity:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+						<GroupBox Header="´Other">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Fly Mode move speed:"/>
+									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			
+			<TabItem Visibility="Collapsed" Header="Gizmo">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox BorderBrush="Transparent">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Gizmo size:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Translation cone size:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Centering cube size:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Scaling cube size:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Line thickness:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			
+			<TabItem Visibility="Collapsed" Header="2D window">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox BorderBrush="Transparent">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Minimum zoom factor:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Maximum zoom factor:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Mouse wheel zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Mouse drag zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Keyboard zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="5">
+									<Label Content="Keyboard move speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			
+			<TabItem Visibility="Collapsed" Header="Texture map">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox BorderBrush="Transparent">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Minimum zoom factor:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Maximum zoom factor:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Mouse wheel zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Mouse drag zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Keyboard zoom speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="5">
+									<Label Content="Keyboard move speed:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<CheckBox Grid.Row="6" Content="Draw selection direction indicators"/>
+								<CheckBox Grid.Row="7" Content="Scroll texture with mouse wheel instead of zooming it"/>
+								<CheckBox Grid.Row="8" Content="Pick texture without attributes"/>
+								<CheckBox Grid.Row="9" Content="Reset attributes on new selection"/>
+								<CheckBox Grid.Row="10" Content="Warn if double-sided texture is applied to single-sided face"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Visibility="Collapsed" Header="Node editor">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox BorderBrush="Transparent">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Node graph size:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Node graph grid step:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Default node width:"/>
+									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Default editing mode:"/>
+									<ComboBox Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Default event to edit:"/>
+									<ComboBox Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<CheckBox Grid.Row="5" Content="Draw node editor links as ropes"/>
+								<CheckBox Grid.Row="6" Content="Show side grips for nodes"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+					
+				</ScrollViewer>
+			</TabItem>
+		</TabControl>
+		<ListView Width="200" x:Name="TabSelection" ItemsSource="{Binding ElementName=SelectedOption,Path=Items,Mode=OneWay}" Grid.Column="0" SelectedIndex="0">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=Header}"/>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</Grid>
+</Window>

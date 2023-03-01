@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using TombEditor.WPF.ViewModels;
 
 namespace TombEditor.WPF.Forms;
 
@@ -10,17 +11,9 @@ namespace TombEditor.WPF.Forms;
 /// </summary>
 public partial class FormOptions : Window
 {
-	public TombEditor.Forms.FormOptions WinFormsLayer { get; }
-
 	public FormOptions(Editor editor)
 	{
+		this.DataContext = new OptionsViewModel(editor.Configuration);
 		InitializeComponent();
-		WinFormsLayer = new TombEditor.Forms.FormOptions(editor);
-
-		var panel = new Panel();
-		panel.Controls.AddRange(WinFormsLayer.Controls.Cast<Control>().ToArray());
-		panel.Dock = DockStyle.Fill;
-
-		Content = new WindowsFormsHost { Child = panel };
 	}
 }
