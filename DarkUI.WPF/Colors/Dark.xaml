@@ -68,6 +68,7 @@
 	<Style TargetType="{x:Type sg:SpacedGrid}">
 		<Setter Property="ColumnSpacing" Value="{DynamicResource DefaultColumnSpacing}" />
 		<Setter Property="RowSpacing" Value="{DynamicResource DefaultRowSpacing}" />
+		<Setter Property="Margin" Value="{DynamicResource DefaultMargin}"/>
 	</Style>
 
 	<Style TargetType="{x:Type Label}">

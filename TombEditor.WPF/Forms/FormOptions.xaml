@@ -3,7 +3,6 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:TombEditor.WPF.Forms"
 	xmlns:vm="clr-namespace:TombEditor.WPF.ViewModels"
 	xmlns:sc="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,20 +16,17 @@
 	d:DataContext="{d:DesignInstance Type=vm:OptionsViewModel, IsDesignTimeCreatable=False}" 
 	Style="{Binding CustomWindowStyle}">
 	<Window.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml"/>
-				<ResourceDictionary>
-					<sys:Single x:Key="InputWidth">75</sys:Single>
-				</ResourceDictionary>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
+		<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml"/>
 	</Window.Resources>
-	<Grid>
+	<sc:SpacedGrid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 		<TabControl BorderBrush="Transparent" SelectedIndex="{Binding ElementName=TabSelection,Path=SelectedIndex,Mode=OneWay}" x:Name="SelectedOption" Grid.Column="1">
 			<TabItem Header="General" Visibility="Collapsed">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -748,5 +744,22 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-	</Grid>
+		<sc:SpacedGrid Grid.Row="1" Grid.Column="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0" Content="Set page to default"/>
+		</sc:SpacedGrid>
+		<sc:SpacedGrid Grid.Row="1" Grid.Column="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="1" Content="Apply"/>
+			<Button Grid.Column="2" Content="OK"/>
+			<Button Grid.Column="3" Content="Cancel"/>
+		</sc:SpacedGrid>
+	</sc:SpacedGrid>
 </Window>
