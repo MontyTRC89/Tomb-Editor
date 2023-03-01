@@ -2,7 +2,4 @@
 	<Style TargetType="{x:Type TextBlock}">
 		<Setter Property="FontSize" Value="11" />
 	</Style>
-	<Style TargetType="{x:Type Label}">
-		<Setter Property="TextBlock.Foreground" Value="{DynamicResource LightText}" />
-	</Style>
 </ResourceDictionary>

@@ -18,14 +18,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Grid.Resources>
-			<Style TargetType="Label">
-				<Setter Property="Padding" Value="0,3,3,3" />
-				<Setter Property="Foreground" Value="{DynamicResource LightText}" />
-				<Setter Property="VerticalAlignment" Value="Bottom" />
-			</Style>
-		</Grid.Resources>
-
 		<sg:SpacedGrid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />

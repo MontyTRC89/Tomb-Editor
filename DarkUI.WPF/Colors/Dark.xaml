@@ -69,4 +69,9 @@
 		<Setter Property="ColumnSpacing" Value="{DynamicResource DefaultColumnSpacing}" />
 		<Setter Property="RowSpacing" Value="{DynamicResource DefaultRowSpacing}" />
 	</Style>
+
+	<Style TargetType="{x:Type Label}">
+		<Setter Property="Padding" Value="0,3,3,3" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+	</Style>
 </ResourceDictionary>

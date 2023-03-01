@@ -5,6 +5,7 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource LightBorder}" />
 		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="Padding" Value="{DynamicResource DefaultPadding}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Template">
 			<Setter.Value>
