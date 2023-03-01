@@ -244,4 +244,10 @@ public partial class FormMain : Window
 	{
 		MessageBox.Show(this, (sender as ColorPickerButton).SelectedColor.ToString());
     }
+
+	private void OnShowEditorOptions(object sender, RoutedEventArgs e)
+	{
+		var window = new FormOptions(Editor.Instance);
+		window.ShowDialog();
+	}
 }
