@@ -18,6 +18,6 @@
 		<ResourceDictionary Source="Controls/DarkListView.xaml" />
 
 		<ResourceDictionary Source="Controls/DarkAvalonDock.xaml" />
-		<ResourceDictionary Source="Controls/DarkTabControl.xaml"/>
+		<ResourceDictionary Source="Controls/DarkTabControl.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
