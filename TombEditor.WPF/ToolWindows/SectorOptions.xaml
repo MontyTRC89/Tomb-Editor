@@ -10,10 +10,7 @@
 	d:DesignWidth="285"
 	mc:Ignorable="d">
 
-	<sg:SpacedGrid
-		Margin="5"
-		ColumnSpacing="5"
-		RowSpacing="5">
+	<sg:SpacedGrid Margin="{DynamicResource DefaultMargin}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition Width="Auto" />
@@ -26,10 +23,7 @@
 
 		<WindowsFormsHost x:Name="Panel2DHost" />
 
-		<sg:SpacedGrid
-			Grid.Column="1"
-			ColumnSpacing="5"
-			RowSpacing="5">
+		<sg:SpacedGrid Grid.Column="1">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="Auto" />
@@ -53,7 +47,7 @@
 				<Image
 					x:Name="butFloor_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Floor_1-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Floor_1-16.png" />
 			</Button>
 			<Button
 				x:Name="butBox"
@@ -63,7 +57,7 @@
 				<Image
 					x:Name="butBox_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Box-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Box-16.png" />
 			</Button>
 			<Button
 				x:Name="butMonkey"
@@ -73,7 +67,7 @@
 				<Image
 					x:Name="butMonkey_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Monkey-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Monkey-16.png" />
 			</Button>
 			<Button
 				x:Name="butPortal"
@@ -83,7 +77,7 @@
 				<Image
 					x:Name="butPortal_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
 			</Button>
 			<Button
 				x:Name="butFlagTriggerTriggerer"
@@ -93,7 +87,7 @@
 				<Image
 					x:Name="butFlagTriggerTriggerer_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_TriggerTriggerer-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_TriggerTriggerer-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbPositiveZ"
@@ -103,7 +97,7 @@
 				<Image
 					x:Name="butClimbPositiveZ_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbNorth-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbNorth-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbNegativeX"
@@ -113,7 +107,7 @@
 				<Image
 					x:Name="butClimbNegativeX_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbWest-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbWest-16.png" />
 			</Button>
 			<Button
 				x:Name="butAddGhostBlock"
@@ -123,7 +117,7 @@
 				<Image
 					x:Name="butAddGhostBlock_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
 			</Button>
 
 			<Button
@@ -134,7 +128,7 @@
 				<Image
 					x:Name="butCeiling_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Roof-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Roof-16.png" />
 			</Button>
 			<Button
 				x:Name="butNotWalkableBox"
@@ -145,7 +139,7 @@
 				<Image
 					x:Name="butNotWalkableBox_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_NotWalkable-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_NotWalkable-16.png" />
 			</Button>
 			<Button
 				x:Name="butDeath"
@@ -156,7 +150,7 @@
 				<Image
 					x:Name="butDeath_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Death-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Death-16.png" />
 			</Button>
 			<Button
 				x:Name="butWall"
@@ -167,7 +161,7 @@
 				<Image
 					x:Name="butWall_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Wall_1-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Wall_1-16.png" />
 			</Button>
 			<Button
 				x:Name="butFlagBeetle"
@@ -178,7 +172,7 @@
 				<Image
 					x:Name="butFlagBeetle_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Beetle-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Beetle-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbNegativeZ"
@@ -189,7 +183,7 @@
 				<Image
 					x:Name="butClimbNegativeZ_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbSouth_1-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbSouth_1-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbPositiveX"
@@ -200,7 +194,7 @@
 				<Image
 					x:Name="butClimbPositiveX_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbEast-16.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbEast-16.png" />
 			</Button>
 			<Button
 				x:Name="butForceSolidFloor"
@@ -211,14 +205,11 @@
 				<Image
 					x:Name="butForceSolidFloor_Image"
 					Width="16"
-					Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ForceSolidFloor-16 copy.png" />
+					Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ForceSolidFloor-16 copy.png" />
 			</Button>
 		</sg:SpacedGrid>
 
-		<sg:SpacedGrid
-			Grid.Row="1"
-			Grid.ColumnSpan="2"
-			ColumnSpacing="5">
+		<sg:SpacedGrid Grid.Row="1" Grid.ColumnSpan="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition />
@@ -230,7 +221,7 @@
 					<Image
 						Width="16"
 						Margin="0,0,3,0"
-						Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
+						Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
 					<TextBlock Text="Floor step" />
 				</StackPanel>
 			</Button>
@@ -239,7 +230,7 @@
 					<Image
 						Width="16"
 						Margin="0,0,3,0"
-						Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
+						Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
 					<TextBlock Text="Ceiling step" />
 				</StackPanel>
 			</Button>
@@ -248,7 +239,7 @@
 					<Image
 						Width="16"
 						Margin="0,0,3,0"
-						Source="pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
+						Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
 					<TextBlock Text="Diag wall" />
 				</StackPanel>
 			</Button>
