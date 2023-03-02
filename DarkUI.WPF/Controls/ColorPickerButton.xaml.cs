@@ -16,7 +16,11 @@ public class ColorPickerButton : Button
 
 	static ColorPickerButton()
 	{
-		SelectedColorProperty = DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ColorPickerButton), new PropertyMetadata(Colors.Transparent));
+		SelectedColorProperty = DependencyProperty.Register(
+			nameof(SelectedColor),
+			typeof(Color),
+			typeof(ColorPickerButton),
+			new FrameworkPropertyMetadata(Colors.Transparent, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 	}
 
 	protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
