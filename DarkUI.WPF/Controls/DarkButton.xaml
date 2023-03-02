@@ -39,6 +39,23 @@
 							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkGreySelection}" />
 							<Setter Property="Foreground" Value="{DynamicResource DisabledText}" />
 						</Trigger>
+						<Trigger Property="IsDefault" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkBlueBackground}" />
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsDefault" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource BlueBackground}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsDefault" Value="True" />
+								<Condition Property="IsPressed" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkBackground}" />
+						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
