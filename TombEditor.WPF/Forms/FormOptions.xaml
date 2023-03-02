@@ -7,7 +7,8 @@
 	xmlns:sc="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:controls="clr-namespace:DarkUI.WPF.Controls;assembly=DarkUI.WPF"
+	xmlns:controls="clr-namespace:DarkUI.WPF.Controls;assembly=DarkUI.WPF"
+	xmlns:converters="clr-namespace:TombEditor.WPF.Converters"
 	Title="FormOptions"
 	Width="620"
 	Height="400"
@@ -16,7 +17,15 @@
 	d:DataContext="{d:DesignInstance Type=vm:OptionsViewModel, IsDesignTimeCreatable=False}" 
 	Style="{Binding CustomWindowStyle}">
 	<Window.Resources>
-		<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml"/>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml"/>
+				<ResourceDictionary>
+					<converters:VectorToUIColorConverter x:Key="VectorToColorConverter"/>
+					<converters:HtmlToUIColorConverter x:Key="HtmlToColorConverter"/>
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Window.Resources>
 	<sc:SpacedGrid>
 		<Grid.ColumnDefinitions>
@@ -41,21 +50,21 @@
 									<RowDefinition/>
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
-									<CheckBox IsChecked="{Binding IsAutoSaveEnabled}" DockPanel.Dock="Left"/>
+									<CheckBox IsChecked="{Binding AutoSave_Enable}" DockPanel.Dock="Left"/>
 									<Label DockPanel.Dock="Right" Content="Enable autosave"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1" HorizontalAlignment="Stretch">
 									<Label HorizontalAlignment="Left"  Content="Autosave interval, in seconds"/>
-									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Width="75" Value="{Binding AutoSave_TimeInSeconds}" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2" HorizontalAlignment="Stretch">
 									<Label HorizontalAlignment="Left"  Content="Date-time format"/>
-									<TextBox Width="100" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+									<TextBox Width="100" Text="{Binding AutoSave_DateTimeFormat}" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
 								</DockPanel>
-								<CheckBox Grid.Row="3" DockPanel.Dock="Left" Content="Put date first in autosave name"/>
+								<CheckBox IsChecked="{Binding AutoSave_NamePutDateFirst}" Grid.Row="3" DockPanel.Dock="Left" Content="Put date first in autosave name"/>
 								<DockPanel Grid.Row="4">
 									<CheckBox DockPanel.Dock="Left" Content="Cleanup autosaves when amount is reached:"/>
-									<xctk:IntegerUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75" VerticalAlignment="Stretch"/>
+									<xctk:IntegerUpDown Value="{Binding AutoSave_CleanupMaxAutoSaves}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75" VerticalAlignment="Stretch"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -68,12 +77,12 @@
 									<RowDefinition/>
 									<RowDefinition/>
 								</Grid.RowDefinitions>
-								<CheckBox Grid.Row="0" Content="Allow multiple instances"/>
-								<CheckBox Grid.Row="1" Content="Open last project on editor start-up"/>
-								<CheckBox Grid.Row="2" Content="Reload resources automatically when changed"/>
+								<CheckBox Grid.Row="0" IsChecked="{Binding Editor_AllowMultipleInstances}" Content="Allow multiple instances"/>
+								<CheckBox Grid.Row="1" IsChecked="{Binding Editor_OpenLastProjectOnStartup}" Content="Open last project on editor start-up"/>
+								<CheckBox Grid.Row="2" IsChecked="{Binding Editor_ReloadFilesAutomaticallyWhenChanged}" Content="Reload resources automatically when changed"/>
 								<DockPanel Grid.Row="3">
 									<Label Content="Undo / redo depth :"/>
-									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Value="{Binding Editor_UndoDepth}" Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -88,15 +97,15 @@
 								</Grid.RowDefinitions>
 								<DockPanel>
 									<Label Content="Default game version for new projects:"/>
-									<ComboBox Width="75" HorizontalAlignment="Right"/>
+									<ComboBox Width="75" ItemsSource="{Binding GameVersions}" HorizontalAlignment="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Default new room size (with border walls) :"/>
-									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Value="{Binding Editor_DefaultNewRoomSize}" Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
 								</DockPanel>
-								<CheckBox Grid.Row="2" Content="Grid border walls in new rooms"/>
-								<CheckBox Grid.Row="3"  Content="Respect T4Larson's mousepatch flyby handling on PRJ import"/>
-								<CheckBox Grid.Row="4" Content="Use half-pixel UV correction on PRJ import"/>
+								<CheckBox Grid.Row="2" IsChecked="{Binding Editor_GridNewRoom}" Content="Grid border walls in new rooms"/>
+								<CheckBox Grid.Row="3" IsChecked="{Binding Editor_RespectFlybyPatchOnPrjImport}" Content="Respect T4Larson's mousepatch flyby handling on PRJ import"/>
+								<CheckBox Grid.Row="4" IsChecked="{Binding Editor_UseHalfPixelCorrectionOnPrjImport}" Content="Use half-pixel UV correction on PRJ import"/>
 							</sc:SpacedGrid>
 						</GroupBox>
 						<GroupBox Header="Misc">
@@ -105,10 +114,10 @@
 									<RowDefinition/>
 									<RowDefinition/>
 								</Grid.RowDefinitions>
-								<CheckBox Grid.Row="0" DockPanel.Dock="Left" Content="Enable logging"/>
+								<CheckBox IsChecked="{Binding Log_WriteToFile}" Grid.Row="0" DockPanel.Dock="Left" Content="Enable logging"/>
 								<DockPanel Grid.Row="1" HorizontalAlignment="Stretch">
 									<Label HorizontalAlignment="Left"  Content="Number of daily log files in history"/>
-									<xctk:IntegerUpDown Width="75" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Width="75" Value="{Binding Log_ArchiveN}"  VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -133,21 +142,22 @@
 									<RowDefinition/>
 									<RowDefinition/>
 								</Grid.RowDefinitions>
-								<CheckBox Grid.Row="0" Content="Warn before deleting objects"/>
-								<CheckBox Grid.Row="1" Content="Non-intrusive message when trying to move locked room"/>
-								<CheckBox Grid.Row="2" Content="Discard selection on editor mode switch"/>
-								<CheckBox Grid.Row="3" Content="Autoswitch block coloring on property hover"/>
-								<CheckBox Grid.Row="4" Content="Apply sector flags to bottom room through portals"/>
-								<CheckBox Grid.Row="5" Content="Set or unset selected area's sector flags at once"/>
-								<CheckBox Grid.Row="6">Autofill "Key", "Switch" and "Dummy" trigger types</CheckBox>
-								<CheckBox Grid.Row="7" Content="Automatically enable skybox if invisible texture is applied"/>
-								<CheckBox Grid.Row="8" Content="Add descriptions for autogenerated rooms"/>
-								<CheckBox Grid.Row="9" Content="Automatically pick selected object color to palette"/>
+								<CheckBox Grid.Row="0" IsChecked="{Binding UI_WarnBeforeDeletingObjects}" Content="Warn before deleting objects"/>
+								<CheckBox Grid.Row="1" IsChecked="{Binding UI_OnlyShowSmallMessageWhenRoomIsLocked}" Content="Non-intrusive message when trying to move locked room"/>
+								<CheckBox Grid.Row="2" IsChecked="{Binding UI_DiscardSelectionOnModeSwitch}" Content="Discard selection on editor mode switch"/>
+								<CheckBox Grid.Row="3" IsChecked="{Binding UI_AutoSwitchSectorColoringInfo}" Content="Autoswitch block coloring on property hover"/>
+								<CheckBox Grid.Row="4" IsChecked="{Binding UI_ProbeAttributesThroughPortals}" Content="Apply sector flags to bottom room through portals"/>
+								<CheckBox Grid.Row="5" IsChecked="{Binding UI_SetAttributesAtOnce}" Content="Set or unset selected area's sector flags at once"/>
+								<CheckBox Grid.Row="6" IsChecked="{Binding UI_AutoFillTriggerTypesForSwitchAndKey}">Autofill "Key", "Switch" and "Dummy" trigger types</CheckBox>
+								<CheckBox Grid.Row="7" IsChecked="{Binding UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture}" Content="Automatically enable skybox if invisible texture is applied"/>
+								<CheckBox Grid.Row="8" IsChecked="{Binding UI_GenerateRoomDescriptions}" Content="Add descriptions for autogenerated rooms"/>
+								<CheckBox Grid.Row="9" IsChecked="{Binding Palette_PickColorFromSelectedObject}" Content="Automatically pick selected object color to palette"/>
 							</sc:SpacedGrid>
 						</GroupBox>
 						<GroupBox Header="Color scheme">
 							<sc:SpacedGrid Width="350">
 								<Grid.RowDefinitions>
+									<RowDefinition/>
 									<RowDefinition/>
 									<RowDefinition/>
 									<RowDefinition/>
@@ -182,7 +192,7 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="UI brightness (requires restart):"/>
-									<xctk:IntegerUpDown Grid.Column="1" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding UI_FormColor_Brightness}" Grid.Column="1" Width="75"/>
 								</Grid>
 								<Grid Grid.Row="1">
 									<Grid.ColumnDefinitions>
@@ -190,7 +200,7 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="Color scheme preset:"/>
-									<ComboBox Grid.Column="1" Width="75"/>
+									<ComboBox x:Name="ColorSchemePresetSelection" SelectedValue="{Binding UI_ColorScheme}" SelectedValuePath="Value" SelectionChanged="ColorSchemePreset_SelectionChanged" ItemsSource="{Binding ColorSchemePresets}" DisplayMemberPath="Key" Grid.Column="1" Width="75"/>
 								</Grid>
 								<Grid Grid.Row="2">
 									<Grid.ColumnDefinitions>
@@ -198,7 +208,7 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="UI button highlight:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding UI_FormColor_ButtonHighlight,Converter={StaticResource HtmlToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="3">
 									<Grid.ColumnDefinitions>
@@ -206,7 +216,7 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="Selection:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<controls:ColorPickerButton Name="ColorSelection" Click="ColorPickerButton_Click" SelectedColor="{Binding ColorSelection,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="4">
 									<Grid.ColumnDefinitions>
@@ -214,7 +224,7 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="3D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding Color3DBackground,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="5">
 									<Grid.ColumnDefinitions>
@@ -222,175 +232,183 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding Color2DBackground,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="6">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Flipped room background:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorFlipRoom,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="7">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="2D portal highlight:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorPortal,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="8">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="3D portal face highlight:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorPortalFace,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="9">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Floor:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorFloor,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="10">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Border wall:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorBorderWall,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="11">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Center wall section:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorWall,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="12">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Lower wall section:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorWallLower,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="13">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Upper wall section"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorWallUpper,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="14">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Trigger:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorTrigger,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="15">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Monkeyswing:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorMonkey,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="16">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Climb:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorClimb,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="17">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Box:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorBox,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="18">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Death:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorDeath,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="19">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Not walkable:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorNotWalkable,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="20">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Beetle mark:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorBeetle,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="21">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Trigger triggerer mark:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorTriggerTriggerer,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="22">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Force solid floor:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorForceSolidFloor,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="23">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Illegal slope:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorIllegalSlope,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="24">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="Slide direction:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding ColorSlideDirection,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="25">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="2D map - rooms above current:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding Color2DRoomsAbove,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 								<Grid Grid.Row="26">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<Label Grid.Column="0" Content="2D background:"/>
-									<controls:ColorPickerButton Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+									<Label Grid.Column="0" Content="2D map - rooms below current:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding Color2DRoomsBelow,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
+								</Grid>
+								<Grid Grid.Row="27">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" Content="2D map - moved rooms:"/>
+									<controls:ColorPickerButton Click="ColorPickerButton_Click" SelectedColor="{Binding Color2DRoomsMoved,Converter={StaticResource VectorToColorConverter}}" Grid.Column="1" Width="75" VerticalAlignment="Stretch"/>
 								</Grid>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -421,18 +439,18 @@
 									<RowDefinition/>
 									<RowDefinition/>
 								</Grid.RowDefinitions>
-								<CheckBox Grid.Row="0" Content="Use antialiasing (requires restart)"/>
-								<CheckBox Grid.Row="1" Content="Use real Light Quality for preview"/>
-								<CheckBox Grid.Row="2" Content="Allow texturing in Lighting mode"/>
-								<CheckBox Grid.Row="3" Content="Show room bounds rectangle"/>
-								<CheckBox Grid.Row="4" Content="Allow selection in any room"/>
-								<CheckBox Grid.Row="5" Content="Automatically switch current room on mouse action"/>
-								<CheckBox Grid.Row="6" Content="Automatically bookmark selected object"/>
-								<CheckBox Grid.Row="7" Content="Use winroomedit cardinal direction hints"/>
-								<CheckBox Grid.Row="8" Content="Use flat icons for service objects"/>
-								<CheckBox Grid.Row="9" Content="Show FPS"/>
-								<CheckBox Grid.Row="10" Content="Reset camera on room switch"/>
-								<CheckBox Grid.Row="11" Content="Animate ghost block unfolding"/>
+								<CheckBox Grid.Row="0" IsChecked="{Binding Rendering3D_Antialias}" Content="Use antialiasing (requires restart)"/>
+								<CheckBox Grid.Row="1" IsChecked="{Binding Rendering3D_HighQualityLightPreview}" Content="Use real Light Quality for preview"/>
+								<CheckBox Grid.Row="2" IsChecked="{Binding Rendering3D_AllowTexturingInLightingMode}" Content="Allow texturing in Lighting mode"/>
+								<CheckBox Grid.Row="3" IsChecked="{Binding Rendering3D_AlwaysShowCurrentRoomBounds}" Content="Show room bounds rectangle"/>
+								<CheckBox Grid.Row="4" IsChecked="{Binding Rendering3D_SelectObjectsInAnyRoom}" Content="Allow selection in any room"/>
+								<CheckBox Grid.Row="5" IsChecked="{Binding Rendering3D_AutoswitchCurrentRoom}" Content="Automatically switch current room on mouse action"/>
+								<CheckBox Grid.Row="6" IsChecked="{Binding Rendering3D_AutoBookmarkSelectedObject}"  Content="Automatically bookmark selected object"/>
+								<CheckBox Grid.Row="7" IsChecked="{Binding Rendering3D_UseRoomEditorDirections}" Content="Use winroomedit cardinal direction hints"/>
+								<CheckBox Grid.Row="8" IsChecked="{Binding Rendering3D_UseSpritesForServiceObjects}"  Content="Use flat icons for service objects"/>
+								<CheckBox Grid.Row="9" IsChecked="{Binding Rendering3D_ShowFPS}" Content="Show FPS"/>
+								<CheckBox Grid.Row="10" IsChecked="{Binding Rendering3D_ResetCameraOnRoomSwitch}" Content="Reset camera on room switch"/>
+								<CheckBox Grid.Row="11" IsChecked="{Binding Rendering3D_AnimateGhostBlockUnfolding}" Content="Animate ghost block unfolding"/>
 								<Grid Grid.Row="12">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"/>
@@ -441,21 +459,21 @@
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" Content="Animate camera on:"/>
-									<CheckBox Grid.Column="1" Content="Relocation"/>
-									<CheckBox Grid.Column="2" Content="Room switch"/>
-									<CheckBox Grid.Column="3" Content="Reset"/>
+									<CheckBox IsChecked="{Binding Rendering3D_AnimateCameraOnRelocation}" Grid.Column="1" Content="Relocation"/>
+									<CheckBox IsChecked="{Binding Rendering3D_AnimateCameraOnDoubleClickRoomSwitch}" Grid.Column="2" Content="Room switch"/>
+									<CheckBox IsChecked="{Binding Rendering3D_AnimateCameraOnReset}" Grid.Column="3" Content="Reset"/>
 								</Grid>
 								<DockPanel Grid.Row="13">
 									<Label Content="Field of view:"/>
-									<xctk:SingleUpDown Minimum="10" Maximum="179" DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_FieldOfView}"  Minimum="10" Maximum="179" DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="14">
 									<Label Content="Maximum portal room depth in 'Draw portals' mode:"/>
-									<xctk:IntegerUpDown DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Value="{Binding Rendering3D_DrawRoomsMaxDepth}" DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="15">
 									<Label Content="Block outline width:"/>
-									<xctk:IntegerUpDown DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
+									<xctk:IntegerUpDown Value="{Binding Rendering3D_LineWidth}" DockPanel.Dock="Right" Width="75" HorizontalAlignment="Right"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -473,14 +491,14 @@
 										<ColumnDefinition Width="Auto"/>
 									</Grid.ColumnDefinitions>
 									<Label Grid.Column="0" DockPanel.Dock="Left" Content="Font (requires restart):"/>
-									<ComboBox Grid.Column="1"/>
-									<CheckBox Grid.Column="2" Content="Bold"/>
+									<ComboBox SelectedValue="{Binding Rendering3D_FontName}" Grid.Column="1"/>
+									<CheckBox IsChecked="{Binding Rendering3D_FontIsBold}" Grid.Column="2" Content="Bold"/>
 								</Grid>
 								<DockPanel Grid.Row="1">
 									<Label Content="Font size (requires restart):" DockPanel.Dock="Left"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_FontSize}" DockPanel.Dock="Right" Width="75"/>
 								</DockPanel>
-								<CheckBox Grid.Row="2" Content="Draw dark rectangular text overlay"/>
+								<CheckBox IsChecked="{Binding Rendering3D_DrawFontOverlays}" Grid.Row="2" Content="Draw dark rectangular text overlay"/>
 							</sc:SpacedGrid>
 						</GroupBox>
 					</StackPanel>
@@ -499,11 +517,11 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Keyboard zoom speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedKeyZoom}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Keyboard rotation speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedKeyRotate}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -520,23 +538,23 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Mouse wheel zoom speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedMouseWheelZoom}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Mouse drag zoom speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedMouseZoom}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2">
 									<Label Content="Mouse move speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedMouseTranslate}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 								<DockPanel Grid.Row="3">
 									<Label Content="Mouse rotation speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_NavigationSpeedMouseRotate}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 								<DockPanel Grid.Row="4">
 									<Label Content="Mouse drag tools sensitivity:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_DragMouseSensitivity}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -547,7 +565,7 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Fly Mode move speed:"/>
-									<xctk:SingleUpDown DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
+									<xctk:SingleUpDown Value="{Binding Rendering3D_FlyModeMoveSpeed}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="75"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -570,30 +588,76 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Gizmo size:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Gizmo_Size}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Translation cone size:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Gizmo_TranslationConeSize}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2">
 									<Label Content="Centering cube size:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Gizmo_CenterCubeSize}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="3">
 									<Label Content="Scaling cube size:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Gizmo_ScaleCubeSize}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="4">
 									<Label Content="Line thickness:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Gizmo_LineThickness}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
-			
+
+			<TabItem Visibility="Collapsed" Header="Item browser">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Orientation="Vertical">
+						<GroupBox BorderBrush="Transparent">
+							<sc:SpacedGrid>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<DockPanel Grid.Row="0">
+									<Label Content="Mouse wheel zoom speed:"/>
+									<xctk:SingleUpDown Value="{Binding RenderingItem_NavigationSpeedMouseWheelZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="1">
+									<Label Content="Mouse drag zoom speed:"/>
+									<xctk:SingleUpDown Value="{Binding RenderingItem_NavigationSpeedMouseZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="2">
+									<Label Content="Mouse move speed:"/>
+									<xctk:SingleUpDown Value="{Binding RenderingItem_NavigationSpeedMouseTranslate}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="3">
+									<Label Content="Mouse rotation speed:"/>
+									<xctk:SingleUpDown  Value="{Binding RenderingItem_NavigationSpeedMouseRotate}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<DockPanel Grid.Row="4">
+									<Label Content="Field of view:"/>
+									<xctk:SingleUpDown  Value="{Binding RenderingItem_FieldOfView}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+								</DockPanel>
+								<CheckBox Grid.Row="5" IsChecked="{Binding RenderingItem_Antialias}" Content="Use antialiasing (requires restart)"/>
+								<CheckBox Grid.Row="6" IsChecked="{Binding RenderingItem_HideInternalObjects}" Content="Hide internally used objects from item list"/>
+								<CheckBox Grid.Row="7" IsChecked="{Binding RenderingItem_ShowMultipleWadsPrompt}" Content="Show hint in case current object exists in several wads"/>
+								<CheckBox Grid.Row="8" IsChecked="{Binding RenderingItem_Animate}" Content="Animate item preview"/>
+							</sc:SpacedGrid>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
 			<TabItem Visibility="Collapsed" Header="2D window">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Orientation="Vertical">
@@ -609,27 +673,27 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Minimum zoom factor:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationMinZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Maximum zoom factor:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationMaxZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2">
 									<Label Content="Mouse wheel zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationSpeedMouseWheelZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="3">
 									<Label Content="Mouse drag zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationSpeedMouseZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="4">
 									<Label Content="Keyboard zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationSpeedKeyZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="5">
 									<Label Content="Keyboard move speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding Map2D_NavigationSpeedKeyMove}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 							</sc:SpacedGrid>
 						</GroupBox>
@@ -657,33 +721,33 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Minimum zoom factor:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding TextureMap_NavigationMinZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Maximum zoom factor:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding TextureMap_NavigationMaxZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2">
 									<Label Content="Mouse wheel zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding TextureMap_NavigationSpeedMouseWheelZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="3">
 									<Label Content="Mouse drag zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding TextureMap_NavigationSpeedMouseZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="4">
 									<Label Content="Keyboard zoom speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding TextureMap_NavigationSpeedKeyZoom}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="5">
 									<Label Content="Keyboard move speed:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown  Value="{Binding TextureMap_NavigationSpeedKeyMove}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
-								<CheckBox Grid.Row="6" Content="Draw selection direction indicators"/>
-								<CheckBox Grid.Row="7" Content="Scroll texture with mouse wheel instead of zooming it"/>
-								<CheckBox Grid.Row="8" Content="Pick texture without attributes"/>
-								<CheckBox Grid.Row="9" Content="Reset attributes on new selection"/>
-								<CheckBox Grid.Row="10" Content="Warn if double-sided texture is applied to single-sided face"/>
+								<CheckBox Grid.Row="6" IsChecked="{Binding TextureMap_DrawSelectionDirectionIndicators}" Content="Draw selection direction indicators"/>
+								<CheckBox Grid.Row="7" IsChecked="{Binding TextureMap_MouseWheelMovesTheTextureInsteadOfZooming}" Content="Scroll texture with mouse wheel instead of zooming it"/>
+								<CheckBox Grid.Row="8" IsChecked="{Binding TextureMap_PickTextureWithoutAttributes}" Content="Pick texture without attributes"/>
+								<CheckBox Grid.Row="9" IsChecked="{Binding TextureMap_ResetAttributesOnNewSelection}" Content="Reset attributes on new selection"/>
+								<CheckBox Grid.Row="10" IsChecked="{Binding TextureMap_WarnAboutIncorrectAttributes}" Content="Warn if double-sided texture is applied to single-sided face"/>
 							</sc:SpacedGrid>
 						</GroupBox>
 					</StackPanel>
@@ -710,26 +774,26 @@
 								</Grid.RowDefinitions>
 								<DockPanel Grid.Row="0">
 									<Label Content="Node graph size:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding NodeEditor_Size}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="1">
 									<Label Content="Node graph grid step:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding NodeEditor_GridStep}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="2">
 									<Label Content="Default node width:"/>
-									<xctk:SingleUpDown Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<xctk:SingleUpDown Value="{Binding NodeEditor_DefaultNodeWidth}" Width="75" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="3">
 									<Label Content="Default editing mode:"/>
-									<ComboBox Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<ComboBox ItemsSource="{Binding NodeEditorDefaultModes}" SelectedIndex="{Binding NodeEditor_DefaultEventMode}"  Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
 								<DockPanel Grid.Row="4">
 									<Label Content="Default event to edit:"/>
-									<ComboBox Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+									<ComboBox ItemsSource="{Binding NodeEditorDefaultEvents}" SelectedIndex="{Binding NodeEditor_DefaultEventToEdit}" Width="125" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
 								</DockPanel>
-								<CheckBox Grid.Row="5" Content="Draw node editor links as ropes"/>
-								<CheckBox Grid.Row="6" Content="Show side grips for nodes"/>
+								<CheckBox IsChecked="{Binding NodeEditor_LinksAsRopes}" Grid.Row="5" Content="Draw node editor links as ropes"/>
+								<CheckBox IsChecked="{Binding NodeEditor_ShowGrips}" Grid.Row="6" Content="Show side grips for nodes"/>
 							</sc:SpacedGrid>
 						</GroupBox>
 					</StackPanel>
@@ -759,7 +823,7 @@
 			</Grid.ColumnDefinitions>
 			<Button Grid.Column="1" Content="Apply"/>
 			<Button Grid.Column="2" Content="OK"/>
-			<Button Grid.Column="3" Content="Cancel"/>
+			<Button IsCancel="True" Grid.Column="3" Content="Cancel"/>
 		</sc:SpacedGrid>
 	</sc:SpacedGrid>
 </Window>
