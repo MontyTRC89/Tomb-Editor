@@ -10,7 +10,7 @@ namespace TombEditor.WPF.Forms;
 /// <summary>
 /// Interaction logic for FormOptions.xaml
 /// </summary>
-public partial class FormOptions : Window
+public partial class FormOptions : WindowEx<OptionsViewModel>
 {
 	public FormOptions(Editor editor)
 	{

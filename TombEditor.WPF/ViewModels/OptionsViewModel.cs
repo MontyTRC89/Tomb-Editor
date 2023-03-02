@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TombLib.LevelData.VisualScripting;
+using System.Numerics;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using System.Collections.ObjectModel;
-using System.Numerics;
 
 namespace TombEditor.WPF.ViewModels
 {
-	public class OptionsViewModel : INotifyPropertyChanged
+	public class OptionsViewModel : ViewModelBase
 	{
-
 		private readonly Configuration _config;
 
 		#region Properties
@@ -50,6 +45,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Log_ArchiveN));
 			}
 		}
+
 		public bool Editor_ReloadFilesAutomaticallyWhenChanged
 		{
 			get => _config.Editor_ReloadFilesAutomaticallyWhenChanged;
@@ -79,7 +75,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Editor_AllowMultipleInstances));
 			}
 		}
-
 
 		// Defaults
 
@@ -123,7 +118,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Editor_RespectFlybyPatchOnPrjImport));
 			}
 		}
-
 
 		// Item preview options
 
@@ -216,7 +210,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(RenderingItem_Animate));
 			}
 		}
-
 
 		// Main 3D window options
 
@@ -790,8 +783,7 @@ namespace TombEditor.WPF.ViewModels
 			}
 		}
 
-
-		// 2D Map options 
+		// 2D Map options
 
 		public float Map2D_NavigationMinZoom
 		{
@@ -862,7 +854,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Map2D_ShowTimes));
 			}
 		}
-
 
 		// Texture map options
 
@@ -986,7 +977,6 @@ namespace TombEditor.WPF.ViewModels
 			}
 		}
 
-
 		// Palette options
 
 		public bool Palette_TextureSamplingMode
@@ -1008,7 +998,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Palette_PickColorFromSelectedObject));
 			}
 		}
-
 
 		// Node editor options
 
@@ -1082,7 +1071,6 @@ namespace TombEditor.WPF.ViewModels
 			}
 		}
 
-
 		// Gizmo options
 
 		public float Gizmo_Size
@@ -1134,7 +1122,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Gizmo_LineThickness));
 			}
 		}
-
 
 		// Autosave options
 
@@ -1207,7 +1194,6 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(AutoSave_NameSeparator));
 			}
 		}
-
 
 		// User interface options
 
@@ -1374,8 +1360,10 @@ namespace TombEditor.WPF.ViewModels
 
 		public IEnumerable<string> NodeEditorDefaultEvents => new ReadOnlyCollection<string>(new string[] { "On enter", "On inside", "On leave" });
 
-		#endregion
+		#endregion Properties
+
 		#region ColorProperties
+
 		public Vector4 ColorSelection
 		{
 			get => _config.UI_ColorScheme.ColorSelection;
@@ -1385,6 +1373,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorSelection));
 			}
 		}
+
 		public Vector4 ColorIllegalSlope
 		{
 			get => _config.UI_ColorScheme.ColorIllegalSlope;
@@ -1394,6 +1383,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorIllegalSlope));
 			}
 		}
+
 		public Vector4 ColorSlideDirection
 		{
 			get => _config.UI_ColorScheme.ColorSlideDirection;
@@ -1403,6 +1393,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorSlideDirection));
 			}
 		}
+
 		public Vector4 Color3DBackground
 		{
 			get => _config.UI_ColorScheme.Color3DBackground;
@@ -1412,6 +1403,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Color3DBackground));
 			}
 		}
+
 		public Vector4 Color2DBackground
 		{
 			get => _config.UI_ColorScheme.Color2DBackground;
@@ -1421,6 +1413,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Color2DBackground));
 			}
 		}
+
 		public Vector4 ColorFlipRoom
 		{
 			get => _config.UI_ColorScheme.ColorFlipRoom;
@@ -1430,6 +1423,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorFlipRoom));
 			}
 		}
+
 		public Vector4 ColorPortal
 		{
 			get => _config.UI_ColorScheme.ColorPortal;
@@ -1439,6 +1433,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorPortal));
 			}
 		}
+
 		public Vector4 ColorPortalFace
 		{
 			get => _config.UI_ColorScheme.ColorPortalFace;
@@ -1448,6 +1443,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorPortalFace));
 			}
 		}
+
 		public Vector4 ColorFloor
 		{
 			get => _config.UI_ColorScheme.ColorFloor;
@@ -1457,6 +1453,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorFloor));
 			}
 		}
+
 		public Vector4 ColorBorderWall
 		{
 			get => _config.UI_ColorScheme.ColorBorderWall;
@@ -1466,6 +1463,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorBorderWall));
 			}
 		}
+
 		public Vector4 ColorWall
 		{
 			get => _config.UI_ColorScheme.ColorWall;
@@ -1475,6 +1473,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorWall));
 			}
 		}
+
 		public Vector4 ColorWallLower
 		{
 			get => _config.UI_ColorScheme.ColorWallLower;
@@ -1484,6 +1483,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorWallLower));
 			}
 		}
+
 		public Vector4 ColorWallUpper
 		{
 			get => _config.UI_ColorScheme.ColorWallUpper;
@@ -1493,6 +1493,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorWallUpper));
 			}
 		}
+
 		public Vector4 ColorTrigger
 		{
 			get => _config.UI_ColorScheme.ColorTrigger;
@@ -1502,6 +1503,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorTrigger));
 			}
 		}
+
 		public Vector4 ColorMonkey
 		{
 			get => _config.UI_ColorScheme.ColorMonkey;
@@ -1511,6 +1513,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorMonkey));
 			}
 		}
+
 		public Vector4 ColorClimb
 		{
 			get => _config.UI_ColorScheme.ColorClimb;
@@ -1520,6 +1523,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorClimb));
 			}
 		}
+
 		public Vector4 ColorBox
 		{
 			get => _config.UI_ColorScheme.ColorBox;
@@ -1529,6 +1533,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorBox));
 			}
 		}
+
 		public Vector4 ColorDeath
 		{
 			get => _config.UI_ColorScheme.ColorDeath;
@@ -1538,6 +1543,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorDeath));
 			}
 		}
+
 		public Vector4 ColorNotWalkable
 		{
 			get => _config.UI_ColorScheme.ColorNotWalkable;
@@ -1547,6 +1553,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorNotWalkable));
 			}
 		}
+
 		public Vector4 ColorBeetle
 		{
 			get => _config.UI_ColorScheme.ColorBeetle;
@@ -1556,6 +1563,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorBeetle));
 			}
 		}
+
 		public Vector4 ColorTriggerTriggerer
 		{
 			get => _config.UI_ColorScheme.ColorTriggerTriggerer;
@@ -1565,6 +1573,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorTriggerTriggerer));
 			}
 		}
+
 		public Vector4 ColorForceSolidFloor
 		{
 			get => _config.UI_ColorScheme.ColorForceSolidFloor;
@@ -1574,6 +1583,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(ColorForceSolidFloor));
 			}
 		}
+
 		public Vector4 Color2DRoomsAbove
 		{
 			get => _config.UI_ColorScheme.Color2DRoomsAbove;
@@ -1583,6 +1593,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Color2DRoomsAbove));
 			}
 		}
+
 		public Vector4 Color2DRoomsBelow
 		{
 			get => _config.UI_ColorScheme.Color2DRoomsBelow;
@@ -1592,6 +1603,7 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Color2DRoomsBelow));
 			}
 		}
+
 		public Vector4 Color2DRoomsMoved
 		{
 			get => _config.UI_ColorScheme.Color2DRoomsMoved;
@@ -1601,18 +1613,12 @@ namespace TombEditor.WPF.ViewModels
 				NotifyPropertyChanged(nameof(Color2DRoomsMoved));
 			}
 		}
-		#endregion
+
+		#endregion ColorProperties
 
 		public OptionsViewModel(Configuration config)
 		{
-			this._config = config;
-		}
-
-		public event PropertyChangedEventHandler? PropertyChanged;
-
-		private void NotifyPropertyChanged(string prop)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+			_config = config;
 		}
 	}
 }

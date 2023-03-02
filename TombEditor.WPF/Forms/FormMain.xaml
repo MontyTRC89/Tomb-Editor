@@ -9,10 +9,10 @@
 	Title="Tomb Editor"
 	Width="800"
 	Height="450"
-	Background="{DynamicResource GreyBackground}"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowState="Maximized"
 	mc:Ignorable="d">
+
 	<Grid x:Name="layoutRoot">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -57,7 +57,7 @@
 				<MenuItem Click="OnShowWinformsWindow" Header="WinForms Window" />
 				<MenuItem Click="OnShowToolWindow1" Header="Tool Window1" />
 				<MenuItem Click="OnNewFloatingWindow" Header="New floating window" />
-				<MenuItem Click="OnShowEditorOptions"  Header="Editor Options"/>
+				<MenuItem Click="OnShowEditorOptions" Header="Editor Options" />
 			</MenuItem>
 			<MenuItem Header="Window">
 				<MenuItem Header="Save">
@@ -85,18 +85,18 @@
 		<DockingManager x:Name="dockManager" Grid.Row="1">
 			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
 				<LayoutPanel Orientation="Horizontal">
-					<LayoutAnchorablePaneGroup DockWidth="300" Orientation="Vertical">
-						<LayoutAnchorablePane DockMinHeight="278">
+					<LayoutAnchorablePaneGroup DockWidth="286" Orientation="Vertical">
+						<LayoutAnchorablePane DockMinHeight="279">
 							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
 								<toolwindows:SectorOptions x:Name="SectorOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane DockMinHeight="226">
+						<LayoutAnchorablePane DockMinHeight="223">
 							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
 								<toolwindows:RoomOptions x:Name="RoomOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane DockMinHeight="250">
+						<LayoutAnchorablePane DockHeight="250" DockMinHeight="250">
 							<LayoutAnchorable Title="Items" ContentId="Items">
 								<toolwindows:ItemBrowser x:Name="Items" />
 							</LayoutAnchorable>

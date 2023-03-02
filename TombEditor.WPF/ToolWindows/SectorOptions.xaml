@@ -5,8 +5,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
-	MinHeight="266"
-	d:DesignHeight="266"
+	MinHeight="256"
+	d:DesignHeight="256"
 	d:DesignWidth="285"
 	mc:Ignorable="d">
 

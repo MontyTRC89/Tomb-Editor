@@ -7,7 +7,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	MinWidth="295"
+	MinWidth="285"
 	MinHeight="200"
 	d:DesignHeight="200"
 	d:DesignWidth="295"
