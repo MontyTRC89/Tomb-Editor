@@ -10,6 +10,7 @@
 	Title="Tomb Editor"
 	Width="800"
 	Height="450"
+	Icon="/TombEditor.WPF;component/Resources/misc/TE.png"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowState="Maximized"
 	mc:Ignorable="d">

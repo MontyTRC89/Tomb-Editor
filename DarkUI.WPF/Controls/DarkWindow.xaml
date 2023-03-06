@@ -40,10 +40,11 @@
 									Background="{TemplateBinding BorderBrush}">
 									<DockPanel Margin="0,0,130,0">
 										<Image
-											Height="24"
-											Margin="4,4,0,0"
+											Height="64"
+											Margin="0,-12,-4,0"
 											HorizontalAlignment="Left"
 											VerticalAlignment="Top"
+											Opacity="0.5"
 											Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
 										<TextBlock
 											Grid.Column="1"
