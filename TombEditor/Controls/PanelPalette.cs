@@ -216,7 +216,7 @@ namespace TombEditor.Controls
             base.OnSizeChanged(e);
 
             // Recalculate selected color coordinate
-            if (_selectedColorCoord != new Point(-1))
+            if (_selectedColorCoord != new Point(-1) && PaletteSize.Width != 0)
             {
                 int colorIndex = _oldPaletteSize.Width * _selectedColorCoord.Y + _selectedColorCoord.X;
                 _selectedColorCoord = new Point((colorIndex % PaletteSize.Width), colorIndex / PaletteSize.Width);

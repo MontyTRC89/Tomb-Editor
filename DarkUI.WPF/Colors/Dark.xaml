@@ -54,6 +54,12 @@
 
 	<Thickness x:Key="DefaultBorderThickness">1</Thickness>
 
+	<Thickness x:Key="ButtonIconTextMargin">0,0,4,0</Thickness>
+	<Thickness x:Key="ExtraLabelMargin">4,0,4,0</Thickness>
+
+	<Thickness x:Key="VerticalStackPanelItem_DefaultMargin">0,4,0,0</Thickness>
+	<Thickness x:Key="HorizontalStackPanelItem_DefaultMargin">4,0,0,0</Thickness>
+
 	<Thickness x:Key="TinyMargin">2</Thickness>
 	<Thickness x:Key="DefaultMargin">4</Thickness>
 	<Thickness x:Key="LargeMargin">8</Thickness>

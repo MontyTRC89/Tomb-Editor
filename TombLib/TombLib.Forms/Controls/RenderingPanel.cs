@@ -115,7 +115,7 @@ namespace TombLib.Controls
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (disposing)
+            if (disposing && SwapChain != null)
                 SwapChain.Dispose();
         }
 

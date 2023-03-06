@@ -759,15 +759,16 @@
     <Compile Update="ToolWindows\Lighting.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ToolWindows\MainView2.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ToolWindows\MainView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="ToolWindows\ObjectList.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ToolWindows\Palette.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\Palette.xaml.cs" />
     <Compile Update="ToolWindows\RoomOptions.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

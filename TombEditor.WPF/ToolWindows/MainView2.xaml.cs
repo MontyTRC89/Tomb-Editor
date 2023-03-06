@@ -6,16 +6,14 @@ namespace TombEditor.WPF.ToolWindows;
 /// <summary>
 /// Interaction logic for MainView.xaml
 /// </summary>
-public partial class MainView : System.Windows.Controls.UserControl
+public partial class MainView2 : System.Windows.Controls.UserControl
 {
 	private Panel3D panel3D = new();
 	private Panel2DMap panel2DMap = new();
 
-	public MainView()
+	public MainView2()
 	{
 		InitializeComponent();
-
-		panel3D.InitializeRendering(Editor.Instance.RenderingDevice, true);
-		Content = new WindowsFormsHost { Child = panel3D };
+		Content = new WindowsFormsHost { Child = panel2DMap };
 	}
 }

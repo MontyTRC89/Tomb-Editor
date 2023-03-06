@@ -916,8 +916,8 @@
 					</LayoutAnchorablePaneGroup>
 
 					<LayoutPanel Orientation="Vertical">
-						<LayoutDocumentPane ShowHeader="False">
-							<LayoutDocument x:Name="MainView">
+						<LayoutDocumentPane>
+							<LayoutDocument x:Name="MainView" Title="3D View">
 								<Grid>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -1061,7 +1061,7 @@
 											</Button>
 										</ToolBar>
 									</ToolBarTray>
-									<Rectangle Grid.Row="1" Fill="Black" />
+									<toolwindows:MainView Grid.Row="1" />
 									<TextBlock
 										Grid.Row="2"
 										Margin="4"
@@ -1069,6 +1069,9 @@
 										Rooms: 1 Objects: 0 / 0 Statics: 0 / 0 Triggers: 0 / 0 Lights: 0 / 0 Cameras: 0 / 0 Flybys: 0 / 0<LineBreak />
 										Room vertices / faces: 0 / 0 Last level output: compile level</TextBlock>
 								</Grid>
+							</LayoutDocument>
+							<LayoutDocument Title="2D View">
+								<toolwindows:MainView2 />
 							</LayoutDocument>
 						</LayoutDocumentPane>
 
