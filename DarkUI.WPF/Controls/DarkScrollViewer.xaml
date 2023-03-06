@@ -203,7 +203,7 @@
 							<Path
 								x:Name="ArrowTop"
 								Margin="2"
-								Data="M 5 -5 L 10 0 L 0 0 Z"
+								Data="{DynamicResource WideArrowUp}"
 								Fill="{DynamicResource GreySelection}"
 								Stretch="Uniform" />
 						</RepeatButton>
@@ -230,7 +230,7 @@
 							<Path
 								x:Name="ArrowBottom"
 								Margin="2"
-								Data="M 5 5 L 10 0 L 0 0 Z"
+								Data="{DynamicResource WideArrowDown}"
 								Fill="{DynamicResource GreySelection}"
 								Stretch="Uniform" />
 						</RepeatButton>

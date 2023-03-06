@@ -76,7 +76,7 @@
 									<Path
 										x:Name="ArrowUp"
 										Margin="1"
-										Data="M 3 -4 L 6 0 L 0 0 Z"
+										Data="{DynamicResource NarrowArrowUp}"
 										Fill="{DynamicResource LightText}"
 										Stretch="Uniform" />
 								</RepeatButton>
@@ -92,7 +92,7 @@
 									<Path
 										x:Name="ArrowDown"
 										Margin="1"
-										Data="M 3 4 L 6 0 L 0 0 Z"
+										Data="{DynamicResource NarrowArrowDown}"
 										Fill="{DynamicResource LightText}"
 										Stretch="Uniform" />
 								</RepeatButton>

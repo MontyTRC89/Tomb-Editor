@@ -54,10 +54,12 @@
 
 	<Thickness x:Key="DefaultBorderThickness">1</Thickness>
 
+	<Thickness x:Key="TinyMargin">2</Thickness>
 	<Thickness x:Key="DefaultMargin">4</Thickness>
 	<Thickness x:Key="LargeMargin">8</Thickness>
 	<Thickness x:Key="JumboMargin">16</Thickness>
 
+	<Thickness x:Key="TinyPadding">2</Thickness>
 	<Thickness x:Key="DefaultPadding">4</Thickness>
 	<Thickness x:Key="LargePadding">8</Thickness>
 	<Thickness x:Key="JumboPadding">16</Thickness>
@@ -74,4 +76,9 @@
 		<Setter Property="Padding" Value="0,3,3,3" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
 	</Style>
+
+	<PathGeometry x:Key="WideArrowUp" Figures="M 5 -5 L 10 0 L 0 0 Z" />
+	<PathGeometry x:Key="WideArrowDown" Figures="M 5 5 L 10 0 L 0 0 Z" />
+	<PathGeometry x:Key="NarrowArrowUp" Figures="M 3 -4 L 6 0 L 0 0 Z" />
+	<PathGeometry x:Key="NarrowArrowDown" Figures="M 3 4 L 6 0 L 0 0 Z" />
 </ResourceDictionary>
