@@ -365,7 +365,7 @@
 									IsEnabled="{TemplateBinding HasOverflowItems}"
 									Style="{StaticResource ToolBarHorizontalOverflowButtonStyle}"
 									Visibility="{TemplateBinding HasOverflowItems,
-									                             Converter={StaticResource BooleanToVisibilityConverter}}" />
+									                             Converter={StaticResource VisibleIfTrueConverter}}" />
 								<Popup
 									x:Name="OverflowPopup"
 									AllowsTransparency="true"
