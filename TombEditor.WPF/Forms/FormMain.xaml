@@ -765,8 +765,8 @@
 			<MenuItem Header="Tools">
 				<MenuItem
 					x:Name="editLevelSettingsToolStripMenuItem"
-					Header="EditLevelSettings"
-					Tag="EditLevelSettings">
+					Click="OnShowEditorOptions"
+					Header="EditLevelSettings">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_settings-16.png" />
 					</MenuItem.Icon>
