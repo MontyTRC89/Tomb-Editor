@@ -29,6 +29,8 @@
 
 	<conv:InverseBoolConverter x:Key="InverseBoolConverter" />
 
+	<BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+
 	<Style TargetType="{x:Type ToolBarTray}">
 		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
 	</Style>
@@ -335,8 +337,8 @@
 								<Thumb
 									x:Name="ToolBarThumb"
 									Width="10"
-									Margin="-3,0,0,0"
-									Padding="6,4,1,5"
+									Margin="-6,0,0,0"
+									Padding="6,4,0,6"
 									Style="{StaticResource ToolBarThumbStyle}" />
 								<ContentPresenter
 									x:Name="ToolBarHeader"
@@ -347,7 +349,7 @@
 									SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 								<ToolBarPanel
 									x:Name="PART_ToolBarPanel"
-									Margin="0,0,2,0"
+									Margin="0,0,0,0"
 									IsItemsHost="true"
 									SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 							</DockPanel>
@@ -361,7 +363,9 @@
 									FocusVisualStyle="{x:Null}"
 									IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
 									IsEnabled="{TemplateBinding HasOverflowItems}"
-									Style="{StaticResource ToolBarHorizontalOverflowButtonStyle}" />
+									Style="{StaticResource ToolBarHorizontalOverflowButtonStyle}"
+									Visibility="{TemplateBinding HasOverflowItems,
+									                             Converter={StaticResource BooleanToVisibilityConverter}}" />
 								<Popup
 									x:Name="OverflowPopup"
 									AllowsTransparency="true"
