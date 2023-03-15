@@ -8061,6 +8061,42 @@
 			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142" />
 			<sound id="1143" name="TR1_SLAMDOOR_OPEN" t5m="1143" />
 			<sound id="1144" name="TR1_SLAMDOOR_CLOSE" t5m="1144" />
+			<sound id="1158" name="TEN_PUSHABLES_MOVE_MUD" t5m="1158" />
+			<sound id="1159" name="TEN_PUSHABLES_STOP_MUD" t5m="1159" />   
+			<sound id="1160" name="TEN_PUSHABLES_COLLIDE_MUD" t5m="1160" />   
+			<sound id="1161" name="TEN_PUSHABLES_MOVE_SNOW" t5m="1161" />   
+			<sound id="1162" name="TEN_PUSHABLES_STOP_SNOW" t5m="1162" />   
+			<sound id="1163" name="TEN_PUSHABLES_COLLIDE_SNOW" t5m="1163" />   
+			<sound id="1164" name="TEN_PUSHABLES_MOVE_SAND" t5m="1164" />   
+			<sound id="1165" name="TEN_PUSHABLES_STOP_SAND" t5m="1165" />   
+			<sound id="1166" name="TEN_PUSHABLES_COLLIDE_SAND" t5m="1166" />  
+			<sound id="1167" name="TEN_PUSHABLES_MOVE_GRAVEL" t5m="1167" />   
+			<sound id="1168" name="TEN_PUSHABLES_STOP_GRAVEL" t5m="1168" />   
+			<sound id="1169" name="TEN_PUSHABLES_COLLIDE_GRAVEL" t5m="1169" />   
+			<sound id="1170" name="TEN_PUSHABLES_MOVE_ICE" t5m="1170" />   
+			<sound id="1171" name="TEN_PUSHABLES_STOP_ICE" t5m="1171" />   
+			<sound id="1172" name="TEN_PUSHABLES_COLLIDE_ICE" t5m="1172" />   
+			<sound id="1173" name="TEN_PUSHABLES_MOVE_WATER" t5m="1173" />   
+			<sound id="1174" name="TEN_PUSHABLES_STOP_WATER" t5m="1174" />   
+			<sound id="1175" name="TEN_PUSHABLES_COLLIDE_WATER" t5m="1175" />   
+			<sound id="1176" name="TEN_PUSHABLES_STOP_MOVE_STONE" t5m="1176" />   
+			<sound id="1177" name="TEN_PUSHABLES_STOP_STONE" t5m="1177" />   
+			<sound id="1178" name="TEN_PUSHABLES_COLLIDE_STONE" t5m="1178" />   
+			<sound id="1179" name="TEN_PUSHABLES_MOVE_WOOD" t5m="1179" />   
+			<sound id="1180" name="TEN_PUSHABLES_STOP_WOOD" t5m="1180" />   
+			<sound id="1181" name="TEN_PUSHABLES_COLLIDE_WOOD" t5m="1181" />   
+			<sound id="1182" name="TEN_PUSHABLES_MOVE_METAL" t5m="1182" />   
+			<sound id="1183" name="TEN_PUSHABLES_STOP_METAL" t5m="1183" />   
+			<sound id="1184" name="TEN_PUSHABLES_COLLIDE_METAL" t5m="1184" />   
+			<sound id="1185" name="TEN_PUSHABLES_MOVE_MARBLE" t5m="1185" />   
+			<sound id="1186" name="TEN_PUSHABLES_STOP_MARBLE" t5m="1186" />   
+			<sound id="1187" name="TEN_PUSHABLES_COLLIDE_MARBLE" t5m="1187" />   
+			<sound id="1188" name="TEN_PUSHABLES_MOVE_GRASS" t5m="1188" />   
+			<sound id="1189" name="TEN_PUSHABLES_STOP_GRASS" t5m="1189" />   
+			<sound id="1190" name="TEN_PUSHABLES_COLLIDE_GRASS" t5m="1190" />   
+			<sound id="1191" name="TEN_PUSHABLES_MOVE_CONCRETE" t5m="1191" />   
+			<sound id="1192" name="TEN_PUSHABLES_STOP_CONCRETE" t5m="1192" />   
+			<sound id="1193" name="TEN_PUSHABLES_COLLIDE_CONCRETE" t5m="1193" />   
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
