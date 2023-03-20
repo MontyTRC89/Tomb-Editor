@@ -6711,6 +6711,8 @@
 			<moveable id="1083" name="WATERFALLSS2" />
 			<moveable id="1084" name="FISHTANK" />
 			<moveable id="1085" name="BACON_REFERENCE" hidden="true" use_body_from="0" />
+			<moveable id="1086" name="CORPSE" />
+			<moveable id="1087" name="WRAITH_TRAP" />
 			<moveable id="1100" name="MESHSWAP1" />
 			<moveable id="1101" name="MESHSWAP2" />
 			<moveable id="1102" name="MESHSWAP3" />
