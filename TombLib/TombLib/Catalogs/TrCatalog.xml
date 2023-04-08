@@ -66,7 +66,7 @@
 			<moveable id="39" name="Dart" hidden="true" /> />
 			<moveable id="40" name="Wall-mounted dartgun" essential="false" t5m="DART_EMMITER" />
 			<moveable id="41" name="Door (opens upward)" essential="false" t5m="DOOR_TYPE9" />
-			<moveable id="42" name="Slamming doors" essential="false" t5m="SLICER_DICER" />
+			<moveable id="42" name="Slamming doors" essential="false" t5m="SLAMMING_DOORS" />
 			<moveable id="43" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
 			<moveable id="44" name="Thor's hammer's handle" essential="false" t5m="ANIMATING110" />
 			<moveable id="45" name="Thor's hammer's block" essential="false" t5m="ROLLINGBALL" />
@@ -336,8 +336,8 @@
 			<sound id="124" name="ATLANTEAN_BALL" t5m="428" />
 			<sound id="125" name="ATLANTEAN_WINGS" t5m="429" />
 			<sound id="126" name="ATLANTEAN_WING_FEET" t5m="430" />
-			<sound id="127" name="SLAMDOOR_CLOSE" t5m="127" />
-			<sound id="128" name="SLAMDOOR_OPEN" t5m="128" />
+			<sound id="127" name="SLAMDOOR_CLOSE" t5m="1144" />
+			<sound id="128" name="SLAMDOOR_OPEN" t5m="1143" />
 			<sound id="129" name="SKATEBOARD_MOVE" t5m="446" />
 			<sound id="130" name="SKATEBOARD_STOP" t5m="447" />
 			<sound id="131" name="SKATEBOARD_SHOOT" t5m="448" />
@@ -1404,7 +1404,7 @@
 			<moveable id="40" name="RX-Tech guy with gun" essential="false"  t5m="SAS_CAIRO" /> 
 			<moveable id="41" name="Dog (Antarctica)" essential="false" t5m="HUSKIE"/>
 			<moveable id="42" name="Crawler mutant" essential="false" /> 
-			<moveable id="44" name="Tinnos wasp" essential="false" /> 
+			<moveable id="44" name="Tinnos wasp" essential="false" t5m="WASP_MUTANT" /> 
 			<moveable id="45" name="Tinnos monster" essential="false" />
 			<moveable id="46" name="Brute mutant (with claw)" essential="false" /> 
 			<moveable id="47" name="Tinnos wasp respawn point" essential="false" />
@@ -1445,7 +1445,7 @@
 			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" t5m="CLASSIC_ROLLINGBALL" /> 
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
-			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="SLAMMING_DOORS" />
 			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
 			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2"/>
 			<moveable id="101" name="Destroyable boarded-up window" essential="false" t5m="SMASH_OBJECT1" />
@@ -6147,7 +6147,8 @@
 			<moveable id="289" name="LAGOON_WITCH" />
 			<moveable id="290" name="BOSS_SHIELD" />
 			<moveable id="291" name="BOSS_EXPLOSION_SHOCKWAVE" />
-			<moveable id="292" name="BOSS_EXPLOSION_RING" />
+			<moveable id="292" name="BOSS_EXPLOSION_RING" />	
+			<moveable id="294" name="WASP_MUTANT" />			
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
 			<moveable id="322" name="DISK_SHOOTER" />
@@ -6277,6 +6278,7 @@
 			<moveable id="446" name="EXPLOSION" />
 			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="448" name="ELECTRIC_CLEANER" />
+			<moveable id="449" name="SLAMMING_DOORS" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
@@ -6709,6 +6711,8 @@
 			<moveable id="1083" name="WATERFALLSS2" />
 			<moveable id="1084" name="FISHTANK" />
 			<moveable id="1085" name="BACON_REFERENCE" hidden="true" use_body_from="0" />
+			<moveable id="1086" name="CORPSE" />
+			<moveable id="1087" name="WRAITH_TRAP" />
 			<moveable id="1100" name="MESHSWAP1" />
 			<moveable id="1101" name="MESHSWAP2" />
 			<moveable id="1102" name="MESHSWAP3" />
@@ -8056,7 +8060,9 @@
 			<sound id="1139" name="TR5_STONE_SCRAPE_FAST" t5m="1139" />
 			<sound id="1140" name="TR5_LOW_RUMBLE" t5m="1140" />
 			<sound id="1141" name="TR5_FLOOR_METAL_OPEN" t5m="1141"	/>
-			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142"/>
+			<sound id="1142" name="TR5_AIRCON_LOOP" t5m="1142" />
+			<sound id="1143" name="TR1_SLAMDOOR_OPEN" t5m="1143" />
+			<sound id="1144" name="TR1_SLAMDOOR_CLOSE" t5m="1144" />
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
@@ -8306,6 +8312,17 @@
 			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
 			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
 			<anim item="283" id="17" name="THROW_ROCK" />
+			
+			<!-- WASP_MUTANT -->
+			<anim item="294" id="0" name= "FLY_IDLE" />
+			<anim item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+			<anim item="294" id="2" name= "IDLE" />
+			<anim item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+			<anim item="294" id="4" name= "ATTACK" />
+			<anim item="294" id="5" name= "FALL" />
+			<anim item="294" id="6" name= "DEATH" />
+			<anim item="294" id="7" name= "FLY_FORWARD" />
+
 
 		</animations>
 		<states>
@@ -8405,6 +8422,16 @@
 			<state item="283" id="8" name= "START_ROLL" />
 			<state item="283" id="9" name= "DEATH" />
 			<state item="283" id="11" name= "THROW_STONES" />
+			
+			<!-- WASP_MUTANT -->
+			<state item="294" id="0" name= "FLY_IDLE" />
+			<state item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+			<state item="294" id="2" name= "IDLE" />
+			<state item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+			<state item="294" id="4" name= "ATTACK" />
+			<state item="294" id="5" name= "FALL" />
+			<state item="294" id="6" name= "DEATH" />
+			<state item="294" id="7" name= "FLY_FORWARD" />
 			
 		</states>
 	</game>

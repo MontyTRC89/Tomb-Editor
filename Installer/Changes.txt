@@ -1,3 +1,11 @@
+Version 1.6.6
+=============
+
+*TEN Base WAD:
+	- Amended Lara's sliding back animation to prevent falling backwards too far after sliding. 
+
+
+
 Version 1.6.5
 =============
 
