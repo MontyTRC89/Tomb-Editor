@@ -4,12 +4,16 @@ Version 1.6.6
 Tomb Editor:
 
 * Add precise movement hotkeys into settings.
-* Update Tomb1main preset to V2.14
+
+TombIDE:
+
+* Update Tomb1Main preset to V2.14
 * Update Tomb3 preset to V1.6
+* Fix Tomb1Main preset not having title.phd in the package.
+
 
 *TEN Base WAD:
 	- Amended Lara's sliding back animation to prevent falling backwards too far after sliding.
-
 
 
 Version 1.6.5
