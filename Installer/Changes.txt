@@ -1,7 +1,26 @@
+Version 1.6.6
+=============
+
+Tomb Editor:
+
+* Add precise movement hotkeys into settings.
+
+TombIDE:
+
+* Update Tomb1Main preset to V2.14
+* Update Tomb3 preset to V1.6
+* Fix Tomb1Main preset not having title.phd in the package.
+
+
+*TEN Base WAD:
+	- Amended Lara's sliding back animation to prevent falling backwards too far after sliding.
+
+
 Version 1.6.5
 =============
 
 Tomb Editor:
+ * Add an option to level settings to apply DirectX texture compression for TEN target.
  * Extend 2D map depth bar range for TEN target.
  * Fix exception when trying to select floor below object out of room bounds.
  * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
@@ -11,9 +30,11 @@ WadTool:
  * Amended slot name for Sophia-Leigh in TEN. 
 
  * TEN Base WAD:
+
    - Addition of dedicated slot "ID_MINECART_SWITCH" for the minecart vehicle.
    - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS
-  
+   - Addition of ID_BURNING_TORCH_ITEM and fix default hand mesh.
+
   
 TombIDE:
  * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
@@ -1126,7 +1147,7 @@ Fixed flipon/off greater than 0
 Fixed group texturing
 Fixed horizon rendering
 Allow deselect object when clicking away
-Fixed 45° rotation of objects
+Fixed 45ï¿½ rotation of objects
 Merged Selected block and Selected geometry context menus (now you can add objects also on selected areas)
 Added debug texture "out of bounds" when parent area in group texturing is invalid (EXPERIMENTAL)
 Fixed Color dialog position (now it's located at top-left corner of screen instead of middle of 3D area)
@@ -1367,7 +1388,7 @@ Fixes to dark UI controls
 Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
 Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's Perï¿½ animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug

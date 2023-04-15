@@ -1,11 +1,16 @@
-﻿using NLog;
+﻿using BCnEncoder.Encoder;
+using BCnEncoder.Shared;
+using NLog;
+using Pfim;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -63,14 +68,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
 
             // Add all sprites to the texture packer
-            var spriteAllocator = new Util.SpriteAllocator(_level.Settings.GameVersion == TRVersion.Game.TombEngine ? 2048 : 256);
+            var spriteAllocator = new TombEngineSpriteAllocator(_limits[Limit.TexPageSize]);
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
                     spriteTextureIDs.Add(sprite.Texture.Hash, spriteAllocator.GetOrAllocateTextureID(sprite.Texture));
 
             // Pack textures
-            _spritesTexturesPages = new List<ImageC>(); //spriteAllocator.PackTextures();
+            _spritesTexturesPages = spriteAllocator.PackTextures(_level.Settings);
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
@@ -89,33 +94,33 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var id = spriteTextureIDs[sprite.Texture.Hash];
                     if (id == -1)
                     {
-                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) + 
+                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) +
                             " in sequence #" + sequence.Id.TypeId + " wasn't added: size is too big or coordinates are invalid.");
                         continue;
                     }
 
-                    /*var packInfo = spriteAllocator.GetPackInfo(id);
-                 
-                    float x = packInfo.Pos.X / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
-                    float y = packInfo.Pos.Y / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
+                    var packInfo = spriteAllocator.GetPackInfo(id);
+
+                    int padding = _level.Settings.TexturePadding;
+
+                    float x = (packInfo.Pos.X + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
+                    float y = (packInfo.Pos.Y + padding) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
                     float w = (sprite.Texture.Image.Width - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
-                    float h = (sprite.Texture.Image.Height - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;*/
+                    float h = (sprite.Texture.Image.Height - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;
 
                     var newTexture = new TombEngineSpriteTexture();
 
-                    newTexture.Tile = _spritesTexturesPages.Count; // packInfo.OutputTextureID;
-                    newTexture.X1 = 0.0f;
-                    newTexture.Y1 = 0.0f;
-                    newTexture.X2 = 1.0f;
-                    newTexture.Y2 = 0.0f;
-                    newTexture.X3 = 1.0f;
-                    newTexture.Y3 = 1.0f;
-                    newTexture.X4 = 0.0f;
-                    newTexture.Y4 = 1.0f;
+                    newTexture.Tile = packInfo.OutputTextureID;
+                    newTexture.X1 = x;
+                    newTexture.Y1 = y;
+                    newTexture.X2 = x + w;
+                    newTexture.Y2 = y;
+                    newTexture.X3 = x + w;
+                    newTexture.Y3 = y + h;
+                    newTexture.X4 = x;
+                    newTexture.Y4 = y + h;
 
-                    _spritesTexturesPages.Add(sprite.Texture.Image);
                     tempSprites.Add(newTexture);
-                    //sprite.Texture.Image.Save("F:\\sprite" + newTexture.Tile + ".png");
                 }
 
                 tempSequences.Add(newSequence);
@@ -124,6 +129,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _spriteSequences = tempSequences;
             _spriteTextures = tempSprites;
+
+#if DEBUG
+            for (int n = 0; n < _spritesTexturesPages.Count; n++)
+            {
+                using (var bmp = _spritesTexturesPages[n].ToBitmap())
+                {
+                    int atlasSize = bmp.Width;
+
+                    using (var g = System.Drawing.Graphics.FromImage(bmp))
+                    {
+                        foreach (var sprite in tempSprites)
+                        {
+                            var spriteBoundingBox = new System.Drawing.Rectangle(
+                                    (int)(sprite.X1 * _spritesTexturesPages[n].Width),
+                                    (int)(sprite.Y1 * _spritesTexturesPages[n].Height),
+                                    (int)((sprite.X2 - sprite.X1) * _spritesTexturesPages[n].Width),
+                                    (int)((sprite.Y3 - sprite.Y2) * _spritesTexturesPages[n].Height));
+                            g.DrawRectangle(System.Drawing.Pens.GreenYellow, spriteBoundingBox);
+                        }
+                        bmp.Save("OutputDebug\\SpritesAtlas" + n + ".png");
+                    }
+                }
+            }
+#endif 
         }
 
         static bool DoesTypeMatch(byte[] type, string value)
@@ -190,6 +219,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return final;
         }
 
+        private byte[] GetUncompressedTexture(ImageC i)
+        {
+            MemoryStream output = new MemoryStream();
+            i.Save(output, System.Drawing.Imaging.ImageFormat.Png);
+            output = RemoveColorChunks(output);
+            return output.ToArray();
+        }
+
+        private byte[] GetCompressedTexture(ImageC i, CompressionFormat format)
+        {
+            using Image bitmap = i.ToBitmap();
+
+            BcEncoder encoder = new BcEncoder();
+
+            encoder.OutputOptions.GenerateMipMaps = true;
+            encoder.OutputOptions.Quality = CompressionQuality.BestQuality;
+            encoder.OutputOptions.Format = format;
+            encoder.OutputOptions.FileFormat = OutputFileFormat.Dds;  
+
+            MemoryStream output = new MemoryStream();
+            encoder.EncodeToStream(i.ToByteArray(), i.Width, i.Height, PixelFormat.Bgra32, output);
+
+            return output.ToArray();    
+        }
+
         void WriteTextureData(BinaryWriterEx writer)
         {
             ReportProgress(90, "Writing texture data...");
@@ -207,9 +261,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(atlas.Height);
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    var output = RemoveColorChunks(ms);
+                    byte[] output = 
+                        _level.Settings.CompressTextures ? 
+                        GetCompressedTexture(atlas, CompressionFormat.Bc3) : 
+                        GetUncompressedTexture(atlas);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -219,17 +274,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var sky = GetSkyTexture();
             using (var ms = new MemoryStream())
             {
-                using (var bmp = sky.ToBitmap())
-                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 writer.Write(sky.Width);
                 writer.Write(sky.Height);
-                var output = RemoveColorChunks(ms);
+                byte[] output =
+                    _level.Settings.CompressTextures ?
+                    GetCompressedTexture(sky, CompressionFormat.Bc3) :
+                    GetUncompressedTexture(sky);
                 writer.Write((int)output.Length);
                 writer.Write(output.ToArray());
             }
         }
 
-        static void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
+        void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
         {
             writer.Write(atlasList.Count);
             foreach (var atlas in atlasList)
@@ -239,10 +295,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.ColorMap.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-                    var output = RemoveColorChunks(ms);
+                    byte[] output =
+                        _level.Settings.CompressTextures ?
+                        GetCompressedTexture(atlas.ColorMap, CompressionFormat.Bc3) :
+                        GetUncompressedTexture(atlas.ColorMap);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }
@@ -253,10 +309,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 using (var ms = new MemoryStream())
                 {
-                    using (var bmp = atlas.NormalMap.ToBitmap())
-                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-                    var output = RemoveColorChunks(ms);
+                    byte[] output =
+                        _level.Settings.CompressTextures ?
+                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
+                        GetUncompressedTexture(atlas.NormalMap);
                     writer.Write((int)output.Length);
                     writer.Write(output.ToArray());
                 }

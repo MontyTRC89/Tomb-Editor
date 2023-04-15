@@ -2178,6 +2178,42 @@ namespace TombEditor
 				args.Editor.SendMessage("Object statistics copied into clipboard!", PopupType.Info);
 			});
 
+            AddCommand("MoveObjectLeftPrecise", "Move object left (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(-8, 0, 0), new Vector3(), true);
+            });
+
+            AddCommand("MoveObjectRightPrecise", "Move object right (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(8, 0, 0), new Vector3(), true);
+            });
+
+            AddCommand("MoveObjectForwardPrecise", "Move object forward (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 0, 8), new Vector3(), true);
+            });
+
+            AddCommand("MoveObjectBackPrecise", "Move object back (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 0, -8), new Vector3(), true);
+            });
+
+            AddCommand("MoveObjectUpPrecise", "Move object up (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 8, 0), new Vector3(), true);
+            });
+
+            AddCommand("MoveObjectDownPrecise", "Move object down (8 units)", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -8, 0), new Vector3(), true);
+            });
+
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
