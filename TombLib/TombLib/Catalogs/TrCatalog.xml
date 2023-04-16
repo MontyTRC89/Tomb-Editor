@@ -8123,7 +8123,24 @@
 			<anim item="113" id="1" name= "RUN" />
 			<anim item="113" id="2" name= "JUMP_ATTACK" />
 			<anim item="113" id="3" name= "ATTACK" />	 
-									
+			
+			<!--COWBOY -->
+			<anim item="239" id="0" name="RUN" />
+			<anim item="239" id="1" name="RUN_TO_IDLE" />
+			<anim item="239" id="2" name="RUN_TO_IDLE_END" />
+			<anim item="239" id="3" name="IDLE_TO_AIM" />
+			<anim item="239" id="4" name="SHOOT" />
+			<anim item="239" id="5" name="AIM" />
+			<anim item="239" id="6" name="AIM_TO_IDLE" />
+			<anim item="239" id="7" name="DEATH" />
+			<anim item="239" id="8" name="WALK" />
+			<anim item="239" id="9" name="WALK_TO_IDLE_START" />
+			<anim item="239" id="10" name="WALK_TO_IDLE_END" />
+			<anim item="239" id="11" name="IDLE_TO_WALK_START" />
+			<anim item="239" id="12" name="IDLE_TO_WALK_END" />
+			<anim item="239" id="13" name="IDLE_TO_RUN" />
+			<anim item="239" id="14" name="IDLE" />
+			
 			<!-- GUARD -->
 			<anim item="186" id="0" name = "IDLE" />
 			<anim item="186" id="1" name = "TURN 180 PART 1" />
@@ -8411,8 +8428,16 @@
 			<state item="113" id="0" name="IDLE" />
 			<state item="113" id="1" name="RUN" />
 			<state item="113" id="2" name="JUMP_ATTACK" />
-			<state item="113" id="3" name="ATTACK" />	 
-					
+			<state item="113" id="3" name="ATTACK" />	
+
+			<!-- COWBOY -->
+			<state item="239" id="1" name="STOP" />
+			<state item="239" id="2" name="WALK" />
+			<state item="239" id="3" name="RUN" />
+			<state item="239" id="4" name="AIM" />
+			<state item="239" id="5" name="DEATH" />
+			<state item="239" id="6" name="SHOOT" />
+			
 			<!-- IMP -->			
 			<state item="283" id="0" name= "WALK" />
 			<state item="283" id="1" name= "IDLE" />
