@@ -858,7 +858,7 @@
 			<moveable id="243" name="Camera target" essential="false" t5m="CAMERA_TARGET" />
 			<moveable id="244" name="Waterfall mist" essential="false" t5m="WATERFALLMIST" />
 			<moveable id="245" name="Harpoon (single)" hidden="true" t5m="HARPOON" />
-			<moveable id="247" name="Pointer (nullmesh)?" />
+			<moveable id="247" name="Knife (Knifethrower)" t5m="KNIFETHROWER_KNIFE" />
 			<moveable id="248" name="Grenade (single)" hidden="true" t5m="GRENADE" />
 			<moveable id="249" name="Harpoon (flying)" hidden="true" t5m="HARPOON" />
 			<moveable id="251" name="Spark emitter" essential="false" t5m="KNIFETHROWER_KNIFE"/>
