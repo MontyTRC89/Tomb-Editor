@@ -55,7 +55,7 @@
 			<moveable id="28" name="Pierre" essential="false" t5m="PIERRE" />
 			<moveable id="29" name="Skateboard" show_with="30" essential="false" hidden="true" />
 			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" />
-			<moveable id="31" name="Cowboy" essential="false" />
+			<moveable id="31" name="Cowboy" essential="false" t5m="COWBOY" />
 			<moveable id="32" name="Mr. T" essential="false" />
 			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="WINGED_NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
@@ -6096,6 +6096,7 @@
 			<moveable id="236" name="SPHERE_OF_DOOM" />
 			<moveable id="237" name="SPHERE_OF_DOOM2" />
 			<moveable id="238" name="SPHERE_OF_DOOM3" />
+			<moveable id="239" name="COWBOY" />
 			<moveable id="240" name="SPEAR_GUARDIAN" />
 			<moveable id="241" name="SPEAR_GUARDIAN_STATUE" />
 			<moveable id="242" name="SWORD_GUARDIAN" />
