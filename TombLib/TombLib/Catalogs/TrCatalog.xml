@@ -8208,6 +8208,32 @@
 			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
 			<anim item="283" id="17" name="THROW_ROCK" />
 			
+			<!-- KNIFE THROWER -->	
+			<anim item="162" id="0" name="IDLE" />
+			<anim item="162" id="1" name="WALK_KNIFE_ATTACK_LEFT_START" />
+			<anim item="162" id="2" name="WALK_KNIFE_ATTACK_LEFT_CANCEL" />
+			<anim item="162" id="3" name="WALK_KNIFE_ATTACK_RIGHT_START" />
+			<anim item="162" id="4" name="WALK_KNIFE_ATTACK_RIGHT_CANCEL" />
+			<anim item="162" id="5" name="IDLE_KNIFE_ATTACK_START" />
+			<anim item="162" id="6" name="RUN_FORWARD_TO_IDLE" />
+			<anim item="162" id="7" name="RUN_FORWARD_TO_WALK_FORWARD" />
+			<anim item="162" id="8" name="RUN_FORWARD" />
+			<anim item="162" id="9" name="WALK_KNIFE_ATTACK_LEFT_CONTINUE" />
+			<anim item="162" id="10" name="WALK_KNIFE_ATTACK_RIGHT_CONTINUE" />
+			<anim item="162" id="11" name="IDLE_KNIFE_ATTACK_CONTINUE" />
+			<anim item="162" id="12" name="WALK_KNIFE_ATTACK_LEFT_END" />
+			<anim item="162" id="13" name="IDLE_KNIFE_ATTACK_END_TO_IDLE" />
+			<anim item="162" id="14" name="IDLE_KNIFE_ATTACK_END_TO_START" />
+			<anim item="162" id="15" name="IDLE_TO_RUN_FORWARD" />
+			<anim item="162" id="16" name="IDLE_TO_WALK_FORWARD" />
+			<anim item="162" id="17" name="WALK_FORWARD" />
+			<anim item="162" id="18" name="WALK_FORWARD_TO_RUN_FORWARD" />
+			<anim item="162" id="19" name="WALK_FORWARD_TO_IDLE_START" />
+			<anim item="162" id="20" name="WALK_FORWARD_TO_IDLE_END" />
+			<anim item="162" id="21" name="WALK_KNIFE_ATTACK_RIGHT_END" />
+			<anim item="162" id="22" name="IDLE_KNIFE_ATTACK_CANCEL" />
+			<anim item="162" id="23" name="DEATH" />
+			
 			<!--SHIVA-->
 			<anim item="244" id="0" name="IDLE" />
 			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
@@ -8397,6 +8423,18 @@
 			<state item="283" id="8" name= "START_ROLL" />
 			<state item="283" id="9" name= "DEATH" />
 			<state item="283" id="11" name= "THROW_STONES" />
+
+			<!-- KNIFE THROWER -->
+			<state item="162" id="1" name= "IDLE" />
+			<state item="162" id="2" name= "WALK_FORWARD" />
+			<state item="162" id="3" name= "RUN_FORWARD" />
+			<state item="162" id="4" name= "WALK_KNIFE_ATTACK_LEFT_START" />
+			<state item="162" id="5" name= "WALK_KNIFE_ATTACK_LEFT_CONTINUE" />
+			<state item="162" id="6" name= "WALK_KNIFE_ATTACK_RIGHT_START" />
+			<state item="162" id="7" name= "WALK_KNIFE_ATTACK_RIGHT_CONTINUE" />
+			<state item="162" id="8" name= "IDLE_KNIFE_ATTACK_START" />
+			<state item="162" id="9" name= "IDLE_KNIFE_ATTACK_CONTINUE" />
+			<state item="162" id="10" name= "DEATH" />
 			
 			<!-- SHIVA -->
 			<state item="244" id="0" name="IDLE "/>
