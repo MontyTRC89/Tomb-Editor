@@ -1,9 +1,11 @@
 Version 1.6.7
 =============
 
+Tomb Editor:
 * Add ability to search for invisible texture tiles.
-* Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
+* Use more consistent naming for newly generated flipped and split rooms.
 * Write catalog file reading errors to a log file.
+* Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
 
 Version 1.6.6
 =============

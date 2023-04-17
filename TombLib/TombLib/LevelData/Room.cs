@@ -171,7 +171,7 @@ namespace TombLib.LevelData
         public Room Split(Level level, RectangleInt2 area, Room alternateOppositeSplitRoom = null)
         {
             var newRoom = Clone(level, instance => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
-            newRoom.Name = "Split from " + Name;
+            newRoom.Name = "Room split from " + Name;
             newRoom.Resize(level, area);
 
             // Setup alternate rooms

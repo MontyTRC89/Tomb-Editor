@@ -2990,7 +2990,7 @@ namespace TombEditor
             // Disable lock flag to prevent deadlocks
             newRoom.Properties.Locked = false;
 
-            newRoom.Name = "Flipped of " + room;
+            newRoom.Name = room + " (Flipped)";
             newRoom.BuildGeometry();
             newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
