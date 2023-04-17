@@ -1,6 +1,7 @@
 Version 1.6.7
 =============
 
+* Add ability to search for invisible texture tiles.
 * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
 * Write catalog file reading errors to a log file.
 

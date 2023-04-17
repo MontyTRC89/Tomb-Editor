@@ -1392,6 +1392,11 @@ namespace TombEditor
                                         result.Add(entry);
                                     break;
 
+                                case TextureSearchType.Invisible:
+                                    if (tex == TextureArea.Invisible)
+                                        result.Add(entry);
+                                    break;
+
                                 case TextureSearchType.Broken:
                                     if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds)
                                         result.Add(entry);
