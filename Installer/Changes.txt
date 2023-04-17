@@ -1,19 +1,22 @@
+Version 1.6.7
+=============
+
+* Write catalog file reading errors to a log file.
+
 Version 1.6.6
 =============
 
 Tomb Editor:
+ * Add precise movement hotkeys into settings.
 
-* Add precise movement hotkeys into settings.
+WadTool:
+ * TEN Base WAD:
+   - Amended Lara's sliding back animation to prevent falling backwards too far after sliding.
 
 TombIDE:
-
-* Update Tomb1Main preset to V2.14
-* Update Tomb3 preset to V1.6
-* Fix Tomb1Main preset not having title.phd in the package.
-
-
-*TEN Base WAD:
-	- Amended Lara's sliding back animation to prevent falling backwards too far after sliding.
+ * Update Tomb1Main preset to 2.14.
+ * Update tomb3 preset to 1.6.
+ * Fix Tomb1Main preset not having title.phd in the package.
 
 
 Version 1.6.5

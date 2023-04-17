@@ -93,6 +93,7 @@ namespace TombEditor
                     }
                     catch (Exception ex)
                     {
+                        log.HandleException(ex);
                         MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
                         Environment.Exit(1);
                     }
