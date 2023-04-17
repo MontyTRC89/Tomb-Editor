@@ -301,7 +301,12 @@ namespace TombLib.LevelData
                 result._objects = new List<PositionBasedObjectInstance>();
                 foreach (var instance in AnyObjects)
                     if (decideToCopy(instance))
-                        result.AddObjectAndSingularPortal(level, instance.Clone());
+                    {
+                        var copy = instance.Clone();
+                        result.AddObjectAndSingularPortal(level, copy);
+                        if (copy is IHasScriptID)
+                            (copy as IHasScriptID).AllocateNewScriptId();
+                    }
             }
 
             return result;
