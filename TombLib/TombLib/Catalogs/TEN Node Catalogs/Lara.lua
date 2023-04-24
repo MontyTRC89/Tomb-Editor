@@ -58,7 +58,7 @@ end
 -- !Arguments "Numerical, 20, Sprint energy value, [ 0 | 120 ]"
 
 LevelFuncs.Engine.Node.TestLaraSprint = function(operator, value)
-    return LevelFuncs.Engine.Node.CompareValue(TEN.Objects.Lara:GetSprintEnergy(), value, operator)
+    return LevelFuncs.Engine.Node.CompareValue(TEN.Objects.Lara:GetStamina(), value, operator)
 end
 
 -- !Name "Modify sprint energy value"
@@ -70,9 +70,9 @@ end
 LevelFuncs.Engine.Node.ModifyLaraSprint = function(operation, value)
 
 	if (operation == 0) then
-		TEN.Objects.Lara:SetSprintEnergy(TEN.Objects.Lara:GetSprintEnergy() + value)
+		TEN.Objects.Lara:SetStamina(TEN.Objects.Lara:GetStamina() + value)
 	else
-		TEN.Objects.Lara:SetSprintEnergy(value)
+		TEN.Objects.Lara:SetStamina(value)
 	end
 end
 
