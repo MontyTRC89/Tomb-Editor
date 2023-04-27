@@ -1,23 +1,28 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Controls/ColorPickerButton.xaml" />
-		<ResourceDictionary Source="Colors/Dark.xaml" />
-		<ResourceDictionary Source="Controls/DarkWindow.xaml" />
-		<ResourceDictionary Source="Controls/DarkButton.xaml" />
-		<ResourceDictionary Source="Controls/DarkToggleButton.xaml" />
-		<ResourceDictionary Source="Controls/DarkCheckBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkComboBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkMenu.xaml" />
-		<ResourceDictionary Source="Controls/DarkNumericUpDown.xaml" />
-		<ResourceDictionary Source="Controls/DarkRadioButton.xaml" />
-		<ResourceDictionary Source="Controls/DarkScrollViewer.xaml" />
-		<ResourceDictionary Source="Controls/DarkTextBlock.xaml" />
-		<ResourceDictionary Source="Controls/DarkTextBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkToolBar.xaml" />
-		<ResourceDictionary Source="Controls/DarkGroupBox.xaml" />
-		<ResourceDictionary Source="Controls/DarkListView.xaml" />
+		<ResourceDictionary Source="Dictionaries/DarkColors.xaml" />
+		<ResourceDictionary Source="Dictionaries/MarginsPaddingsAndSizes.xaml" />
+		<ResourceDictionary Source="Dictionaries/PathDefinitions.xaml" />
 
-		<ResourceDictionary Source="Controls/DarkAvalonDock.xaml" />
-		<ResourceDictionary Source="Controls/DarkTabControl.xaml" />
+		<ResourceDictionary Source="Styles/Button.xaml" />
+		<ResourceDictionary Source="Styles/CheckBox.xaml" />
+		<ResourceDictionary Source="Styles/ColorPickerButton.xaml" />
+		<ResourceDictionary Source="Styles/ComboBox.xaml" />
+		<ResourceDictionary Source="Styles/GroupBox.xaml" />
+		<ResourceDictionary Source="Styles/Label.xaml" />
+		<ResourceDictionary Source="Styles/ListView.xaml" />
+		<ResourceDictionary Source="Styles/Menu.xaml" />
+		<ResourceDictionary Source="Styles/NumericUpDown.xaml" />
+		<ResourceDictionary Source="Styles/RadioButton.xaml" />
+		<ResourceDictionary Source="Styles/ScrollViewer.xaml" />
+		<ResourceDictionary Source="Styles/SearchableComboBox.xaml" />
+		<ResourceDictionary Source="Styles/TabControl.xaml" />
+		<ResourceDictionary Source="Styles/TextBlock.xaml" />
+		<ResourceDictionary Source="Styles/TextBox.xaml" />
+		<ResourceDictionary Source="Styles/ToggleButton.xaml" />
+		<ResourceDictionary Source="Styles/ToolBar.xaml" />
+		<ResourceDictionary Source="Styles/Window.xaml" />
+
+		<ResourceDictionary Source="/AvalonDock.Themes.VS2013;component/Themes/Generic.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

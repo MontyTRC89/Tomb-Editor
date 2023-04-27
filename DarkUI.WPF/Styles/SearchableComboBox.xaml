@@ -1,0 +1,63 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.Controls">
+
+	<ControlTemplate x:Key="SearchableComboBoxTemplate" TargetType="{x:Type controls:SearchableComboBox}">
+		<Grid SnapsToDevicePixels="True">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="0" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+			</Grid.ColumnDefinitions>
+
+			<Popup
+				Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"
+				AllowsTransparency="True"
+				IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+				Placement="Bottom"
+				PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+				<Border
+					x:Name="PART_DropDownBorder"
+					Background="{TemplateBinding Background}"
+					BorderBrush="{TemplateBinding BorderBrush}"
+					BorderThickness="{TemplateBinding BorderThickness}">
+					<ScrollViewer x:Name="PART_DropDownScrollViewer">
+						<ItemsPresenter />
+					</ScrollViewer>
+				</Border>
+			</Popup>
+			<ToggleButton
+				Grid.ColumnSpan="2"
+				Background="{TemplateBinding Background}"
+				BorderBrush="{TemplateBinding BorderBrush}"
+				BorderThickness="{TemplateBinding BorderThickness}"
+				IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+				Style="{DynamicResource ComboBoxToggleButton}" />
+			<ContentPresenter
+				Margin="{TemplateBinding Padding}"
+				HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+				VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+				Content="{TemplateBinding SelectionBoxItem}"
+				ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+				ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+				ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+				IsHitTestVisible="False" />
+		</Grid>
+		<ControlTemplate.Triggers>
+			<Trigger Property="HasItems" Value="False">
+				<Setter TargetName="PART_DropDownBorder" Property="Height" Value="{DynamicResource EmptyComboBoxPopupHeight}" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type controls:SearchableComboBox}">
+		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
+		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
+		<Setter Property="Padding" Value="6,0,6,0" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="Template" Value="{DynamicResource SearchableComboBoxTemplate}" />
+	</Style>
+</ResourceDictionary>

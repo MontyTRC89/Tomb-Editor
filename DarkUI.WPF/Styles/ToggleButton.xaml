@@ -3,7 +3,7 @@
 		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
 		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
-		<Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="Padding" Value="3" />

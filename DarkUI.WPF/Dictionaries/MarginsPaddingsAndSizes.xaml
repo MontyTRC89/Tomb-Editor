@@ -1,0 +1,36 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+	<Thickness x:Key="Default_BorderThickness">1</Thickness>
+
+	<Thickness x:Key="ButtonIconToTextMargin">0,0,4,0</Thickness>
+
+	<Thickness x:Key="VerticalStackPanelItem_DefaultMargin">0,4,0,0</Thickness>
+	<Thickness x:Key="HorizontalStackPanelItem_DefaultMargin">4,0,0,0</Thickness>
+
+	<Thickness x:Key="TinyMargin">2</Thickness>
+	<Thickness x:Key="DefaultMargin">4</Thickness>
+	<Thickness x:Key="LargeMargin">8</Thickness>
+	<Thickness x:Key="JumboMargin">16</Thickness>
+
+	<Thickness x:Key="TinyPadding">2</Thickness>
+	<Thickness x:Key="DefaultPadding">4</Thickness>
+	<Thickness x:Key="LargePadding">8</Thickness>
+	<Thickness x:Key="JumboPadding">16</Thickness>
+
+	<sys:Double x:Key="DefaultColumnSpacing">4</sys:Double>
+	<sys:Double x:Key="DefaultRowSpacing">4</sys:Double>
+
+	<sys:Double x:Key="EmptyComboBoxPopupHeight">20</sys:Double>
+
+	<sys:Double x:Key="CheckBoxWidth">13</sys:Double>
+	<sys:Double x:Key="CheckBoxHeight">13</sys:Double>
+
+	<Style TargetType="{x:Type sg:SpacedGrid}">
+		<Setter Property="ColumnSpacing" Value="{DynamicResource DefaultColumnSpacing}" />
+		<Setter Property="RowSpacing" Value="{DynamicResource DefaultRowSpacing}" />
+	</Style>
+</ResourceDictionary>

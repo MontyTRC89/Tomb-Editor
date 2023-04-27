@@ -23,7 +23,6 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/DarkUI.WPF;component/Colors/Dark.xaml" />
 				<ResourceDictionary>
 					<converters:VectorToUIColorConverter x:Key="VectorToColorConverter" />
 					<converters:HtmlToUIColorConverter x:Key="HtmlToColorConverter" />

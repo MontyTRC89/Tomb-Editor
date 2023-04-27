@@ -11,6 +11,7 @@
 	MinHeight="200"
 	d:DesignHeight="200"
 	d:DesignWidth="295"
+	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	mc:Ignorable="d">
 
 	<Grid Margin="{DynamicResource DefaultMargin}">
@@ -34,7 +35,7 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<ComboBox x:Name="comboRoom" />
+				<controls:SearchableComboBox x:Name="comboRoom" />
 
 				<sg:SpacedGrid Grid.Row="1">
 					<Grid.ColumnDefinitions>

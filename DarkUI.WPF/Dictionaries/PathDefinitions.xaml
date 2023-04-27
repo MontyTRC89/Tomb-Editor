@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<PathGeometry x:Key="WideArrowUp" Figures="M 5 -5 L 10 0 L 0 0 Z" />
+	<PathGeometry x:Key="WideArrowDown" Figures="M 5 5 L 10 0 L 0 0 Z" />
+	<PathGeometry x:Key="NarrowArrowUp" Figures="M 3 -4 L 6 0 L 0 0 Z" />
+	<PathGeometry x:Key="NarrowArrowDown" Figures="M 3 4 L 6 0 L 0 0 Z" />
+	<PathGeometry x:Key="CheckMark" Figures="M 0 5 L 3 9 M 3 9 L 9 0" />
+</ResourceDictionary>

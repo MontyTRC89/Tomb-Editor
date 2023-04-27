@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\search-16.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\search-16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.71.2" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
@@ -14,47 +24,47 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Colors\Dark.xaml">
+    <Page Update="Dictionaries\DarkColors.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkToggleButton.xaml">
+    <Page Update="Styles\ToggleButton.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
-    <Page Update="Controls\DarkButton.xaml">
+    <Page Update="Styles\Button.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkCheckBox.xaml">
+    <Page Update="Styles\CheckBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkComboBox.xaml">
+    <Page Update="Styles\ComboBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkNumericUpDown.xaml">
+    <Page Update="Styles\NumericUpDown.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkRadioButton.xaml">
+    <Page Update="Styles\RadioButton.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkScrollViewer.xaml">
+    <Page Update="Styles\ScrollViewer.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkTextBlock.xaml">
+    <Page Update="Styles\TextBlock.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DarkTextBox.xaml">
+    <Page Update="Styles\TextBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>

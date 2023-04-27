@@ -2,6 +2,7 @@
 	x:Class="TombEditor.WPF.ToolWindows.ImportedGeometryBrowser"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.Controls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
@@ -22,7 +23,7 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<ComboBox />
+			<controls:SearchableComboBox />
 
 			<Button Grid.Column="1">
 				<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />

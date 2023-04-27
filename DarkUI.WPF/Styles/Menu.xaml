@@ -45,7 +45,7 @@
 						x:Name="PART_Border"
 						Background="{DynamicResource LightBackground}"
 						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="{DynamicResource DefaultBorderThickness}"
+						BorderThickness="{DynamicResource Default_BorderThickness}"
 						SnapsToDevicePixels="True">
 						<ContentPresenter
 							x:Name="ContentContainer"
@@ -154,7 +154,7 @@
 						Margin="0,0,6,6"
 						Background="{DynamicResource GreyBackground}"
 						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="{DynamicResource DefaultBorderThickness}"
+						BorderThickness="{DynamicResource Default_BorderThickness}"
 						SnapsToDevicePixels="True">
 						<Border.Effect>
 							<DropShadowEffect Opacity="0.3" ShadowDepth="3" />
@@ -225,13 +225,13 @@
 					Height="20"
 					Margin="1"
 					HorizontalAlignment="Left"
-					BorderThickness="{DynamicResource DefaultBorderThickness}"
+					BorderThickness="{DynamicResource Default_BorderThickness}"
 					Visibility="Collapsed">
 					<Path
 						x:Name="CheckMark"
 						Width="10"
 						Height="10"
-						Data="M 0 5 L 3 9 M 3 9 L 9 0"
+						Data="{DynamicResource CheckMark}"
 						SnapsToDevicePixels="False"
 						Stroke="{DynamicResource LightText}"
 						StrokeThickness="1"
@@ -325,7 +325,7 @@
 						Margin="0,0,6,6"
 						Background="{DynamicResource GreyBackground}"
 						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="{DynamicResource DefaultBorderThickness}"
+						BorderThickness="{DynamicResource Default_BorderThickness}"
 						SnapsToDevicePixels="True">
 						<Border.Effect>
 							<DropShadowEffect Opacity="0.3" ShadowDepth="3" />
