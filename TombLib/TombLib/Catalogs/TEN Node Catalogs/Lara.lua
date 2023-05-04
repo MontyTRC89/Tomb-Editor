@@ -50,10 +50,10 @@ LevelFuncs.Engine.Node.ModifyLaraPoison = function(operation, value)
 	end
 end
 
--- !Name "If Stamina value is..."
+-- !Name "If stamina value is..."
 -- !Section "Lara state"
 -- !Conditional "True"
--- !Description "Checks current Stamina value."
+-- !Description "Checks current stamina value."
 -- !Arguments "CompareOperator, 30, Kind of check"
 -- !Arguments "Numerical, 20, Sprint energy value, [ 0 | 120 ]"
 
@@ -61,9 +61,9 @@ LevelFuncs.Engine.Node.TestLaraSprint = function(operator, value)
     return LevelFuncs.Engine.Node.CompareValue(TEN.Objects.Lara:GetStamina(), value, operator)
 end
 
--- !Name "Modify Stamina value"
+-- !Name "Modify stamina value"
 -- !Section "Lara state"
--- !Description "Sets Stamina value to specified."
+-- !Description "Sets stamina value to specified."
 -- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
 -- !Arguments "Numerical, [ -120 | 120 | 0 | 1 | 5 ], 15, Sprint energy value to define"
 
