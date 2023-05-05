@@ -1022,7 +1022,7 @@
 			<sound id="96" name="LEOPARD_GROWL" t5m="519" />
 			<sound id="97" name="RAT_ATTACK" t5m="531" />
 			<sound id="98" name="RAT_DEATH" t5m="532" />
-			<sound id="99" name="TIGER_ROAR" t5m="580" />
+			<sound id="99" name="TIGER_ROAR" t5m="520" />
 			<sound id="100" name="TIGER_BITE" t5m="521" />
 			<sound id="101" name="TIGER_STRIKE" t5m="522" />
 			<sound id="102" name="TIGER_DEATH" t5m="523" />
@@ -1177,7 +1177,7 @@
 			<sound id="259" name="KNIFETHROWER_WARRIOR_FEET" t5m="631" />
 			<sound id="260" name="WARRIOR_BLADE_SWING1" t5m="579" />
 			<sound id="261" name="WARRIOR_BLADE_SWING2" t5m="580" />
-			<sound id="262" name="WARRIOR_GROWL" t5m="566" />
+			<sound id="262" name="WARRIOR_GROWL" t5m="583" />
 			<sound id="263" name="KNIFETHROWER_HICCUP" t5m="601" />
 			<sound id="264" name="WARROPR_BURP" t5m="589" />
 			<sound id="265" name="WARRIOR_GROWL1" t5m="582" />
