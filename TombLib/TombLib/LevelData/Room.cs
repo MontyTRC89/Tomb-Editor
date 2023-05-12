@@ -171,7 +171,7 @@ namespace TombLib.LevelData
         public Room Split(Level level, RectangleInt2 area, Room alternateOppositeSplitRoom = null)
         {
             var newRoom = Clone(level, instance => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
-            newRoom.Name = "Split from " + Name;
+            newRoom.Name = "Room split from " + Name;
             newRoom.Resize(level, area);
 
             // Setup alternate rooms
@@ -301,7 +301,12 @@ namespace TombLib.LevelData
                 result._objects = new List<PositionBasedObjectInstance>();
                 foreach (var instance in AnyObjects)
                     if (decideToCopy(instance))
-                        result.AddObjectAndSingularPortal(level, instance.Clone());
+                    {
+                        var copy = instance.Clone();
+                        result.AddObjectAndSingularPortal(level, copy);
+                        if (copy is IHasScriptID)
+                            (copy as IHasScriptID).AllocateNewScriptId();
+                    }
             }
 
             return result;

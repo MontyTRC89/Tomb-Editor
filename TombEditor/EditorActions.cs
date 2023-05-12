@@ -1392,6 +1392,11 @@ namespace TombEditor
                                         result.Add(entry);
                                     break;
 
+                                case TextureSearchType.Invisible:
+                                    if (tex == TextureArea.Invisible)
+                                        result.Add(entry);
+                                    break;
+
                                 case TextureSearchType.Broken:
                                     if (tex.TriangleCoordsOutOfBounds || tex.QuadCoordsOutOfBounds)
                                         result.Add(entry);
@@ -2985,7 +2990,7 @@ namespace TombEditor
             // Disable lock flag to prevent deadlocks
             newRoom.Properties.Locked = false;
 
-            newRoom.Name = "Flipped of " + room;
+            newRoom.Name = room + " (Flipped)";
             newRoom.BuildGeometry();
             newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
@@ -3726,10 +3731,18 @@ namespace TombEditor
 
             // Split alternate room
             var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
-            Room splitRoom = room.Split(_editor.Level, area);
-            _editor.Level.AssignRoomToFree(splitRoom);
+
+            var splitRoom = room.Split(_editor.Level, area);
+            int newRoomIndex = _editor.Level.AssignRoomToFree(splitRoom);
+            splitRoom.Name = "Room " + newRoomIndex + " (split from " + room.Name + ")";
+
             if (room.Alternated)
-                _editor.Level.AssignRoomToFree(room.AlternateRoom.Split(_editor.Level, area, splitRoom));
+            {
+                var alternateSplitRoom = room.AlternateRoom.Split(_editor.Level, area, splitRoom);
+                int newAlternateRoomIndex = _editor.Level.AssignRoomToFree(alternateSplitRoom);
+                alternateSplitRoom.Name = "Room " + newRoomIndex + " Split from " + room.AlternateRoom.Name + ")";
+
+            }
 
             relevantRooms.Add(room);
             relevantRooms.Add(splitRoom);

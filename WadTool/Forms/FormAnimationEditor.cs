@@ -538,16 +538,16 @@ namespace WadTool
                 k = Math.Min(k, 1);
                 KeyFrame nextKeyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[nextIndex];
                 panelRendering.Model.BuildAnimationPose(keyFrame, nextKeyFrame, k);
-                panelRendering.Invalidate();
             }
             else
             {
                 panelRendering.Model.BuildAnimationPose(keyFrame);
-                panelRendering.Invalidate();
                 OnKeyframesListChanged();
                 UpdateTransformUI();
-                PreviewSounds();
             }
+
+            panelRendering.Invalidate();
+            PreviewSounds();
         }
 
         private void SelectMesh(int index)
