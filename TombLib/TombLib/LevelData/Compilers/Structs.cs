@@ -783,7 +783,7 @@ namespace TombLib.LevelData.Compilers
 
                 writer.Write(bulb.Out);
                 writer.Write(bulb.Out * bulb.Out);
-                writer.Write(bulb.Length * 65535.0f);
+                writer.Write(bulb.Length * 8192.0f);
 
                 writer.Write(bulb.Color.Red / 255.0f);
                 writer.Write(bulb.Color.Green / 255.0f);
