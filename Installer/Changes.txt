@@ -2,6 +2,7 @@ Version 1.6.7
 =============
 
 Tomb Editor:
+* Add a set of particle and dynamic light node functions.
 * Add ability to search for invisible texture tiles.
 * Use more consistent naming for newly generated flipped and split rooms.
 * Write catalog file reading errors to a log file.
