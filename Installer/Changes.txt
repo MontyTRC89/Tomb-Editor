@@ -6,6 +6,7 @@ Tomb Editor:
  * Add ability to search for invisible texture tiles.
  * Use more consistent naming for newly generated flipped and split rooms.
  * Write catalog file reading errors to a log file.
+ * Don't throw useless invalid texture warnings when building a level.
  * Fix TEN texture packer crash if static meshes have more textures than moveables.
  * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
  * Fix exception when autosave interval was set to 0 in editor options.

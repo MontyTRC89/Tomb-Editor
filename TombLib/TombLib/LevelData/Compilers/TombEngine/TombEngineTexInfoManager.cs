@@ -1551,7 +1551,7 @@ namespace TombLib.LevelData.Compilers
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
                         var newObjectTexture = new ObjectTexture(parent, child, maxSize);
-
+#if DEBUG
                         if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
                             newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
                             newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
@@ -1568,7 +1568,7 @@ namespace TombLib.LevelData.Compilers
 
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
-
+#endif
             foreach (var animTexture in _actualAnimTextures)
             {
                 SortOutAlpha(animTexture.CompiledAnimation);
