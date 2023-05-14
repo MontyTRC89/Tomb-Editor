@@ -12,6 +12,7 @@ Tomb Editor:
  * Fix exception when autosave interval was set to 0 in editor options.
 
 WadTool:
+ * Automatically fix incorrect state IDs for switch objects when converting them to TEN.
  * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
 
 
