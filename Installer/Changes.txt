@@ -2,12 +2,16 @@ Version 1.6.7
 =============
 
 Tomb Editor:
-* Add a set of particle and dynamic light node functions.
-* Add ability to search for invisible texture tiles.
-* Use more consistent naming for newly generated flipped and split rooms.
-* Write catalog file reading errors to a log file.
-* Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
-* Fix exception when autosave interval was set to 0 in editor options.
+ * Add a set of particle and dynamic light node functions.
+ * Add ability to search for invisible texture tiles.
+ * Use more consistent naming for newly generated flipped and split rooms.
+ * Write catalog file reading errors to a log file.
+ * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
+ * Fix exception when autosave interval was set to 0 in editor options.
+
+WadTool:
+ * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
+
 
 Version 1.6.6
 =============
