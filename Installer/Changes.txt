@@ -11,6 +11,7 @@ Tomb Editor:
  * Fix nodes made from context menu incorrectly linking to selected node as next instead of previous.
  * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
  * Fix exception when autosave interval was set to 0 in editor options.
+ * Fix several TEN object remaps in TrCatalog.xml.
 
 WadTool:
  * Automatically fix incorrect state IDs for switch objects when converting them to TEN.
