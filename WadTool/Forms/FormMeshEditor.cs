@@ -570,7 +570,7 @@ namespace WadTool
             nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
             nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
             nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
-            nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
+            nudSphereRadius.Value = (decimal)Math.Abs(panelMesh.Mesh.BoundingSphere.Radius);
             _readingValues = false;
         }
 

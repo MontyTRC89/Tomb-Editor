@@ -187,6 +187,32 @@ namespace TombLib.LevelData.IO
                     break;
             }
 
+            // Detect flipped switch states
+
+            if (newSlotName.Contains("SWITCH_TYPE"))
+            {
+                if (moveable.Animations.Count > 0 &&
+                    moveable.Animations.Any(a => a.KeyFrames.Count == 1) &&
+                    moveable.Animations.First(a => a.KeyFrames.Count == 1).StateId == 0)
+                {
+                    progressReporter?.ReportInfo("    Fixing switch state ID order for " + newSlotName);
+
+                    foreach (var anim in moveable.Animations)
+                    {
+                        if (anim.StateId > 1 || anim.KeyFrames.Count != 1)
+                            continue;
+
+                        var newStateId = (ushort)(1 - anim.StateId);
+
+                        foreach (var sc in anim.StateChanges)
+                            if (sc.StateId == newStateId)
+                                sc.StateId = anim.StateId;
+
+                        anim.StateId = newStateId;
+                    }
+                }
+            }
+
             // Adjust bridge thickness
 
             if (newSlotName == "TWOBLOCK_PLATFORM" ||
