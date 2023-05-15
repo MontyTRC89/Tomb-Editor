@@ -1565,10 +1565,9 @@ namespace TombLib.LevelData.Compilers
                         {
                             _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
-
+#endif
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
-#endif
             foreach (var animTexture in _actualAnimTextures)
             {
                 SortOutAlpha(animTexture.CompiledAnimation);
