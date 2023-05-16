@@ -273,7 +273,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1176</Id>
-			<Name>TEN_PUSHABLES_STOP_MOVE_STONE</Name>
+			<Name>TEN_PUSHABLES_MOVE_STONE</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -281,8 +281,12 @@
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_pushable_sound_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -296,8 +300,12 @@
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_push_block_end_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -350,59 +358,75 @@
 			<Id>1181</Id>
 			<Name>TEN_PUSHABLES_COLLIDE_WOOD</Name>
 			<Volume>100</Volume>
-			<RangeInSectors>10</RangeInSectors>
+			<RangeInSectors>20</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>-20</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_smashwood_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1182</Id>
 			<Name>TEN_PUSHABLES_MOVE_METAL</Name>
-			<Volume>100</Volume>
+			<Volume>50</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>60</PitchFactor>
 			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>false</RandomizePitch>
+			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_metal_scrape_loop1_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1183</Id>
 			<Name>TEN_PUSHABLES_STOP_METAL</Name>
-			<Volume>100</Volume>
+			<Volume>50</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>-10</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_hammer_trap_bang_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1184</Id>
 			<Name>TEN_PUSHABLES_COLLIDE_METAL</Name>
-			<Volume>100</Volume>
-			<RangeInSectors>10</RangeInSectors>
+			<Volume>60</Volume>
+			<RangeInSectors>20</RangeInSectors>
 			<Chance>100</Chance>
 			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<LoopBehaviour>OneShotRewound</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr4_smashmetal_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
