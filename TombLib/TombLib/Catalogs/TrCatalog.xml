@@ -5245,7 +5245,7 @@
 			<moveable id="387" name="Lara position changer" t5m="TELEPORTER" />
 			<moveable id="388" name="Elevator" t5m="LIFT_TELEPORTER" />
 			<moveable id="389" name="Raising cog" t5m="RAISING_COG" />
-			<moveable id="390" name="Laser" t5m="LASERS" />
+			<moveable id="390" name="Laser" t5m="LASER_BARRIER" />
 			<moveable id="391" name="Steam laser" t5m="STEAM_LASERS" />
 			<moveable id="392" name="Floor laser" t5m="FLOOR_LASERS" />
 			<moveable id="393" name="Kill all triggers" t5m="KILL_ALL_TRIGGERS" />
@@ -6680,7 +6680,7 @@
 			<moveable id="1048" name="LARA_START_POS" />
 			<moveable id="1049" name="TELEPORTER" />
 			<moveable id="1050" name="LIFT_TELEPORTER" />
-			<moveable id="1051" name="LASERS" />
+			<moveable id="1051" name="LASER_BARRIER" />
 			<moveable id="1052" name="STEAM_LASERS" />
 			<moveable id="1053" name="FLOOR_LASERS" />
 			<moveable id="1054" name="KILL_ALL_TRIGGERS" />
