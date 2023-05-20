@@ -105,9 +105,18 @@ namespace TombLib.LevelData.Compilers
                     {
                         if (_vertexColors.ContainsKey(sig))
                         {
-                            v.Lighting1 = (ushort)_vertexColors[sig];
-                            v.Lighting2 = (ushort)_vertexColors[sig];
-                            trRoom.Vertices[i] = v;
+                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                            {
+                                v.Lighting1 = (ushort)(((_vertexColors[sig] & 0x70000) >> 10) | ((_vertexColors[sig] & 0x700) >> 5) | (_vertexColors[sig] & 0x7));
+                                v.Lighting2 = (ushort)(((_vertexColors[sig] & 0xf80000) >> 9) | ((_vertexColors[sig] & 0xf800) >> 6) | ((_vertexColors[sig] & 0xf8) >> 3));
+                                trRoom.Vertices[i] = v;
+                            }
+                            else
+                            {
+                                v.Lighting1 = (ushort)_vertexColors[sig];
+                                v.Lighting2 = (ushort)_vertexColors[sig];
+                                trRoom.Vertices[i] = v;
+                            }
                         }
                     }
                     else
@@ -1795,7 +1804,14 @@ namespace TombLib.LevelData.Compilers
                                         if (!isPresentInLookup)
                                         {
                                             if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                refColor = v1.Lighting2;
+                                            {
+                                                if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                    refColor = (uint)(((v1.Lighting1 & 0x1c0) << 10) | ((v1.Lighting2 & 0x7c00) << 9) |
+                                                                        ((v1.Lighting1 & 0x38) << 5) | ((v1.Lighting2 & 0x3e0) << 6) |
+                                                                        (v1.Lighting1 & 0x7) | ((v1.Lighting2 & 0x1f) << 3));
+                                                else
+                                                    refColor = v1.Lighting2;
+                                            }
                                             else
                                                 refColor = v1.Color;
                                         }
@@ -1817,7 +1833,14 @@ namespace TombLib.LevelData.Compilers
                                                 if (!_vertexColors.TryGetValue(baseSig, out newColor))
                                                 {
                                                     if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                        newColor = v2.Lighting2;
+                                                    {
+                                                        if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                            newColor = (uint)(((v2.Lighting1 & 0x1c0) << 10) | ((v2.Lighting2 & 0x7c00) << 9) |
+                                                                                ((v2.Lighting1 & 0x38) << 5) | ((v2.Lighting2 & 0x3e0) << 6) |
+                                                                                (v2.Lighting1 & 0x7) | ((v2.Lighting2 & 0x1f) << 3));
+                                                        else
+                                                            newColor = v2.Lighting2;
+                                                    }
                                                     else
                                                         newColor = v2.Color;
                                                 }
@@ -1827,9 +1850,21 @@ namespace TombLib.LevelData.Compilers
                                                 if (grayscale)
                                                     newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
                                                 else if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                    newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
+                                                {
+                                                    if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                    {
+                                                        var color = (uint)(((v2.Lighting1 & 0x1c0) << 10) | ((v2.Lighting2 & 0x7c00) << 9) |
+                                                                            ((v2.Lighting1 & 0x38) << 5) | ((v2.Lighting2 & 0x3e0) << 6) |
+                                                                            (v2.Lighting1 & 0x7) | ((v2.Lighting2 & 0x1f) << 3));
+                                                        newColor = (uint)(0xff000000 | (((((color & 0xff) + (refColor & 0xff)) >> 1) |
+                                                                            256 * (((((color >> 8) & 0xff) + ((refColor >> 8) & 0xff)) >> 1) |
+                                                                                256 * ((((color >> 16) & 0xff) + ((refColor >> 16) & 0xff)) >> 1)))));
+                                                    }
+                                                    else
+                                                        newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
                                                                         32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
                                                                             32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                                }
                                                 else
                                                     newColor = (uint)(0xff000000 | (((((v2.Color & 0xff) + (refColor & 0xff)) >> 1) |
                                                                         256 * (((((v2.Color >> 8) & 0xff) + ((refColor >> 8) & 0xff)) >> 1) |
