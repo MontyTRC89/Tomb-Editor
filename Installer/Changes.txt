@@ -16,6 +16,7 @@ Tomb Editor:
 
 WadTool:
  * Automatically fix incorrect state IDs for switch objects when converting them to TEN.
+ * Fix incorrect conversion of several objects such as LARA_HOLSTERS to TEN format.
  * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
  * TEN Base WAD
    - Improve TEN Lara wad base equipment such as Pistol holsters.
