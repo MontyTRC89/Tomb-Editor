@@ -6,6 +6,7 @@ Tomb Editor:
 * Use more consistent naming for newly generated flipped and split rooms.
 * Write catalog file reading errors to a log file.
 * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
+* Fix light interpolation if 32 bit lighting is active.
 
 Version 1.6.6
 =============
