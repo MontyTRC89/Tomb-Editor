@@ -1,14 +1,14 @@
 -- !Name "Particle generator (moveables)"
 -- !Section "Particles"
 -- !Description "Emit particles from a moveable"
--- !Arguments "NewLine, Moveables, 70, The moveable particles will spawn from." "Numerical, 30, [ 0 | 100], Mesh number."
--- !Arguments "NewLine, Vector3, 100, [ -32000 | 32000 ], Velocity X Y Z."
--- !Arguments "NewLine, Numerical, 33, [ 0 | 31 | 0 ], For sprite number refer to base wad DEFAULT_SPRITES sequence in WadTool."
--- !Arguments "Numerical, 33, [ -32768 | 32767 | 0 ], Gravity." "Numerical, 33, [ -32000 | 32000 | 1 ], Rotation." 
--- !Arguments "NewLine, Color, 50, Start color.", "Color, 50, End color."
--- !Arguments "NewLine, Enumeration, 100, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "NewLine, Numerical, 33, [ -32000 | 32000 | 0 ], Start size." "Numerical, 33, [ -32000 | 32000 | 0 ], End size." "Numerical, 33, [ 0 | 32000 | 0 ], Lifetime (in seconds)."
--- !Arguments "NewLine, Boolean, 50, Damage." "Boolean, 50, Poison."
+-- !Arguments "NewLine, Moveables, 70, The moveable particles will spawn from." "Numerical, 15, [ 0 | 100], Mesh number"
+-- !Arguments "Numerical, 15, [ 0 | 31 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
+-- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation" 
+-- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
+-- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 0 ], Lifetime (in seconds)"
+-- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
 	LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, velocity, spriteID, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, damage, poison)
 
@@ -21,11 +21,10 @@
 -- !Name "Emit lightning arc"
 -- !Section "Particles"
 -- !Description "Emit a lightning arc between two points in 3D space"
--- !Arguments "Newline, Moveables, 50, Source position.", "Moveables, 50, Destination position."
--- !Arguments "NewLine, Color, 100, Color of Lightning Effect."
--- !Arguments "Newline, Number, 25, [ 0 | 4.2 | 1 ], Lifetime in seconds." , "Number, 25, [ 1 | 255 | 0 ], Effect strength.", "Number, 25, [ 1 | 127 | 0 ], Beam width.", "Number, 25, [ 1 | 127 | 0 ], Detail level."
--- !Arguments "Newline, Boolean, 50, Toggle smooth effect.", "Boolean, 50, Toggle end drift."
--- !Arguments "NewLine, Boolean, 50, Add source light." "Boolean, 50, Add destination light."
+-- !Arguments "Newline, Moveables, 50, Source position." "Moveables, 50, Destination position"
+-- !Arguments "NewLine, Color, 100, Color of lightning Effect"
+-- !Arguments "Newline, Number, 25, [ 0 | 4.2 | 1 ], Lifetime in seconds." "Number, 25, [ 1 | 255 | 0 ], Effect strength." "Number, 25, [ 1 | 127 | 0 ], Beam width." "Number, 25, [ 1 | 127 | 0 ], Detail level."
+-- !Arguments "Newline, Boolean, 25, Smooth effect" "Boolean, 25, End drift" "Boolean, 25, Source light" "Boolean, 25, Destination light"
 
 LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth, endDrift, sourcelight, destlight)
 	
@@ -64,10 +63,10 @@ end
 -- !Section "Particles"
 -- !Description "Emit a shockwave effect."
 -- !Arguments "NewLine, Moveables, 70, Shockwave position." "Numerical, 30, [0 | 100], Mesh number (optional)."
--- !Arguments "NewLine, Number, 50, [ 1 | 10400 | 0 ], Inner radius." "Number, 50, [ 1| 10400 |0 ], Outer radius."
--- !Arguments "NewLine, Color, 100, Color of shockwave."
--- !Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)." "Number, 33, [ 0 | 500 | 0 ], Speed." "Number, 33, [ -360 | 360 |0 ], X axis rotation."
--- !Arguments "NewLine, Boolean, 50, Damage." "Boolean, 50, Randomise spawn point."
+-- !Arguments "NewLine, Number, 50, [ 1 | 10400 | 0 ], Inner radius" "Number, 50, [ 1| 10400 |0 ], Outer radius"
+-- !Arguments "NewLine, Color, 100, Color of shockwave"
+-- !Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)." "Number, 33, [ 0 | 500 | 0 ], Speed" "Number, 33, [ -360 | 360 |0 ], X axis rotation"
+-- !Arguments "NewLine, Boolean, 50, Damage." "Boolean, 50, Randomize spawn point"
 
 LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadius, color, lifetime, speed, angle, damage, randomSpawn)
 			

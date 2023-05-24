@@ -53,7 +53,7 @@ namespace TombEditor
             
             if (loadedObjects.Objects.Count == 0)
                 return null;
-                
+
             var unpackedObjects = loadedObjects.Objects.Select(obj =>
             {
                 obj.CopyDependentLevelSettings(
@@ -61,14 +61,12 @@ namespace TombEditor
 
                 // A little workaround to detect collisions
 
-                var testRoom = editor.SelectedRoom;
-
                 if (obj is IHasScriptID)
                 {
                     try
                     {
-                        testRoom.AddObject(editor.Level, obj);
-                        testRoom.RemoveObject(editor.Level, obj);
+                        editor.SelectedRoom.AddObject(editor.Level, obj);
+                        editor.SelectedRoom.RemoveObject(editor.Level, obj);
                     }
                     catch (ScriptIdCollisionException)
                     {
@@ -78,11 +76,11 @@ namespace TombEditor
 
                 if (obj is IHasLuaName)
                 {
-                    testRoom.AddObject(editor.Level, obj);
+                    editor.SelectedRoom.AddObject(editor.Level, obj);
                     var luaObj = obj as IHasLuaName;
                     if (!luaObj.TrySetLuaName(luaObj.LuaName, null))
-                        luaObj.AllocateNewLuaName();
-                    testRoom.RemoveObject(editor.Level, obj);
+                        luaObj.LuaName = string.Empty;
+                    editor.SelectedRoom.RemoveObject(editor.Level, obj);
                 }
 
                 if (obj is FlybyCameraInstance)
