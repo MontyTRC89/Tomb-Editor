@@ -107,8 +107,8 @@ namespace TombLib.LevelData.Compilers
                         {
                             if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
                             {
-                                v.Lighting1 = (ushort)(((_vertexColors[sig] & 0x70000) >> 10) | ((_vertexColors[sig] & 0x700) >> 5) | (_vertexColors[sig] & 0x7));
-                                v.Lighting2 = (ushort)(((_vertexColors[sig] & 0xf80000) >> 9) | ((_vertexColors[sig] & 0xf800) >> 6) | ((_vertexColors[sig] & 0xf8) >> 3));
+                                v.Lighting1 = PackTo24BitLow(_vertexColors[sig]);
+                                v.Lighting2 = PackTo24BitHigh(_vertexColors[sig]);
                                 trRoom.Vertices[i] = v;
                             }
                             else
@@ -1806,9 +1806,7 @@ namespace TombLib.LevelData.Compilers
                                             if (_level.Settings.GameVersion != TRVersion.Game.TR5)
                                             {
                                                 if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
-                                                    refColor = (uint)(((v1.Lighting1 & 0x1c0) << 10) | ((v1.Lighting2 & 0x7c00) << 9) |
-                                                                        ((v1.Lighting1 & 0x38) << 5) | ((v1.Lighting2 & 0x3e0) << 6) |
-                                                                        (v1.Lighting1 & 0x7) | ((v1.Lighting2 & 0x1f) << 3));
+                                                    refColor = UnpackFrom24BitPair(v1.Lighting1, v1.Lighting2);
                                                 else
                                                     refColor = v1.Lighting2;
                                             }
@@ -1835,9 +1833,7 @@ namespace TombLib.LevelData.Compilers
                                                     if (_level.Settings.GameVersion != TRVersion.Game.TR5)
                                                     {
                                                         if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
-                                                            newColor = (uint)(((v2.Lighting1 & 0x1c0) << 10) | ((v2.Lighting2 & 0x7c00) << 9) |
-                                                                                ((v2.Lighting1 & 0x38) << 5) | ((v2.Lighting2 & 0x3e0) << 6) |
-                                                                                (v2.Lighting1 & 0x7) | ((v2.Lighting2 & 0x1f) << 3));
+                                                            newColor = UnpackFrom24BitPair(v2.Lighting1, v2.Lighting2);
                                                         else
                                                             newColor = v2.Lighting2;
                                                     }
@@ -1853,9 +1849,7 @@ namespace TombLib.LevelData.Compilers
                                                 {
                                                     if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
                                                     {
-                                                        var color = (uint)(((v2.Lighting1 & 0x1c0) << 10) | ((v2.Lighting2 & 0x7c00) << 9) |
-                                                                            ((v2.Lighting1 & 0x38) << 5) | ((v2.Lighting2 & 0x3e0) << 6) |
-                                                                            (v2.Lighting1 & 0x7) | ((v2.Lighting2 & 0x1f) << 3));
+                                                        var color = UnpackFrom24BitPair(v2.Lighting1, v2.Lighting2);
                                                         newColor = (uint)(0xff000000 | (((((color & 0xff) + (refColor & 0xff)) >> 1) |
                                                                             256 * (((((color >> 8) & 0xff) + ((refColor >> 8) & 0xff)) >> 1) |
                                                                                 256 * ((((color >> 16) & 0xff) + ((refColor >> 16) & 0xff)) >> 1)))));
@@ -2045,6 +2039,21 @@ namespace TombLib.LevelData.Compilers
             low |= (ushort)((result.Green & 0x7) << 3);
             low |= (ushort)(result.Blue & 0x7);
             return low;
+        }
+
+        private static uint UnpackFrom24BitPair(ushort packed1, ushort packed2)
+        {
+            return (uint)(((packed1 & 0x1c0) << 10) | ((packed2 & 0x7c00) << 9) | ((packed1 & 0x38) << 5) | ((packed2 & 0x3e0) << 6) | (packed1 & 0x7) | ((packed2 & 0x1f) << 3));
+        }
+
+        private static ushort PackTo24BitHigh(uint packed)
+        {
+            return (ushort)(((packed & 0xf80000) >> 9) | ((packed & 0xf800) >> 6) | ((packed & 0xf8) >> 3));
+        }
+
+        private static ushort PackTo24BitLow(uint packed)
+        {
+            return (ushort)(((packed & 0x70000) >> 10) | ((packed & 0x700) >> 5) | (packed & 0x7));
         }
     }
 }
