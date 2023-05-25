@@ -13,6 +13,7 @@ Tomb Editor:
  * Fix Lua ID assignment when pasting a group of objects.
  * Fix exception when autosave interval was set to 0 in editor options.
  * Fix several TEN object remaps in TrCatalog.xml.
+ * Fix light interpolation if 32 bit lighting is active.
 
 WadTool:
  * Automatically fix incorrect state IDs for switch objects when converting them to TEN format.
