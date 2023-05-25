@@ -15,11 +15,11 @@ Tomb Editor:
  * Fix several TEN object remaps in TrCatalog.xml.
 
 WadTool:
- * Automatically fix incorrect state IDs for switch objects when converting them to TEN.
+ * Automatically fix incorrect state IDs for switch objects when converting them to TEN format.
  * Fix incorrect conversion of several objects such as LARA_HOLSTERS to TEN format.
  * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
- * TEN Base WAD
-   - Improve TEN Lara wad base equipment such as Pistol holsters.
+ * TEN Base WAD:
+   - Improve TEN Lara wad base equipment such as pistol holsters.
    - Fix TEN Lara head rotation in shotgun, crossbow, and harpoon gun.
 
 Version 1.6.6
