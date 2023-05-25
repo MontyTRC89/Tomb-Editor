@@ -856,7 +856,7 @@ namespace WadTool
                         referenceWad = Wad2Loader.LoadFromFile(TombEngineConverter.ReferenceWadPath, true);
                 
                     var mov = (obj as WadMoveable).Clone();
-                    mov.ConvertMoveable(sourceWad.GameVersion, sourceWad);
+                    mov.ConvertMoveable(sourceWad.GameVersion, referenceWad);
                     obj = mov;
                 }
 
