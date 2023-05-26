@@ -179,7 +179,7 @@ LevelFuncs.Engine.Node.TestLaraVehicleAndType = function(type)
 		or (type == 7) and ObjID.MOTORBIKE
 		or (type == 8) and ObjID.RUBBER_BOAT
 	if TEN.Objects.Lara:GetVehicle() ~= nil then
-		return TEN.Objects.Lara:GetVehicle():GetObjectID() == ObjID[vehicleName]
+		return TEN.Objects.Lara:GetVehicle():GetObjectID() == vehicleName
 	else
 		return false
 	end
