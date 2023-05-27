@@ -266,9 +266,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(data, 0, data.Length);
                     }
                 }
-            }           
+            }
 
-            ReportProgress(100, "Done");
+            ReportProgress(100, "Done :" + _finalDest);
         }
     }
 }
