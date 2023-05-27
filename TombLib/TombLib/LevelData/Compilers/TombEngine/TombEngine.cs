@@ -268,7 +268,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
             }
 
-            ReportProgress(100, "Done :" + _finalDest);
+            ReportProgress(100, "Done");
         }
     }
 }

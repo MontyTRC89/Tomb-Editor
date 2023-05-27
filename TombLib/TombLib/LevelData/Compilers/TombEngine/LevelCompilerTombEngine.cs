@@ -106,6 +106,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
 
+            _progressReporter.ReportInfo("\nOutput file: " + _finalDest + "\n");
+
             // Return statistics
             return new CompilerStatistics
             {
