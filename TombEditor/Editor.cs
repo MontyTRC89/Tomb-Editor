@@ -979,7 +979,7 @@ namespace TombEditor
                 if (((ConfigurationChangedEvent)obj).Save && !_configurationIsLoadedFromFile)
                     Configuration.SaveTry();
 
-                _autoSavingTimer.Interval = Configuration.AutoSave_TimeInSeconds * 1000;
+                _autoSavingTimer.Interval = Configuration.AutoSave_TimeInSeconds > 0 ? (Configuration.AutoSave_TimeInSeconds * 1000) : int.MaxValue;
                 _autoSavingTimer.Enabled = Configuration.AutoSave_Enable && HasUnsavedChanges;
 
                 if (Configuration.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))

@@ -63,19 +63,19 @@
 			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
-			<moveable id="39" name="Dart" hidden="true" /> />
+			<moveable id="39" name="Dart" hidden="true" />
 			<moveable id="40" name="Wall-mounted dartgun" essential="false" t5m="DART_EMMITER" />
 			<moveable id="41" name="Door (opens upward)" essential="false" t5m="DOOR_TYPE9" />
 			<moveable id="42" name="Slamming doors" essential="false" t5m="SLAMMING_DOORS" />
 			<moveable id="43" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
-			<moveable id="44" name="Thor's hammer's handle" essential="false" t5m="ANIMATING110" />
-			<moveable id="45" name="Thor's hammer's block" essential="false" t5m="ROLLINGBALL" />
+			<moveable id="44" name="Thor's hammer's handle" essential="false" />
+			<moveable id="45" name="Thor's hammer's block" essential="false" />
 			<moveable id="46" name="Lightning ball / Some kind of box?" essential="false" t5m="ANIMATING34" />
-			<moveable id="47" name="Metal rod / Powered mining cart" essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
-			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
-			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
-			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT5" />
+			<moveable id="47" name="Metal rod / Powered mining cart" essential="false" />
+			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
+			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
+			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
+			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
 			<moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100" />
 			<moveable id="53" name="Falling ceiling" essential="false" t5m="FALLING_CEILING" />
 			<moveable id="54" name="Sword of Damocles" essential="false" t5m="SLICER_DICER" />
@@ -1442,7 +1442,7 @@
 			<moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" t5m="WALL_MOUNTED_BLADE" />  
 			<moveable id="87" name="Spikes / Barbed wire" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="88" name="Boulder / Barrel" essential="false" t5m="CLASSIC_ROLLINGBALL" />
-			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" t5m="CLASSIC_ROLLINGBALL" /> 
+			<moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" t5m="BIG_ROLLINGBALL" /> 
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="SLAMMING_DOORS" />
@@ -6266,8 +6266,8 @@
 			<moveable id="430" name="SETH_DOOR" />
 			<moveable id="431" name="HORUS_STATUE" />
 			<moveable id="432" name="STATUE_PLINTH" />
-			<moveable id="433" name="CLASSIC_ROLLING_BALL" />
-			<moveable id="434" name="BIG_ROLLING_BALL" />
+			<moveable id="433" name="CLASSIC_ROLLINGBALL" />
+			<moveable id="434" name="BIG_ROLLINGBALL" />
 			<moveable id="435" name="PUSHABLE_OBJECT_CLIMBABLE1" />
 			<moveable id="436" name="PUSHABLE_OBJECT_CLIMBABLE2" />
 			<moveable id="437" name="PUSHABLE_OBJECT_CLIMBABLE3" />
