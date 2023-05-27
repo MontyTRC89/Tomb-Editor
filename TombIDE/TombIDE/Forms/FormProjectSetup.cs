@@ -1,6 +1,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -316,6 +317,8 @@ namespace TombIDE
 					case TRVersion.Game.TombEngine: InstallTENEngine(createdProject); break;
 				}
 
+				AddLauncherToProject(createdProject);
+
 				DarkMessageBox.Show(this, "Project has been successfully installed.", "Success",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -520,6 +523,20 @@ namespace TombIDE
 
 			targetProject.Save();
 			progressBar.Increment(1);
+		}
+
+		private void AddLauncherToProject(Project targetProject)
+		{
+			string sharedLauncherFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "PLAY.exe");
+			string sharedSplashPropertiesFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "splash.xml");
+
+			// Copy launcher to project
+			File.Copy(sharedLauncherFilePath, targetProject.LaunchFilePath, true);
+			File.Copy(sharedSplashPropertiesFilePath, Path.Combine(targetProject.EnginePath, "splash.xml"), true);
+
+			// Apply icon to launcher
+			string icoFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Defaults", "Game Icons", targetProject.GameVersion + ".ico");
+			IconUtilities.InjectIcon(targetProject.LaunchFilePath, icoFilePath);
 		}
 
 		private void ExtractEntries(List<ZipArchiveEntry> entries, Project targetProject)
