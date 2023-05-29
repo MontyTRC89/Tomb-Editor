@@ -10,9 +10,9 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.IO
 {
-    public static class Prj2TombEngineConverter
-    {
-        private static readonly string _tenReferenceWad = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
+    public static class TombEngineConverter
+	{
+        public static readonly string ReferenceWadPath = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
         public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter)
         {
@@ -292,7 +292,7 @@ namespace TombLib.LevelData.IO
             try
             {
                 // Load new TombEngine reference Wad2
-                Wad2 referenceWad = Wad2Loader.LoadFromFile(_tenReferenceWad, true);
+                Wad2 referenceWad = Wad2Loader.LoadFromFile(ReferenceWadPath, true);
 
                 // Load level and all related resources
                 Level level = Path.GetExtension(source).ToLower() == ".prj" ?
@@ -369,7 +369,7 @@ namespace TombLib.LevelData.IO
                             continue;
                         }
 
-                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, wad, progressReporter);
+                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, referenceWad, progressReporter);
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
