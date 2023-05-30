@@ -14,6 +14,7 @@ Tomb Editor:
  * Fix exception when autosave interval was set to 0 in editor options.
  * Fix several TEN object remaps in TrCatalog.xml.
  * Fix light interpolation if 32 bit lighting is active.
+ * Build status window now displays the path to the built level.
 
 WadTool:
  * Automatically fix incorrect state IDs for switch objects when converting them to TEN format.
