@@ -162,7 +162,7 @@ LevelFuncs.Engine.Node.TestLaraVehicle = function()
 	return TEN.Objects.Lara:GetVehicle() ~= nil
 end
 
--- !Name "if Lara is on current vehicle..."
+-- !Name "If current Lara vehicle is..."
 -- !Section "Lara state"
 -- !Conditional "True"
 -- !Arguments "Enumeration, [ Snowmobile | Quad | Speedboat | Kayak | Upv | Minecart | Jeep | Motorbike | Rubber Boat ], 26, type of vehicle"
