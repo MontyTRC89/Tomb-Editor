@@ -21,6 +21,7 @@ WadTool:
  * Fix incorrect conversion of Lara object in legacy wads to TEN format.
  * Fix incorrect conversion of several objects such as LARA_HOLSTERS to TEN format.
  * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
+ * Fix more cases of incorrect animation importing.
  * TEN Base WAD:
    - Improve TEN Lara wad base equipment such as pistol holsters.
    - Fix TEN Lara head rotation in shotgun, crossbow, and harpoon gun.
