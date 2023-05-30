@@ -35,11 +35,16 @@ namespace TombIDE.Shared
 		public string ProjectPath { get; set; }
 
 		/// <summary>
-		/// The path where the project's tomb4.exe / PCTomb5.exe file is stored.
-		/// <para>For the new project format, the game's .exe file is stored in the /Engine/ directory.</para>
+		/// The path where the project's engine files are stored.
 		/// </summary>
 		[XmlIgnore]
 		public string EnginePath { get; set; }
+
+		/// <summary>
+		/// The path where the project's tomb4.exe / PCTomb5.exe file is stored.
+		/// </summary>
+		[XmlIgnore]
+		public string EngineExecutableDirectory { get; set; }
 
 		/// <summary>
 		/// The path where the project's SCRIPT.TXT and {LANGUAGE}.TXT files are stored.
@@ -92,6 +97,7 @@ namespace TombIDE.Shared
 				LaunchFilePath = LaunchFilePath,
 				ProjectPath = ProjectPath,
 				EnginePath = EnginePath,
+				EngineExecutableDirectory = EngineExecutableDirectory,
 				ScriptPath = ScriptPath,
 				LevelsPath = LevelsPath
 			};
@@ -120,6 +126,7 @@ namespace TombIDE.Shared
 					Directory.Move(ProjectPath, newProjectPath);
 
 				EnginePath = Path.Combine(newProjectPath, EnginePath.Remove(0, ProjectPath.Length + 1));
+				EngineExecutableDirectory = Path.Combine(newProjectPath, EngineExecutableDirectory.Remove(0, ProjectPath.Length + 1));
 
 				// Change ScriptPath / LevelsPath values of the project if they were inside the ProjectPath folder
 				if (ScriptPath.StartsWith(ProjectPath))
@@ -182,7 +189,24 @@ namespace TombIDE.Shared
 					if (isValidTR1 || isValidTR2 || isValidTR3 || isValidTR4 || isValidTEN)
 					{
 						EnginePath = engineDirectory;
+						EngineExecutableDirectory = EnginePath;
 						break;
+					}
+				}
+
+				if (GameVersion == TRVersion.Game.TombEngine)
+				{
+					string x64Directory = Path.Combine(engineDirectory, "Bin", "x64");
+					string x86Directory = Path.Combine(engineDirectory, "Bin", "x86");
+
+					if (Directory.Exists(x64Directory) || Directory.Exists(x86Directory))
+					{
+						EnginePath = engineDirectory;
+
+						if (Environment.Is64BitOperatingSystem)
+							EngineExecutableDirectory = x64Directory;
+						else
+							EngineExecutableDirectory = x86Directory;
 					}
 				}
 			}
@@ -232,7 +256,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public string GetTrprojFilePath()
 		{
-			foreach (string file in Directory.GetFiles(EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(EngineExecutableDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 			{
 				bool isValidTR1 = GameVersion == TRVersion.Game.TR1
 					&& Path.GetFileName(file).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase);

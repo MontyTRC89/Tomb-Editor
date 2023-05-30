@@ -12,7 +12,7 @@ namespace TombIDE.Shared.SharedClasses
 		{
 			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null);
 
-			string exeFilePath = Path.Combine(destProject.EnginePath, destProject.GetExeFileName());
+			string exeFilePath = Path.Combine(destProject.EngineExecutableDirectory, destProject.GetExeFileName());
 
 			string dataFileName = destLevel.DataFileName + destProject.GetLevelFileExtension();
 			string dataFilePath = Path.Combine(destProject.EnginePath, "data", dataFileName);
