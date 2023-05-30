@@ -597,8 +597,16 @@ namespace WadTool
 
                 var newId = new WadMoveableId(destId.Value);
 
-                var mov = moveable.Value.Clone();
-                mov.ConvertMoveable(src.GameVersion, referenceWad);
+				WadMoveable mov;
+				if (newId.TypeId == 0) // Copy Lara object directly from reference wad.
+				{
+					mov = referenceWad.Moveables[new WadMoveableId(0)].Clone();
+				}
+				else
+				{
+					mov = moveable.Value.Clone();
+					mov.ConvertMoveable(src.GameVersion, referenceWad);
+				}
 
                 dest.Add(newId, mov);
             }
@@ -850,13 +858,28 @@ namespace WadTool
                     continue;
 
                 // TEN moveables sometimes need conversion procedures.
-                if (destinationWad.GameVersion == TRVersion.Game.TombEngine && sourceWad.GameVersion != TRVersion.Game.TombEngine && obj is WadMoveable) 
-                {
-                    if (referenceWad == null)
+                if (destinationWad.GameVersion == TRVersion.Game.TombEngine && sourceWad.GameVersion != TRVersion.Game.TombEngine && obj is WadMoveable)
+				{
+					var mov = (obj as WadMoveable).Clone();
+
+					if (referenceWad == null)
                         referenceWad = Wad2Loader.LoadFromFile(TombEngineConverter.ReferenceWadPath, true);
-                
-                    var mov = (obj as WadMoveable).Clone();
-                    mov.ConvertMoveable(sourceWad.GameVersion, referenceWad);
+
+					if (mov.Id.TypeId == 0)
+					{
+						var dialogResult = DarkMessageBox.Show(owner, 
+							"You are trying to copy incompatible Lara object from legacy wad to TEN wad. \n" +
+							"Replace it with compatible Lara object from reference wad?",
+							"Incompatible Lara object", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (dialogResult == DialogResult.Yes)
+							mov = referenceWad.Moveables[new WadMoveableId(0)].Clone();
+					}
+					else
+					{
+						mov.ConvertMoveable(sourceWad.GameVersion, referenceWad);
+					}
+
                     obj = mov;
                 }
 
