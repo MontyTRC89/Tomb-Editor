@@ -359,7 +359,7 @@ namespace TombIDE
 
 			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
 
-			return new Project
+			var project = new Project
 			{
 				Name = projectName,
 				GameVersion = gameVersion,
@@ -367,9 +367,20 @@ namespace TombIDE
 				LaunchFilePath = launchFilePath,
 				ProjectPath = projectPath,
 				EnginePath = enginePath,
+				EngineExecutableDirectory = enginePath,
 				ScriptPath = scriptPath,
 				LevelsPath = levelsPath
 			};
+
+			if (project.GameVersion == TRVersion.Game.TombEngine)
+			{
+				if (Environment.Is64BitOperatingSystem)
+					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x64");
+				else
+					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x86");
+			}
+
+			return project;
 		}
 
 		private void InstallTR1Engine(Project targetProject)
@@ -520,6 +531,9 @@ namespace TombIDE
 
 			Directory.Move(Path.Combine(targetProject.EnginePath, "audio_temp"), Path.Combine(targetProject.EnginePath, "Audio"));
 			progressBar.Increment(1);
+
+			if (!Directory.Exists(targetProject.EngineExecutableDirectory))
+				targetProject.EngineExecutableDirectory = targetProject.EnginePath; // Legacy project structure support
 
 			targetProject.Save();
 			progressBar.Increment(1);
