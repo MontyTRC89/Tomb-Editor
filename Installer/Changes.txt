@@ -6,6 +6,7 @@ Tomb Editor:
  * Add ability to search for invisible texture tiles.
  * Use more consistent naming for newly generated flipped and split rooms.
  * Write catalog file reading errors to a log file.
+ * Build status window now displays the path to the built level.
  * Don't throw useless invalid texture warnings when building a level.
  * Fix TEN texture packer crash if static meshes have more textures than moveables.
  * Fix nodes made from context menu incorrectly linking to selected node as next instead of previous.
@@ -14,7 +15,6 @@ Tomb Editor:
  * Fix exception when autosave interval was set to 0 in editor options.
  * Fix several TEN object remaps in TrCatalog.xml.
  * Fix light interpolation if 32 bit lighting is active.
- * Build status window now displays the path to the built level.
 
 WadTool:
  * Automatically fix incorrect state IDs for switch objects when converting them to TEN format.
