@@ -295,7 +295,7 @@ namespace TombLib.LevelData
 
         public List<string> GetListOfSoundtracks()
         {
-            var path = Path.Combine(Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath)), "Audio");
+            var path = Path.Combine(MakeAbsolute(GameDirectory), "Audio");
 
             if (!Directory.Exists(path))
                 return new List<string>();
