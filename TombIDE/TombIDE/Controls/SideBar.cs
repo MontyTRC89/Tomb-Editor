@@ -398,7 +398,7 @@ namespace TombIDE.Controls
 				var startInfo = new ProcessStartInfo
 				{
 					FileName = _ide.Project.LaunchFilePath,
-					WorkingDirectory = _ide.Project.EnginePath
+					WorkingDirectory = _ide.Project.EngineExecutableDirectory
 				};
 
 				Process.Start(startInfo);

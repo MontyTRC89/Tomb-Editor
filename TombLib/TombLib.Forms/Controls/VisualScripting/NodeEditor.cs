@@ -829,11 +829,10 @@ namespace TombLib.Controls.VisualScripting
             node.ScreenPosition = FromVisualCoord(PointToClient((sender as Form).Location));
 
             Nodes.Add(node);
-            UpdateVisibleNodes();
 
-            var previousNode = SelectedNode;
+            LinkToSelectedNode(node, Control.ModifierKeys == Keys.Alt);
+            UpdateVisibleNodes();
             SelectNode(node, false, true);
-            LinkToSelectedNode(previousNode, Control.ModifierKeys == Keys.Alt);
         }
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)

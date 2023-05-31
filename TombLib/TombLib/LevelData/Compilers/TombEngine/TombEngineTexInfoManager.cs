@@ -1497,7 +1497,7 @@ namespace TombLib.LevelData.Compilers
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
             MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numMoveablesAtlases, false, true, 0, atlasSize);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
@@ -1551,7 +1551,7 @@ namespace TombLib.LevelData.Compilers
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
                         var newObjectTexture = new ObjectTexture(parent, child, maxSize);
-
+#if DEBUG
                         if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
                             newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
                             newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
@@ -1565,10 +1565,9 @@ namespace TombLib.LevelData.Compilers
                         {
                             _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
-
+#endif
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
-
             foreach (var animTexture in _actualAnimTextures)
             {
                 SortOutAlpha(animTexture.CompiledAnimation);

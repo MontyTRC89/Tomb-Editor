@@ -70,6 +70,9 @@ namespace TombIDE
 					return true;
 			}
 
+			if (project.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
+				return File.Exists(Path.Combine(project.EngineExecutableDirectory, "TombEngine.exe"));
+
 			return false;
 		}
 

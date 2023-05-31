@@ -11,7 +11,7 @@ namespace TombIDE
 		/// <exception cref="FileNotFoundException" />
 		public static string GetLauncherPathFromProject(Project project)
 		{
-			if (project.EnginePath.ToLower() == project.ProjectPath.ToLower()) // Old project format
+			if (project.EnginePath.Equals(project.ProjectPath, StringComparison.OrdinalIgnoreCase)) // Old project format (TEN never used it !!!)
 			{
 				List<string> validGameExeFiles = GetValidGameExeFiles(project.EnginePath);
 
@@ -21,7 +21,7 @@ namespace TombIDE
 					throw new FileNotFoundException("Detected more than one game .exe file in the /Engine/ directory.\n" +
 						"Couldn't distinguish the engine type.");
 			}
-			else // New project format
+			else // New project format (The ONLY valid TEN format)
 			{
 				List<string> launcherFiles = GetLauncherExecutablesFromDirectory(project.ProjectPath);
 
@@ -52,22 +52,26 @@ namespace TombIDE
 			{
 				string selectedFileDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedFilePath));
 
-				if (selectedFileDirectoryName.ToLower() == "engine") // New project format
-				{
-					string parentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(selectedFilePath));
-					List<string> launcherFiles = GetLauncherExecutablesFromDirectory(parentDirectory);
+				string parentDirectory;
 
-					if (launcherFiles.Count == 1)
-						return launcherFiles[0];
-					else if (launcherFiles.Count > 1)
-						throw new FileNotFoundException("Selected project contains more than one launcher executable.\n" +
-							"Please check if the project is correctly installed.");
-					else
-						throw new FileNotFoundException("Selected project doesn't contain any launcher executable.\n" +
-							"Please check if the project is correctly installed.");
-				}
+				if (selectedFileDirectoryName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // New project format
+					parentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(selectedFilePath));
+				else if (selectedFileDirectoryName.Equals("x64", StringComparison.OrdinalIgnoreCase)
+					|| selectedFileDirectoryName.Equals("x86", StringComparison.OrdinalIgnoreCase))
+					parentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(selectedFilePath))));
 				else // Old project format
 					return selectedFilePath;
+
+				List<string> launcherFiles = GetLauncherExecutablesFromDirectory(parentDirectory);
+
+				if (launcherFiles.Count == 1)
+					return launcherFiles[0];
+				else if (launcherFiles.Count > 1)
+					throw new FileNotFoundException("Selected project contains more than one launcher executable.\n" +
+						"Please check if the project is correctly installed.");
+				else
+					throw new FileNotFoundException("Selected project doesn't contain any launcher executable.\n" +
+						"Please check if the project is correctly installed.");
 			}
 			else
 				throw new FileNotFoundException("Invalid game .exe file.");
@@ -87,7 +91,18 @@ namespace TombIDE
 				{
 					List<string> validGameExeFiles = GetValidGameExeFiles(engineDirectory);
 
-					if (validGameExeFiles.Count == 1)
+					if (validGameExeFiles.Count == 0)
+					{
+						string x64Directory = Path.Combine(engineDirectory, "Bin", "x64");
+						string x86Directory = Path.Combine(engineDirectory, "Bin", "x86");
+
+						if (Directory.Exists(x64Directory) || Directory.Exists(x86Directory))
+							validGameExeFiles = Environment.Is64BitOperatingSystem ? GetValidGameExeFiles(x64Directory) : GetValidGameExeFiles(x86Directory);
+					}
+					
+					if (validGameExeFiles.Count == 0)
+						throw new FileNotFoundException("Couldn't find a valid engine .exe file.");
+					else if (validGameExeFiles.Count == 1)
 						return validGameExeFiles[0];
 					else
 						throw new FileNotFoundException("Detected more than one game .exe file in the /Engine/ directory.\n" +

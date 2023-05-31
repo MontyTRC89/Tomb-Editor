@@ -126,7 +126,7 @@ namespace TombIDE.ProjectMaster
 				Level level = Level.CreateSimpleLevel();
 
 				string prj2FilePath = Path.Combine(createdLevel.FolderPath, createdLevel.DataFileName) + ".prj2";
-				string exeFilePath = Path.Combine(_targetProject.EnginePath, _targetProject.GetExeFileName());
+				string exeFilePath = Path.Combine(_targetProject.EngineExecutableDirectory, _targetProject.GetExeFileName());
 
 				string dataFilePath = Path.Combine(_targetProject.EnginePath, "data", createdLevel.DataFileName + _targetProject.GetLevelFileExtension());
 

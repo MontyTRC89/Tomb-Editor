@@ -72,7 +72,13 @@ namespace TombIDE
 			}
 			else if (Path.GetFileName(exeFilePath).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
 			{
-				textBox_ScriptPath.Text = Path.Combine(gameExeDirectory, "Scripts");
+				string targetParentDirectory = gameExeDirectory;
+				string directoryName = Path.GetFileName(gameExeDirectory);
+
+				if (directoryName.Equals("x64", StringComparison.OrdinalIgnoreCase) || directoryName.Equals("x86", StringComparison.OrdinalIgnoreCase))
+					targetParentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory)); // 2 steps back
+
+				textBox_ScriptPath.Text = Path.Combine(targetParentDirectory, "Scripts");
 				isHardcoded = true;
 				return;
 			}
@@ -125,6 +131,21 @@ namespace TombIDE
 			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
 			{
 				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
+
+				foreach (string directory in Directory.GetDirectories(parentDirectory))
+				{
+					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
+					{
+						textBox_LevelsPath.Text = directory;
+						break;
+					}
+				}
+			}
+
+			if (Path.GetFileName(gameExeDirectory).Equals("x64", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(gameExeDirectory).Equals("x86", StringComparison.OrdinalIgnoreCase))
+			{
+				string parentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory))); // 3 steps back
 
 				foreach (string directory in Directory.GetDirectories(parentDirectory))
 				{
@@ -278,6 +299,22 @@ namespace TombIDE
 					LevelsPath = levelsPath
 				};
 
+				if (importedProject.GameVersion == TRVersion.Game.TombEngine)
+				{
+					if (Path.GetDirectoryName(textBox_ExePath.Text).Equals("x64", StringComparison.OrdinalIgnoreCase)
+						|| Path.GetDirectoryName(textBox_ExePath.Text).Equals("x86", StringComparison.OrdinalIgnoreCase))
+					{
+						if (Environment.Is64BitOperatingSystem)
+							importedProject.EngineExecutableDirectory = Path.Combine(importedProject.EnginePath, "Bin", "x64");
+						else
+							importedProject.EngineExecutableDirectory = Path.Combine(importedProject.EnginePath, "Bin", "x86");
+					}
+					else
+						importedProject.EngineExecutableDirectory = importedProject.EnginePath;
+				}
+				else
+					importedProject.EngineExecutableDirectory = importedProject.EnginePath;
+
 				// Create the .trproj file
 				importedProject.Save(); // .trproj = .xml but .trproj can be opened with TombIDE
 
@@ -361,6 +398,9 @@ namespace TombIDE
 			// Check if the project is using the new format
 			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
 				return Path.GetDirectoryName(gameExeDirectory);
+			else if (Path.GetFileName(gameExeDirectory).Equals("x64", StringComparison.OrdinalIgnoreCase)
+				|| Path.GetFileName(gameExeDirectory).Equals("x86", StringComparison.OrdinalIgnoreCase)) // New TEN
+				return Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory)));
 			else
 				return gameExeDirectory;
 		}

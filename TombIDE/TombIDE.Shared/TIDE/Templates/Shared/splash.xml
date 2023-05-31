@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Configuration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<WindowAccent>ENABLE_ACRYLICBLURBEHIND</WindowAccent>
+	<TopBar_GradientFlow>TopToBottom</TopBar_GradientFlow>
+	<TopBar_GradientStartColor>#404040</TopBar_GradientStartColor>
+	<TopBar_GradientStartAlpha>192</TopBar_GradientStartAlpha>
+	<TopBar_GradientEndColor>#202020</TopBar_GradientEndColor>
+	<TopBar_GradientEndAlpha>192</TopBar_GradientEndAlpha>
+	<BottomBar_GradientFlow>TopToBottom</BottomBar_GradientFlow>
+	<BottomBar_GradientStartColor>#404040</BottomBar_GradientStartColor>
+	<BottomBar_GradientStartAlpha>192</BottomBar_GradientStartAlpha>
+	<BottomBar_GradientEndColor>#202020</BottomBar_GradientEndColor>
+	<BottomBar_GradientEndAlpha>192</BottomBar_GradientEndAlpha>
+	<FontColor>White</FontColor>
+	<DisplayTimeMilliseconds>1500</DisplayTimeMilliseconds>
+</Configuration>

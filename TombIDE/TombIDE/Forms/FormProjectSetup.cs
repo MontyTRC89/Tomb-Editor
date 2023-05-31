@@ -1,6 +1,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -316,6 +317,8 @@ namespace TombIDE
 					case TRVersion.Game.TombEngine: InstallTENEngine(createdProject); break;
 				}
 
+				AddLauncherToProject(createdProject);
+
 				DarkMessageBox.Show(this, "Project has been successfully installed.", "Success",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -356,7 +359,7 @@ namespace TombIDE
 
 			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
 
-			return new Project
+			var project = new Project
 			{
 				Name = projectName,
 				GameVersion = gameVersion,
@@ -364,9 +367,20 @@ namespace TombIDE
 				LaunchFilePath = launchFilePath,
 				ProjectPath = projectPath,
 				EnginePath = enginePath,
+				EngineExecutableDirectory = enginePath,
 				ScriptPath = scriptPath,
 				LevelsPath = levelsPath
 			};
+
+			if (project.GameVersion == TRVersion.Game.TombEngine)
+			{
+				if (Environment.Is64BitOperatingSystem)
+					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x64");
+				else
+					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x86");
+			}
+
+			return project;
 		}
 
 		private void InstallTR1Engine(Project targetProject)
@@ -518,8 +532,25 @@ namespace TombIDE
 			Directory.Move(Path.Combine(targetProject.EnginePath, "audio_temp"), Path.Combine(targetProject.EnginePath, "Audio"));
 			progressBar.Increment(1);
 
+			if (!Directory.Exists(targetProject.EngineExecutableDirectory))
+				targetProject.EngineExecutableDirectory = targetProject.EnginePath; // Legacy project structure support
+
 			targetProject.Save();
 			progressBar.Increment(1);
+		}
+
+		private void AddLauncherToProject(Project targetProject)
+		{
+			string sharedLauncherFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "PLAY.exe");
+			string sharedSplashPropertiesFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "splash.xml");
+
+			// Copy launcher to project
+			File.Copy(sharedLauncherFilePath, targetProject.LaunchFilePath, true);
+			File.Copy(sharedSplashPropertiesFilePath, Path.Combine(targetProject.EnginePath, "splash.xml"), true);
+
+			// Apply icon to launcher
+			string icoFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Defaults", "Game Icons", targetProject.GameVersion + ".ico");
+			IconUtilities.InjectIcon(targetProject.LaunchFilePath, icoFilePath);
 		}
 
 		private void ExtractEntries(List<ZipArchiveEntry> entries, Project targetProject)

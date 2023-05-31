@@ -1389,7 +1389,7 @@ namespace TombLib.LevelData.Compilers.Util
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
                         var newObjectTexture = new ObjectTexture(parent, child, version, maxSize);
-
+#if DEBUG
                         if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
                             newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
                             newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
@@ -1403,7 +1403,7 @@ namespace TombLib.LevelData.Compilers.Util
                         {
                             _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
-
+#endif
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
 

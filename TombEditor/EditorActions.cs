@@ -4995,7 +4995,7 @@ namespace TombEditor
             var newLevel = string.Empty;
 
             using (var form = new FormOperationDialog("TombEngine level converter", false, true, progressReporter =>
-                newLevel = Prj2TombEngineConverter.Start(fileName, owner, progressReporter)))
+                newLevel = TombEngineConverter.Start(fileName, owner, progressReporter)))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK || string.IsNullOrEmpty(newLevel))
                     return false;

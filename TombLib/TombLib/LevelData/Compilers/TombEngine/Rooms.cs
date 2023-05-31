@@ -907,7 +907,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                if (!light.Enabled || !light.IsDynamicallyUsed || light.Type == LightType.FogBulb)
+                if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
 
                 if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)

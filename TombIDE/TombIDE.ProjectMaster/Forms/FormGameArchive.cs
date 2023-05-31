@@ -130,6 +130,7 @@ namespace TombIDE.ProjectMaster.Forms
 				Path.Combine(_ide.Project.EnginePath, "audio", "cdaudio.wad"),
 				Path.Combine(_ide.Project.EnginePath, "data.bin"),
 				Path.Combine(_ide.Project.EnginePath, "tomb3.exe"),
+				Path.Combine(_ide.Project.EnginePath, "tomb3_ConfigTool.exe"),
 				Path.Combine(_ide.Project.EnginePath, "splash.xml")
 			};
 
@@ -172,6 +173,7 @@ namespace TombIDE.ProjectMaster.Forms
 		{
 			string[] importantFolders = new string[]
 			{
+				Path.Combine(_ide.Project.EnginePath, "Bin"),
 				Path.Combine(_ide.Project.EnginePath, "Audio"),
 				Path.Combine(_ide.Project.EnginePath, "Data"),
 				Path.Combine(_ide.Project.EnginePath, "Screens"),

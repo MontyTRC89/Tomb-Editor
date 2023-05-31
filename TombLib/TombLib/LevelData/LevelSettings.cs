@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
@@ -294,7 +295,7 @@ namespace TombLib.LevelData
 
         public List<string> GetListOfSoundtracks()
         {
-            var path = Path.Combine(Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath)), "Audio");
+            var path = Path.Combine(MakeAbsolute(GameDirectory), "Audio");
 
             if (!Directory.Exists(path))
                 return new List<string>();
@@ -564,7 +565,7 @@ namespace TombLib.LevelData
             switch (GameVersion.Native())
             {
                 case TRVersion.Game.TombEngine:
-                    wadName = DefaultPaths.ProgramDirectory + "\\Assets\\Wads\\TombEngine.wad2";
+                    wadName = TombEngineConverter.ReferenceWadPath;
                     break;
             }
 
