@@ -253,12 +253,19 @@ namespace TombLib.GeometryIO.Importers
                     meshNameList = meshNameList.OrderBy(s => s, new CustomComparer<string>(NaturalComparer.Do)).ToList();
 
                 // Determine amount of animation channels
-                var maxChannelCount = scene.Animations
-                    .Max(a => a.NodeAnimationChannels.Where(c => meshNameList.Contains(c.NodeName)).Count());
+                var maxChannelCount = scene.MeshCount; 
 
-                // Loop through all animations and add appropriate ones.
-                // Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.
-                if (maxChannelCount <= 0 || maxChannelCount != meshNameList.Count)
+				// If amount of animation channels does not correspond to mesh count, try to guess valid channels
+				// by comparing their names.
+				if (maxChannelCount != meshNameList.Count)
+				{
+					maxChannelCount = scene.Animations
+						.Max(a => a.NodeAnimationChannels.Where(c => meshNameList.Contains(c.NodeName)).Count());
+				}
+
+				// Loop through all animations and add appropriate ones.
+				// Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.
+				if (maxChannelCount <= 0 || maxChannelCount != meshNameList.Count)
                     logger.Warn("Actual number of meshes doesn't correspond to mesh list. Animations won't be imported.");
                 else
                 {
