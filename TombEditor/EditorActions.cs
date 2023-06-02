@@ -3975,7 +3975,11 @@ namespace TombEditor
             if (AutoLoadSamplePath(level.Settings))
                 whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Stock samples" : "\nAlso stock samples") + " were assigned because some samples were missing.";
 
-            if (!string.IsNullOrEmpty(whatLoaded))
+
+			if (level.Settings.ConvertLegacyTombEngineExecutablePath())
+				whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Executable path" : "\nAlso executable path") + " was upgraded to new TEN directory structure.";
+
+			if (!string.IsNullOrEmpty(whatLoaded))
                 _editor.SendMessage(whatLoaded, PopupType.Info);
 
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,

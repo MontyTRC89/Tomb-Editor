@@ -585,6 +585,34 @@ namespace TombLib.LevelData
             return false;
         }
 
+		public bool ConvertLegacyTombEngineExecutablePath()
+		{
+			if (GameVersion != TRVersion.Game.TombEngine)
+				return false;
+
+			var exePath = Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath));
+			var exeName = Path.GetFileName(MakeAbsolute(GameExecutableFilePath));
+
+			if (!Directory.Exists(Path.Combine(exePath, "Bin")))
+				return false;
+
+			if (Environment.Is64BitOperatingSystem)
+				exePath = Path.Combine(exePath, "Bin", "x64");
+			else
+				exePath = Path.Combine(exePath, "Bin", "x86");
+
+			if (!Directory.Exists(Path.Combine(exePath)))
+				return false;
+
+			exePath = Path.Combine(exePath, exeName);
+
+			if (!File.Exists(exePath))
+				return false;
+
+			GameExecutableFilePath = MakeRelative(exePath, VariableType.GameDirectory);
+			return true;
+		}
+
         public bool LoadDefaultSoundCatalog()
         {
             string catalogName = string.Empty;

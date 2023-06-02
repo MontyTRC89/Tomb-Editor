@@ -460,7 +460,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void CopyNodeScripts()
         {
-            var scriptDirectory = Path.Combine(Path.GetDirectoryName(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)), 
+            var scriptDirectory = Path.Combine(_level.Settings.MakeAbsolute(_level.Settings.GameDirectory), 
                                                ScriptingUtils.GameNodeScriptPath);
 
             if (!Directory.Exists(ScriptingUtils.NodeScriptPath))
