@@ -106,6 +106,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
 
+            _progressReporter.ReportInfo("\nOutput file: " + _finalDest);
+
             // Return statistics
             return new CompilerStatistics
             {
@@ -458,7 +460,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void CopyNodeScripts()
         {
-            var scriptDirectory = Path.Combine(Path.GetDirectoryName(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)), 
+            var scriptDirectory = Path.Combine(_level.Settings.MakeAbsolute(_level.Settings.GameDirectory), 
                                                ScriptingUtils.GameNodeScriptPath);
 
             if (!Directory.Exists(ScriptingUtils.NodeScriptPath))
