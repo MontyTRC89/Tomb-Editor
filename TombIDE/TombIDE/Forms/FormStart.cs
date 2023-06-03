@@ -1,9 +1,12 @@
 using DarkUI.Config;
 using DarkUI.Controls;
 using DarkUI.Forms;
+using FreeImageAPI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -349,6 +352,8 @@ namespace TombIDE
 			if (!IsValidGameLauncher())
 				return;
 
+			TryUpdateGameLauncher();
+
 			if (checkBox_Remember.Checked)
 				_ide.IDEConfiguration.RememberedProject = _selectedProject.ProjectPath;
 
@@ -470,6 +475,71 @@ namespace TombIDE
 			}
 			else
 				return true;
+		}
+
+		private void TryUpdateGameLauncher()
+		{
+			if (!File.Exists(_selectedProject.LaunchFilePath))
+				return;
+
+			var projectLauncherVersionInfo = FileVersionInfo.GetVersionInfo(_selectedProject.LaunchFilePath);
+
+			if (projectLauncherVersionInfo.OriginalFilename != "launch.exe")
+				return;
+
+			try
+			{
+				// Update icon cache
+				NativeMethods.SHChangeNotify(0x08000000, 0x0000, IntPtr.Zero, IntPtr.Zero);
+
+				string sharedLauncherFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "PLAY.exe");
+				var recentLauncherVersionInfo = FileVersionInfo.GetVersionInfo(sharedLauncherFilePath);
+
+				if (new Version(projectLauncherVersionInfo.ProductVersion) < new Version(recentLauncherVersionInfo.ProductVersion))
+				{
+					string tempIconFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".ico");
+
+					try
+					{
+						var ico_16 = IconUtilities.ExtractIcon(_selectedProject.LaunchFilePath, IconSize.Small).ToBitmap();
+						var ico_32 = IconUtilities.ExtractIcon(_selectedProject.LaunchFilePath, IconSize.Large).ToBitmap();
+						var ico_48 = IconUtilities.ExtractIcon(_selectedProject.LaunchFilePath, IconSize.ExtraLarge).ToBitmap();
+						var ico_256 = IconUtilities.ExtractIcon(_selectedProject.LaunchFilePath, IconSize.Jumbo).ToBitmap();
+
+						string randomFileName = Path.GetRandomFileName();
+
+						string pngFilePath_16 = Path.Combine(Path.GetTempPath(), randomFileName + "_16.png");
+						string pngFilePath_48 = Path.Combine(Path.GetTempPath(), randomFileName + "_48.png");
+						string pngFilePath_32 = Path.Combine(Path.GetTempPath(), randomFileName + "_32.png");
+						string pngFilePath_256 = Path.Combine(Path.GetTempPath(), randomFileName + "_256.png");
+
+						ico_256.Save(pngFilePath_256, ImageFormat.Bmp);
+						ico_48.Save(pngFilePath_48, ImageFormat.Bmp);
+						ico_32.Save(pngFilePath_32, ImageFormat.Bmp);
+						ico_16.Save(pngFilePath_16, ImageFormat.Bmp);
+
+						new FreeImageBitmap(pngFilePath_16).Save(tempIconFilePath);
+						new FreeImageBitmap(pngFilePath_32).SaveAdd(tempIconFilePath);
+						new FreeImageBitmap(pngFilePath_48).SaveAdd(tempIconFilePath);
+						new FreeImageBitmap(pngFilePath_256).SaveAdd(tempIconFilePath);
+
+						File.Delete(pngFilePath_16);
+						File.Delete(pngFilePath_32);
+						File.Delete(pngFilePath_48);
+						File.Delete(pngFilePath_256);
+					}
+					catch { }
+
+					File.Copy(sharedLauncherFilePath, _selectedProject.LaunchFilePath, true);
+
+					if (File.Exists(tempIconFilePath))
+					{
+						IconUtilities.InjectIcon(_selectedProject.LaunchFilePath, tempIconFilePath);
+						File.Delete(tempIconFilePath);
+					}
+				}
+			}
+			catch { }
 		}
 
 		#endregion Other methods
