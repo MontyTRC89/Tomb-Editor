@@ -1,4 +1,5 @@
-﻿using TombLib.LevelData;
+﻿using TombIDE.Shared.NewStructure.Implementations;
+using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
 {
@@ -8,5 +9,8 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string DataFileExtension => ".tr4";
 		public override string EngineExecutableFileName => "tomb4.exe";
+
+		public TR4GameProject(TrprojFile trproj) : base(trproj)
+		{ }
 	}
 }

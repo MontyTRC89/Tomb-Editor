@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -29,6 +31,11 @@ namespace TombIDE.Shared.NewStructure
 		/// The path where the project's script files are stored.
 		/// </summary>
 		string ScriptRootDirectoryPath { get; }
+
+		/// <summary>
+		/// The path where the project's plugins are stored (if the game engine supports them).
+		/// </summary>
+		string PluginsDirectoryPath { get; }
 
 		/// <summary>
 		/// The path of the main script file. (e.g. <c>"C:\...\Script\Script.txt"</c>, <c>"C:\...\Engine\Scripts\Gameflow.lua"</c>, ...)
@@ -63,7 +70,7 @@ namespace TombIDE.Shared.NewStructure
 		/// <summary>
 		/// Returns the path where the project's engine files are stored. (root directory may not contain the engine executable file in TombEngine based projects)
 		/// </summary>
-		string GetEngineDirectoryPath();
+		string GetEngineRootDirectoryPath();
 
 		/// <summary>
 		/// Returns the path of the engine executable file. (e.g. <c>"C:\...\Engine\tomb4.exe"</c>, <c>"C:\...\Bin\x64\TombEngine.exe"</c>, ...)
@@ -76,9 +83,14 @@ namespace TombIDE.Shared.NewStructure
 		string GetDefaultGameLanguageFilePath();
 
 		/// <summary>
-		/// Returns a list of all valid .trmap file paths in the project's Maps directory and external map file paths.
+		/// Returns a list of all valid .trmap files in the project's Maps directory and external map file paths.
 		/// </summary>
-		string[] GetAllValidMapFilePaths();
+		FileInfo[] GetAllValidTrmapFiles();
+
+		/// <summary>
+		/// Returns a list of all valid map projects in the project's Maps directory and external map file paths.
+		/// </summary>
+		MapProject[] GetAllValidMapProjects();
 
 		/// <summary>
 		/// Sets the project's script root directory to the given path. May require a restart of the IDE, depending on the implementation.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -14,14 +15,14 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".ten";
 		public override string EngineExecutableFileName => "TombEngine.exe";
 
-		public TENGameProject()
+		public TENGameProject(TrprojFile trproj) : base(trproj)
 			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
 
 		public override string GetEngineExecutableFilePath()
 		{
 			string engineExecutableFilePath;
 
-			string engineDirectoryPath = GetEngineDirectoryPath();
+			string engineDirectoryPath = GetEngineRootDirectoryPath();
 			string x64Directory = Path.Combine(engineDirectoryPath, "Bin", "x64");
 			string x86Directory = Path.Combine(engineDirectoryPath, "Bin", "x86");
 
@@ -72,8 +73,6 @@ namespace TombIDE.Shared.NewStructure
 
 			return true;
 		}
-
-		public override void Save() => throw new NotImplementedException();
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");

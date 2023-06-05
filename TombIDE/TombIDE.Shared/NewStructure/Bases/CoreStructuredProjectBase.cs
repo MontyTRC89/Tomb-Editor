@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -17,7 +18,7 @@ namespace TombIDE.Shared.NewStructure
 		public abstract override string DataFileExtension { get; }
 		public abstract override string EngineExecutableFileName { get; }
 
-		public CoreStructuredProjectBase()
+		public CoreStructuredProjectBase(TrprojFile trproj) : base(trproj)
 			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
 
 		public override string GetDefaultGameLanguageFilePath()
@@ -71,7 +72,5 @@ namespace TombIDE.Shared.NewStructure
 
 			return true;
 		}
-
-		public override void Save() => throw new NotImplementedException();
 	}
 }

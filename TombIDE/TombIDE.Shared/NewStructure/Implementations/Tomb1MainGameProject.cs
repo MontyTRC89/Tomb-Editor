@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -14,7 +15,7 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".phd";
 		public override string EngineExecutableFileName => "tomb1main.exe";
 
-		public Tomb1MainGameProject()
+		public Tomb1MainGameProject(TrprojFile trproj) : base(trproj)
 			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
 
 		public override string GetDefaultGameLanguageFilePath()
@@ -40,8 +41,6 @@ namespace TombIDE.Shared.NewStructure
 
 			return true;
 		}
-
-		public override void Save() => throw new NotImplementedException();
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");

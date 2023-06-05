@@ -1,11 +1,14 @@
-﻿namespace TombIDE.Shared.NewStructure
+﻿using System.IO;
+
+namespace TombIDE.Shared.NewStructure
 {
 	public interface IMapProject : IProject
 	{
 		/// <summary>
-		/// The target .prj2 file which should be opened in TombEditor when double-clicking on the map entry on the list.
+		/// The target .prj2 file name (not path) which should be opened in TombEditor when double-clicking on the map entry on the list.
+		/// <para>Set to <see langword="null" /> to get the file name of the most recently modified .prj2 file from the map's directory.</para>
 		/// </summary>
-		string TargetPrj2FilePath { get; }
+		string TargetPrj2FileName { get; set; }
 
 		/// <summary>
 		/// Returns the path to the .trmap file of the map. File name should be "project.trmap".
@@ -13,8 +16,13 @@
 		string GetTrmapFilePath();
 
 		/// <summary>
-		/// Returns paths of all .prj2 files in the project folder. Includes backup files if specified.
+		/// Returns all .prj2 files in the map's directory. Includes backup files if specified.
 		/// </summary>
-		string[] GetPrj2FilePaths(bool includeBackups = false);
+		FileInfo[] GetPrj2Files(bool includeBackups = false);
+
+		/// <summary>
+		/// Returns the name (not path) of the most recently modified .prj2 file in the map project folder. Excludes backup files.
+		/// </summary>
+		string GetMostRecentlyModifiedPrj2FileName();
 	}
 }

@@ -10,6 +10,9 @@ namespace TombIDE.Shared.NewStructure.Implementations
 {
 	public class TrprojFile : ITrproj
 	{
+		[XmlIgnore]
+		public string FilePath { get; protected set; }
+
 		public Version Version => new(2, 0);
 
 		public string ProjectName { get; set; }
@@ -25,23 +28,6 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public List<string> ExternalMapFilePaths { get; set; } = new();
 		public List<string> GameLanguageNames { get; set; } = new();
 
-		/// <summary>
-		/// A list of legacy map projects that will be converted to the new project structure.
-		/// </summary>
-		[XmlIgnore]
-		public List<ProjectLevel> MapProjectsToConvert { get; set; } = new();
-
-		public void DecodeProjectPaths(string trprojFilePath)
-		{
-			string projectPath = Path.GetDirectoryName(trprojFilePath);
-
-			MapsDirectoryPath = Path.GetFullPath(MapsDirectoryPath, projectPath);
-			ScriptRootDirectoryPath = Path.GetFullPath(ScriptRootDirectoryPath, projectPath);
-			PluginsDirectoryPath = Path.GetFullPath(PluginsDirectoryPath, projectPath);
-
-			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
-		}
-
 		public void EncodeProjectPaths(string trprojFilePath)
 		{
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
@@ -51,6 +37,36 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			PluginsDirectoryPath = Path.GetRelativePath(projectPath, PluginsDirectoryPath);
 
 			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
+		}
+
+		public void DecodeProjectPaths(string trprojFilePath)
+		{
+			FilePath = trprojFilePath;
+
+			string projectPath = Path.GetDirectoryName(trprojFilePath);
+
+			MapsDirectoryPath = Path.GetFullPath(MapsDirectoryPath, projectPath);
+			ScriptRootDirectoryPath = Path.GetFullPath(ScriptRootDirectoryPath, projectPath);
+			PluginsDirectoryPath = Path.GetFullPath(PluginsDirectoryPath, projectPath);
+
+			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
+		}
+
+		public void WriteToFile(string filePath)
+		{
+			try
+			{
+				EncodeProjectPaths(filePath);
+				XmlUtils.WriteXmlFile(filePath, this);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to save the project file.", ex);
+			}
+			finally
+			{
+				DecodeProjectPaths(filePath);
+			}
 		}
 
 		public static TrprojFile FromFile(string filePath)
@@ -80,17 +96,44 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		private static TrprojFile FromLegacy(LegacyTrprojFile legacyTrproj)
 		{
-			TrprojFile trproj = new()
+			string trprojDirectory = Path.GetDirectoryName(legacyTrproj.FilePath);
+
+			var trproj = new TrprojFile
 			{
+				FilePath = legacyTrproj.FilePath,
+
 				ProjectName = legacyTrproj.Name,
 				TargetGameVersion = legacyTrproj.GameVersion,
+
 				MapsDirectoryPath = legacyTrproj.LevelsPath,
 				ScriptRootDirectoryPath = legacyTrproj.ScriptPath,
-				DefaultGameLanguageName = "English",
-				PluginsDirectoryPath = string.Empty
+				PluginsDirectoryPath = Path.Combine(trprojDirectory, "Plugins"),
+
+				GameLanguageNames = new List<string> { "English" },
+				DefaultGameLanguageName = "English"
 			};
 
-			trproj.MapProjectsToConvert.AddRange(legacyTrproj.Levels);
+			foreach (ProjectLevel level in legacyTrproj.Levels)
+			{
+				try
+				{
+					var trmap = new TrmapFile
+					{
+						MapName = level.Name,
+						TargetPrj2FileName = level.SpecificFile
+					};
+
+					if (trmap.TargetPrj2FileName == "$(LatestFile)")
+						trmap.TargetPrj2FileName = null; // New method of specifying the latest file
+
+					string trmapFilePath = Path.Combine(level.FolderPath, "project.trmap");
+					trmap.WriteToFile(trmapFilePath);
+
+					if (!trmapFilePath.StartsWith(trprojDirectory))
+						trproj.ExternalMapFilePaths.Add(trmapFilePath);
+				}
+				catch { } // Skip
+			}
 
 			return trproj;
 		}

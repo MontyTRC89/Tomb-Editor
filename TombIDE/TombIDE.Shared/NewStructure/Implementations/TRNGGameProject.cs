@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -7,8 +7,7 @@ namespace TombIDE.Shared.NewStructure
 	{
 		public override TRVersion.Game GameVersion => TRVersion.Game.TRNG;
 
-		public string PluginsDirectoryPath { get; private set; }
-
-		public override void Save() => throw new NotImplementedException();
+		public TRNGGameProject(TrprojFile trproj) : base(trproj)
+		{ }
 	}
 }
