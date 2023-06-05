@@ -77,21 +77,22 @@ namespace TombIDE.Shared
 
 		public static bool IsBackupFile(string fileName)
 		{
-			if (fileName.Length < 9)
-				return false;
+			try
+			{
+				string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 
-			DateTime dateTime;
+				if (fileNameWithoutExtension.EndsWith(".backup", StringComparison.OrdinalIgnoreCase))
+					return true;
 
-			// 01-01-0001 || 0001-01-01
-			if (DateTime.TryParse(fileName.Substring(0, 9), out dateTime))
-				return true;
+				// 05-06-23
+				if (DateTime.TryParse(fileNameWithoutExtension[..7], out _) || DateTime.TryParse(fileNameWithoutExtension[^7..], out _))
+					return true;
 
-			if (fileName.Length < 7)
-				return false;
-
-			// 01-01-01
-			if (DateTime.TryParse(fileName.Substring(0, 7), out dateTime))
-				return true;
+				// 05-06-2023 || 2023-06-05
+				if (DateTime.TryParse(fileNameWithoutExtension[..9], out _) || DateTime.TryParse(fileNameWithoutExtension[^9..], out _))
+					return true;
+			}
+			catch { }
 
 			return false;
 		}

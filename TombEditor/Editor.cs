@@ -1330,7 +1330,7 @@ namespace TombEditor
                         fileName = Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture) + configuration.AutoSave_NameSeparator + fileNameBase;
                     else
                         fileName = fileNameBase + configuration.AutoSave_NameSeparator + Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture);
-                    fileName = Path.Combine(path, fileName + ".prj2");
+                    fileName = Path.Combine(path, fileName + ".backup.prj2");
 
                     // Save project
                     Prj2Writer.SaveToPrj2(fileName, level);
