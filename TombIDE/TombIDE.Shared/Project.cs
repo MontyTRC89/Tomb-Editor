@@ -213,7 +213,10 @@ namespace TombIDE.Shared
 
 			// If the /Engine/ directory doesn't exist or no valid .exe file was found in that directory
 			if (string.IsNullOrEmpty(EnginePath))
+			{
 				EnginePath = ProjectPath;
+				EngineExecutableDirectory = EnginePath;
+			}
 
 			if (ScriptPath.StartsWith("$(ProjectDirectory)"))
 				ScriptPath = ScriptPath.Replace("$(ProjectDirectory)", ProjectPath);
