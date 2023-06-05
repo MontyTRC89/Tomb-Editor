@@ -15,8 +15,8 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".ten";
 		public override string EngineExecutableFileName => "TombEngine.exe";
 
-		public TENGameProject(TrprojFile trproj) : base(trproj)
-			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
+		public TENGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+			=> MainScriptFilePath = Path.Combine(ScriptDirectoryPath, MainScriptFileName);
 
 		public override string GetEngineExecutableFilePath()
 		{
@@ -42,7 +42,7 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
-			string defaultLanguageFilePath = Path.Combine(ScriptRootDirectoryPath, LanguageFileName);
+			string defaultLanguageFilePath = Path.Combine(ScriptDirectoryPath, LanguageFileName);
 
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath

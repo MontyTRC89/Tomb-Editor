@@ -25,11 +25,13 @@ namespace TombIDE.Shared.NewStructure
 
 		#endregion Abstract region
 
+		public Version TargetTrprojVersion { get; set; } = new(1, 0);
+
 		public string Name { get; protected set; }
 		public string DirectoryPath { get; protected set; }
 
 		public string MapsDirectoryPath { get; set; }
-		public string ScriptRootDirectoryPath { get; protected set; }
+		public string ScriptDirectoryPath { get; protected set; }
 		public string PluginsDirectoryPath { get; set; }
 
 		public string MainScriptFilePath { get; protected set; }
@@ -38,13 +40,15 @@ namespace TombIDE.Shared.NewStructure
 		public List<string> ExternalMapFilePaths { get; set; } = new();
 		public List<string> GameLanguageNames { get; set; } = new[] { "English" }.ToList();
 
-		public GameProjectBase(TrprojFile trproj)
+		public GameProjectBase(TrprojFile trproj, Version targetTrprojVersion)
 		{
+			TargetTrprojVersion = targetTrprojVersion;
+
 			Name = trproj.ProjectName;
 			DirectoryPath = Path.GetDirectoryName(trproj.FilePath);
 
 			MapsDirectoryPath = trproj.MapsDirectoryPath;
-			ScriptRootDirectoryPath = trproj.ScriptRootDirectoryPath;
+			ScriptDirectoryPath = trproj.ScriptDirectoryPath;
 			PluginsDirectoryPath = trproj.PluginsDirectoryPath;
 
 			DefaultGameLanguageName = trproj.DefaultGameLanguageName;
@@ -140,8 +144,8 @@ namespace TombIDE.Shared.NewStructure
 				else
 					Directory.Move(DirectoryPath, newProjectPath);
 
-				if (ScriptRootDirectoryPath.StartsWith(DirectoryPath))
-					ScriptRootDirectoryPath = Path.Combine(newProjectPath, ScriptRootDirectoryPath.Remove(0, DirectoryPath.Length + 1));
+				if (ScriptDirectoryPath.StartsWith(DirectoryPath))
+					ScriptDirectoryPath = Path.Combine(newProjectPath, ScriptDirectoryPath.Remove(0, DirectoryPath.Length + 1));
 
 				if (MapsDirectoryPath.StartsWith(DirectoryPath))
 					MapsDirectoryPath = Path.Combine(newProjectPath, MapsDirectoryPath.Remove(0, DirectoryPath.Length + 1));
@@ -174,7 +178,7 @@ namespace TombIDE.Shared.NewStructure
 				return false;
 			}
 
-			if (!Directory.Exists(ScriptRootDirectoryPath))
+			if (!Directory.Exists(ScriptDirectoryPath))
 			{
 				errorMessage = "The project's Script directory is missing.";
 				return false;
@@ -201,45 +205,67 @@ namespace TombIDE.Shared.NewStructure
 
 		public virtual void Save()
 		{
-			// We save the project as a LEGACY .trproj file, since we don't want to enforce new structure yet
-			// We simply want to get ready for people to easily migrate in the future while keeping backwards compatibility
-
-			var trproj = new LegacyTrprojFile
+			if (TargetTrprojVersion == new Version(1, 0))
 			{
-				Name = Name,
-				GameVersion = GameVersion,
-				LevelsPath = MapsDirectoryPath,
-				ScriptPath = ScriptRootDirectoryPath,
-				LaunchFilePath = GetLauncherFilePath()
-			};
+				// We save the project as a LEGACY .trproj file, since we don't want to enforce new structure yet
+				// We simply want to get ready for people to easily migrate in the future while keeping backwards compatibility
 
-			foreach (MapProject mapProject in GetAllValidMapProjects())
-			{
-				mapProject.Save();
-
-				trproj.Levels.Add(new ProjectLevel
+				var trproj = new LegacyTrprojFile
 				{
-					Name = mapProject.Name,
-					FolderPath = mapProject.DirectoryPath,
-					SpecificFile = mapProject.TargetPrj2FileName
-				});
-			}
+					Name = Name,
+					GameVersion = GameVersion,
+					LevelsPath = MapsDirectoryPath,
+					ScriptPath = ScriptDirectoryPath,
+					LaunchFilePath = GetLauncherFilePath()
+				};
 
-			trproj.WriteToFile(GetTrprojFilePath());
+				foreach (MapProject mapProject in GetAllValidMapProjects())
+				{
+					mapProject.Save();
+
+					trproj.Levels.Add(new LegacyProjectLevel
+					{
+						Name = mapProject.Name,
+						FolderPath = mapProject.DirectoryPath,
+						SpecificFile = mapProject.TargetPrj2FileName
+					});
+				}
+
+				trproj.WriteToFile(GetTrprojFilePath());
+			}
+			else if (TargetTrprojVersion == new Version(2, 0))
+			{
+				var trproj = new TrprojFile
+				{
+					ProjectName = Name,
+					TargetGameVersion = GameVersion,
+
+					MapsDirectoryPath = MapsDirectoryPath,
+					ScriptDirectoryPath = ScriptDirectoryPath,
+					PluginsDirectoryPath = PluginsDirectoryPath,
+
+					DefaultGameLanguageName = DefaultGameLanguageName,
+
+					ExternalMapFilePaths = ExternalMapFilePaths,
+					GameLanguageNames = GameLanguageNames
+				};
+
+				trproj.WriteToFile(GetTrprojFilePath());
+			}
 		}
 
 		public static IGameProject FromTrproj(string trprojFilePath)
 		{
-			TrprojFile trproj = TrprojFile.FromFile(trprojFilePath);
+			TrprojFile trproj = TrprojFile.FromFile(trprojFilePath, out Version targetTrprojVersion);
 
 			return trproj.TargetGameVersion switch
 			{
-				TRVersion.Game.TR1 => new Tomb1MainGameProject(trproj),
-				TRVersion.Game.TR2 => new TR2GameProject(trproj),
-				TRVersion.Game.TR3 => new TR3GameProject(trproj),
-				TRVersion.Game.TR4 => new TR4GameProject(trproj),
-				TRVersion.Game.TRNG => new TRNGGameProject(trproj),
-				TRVersion.Game.TombEngine => new TENGameProject(trproj),
+				TRVersion.Game.TR1 => new Tomb1MainGameProject(trproj, targetTrprojVersion),
+				TRVersion.Game.TR2 => new TR2GameProject(trproj, targetTrprojVersion),
+				TRVersion.Game.TR3 => new TR3GameProject(trproj, targetTrprojVersion),
+				TRVersion.Game.TR4 => new TR4GameProject(trproj, targetTrprojVersion),
+				TRVersion.Game.TRNG => new TRNGGameProject(trproj, targetTrprojVersion),
+				TRVersion.Game.TombEngine => new TENGameProject(trproj, targetTrprojVersion),
 				_ => throw new NotSupportedException("The specified .trproj file is for an unsupported game version.")
 			};
 		}

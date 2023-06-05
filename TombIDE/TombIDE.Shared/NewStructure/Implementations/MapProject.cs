@@ -17,6 +17,13 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public string Name { get; protected set; } = "UNTITLED MAP";
 		public string DirectoryPath { get; protected set; } = string.Empty;
 
+		public MapProject(string name, string directoryPath, string targetPrj2FileName = null)
+		{
+			Name = name;
+			DirectoryPath = directoryPath;
+			TargetPrj2FileName = targetPrj2FileName;
+		}
+
 		public FileInfo[] GetPrj2Files(bool includeBackups = false)
 		{
 			FileInfo[] allPrj2Files = new DirectoryInfo(DirectoryPath).GetFiles("*.prj2", SearchOption.TopDirectoryOnly);
@@ -96,13 +103,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public static MapProject FromTrmap(string trmapFilePath)
 		{
 			TrmapFile trmap = XmlUtils.ReadXmlFile<TrmapFile>(trmapFilePath);
-
-			return new MapProject
-			{
-				Name = trmap.MapName,
-				DirectoryPath = Path.GetDirectoryName(trmapFilePath),
-				TargetPrj2FileName = trmap.TargetPrj2FileName
-			};
+			return new MapProject(trmap.MapName, Path.GetDirectoryName(trmapFilePath), trmap.TargetPrj2FileName);
 		}
 	}
 }

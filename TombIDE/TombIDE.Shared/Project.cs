@@ -7,7 +7,7 @@ using TombLib.Utils;
 
 namespace TombIDE.Shared
 {
-	public class Project
+	public class LegacyProject
 	{
 		#region Public properties
 
@@ -59,7 +59,7 @@ namespace TombIDE.Shared
 		/// <summary>
 		/// A list of the project's levels.
 		/// </summary>
-		public List<ProjectLevel> Levels { get; set; } = new List<ProjectLevel>();
+		public List<LegacyProjectLevel> Levels { get; set; } = new List<LegacyProjectLevel>();
 
 		/// <summary>
 		/// A list of the project's installed plugins.
@@ -78,7 +78,7 @@ namespace TombIDE.Shared
 		{
 			string trprojPath = GetTrprojFilePath();
 
-			Project projectCopy = Clone();
+			LegacyProject projectCopy = Clone();
 			projectCopy.EncodeProjectPaths();
 
 			XmlUtils.WriteXmlFile(trprojPath, projectCopy);
@@ -87,9 +87,9 @@ namespace TombIDE.Shared
 		/// <summary>
 		/// Creates and returns an exact copy of the current project without overriding the original data while in use.
 		/// </summary>
-		public Project Clone()
+		public LegacyProject Clone()
 		{
-			var projectCopy = new Project
+			var projectCopy = new LegacyProject
 			{
 				Name = Name,
 				GameVersion = GameVersion,
@@ -102,7 +102,7 @@ namespace TombIDE.Shared
 				LevelsPath = LevelsPath
 			};
 
-			foreach (ProjectLevel level in Levels)
+			foreach (LegacyProjectLevel level in Levels)
 				projectCopy.Levels.Add(level.Clone()); // Clone the levels too, because their data can be overridden as well
 
 			projectCopy.InstalledPlugins.AddRange(InstalledPlugins);
@@ -135,14 +135,14 @@ namespace TombIDE.Shared
 				if (LevelsPath.StartsWith(ProjectPath))
 					LevelsPath = Path.Combine(newProjectPath, LevelsPath.Remove(0, ProjectPath.Length + 1));
 
-				var cachedLevelList = new List<ProjectLevel>();
+				var cachedLevelList = new List<LegacyProjectLevel>();
 				cachedLevelList.AddRange(Levels);
 
 				// Remove all internal levels from the project's list to update all .prj2 files with new paths
 				Levels.Clear();
 
 				// Restore external levels, because we don't update them
-				foreach (ProjectLevel projectLevel in cachedLevelList)
+				foreach (LegacyProjectLevel projectLevel in cachedLevelList)
 				{
 					if (!Path.GetDirectoryName(projectLevel.FolderPath).Equals(LevelsPath, StringComparison.OrdinalIgnoreCase))
 						Levels.Add(projectLevel);
@@ -224,7 +224,7 @@ namespace TombIDE.Shared
 			if (LevelsPath.StartsWith("$(ProjectDirectory)"))
 				LevelsPath = LevelsPath.Replace("$(ProjectDirectory)", ProjectPath);
 
-			foreach (ProjectLevel level in Levels)
+			foreach (LegacyProjectLevel level in Levels)
 			{
 				if (level.FolderPath.StartsWith("$(ProjectDirectory)"))
 					level.FolderPath = level.FolderPath.Replace("$(ProjectDirectory)", ProjectPath);
@@ -245,7 +245,7 @@ namespace TombIDE.Shared
 			if (LevelsPath.StartsWith(ProjectPath))
 				LevelsPath = LevelsPath.Replace(ProjectPath, "$(ProjectDirectory)");
 
-			foreach (ProjectLevel level in Levels)
+			foreach (LegacyProjectLevel level in Levels)
 			{
 				if (level.FolderPath.StartsWith(ProjectPath))
 					level.FolderPath = level.FolderPath.Replace(ProjectPath, "$(ProjectDirectory)");
@@ -341,9 +341,9 @@ namespace TombIDE.Shared
 
 		#region Public static methods
 
-		public static Project FromFile(string trprojPath)
+		public static LegacyProject FromFile(string trprojPath)
 		{
-			Project project = XmlUtils.ReadXmlFile<Project>(trprojPath);
+			LegacyProject project = XmlUtils.ReadXmlFile<LegacyProject>(trprojPath);
 			project.DecodeProjectPaths(trprojPath);
 
 			return project;

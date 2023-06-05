@@ -19,7 +19,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public TRVersion.Game TargetGameVersion { get; set; }
 
 		public string MapsDirectoryPath { get; set; }
-		public string ScriptRootDirectoryPath { get; set; }
+		public string ScriptDirectoryPath { get; set; }
 
 		public string DefaultGameLanguageName { get; set; }
 
@@ -33,7 +33,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
 			MapsDirectoryPath = Path.GetRelativePath(projectPath, MapsDirectoryPath);
-			ScriptRootDirectoryPath = Path.GetRelativePath(projectPath, ScriptRootDirectoryPath);
+			ScriptDirectoryPath = Path.GetRelativePath(projectPath, ScriptDirectoryPath);
 			PluginsDirectoryPath = Path.GetRelativePath(projectPath, PluginsDirectoryPath);
 
 			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
@@ -46,7 +46,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
 			MapsDirectoryPath = Path.GetFullPath(MapsDirectoryPath, projectPath);
-			ScriptRootDirectoryPath = Path.GetFullPath(ScriptRootDirectoryPath, projectPath);
+			ScriptDirectoryPath = Path.GetFullPath(ScriptDirectoryPath, projectPath);
 			PluginsDirectoryPath = Path.GetFullPath(PluginsDirectoryPath, projectPath);
 
 			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
@@ -69,13 +69,14 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			}
 		}
 
-		public static TrprojFile FromFile(string filePath)
+		public static TrprojFile FromFile(string filePath, out Version version)
 		{
 			try
 			{
 				TrprojFile trprojFile = XmlUtils.ReadXmlFile<TrprojFile>(filePath);
 				trprojFile.DecodeProjectPaths(filePath);
 
+				version = trprojFile.Version;
 				return trprojFile;
 			}
 			catch
@@ -85,6 +86,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 					LegacyTrprojFile legacyTrproj = XmlUtils.ReadXmlFile<LegacyTrprojFile>(filePath);
 					legacyTrproj.DecodeProjectPaths(filePath);
 
+					version = legacyTrproj.Version;
 					return FromLegacy(legacyTrproj);
 				}
 				catch (Exception ex)
@@ -106,14 +108,14 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				TargetGameVersion = legacyTrproj.GameVersion,
 
 				MapsDirectoryPath = legacyTrproj.LevelsPath,
-				ScriptRootDirectoryPath = legacyTrproj.ScriptPath,
+				ScriptDirectoryPath = legacyTrproj.ScriptPath,
 				PluginsDirectoryPath = Path.Combine(trprojDirectory, "Plugins"),
 
 				GameLanguageNames = new List<string> { "English" },
 				DefaultGameLanguageName = "English"
 			};
 
-			foreach (ProjectLevel level in legacyTrproj.Levels)
+			foreach (LegacyProjectLevel level in legacyTrproj.Levels)
 			{
 				try
 				{

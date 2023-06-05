@@ -1,19 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace TombIDE.Shared
 {
-	public class ProjectLevel
+	[XmlRoot("ProjectLevel")]
+	public class LegacyProjectLevel
 	{
 		public string Name { get; set; }
 		public string DataFileName { get; set; }
 		public string FolderPath { get; set; }
 		public string SpecificFile { get; set; } = "$(LatestFile)";
 
-		public ProjectLevel Clone()
+		public LegacyProjectLevel Clone()
 		{
-			return new ProjectLevel
+			return new LegacyProjectLevel
 			{
 				Name = Name,
 				FolderPath = FolderPath,
