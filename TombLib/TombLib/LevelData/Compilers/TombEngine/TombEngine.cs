@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Flac;
+using System;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -78,42 +79,55 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                // Write animations' data
-                writer.Write((uint)_animations.Count);
-                writer.WriteBlockArray(_animations);
-
-                writer.Write((uint)_stateChanges.Count);
-                writer.WriteBlockArray(_stateChanges);
-
-                writer.Write((uint)_animDispatches.Count);
-                writer.WriteBlockArray(_animDispatches);
-
-                writer.Write((uint)_animCommands.Count);
-                writer.WriteBlockArray(_animCommands);
-
                 writer.Write((uint)_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Count);
-                foreach (var frame in _frames)
-                {
-                    writer.Write((short)frame.BoundingBox.X1);
-                    writer.Write((short)frame.BoundingBox.X2);
-                    writer.Write((short)frame.BoundingBox.Y1);
-                    writer.Write((short)frame.BoundingBox.Y2);
-                    writer.Write((short)frame.BoundingBox.Z1);
-                    writer.Write((short)frame.BoundingBox.Z2);
-                    writer.Write((short)frame.Offset.X);
-                    writer.Write((short)frame.Offset.Y);
-                    writer.Write((short)frame.Offset.Z);
-                    writer.Write((short)frame.Angles.Count);
-                    foreach (var angle in frame.Angles)
-                        writer.Write(angle);
-                }
-
                 writer.Write((uint)_moveables.Count);
-                for (var k = 0; k < _moveables.Count; k++)
-                    writer.WriteBlock(_moveables[k]);
+                foreach (var moveable in _moveables)
+                {
+                    writer.Write(moveable.ObjectID);
+                    writer.Write(moveable.NumMeshes);
+                    writer.Write(moveable.StartingMesh);
+                    writer.Write(moveable.MeshTree);
+                    writer.Write(moveable.FrameOffset);
+                    writer.Write(moveable.NumAnimations);
+
+                    foreach (var animation in moveable.Animations)
+                    {
+                        writer.Write((uint)animation.FrameOffset);
+                        writer.Write((uint)animation.FrameRate);
+                        writer.Write((uint)animation.StateID);
+                        writer.Write(animation.VelocityStart);
+                        writer.Write(animation.VelocityEnd);
+                        writer.Write((uint)animation.FrameStart);
+                        writer.Write((uint)animation.FrameEnd);
+                        writer.Write((uint)animation.NextAnimation);
+                        writer.Write((uint)animation.NextFrame);
+
+                        writer.Write((uint)animation.KeyFrames.Count);
+                        foreach (var keyFrame in animation.KeyFrames)
+                        {
+                            writer.Write((int)keyFrame.BoundingBox.X1);
+                            writer.Write((int)keyFrame.BoundingBox.X2);
+                            writer.Write((int)keyFrame.BoundingBox.Y1);
+                            writer.Write((int)keyFrame.BoundingBox.Y2);
+                            writer.Write((int)keyFrame.BoundingBox.Z1);
+                            writer.Write((int)keyFrame.BoundingBox.Z2);
+                            writer.Write(keyFrame.Offset.X);
+                            writer.Write(keyFrame.Offset.Y);
+                            writer.Write(keyFrame.Offset.Z);
+                            writer.Write((uint)keyFrame.Angles.Count);
+                            foreach (var angle in keyFrame.Angles)
+                                writer.Write(angle);
+                        }
+
+                        writer.Write((uint)animation.StateChanges.Count);
+                        writer.WriteBlockArray(animation.StateChanges);
+                        writer.Write((uint)animation.NumAnimCommands);
+                        writer.Write((uint)animation.CommandData.Count);
+                        writer.WriteBlockArray(animation.CommandData);
+                    }
+                }
 
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);

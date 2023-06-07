@@ -234,15 +234,57 @@ namespace TombLib.LevelData.Compilers.TombEngine
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
-            // First thing build frames
             ReportProgress(1, "Building animations");
-            var animationDictionary = new Dictionary<WadAnimation, int>(new ReferenceEqualityComparer<WadAnimation>());
-            foreach (WadMoveable moveable in moveables.Values)
-                foreach (var animation in moveable.Animations)
-                { 
-                    animationDictionary.Add(animation, _frames.Count);
 
-                    foreach (var wadFrame in animation.KeyFrames)
+            var frameIndexOffset = 0;
+            foreach (WadMoveable oldMoveable in moveables.Values)
+            {
+                var newMoveable = new TombEngineMoveable();
+                newMoveable.NumMeshes = oldMoveable.Meshes.Count();
+                newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
+                newMoveable.FrameOffset = 0;
+                newMoveable.NumAnimations = oldMoveable.Animations.Count;
+                newMoveable.Animations = new List<TombEngineAnimation>();
+
+                // Add animations
+                int realFrameBase = 0;
+                for (int j = 0; j < oldMoveable.Animations.Count; ++j)
+                {
+                    var oldAnimation = oldMoveable.Animations[j];
+                    var newAnimation = new TombEngineAnimation();
+
+                    // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
+
+                    var frameCount = oldAnimation.EndFrame + 1;
+                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
+                    if (frameCount > maxFrame)
+                        frameCount = maxFrame;
+
+                    // Setup the final animation
+                    newAnimation.FrameOffset = frameIndexOffset;
+                    newAnimation.FrameRate = oldAnimation.FrameRate;
+                    newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
+                    newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
+                    newAnimation.FrameStart = realFrameBase;
+                    newAnimation.FrameEnd = realFrameBase + (frameCount == 0 ? 0 : frameCount - 1);
+                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
+                    newAnimation.NextFrame = oldAnimation.NextFrame;
+                    newAnimation.StateID = oldAnimation.StateId;
+                    newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
+                    newAnimation.StateChanges = new List<TombEngineStateChange>();
+                    newAnimation.CommandData = new List<int>();
+
+                    // Check if next animation contains valid value. If not, set to zero and throw a warning.
+                    if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
+                    {
+                        _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
+                                                     "' refers to incorrect next animation " + oldAnimation.NextAnimation + " in animation " + j + ". It will be set to 0.");
+                        newAnimation.NextAnimation = 0;
+                    }
+                    else
+                        newAnimation.NextAnimation = oldAnimation.NextAnimation;
+
+                    foreach (var wadFrame in oldAnimation.KeyFrames)
                     {
                         var newFrame = new TombEngineKeyFrame
                         {
@@ -262,58 +304,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newFrame.Angles.Add(oldRot.Quaternion);
                         }
 
-                        _frames.Add(newFrame);
+                        newAnimation.KeyFrames.Add(newFrame);
                     }
-                }
-
-            int lastAnimation = 0;
-            int lastAnimDispatch = 0;
-            foreach (WadMoveable oldMoveable in moveables.Values)
-            {
-                var newMoveable = new TombEngineMoveable();
-                newMoveable.Animation = oldMoveable.Animations.Count != 0 ? lastAnimation : -1;
-                newMoveable.NumMeshes = oldMoveable.Meshes.Count();
-                newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
-                newMoveable.FrameOffset = 0;
-
-                // Add animations
-                int realFrameBase = 0;
-                for (int j = 0; j < oldMoveable.Animations.Count; ++j)
-                {
-                    var oldAnimation = oldMoveable.Animations[j];
-                    var newAnimation = new TombEngineAnimation();
-                    var offset = animationDictionary[oldAnimation];
-
-                    // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
-
-                    var frameCount = oldAnimation.EndFrame + 1;
-                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
-                    if (frameCount > maxFrame)
-                        frameCount = maxFrame;
-
-                    // Setup the final animation
-                    newAnimation.FrameOffset = offset;
-                    newAnimation.FrameRate = oldAnimation.FrameRate;
-                    newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
-                    newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
-                    newAnimation.FrameStart = realFrameBase;
-                    newAnimation.FrameEnd = realFrameBase + (frameCount == 0 ? 0 : frameCount - 1);
-                    newAnimation.AnimCommand = _animCommands.Count;
-                    newAnimation.StateChangeOffset = _stateChanges.Count;
-                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
-                    newAnimation.NumStateChanges = oldAnimation.StateChanges.Count;
-                    newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.StateID = oldAnimation.StateId;
-
-                    // Check if next animation contains valid value. If not, set to zero and throw a warning.
-                    if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
-                    {
-                        _progressReporter.ReportWarn("Object '" + oldMoveable.Id.ShortName(_level.Settings.GameVersion) +
-                                                     "' refers to incorrect next animation " + oldAnimation.NextAnimation + " in animation " + j + ". It will be set to 0.");
-                        newAnimation.NextAnimation = lastAnimation;
-                    }
-                    else
-                        newAnimation.NextAnimation = oldAnimation.NextAnimation + lastAnimation;
+                    frameIndexOffset += newAnimation.KeyFrames.Count;
 
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
@@ -321,45 +314,45 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                _animCommands.Add(0x01);
+                                newAnimation.CommandData.Add(0x01);
 
-                                _animCommands.Add(command.Parameter1);
-                                _animCommands.Add(command.Parameter2);
-                                _animCommands.Add(command.Parameter3);
+                                newAnimation.CommandData.Add(command.Parameter1);
+                                newAnimation.CommandData.Add(command.Parameter2);
+                                newAnimation.CommandData.Add(command.Parameter3);
 
                                 break;
 
                             case WadAnimCommandType.SetJumpDistance:
-                                _animCommands.Add(0x02);
+                                newAnimation.CommandData.Add(0x02);
 
-                                _animCommands.Add(command.Parameter1);
-                                _animCommands.Add(command.Parameter2);
+                                newAnimation.CommandData.Add(command.Parameter1);
+                                newAnimation.CommandData.Add(command.Parameter2);
 
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                _animCommands.Add(0x03);
+                                newAnimation.CommandData.Add(0x03);
 
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                _animCommands.Add(0x04);
+                                newAnimation.CommandData.Add(0x04);
 
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                _animCommands.Add(0x05);
+                                newAnimation.CommandData.Add(0x05);
 
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2)));
+                                newAnimation.CommandData.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                newAnimation.CommandData.Add(unchecked((short)(command.Parameter2)));
 
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
-                                _animCommands.Add(0x06);
+                                newAnimation.CommandData.Add(0x06);
 
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(command.Parameter2);
+                                newAnimation.CommandData.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                newAnimation.CommandData.Add(command.Parameter2);
 
                                 break;
                         }
@@ -368,11 +361,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add state changes
                     foreach (var stateChange in oldAnimation.StateChanges)
                     {
-                        var newStateChange = new TombEngineStateChange();
-
-                        newStateChange.AnimDispatch = lastAnimDispatch;
-                        newStateChange.StateID = (int)stateChange.StateId;
-                        newStateChange.NumAnimDispatches = stateChange.Dispatches.Count;
+                        int stateID = (int)stateChange.StateId;
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
@@ -385,25 +374,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 continue;
                             }
 
-                            var newAnimDispatch = new TombEngineAnimDispatch();
+                            var newStateChange = new TombEngineStateChange();
+                            newStateChange.StateID = stateID;
+                            newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
+                            newStateChange.NextFrame = (int)dispatch.NextFrame;
+                            newStateChange.Low = unchecked((int)(dispatch.InFrame + newAnimation.FrameStart));
+                            newStateChange.High = unchecked((int)(dispatch.OutFrame + newAnimation.FrameStart));
 
-                            newAnimDispatch.Low = unchecked((int)(dispatch.InFrame + newAnimation.FrameStart));
-                            newAnimDispatch.High = unchecked((int)(dispatch.OutFrame + newAnimation.FrameStart));
-                            newAnimDispatch.NextAnimation = checked((int)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = (int)dispatch.NextFrame;
-
-                            _animDispatches.Add(newAnimDispatch);
-                            lastAnimDispatch++;
+                            newAnimation.StateChanges.Add(newStateChange);
                         }
-
-                        _stateChanges.Add(newStateChange);
                     }
 
-                    _animations.Add(newAnimation);
+                    newMoveable.Animations.Add(newAnimation);
 
                     realFrameBase += frameCount < 0 ? 0 : frameCount; // FIXME: Not really needed?
                 }
-                lastAnimation += oldMoveable.Animations.Count;
 
                 newMoveable.MeshTree = _meshTrees.Count;
                 newMoveable.StartingMesh = _meshes.Count;
@@ -447,20 +432,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _moveables.Add(newMoveable);
             }
 
-            // Adjust NextFrame of each Animation
-            for (int i = 0; i < _animations.Count; i++)
+            // Adjust NextFrames
+            foreach (var newMoveable in _moveables)
             {
-                var animation = _animations[i];
-                animation.NextFrame += _animations[animation.NextAnimation].FrameStart;
-                _animations[i] = animation;
-            }
+                for (int i = 0; i < newMoveable.Animations.Count; i++)
+                {
+                    var animation = newMoveable.Animations[i];
+                    animation.NextFrame += newMoveable.Animations[animation.NextAnimation].FrameStart;
+                    newMoveable.Animations[i] = animation;
 
-            // Adjust NextFrame of each AnimDispatch
-            for (int i = 0; i < _animDispatches.Count; i++)
-            {
-                var dispatch = _animDispatches[i];
-                dispatch.NextFrame += _animations[dispatch.NextAnimation].FrameStart;
-                _animDispatches[i] = dispatch;
+                    for (int j = 0; j < animation.StateChanges.Count; j++)
+                    {
+                        var stateChange = animation.StateChanges[j];
+                        stateChange.NextFrame += newMoveable.Animations[stateChange.NextAnimation].FrameStart;
+                        animation.StateChanges[j] = stateChange;
+                    }
+                }
             }
 
             // Convert static meshes
@@ -533,43 +520,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 using (var writer = new StreamWriter(fileStream))
                 {
                     int n = 0;
-                    foreach (var anim in _animations)
-                    {
-                        writer.WriteLine("Anim #" + n);
-                        writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
-                        writer.WriteLine("    FrameRate: " + anim.FrameRate);
-                        writer.WriteLine("    FrameStart: " + anim.FrameStart);
-                        writer.WriteLine("    FrameEnd: " + anim.FrameEnd);
-                        writer.WriteLine("    StateChangeOffset: " + anim.StateChangeOffset);
-                        writer.WriteLine("    NumStateChanges: " + anim.NumStateChanges);
-                        writer.WriteLine("    AnimCommand: " + anim.AnimCommand);
-                        writer.WriteLine("    NumAnimCommands: " + anim.NumAnimCommands);
-                        writer.WriteLine("    NextAnimation: " + anim.NextAnimation);
-                        writer.WriteLine("    NextFrame: " + anim.NextFrame);
-                        writer.WriteLine("    StateID: " + anim.StateID);
-                        writer.WriteLine("    VelStart: " + anim.VelocityStart.Z.ToString("X"));
-                        writer.WriteLine("    VelEnd: " + anim.VelocityEnd.Z.ToString("X"));
-                        writer.WriteLine("    VelLateralStart: " + anim.VelocityStart.X.ToString("X"));
-                        writer.WriteLine("    VelLateralEnd: " + anim.VelocityEnd.X.ToString("X"));
-                        writer.WriteLine();
-
-                        n++;
-                    }
-
-                    n = 0;
-                    foreach (var dispatch in _animDispatches)
-                    {
-                        writer.WriteLine("AnimDispatch #" + n);
-                        writer.WriteLine("    In: " + dispatch.Low);
-                        writer.WriteLine("    Out: " + dispatch.High);
-                        writer.WriteLine("    NextAnimation: " + dispatch.NextAnimation);
-                        writer.WriteLine("    NextFrame: " + dispatch.NextFrame);
-                        writer.WriteLine();
-
-                        n++;
-                    }
-
-                    n = 0;
                     for (int jj = 0; jj < _meshTrees.Count; jj += 4)
                     {
                         writer.WriteLine("MeshTree #" + jj);
@@ -588,20 +538,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.WriteLine("Moveable #" + n);
                         writer.WriteLine("    MeshTree: " + mov.MeshTree);
                         writer.WriteLine("    MeshPointer: " + mov.StartingMesh);
-                        writer.WriteLine("    AnimationIndex: " + mov.Animation);
                         writer.WriteLine("    NumMeshes: " + mov.NumMeshes);
-                        writer.WriteLine();
-
-                        n++;
-                    }
-
-                    n = 0;
-                    foreach (var sc in _stateChanges)
-                    {
-                        writer.WriteLine("StateChange #" + n);
-                        writer.WriteLine("    StateID: " + sc.StateID);
-                        writer.WriteLine("    NumAnimDispatches: " + sc.NumAnimDispatches);
-                        writer.WriteLine("    AnimDispatch: " + sc.AnimDispatch);
                         writer.WriteLine();
 
                         n++;
