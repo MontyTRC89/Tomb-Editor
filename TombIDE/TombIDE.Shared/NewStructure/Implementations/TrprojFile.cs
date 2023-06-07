@@ -96,7 +96,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			}
 		}
 
-		private static TrprojFile FromLegacy(LegacyTrprojFile legacyTrproj)
+		public static TrprojFile FromLegacy(LegacyTrprojFile legacyTrproj)
 		{
 			string trprojDirectory = Path.GetDirectoryName(legacyTrproj.FilePath);
 
@@ -119,7 +119,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			{
 				try
 				{
-					var trmap = new TrmapFile
+					var trmap = new TrlevFile
 					{
 						MapName = level.Name,
 						TargetPrj2FileName = level.SpecificFile

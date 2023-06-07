@@ -14,9 +14,14 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string DataFileExtension => ".phd";
 		public override string EngineExecutableFileName => "tomb1main.exe";
+		public override string MainScriptFilePath => Path.Combine(ScriptDirectoryPath, MainScriptFileName);
 
 		public Tomb1MainGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
-			=> MainScriptFilePath = Path.Combine(ScriptDirectoryPath, MainScriptFileName);
+		{ }
+
+		public Tomb1MainGameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath)
+		{ }
 
 		public override string GetDefaultGameLanguageFilePath()
 		{

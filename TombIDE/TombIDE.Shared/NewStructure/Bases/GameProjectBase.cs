@@ -19,6 +19,7 @@ namespace TombIDE.Shared.NewStructure
 
 		public abstract string DataFileExtension { get; }
 		public abstract string EngineExecutableFileName { get; }
+		public abstract string MainScriptFilePath { get; }
 
 		public abstract string GetDefaultGameLanguageFilePath();
 		public abstract void SetScriptRootDirectory(string newDirectoryPath);
@@ -30,11 +31,10 @@ namespace TombIDE.Shared.NewStructure
 		public string Name { get; protected set; }
 		public string DirectoryPath { get; protected set; }
 
-		public string MapsDirectoryPath { get; set; }
+		public string LevelsDirectoryPath { get; set; }
 		public string ScriptDirectoryPath { get; protected set; }
 		public string PluginsDirectoryPath { get; set; }
 
-		public string MainScriptFilePath { get; protected set; }
 		public string DefaultGameLanguageName { get; set; } = "English";
 
 		public List<string> ExternalMapFilePaths { get; set; } = new();
@@ -47,7 +47,7 @@ namespace TombIDE.Shared.NewStructure
 			Name = trproj.ProjectName;
 			DirectoryPath = Path.GetDirectoryName(trproj.FilePath);
 
-			MapsDirectoryPath = trproj.MapsDirectoryPath;
+			LevelsDirectoryPath = trproj.MapsDirectoryPath;
 			ScriptDirectoryPath = trproj.ScriptDirectoryPath;
 			PluginsDirectoryPath = trproj.PluginsDirectoryPath;
 
@@ -57,7 +57,16 @@ namespace TombIDE.Shared.NewStructure
 			GameLanguageNames = trproj.GameLanguageNames;
 		}
 
-		public virtual string GetTrprojFilePath()
+        public GameProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
+        {
+			Name = name;
+			DirectoryPath = directoryPath;
+			LevelsDirectoryPath = levelsDirectoryPath;
+			ScriptDirectoryPath = scriptDirectoryPath;
+			PluginsDirectoryPath = pluginsDirectoryPath;
+		}
+
+        public virtual string GetTrprojFilePath()
 			=> Path.Combine(DirectoryPath, Path.GetFileNameWithoutExtension(GetEngineExecutableFilePath()));
 
 		public virtual string GetLauncherFilePath()
@@ -95,7 +104,7 @@ namespace TombIDE.Shared.NewStructure
 				: throw new FileNotFoundException("The engine executable file could not be found.");
 		}
 
-		public virtual FileInfo[] GetAllValidTrmapFiles()
+		public virtual FileInfo[] GetAllValidTrlevFiles()
 		{
 			var result = new List<FileInfo>();
 
@@ -105,7 +114,7 @@ namespace TombIDE.Shared.NewStructure
 				select new FileInfo(filePath)
 			);
 
-			var mapsDirectoryInfo = new DirectoryInfo(MapsDirectoryPath);
+			var mapsDirectoryInfo = new DirectoryInfo(LevelsDirectoryPath);
 
 			foreach (DirectoryInfo mapDirectoryInfo in mapsDirectoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
 			{
@@ -120,13 +129,13 @@ namespace TombIDE.Shared.NewStructure
 			return result.ToArray();
 		}
 
-		public virtual MapProject[] GetAllValidMapProjects()
+		public virtual LevelProject[] GetAllValidLevelProjects()
 		{
-			var result = new List<MapProject>();
+			var result = new List<LevelProject>();
 
-			foreach (FileInfo trmapFile in GetAllValidTrmapFiles())
+			foreach (FileInfo trmapFile in GetAllValidTrlevFiles())
 			{
-				try { result.Add(MapProject.FromTrmap(trmapFile.FullName)); }
+				try { result.Add(LevelProject.FromTrmap(trmapFile.FullName)); }
 				catch { }
 			}
 
@@ -138,17 +147,13 @@ namespace TombIDE.Shared.NewStructure
 			if (renameDirectory)
 			{
 				string newProjectPath = Path.Combine(Path.GetDirectoryName(DirectoryPath), newName);
-
-				if (Directory.Exists(DirectoryPath + "_TEMP")) // The "_TEMP" suffix exists only when the directory name just changed letter cases
-					Directory.Move(DirectoryPath + "_TEMP", newProjectPath);
-				else
-					Directory.Move(DirectoryPath, newProjectPath);
+				Directory.Move(DirectoryPath, newProjectPath);
 
 				if (ScriptDirectoryPath.StartsWith(DirectoryPath))
 					ScriptDirectoryPath = Path.Combine(newProjectPath, ScriptDirectoryPath.Remove(0, DirectoryPath.Length + 1));
 
-				if (MapsDirectoryPath.StartsWith(DirectoryPath))
-					MapsDirectoryPath = Path.Combine(newProjectPath, MapsDirectoryPath.Remove(0, DirectoryPath.Length + 1));
+				if (LevelsDirectoryPath.StartsWith(DirectoryPath))
+					LevelsDirectoryPath = Path.Combine(newProjectPath, LevelsDirectoryPath.Remove(0, DirectoryPath.Length + 1));
 
 				for (int i = 0; i < ExternalMapFilePaths.Count; i++)
 				{
@@ -184,7 +189,7 @@ namespace TombIDE.Shared.NewStructure
 				return false;
 			}
 
-			if (!Directory.Exists(MapsDirectoryPath))
+			if (!Directory.Exists(LevelsDirectoryPath))
 			{
 				errorMessage = "The project's Maps directory is missing.";
 				return false;
@@ -214,12 +219,12 @@ namespace TombIDE.Shared.NewStructure
 				{
 					Name = Name,
 					GameVersion = GameVersion,
-					LevelsPath = MapsDirectoryPath,
+					LevelsPath = LevelsDirectoryPath,
 					ScriptPath = ScriptDirectoryPath,
 					LaunchFilePath = GetLauncherFilePath()
 				};
 
-				foreach (MapProject mapProject in GetAllValidMapProjects())
+				foreach (LevelProject mapProject in GetAllValidLevelProjects())
 				{
 					mapProject.Save();
 
@@ -240,7 +245,7 @@ namespace TombIDE.Shared.NewStructure
 					ProjectName = Name,
 					TargetGameVersion = GameVersion,
 
-					MapsDirectoryPath = MapsDirectoryPath,
+					MapsDirectoryPath = LevelsDirectoryPath,
 					ScriptDirectoryPath = ScriptDirectoryPath,
 					PluginsDirectoryPath = PluginsDirectoryPath,
 
@@ -256,7 +261,7 @@ namespace TombIDE.Shared.NewStructure
 
 		public static IGameProject FromTrproj(string trprojFilePath)
 		{
-			TrprojFile trproj = TrprojFile.FromFile(trprojFilePath, out Version targetTrprojVersion);
+			var trproj = TrprojFile.FromFile(trprojFilePath, out Version targetTrprojVersion);
 
 			return trproj.TargetGameVersion switch
 			{

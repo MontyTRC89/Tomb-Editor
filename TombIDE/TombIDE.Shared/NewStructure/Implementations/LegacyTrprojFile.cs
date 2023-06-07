@@ -28,6 +28,12 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public List<LegacyProjectLevel> Levels { get; set; } = new();
 
+		public LegacyTrprojFile()
+		{ }
+
+		public LegacyTrprojFile(string baseFilePath)
+			=> FilePath = baseFilePath;
+
 		/// <summary>
 		/// Replaces the project's .trproj directory path with <inheritdoc cref="RelativePathKey" />.
 		/// </summary>

@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using TombLib.Utils;
 
 namespace TombIDE.Shared.NewStructure.Implementations
 {
-	public class MapProject : IMapProject
+	public class LevelProject : ILevelProject
 	{
 		private string _targetPrj2FileName = null;
 
@@ -17,7 +18,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public string Name { get; protected set; } = "UNTITLED MAP";
 		public string DirectoryPath { get; protected set; } = string.Empty;
 
-		public MapProject(string name, string directoryPath, string targetPrj2FileName = null)
+		public LevelProject(string name, string directoryPath, string targetPrj2FileName = null)
 		{
 			Name = name;
 			DirectoryPath = directoryPath;
@@ -48,7 +49,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public string GetTrmapFilePath()
 		{
-			string[] allTrmapFiles = Directory.GetFiles(DirectoryPath, "*.trmap", SearchOption.TopDirectoryOnly);
+			string[] allTrmapFiles = Directory.GetFiles(DirectoryPath, "*.trlev", SearchOption.TopDirectoryOnly);
 			return allTrmapFiles.Length == 0 ? Path.Combine(DirectoryPath, "project.trmap") : allTrmapFiles[0];
 		}
 
@@ -72,16 +73,15 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			return true;
 		}
 
+		public bool IsExternal(string relativeToLevelsDirectoryPath)
+			=> !DirectoryPath.StartsWith(relativeToLevelsDirectoryPath, StringComparison.OrdinalIgnoreCase);
+
 		public void Rename(string newName, bool renameDirectory = false)
 		{
 			if (renameDirectory)
 			{
 				string newFolderPath = Path.Combine(Path.GetDirectoryName(DirectoryPath), newName);
-
-				if (Directory.Exists(DirectoryPath + "_TEMP")) // The "_TEMP" suffix exists only when the directory name just changed letter cases
-					Directory.Move(DirectoryPath + "_TEMP", newFolderPath);
-				else
-					Directory.Move(DirectoryPath, newFolderPath);
+				Directory.Move(DirectoryPath, newFolderPath);
 
 				DirectoryPath = newFolderPath;
 			}
@@ -91,7 +91,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public void Save()
 		{
-			var trmap = new TrmapFile
+			var trmap = new TrlevFile
 			{
 				MapName = Name,
 				TargetPrj2FileName = TargetPrj2FileName
@@ -100,10 +100,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			trmap.WriteToFile(GetTrmapFilePath());
 		}
 
-		public static MapProject FromTrmap(string trmapFilePath)
+		public static LevelProject FromTrmap(string trmapFilePath)
 		{
-			TrmapFile trmap = XmlUtils.ReadXmlFile<TrmapFile>(trmapFilePath);
-			return new MapProject(trmap.MapName, Path.GetDirectoryName(trmapFilePath), trmap.TargetPrj2FileName);
+			TrlevFile trmap = XmlUtils.ReadXmlFile<TrlevFile>(trmapFilePath);
+			return new LevelProject(trmap.MapName, Path.GetDirectoryName(trmapFilePath), trmap.TargetPrj2FileName);
 		}
 	}
 }

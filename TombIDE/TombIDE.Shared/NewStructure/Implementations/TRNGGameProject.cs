@@ -10,5 +10,9 @@ namespace TombIDE.Shared.NewStructure
 
 		public TRNGGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
 		{ }
+
+		public TRNGGameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
+		{ }
 	}
 }

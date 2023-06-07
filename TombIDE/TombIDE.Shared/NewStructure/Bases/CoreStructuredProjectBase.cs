@@ -17,9 +17,14 @@ namespace TombIDE.Shared.NewStructure
 
 		public abstract override string DataFileExtension { get; }
 		public abstract override string EngineExecutableFileName { get; }
+		public override string MainScriptFilePath => Path.Combine(ScriptDirectoryPath, MainScriptFileName);
 
 		public CoreStructuredProjectBase(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
-			=> MainScriptFilePath = Path.Combine(ScriptDirectoryPath, MainScriptFileName);
+		{ }
+
+		public CoreStructuredProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
+		{ }
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
@@ -45,7 +50,6 @@ namespace TombIDE.Shared.NewStructure
 					$"Required file not found: {DefaultGameLanguageName}.txt\n" +
 					$"Try changing your default game language to one that matches the chosen directory and try again.");
 
-			MainScriptFilePath = mainScriptFilePath;
 			ScriptDirectoryPath = newDirectoryPath;
 		}
 

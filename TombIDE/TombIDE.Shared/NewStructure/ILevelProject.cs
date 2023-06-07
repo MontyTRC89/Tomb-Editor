@@ -2,7 +2,7 @@
 
 namespace TombIDE.Shared.NewStructure
 {
-	public interface IMapProject : IProject
+	public interface ILevelProject : IProject
 	{
 		/// <summary>
 		/// The target .prj2 file name (not path) which should be opened in TombEditor when double-clicking on the map entry on the list.
@@ -24,5 +24,10 @@ namespace TombIDE.Shared.NewStructure
 		/// Returns the name (not path) of the most recently modified .prj2 file in the map project folder. Excludes backup files.
 		/// </summary>
 		string GetMostRecentlyModifiedPrj2FileName();
+
+		/// <summary>
+		/// Determines whether the level project is stored outside of the game's "Levels" directory.
+		/// </summary>
+		bool IsExternal(string relativeToLevelsDirectoryPath);
 	}
 }

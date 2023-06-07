@@ -28,7 +28,7 @@ namespace TombIDE.Shared.NewStructure
 		/// <summary>
 		/// The path where all the project's newly created / imported maps are stored.
 		/// </summary>
-		string MapsDirectoryPath { get; set; }
+		string LevelsDirectoryPath { get; set; }
 
 		/// <summary>
 		/// The path where the project's script files are stored.
@@ -88,12 +88,12 @@ namespace TombIDE.Shared.NewStructure
 		/// <summary>
 		/// Returns a list of all valid .trmap files in the project's Maps directory and external map file paths.
 		/// </summary>
-		FileInfo[] GetAllValidTrmapFiles();
+		FileInfo[] GetAllValidTrlevFiles();
 
 		/// <summary>
 		/// Returns a list of all valid map projects in the project's Maps directory and external map file paths.
 		/// </summary>
-		MapProject[] GetAllValidMapProjects();
+		LevelProject[] GetAllValidLevelProjects();
 
 		/// <summary>
 		/// Sets the project's script root directory to the given path. May require a restart of the IDE, depending on the implementation.

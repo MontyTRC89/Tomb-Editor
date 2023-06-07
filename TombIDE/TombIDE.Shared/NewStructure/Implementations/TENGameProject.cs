@@ -14,9 +14,14 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string DataFileExtension => ".ten";
 		public override string EngineExecutableFileName => "TombEngine.exe";
+		public override string MainScriptFilePath => Path.Combine(ScriptDirectoryPath, MainScriptFileName);
 
 		public TENGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
-			=> MainScriptFilePath = Path.Combine(ScriptDirectoryPath, MainScriptFileName);
+		{ }
+
+		public TENGameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath)
+		{ }
 
 		public override string GetEngineExecutableFilePath()
 		{
