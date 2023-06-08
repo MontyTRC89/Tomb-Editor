@@ -7,15 +7,9 @@ namespace TombIDE.Shared.NewStructure.Implementations
 {
 	public class LevelProject : ILevelProject
 	{
-		private string _targetPrj2FileName = null;
+		public string TargetPrj2FileName { get; set; }
 
-		public string TargetPrj2FileName
-		{
-			get => _targetPrj2FileName ?? GetMostRecentlyModifiedPrj2FileName();
-			set => _targetPrj2FileName = value;
-		}
-
-		public string Name { get; protected set; } = "UNTITLED MAP";
+		public string Name { get; protected set; } = "UNTITLED LEVEL";
 		public string DirectoryPath { get; protected set; } = string.Empty;
 
 		public LevelProject(string name, string directoryPath, string targetPrj2FileName = null)
@@ -47,17 +41,17 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			return null; // This will only happen when the directory is empty or consists of only backup files
 		}
 
-		public string GetTrmapFilePath()
+		public string GetTrlevFilePath()
 		{
-			string[] allTrmapFiles = Directory.GetFiles(DirectoryPath, "*.trlev", SearchOption.TopDirectoryOnly);
-			return allTrmapFiles.Length == 0 ? Path.Combine(DirectoryPath, "project.trmap") : allTrmapFiles[0];
+			string[] allTrlevFiles = Directory.GetFiles(DirectoryPath, "*.trlev", SearchOption.TopDirectoryOnly);
+			return allTrlevFiles.Length == 0 ? Path.Combine(DirectoryPath, "project.trlev") : allTrlevFiles[0];
 		}
 
 		public bool IsValid(out string errorMessage)
 		{
 			if (!Directory.Exists(DirectoryPath))
 			{
-				errorMessage = "The map project directory does not exist.";
+				errorMessage = "The level project directory does not exist.";
 				return false;
 			}
 
@@ -65,7 +59,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 			if (allPrj2Files.Length == 0)
 			{
-				errorMessage = "The map project directory does not contain any .prj2 files.";
+				errorMessage = "The level project directory does not contain any .prj2 files.";
 				return false;
 			}
 
@@ -91,19 +85,19 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public void Save()
 		{
-			var trmap = new TrlevFile
+			var trlev = new TrlevFile
 			{
-				MapName = Name,
+				LevelName = Name,
 				TargetPrj2FileName = TargetPrj2FileName
 			};
 
-			trmap.WriteToFile(GetTrmapFilePath());
+			trlev.WriteToFile(GetTrlevFilePath());
 		}
 
-		public static LevelProject FromTrmap(string trmapFilePath)
+		public static LevelProject FromTrlev(string trlevFilePath)
 		{
-			TrlevFile trmap = XmlUtils.ReadXmlFile<TrlevFile>(trmapFilePath);
-			return new LevelProject(trmap.MapName, Path.GetDirectoryName(trmapFilePath), trmap.TargetPrj2FileName);
+			TrlevFile trlev = XmlUtils.ReadXmlFile<TrlevFile>(trlevFilePath);
+			return new LevelProject(trlev.LevelName, Path.GetDirectoryName(trlevFilePath), trlev.TargetPrj2FileName);
 		}
 	}
 }

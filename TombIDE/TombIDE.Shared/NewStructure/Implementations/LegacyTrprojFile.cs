@@ -26,6 +26,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public string LaunchFilePath { get; set; }
 
+		[XmlArrayItem(typeof(LegacyProjectLevel), ElementName = "ProjectLevel")]
 		public List<LegacyProjectLevel> Levels { get; set; } = new();
 
 		public LegacyTrprojFile()

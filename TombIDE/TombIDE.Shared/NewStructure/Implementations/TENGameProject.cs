@@ -33,9 +33,11 @@ namespace TombIDE.Shared.NewStructure
 
 			if (Directory.Exists(x64Directory) || Directory.Exists(x86Directory))
 			{
-				engineExecutableFilePath = Environment.Is64BitOperatingSystem && Directory.Exists(x64Directory)
+				string engineExecutableDirectory = Environment.Is64BitOperatingSystem && Directory.Exists(x64Directory)
 					? x64Directory
 					: x86Directory;
+
+				engineExecutableFilePath = Path.Combine(engineExecutableDirectory, EngineExecutableFileName);
 			}
 			else
 				engineExecutableFilePath = Path.Combine(engineDirectoryPath, EngineExecutableFileName);

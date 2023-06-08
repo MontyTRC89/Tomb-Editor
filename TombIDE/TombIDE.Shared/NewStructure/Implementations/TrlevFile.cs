@@ -7,7 +7,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 	{
 		public Version Version => new(1, 0);
 
-		public string MapName { get; set; }
+		public string LevelName { get; set; }
 		public string TargetPrj2FileName { get; set; }
 
 		public void WriteToFile(string filePath)

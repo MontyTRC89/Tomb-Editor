@@ -26,7 +26,7 @@ namespace TombIDE.Shared.NewStructure
 		string EngineExecutableFileName { get; }
 
 		/// <summary>
-		/// The path where all the project's newly created / imported maps are stored.
+		/// The path where all the project's newly created / imported levels are stored.
 		/// </summary>
 		string LevelsDirectoryPath { get; set; }
 
@@ -51,9 +51,9 @@ namespace TombIDE.Shared.NewStructure
 		string DefaultGameLanguageName { get; set; }
 
 		/// <summary>
-		/// A list of .trmap files which are not stored in the project's Maps directory.
+		/// A list of .trlev files which are not stored in the project's Levels directory.
 		/// </summary>
-		List<string> ExternalMapFilePaths { get; }
+		List<string> ExternalLevelFilePaths { get; }
 
 		/// <summary>
 		/// A list of all available game languages. (e.g. <c>"English"</c>, <c>"German"</c>, <c>"French"</c>, ...)
@@ -86,12 +86,12 @@ namespace TombIDE.Shared.NewStructure
 		string GetDefaultGameLanguageFilePath();
 
 		/// <summary>
-		/// Returns a list of all valid .trmap files in the project's Maps directory and external map file paths.
+		/// Returns a list of all valid .trlev files in the project's Levels directory and external level file paths.
 		/// </summary>
 		FileInfo[] GetAllValidTrlevFiles();
 
 		/// <summary>
-		/// Returns a list of all valid map projects in the project's Maps directory and external map file paths.
+		/// Returns a list of all valid level projects in the project's Levels directory and external level file paths.
 		/// </summary>
 		LevelProject[] GetAllValidLevelProjects();
 

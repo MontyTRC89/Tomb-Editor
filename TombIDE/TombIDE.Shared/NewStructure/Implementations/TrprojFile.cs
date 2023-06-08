@@ -18,25 +18,25 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public string ProjectName { get; set; }
 		public TRVersion.Game TargetGameVersion { get; set; }
 
-		public string MapsDirectoryPath { get; set; }
+		public string LevelsDirectoryPath { get; set; }
 		public string ScriptDirectoryPath { get; set; }
 
 		public string DefaultGameLanguageName { get; set; }
 
 		public string PluginsDirectoryPath { get; set; }
 
-		public List<string> ExternalMapFilePaths { get; set; } = new();
+		public List<string> ExternalLevelFilePaths { get; set; } = new();
 		public List<string> GameLanguageNames { get; set; } = new();
 
 		public void EncodeProjectPaths(string trprojFilePath)
 		{
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			MapsDirectoryPath = Path.GetRelativePath(projectPath, MapsDirectoryPath);
+			LevelsDirectoryPath = Path.GetRelativePath(projectPath, LevelsDirectoryPath);
 			ScriptDirectoryPath = Path.GetRelativePath(projectPath, ScriptDirectoryPath);
 			PluginsDirectoryPath = Path.GetRelativePath(projectPath, PluginsDirectoryPath);
 
-			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
+			ExternalLevelFilePaths = ExternalLevelFilePaths.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
 		}
 
 		public void DecodeProjectPaths(string trprojFilePath)
@@ -45,11 +45,11 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			MapsDirectoryPath = Path.GetFullPath(MapsDirectoryPath, projectPath);
+			LevelsDirectoryPath = Path.GetFullPath(LevelsDirectoryPath, projectPath);
 			ScriptDirectoryPath = Path.GetFullPath(ScriptDirectoryPath, projectPath);
 			PluginsDirectoryPath = Path.GetFullPath(PluginsDirectoryPath, projectPath);
 
-			ExternalMapFilePaths = ExternalMapFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
+			ExternalLevelFilePaths = ExternalLevelFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
 		}
 
 		public void WriteToFile(string filePath)
@@ -107,7 +107,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				ProjectName = legacyTrproj.Name,
 				TargetGameVersion = legacyTrproj.GameVersion,
 
-				MapsDirectoryPath = legacyTrproj.LevelsPath,
+				LevelsDirectoryPath = legacyTrproj.LevelsPath,
 				ScriptDirectoryPath = legacyTrproj.ScriptPath,
 				PluginsDirectoryPath = Path.Combine(trprojDirectory, "Plugins"),
 
@@ -119,20 +119,20 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			{
 				try
 				{
-					var trmap = new TrlevFile
+					var trlev = new TrlevFile
 					{
-						MapName = level.Name,
+						LevelName = level.Name,
 						TargetPrj2FileName = level.SpecificFile
 					};
 
-					if (trmap.TargetPrj2FileName == "$(LatestFile)")
-						trmap.TargetPrj2FileName = null; // New method of specifying the latest file
+					if (trlev.TargetPrj2FileName == "$(LatestFile)")
+						trlev.TargetPrj2FileName = null; // New method of specifying the latest file
 
-					string trmapFilePath = Path.Combine(level.FolderPath, "project.trmap");
-					trmap.WriteToFile(trmapFilePath);
+					string trlevFilePath = Path.Combine(level.FolderPath, "project.trlev");
+					trlev.WriteToFile(trlevFilePath);
 
-					if (!trmapFilePath.StartsWith(trprojDirectory))
-						trproj.ExternalMapFilePaths.Add(trmapFilePath);
+					if (!trlevFilePath.StartsWith(trprojDirectory))
+						trproj.ExternalLevelFilePaths.Add(trlevFilePath);
 				}
 				catch { } // Skip
 			}

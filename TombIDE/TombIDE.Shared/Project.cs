@@ -7,6 +7,7 @@ using TombLib.Utils;
 
 namespace TombIDE.Shared
 {
+	[XmlRoot("Project")]
 	public class LegacyProject
 	{
 		#region Public properties

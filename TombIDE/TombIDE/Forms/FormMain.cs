@@ -1,6 +1,5 @@
 using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -9,6 +8,7 @@ using System.Windows.Forms;
 using TombIDE.ProjectMaster;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedForms;
 using TombLib.LevelData;
 
@@ -28,7 +28,7 @@ namespace TombIDE
 
 		#region Initialization
 
-		public FormMain(IDE ide, Project project)
+		public FormMain(IDE ide, IGameProject project)
 		{
 			InitializeComponent();
 			Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -50,13 +50,13 @@ namespace TombIDE
 				tabPage_Plugins.Controls.Add(pluginManager);
 			}
 
-			if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
+			if (_ide.Project.GameVersion is TRVersion.Game.TR4 or TRVersion.Game.TRNG)
 				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion == TRVersion.Game.TR2 || _ide.Project.GameVersion == TRVersion.Game.TR3)
+			else if (_ide.Project.GameVersion is TRVersion.Game.TR2 or TRVersion.Game.TR3)
 				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion == TRVersion.Game.TR1)
+			else if (_ide.Project.GameVersion is TRVersion.Game.TR1)
 				scriptingStudio = new ScriptingStudio.Tomb1MainStudio { Parent = this };
-			else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
+			else if (_ide.Project.GameVersion is TRVersion.Game.TombEngine)
 				scriptingStudio = new ScriptingStudio.LuaStudio { Parent = this };
 
 			scriptingStudio.Dock = DockStyle.Fill;
@@ -103,24 +103,23 @@ namespace TombIDE
 		{
 			base.OnShown(e);
 
-			using (var form = new FormLoading(_ide))
+			using var form = new FormLoading(_ide);
+
+			if (form.ShowDialog(this) == DialogResult.OK)
 			{
-				if (form.ShowDialog(this) == DialogResult.OK)
-				{
-					// Initialize the IDE interfaces
-					sideBar.Initialize(_ide);
-					levelManager.Initialize(_ide);
-					miscellaneous.Initialize(_ide);
+				// Initialize the IDE interfaces
+				sideBar.Initialize(_ide);
+				levelManager.Initialize(_ide);
+				miscellaneous.Initialize(_ide);
 
-					if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
-						pluginManager.Initialize(_ide);
+				if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
+					pluginManager.Initialize(_ide);
 
-					sideBar.SelectedIDETabChanged += SideBar_SelectedIDETabChanged;
-					sideBar.SelectIDETab(IDETab.LevelManager);
+				sideBar.SelectedIDETabChanged += SideBar_SelectedIDETabChanged;
+				sideBar.SelectIDETab(IDETab.LevelManager);
 
-					// Drop the panel
-					panel_CoverLoading.Dispose();
-				}
+				// Drop the panel
+				panel_CoverLoading.Dispose();
 			}
 		}
 
@@ -161,7 +160,7 @@ namespace TombIDE
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.ProjectScriptPathChangedEvent || obj is IDE.ProjectLevelsPathChangedEvent)
+			if (obj is IDE.ProjectScriptPathChangedEvent or IDE.ProjectLevelsPathChangedEvent)
 				OnProjectPathsChanged(obj);
 		}
 
@@ -190,22 +189,10 @@ namespace TombIDE
 					return;
 				}
 
-				if (obj is IDE.ProjectScriptPathChangedEvent)
-					_ide.Project.ScriptPath = ((IDE.ProjectScriptPathChangedEvent)obj).NewPath;
-				else if (obj is IDE.ProjectLevelsPathChangedEvent)
-				{
-					var projectLevels = new List<ProjectLevel>();
-					projectLevels.AddRange(_ide.Project.Levels);
-
-					// Remove all internal level entries from the project's Levels list (for safety)
-					foreach (ProjectLevel projectLevel in projectLevels)
-					{
-						if (projectLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-							_ide.Project.Levels.Remove(projectLevel);
-					}
-
-					_ide.Project.LevelsPath = ((IDE.ProjectLevelsPathChangedEvent)obj).NewPath;
-				}
+				if (obj is IDE.ProjectScriptPathChangedEvent spce)
+					_ide.Project.SetScriptRootDirectory(spce.NewPath);
+				else if (obj is IDE.ProjectLevelsPathChangedEvent lpce)
+					_ide.Project.LevelsDirectoryPath = lpce.NewPath;
 
 				RestartApplication();
 			}

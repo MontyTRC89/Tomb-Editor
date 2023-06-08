@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
 using TombLib.LevelData;
@@ -37,9 +38,9 @@ namespace TombIDE.ProjectMaster
 			treeView.Nodes.Clear();
 
 			// Add nodes into the treeView for each level
-			foreach (ProjectLevel level in _ide.Project.Levels)
+			foreach (ILevelProject level in _ide.Project.GetAllValidLevelProjects())
 			{
-				if (level.IsValidLevel())
+				if (level.IsValid(out _))
 					AddLevelToList(level);
 			}
 
@@ -47,12 +48,12 @@ namespace TombIDE.ProjectMaster
 			ReserializeTRPROJ();
 		}
 
-		private void AddLevelToList(ProjectLevel level, bool reserialize = false)
+		private void AddLevelToList(ILevelProject level, bool reserialize = false)
 		{
-			var node = new DarkTreeNodeEx(level.Name, "~/" + level.GetLatestPrj2File()) { Tag = level };
+			var node = new DarkTreeNodeEx(level.Name, "~/" + level.GetMostRecentlyModifiedPrj2FileName()) { Tag = level };
 
 			// Mark external levels
-			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+			if (level.IsExternal(_ide.Project.LevelsDirectoryPath))
 				node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 
 			// Add the node to the list
@@ -71,15 +72,15 @@ namespace TombIDE.ProjectMaster
 			if (obj is IDE.SelectedLevelSettingsChangedEvent)
 			{
 				// Update the text of the node (if the level name was changed ofc)
-				if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.GetLatestPrj2File();
+				if (_ide.SelectedLevel.TargetPrj2FileName is null)
+					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.GetMostRecentlyModifiedPrj2FileName();
 				else
-					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.SpecificFile;
+					((DarkTreeNodeEx)treeView.SelectedNodes[0]).SubText = "~/" + _ide.SelectedLevel.TargetPrj2FileName;
 
 				treeView.SelectedNodes[0].Text = _ide.SelectedLevel.Name;
 
 				// Mark external levels
-				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+				if (_ide.SelectedLevel.IsExternal(_ide.Project.LevelsDirectoryPath))
 					treeView.SelectedNodes[0].Text = _ide.IDEConfiguration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
 
 				// Update the node's Tag with the updated level
@@ -118,7 +119,7 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(((ProjectLevel)treeView.SelectedNodes[0].Tag).FolderPath);
+			SharedMethods.OpenInExplorer(((ILevelProject)treeView.SelectedNodes[0].Tag).DirectoryPath);
 
 		private void button_Refresh_Click(object sender, EventArgs e) => RefreshLevelList();
 
@@ -155,7 +156,7 @@ namespace TombIDE.ProjectMaster
 
 		private void treeView_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			if (e.KeyCode is Keys.Up or Keys.Down)
 				CheckItemSelection();
 		}
 
@@ -163,58 +164,54 @@ namespace TombIDE.ProjectMaster
 
 		private void ShowLevelSetupForm()
 		{
-			using (var form = new FormLevelSetup(_ide.Project))
-			{
-				if (form.ShowDialog(this) == DialogResult.OK)
-					OnLevelAdded(form.CreatedLevel, form.GeneratedScriptLines);
-			}
+			using var form = new FormLevelSetup(_ide.Project);
+
+			if (form.ShowDialog(this) == DialogResult.OK)
+				OnLevelAdded(form.CreatedLevel, form.GeneratedScriptLines);
 		}
 
 		private void ImportLevel()
 		{
-			using (var dialog = new OpenFileDialog())
+			using var dialog = new OpenFileDialog();
+			dialog.Title = "Choose the .prj2 file you want to import";
+			dialog.Filter = "Tomb Editor Levels|*.prj2";
+
+			if (dialog.ShowDialog(this) == DialogResult.OK)
 			{
-				dialog.Title = "Choose the .prj2 file you want to import";
-				dialog.Filter = "Tomb Editor Levels|*.prj2";
-
-				if (dialog.ShowDialog(this) == DialogResult.OK)
+				try
 				{
-					try
-					{
-						if (dialog.FileName.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-							throw new ArgumentException("You cannot import levels which are already inside the project's /Levels/ folder.");
+					if (dialog.FileName.StartsWith(_ide.Project.LevelsDirectoryPath, StringComparison.OrdinalIgnoreCase))
+						throw new ArgumentException("You cannot import levels which are already inside the project's /Levels/ folder.");
 
-						if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
-							throw new ArgumentException("You cannot import backup files.");
+					if (Prj2Helper.IsBackupFile(dialog.FileName))
+						throw new ArgumentException("You cannot import backup files.");
 
-						using (var form = new FormImportLevel(_ide.Project, dialog.FileName))
-						{
-							if (form.ShowDialog(this) == DialogResult.OK)
-								OnLevelAdded(form.ImportedLevel, form.GeneratedScriptLines);
-						}
-					}
-					catch (Exception ex)
-					{
-						DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
+					using var form = new FormImportLevel(_ide.Project, dialog.FileName);
+
+					if (form.ShowDialog(this) == DialogResult.OK)
+						OnLevelAdded(form.ImportedLevel, form.GeneratedScriptLines);
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 		}
 
 		private void ShowRenameLevelForm()
 		{
-			using (var form = new FormRenameLevel(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger IDE.SelectedLevelSettingsChangedEvent
+			using var form = new FormRenameLevel(_ide);
+			form.ShowDialog(this); // After the form is done, it will trigger IDE.SelectedLevelSettingsChangedEvent
 		}
 
 		private void DeleteLevel()
 		{
-			var affectedLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
+			var affectedLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
 
 			// We can't allow deleting directories of external levels, so we must handle them differently
 
 			// Internal level paths always start with the project's LevelsPath
-			bool isInternalLevel = affectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase);
+			bool isInternalLevel = affectedLevel.DirectoryPath.StartsWith(_ide.Project.LevelsDirectoryPath, StringComparison.OrdinalIgnoreCase);
 			string message;
 
 			if (isInternalLevel)
@@ -233,7 +230,7 @@ namespace TombIDE.ProjectMaster
 			if (result == DialogResult.Yes)
 			{
 				if (isInternalLevel) // Move the level folder into the recycle bin in this case
-					FileSystem.DeleteDirectory(affectedLevel.FolderPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+					FileSystem.DeleteDirectory(affectedLevel.DirectoryPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
 
 				// Remove the node and clear selection
 				treeView.SelectedNodes[0].Remove();
@@ -255,34 +252,33 @@ namespace TombIDE.ProjectMaster
 
 				// Reinitialize the selected level (That's for treeView_Resources in SectionLevelProperties)
 				_ide.SelectedLevel = null;
-				_ide.SelectedLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
+				_ide.SelectedLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
 			}
 
 			// Scan the project's /Levels/ folder using FormLoading
-			using (var form = new FormLoading(_ide))
+			using var form = new FormLoading(_ide);
+
+			if (form.ShowDialog(this) == DialogResult.OK)
 			{
-				if (form.ShowDialog(this) == DialogResult.OK)
+				// Refresh the level list
+				FillLevelList();
+
+				// If a node was selected, reselect it after refreshing
+				if (!string.IsNullOrEmpty(cachedNodeText))
 				{
-					// Refresh the level list
-					FillLevelList();
-
-					// If a node was selected, reselect it after refreshing
-					if (!string.IsNullOrEmpty(cachedNodeText))
+					foreach (DarkTreeNode node in treeView.Nodes)
 					{
-						foreach (DarkTreeNode node in treeView.Nodes)
+						if (node.Text.Equals(cachedNodeText, StringComparison.OrdinalIgnoreCase))
 						{
-							if (node.Text.Equals(cachedNodeText, StringComparison.OrdinalIgnoreCase))
-							{
-								treeView.SelectNode(node);
-								treeView.ScrollTo(node.FullArea.Location);
+							treeView.SelectNode(node);
+							treeView.ScrollTo(node.FullArea.Location);
 
-								break;
-							}
+							break;
 						}
 					}
-
-					CheckItemSelection();
 				}
+
+				CheckItemSelection();
 			}
 		}
 
@@ -309,10 +305,10 @@ namespace TombIDE.ProjectMaster
 			// Triggers IDE.SelectedLevelChangedEvent
 			if (treeView.SelectedNodes.Count > 0)
 			{
-				var nodeLevel = (ProjectLevel)treeView.SelectedNodes[0].Tag;
+				var nodeLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
 
 				// Validation check
-				if (!nodeLevel.IsValidLevel())
+				if (!nodeLevel.IsValid(out _))
 				{
 					treeView.SelectedNodes.Clear();
 					CheckItemSelection(); // Recursion
@@ -333,7 +329,7 @@ namespace TombIDE.ProjectMaster
 				return;
 
 			// Validation check
-			if (!_ide.SelectedLevel.IsValidLevel())
+			if (!_ide.SelectedLevel.IsValid(out _))
 			{
 				treeView.SelectedNodes.Clear();
 				CheckItemSelection();
@@ -344,10 +340,10 @@ namespace TombIDE.ProjectMaster
 
 			string prj2Path;
 
-			if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.GetLatestPrj2File());
+			if (_ide.SelectedLevel.TargetPrj2FileName is null)
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.GetMostRecentlyModifiedPrj2FileName());
 			else
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.TargetPrj2FileName);
 
 			var startInfo = new ProcessStartInfo
 			{
@@ -362,14 +358,14 @@ namespace TombIDE.ProjectMaster
 
 		#region Methods
 
-		private void OnLevelAdded(ProjectLevel addedLevel, List<string> scriptLines)
+		private void OnLevelAdded(ILevelProject addedLevel, List<string> scriptLines)
 		{
 			AddLevelToList(addedLevel, true);
 
 			// Select the new level node
 			foreach (DarkTreeNode node in treeView.Nodes)
 			{
-				if (((ProjectLevel)node.Tag).Name.Equals(addedLevel.Name, StringComparison.OrdinalIgnoreCase))
+				if (((ILevelProject)node.Tag).Name.Equals(addedLevel.Name, StringComparison.OrdinalIgnoreCase))
 				{
 					treeView.SelectNode(node);
 					CheckItemSelection();
@@ -389,10 +385,17 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView.Invalidate();
 
-			_ide.Project.Levels.Clear();
+			_ide.Project.ExternalLevelFilePaths.Clear();
 
 			foreach (DarkTreeNode node in treeView.Nodes)
-				_ide.Project.Levels.Add((ProjectLevel)node.Tag);
+			{
+				var level = (ILevelProject)node.Tag;
+
+				if (level.IsExternal(_ide.Project.LevelsDirectoryPath))
+					_ide.Project.ExternalLevelFilePaths.Add(level.GetTrlevFilePath());
+
+				level.Save();
+			}
 
 			_ide.Project.Save();
 
@@ -407,10 +410,10 @@ namespace TombIDE.ProjectMaster
 
 			string prj2Path;
 
-			if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.GetLatestPrj2File());
+			if (_ide.SelectedLevel.TargetPrj2FileName is null)
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.GetMostRecentlyModifiedPrj2FileName());
 			else
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.TargetPrj2FileName);
 
 			batchList.Files.Add(prj2Path);
 

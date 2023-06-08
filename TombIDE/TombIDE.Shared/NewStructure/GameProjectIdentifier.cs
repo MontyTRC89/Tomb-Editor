@@ -35,17 +35,17 @@ namespace TombIDE.Shared.NewStructure
 			string engineExecutable = FindEngineExecutable(directoryPath, out TRVersion.Game version);
 			string launcherExecutable = FindLauncherExecutable(directoryPath);
 
-			string rootDirectoryPath = Path.GetDirectoryName(launcherExecutable);
-			string projectName = Path.GetFileName(rootDirectoryPath); // Name of root directory
+			string projectDirectoryPath = Path.GetDirectoryName(launcherExecutable);
+			string projectName = Path.GetFileName(projectDirectoryPath); // Name of project directory
 
-			string levelsDirectory = FindLevelsDirectory(engineExecutable);
-			string scriptDirectory = FindScriptDirectory(engineExecutable);
-			string pluginsDirectory = FindPluginsDirectory(engineExecutable);
+			string levelsDirectory = FindLevelsDirectory(projectDirectoryPath);
+			string scriptDirectory = FindScriptDirectory(projectDirectoryPath);
+			string pluginsDirectory = FindPluginsDirectory(projectDirectoryPath);
 
 			return new GameProjectDTO
 			{
 				ProjectName = projectName,
-				RootDirectoryPath = rootDirectoryPath,
+				RootDirectoryPath = projectDirectoryPath,
 
 				GameVersion = version,
 
@@ -159,7 +159,7 @@ namespace TombIDE.Shared.NewStructure
 						string parentDirectory = Path.GetDirectoryName(engineDirectory);
 						launcherExecutable = FindValidLauncherExecutable(parentDirectory);
 
-						if (Directory.Exists(launcherExecutable))
+						if (File.Exists(launcherExecutable))
 							result = launcherExecutable;
 					}
 
@@ -256,7 +256,7 @@ namespace TombIDE.Shared.NewStructure
 					if (string.IsNullOrEmpty(result))
 						throw new Exception("The game's \"Scripts\" directory could not be found.");
 
-					if (!IsValidScriptDirectory(result, TRVersion.Game.TR1))
+					if (!IsValidScriptDirectory(result, TRVersion.Game.TombEngine))
 						throw new Exception($"The game's \"Scripts\" directory does not contain a valid {TENGameProject.MainScriptFileName} file.");
 
 					break;

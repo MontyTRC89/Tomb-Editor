@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TombIDE.Shared.NewStructure;
 using TombLib.Utils;
 
 namespace TombIDE.Shared.SharedClasses
@@ -10,7 +11,7 @@ namespace TombIDE.Shared.SharedClasses
 		/// <summary>
 		/// Returns a list made up of projects taken from each .trproj file path stored in TombIDEProjects.xml.
 		/// </summary>
-		public static IEnumerable<Project> GetProjectsFromXml()
+		public static IEnumerable<IGameProject> GetProjectsFromXml()
 		{
 			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEProjects.xml");
 
@@ -21,26 +22,28 @@ namespace TombIDE.Shared.SharedClasses
 
 				return projectFilePaths
 					.Where(path => File.Exists(path))
-					.Select(path => Project.FromFile(path));
+					.Select(path => GameProjectBase.FromTrproj(path));
 			}
 			catch
 			{
 				// Create a new (empty) .xml file
 				XmlUtils.WriteXmlFile(xmlPath, new List<string>());
-				return new List<Project>();
+				return new List<IGameProject>();
 			}
 		}
 
 		/// <summary>
 		/// Updates TombIDEProjects.xml with the projects' .trproj file paths.
 		/// </summary>
-		public static void UpdateProjectsXml(List<Project> projects)
+		public static void UpdateProjectsXml(List<IGameProject> projects)
 		{
-			IEnumerable<string> projectFilePaths = projects
-				.Select(project => project.GetTrprojFilePath());
-
 			string xmlPath = Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEProjects.xml");
-			XmlUtils.WriteXmlFile(xmlPath, projectFilePaths.ToList());
+
+			var projectFilePaths = projects
+				.Select(project => project.GetTrprojFilePath())
+				.ToList();
+
+			XmlUtils.WriteXmlFile(xmlPath, projectFilePaths);
 		}
 	}
 }

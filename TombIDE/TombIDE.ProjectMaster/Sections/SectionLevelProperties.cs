@@ -8,6 +8,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
@@ -44,8 +45,8 @@ namespace TombIDE.ProjectMaster
 				string exeFileName = Path.GetFileName(programPath).ToLower();
 
 				// Exclude these programs from the list
-				if (exeFileName == "tombeditor.exe" || exeFileName == "wadtool.exe" || exeFileName == "soundtool.exe" || exeFileName == "tombide.exe"
-					|| exeFileName == "ng_center.exe" || exeFileName == "tomb4.exe" || exeFileName == "pctomb5.exe")
+				if (exeFileName is "tombeditor.exe" or "wadtool.exe" or "soundtool.exe" or "tombide.exe"
+					or "ng_center.exe" or "tomb4.exe" or "pctomb5.exe")
 					continue;
 
 				// Exclude batch files
@@ -60,7 +61,7 @@ namespace TombIDE.ProjectMaster
 					programName = Path.GetFileNameWithoutExtension(programPath);
 
 				// Create the menu item
-				ToolStripMenuItem item = new ToolStripMenuItem
+				var item = new ToolStripMenuItem
 				{
 					Image = image,
 					Text = "Open with " + programName,
@@ -100,7 +101,7 @@ namespace TombIDE.ProjectMaster
 			else if (obj is IDE.ProgramButtonsModifiedEvent)
 			{
 				// Cache the first 3 items, because they are important
-				List<ToolStripItem> cachedItems = new List<ToolStripItem>
+				var cachedItems = new List<ToolStripItem>
 				{
 					contextMenu.Items[0],
 					contextMenu.Items[1],
@@ -131,11 +132,11 @@ namespace TombIDE.ProjectMaster
 				return;
 
 			// Check if the setting actually changed
-			if (radioButton_LatestFile.Checked && _ide.SelectedLevel.SpecificFile != "$(LatestFile)")
+			if (radioButton_LatestFile.Checked && _ide.SelectedLevel.TargetPrj2FileName is not null)
 			{
 				ClearAndDisablePrj2FileList();
 
-				_ide.SelectedLevel.SpecificFile = "$(LatestFile)";
+				_ide.SelectedLevel.TargetPrj2FileName = null;
 				_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 			}
 		}
@@ -146,11 +147,11 @@ namespace TombIDE.ProjectMaster
 				return;
 
 			// Check if the setting actually changed
-			if (radioButton_SpecificFile.Checked && _ide.SelectedLevel.SpecificFile == "$(LatestFile)")
+			if (radioButton_SpecificFile.Checked && _ide.SelectedLevel.TargetPrj2FileName is null)
 			{
 				EnableAndFillPrj2FileList();
 
-				_ide.SelectedLevel.SpecificFile = treeView_AllPrjFiles.SelectedNodes[0].Text;
+				_ide.SelectedLevel.TargetPrj2FileName = treeView_AllPrjFiles.SelectedNodes[0].Text;
 				_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 			}
 		}
@@ -163,9 +164,9 @@ namespace TombIDE.ProjectMaster
 			if (treeView_AllPrjFiles.SelectedNodes.Count > 0)
 			{
 				// Check if the setting actually changed
-				if (_ide.SelectedLevel.SpecificFile != treeView_AllPrjFiles.SelectedNodes[0].Text)
+				if (_ide.SelectedLevel.TargetPrj2FileName != treeView_AllPrjFiles.SelectedNodes[0].Text)
 				{
-					_ide.SelectedLevel.SpecificFile = treeView_AllPrjFiles.SelectedNodes[0].Text;
+					_ide.SelectedLevel.TargetPrj2FileName = treeView_AllPrjFiles.SelectedNodes[0].Text;
 					_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
 				}
 			}
@@ -179,7 +180,7 @@ namespace TombIDE.ProjectMaster
 			UpdatePrj2FileList();
 
 			// If the user unchecked the checkBox and the SpecificFile was a backup file
-			if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(_ide.SelectedLevel.SpecificFile))
+			if (!checkBox_ShowAllFiles.Checked && Prj2Helper.IsBackupFile(Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.TargetPrj2FileName)))
 				treeView_AllPrjFiles.SelectNode(treeView_AllPrjFiles.Nodes[0]); // Select something else since the item is no longer on the list
 		}
 
@@ -203,8 +204,8 @@ namespace TombIDE.ProjectMaster
 
 		private void menuItem_Open_Click(object sender, EventArgs e) => OpenSelectedResource();
 
-		private void menuItem_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
+		private void menuItem_OpenFolder_Click(object sender, EventArgs e)
+			=> SharedMethods.OpenInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
 
 		private void OpenSelectedResource()
 		{
@@ -217,7 +218,7 @@ namespace TombIDE.ProjectMaster
 
 			try
 			{
-				ProcessStartInfo startInfo = new ProcessStartInfo();
+				var startInfo = new ProcessStartInfo();
 
 				if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1]) // Wad handling
 				{
@@ -251,7 +252,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string programPath = ((ToolStripMenuItem)sender).Tag.ToString();
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = programPath,
 				Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\""
@@ -267,8 +268,8 @@ namespace TombIDE.ProjectMaster
 		private void UpdateSettings()
 		{
 			// Update the radio buttons
-			radioButton_LatestFile.Checked = _ide.SelectedLevel.SpecificFile == "$(LatestFile)";
-			radioButton_SpecificFile.Checked = _ide.SelectedLevel.SpecificFile != "$(LatestFile)";
+			radioButton_LatestFile.Checked = _ide.SelectedLevel.TargetPrj2FileName == null;
+			radioButton_SpecificFile.Checked = _ide.SelectedLevel.TargetPrj2FileName != null;
 
 			// Update the .prj2 file list depending on which radio button was checked
 			if (radioButton_LatestFile.Checked)
@@ -300,16 +301,16 @@ namespace TombIDE.ProjectMaster
 
 			string prj2Path = string.Empty;
 
-			if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.GetLatestPrj2File());
+			if (_ide.SelectedLevel.TargetPrj2FileName is null)
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.GetMostRecentlyModifiedPrj2FileName());
 			else
-				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
+				prj2Path = Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.TargetPrj2FileName);
 
 			try
 			{
 				LevelSettings settings;
 
-				using (FileStream stream = new FileStream(prj2Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (var stream = new FileStream(prj2Path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					settings = Prj2Loader.LoadFromPrj2OnlySettings(prj2Path, stream);
 
 				AddTextureFileNodes(settings);
@@ -345,7 +346,8 @@ namespace TombIDE.ProjectMaster
 
 			// When the user switched the _ide.SelectedLevel and the current _ide.SelectedLevel 's SpecificFile is a backup file,
 			// then check this checkbox, otherwise it will reset the SpecificFile to a non-backup file and we don't want that
-			checkBox_ShowAllFiles.Checked = ProjectLevel.IsBackupFile(_ide.SelectedLevel.SpecificFile);
+			if (_ide.SelectedLevel.TargetPrj2FileName is not null)
+				checkBox_ShowAllFiles.Checked = Prj2Helper.IsBackupFile(Path.Combine(_ide.SelectedLevel.DirectoryPath, _ide.SelectedLevel.TargetPrj2FileName));
 
 			UpdatePrj2FileList();
 		}
@@ -365,14 +367,14 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView_AllPrjFiles.Nodes.Clear();
 
-			foreach (string file in Directory.GetFiles(_ide.SelectedLevel.FolderPath, "*.prj2", SearchOption.TopDirectoryOnly))
+			foreach (string file in Directory.GetFiles(_ide.SelectedLevel.DirectoryPath, "*.prj2", SearchOption.TopDirectoryOnly))
 			{
 				// Don't show backup files if checkBox_ShowAllFiles is unchecked
-				if (!checkBox_ShowAllFiles.Checked && ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+				if (!checkBox_ShowAllFiles.Checked && Prj2Helper.IsBackupFile(file))
 					continue;
 
 				// Create the .prj2 file node
-				DarkTreeNode node = new DarkTreeNode
+				var node = new DarkTreeNode
 				{
 					Text = Path.GetFileName(file),
 					Tag = file
@@ -385,14 +387,17 @@ namespace TombIDE.ProjectMaster
 			// Select the SpecificFile node (if the file exists on the list)
 			bool nodeFound = false;
 
-			foreach (DarkTreeNode node in treeView_AllPrjFiles.Nodes)
+			if (_ide.SelectedLevel.TargetPrj2FileName is not null)
 			{
-				if (node.Text.ToLower() == _ide.SelectedLevel.SpecificFile.ToLower())
+				foreach (DarkTreeNode node in treeView_AllPrjFiles.Nodes)
 				{
-					treeView_AllPrjFiles.SelectNode(node);
-					nodeFound = true;
+					if (node.Text.ToLower() == _ide.SelectedLevel.TargetPrj2FileName.ToLower())
+					{
+						treeView_AllPrjFiles.SelectNode(node);
+						nodeFound = true;
 
-					break;
+						break;
+					}
 				}
 			}
 
@@ -404,19 +409,19 @@ namespace TombIDE.ProjectMaster
 
 		private void AddDefaultResourceNodes()
 		{
-			DarkTreeNode texturesNode = new DarkTreeNode
+			var texturesNode = new DarkTreeNode
 			{
 				Icon = Properties.Resources.image_file.ToBitmap(),
 				Text = "Textures",
 			};
 
-			DarkTreeNode wadFilesNode = new DarkTreeNode
+			var wadFilesNode = new DarkTreeNode
 			{
 				Icon = Properties.Resources.wad_file.ToBitmap(),
 				Text = "Wad Files",
 			};
 
-			DarkTreeNode geometryNode = new DarkTreeNode
+			var geometryNode = new DarkTreeNode
 			{
 				Icon = Properties.Resources.obj_file.ToBitmap(),
 				Text = "Imported Geometry",
@@ -437,7 +442,7 @@ namespace TombIDE.ProjectMaster
 				if (!File.Exists(textureFilePath))
 					continue;
 
-				DarkTreeNode node = new DarkTreeNode
+				var node = new DarkTreeNode
 				{
 					Icon = Properties.Resources.image_file.ToBitmap(),
 					Text = textureFilePath,
@@ -458,7 +463,7 @@ namespace TombIDE.ProjectMaster
 				if (!File.Exists(wadFilePath))
 					continue;
 
-				DarkTreeNode node = new DarkTreeNode
+				var node = new DarkTreeNode
 				{
 					Icon = Properties.Resources.wad_file.ToBitmap(),
 					Text = wadFilePath,
@@ -479,7 +484,7 @@ namespace TombIDE.ProjectMaster
 				if (!File.Exists(geometryFilePath))
 					continue;
 
-				DarkTreeNode node = new DarkTreeNode
+				var node = new DarkTreeNode
 				{
 					Icon = Properties.Resources.obj_file.ToBitmap(),
 					Text = geometryFilePath,

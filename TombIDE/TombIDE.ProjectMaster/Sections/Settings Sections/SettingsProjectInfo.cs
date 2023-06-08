@@ -47,16 +47,16 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_OpenProjectFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
+			SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
 
 		private void button_OpenEngineFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(_ide.Project.EnginePath);
+			SharedMethods.OpenInExplorer(_ide.Project.GetEngineRootDirectoryPath());
 
 		private void button_OpenScriptFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(_ide.Project.ScriptPath);
+			SharedMethods.OpenInExplorer(_ide.Project.ScriptDirectoryPath);
 
 		private void button_OpenLevelsFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(_ide.Project.LevelsPath);
+			SharedMethods.OpenInExplorer(_ide.Project.LevelsDirectoryPath);
 
 		private void button_ChangeScriptPath_Click(object sender, EventArgs e)
 		{
@@ -99,19 +99,19 @@ namespace TombIDE.ProjectMaster
 		private void UpdateProjectInfo()
 		{
 			textBox_ProjectName.Text = _ide.Project.Name;
-			textBox_ProjectPath.Text = _ide.Project.ProjectPath;
+			textBox_ProjectPath.Text = _ide.Project.DirectoryPath;
 
 			if (checkBox_FullPaths.Checked)
 			{
-				textBox_EnginePath.Text = _ide.Project.EnginePath;
-				textBox_ScriptPath.Text = _ide.Project.ScriptPath;
-				textBox_LevelsPath.Text = _ide.Project.LevelsPath;
+				textBox_EnginePath.Text = _ide.Project.GetEngineRootDirectoryPath();
+				textBox_ScriptPath.Text = _ide.Project.ScriptDirectoryPath;
+				textBox_LevelsPath.Text = _ide.Project.LevelsDirectoryPath;
 			}
 			else
 			{
-				textBox_EnginePath.Text = _ide.Project.EnginePath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
-				textBox_ScriptPath.Text = _ide.Project.ScriptPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
-				textBox_LevelsPath.Text = _ide.Project.LevelsPath.Replace(_ide.Project.ProjectPath, "$(ProjectDirectory)");
+				textBox_EnginePath.Text = _ide.Project.GetEngineRootDirectoryPath().Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
+				textBox_ScriptPath.Text = _ide.Project.ScriptDirectoryPath.Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
+				textBox_LevelsPath.Text = _ide.Project.LevelsDirectoryPath.Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
 			}
 		}
 
