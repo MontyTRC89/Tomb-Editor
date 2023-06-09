@@ -10,7 +10,7 @@ using System.Runtime.Versioning;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tomb Editor Team")]
 [assembly: AssemblyProduct("TombIDE")]
-[assembly: AssemblyCopyright("Copyright © Nickelony 2018 - 2020")]
+[assembly: AssemblyCopyright("Copyright © Nickelony 2018 - 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
