@@ -597,7 +597,9 @@ namespace TombEditor
             {
                 objectList = objectList.OrderByDescending(o =>
                 {
-                    string objectName = o.ToString().ToLower();
+                    string objectName = string.Empty;
+					if (o is MoveableInstance)
+						objectName = (o as MoveableInstance).WadObjectId.ShortName(_editor.Level.Settings.GameVersion);
 
                     bool isSwitch = objectName.Contains("switch") || objectName.Contains("pulley");
                     bool isHole = objectName.Contains("hole") &&

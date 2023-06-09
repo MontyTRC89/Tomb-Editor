@@ -1,3 +1,9 @@
+Version 1.6.8
+=============
+
+Tomb Editor:
+ * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
+
 Version 1.6.7
 =============
 
