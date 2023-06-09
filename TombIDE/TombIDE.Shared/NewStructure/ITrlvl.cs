@@ -2,7 +2,7 @@
 
 namespace TombIDE.Shared.NewStructure
 {
-	public interface ITrlev
+	public interface ITrlvl
 	{
 		Version Version { get; }
 		void WriteToFile(string filePath);

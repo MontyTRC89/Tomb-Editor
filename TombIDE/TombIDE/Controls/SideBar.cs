@@ -277,7 +277,8 @@ namespace TombIDE.Controls
 				var startInfo = new ProcessStartInfo
 				{
 					FileName = programFilePath,
-					WorkingDirectory = Path.GetDirectoryName(programFilePath)
+					WorkingDirectory = Path.GetDirectoryName(programFilePath),
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);
@@ -351,7 +352,8 @@ namespace TombIDE.Controls
 				var startInfo = new ProcessStartInfo
 				{
 					FileName = flepExePath,
-					WorkingDirectory = engineRootDirectory
+					WorkingDirectory = engineRootDirectory,
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);
@@ -386,10 +388,13 @@ namespace TombIDE.Controls
 
 			try
 			{
+				string launcherFilePath = _ide.Project.GetLauncherFilePath();
+
 				var startInfo = new ProcessStartInfo
 				{
-					FileName = _ide.Project.GetLauncherFilePath(),
-					WorkingDirectory = Path.GetDirectoryName(_ide.Project.GetEngineExecutableFilePath())
+					FileName = launcherFilePath,
+					WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);

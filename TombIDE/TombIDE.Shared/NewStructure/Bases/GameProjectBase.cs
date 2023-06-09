@@ -104,7 +104,7 @@ namespace TombIDE.Shared.NewStructure
 				: throw new FileNotFoundException("The engine executable file could not be found.");
 		}
 
-		public virtual FileInfo[] GetAllValidTrlevFiles()
+		public virtual FileInfo[] GetAllValidTrlvlFiles()
 		{
 			var result = new List<FileInfo>();
 
@@ -118,12 +118,12 @@ namespace TombIDE.Shared.NewStructure
 
 			foreach (DirectoryInfo levelDirectoryInfo in levelsDirectoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
 			{
-				FileInfo[] trlevFiles = levelDirectoryInfo.GetFiles("*.trlev", SearchOption.TopDirectoryOnly);
+				FileInfo[] trlvlFiles = levelDirectoryInfo.GetFiles("*.trlvl", SearchOption.TopDirectoryOnly);
 
-				if (trlevFiles.Length is 0 or > 1)
+				if (trlvlFiles.Length is 0 or > 1)
 					continue;
 				else
-					result.Add(trlevFiles[0]);
+					result.Add(trlvlFiles[0]);
 			}
 
 			return result.ToArray();
@@ -133,9 +133,9 @@ namespace TombIDE.Shared.NewStructure
 		{
 			var result = new List<LevelProject>();
 
-			foreach (FileInfo trlevFile in GetAllValidTrlevFiles())
+			foreach (FileInfo trlvlFile in GetAllValidTrlvlFiles())
 			{
-				try { result.Add(LevelProject.FromTrlev(trlevFile.FullName)); }
+				try { result.Add(LevelProject.FromTrlvl(trlvlFile.FullName)); }
 				catch { }
 			}
 

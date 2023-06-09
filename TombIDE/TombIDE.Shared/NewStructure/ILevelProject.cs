@@ -11,9 +11,9 @@ namespace TombIDE.Shared.NewStructure
 		string TargetPrj2FileName { get; set; }
 
 		/// <summary>
-		/// Returns the path to the .trlev file of the level. File name should be "project.trlev".
+		/// Returns the path to the .trlvl file of the level. File name should be "project.trlvl".
 		/// </summary>
-		string GetTrlevFilePath();
+		string GetTrlvlFilePath();
 
 		/// <summary>
 		/// Returns all .prj2 files in the level's directory. Includes backup files if specified.

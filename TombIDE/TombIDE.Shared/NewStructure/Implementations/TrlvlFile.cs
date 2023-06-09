@@ -3,7 +3,7 @@ using TombLib.Utils;
 
 namespace TombIDE.Shared.NewStructure.Implementations
 {
-	public class TrlevFile : ITrlev
+	public class TrlvlFile : ITrlvl
 	{
 		public Version Version => new(1, 0);
 

@@ -197,7 +197,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.T1MColorConfigsDirectory
+				Arguments = DefaultPaths.T1MColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

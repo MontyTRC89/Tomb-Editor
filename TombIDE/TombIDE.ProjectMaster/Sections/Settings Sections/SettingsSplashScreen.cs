@@ -54,8 +54,9 @@ namespace TombIDE.ProjectMaster
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = launcherExecutable,
+				Arguments = "-p",
 				WorkingDirectory = Path.GetDirectoryName(launcherExecutable),
-				Arguments = "-p"
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

@@ -41,10 +41,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			return null; // This will only happen when the directory is empty or consists of only backup files
 		}
 
-		public string GetTrlevFilePath()
+		public string GetTrlvlFilePath()
 		{
-			string[] allTrlevFiles = Directory.GetFiles(DirectoryPath, "*.trlev", SearchOption.TopDirectoryOnly);
-			return allTrlevFiles.Length == 0 ? Path.Combine(DirectoryPath, "project.trlev") : allTrlevFiles[0];
+			string[] allTrlvlFiles = Directory.GetFiles(DirectoryPath, "*.trlvl", SearchOption.TopDirectoryOnly);
+			return allTrlvlFiles.Length == 0 ? Path.Combine(DirectoryPath, "project.trlvl") : allTrlvlFiles[0];
 		}
 
 		public bool IsValid(out string errorMessage)
@@ -85,19 +85,19 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public void Save()
 		{
-			var trlev = new TrlevFile
+			var trlvl = new TrlvlFile
 			{
 				LevelName = Name,
 				TargetPrj2FileName = TargetPrj2FileName
 			};
 
-			trlev.WriteToFile(GetTrlevFilePath());
+			trlvl.WriteToFile(GetTrlvlFilePath());
 		}
 
-		public static LevelProject FromTrlev(string trlevFilePath)
+		public static LevelProject FromTrlvl(string trlvlFilePath)
 		{
-			TrlevFile trlev = XmlUtils.ReadXmlFile<TrlevFile>(trlevFilePath);
-			return new LevelProject(trlev.LevelName, Path.GetDirectoryName(trlevFilePath), trlev.TargetPrj2FileName);
+			TrlvlFile trlvl = XmlUtils.ReadXmlFile<TrlvlFile>(trlvlFilePath);
+			return new LevelProject(trlvl.LevelName, Path.GetDirectoryName(trlvlFilePath), trlvl.TargetPrj2FileName);
 		}
 	}
 }

@@ -119,20 +119,20 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			{
 				try
 				{
-					var trlev = new TrlevFile
+					var trlvl = new TrlvlFile
 					{
 						LevelName = level.Name,
 						TargetPrj2FileName = level.SpecificFile
 					};
 
-					if (trlev.TargetPrj2FileName == "$(LatestFile)")
-						trlev.TargetPrj2FileName = null; // New method of specifying the latest file
+					if (trlvl.TargetPrj2FileName == "$(LatestFile)")
+						trlvl.TargetPrj2FileName = null; // New method of specifying the latest file
 
-					string trlevFilePath = Path.Combine(level.FolderPath, "project.trlev");
-					trlev.WriteToFile(trlevFilePath);
+					string trlvlFilePath = Path.Combine(level.FolderPath, "project.trlvl");
+					trlvl.WriteToFile(trlvlFilePath);
 
-					if (!trlevFilePath.StartsWith(trprojDirectory))
-						trproj.ExternalLevelFilePaths.Add(trlevFilePath);
+					if (!trlvlFilePath.StartsWith(trprojDirectory))
+						trproj.ExternalLevelFilePaths.Add(trlvlFilePath);
 				}
 				catch { } // Skip
 			}

@@ -348,7 +348,9 @@ namespace TombIDE.ProjectMaster
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-				Arguments = "\"" + prj2Path + "\""
+				Arguments = "\"" + prj2Path + "\"",
+				WorkingDirectory = DefaultPaths.ProgramDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);
@@ -392,7 +394,7 @@ namespace TombIDE.ProjectMaster
 				var level = (ILevelProject)node.Tag;
 
 				if (level.IsExternal(_ide.Project.LevelsDirectoryPath))
-					_ide.Project.ExternalLevelFilePaths.Add(level.GetTrlevFilePath());
+					_ide.Project.ExternalLevelFilePaths.Add(level.GetTrlvlFilePath());
 
 				level.Save();
 			}
@@ -423,7 +425,9 @@ namespace TombIDE.ProjectMaster
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-				Arguments = "\"" + batchListFilePath + "\""
+				Arguments = "\"" + batchListFilePath + "\"",
+				WorkingDirectory = DefaultPaths.ProgramDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

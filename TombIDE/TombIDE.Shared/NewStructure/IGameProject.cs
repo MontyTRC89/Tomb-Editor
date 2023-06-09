@@ -51,7 +51,7 @@ namespace TombIDE.Shared.NewStructure
 		string DefaultGameLanguageName { get; set; }
 
 		/// <summary>
-		/// A list of .trlev files which are not stored in the project's Levels directory.
+		/// A list of .trlvl files which are not stored in the project's Levels directory.
 		/// </summary>
 		List<string> ExternalLevelFilePaths { get; }
 
@@ -86,9 +86,9 @@ namespace TombIDE.Shared.NewStructure
 		string GetDefaultGameLanguageFilePath();
 
 		/// <summary>
-		/// Returns a list of all valid .trlev files in the project's Levels directory and external level file paths.
+		/// Returns a list of all valid .trlvl files in the project's Levels directory and external level file paths.
 		/// </summary>
-		FileInfo[] GetAllValidTrlevFiles();
+		FileInfo[] GetAllValidTrlvlFiles();
 
 		/// <summary>
 		/// Returns a list of all valid level projects in the project's Levels directory and external level file paths.

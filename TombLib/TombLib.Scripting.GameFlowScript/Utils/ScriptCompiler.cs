@@ -22,7 +22,8 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = batchFilePath,
-				WorkingDirectory = DefaultPaths.GameFlowDirectory
+				WorkingDirectory = DefaultPaths.GameFlowDirectory,
+				UseShellExecute = true
 			};
 
 			var process = Process.Start(startInfo);

@@ -218,15 +218,19 @@ namespace TombIDE.ProjectMaster
 
 			try
 			{
+				string filePath = treeView_Resources.SelectedNodes[0].Text;
 				var startInfo = new ProcessStartInfo();
 
 				if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1]) // Wad handling
 				{
 					startInfo.FileName = Path.Combine(DefaultPaths.ProgramDirectory, "WadTool.exe");
-					startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
+					startInfo.Arguments = "\"" + filePath + "\"";
 				}
 				else
-					startInfo.FileName = treeView_Resources.SelectedNodes[0].Text;
+					startInfo.FileName = filePath;
+
+				startInfo.WorkingDirectory = Path.GetDirectoryName(filePath);
+				startInfo.UseShellExecute = true;
 
 				Process.Start(startInfo);
 			}
@@ -251,11 +255,14 @@ namespace TombIDE.ProjectMaster
 		private void OnContextMenuProgramClicked(object sender, EventArgs e)
 		{
 			string programPath = ((ToolStripMenuItem)sender).Tag.ToString();
+			string selectedFilePath = treeView_Resources.SelectedNodes[0].Text;
 
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = programPath,
-				Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\""
+				Arguments = "\"" + selectedFilePath + "\"",
+				WorkingDirectory = Path.GetDirectoryName(selectedFilePath),
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

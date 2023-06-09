@@ -193,7 +193,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.GameFlowColorConfigsDirectory
+				Arguments = DefaultPaths.GameFlowColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.ProjectMaster;
@@ -252,7 +253,9 @@ namespace TombIDE
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = Assembly.GetExecutingAssembly().Location,
-				Arguments = "\"" + _ide.Project.GetTrprojFilePath() + "\""
+				Arguments = "\"" + _ide.Project.GetTrprojFilePath() + "\"",
+				WorkingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

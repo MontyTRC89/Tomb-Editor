@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
@@ -109,7 +110,9 @@ namespace TombIDE.ProjectMaster
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-				Arguments = "\"" + batchListFilePath + "\""
+				Arguments = "\"" + batchListFilePath + "\"",
+				WorkingDirectory = DefaultPaths.ProgramDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

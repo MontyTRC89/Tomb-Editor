@@ -66,10 +66,11 @@ namespace TombIDE.REGSVR
 
 		private static void RegisterCom(string path)
 		{
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = "regsvr32.exe",
-				Arguments = "/s " + "\"" + path + "\""
+				Arguments = "/s " + "\"" + path + "\"",
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);
