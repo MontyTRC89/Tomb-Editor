@@ -257,6 +257,9 @@ namespace TombIDE.Shared.NewStructure
 
 				trproj.WriteToFile(GetTrprojFilePath());
 			}
+
+			foreach (LevelProject level in GetAllValidLevelProjects())
+				level.Save();
 		}
 
 		public static IGameProject FromTrproj(string trprojFilePath)

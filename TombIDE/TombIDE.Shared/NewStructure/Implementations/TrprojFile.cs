@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombIDE.Shared.NewStructure.Implementations
 {
+	[XmlRoot("GameProject")]
 	public class TrprojFile : ITrproj
 	{
 		[XmlIgnore]
 		public string FilePath { get; protected set; }
 
-		public Version Version => new(2, 0);
+		[XmlAttribute]
+		public string FileFormatVersion { get; set; } = "2.0";
+
+		[XmlAttribute]
+		public TRVersion.Game TargetGameVersion { get; set; }
 
 		public string ProjectName { get; set; }
-		public TRVersion.Game TargetGameVersion { get; set; }
 
 		public string LevelsDirectoryPath { get; set; }
 		public string ScriptDirectoryPath { get; set; }
@@ -25,7 +30,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public string PluginsDirectoryPath { get; set; }
 
+		[XmlArrayItem(typeof(string), ElementName = "TrlvlFilePath")]
 		public List<string> ExternalLevelFilePaths { get; set; } = new();
+
+		[XmlArrayItem(typeof(string), ElementName = "LanguageName")]
 		public List<string> GameLanguageNames { get; set; } = new();
 
 		public void EncodeProjectPaths(string trprojFilePath)
@@ -76,7 +84,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				TrprojFile trprojFile = XmlUtils.ReadXmlFile<TrprojFile>(filePath);
 				trprojFile.DecodeProjectPaths(filePath);
 
-				version = trprojFile.Version;
+				version = new Version(trprojFile.FileFormatVersion);
 				return trprojFile;
 			}
 			catch
@@ -86,7 +94,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 					LegacyTrprojFile legacyTrproj = XmlUtils.ReadXmlFile<LegacyTrprojFile>(filePath);
 					legacyTrproj.DecodeProjectPaths(filePath);
 
-					version = legacyTrproj.Version;
+					version = new Version(legacyTrproj.FileFormatVersion);
 					return FromLegacy(legacyTrproj);
 				}
 				catch (Exception ex)

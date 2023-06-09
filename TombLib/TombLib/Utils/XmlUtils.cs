@@ -7,7 +7,7 @@ namespace TombLib.Utils
 {
 	public static class XmlUtils
 	{
-		private static readonly XmlWriterSettings ReadableOutputSettings = new XmlWriterSettings()
+		private static readonly XmlWriterSettings ReadableOutputSettings = new()
 		{
 			Indent = true,
 			IndentChars = "\t"

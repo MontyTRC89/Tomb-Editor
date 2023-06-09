@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace TombIDE.Shared.NewStructure
+﻿namespace TombIDE.Shared.NewStructure
 {
 	public interface ITrlvl
 	{
-		Version Version { get; }
+		string FileFormatVersion { get; }
 		void WriteToFile(string filePath);
 	}
 }

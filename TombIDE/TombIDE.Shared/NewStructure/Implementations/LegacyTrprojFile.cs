@@ -16,7 +16,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		[XmlIgnore]
 		public string FilePath { get; private set; }
 
-		public Version Version => new(1, 0);
+		[XmlIgnore]
+		public string FileFormatVersion => "1.0";
 
 		public string Name { get; set; }
 		public TRVersion.Game GameVersion { get; set; }

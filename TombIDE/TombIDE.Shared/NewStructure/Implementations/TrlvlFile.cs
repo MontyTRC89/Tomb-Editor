@@ -1,11 +1,13 @@
-﻿using System;
+﻿using System.Xml.Serialization;
 using TombLib.Utils;
 
 namespace TombIDE.Shared.NewStructure.Implementations
 {
+	[XmlRoot("LevelProject")]
 	public class TrlvlFile : ITrlvl
 	{
-		public Version Version => new(1, 0);
+		[XmlAttribute]
+		public string FileFormatVersion { get; set; } = "1.0";
 
 		public string LevelName { get; set; }
 		public string TargetPrj2FileName { get; set; }
