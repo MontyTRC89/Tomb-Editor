@@ -10,6 +10,8 @@ namespace TombIDE.Shared.NewStructure
 		/// </summary>
 		string TargetPrj2FileName { get; set; }
 
+		int Order { get; set; }
+
 		/// <summary>
 		/// Returns the path to the .trlvl file of the level. File name should be "project.trlvl".
 		/// </summary>

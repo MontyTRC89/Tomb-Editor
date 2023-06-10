@@ -11,6 +11,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public string LevelName { get; set; }
 		public string TargetPrj2FileName { get; set; }
+		public int Order { get; set; } = 0;
 
 		public void WriteToFile(string filePath)
 			=> XmlUtils.WriteXmlFile(filePath, this);

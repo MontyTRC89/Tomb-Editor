@@ -139,7 +139,7 @@ namespace TombIDE.Shared.NewStructure
 				catch { }
 			}
 
-			return result.ToArray();
+			return result.OrderBy(level => level.Order).ToArray();
 		}
 
 		public virtual void Rename(string newName, bool renameDirectory)

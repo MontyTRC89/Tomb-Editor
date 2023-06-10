@@ -131,6 +131,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				DefaultGameLanguageName = "English"
 			};
 
+			int i = 0;
+
 			foreach (LegacyProjectLevel level in legacyTrproj.Levels)
 			{
 				try
@@ -138,7 +140,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 					var trlvl = new TrlvlFile
 					{
 						LevelName = level.Name,
-						TargetPrj2FileName = level.SpecificFile
+						TargetPrj2FileName = level.SpecificFile,
+						Order = i
 					};
 
 					if (trlvl.TargetPrj2FileName == "$(LatestFile)")
@@ -151,6 +154,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 						trproj.ExternalLevelFilePaths.Add(trlvlFilePath);
 				}
 				catch { } // Skip
+
+				i++;
 			}
 
 			return trproj;

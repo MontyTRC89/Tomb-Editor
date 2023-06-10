@@ -389,6 +389,8 @@ namespace TombIDE.ProjectMaster
 
 			_ide.Project.ExternalLevelFilePaths.Clear();
 
+			int i = 0;
+
 			foreach (DarkTreeNode node in treeView.Nodes)
 			{
 				var level = (ILevelProject)node.Tag;
@@ -396,7 +398,10 @@ namespace TombIDE.ProjectMaster
 				if (level.IsExternal(_ide.Project.LevelsDirectoryPath))
 					_ide.Project.ExternalLevelFilePaths.Add(level.GetTrlvlFilePath());
 
+				level.Order = i;
 				level.Save();
+
+				i++;
 			}
 
 			_ide.Project.Save();

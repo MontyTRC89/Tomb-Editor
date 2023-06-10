@@ -8,6 +8,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 	public class LevelProject : ILevelProject
 	{
 		public string TargetPrj2FileName { get; set; }
+		public int Order { get; set; } = 0;
 
 		public string Name { get; protected set; } = "UNTITLED LEVEL";
 		public string DirectoryPath { get; protected set; } = string.Empty;
@@ -90,7 +91,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			var trlvl = new TrlvlFile
 			{
 				LevelName = Name,
-				TargetPrj2FileName = TargetPrj2FileName
+				TargetPrj2FileName = TargetPrj2FileName,
+				Order = Order
 			};
 
 			trlvl.WriteToFile(GetTrlvlFilePath());
@@ -99,7 +101,11 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public static LevelProject FromTrlvl(string trlvlFilePath)
 		{
 			TrlvlFile trlvl = XmlUtils.ReadXmlFile<TrlvlFile>(trlvlFilePath);
-			return new LevelProject(trlvl.LevelName, Path.GetDirectoryName(trlvlFilePath), trlvl.TargetPrj2FileName);
+
+			var level = new LevelProject(trlvl.LevelName, Path.GetDirectoryName(trlvlFilePath), trlvl.TargetPrj2FileName);
+			level.Order = trlvl.Order;
+
+			return level;
 		}
 	}
 }
