@@ -85,6 +85,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				trprojFile.DecodeProjectPaths(filePath);
 
 				version = new Version(trprojFile.FileFormatVersion);
+
+				if (version != new Version(2, 0))
+					throw new Exception("Failed to load the project file. Unsupported version.");
+
 				return trprojFile;
 			}
 			catch
@@ -95,11 +99,15 @@ namespace TombIDE.Shared.NewStructure.Implementations
 					legacyTrproj.DecodeProjectPaths(filePath);
 
 					version = new Version(legacyTrproj.FileFormatVersion);
+
+					if (version != new Version(1, 0))
+						throw new Exception("Failed to load the project file. Unsupported version.");
+
 					return FromLegacy(legacyTrproj);
 				}
 				catch (Exception ex)
 				{
-					throw new Exception("Failed to load the project file.", ex);
+					throw new Exception("Failed to load the project file. Unsupported version or corrupted data.", ex);
 				}
 			}
 		}

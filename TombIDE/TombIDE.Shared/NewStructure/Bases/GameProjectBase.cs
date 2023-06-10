@@ -257,6 +257,8 @@ namespace TombIDE.Shared.NewStructure
 
 				trproj.WriteToFile(GetTrprojFilePath());
 			}
+			else
+				throw new NotSupportedException("The target .trproj version is not supported.");
 
 			foreach (LevelProject level in GetAllValidLevelProjects())
 				level.Save();
