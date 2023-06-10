@@ -21,30 +21,32 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		[XmlAttribute]
 		public TRVersion.Game TargetGameVersion { get; set; }
 
-		public string ProjectName { get; set; }
+		public string Name { get; set; }
 
-		public string LevelsDirectoryPath { get; set; }
-		public string ScriptDirectoryPath { get; set; }
+		public string LevelsDirectory { get; set; }
+		public string ScriptingDirectory { get; set; }
+		public string PluginsDirectory { get; set; }
 
-		public string DefaultGameLanguageName { get; set; }
+		[XmlIgnore] // Ignore for now
+		public string DefaultLanguage { get; set; } = "English";
 
-		public string PluginsDirectoryPath { get; set; }
+		[XmlArrayItem(typeof(string), ElementName = "TrlvlFile")]
+		public List<string> ExternalLevels { get; set; } = new();
 
-		[XmlArrayItem(typeof(string), ElementName = "TrlvlFilePath")]
-		public List<string> ExternalLevelFilePaths { get; set; } = new();
-
-		[XmlArrayItem(typeof(string), ElementName = "LanguageName")]
-		public List<string> GameLanguageNames { get; set; } = new();
+		[XmlIgnore, XmlArrayItem(typeof(string), ElementName = "Language")] // Ignore for now
+		public List<string> Languages { get; set; } = new() { "English" };
 
 		public void EncodeProjectPaths(string trprojFilePath)
 		{
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			LevelsDirectoryPath = Path.GetRelativePath(projectPath, LevelsDirectoryPath);
-			ScriptDirectoryPath = Path.GetRelativePath(projectPath, ScriptDirectoryPath);
-			PluginsDirectoryPath = Path.GetRelativePath(projectPath, PluginsDirectoryPath);
+			LevelsDirectory = Path.GetRelativePath(projectPath, LevelsDirectory);
+			ScriptingDirectory = Path.GetRelativePath(projectPath, ScriptingDirectory);
 
-			ExternalLevelFilePaths = ExternalLevelFilePaths.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
+			if (PluginsDirectory is not null)
+				PluginsDirectory = Path.GetRelativePath(projectPath, PluginsDirectory);
+
+			ExternalLevels = ExternalLevels.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
 		}
 
 		public void DecodeProjectPaths(string trprojFilePath)
@@ -53,11 +55,13 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			LevelsDirectoryPath = Path.GetFullPath(LevelsDirectoryPath, projectPath);
-			ScriptDirectoryPath = Path.GetFullPath(ScriptDirectoryPath, projectPath);
-			PluginsDirectoryPath = Path.GetFullPath(PluginsDirectoryPath, projectPath);
+			LevelsDirectory = Path.GetFullPath(LevelsDirectory, projectPath);
+			ScriptingDirectory = Path.GetFullPath(ScriptingDirectory, projectPath);
 
-			ExternalLevelFilePaths = ExternalLevelFilePaths.Select(path => Path.GetFullPath(path, projectPath)).ToList();
+			if (PluginsDirectory is not null)
+				PluginsDirectory = Path.GetFullPath(PluginsDirectory, projectPath);
+
+			ExternalLevels = ExternalLevels.Select(path => Path.GetFullPath(path, projectPath)).ToList();
 		}
 
 		public void WriteToFile(string filePath)
@@ -120,16 +124,18 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			{
 				FilePath = legacyTrproj.FilePath,
 
-				ProjectName = legacyTrproj.Name,
+				Name = legacyTrproj.Name,
 				TargetGameVersion = legacyTrproj.GameVersion,
 
-				LevelsDirectoryPath = legacyTrproj.LevelsPath,
-				ScriptDirectoryPath = legacyTrproj.ScriptPath,
-				PluginsDirectoryPath = Path.Combine(trprojDirectory, "Plugins"),
+				LevelsDirectory = legacyTrproj.LevelsPath,
+				ScriptingDirectory = legacyTrproj.ScriptPath,
 
-				GameLanguageNames = new List<string> { "English" },
-				DefaultGameLanguageName = "English"
+				Languages = new List<string> { "English" },
+				DefaultLanguage = "English"
 			};
+
+			if (trproj.TargetGameVersion is TRVersion.Game.TRNG)
+				trproj.PluginsDirectory = Path.Combine(trprojDirectory, "Plugins");
 
 			int i = 0;
 
@@ -139,19 +145,19 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				{
 					var trlvl = new TrlvlFile
 					{
-						LevelName = level.Name,
-						TargetPrj2FileName = level.SpecificFile,
+						Name = level.Name,
+						StartupFile = level.SpecificFile,
 						Order = i
 					};
 
-					if (trlvl.TargetPrj2FileName == "$(LatestFile)")
-						trlvl.TargetPrj2FileName = null; // New method of specifying the latest file
+					if (trlvl.StartupFile == "$(LatestFile)")
+						trlvl.StartupFile = null; // New method of specifying the latest file
 
 					string trlvlFilePath = Path.Combine(level.FolderPath, "project.trlvl");
 					trlvl.WriteToFile(trlvlFilePath);
 
 					if (!trlvlFilePath.StartsWith(trprojDirectory))
-						trproj.ExternalLevelFilePaths.Add(trlvlFilePath);
+						trproj.ExternalLevels.Add(trlvlFilePath);
 				}
 				catch { } // Skip
 

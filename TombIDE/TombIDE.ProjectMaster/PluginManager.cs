@@ -45,7 +45,7 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
 			}
 
-			string pluginsPath = Path.Combine(_ide.Project.DirectoryPath, "Plugins");
+			string pluginsPath = _ide.Project.PluginsDirectoryPath;
 			_pluginsDirectory = new DirectoryInfo(pluginsPath);
 
 			if (!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFiles("*", System.IO.SearchOption.AllDirectories).Any())

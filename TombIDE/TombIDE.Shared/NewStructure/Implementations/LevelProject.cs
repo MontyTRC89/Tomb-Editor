@@ -90,8 +90,8 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		{
 			var trlvl = new TrlvlFile
 			{
-				LevelName = Name,
-				TargetPrj2FileName = TargetPrj2FileName,
+				Name = Name,
+				StartupFile = TargetPrj2FileName,
 				Order = Order
 			};
 
@@ -102,7 +102,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		{
 			TrlvlFile trlvl = XmlUtils.ReadXmlFile<TrlvlFile>(trlvlFilePath);
 
-			var level = new LevelProject(trlvl.LevelName, Path.GetDirectoryName(trlvlFilePath), trlvl.TargetPrj2FileName);
+			var level = new LevelProject(trlvl.Name, Path.GetDirectoryName(trlvlFilePath), trlvl.StartupFile);
 			level.Order = trlvl.Order;
 
 			return level;

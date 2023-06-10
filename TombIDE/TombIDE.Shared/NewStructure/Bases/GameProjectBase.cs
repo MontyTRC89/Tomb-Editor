@@ -44,17 +44,17 @@ namespace TombIDE.Shared.NewStructure
 		{
 			TargetTrprojVersion = targetTrprojVersion;
 
-			Name = trproj.ProjectName;
+			Name = trproj.Name;
 			DirectoryPath = Path.GetDirectoryName(trproj.FilePath);
 
-			LevelsDirectoryPath = trproj.LevelsDirectoryPath;
-			ScriptDirectoryPath = trproj.ScriptDirectoryPath;
-			PluginsDirectoryPath = trproj.PluginsDirectoryPath;
+			LevelsDirectoryPath = trproj.LevelsDirectory;
+			ScriptDirectoryPath = trproj.ScriptingDirectory;
+			PluginsDirectoryPath = trproj.PluginsDirectory;
 
-			DefaultGameLanguageName = trproj.DefaultGameLanguageName;
+			DefaultGameLanguageName = trproj.DefaultLanguage;
 
-			ExternalLevelFilePaths = trproj.ExternalLevelFilePaths;
-			GameLanguageNames = trproj.GameLanguageNames;
+			ExternalLevelFilePaths = trproj.ExternalLevels;
+			GameLanguageNames = trproj.Languages;
 		}
 
 		public GameProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
@@ -244,17 +244,17 @@ namespace TombIDE.Shared.NewStructure
 			{
 				var trproj = new TrprojFile
 				{
-					ProjectName = Name,
+					Name = Name,
 					TargetGameVersion = GameVersion,
 
-					LevelsDirectoryPath = LevelsDirectoryPath,
-					ScriptDirectoryPath = ScriptDirectoryPath,
-					PluginsDirectoryPath = PluginsDirectoryPath,
+					LevelsDirectory = LevelsDirectoryPath,
+					ScriptingDirectory = ScriptDirectoryPath,
+					PluginsDirectory = PluginsDirectoryPath,
 
-					DefaultGameLanguageName = DefaultGameLanguageName,
+					DefaultLanguage = DefaultGameLanguageName,
 
-					ExternalLevelFilePaths = ExternalLevelFilePaths,
-					GameLanguageNames = GameLanguageNames
+					ExternalLevels = ExternalLevelFilePaths,
+					Languages = GameLanguageNames
 				};
 
 				trproj.WriteToFile(GetTrprojFilePath());
