@@ -75,7 +75,9 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			if (renameDirectory)
 			{
 				string newFolderPath = Path.Combine(Path.GetDirectoryName(DirectoryPath), newName);
-				Directory.Move(DirectoryPath, newFolderPath);
+
+				Directory.Move(DirectoryPath, newFolderPath + "_TEMP");
+				Directory.Move(newFolderPath + "_TEMP", newFolderPath);
 
 				DirectoryPath = newFolderPath;
 			}

@@ -147,7 +147,9 @@ namespace TombIDE.Shared.NewStructure
 			if (renameDirectory)
 			{
 				string newProjectPath = Path.Combine(Path.GetDirectoryName(DirectoryPath), newName);
-				Directory.Move(DirectoryPath, newProjectPath);
+
+				Directory.Move(DirectoryPath, newProjectPath + "_TEMP");
+				Directory.Move(newProjectPath + "_TEMP", newProjectPath);
 
 				if (ScriptDirectoryPath.StartsWith(DirectoryPath))
 					ScriptDirectoryPath = Path.Combine(newProjectPath, ScriptDirectoryPath.Remove(0, DirectoryPath.Length + 1));

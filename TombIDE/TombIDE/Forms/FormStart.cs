@@ -376,6 +376,9 @@ namespace TombIDE
 		{
 			var node = new DarkTreeNodeEx(project.Name, project.DirectoryPath) { Tag = project };
 
+			if (project.TargetTrprojVersion == new Version(2, 0))
+				node.SubText += " (.trproj 2.0)";
+
 			switch (project.GameVersion)
 			{
 				case TRVersion.Game.TombEngine: node.ExtraIcon = Properties.Resources.TEN_LVL; break;

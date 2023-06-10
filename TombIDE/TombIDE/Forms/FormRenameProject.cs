@@ -66,8 +66,8 @@ namespace TombIDE
 				{
 					string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.DirectoryPath), newName);
 
-					if (renameDirectory && Directory.Exists(newDirectory))
-						throw new ArgumentException("A directory with the same name already exists in the root directory.");
+					if (renameDirectory && Directory.Exists(newDirectory) && !newDirectory.Equals(_targetProject.DirectoryPath, StringComparison.OrdinalIgnoreCase))
+						throw new ArgumentException("A directory with the same name already exists in the parent directory.");
 
 					_targetProject.Rename(newName, renameDirectory);
 					_targetProject.Save();
