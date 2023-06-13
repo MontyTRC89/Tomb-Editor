@@ -22,7 +22,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public GameFlowScriptStudio() : base(IDE.Global.Project.ScriptDirectoryPath, IDE.Global.Project.GetEngineRootDirectoryPath())
+		public GameFlowScriptStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
 		{
 			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
 
@@ -33,7 +33,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptDirectoryPath, TombLib.LevelData.TRVersion.Game.TR2);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR2);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);

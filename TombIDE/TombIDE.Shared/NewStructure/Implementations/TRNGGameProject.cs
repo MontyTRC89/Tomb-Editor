@@ -8,6 +8,8 @@ namespace TombIDE.Shared.NewStructure
 	{
 		public override TRVersion.Game GameVersion => TRVersion.Game.TRNG;
 
+		public override bool SupportsPlugins => true;
+
 		public TRNGGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
 		{ }
 

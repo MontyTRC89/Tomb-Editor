@@ -9,9 +9,11 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		[XmlAttribute]
 		public string FileFormatVersion { get; set; } = "1.0";
 
-		public int Order { get; set; } = 0;
-		public string Name { get; set; }
-		public string StartupFile { get; set; }
+		[XmlElement("Name")]
+		public string LevelName { get; set; }
+
+		[XmlElement("StartupFile")]
+		public string StartupFileName { get; set; }
 
 		public void WriteToFile(string filePath)
 			=> XmlUtils.WriteXmlFile(filePath, this);

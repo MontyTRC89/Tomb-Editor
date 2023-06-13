@@ -31,11 +31,6 @@ namespace TombIDE.Shared.NewStructure
 		string LevelsDirectoryPath { get; set; }
 
 		/// <summary>
-		/// The path where the project's script files are stored.
-		/// </summary>
-		string ScriptDirectoryPath { get; }
-
-		/// <summary>
 		/// The path where the project's plugins are stored (if the game engine supports them).
 		/// </summary>
 		string PluginsDirectoryPath { get; set; }
@@ -50,10 +45,10 @@ namespace TombIDE.Shared.NewStructure
 		/// </summary>
 		string DefaultGameLanguageName { get; set; }
 
-		/// <summary>
-		/// A list of .trlvl files which are not stored in the project's Levels directory.
-		/// </summary>
-		List<string> ExternalLevelFilePaths { get; }
+		bool SupportsCustomScriptPaths { get; }
+		bool SupportsPlugins { get; }
+
+		List<string> KnownLevelProjectFilePaths { get; }
 
 		/// <summary>
 		/// A list of all available game languages. (e.g. <c>"English"</c>, <c>"German"</c>, <c>"French"</c>, ...)
@@ -94,6 +89,8 @@ namespace TombIDE.Shared.NewStructure
 		/// Returns a list of all valid level projects in the project's Levels directory and external level file paths.
 		/// </summary>
 		LevelProject[] GetAllValidLevelProjects();
+
+		string GetScriptRootDirectory();
 
 		/// <summary>
 		/// Sets the project's script root directory to the given path. May require a restart of the IDE, depending on the implementation.

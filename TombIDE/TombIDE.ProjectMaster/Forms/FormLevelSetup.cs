@@ -151,6 +151,8 @@ namespace TombIDE.ProjectMaster
 					// // // //
 				}
 
+				createdLevel.Save();
+
 				// // // //
 				CreatedLevel = createdLevel;
 				// // // //

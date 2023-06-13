@@ -193,7 +193,10 @@ namespace TombIDE
 				if (obj is IDE.ProjectScriptPathChangedEvent spce)
 					_ide.Project.SetScriptRootDirectory(spce.NewPath);
 				else if (obj is IDE.ProjectLevelsPathChangedEvent lpce)
+				{
+					_ide.Project.KnownLevelProjectFilePaths.Clear();
 					_ide.Project.LevelsDirectoryPath = lpce.NewPath;
+				}	
 
 				RestartApplication();
 			}

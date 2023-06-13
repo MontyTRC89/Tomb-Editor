@@ -23,7 +23,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public LuaStudio() : base(IDE.Global.Project.ScriptDirectoryPath, IDE.Global.Project.GetEngineRootDirectoryPath())
+		public LuaStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
 		{
 			DockPanelState = IDE.Global.IDEConfiguration.Lua_DockPanelState;
 
@@ -32,7 +32,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);

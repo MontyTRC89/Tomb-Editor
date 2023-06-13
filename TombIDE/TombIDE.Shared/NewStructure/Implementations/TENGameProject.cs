@@ -14,13 +14,16 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string DataFileExtension => ".ten";
 		public override string EngineExecutableFileName => "TombEngine.exe";
-		public override string MainScriptFilePath => Path.Combine(ScriptDirectoryPath, MainScriptFileName);
+		public override string MainScriptFilePath => Path.Combine(GetScriptRootDirectory(), MainScriptFileName);
+
+		public override bool SupportsCustomScriptPaths => false;
+		public override bool SupportsPlugins => false;
 
 		public TENGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
 		{ }
 
-		public TENGameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath)
-			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath)
+		public TENGameProject(string name, string directoryPath, string levelsDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath)
 		{ }
 
 		public override string GetEngineExecutableFilePath()
@@ -49,7 +52,7 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
-			string defaultLanguageFilePath = Path.Combine(ScriptDirectoryPath, LanguageFileName);
+			string defaultLanguageFilePath = Path.Combine(GetScriptRootDirectory(), LanguageFileName);
 
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath
@@ -80,6 +83,9 @@ namespace TombIDE.Shared.NewStructure
 
 			return true;
 		}
+
+		public override string GetScriptRootDirectory()
+			=> Path.Combine(GetEngineRootDirectoryPath(), "Scripts"); // Hardcoded path
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");

@@ -387,21 +387,13 @@ namespace TombIDE.ProjectMaster
 		{
 			treeView.Invalidate();
 
-			_ide.Project.ExternalLevelFilePaths.Clear();
-
-			int i = 0;
+			_ide.Project.KnownLevelProjectFilePaths.Clear();
 
 			foreach (DarkTreeNode node in treeView.Nodes)
 			{
 				var level = (ILevelProject)node.Tag;
-
-				if (level.IsExternal(_ide.Project.LevelsDirectoryPath))
-					_ide.Project.ExternalLevelFilePaths.Add(level.GetTrlvlFilePath());
-
-				level.Order = i;
+				_ide.Project.KnownLevelProjectFilePaths.Add(level.GetTrlvlFilePath());
 				level.Save();
-
-				i++;
 			}
 
 			_ide.Project.Save();

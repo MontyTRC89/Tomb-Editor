@@ -138,12 +138,12 @@ namespace TombIDE
 
 				IGameProject importedProject = ProjectDTO.GameVersion switch
 				{
-					TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
+					TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectDirectory, levelsDirectoryPath),
 					TRVersion.Game.TR2 => new TR2GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
 					TRVersion.Game.TR3 => new TR3GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
 					TRVersion.Game.TR4 => new TR4GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
 					TRVersion.Game.TRNG => new TRNGGameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath, ProjectDTO.PluginsDirectoryPath),
-					TRVersion.Game.TombEngine => new TENGameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
+					TRVersion.Game.TombEngine => new TENGameProject(projectName, projectDirectory, levelsDirectoryPath),
 					_ => throw new NotImplementedException("Detected game version doesn't match a supported version.")
 				};
 

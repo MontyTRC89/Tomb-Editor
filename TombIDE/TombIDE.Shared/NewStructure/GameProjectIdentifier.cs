@@ -227,7 +227,7 @@ namespace TombIDE.Shared.NewStructure
 					if (!Directory.Exists(scriptsDirectory))
 						throw new DirectoryNotFoundException("The game's \"cfg\" directory could not be found.");
 
-					if (!IsValidScriptDirectory(result, TRVersion.Game.TR1))
+					if (!IsValidScriptDirectory(scriptsDirectory, TRVersion.Game.TR1))
 						throw new Exception($"The game's \"cfg\" directory does not contain a valid {Tomb1MainGameProject.MainScriptFileName} file.");
 
 					result = scriptsDirectory;

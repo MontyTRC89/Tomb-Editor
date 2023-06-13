@@ -33,6 +33,9 @@ namespace TombIDE.ProjectMaster
 
 		public void Initialize(IDE ide)
 		{
+			if (!ide.Project.SupportsPlugins)
+				return;
+
 			_ide = ide;
 
 			switch (_ide.Project.GameVersion)

@@ -22,7 +22,8 @@ namespace TombIDE.Shared.SharedClasses
 
 				return projectFilePaths
 					.Where(path => File.Exists(path))
-					.Select(path => GameProjectBase.FromTrproj(path));
+					.Select(path => GameProjectBase.FromTrproj(path))
+						.Where(project => project is not null);
 			}
 			catch
 			{

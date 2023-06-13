@@ -45,7 +45,6 @@ namespace TombIDE.ProjectMaster
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 30;
-				Height -= 30;
 			}
 
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
@@ -163,6 +162,8 @@ namespace TombIDE.ProjectMaster
 				GeneratedScriptLines = LevelHandling.GenerateScriptLines(levelName, dataFileName, _targetProject.GameVersion, ambientSoundID, horizon);
 				// // // //
 			}
+
+			importedLevel.Save();
 
 			// // // //
 			ImportedLevel = importedLevel;

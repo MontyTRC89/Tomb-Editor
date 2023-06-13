@@ -20,50 +20,63 @@ namespace TombIDE.Shared.NewStructure
 		public abstract string DataFileExtension { get; }
 		public abstract string EngineExecutableFileName { get; }
 		public abstract string MainScriptFilePath { get; }
+		public abstract bool SupportsCustomScriptPaths { get; }
+		public abstract bool SupportsPlugins { get; }
 
 		public abstract string GetDefaultGameLanguageFilePath();
+
+		public abstract string GetScriptRootDirectory();
 		public abstract void SetScriptRootDirectory(string newDirectoryPath);
 
 		#endregion Abstract region
 
-		public Version TargetTrprojVersion { get; set; } = new(1, 0);
+		public Version TargetTrprojVersion { get; set; } = new(1, 0); // For now
 
 		public string Name { get; protected set; }
 		public string DirectoryPath { get; protected set; }
 
+		protected string CustomScriptDirectoryPath { get; set; }
+
 		public string LevelsDirectoryPath { get; set; }
-		public string ScriptDirectoryPath { get; protected set; }
 		public string PluginsDirectoryPath { get; set; }
 
 		public string DefaultGameLanguageName { get; set; } = "English";
 
-		public List<string> ExternalLevelFilePaths { get; set; } = new();
+		public List<string> KnownLevelProjectFilePaths { get; set; } = new();
 		public List<string> GameLanguageNames { get; set; } = new() { "English" };
 
 		public GameProjectBase(TrprojFile trproj, Version targetTrprojVersion)
 		{
 			TargetTrprojVersion = targetTrprojVersion;
 
-			Name = trproj.Name;
+			Name = trproj.ProjectName;
 			DirectoryPath = Path.GetDirectoryName(trproj.FilePath);
 
-			LevelsDirectoryPath = trproj.LevelsDirectory;
-			ScriptDirectoryPath = trproj.ScriptingDirectory;
-			PluginsDirectoryPath = trproj.PluginsDirectory;
+			LevelsDirectoryPath = trproj.LevelSourcingDirectory;
+
+			if (SupportsCustomScriptPaths)
+				CustomScriptDirectoryPath = trproj.ScriptingDirectory;
+
+			if (SupportsPlugins)
+				PluginsDirectoryPath = trproj.PluginSourcingDirectory;
 
 			DefaultGameLanguageName = trproj.DefaultLanguage;
 
-			ExternalLevelFilePaths = trproj.ExternalLevels;
-			GameLanguageNames = trproj.Languages;
+			KnownLevelProjectFilePaths = trproj.KnownLevels;
+			GameLanguageNames = trproj.SupportedLanguages;
 		}
 
-		public GameProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
+		public GameProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath = null, string pluginsDirectoryPath = null)
 		{
 			Name = name;
 			DirectoryPath = directoryPath;
 			LevelsDirectoryPath = levelsDirectoryPath;
-			ScriptDirectoryPath = scriptDirectoryPath;
-			PluginsDirectoryPath = pluginsDirectoryPath;
+
+			if (SupportsCustomScriptPaths)
+				CustomScriptDirectoryPath = scriptDirectoryPath;
+
+			if (SupportsPlugins)
+				PluginsDirectoryPath = pluginsDirectoryPath;
 		}
 
 		public virtual string GetTrprojFilePath()
@@ -109,7 +122,7 @@ namespace TombIDE.Shared.NewStructure
 			var result = new List<FileInfo>();
 
 			result.AddRange(
-				from filePath in ExternalLevelFilePaths
+				from filePath in KnownLevelProjectFilePaths
 				where File.Exists(filePath)
 				select new FileInfo(filePath)
 			);
@@ -122,7 +135,7 @@ namespace TombIDE.Shared.NewStructure
 
 				if (trlvlFiles.Length is 0 or > 1)
 					continue;
-				else
+				else if (!result.Any(item => item.FullName == trlvlFiles[0].FullName))
 					result.Add(trlvlFiles[0]);
 			}
 
@@ -139,7 +152,7 @@ namespace TombIDE.Shared.NewStructure
 				catch { }
 			}
 
-			return result.OrderBy(level => level.Order).ToArray();
+			return result.ToArray();
 		}
 
 		public virtual void Rename(string newName, bool renameDirectory)
@@ -151,16 +164,16 @@ namespace TombIDE.Shared.NewStructure
 				Directory.Move(DirectoryPath, newProjectPath + "_TEMP");
 				Directory.Move(newProjectPath + "_TEMP", newProjectPath);
 
-				if (ScriptDirectoryPath.StartsWith(DirectoryPath))
-					ScriptDirectoryPath = Path.Combine(newProjectPath, ScriptDirectoryPath.Remove(0, DirectoryPath.Length + 1));
+				if (CustomScriptDirectoryPath is not null && CustomScriptDirectoryPath.StartsWith(DirectoryPath))
+					CustomScriptDirectoryPath = Path.Combine(newProjectPath, CustomScriptDirectoryPath.Remove(0, DirectoryPath.Length + 1));
 
 				if (LevelsDirectoryPath.StartsWith(DirectoryPath))
 					LevelsDirectoryPath = Path.Combine(newProjectPath, LevelsDirectoryPath.Remove(0, DirectoryPath.Length + 1));
 
-				for (int i = 0; i < ExternalLevelFilePaths.Count; i++)
+				for (int i = 0; i < KnownLevelProjectFilePaths.Count; i++)
 				{
-					if (ExternalLevelFilePaths[i].StartsWith(DirectoryPath))
-						ExternalLevelFilePaths[i] = Path.Combine(newProjectPath, ExternalLevelFilePaths[i].Remove(0, DirectoryPath.Length + 1));
+					if (KnownLevelProjectFilePaths[i].StartsWith(DirectoryPath))
+						KnownLevelProjectFilePaths[i] = Path.Combine(newProjectPath, KnownLevelProjectFilePaths[i].Remove(0, DirectoryPath.Length + 1));
 				}
 
 				DirectoryPath = newProjectPath;
@@ -185,7 +198,7 @@ namespace TombIDE.Shared.NewStructure
 				return false;
 			}
 
-			if (!Directory.Exists(ScriptDirectoryPath))
+			if (!Directory.Exists(GetScriptRootDirectory()))
 			{
 				errorMessage = "The project's Script directory is missing.";
 				return false;
@@ -222,7 +235,7 @@ namespace TombIDE.Shared.NewStructure
 					Name = Name,
 					GameVersion = GameVersion,
 					LevelsPath = LevelsDirectoryPath,
-					ScriptPath = ScriptDirectoryPath,
+					ScriptPath = GetScriptRootDirectory(), // Value was always provided
 					LaunchFilePath = GetLauncherFilePath()
 				};
 
@@ -244,17 +257,17 @@ namespace TombIDE.Shared.NewStructure
 			{
 				var trproj = new TrprojFile
 				{
-					Name = Name,
+					ProjectName = Name,
 					TargetGameVersion = GameVersion,
 
-					LevelsDirectory = LevelsDirectoryPath,
-					ScriptingDirectory = ScriptDirectoryPath,
-					PluginsDirectory = PluginsDirectoryPath,
+					LevelSourcingDirectory = LevelsDirectoryPath,
+					ScriptingDirectory = CustomScriptDirectoryPath,
+					PluginSourcingDirectory = PluginsDirectoryPath,
 
 					DefaultLanguage = DefaultGameLanguageName,
 
-					ExternalLevels = ExternalLevelFilePaths,
-					Languages = GameLanguageNames
+					KnownLevels = KnownLevelProjectFilePaths,
+					SupportedLanguages = GameLanguageNames
 				};
 
 				trproj.WriteToFile(GetTrprojFilePath());
@@ -269,6 +282,9 @@ namespace TombIDE.Shared.NewStructure
 		public static IGameProject FromTrproj(string trprojFilePath)
 		{
 			var trproj = TrprojFile.FromFile(trprojFilePath, out Version targetTrprojVersion);
+
+			if (trproj is null)
+				return null;
 
 			return trproj.TargetGameVersion switch
 			{

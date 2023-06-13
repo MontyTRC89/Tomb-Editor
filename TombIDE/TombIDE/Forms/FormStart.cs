@@ -41,7 +41,8 @@ namespace TombIDE
 		{
 			try
 			{
-				IGameProject openedProject = GameProjectBase.FromTrproj(trprojFilePath);
+				IGameProject openedProject = GameProjectBase.FromTrproj(trprojFilePath)
+					?? throw new ArgumentException("The selected .trproj file is invalid.");
 
 				if (!openedProject.IsValid(out string errorMessage))
 					throw new ArgumentException(errorMessage);
@@ -220,7 +221,8 @@ namespace TombIDE
 			{
 				try
 				{
-					IGameProject openedProject = GameProjectBase.FromTrproj(dialog.FileName);
+					IGameProject openedProject = GameProjectBase.FromTrproj(dialog.FileName)
+						?? throw new ArgumentException("The selected .trproj file is invalid.");
 
 					if (!openedProject.IsValid(out string errorMessage))
 						throw new ArgumentException(errorMessage);

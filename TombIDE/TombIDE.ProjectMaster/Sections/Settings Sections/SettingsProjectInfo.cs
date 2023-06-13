@@ -53,7 +53,7 @@ namespace TombIDE.ProjectMaster
 			SharedMethods.OpenInExplorer(_ide.Project.GetEngineRootDirectoryPath());
 
 		private void button_OpenScriptFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(_ide.Project.ScriptDirectoryPath);
+			SharedMethods.OpenInExplorer(_ide.Project.GetScriptRootDirectory());
 
 		private void button_OpenLevelsFolder_Click(object sender, EventArgs e) =>
 			SharedMethods.OpenInExplorer(_ide.Project.LevelsDirectoryPath);
@@ -104,13 +104,13 @@ namespace TombIDE.ProjectMaster
 			if (checkBox_FullPaths.Checked)
 			{
 				textBox_EnginePath.Text = _ide.Project.GetEngineRootDirectoryPath();
-				textBox_ScriptPath.Text = _ide.Project.ScriptDirectoryPath;
+				textBox_ScriptPath.Text = _ide.Project.GetScriptRootDirectory();
 				textBox_LevelsPath.Text = _ide.Project.LevelsDirectoryPath;
 			}
 			else
 			{
 				textBox_EnginePath.Text = _ide.Project.GetEngineRootDirectoryPath().Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
-				textBox_ScriptPath.Text = _ide.Project.ScriptDirectoryPath.Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
+				textBox_ScriptPath.Text = _ide.Project.GetScriptRootDirectory().Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
 				textBox_LevelsPath.Text = _ide.Project.LevelsDirectoryPath.Replace(_ide.Project.DirectoryPath, "$(ProjectDirectory)");
 			}
 		}

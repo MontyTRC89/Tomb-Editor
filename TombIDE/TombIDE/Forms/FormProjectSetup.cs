@@ -353,12 +353,12 @@ namespace TombIDE
 
 			IGameProject gameProject = gameVersion switch
 			{
-				TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectPath, levelsPath, scriptPath),
+				TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectPath, levelsPath),
 				TRVersion.Game.TR2 => new TR2GameProject(projectName, projectPath, levelsPath, scriptPath),
 				TRVersion.Game.TR3 => new TR3GameProject(projectName, projectPath, levelsPath, scriptPath),
 				TRVersion.Game.TR4 => new TR4GameProject(projectName, projectPath, levelsPath, scriptPath),
 				TRVersion.Game.TRNG => new TRNGGameProject(projectName, projectPath, levelsPath, scriptPath, Path.Combine(projectPath, "Plugins")),
-				TRVersion.Game.TombEngine => new TENGameProject(projectName, projectPath, levelsPath, scriptPath),
+				TRVersion.Game.TombEngine => new TENGameProject(projectName, projectPath, levelsPath),
 				_ => throw new NotImplementedException()
 			};
 
@@ -525,7 +525,7 @@ namespace TombIDE
 			string sharedLauncherFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "PLAY.exe");
 			string sharedSplashPropertiesFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "splash.xml");
 
-			string launcherFile = targetProject.GetLauncherFilePath();
+			string launcherFile = Path.Combine(targetProject.DirectoryPath, "PLAY.exe");
 			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
 
 			// Copy launcher to project

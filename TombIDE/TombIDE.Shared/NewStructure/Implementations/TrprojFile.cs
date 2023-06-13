@@ -21,32 +21,40 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		[XmlAttribute]
 		public TRVersion.Game TargetGameVersion { get; set; }
 
-		public string Name { get; set; }
+		[XmlElement("Name")]
+		public string ProjectName { get; set; }
 
-		public string LevelsDirectory { get; set; }
+		[XmlElement("LevelSourcingPath")]
+		public string LevelSourcingDirectory { get; set; }
+
+		[XmlElement("ScriptingPath")]
 		public string ScriptingDirectory { get; set; }
-		public string PluginsDirectory { get; set; }
 
-		[XmlIgnore] // Ignore for now
+		[XmlElement("PluginSourcingPath")]
+		public string PluginSourcingDirectory { get; set; }
+
+		[XmlIgnore]
 		public string DefaultLanguage { get; set; } = "English";
 
-		[XmlArrayItem(typeof(string), ElementName = "TrlvlFile")]
-		public List<string> ExternalLevels { get; set; } = new();
+		[XmlIgnore, XmlArrayItem(typeof(string), ElementName = "Language")]
+		public List<string> SupportedLanguages { get; set; } = new() { "English" };
 
-		[XmlIgnore, XmlArrayItem(typeof(string), ElementName = "Language")] // Ignore for now
-		public List<string> Languages { get; set; } = new() { "English" };
+		[XmlArrayItem(typeof(string), ElementName = "ProjectFile")]
+		public List<string> KnownLevels { get; set; } = new();
 
 		public void EncodeProjectPaths(string trprojFilePath)
 		{
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			LevelsDirectory = Path.GetRelativePath(projectPath, LevelsDirectory);
-			ScriptingDirectory = Path.GetRelativePath(projectPath, ScriptingDirectory);
+			LevelSourcingDirectory = Path.GetRelativePath(projectPath, LevelSourcingDirectory);
 
-			if (PluginsDirectory is not null)
-				PluginsDirectory = Path.GetRelativePath(projectPath, PluginsDirectory);
+			if (ScriptingDirectory is not null)
+				ScriptingDirectory = Path.GetRelativePath(projectPath, ScriptingDirectory);
 
-			ExternalLevels = ExternalLevels.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
+			if (PluginSourcingDirectory is not null)
+				PluginSourcingDirectory = Path.GetRelativePath(projectPath, PluginSourcingDirectory);
+
+			KnownLevels = KnownLevels.Select(path => Path.GetRelativePath(projectPath, path)).ToList();
 		}
 
 		public void DecodeProjectPaths(string trprojFilePath)
@@ -55,13 +63,15 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 			string projectPath = Path.GetDirectoryName(trprojFilePath);
 
-			LevelsDirectory = Path.GetFullPath(LevelsDirectory, projectPath);
-			ScriptingDirectory = Path.GetFullPath(ScriptingDirectory, projectPath);
+			LevelSourcingDirectory = Path.GetFullPath(LevelSourcingDirectory, projectPath);
 
-			if (PluginsDirectory is not null)
-				PluginsDirectory = Path.GetFullPath(PluginsDirectory, projectPath);
+			if (ScriptingDirectory is not null)
+				ScriptingDirectory = Path.GetFullPath(ScriptingDirectory, projectPath);
 
-			ExternalLevels = ExternalLevels.Select(path => Path.GetFullPath(path, projectPath)).ToList();
+			if (PluginSourcingDirectory is not null)
+				PluginSourcingDirectory = Path.GetFullPath(PluginSourcingDirectory, projectPath);
+
+			KnownLevels = KnownLevels.Select(path => Path.GetFullPath(path, projectPath)).ToList();
 		}
 
 		public void WriteToFile(string filePath)
@@ -109,9 +119,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 					return FromLegacy(legacyTrproj);
 				}
-				catch (Exception ex)
+				catch
 				{
-					throw new Exception("Failed to load the project file. Unsupported version or corrupted data.", ex);
+					version = null;
+					return null;
 				}
 			}
 		}
@@ -124,20 +135,18 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			{
 				FilePath = legacyTrproj.FilePath,
 
-				Name = legacyTrproj.Name,
+				ProjectName = legacyTrproj.Name,
 				TargetGameVersion = legacyTrproj.GameVersion,
 
-				LevelsDirectory = legacyTrproj.LevelsPath,
+				LevelSourcingDirectory = legacyTrproj.LevelsPath,
 				ScriptingDirectory = legacyTrproj.ScriptPath,
 
-				Languages = new List<string> { "English" },
+				SupportedLanguages = new List<string> { "English" },
 				DefaultLanguage = "English"
 			};
 
 			if (trproj.TargetGameVersion is TRVersion.Game.TRNG)
-				trproj.PluginsDirectory = Path.Combine(trprojDirectory, "Plugins");
-
-			int i = 0;
+				trproj.PluginSourcingDirectory = Path.Combine(trprojDirectory, "Plugins");
 
 			foreach (LegacyProjectLevel level in legacyTrproj.Levels)
 			{
@@ -145,23 +154,19 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				{
 					var trlvl = new TrlvlFile
 					{
-						Name = level.Name,
-						StartupFile = level.SpecificFile,
-						Order = i
+						LevelName = level.Name,
+						StartupFileName = level.SpecificFile
 					};
 
-					if (trlvl.StartupFile == "$(LatestFile)")
-						trlvl.StartupFile = null; // New method of specifying the latest file
+					if (trlvl.StartupFileName == "$(LatestFile)")
+						trlvl.StartupFileName = null; // New method of specifying the latest file
 
 					string trlvlFilePath = Path.Combine(level.FolderPath, "project.trlvl");
 					trlvl.WriteToFile(trlvlFilePath);
 
-					if (!trlvlFilePath.StartsWith(trprojDirectory))
-						trproj.ExternalLevels.Add(trlvlFilePath);
+					trproj.KnownLevels.Add(trlvlFilePath);
 				}
 				catch { } // Skip
-
-				i++;
 			}
 
 			return trproj;

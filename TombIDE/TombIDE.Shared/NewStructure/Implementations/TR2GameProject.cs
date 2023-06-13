@@ -11,6 +11,8 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".tr2";
 		public override string EngineExecutableFileName => "Tomb2.exe";
 
+		public override bool SupportsPlugins => false;
+
 		public TR2GameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
 		{ }
 

@@ -106,7 +106,7 @@ namespace TombIDE.Shared
 
 		public void ChangeScriptFolder(string newPath)
 		{
-			string oldPath = Project.ScriptDirectoryPath;
+			string oldPath = Project.GetScriptRootDirectory();
 
 			if (newPath != oldPath)
 				RaiseEvent(new ProjectScriptPathChangedEvent { OldPath = oldPath, NewPath = newPath });
