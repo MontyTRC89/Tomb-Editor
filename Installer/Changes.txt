@@ -3,6 +3,7 @@ Version 1.6.8
 
 Tomb Editor:
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
+ * Fix TEN level compiler producing weong normals for imported geometry.
 
 Version 1.6.7
 =============
@@ -1181,7 +1182,7 @@ Fixed flipon/off greater than 0
 Fixed group texturing
 Fixed horizon rendering
 Allow deselect object when clicking away
-Fixed 45° rotation of objects
+Fixed 45Â° rotation of objects
 Merged Selected block and Selected geometry context menus (now you can add objects also on selected areas)
 Added debug texture "out of bounds" when parent area in group texturing is invalid (EXPERIMENTAL)
 Fixed Color dialog position (now it's located at top-left corner of screen instead of middle of 3D area)
@@ -1422,7 +1423,7 @@ Fixes to dark UI controls
 Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
 Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's PerÃ¹ animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug
