@@ -3,7 +3,7 @@ Version 1.6.8
 
 Tomb Editor:
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
- * Fix TEN level compiler producing weong normals for imported geometry.
+ * Fix TEN level compiler producing incorrect normals for imported geometry.
 
 Version 1.6.7
 =============
