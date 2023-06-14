@@ -28,6 +28,7 @@ WadTool:
    
 TombIDE:
  * Update tomb3 preset to 2.0.2.
+ * Many minor bugfixes
 
 Version 1.6.6
 =============
