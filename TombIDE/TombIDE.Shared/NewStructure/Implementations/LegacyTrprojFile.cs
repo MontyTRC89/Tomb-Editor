@@ -14,9 +14,10 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public const string RelativePathKey = "$(ProjectDirectory)";
 
 		[XmlIgnore]
-		public string FilePath { get; protected set; }
+		public string FilePath { get; private set; }
 
-		public Version Version => new(1, 0);
+		[XmlIgnore]
+		public string FileFormatVersion { get; set; } = "1.0";
 
 		public string Name { get; set; }
 		public TRVersion.Game GameVersion { get; set; }
@@ -26,7 +27,14 @@ namespace TombIDE.Shared.NewStructure.Implementations
 
 		public string LaunchFilePath { get; set; }
 
-		public List<ProjectLevel> Levels { get; set; } = new();
+		[XmlArrayItem(typeof(LegacyProjectLevel), ElementName = "ProjectLevel")]
+		public List<LegacyProjectLevel> Levels { get; set; } = new();
+
+		public LegacyTrprojFile()
+		{ }
+
+		public LegacyTrprojFile(string baseFilePath)
+			=> FilePath = baseFilePath;
 
 		/// <summary>
 		/// Replaces the project's .trproj directory path with <inheritdoc cref="RelativePathKey" />.
@@ -43,7 +51,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			if (LevelsPath.StartsWith(projectPath))
 				LevelsPath = LevelsPath.Replace(projectPath, RelativePathKey);
 
-			foreach (ProjectLevel level in Levels)
+			foreach (LegacyProjectLevel level in Levels)
 			{
 				if (level.FolderPath.StartsWith(projectPath))
 					level.FolderPath = level.FolderPath.Replace(projectPath, RelativePathKey);
@@ -65,7 +73,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			if (ScriptPath.StartsWith(RelativePathKey))
 				ScriptPath = ScriptPath.Replace(RelativePathKey, projectPath);
 
-			foreach (ProjectLevel level in Levels)
+			foreach (LegacyProjectLevel level in Levels)
 			{
 				if (level.FolderPath.StartsWith(RelativePathKey))
 					level.FolderPath = level.FolderPath.Replace(RelativePathKey, projectPath);

@@ -17,19 +17,28 @@ namespace TombIDE.Shared.NewStructure
 
 		public abstract override string DataFileExtension { get; }
 		public abstract override string EngineExecutableFileName { get; }
+		public override string MainScriptFilePath => Path.Combine(GetScriptRootDirectory(), MainScriptFileName);
+		public override bool SupportsCustomScriptPaths => true;
 
-		public CoreStructuredProjectBase(TrprojFile trproj) : base(trproj)
-			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
+		public CoreStructuredProjectBase(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		{ }
+
+		public CoreStructuredProjectBase(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
+		{ }
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
-			string defaultLanguageFilePath = Path.Combine(ScriptRootDirectoryPath, $"{DefaultGameLanguageName}.txt");
+			string defaultLanguageFilePath = Path.Combine(GetScriptRootDirectory(), $"{DefaultGameLanguageName}.txt");
 
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath
 				: throw new FileNotFoundException("The default game language file could not be found.\n" +
 					$"Required file not found: {DefaultGameLanguageName}.txt");
 		}
+
+		public override string GetScriptRootDirectory()
+			=> CustomScriptDirectoryPath;
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 		{
@@ -45,8 +54,7 @@ namespace TombIDE.Shared.NewStructure
 					$"Required file not found: {DefaultGameLanguageName}.txt\n" +
 					$"Try changing your default game language to one that matches the chosen directory and try again.");
 
-			MainScriptFilePath = mainScriptFilePath;
-			ScriptRootDirectoryPath = newDirectoryPath;
+			CustomScriptDirectoryPath = newDirectoryPath;
 		}
 
 		public override bool IsValid(out string errorMessage)

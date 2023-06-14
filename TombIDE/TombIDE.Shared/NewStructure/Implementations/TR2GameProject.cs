@@ -1,4 +1,5 @@
-﻿using TombIDE.Shared.NewStructure.Implementations;
+﻿using System;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -10,7 +11,13 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".tr2";
 		public override string EngineExecutableFileName => "Tomb2.exe";
 
-		public TR2GameProject(TrprojFile trproj) : base(trproj)
+		public override bool SupportsPlugins => false;
+
+		public TR2GameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		{ }
+
+		public TR2GameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath)
 		{ }
 	}
 }

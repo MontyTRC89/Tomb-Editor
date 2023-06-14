@@ -1,4 +1,5 @@
-﻿using TombIDE.Shared.NewStructure.Implementations;
+﻿using System;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -10,7 +11,13 @@ namespace TombIDE.Shared.NewStructure
 		public override string DataFileExtension => ".tr4";
 		public override string EngineExecutableFileName => "tomb4.exe";
 
-		public TR4GameProject(TrprojFile trproj) : base(trproj)
+		public override bool SupportsPlugins => false;
+
+		public TR4GameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		{ }
+
+		public TR4GameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
 		{ }
 	}
 }

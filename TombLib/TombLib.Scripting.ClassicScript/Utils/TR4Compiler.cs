@@ -23,7 +23,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 					"-c \"C:\" " +
 					"-c \"script script.txt >> logs.txt\" " +
 					"-c \"exit\" " +
-					"-noconsole"
+					"-noconsole",
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo).WaitForExit();

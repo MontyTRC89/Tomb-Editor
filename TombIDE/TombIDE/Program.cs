@@ -28,38 +28,35 @@ namespace TombIDE
 			var ideConfiguration = IDEConfiguration.Load();
 			var availableProjects = XmlHandling.GetProjectsFromXml().ToList();
 
-			using (var ide = new IDE(ideConfiguration, availableProjects))
+			using var ide = new IDE(ideConfiguration, availableProjects);
+			IDE.Global = ide;
+
+			using var form = new FormStart(ide);
+
+			if (args.Length > 0)
 			{
-				IDE.Global = ide;
-
-				using (var form = new FormStart(ide))
+				if (!Path.GetExtension(args[0]).Equals(".trproj", StringComparison.OrdinalIgnoreCase))
 				{
-					if (args.Length > 0)
-					{
-						if (!Path.GetExtension(args[0]).Equals(".trproj", StringComparison.OrdinalIgnoreCase))
-						{
-							MessageBox.Show("Invalid file type. TombIDE can only open .trproj files.", "Error",
-								MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Invalid file type. TombIDE can only open .trproj files.", "Error",
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-							return;
-						}
-
-						ide.IDEConfiguration.RememberedProject = string.Empty;
-						form.OpenTrprojWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success
-
-						if (string.IsNullOrEmpty(ide.IDEConfiguration.RememberedProject))
-							return; // Opening project failed
-
-						Application.Run(form);
-
-						// Reset the RememberedProject setting after closing
-						ide.IDEConfiguration.RememberedProject = string.Empty;
-						ide.IDEConfiguration.Save();
-					}
-					else
-						Application.Run(form);
+					return;
 				}
+
+				ide.IDEConfiguration.RememberedProject = string.Empty;
+				form.OpenTrprojWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success
+
+				if (string.IsNullOrEmpty(ide.IDEConfiguration.RememberedProject))
+					return; // Opening project failed
+
+				Application.Run(form);
+
+				// Reset the RememberedProject setting after closing
+				ide.IDEConfiguration.RememberedProject = string.Empty;
+				ide.IDEConfiguration.Save();
 			}
+			else
+				Application.Run(form);
 		}
 
 		private static void UpdateNGCompilerPaths()
@@ -96,14 +93,12 @@ namespace TombIDE
 
 				string centerSettingsFilePath = Path.Combine(programPath, "TIDE", "NGC", "center_settings.bin");
 
-				using (FileStream stream = File.OpenWrite(centerSettingsFilePath))
-				{
-					stream.Position = 4; // First game path offset
-					stream.Write(bytesToWrite_01, 0, bytesToWrite_01.Length);
+				using FileStream stream = File.OpenWrite(centerSettingsFilePath);
+				stream.Position = 4; // First game path offset
+				stream.Write(bytesToWrite_01, 0, bytesToWrite_01.Length);
 
-					stream.Position = 2820; // Second game path offset
-					stream.Write(bytesToWrite_02, 0, bytesToWrite_02.Length);
-				}
+				stream.Position = 2820; // Second game path offset
+				stream.Write(bytesToWrite_02, 0, bytesToWrite_02.Length);
 			}
 			catch (Exception ex)
 			{

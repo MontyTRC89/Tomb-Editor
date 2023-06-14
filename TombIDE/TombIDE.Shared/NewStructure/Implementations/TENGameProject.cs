@@ -14,9 +14,17 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string DataFileExtension => ".ten";
 		public override string EngineExecutableFileName => "TombEngine.exe";
+		public override string MainScriptFilePath => Path.Combine(GetScriptRootDirectory(), MainScriptFileName);
 
-		public TENGameProject(TrprojFile trproj) : base(trproj)
-			=> MainScriptFilePath = Path.Combine(ScriptRootDirectoryPath, MainScriptFileName);
+		public override bool SupportsCustomScriptPaths => false;
+		public override bool SupportsPlugins => false;
+
+		public TENGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		{ }
+
+		public TENGameProject(string name, string directoryPath, string levelsDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath)
+		{ }
 
 		public override string GetEngineExecutableFilePath()
 		{
@@ -28,9 +36,11 @@ namespace TombIDE.Shared.NewStructure
 
 			if (Directory.Exists(x64Directory) || Directory.Exists(x86Directory))
 			{
-				engineExecutableFilePath = Environment.Is64BitOperatingSystem && Directory.Exists(x64Directory)
+				string engineExecutableDirectory = Environment.Is64BitOperatingSystem && Directory.Exists(x64Directory)
 					? x64Directory
 					: x86Directory;
+
+				engineExecutableFilePath = Path.Combine(engineExecutableDirectory, EngineExecutableFileName);
 			}
 			else
 				engineExecutableFilePath = Path.Combine(engineDirectoryPath, EngineExecutableFileName);
@@ -42,7 +52,7 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
-			string defaultLanguageFilePath = Path.Combine(ScriptRootDirectoryPath, LanguageFileName);
+			string defaultLanguageFilePath = Path.Combine(GetScriptRootDirectory(), LanguageFileName);
 
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath
@@ -73,6 +83,9 @@ namespace TombIDE.Shared.NewStructure
 
 			return true;
 		}
+
+		public override string GetScriptRootDirectory()
+			=> Path.Combine(GetEngineRootDirectoryPath(), "Scripts"); // Hardcoded path
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");

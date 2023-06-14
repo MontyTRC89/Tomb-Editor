@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TombIDE.Shared.NewStructure
+﻿namespace TombIDE.Shared.NewStructure
 {
 	public interface ITrproj
 	{
@@ -9,7 +7,7 @@ namespace TombIDE.Shared.NewStructure
 		/// </summary>
 		string FilePath { get; }
 
-		Version Version { get; }
+		string FileFormatVersion { get; }
 
 		void EncodeProjectPaths(string trprojFilePath);
 		void DecodeProjectPaths(string trprojFilePath);
