@@ -53,10 +53,10 @@
 			<moveable id="25" name="DinoWarrior" essential="false" />
 			<moveable id="27" name="Larson" essential="false" t5m="LARSON" />
 			<moveable id="28" name="Pierre" essential="false" t5m="PIERRE" />
-			<moveable id="29" name="Skateboard" show_with="30" essential="false" hidden="true" />
-			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" />
+			<moveable id="29" name="Skateboard" show_with="30" essential="false" hidden="true" t5m="SKATEBOARD" />
+			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" t5m="SKATEBOARD_KID" />
 			<moveable id="31" name="Cowboy" essential="false" t5m="COWBOY" />
-			<moveable id="32" name="Mr. T" essential="false" />
+			<moveable id="32" name="Mr. T" essential="false" t5m="KOLD" />
 			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="WINGED_NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
@@ -78,7 +78,7 @@
 			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
 			<moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100" />
 			<moveable id="53" name="Falling ceiling" essential="false" t5m="FALLING_CEILING" />
-			<moveable id="54" name="Sword of Damocles" essential="false" t5m="SLICER_DICER" />
+			<moveable id="54" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
 			<moveable id="55" name="Above-water switch" essential="false" t5m="SWITCH_TYPE10" />
 			<moveable id="56" name="Underwater switch" essential="false" t5m="UNDERWATER_SWITCH1" />
 			<moveable id="57" name="Door" essential="false" t5m="DOOR_TYPE1" />
@@ -6077,6 +6077,7 @@
 			<moveable id="195" name="CYBORG" />
 			<moveable id="196" name="SNIPER" />
 			<moveable id="197" name="CHEF" />
+			<moveable id="219" name="KOLD" />
 			<moveable id="220" name="WINGED_MUMMY" />
 			<moveable id="221" name="CENTAUR_MUTANT" />
 			<moveable id="222" name="DOPPELGANGER" use_body_from="225" />
@@ -6714,7 +6715,7 @@
 			<moveable id="1082" name="WATERFALLSS1" />
 			<moveable id="1083" name="WATERFALLSS2" />
 			<moveable id="1084" name="FISHTANK" />
-			<moveable id="1085" name="BACON_REFERENCE" hidden="true" use_body_from="0" />
+			<moveable id="1085" name="DOPPLEGANGER_ORIGIN" hidden="true" use_body_from="0" />
 			<moveable id="1086" name="CORPSE" />
 			<moveable id="1087" name="WRAITH_TRAP" />
 			<moveable id="1100" name="MESHSWAP1" />
