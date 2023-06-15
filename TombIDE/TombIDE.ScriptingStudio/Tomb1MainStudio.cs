@@ -146,6 +146,8 @@ namespace TombIDE.ScriptingStudio
 			// Nothing.
 		}
 
+		protected override void ShowDocumentation() => throw new NotImplementedException();
+
 		#endregion Other methods
 	}
 }

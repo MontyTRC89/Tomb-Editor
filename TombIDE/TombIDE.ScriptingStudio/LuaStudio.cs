@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -278,6 +279,28 @@ namespace TombIDE.ScriptingStudio
 		{
 			// Nothing.
 		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.LuaBasics:
+					string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
+
+					var process = new ProcessStartInfo
+					{
+						FileName = url,
+						UseShellExecute = true
+					};
+
+					Process.Start(process);
+					break;
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation() => throw new NotImplementedException();
 
 		#endregion Other methods
 	}

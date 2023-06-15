@@ -505,6 +505,20 @@ namespace TombIDE.ScriptingStudio
 			base.HandleDocumentCommands(command);
 		}
 
+		protected override void ShowDocumentation()
+		{
+			string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "ClassicScript", "TRNG Script Reference Manual.pdf");
+
+			var process = new ProcessStartInfo
+			{
+				FileName = pdfPath,
+				UseShellExecute = true
+			};
+
+			if (File.Exists(pdfPath))
+				Process.Start(process);
+		}
+
 		#endregion Other methods
 	}
 }

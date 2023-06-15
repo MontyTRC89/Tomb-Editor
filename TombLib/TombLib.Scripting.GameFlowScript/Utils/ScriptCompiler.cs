@@ -9,20 +9,25 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 	{
 		public static bool Compile(string projectScriptPath, string projectEnginePath, bool isTR3, bool showLogs)
 		{
-			CopyFilesToGFScriptDirectory(projectScriptPath, DefaultPaths.GameFlowDirectory);
+			string gameflowExecutablePath = isTR3 ? DefaultPaths.GameFlow3Executable : DefaultPaths.GameFlow2Executable;
+			string gameflowDirectory = isTR3 ? DefaultPaths.GameFlow3Directory : DefaultPaths.GameFlow2Directory;
 
-			string batchFilePath = Path.Combine(DefaultPaths.GameFlowDirectory, "compile.bat");
+			CopyFilesToGFScriptDirectory(projectScriptPath, gameflowDirectory);
 
-			string batchFileContent =
-				"gameflow -Game " + (isTR3 ? "3" : "2") + "\n" +
-				(showLogs ? "@pause" : string.Empty);
+			string batchFilePath = Path.Combine(gameflowDirectory, "compile.bat");
+
+			string batchFileContent = isTR3
+				? $"TRGameFlow Script.txt\n" +
+					(showLogs ? "@pause" : string.Empty)
+				: $"gameflow -Game 2\n" +
+					(showLogs ? "@pause" : string.Empty);
 
 			File.WriteAllText(batchFilePath, batchFileContent);
 
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = batchFilePath,
-				WorkingDirectory = DefaultPaths.GameFlowDirectory,
+				WorkingDirectory = gameflowDirectory,
 				UseShellExecute = true
 			};
 
@@ -31,7 +36,9 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 			process.WaitForExit();
 			process.Close();
 
-			string compiledScriptFilePath = Path.Combine(DefaultPaths.GameFlowDirectory, "tombpc.dat");
+			string compiledScriptFilePath = isTR3
+				? Path.Combine(gameflowDirectory, "Script.dat")
+				: Path.Combine(gameflowDirectory, "tombpc.dat");
 
 			bool success = false;
 
@@ -41,10 +48,11 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 				success = true;
 			}
 
-			var gfScriptDirectory = new DirectoryInfo(DefaultPaths.GameFlowDirectory);
+			var gfScriptDirectory = new DirectoryInfo(gameflowDirectory);
 
 			foreach (FileSystemInfo fileSystemInfo in gfScriptDirectory.EnumerateFileSystemInfos().Where(x
-				=> !x.Name.Equals("gameflow.exe", StringComparison.OrdinalIgnoreCase)))
+				=> !x.Name.Equals("gameFlow.exe", StringComparison.OrdinalIgnoreCase)
+				&& !x.Name.Equals("TRGameFlow.exe", StringComparison.OrdinalIgnoreCase)))
 			{
 				if (fileSystemInfo is DirectoryInfo dir)
 					dir.Delete(true);
