@@ -104,7 +104,7 @@ namespace TombIDE.Shared.SharedForms
 		}
 
 		private bool IsFolderKnownForProject(DirectoryInfo directory)
-			=> _ide.Project.GetAllValidLevelProjects().Any(level => level.DirectoryPath.Equals(directory.FullName, StringComparison.OrdinalIgnoreCase));
+			=> _ide.Project.KnownLevelProjectFilePaths.Any(level => Path.GetDirectoryName(level).Equals(directory.FullName, StringComparison.OrdinalIgnoreCase));
 
 		private bool FolderOnlyContainsBackupFiles(DirectoryInfo directory)
 		{
