@@ -4,6 +4,10 @@ Version 1.6.8
 Tomb Editor:
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
  * Fix TEN level compiler producing incorrect normals for imported geometry.
+ * Fix TEN level compiler not scaling merged static meshes.
+ 
+TombIDE:
+ * Many minor bugfixes.
 
 Version 1.6.7
 =============
@@ -35,7 +39,6 @@ WadTool:
    
 TombIDE:
  * Update tomb3 preset to 2.0.2.
- * Many minor bugfixes
 
 Version 1.6.6
 =============

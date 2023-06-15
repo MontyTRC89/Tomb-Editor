@@ -400,7 +400,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
                         bool clearShades = entry.ClearShades;
                         int meshVertexBase = roomVertices.Count;
-                        var worldTransform = staticMesh.RotationMatrix *
+                        var worldTransform = staticMesh.ScaleMatrix *
+                                             staticMesh.RotationMatrix *
                                              Matrix4x4.CreateTranslation(staticMesh.Position);
                         var normalTransform = staticMesh.RotationMatrix;
                         WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
