@@ -7108,7 +7108,7 @@
 			<sound id="182" name="TR4_THUNDER_RUMBLE" t5m="182" />
 			<sound id="183" name="TR4_THUNDER_CRACK" t5m="183" />
 			<sound id="184" name="TR4_WRAITH_WHISPERS" t5m="184" />
-			<sound id="185" name="TR4_LARA_FOOSTEPS_SAND" t5m="185" />
+			<sound id="185" name="TR4_LARA_FOOTSTEPS_SAND" t5m="185" />
 			<sound id="186" name="TR4_LARA_POLE_SQUEAK" t5m="186" />
 			<sound id="187" name="TR4_SKELETON_FOOTSTEPS" t5m="187" />
 			<sound id="188" name="TR4_SKELETON_ATTACK" t5m="188" />
