@@ -1,4 +1,4 @@
--- !Name "Check if fade out is complete"
+-- !Name "If fade out is complete..."
 -- !Section "Effects"
 -- !Conditional "True"
 -- !Description "Check if fade out was finished and screen is totally black."
@@ -81,10 +81,32 @@ LevelFuncs.Engine.Node.Vibrate = function(strength, time)
     TEN.Misc.Vibrate(strength, time)
 end
 
+-- !Name "If audio track is playing..."
+-- !Section "Effects"
+-- !Conditional "True"
+-- !Description "Checks if specified audio track is playing."
+-- !Arguments "NewLine, SoundTracks, Name of the audiotrack to check"
+
+LevelFuncs.Engine.Node.AudioTrackIsPlaying = function(name)
+	return TEN.Misc.IsAudioTrackPlaying(name)
+end
+
+-- !Name "If audio track loudness is..."
+-- !Section "Effects"
+-- !Conditional "True"
+-- !Description "Checks specified audio track loudness."
+-- !Arguments "NewLine, CompareOperator, 33, Compare operation" "Numerical, 33, [ 0 | 1 | 2 | 0.05 | 0.1 ], Loudness"
+-- !Arguments "Enumeration, 34, [ One shot | Looped | Voice ]"
+
+LevelFuncs.Engine.Node.CheckAudioTrackLoudness = function(operator, value, mode)
+	return LevelFuncs.Engine.Node.CompareValue(TEN.Misc.GetAudioTrackLoudness(LevelFuncs.Engine.Node.GetSoundTrackType(mode)), value, operator)
+end
+
 -- !Name "Play audio track"
 -- !Section "Effects"
 -- !Description "Plays specified audio track."
--- !Arguments "NewLine, 82, SoundTracks, Name of the audiotrack to play" "Boolean, 18, Looped"
+-- !Arguments "NewLine, 75, SoundTracks, Name of the audiotrack to play"
+-- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ]"
 
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
 	TEN.Misc.PlayAudioTrack(name, looped)
@@ -93,15 +115,15 @@ end
 -- !Name "Stop audio track"
 -- !Section "Effects"
 -- !Description "Stops audio track of the specified mode."
--- !Arguments "Boolean, 18, Looped"
+-- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ]"
 
 LevelFuncs.Engine.Node.StopAudioTrack = function(looped)
 	TEN.Misc.StopAudioTrack(looped)
 end
 
--- !Name "Stop both audio tracks"
+-- !Name "Stop all audio tracks"
 -- !Section "Effects"
--- !Description "Stops audio tracks of both looped and one-shot types."
+-- !Description "Stops audio tracks of all types."
 
 LevelFuncs.Engine.Node.StopAudioTracks = function()
 	TEN.Misc.StopAudioTracks()
