@@ -579,6 +579,38 @@
 			<anim item="0" id="158" name="SWANDIVE_START" />
 			<anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
 			
+			<!-- SKATEBOARD -->			
+			<anim item="29" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="29" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="29" id="2" name="SKATE_ACCEL_END" />
+			<anim item="29" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="29" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="29" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="29" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="29" id="7" name="IDLE" />
+			<anim item="29" id="8" name="SKATE_ACCEL_START" />
+			<anim item="29" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="29" id="10" name="IDLE_SHOOT" />
+			<anim item="29" id="11" name="SKATE_SHOOT" />
+			<anim item="29" id="12" name="SKATE" />
+			<anim item="29" id="13" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<anim item="30" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="30" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="30" id="2" name="SKATE_ACCEL_END" />
+			<anim item="30" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="30" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="30" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="30" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="30" id="7" name="IDLE" />
+			<anim item="30" id="8" name="SKATE_ACCEL_START" />
+			<anim item="30" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="30" id="10" name="IDLE_SHOOT" />
+			<anim item="30" id="11" name="SKATE_SHOOT" />
+			<anim item="30" id="12" name="SKATE" />
+			<anim item="30" id="13" name="DEATH" />      
+		
 			<!-- MR.T -->
 			<anim item="32" id="0" name="RUN_TO_IDLE_START" />
 			<anim item="32" id="1" name="RUN_TO_IDLE_END"/>
@@ -654,6 +686,22 @@
 			<state item="0" id="53" name="SWANDIVE_END" />
 			<state item="0" id="54" name="HANDSTAND" />
 			<state item="0" id="55" name="ONWATER_EXIT" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<state item="29" id="0" name="IDLE" />
+			<state item="29" id="1" name="SHOOT_IDLE" />
+			<state item="29" id="2" name="SKATE" />
+			<state item="29" id="3" name="SKATE_ACCELERATE" />
+			<state item="29" id="4" name="SKATE_SHOOT" />
+			<state item="29" id="5" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<state item="30" id="0" name="IDLE" />
+			<state item="30" id="1" name="SHOOT_IDLE" />
+			<state item="30" id="2" name="SKATE" />
+			<state item="30" id="3" name="SKATE_ACCELERATE" />
+			<state item="30" id="4" name="SKATE_SHOOT" />
+			<state item="30" id="5" name="DEATH" />
 			
 			<!-- MR.T -->
 			<anim item="32" id="0" name="RUN_TO_IDLE_START" />
@@ -8423,6 +8471,39 @@
 			<anim item="294" id="5" name= "FALL" />
 			<anim item="294" id="6" name= "DEATH" />
 			<anim item="294" id="7" name= "FLY_FORWARD" />
+			
+			<!-- SKATEBOARD -->			
+			<anim item="296" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="296" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="296" id="2" name="SKATE_ACCEL_END" />
+			<anim item="296" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="296" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="296" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="296" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="296" id="7" name="IDLE" />
+			<anim item="296" id="8" name="SKATE_ACCEL_START" />
+			<anim item="296" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="296" id="10" name="IDLE_SHOOT" />
+			<anim item="296" id="11" name="SKATE_SHOOT" />
+			<anim item="296" id="12" name="SKATE" />
+			<anim item="296" id="13" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<anim item="297" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="297" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="297" id="2" name="SKATE_ACCEL_END" />
+			<anim item="297" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="297" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="297" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="297" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="297" id="7" name="IDLE" />
+			<anim item="297" id="8" name="SKATE_ACCEL_START" />
+			<anim item="297" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="297" id="10" name="IDLE_SHOOT" />
+			<anim item="297" id="11" name="SKATE_SHOOT" />
+			<anim item="297" id="12" name="SKATE" />
+			<anim item="297" id="13" name="DEATH" />
+		
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -8559,6 +8640,22 @@
 			<state item="294" id="5" name= "FALL" />
 			<state item="294" id="6" name= "DEATH" />
 			<state item="294" id="7" name= "FLY_FORWARD" />
+			
+			<!-- SKATEBOARD -->			
+			<state item="296" id="0" name="IDLE" />
+			<state item="296" id="1" name="SHOOT_IDLE" />
+			<state item="296" id="2" name="SKATE" />
+			<state item="296" id="3" name="SKATE_ACCELERATE" />
+			<state item="296" id="4" name="SKATE_SHOOT" />
+			<state item="296" id="5" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<state item="297" id="0" name="IDLE" />
+			<state item="297" id="1" name="SHOOT_IDLE" />
+			<state item="297" id="2" name="SKATE" />
+			<state item="297" id="3" name="SKATE_ACCELERATE" />
+			<state item="297" id="4" name="SKATE_SHOOT" />
+			<state item="297" id="5" name="DEATH" />
 		   			
 		</states>
 	</game>
