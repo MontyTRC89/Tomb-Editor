@@ -121,35 +121,47 @@ namespace TombLib.Wad
             WaveStream reader = null;
             var disposables = new List<IDisposable>();
 
-            foreach (WadSounds.SoundtrackFormat ext in Enum.GetValues(typeof(WadSounds.SoundtrackFormat)))
+            try
             {
-                var potentialPath = Path.ChangeExtension(path, ext.ToString());
-                if (File.Exists(potentialPath))
+
+                foreach (WadSounds.SoundtrackFormat ext in Enum.GetValues(typeof(WadSounds.SoundtrackFormat)))
                 {
-                    switch (ext)
+                    var potentialPath = Path.ChangeExtension(path, ext.ToString());
+                    if (File.Exists(potentialPath))
                     {
-                        case WadSounds.SoundtrackFormat.Wav:
-                            reader = disposables.AddAndReturn(new WaveFileReader(potentialPath));
-                            break;
+                        switch (ext)
+                        {
+                            case WadSounds.SoundtrackFormat.Wav:
+                                reader = disposables.AddAndReturn(new WaveFileReader(potentialPath));
+                                break;
 
-                        case WadSounds.SoundtrackFormat.Mp3:
-                            reader = disposables.AddAndReturn(new Mp3FileReader(potentialPath));
-                            break;
+                            case WadSounds.SoundtrackFormat.Mp3:
+                                reader = disposables.AddAndReturn(new Mp3FileReader(potentialPath));
+                                break;
 
-                        case WadSounds.SoundtrackFormat.Ogg:
-                            reader = disposables.AddAndReturn(new VorbisWaveReader(potentialPath));
-                            break;
+                            case WadSounds.SoundtrackFormat.Ogg:
+                                reader = disposables.AddAndReturn(new VorbisWaveReader(potentialPath));
+                                break;
 
-                        default:
-                            return;
+                            default:
+                                return;
+                        }
+
+                        break;
                     }
-
-                    break;
                 }
-            }
 
-            var sourceStream = ResampleWaveStream(reader);
-            SetupChannelForPlayback(GetFreeChannel(), sourceStream.ToSampleProvider(), disposables);
+                var sourceStream = ResampleWaveStream(reader);
+                SetupChannelForPlayback(GetFreeChannel(), sourceStream.ToSampleProvider(), disposables);
+            }
+            catch (Exception ex)
+            {
+                // Clean up in case of a problem
+                foreach (IDisposable disposable in disposables)
+                    disposable?.Dispose();
+
+                _logger.Error("Error while playing soundtrack " + path + ", exception: " + ex);
+            }
         }
 
         public static void PlaySample(Level level, WadSample sample, int channel, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
