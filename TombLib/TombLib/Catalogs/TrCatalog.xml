@@ -579,6 +579,28 @@
 			<anim item="0" id="158" name="SWANDIVE_START" />
 			<anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
 			
+			<!--APE -->
+			<anim item="15" id="0" name="IDLE" />
+			<anim item="15" id="1" name="POUND_CHEST" />
+			<anim item="15" id="2" name="POUND_GROUND" />
+			<anim item="15" id="3" name="IDLE_TO_RUN_FORWARD" />
+			<anim item="15" id="4" name="RUN_FORWARD_TO_IDLE" />
+			<anim item="15" id="5" name="JUMP" />
+			<anim item="15" id="6" name="RUN_FORWARD" />
+			<anim item="15" id="7" name="DEATH_1" />
+			<anim item="15" id="8" name="DEATH_2" />
+			<anim item="15" id="9" name="ATTACK_START" />
+			<anim item="15" id="10" name="ATTACK_CONTINUE_1" />
+			<anim item="15" id="11" name="ATTACK_CONTINUE_2" />
+			<anim item="15" id="12" name="ATTACK_END" />
+			<anim item="15" id="13" name="RUN_LEFT" />
+			<anim item="15" id="14" name="RUN_RIGHT" />
+			<anim item="15" id="15" name="RUN_LEFT_TO_IDLE" />
+			<anim item="15" id="16" name="RUN_RIGHT_TO_IDLE" />
+			<anim item="15" id="17" name="IDLE_TO_RUN_LEFT" />
+			<anim item="15" id="18" name="IDLE_TO_RUN_RIGHT" />
+			<anim item="15" id="19" name="VAULT" />
+			
 			<!-- SKATEBOARD -->			
 			<anim item="29" id="0" name="IDLE_TO_SKATE_CONTINUE" />
 			<anim item="29" id="1" name="IDLE_TO_SKATE_END" />
@@ -686,6 +708,19 @@
 			<state item="0" id="53" name="SWANDIVE_END" />
 			<state item="0" id="54" name="HANDSTAND" />
 			<state item="0" id="55" name="ONWATER_EXIT" />
+			 			
+			<!-- APE -->
+			<state item="15" id="1" name="IDLE" />
+			<state item="15" id="2" name="WALK_FORWARD" />
+			<state item="15" id="3" name="RUN_FORWARD" />
+			<state item="15" id="4" name="ATTACK" />
+			<state item="15" id="5" name="DEATH" />
+			<state item="15" id="6" name="POUND_CHEST" />
+			<state item="15" id="7" name="POUND_GROUND" />
+			<state item="15" id="8" name="RUN_LEFT" />
+			<state item="15" id="9" name="RUN_RIGHT" />
+			<state item="15" id="10" name="JUMP" />
+			<state item="15" id="11" name="VAULT" />
 			
 			<!-- SKATEBOARD_KID -->			
 			<state item="29" id="0" name="IDLE" />
@@ -8171,11 +8206,33 @@
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<anim item="1" id="14" name="DEATH_SETH" />
 			
+			<!--APE -->
+			<anim item="102" id="0" name="IDLE" />
+			<anim item="102" id="1" name="POUND_CHEST" />
+			<anim item="102" id="2" name="POUND_GROUND" />
+			<anim item="102" id="3" name="IDLE_TO_RUN_FORWARD" />
+			<anim item="102" id="4" name="RUN_FORWARD_TO_IDLE" />
+			<anim item="102" id="5" name="JUMP" />
+			<anim item="102" id="6" name="RUN_FORWARD" />
+			<anim item="102" id="7" name="DEATH_1" />
+			<anim item="102" id="8" name="DEATH_2" />
+			<anim item="102" id="9" name="ATTACK_START" />
+			<anim item="102" id="10" name="ATTACK_CONTINUE_1" />
+			<anim item="102" id="11" name="ATTACK_CONTINUE_2" />
+			<anim item="102" id="12" name="ATTACK_END" />
+			<anim item="102" id="13" name="RUN_LEFT" />
+			<anim item="102" id="14" name="RUN_RIGHT" />
+			<anim item="102" id="15" name="RUN_LEFT_TO_IDLE" />
+			<anim item="102" id="16" name="RUN_RIGHT_TO_IDLE" />
+			<anim item="102" id="17" name="IDLE_TO_RUN_LEFT" />
+			<anim item="102" id="18" name="IDLE_TO_RUN_RIGHT" />
+			<anim item="102" id="19" name="VAULT" />
+		
 			<!--COMPSOGNATHUS -->
 			<anim item="113" id="0" name="IDLE" />
-			<anim item="113" id="1" name= "RUN" />
-			<anim item="113" id="2" name= "JUMP_ATTACK" />
-			<anim item="113" id="3" name= "ATTACK" />
+			<anim item="113" id="1" name="RUN" />
+			<anim item="113" id="2" name="JUMP_ATTACK" />
+			<anim item="113" id="3" name="ATTACK" />
 			
 			 <!-- KNIFE THROWER -->	
 			<anim item="162" id="0" name="IDLE" />
@@ -8543,7 +8600,20 @@
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
 			
-			 <!-- COMPSOGNATHUS -->
+			<!-- APE -->
+			<state item="102" id="1" name="IDLE" />
+			<state item="102" id="2" name="WALK_FORWARD" />
+			<state item="102" id="3" name="RUN_FORWARD" />
+			<state item="102" id="4" name="ATTACK" />
+			<state item="102" id="5" name="DEATH" />
+			<state item="102" id="6" name="POUND_CHEST" />
+			<state item="102" id="7" name="POUND_GROUND" />
+			<state item="102" id="8" name="RUN_LEFT" />
+			<state item="102" id="9" name="RUN_RIGHT" />
+			<state item="102" id="10" name="JUMP" />
+			<state item="102" id="11" name="VAULT" />
+			
+			<!-- COMPSOGNATHUS -->
 			<state item="113" id="0" name="IDLE" />
 			<state item="113" id="1" name="RUN" />
 			<state item="113" id="2" name="JUMP_ATTACK" />
