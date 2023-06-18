@@ -123,7 +123,6 @@ namespace TombLib.Wad
 
             try
             {
-
                 foreach (WadSounds.SoundtrackFormat ext in Enum.GetValues(typeof(WadSounds.SoundtrackFormat)))
                 {
                     var potentialPath = Path.ChangeExtension(path, ext.ToString());
