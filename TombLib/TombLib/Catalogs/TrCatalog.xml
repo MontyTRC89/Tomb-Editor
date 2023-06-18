@@ -594,7 +594,7 @@
 			<anim item="32" id="11" name="SHOOT" />
 			<anim item="32" id="12" name="IDLE_TO_WALK" />
 			<anim item="32" id="13" name="WALK_TO_IDLE" />
-			<anim item="32" id="14" name="DEATH = 14" />
+			<anim item="32" id="14" name="DEATH" />
 		</animations>
 		<states>
 		<!-- LARA -->
@@ -8300,7 +8300,7 @@
 			<anim item="219" id="11" name="SHOOT" />
 			<anim item="219" id="12" name="IDLE_TO_WALK" />
 			<anim item="219" id="13" name="WALK_TO_IDLE" />
-			<anim item="219" id="14" name="DEATH = 14" />
+			<anim item="219" id="14" name="DEATH" />
 			
 			<!--COWBOY -->
 			<anim item="239" id="0" name="RUN" />
