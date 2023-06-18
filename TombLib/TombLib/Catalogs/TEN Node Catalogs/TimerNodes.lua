@@ -52,7 +52,6 @@ LevelFuncs.Engine.Node.StartTimer = function(name)
             PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        -- print('Error in the "Start Timer" node. The name of Timer is empty')
         PrintLog('Error in the "Start Timer" node. The name of Timer is empty', LogLevel.ERROR)
     end
 end
@@ -71,7 +70,6 @@ LevelFuncs.Engine.Node.StopTimer = function(name)
             PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        -- print('Error in the "Stop Timer" node. The name of Timer is empty')
         PrintLog('Error in the "Stop Timer" node. The name of Timer is empty', LogLevel.ERROR)
     end
 end
