@@ -2,6 +2,7 @@ Version 1.6.8
 =============
 
 Tomb Editor:
+ * Add preview button for sound playback node functions.
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
  * Fix TEN level compiler producing incorrect normals for imported geometry.
  * Fix TEN level compiler not scaling merged static meshes.

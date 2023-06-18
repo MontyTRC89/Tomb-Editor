@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Vorbis;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using NLog;
 using System;
@@ -113,6 +114,44 @@ namespace TombLib.Wad
             PlaySample(level, soundInfo.Samples[sampleIndex], channelIndex, volume, pitch, pan, loopCount);
         }
 
+        public static void PlaySoundtrack(Level level, string path)
+        {
+            path = Path.Combine(level.Settings.MakeAbsolute(level.Settings.GameDirectory), WadSounds.AudioFolder, path);
+
+            WaveStream reader = null;
+            var disposables = new List<IDisposable>();
+
+            foreach (WadSounds.SoundtrackFormat ext in Enum.GetValues(typeof(WadSounds.SoundtrackFormat)))
+            {
+                var potentialPath = Path.ChangeExtension(path, ext.ToString());
+                if (File.Exists(potentialPath))
+                {
+                    switch (ext)
+                    {
+                        case WadSounds.SoundtrackFormat.Wav:
+                            reader = disposables.AddAndReturn(new WaveFileReader(potentialPath));
+                            break;
+
+                        case WadSounds.SoundtrackFormat.Mp3:
+                            reader = disposables.AddAndReturn(new Mp3FileReader(potentialPath));
+                            break;
+
+                        case WadSounds.SoundtrackFormat.Ogg:
+                            reader = disposables.AddAndReturn(new VorbisWaveReader(potentialPath));
+                            break;
+
+                        default:
+                            return;
+                    }
+
+                    break;
+                }
+            }
+
+            var sourceStream = ResampleWaveStream(reader);
+            SetupChannelForPlayback(GetFreeChannel(), sourceStream.ToSampleProvider(), disposables);
+        }
+
         public static void PlaySample(Level level, WadSample sample, int channel, float volume = 1.0f, float pitch = 1.0f, float pan = 0.0f, int loopCount = 1)
         {
             if (volume <= 0.0f || loopCount <= 0)
@@ -142,16 +181,7 @@ namespace TombLib.Wad
                 }
 
                 // Resample if necessary
-                WaveStream sourceStream;
-                if (waveStream.WaveFormat.Encoding == WaveFormatEncoding.IeeeFloat ||
-                    waveStream.WaveFormat.Encoding == WaveFormatEncoding.Pcm)
-                    sourceStream = waveStream;
-                else
-                {
-                    var resampleFormat = new WaveFormat(waveStream.WaveFormat.SampleRate, 16,
-                                                        waveStream.WaveFormat.Channels);
-                    sourceStream = new WaveFormatConversionStream(resampleFormat, waveStream);
-                }
+                var sourceStream = ResampleWaveStream(waveStream);
 
                 // Apply looping
                 ISampleProvider sampleStream;
@@ -172,31 +202,8 @@ namespace TombLib.Wad
                 const int latencyInMilliseconds = 200;
                 int latencyInSamples = (sampleStream.WaveFormat.SampleRate * latencyInMilliseconds * 2) / 1000;
                 sampleStream = new OffsetSampleProvider(sampleStream) { LeadOutSamples = sampleStream.WaveFormat.Channels * latencyInSamples };
-                
-                // Initialize
-                // HACK: In some user setups, default device (-1) is incorrectly identified by NAudio and results in exception.
-                // Try to fall back to first available device if default device throws an exception.
 
-                _channels[channel] = disposables.AddAndReturn(new WaveOutEvent());
-                try
-                {
-                    _channels[channel].Init(sampleStream);
-                }
-                catch
-                {
-                    _channels[channel].DeviceNumber = 0;
-                    _channels[channel].Init(sampleStream);
-                }
-
-                // Play
-                _channels[channel].PlaybackStopped += (s, e) =>
-                {
-                    foreach (IDisposable disposable in disposables)
-                        disposable?.Dispose();
-                    _channels[channel] = null;
-                    _indices[channel] = -1;
-                };
-                _channels[channel].Play();
+                SetupChannelForPlayback(channel, sampleStream, disposables);
             }
             catch (Exception ex)
             {
@@ -208,6 +215,50 @@ namespace TombLib.Wad
             }
         }
 
+        private static WaveStream ResampleWaveStream(WaveStream originalStream)
+        {
+            if (originalStream.WaveFormat.Encoding == WaveFormatEncoding.IeeeFloat ||
+                originalStream.WaveFormat.Encoding == WaveFormatEncoding.Pcm)
+            {
+                return originalStream;
+            }
+            else
+            {
+                var resampleFormat = new WaveFormat(originalStream.WaveFormat.SampleRate, 16,
+                                                    originalStream.WaveFormat.Channels);
+                return new WaveFormatConversionStream(resampleFormat, originalStream);
+            }
+        }
+
+        private static void SetupChannelForPlayback(int channel, ISampleProvider stream, List<IDisposable> disposables)
+        {
+            _channels[channel] = disposables.AddAndReturn(new WaveOutEvent());
+
+            // HACK: In some user setups, default device (-1) is incorrectly identified by NAudio and results in exception.
+            // Try to fall back to first available device if default device throws an exception.
+
+            try
+            {
+                _channels[channel].Init(stream);
+            }
+            catch
+            {
+                _channels[channel].DeviceNumber = 0;
+                _channels[channel].Init(stream);
+            }
+
+            // Setup stop event
+            _channels[channel].PlaybackStopped += (s, e) =>
+            {
+                foreach (IDisposable disposable in disposables)
+                    disposable?.Dispose();
+                _channels[channel] = null;
+                _indices[channel] = -1;
+            };
+
+            _channels[channel].Play();
+        }
+
         public static void StopSample(int index = -1)
         {
             for (int i = 0; i < maxChannels; i++)
@@ -216,7 +267,6 @@ namespace TombLib.Wad
                     {
                         _channels[i].Stop();
                         _channels[i].Dispose();
-                        _channels[i] = null;
                     }
         }
 
