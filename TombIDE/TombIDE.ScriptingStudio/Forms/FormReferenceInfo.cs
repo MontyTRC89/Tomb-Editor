@@ -131,8 +131,12 @@ namespace TombIDE.ScriptingStudio.Forms
 				else
 					message = "No description found for the " + flag.ToUpper() + " flag.";
 
+				TopMost = false;
+
 				DarkMessageBox.Show(this, message, "Information",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+				TopMost = IDE.Global.IDEConfiguration.InfoBox_AlwaysOnTop;
 
 				newTabPage.Dispose();
 
