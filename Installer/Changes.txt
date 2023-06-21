@@ -6,6 +6,9 @@ Tomb Editor:
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
  * Fix TEN level compiler producing incorrect normals for imported geometry.
  * Fix TEN level compiler not scaling merged static meshes.
+
+WadTool:
+ * Fix broken sound remap when copying objects from legacy wads to TEN wad.
  
 TombIDE:
  * Many minor bugfixes.
