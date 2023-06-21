@@ -15,7 +15,8 @@ namespace TombEditor.WPF.ViewModels
 
 		#region Properties
 
-		public IEnumerable<TRVersion.Game> GameVersions = Enum.GetValues<TRVersion.Game>().Cast<TRVersion.Game>();
+		public IEnumerable<TRVersion.Game> GameVersions { get; set; } = Enum.GetValues<TRVersion.Game>().Cast<TRVersion.Game>();
+
 		public int Editor_UndoDepth
 		{
 			get => _config.Editor_UndoDepth;
@@ -79,6 +80,7 @@ namespace TombEditor.WPF.ViewModels
 		// Defaults
 
 		public TRVersion.Game Editor_DefaultProjectGameVersion { get; set; } = TRVersion.Game.TRNG;
+
 		public int Editor_DefaultNewRoomSize
 		{
 			get => _config.Editor_DefaultNewRoomSize;
@@ -1299,6 +1301,7 @@ namespace TombEditor.WPF.ViewModels
 
 		public float UI_FormColor_Brightness { get; set; } = 100.0f;
 		public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
+
 		public ColorScheme UI_ColorScheme
 		{
 			get => _config.UI_ColorScheme;
@@ -1306,6 +1309,7 @@ namespace TombEditor.WPF.ViewModels
 			{
 				if (value == null)
 					return;
+
 				_config.UI_ColorScheme = value;
 				Color2DBackground = value.Color2DBackground;
 				ColorSelection = value.ColorSelection;
@@ -1357,7 +1361,6 @@ namespace TombEditor.WPF.ViewModels
 		}
 
 		public IEnumerable<string> NodeEditorDefaultModes => new ReadOnlyCollection<string>(new string[] { "Level script functions", "Node editor" });
-
 		public IEnumerable<string> NodeEditorDefaultEvents => new ReadOnlyCollection<string>(new string[] { "On enter", "On inside", "On leave" });
 
 		#endregion Properties

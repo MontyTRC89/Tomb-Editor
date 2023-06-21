@@ -3,7 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:conv="clr-namespace:Xceed.Wpf.Toolkit.Core.Converters;assembly=Xceed.Wpf.Toolkit.NET5"
 	xmlns:prim="clr-namespace:Xceed.Wpf.Toolkit.Primitives;assembly=Xceed.Wpf.Toolkit.NET5"
-	xmlns:themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit.NET5"
 	xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit.NET5">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/Xceed.Wpf.Toolkit.NET5;component/Themes/Generic/Glyphs.xaml" />
@@ -20,10 +19,65 @@
 			Foreground="Gray" />
 	</DataTemplate>
 
+	<Style x:Key="NumericRepeatButton" TargetType="{x:Type RepeatButton}">
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="BorderThickness" Value="1,1,0,1" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type RepeatButton}">
+					<Grid SnapsToDevicePixels="True">
+						<Border
+							x:Name="PART_Border"
+							Padding="{TemplateBinding Padding}"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+							<ContentPresenter
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}"
+								Focusable="False" />
+						</Border>
+						<Border
+							x:Name="PART_HoverIndicatorBorder"
+							Margin="{TemplateBinding BorderBrush}"
+							Background="{DynamicResource InputControl_HoverHighlight}"
+							Opacity="{DynamicResource InputControl_HoverHighlight_Opacity}"
+							Visibility="Hidden" />
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="True" />
+								<Condition Property="IsPressed" Value="False" />
+							</MultiTrigger.Conditions>
+
+							<Setter TargetName="PART_HoverIndicatorBorder" Property="Visibility" Value="Visible" />
+						</MultiTrigger>
+
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
+						</Trigger>
+
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<Style TargetType="{x:Type xceed:ButtonSpinner}">
-		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
-		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -68,35 +122,28 @@
 
 								<RepeatButton
 									x:Name="PART_IncreaseButton"
-									Background="{TemplateBinding Background}"
-									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="1,1,0,1"
-									Foreground="{TemplateBinding Foreground}"
-									IsTabStop="{TemplateBinding IsTabStop}">
+									IsTabStop="{TemplateBinding IsTabStop}"
+									Style="{DynamicResource NumericRepeatButton}">
 									<Path
 										x:Name="ArrowUp"
 										Margin="1"
 										Data="{DynamicResource NarrowArrowUp}"
-										Fill="{DynamicResource LightText}"
+										Fill="{TemplateBinding Foreground}"
 										Stretch="Uniform" />
 								</RepeatButton>
 
 								<RepeatButton
 									x:Name="PART_DecreaseButton"
 									Grid.Row="1"
-									Background="{TemplateBinding Background}"
-									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="1,1,0,1"
-									Foreground="{TemplateBinding Foreground}"
-									IsTabStop="{TemplateBinding IsTabStop}">
+									IsTabStop="{TemplateBinding IsTabStop}"
+									Style="{DynamicResource NumericRepeatButton}">
 									<Path
 										x:Name="ArrowDown"
 										Margin="1"
 										Data="{DynamicResource NarrowArrowDown}"
-										Fill="{DynamicResource LightText}"
+										Fill="{TemplateBinding Foreground}"
 										Stretch="Uniform" />
 								</RepeatButton>
-
 							</Grid>
 						</Grid>
 					</Border>
@@ -108,7 +155,7 @@
 							<Setter TargetName="gridContent" Property="Visibility" Value="Collapsed" />
 						</Trigger>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Background" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlDisabledBackgroundKey}}" />
+							<Setter Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
 						</Trigger>
 						<Trigger SourceName="PART_IncreaseButton" Property="IsEnabled" Value="False">
 							<Setter TargetName="PART_IncreaseButton" Property="ContentTemplate" Value="{Binding SpinnerUpDisabledContentTemplate, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -129,12 +176,12 @@
 	</Style>
 
 	<Style x:Key="NumericUpDown" TargetType="{x:Type prim:InputBase}">
-		<Setter Property="Background" Value="{DynamicResource LightBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource GreySelection}" />
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="FontSize" Value="11" />
 		<Setter Property="VerticalAlignment" Value="Top" />
-		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="HorizontalContentAlignment" Value="Right" />
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
@@ -201,7 +248,7 @@
 							<Setter TargetName="PART_TextBox" Property="IsReadOnly" Value="True" />
 						</DataTrigger>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
 						</Trigger>
 						<Trigger Property="IsFocused" Value="True">
 							<Setter TargetName="PART_TextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_TextBox}" />

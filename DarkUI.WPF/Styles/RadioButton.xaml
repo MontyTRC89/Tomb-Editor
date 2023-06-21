@@ -1,31 +1,30 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style TargetType="{x:Type RadioButton}">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="{DynamicResource LightestBackground}" />
-		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
-		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
-		<Setter Property="Padding" Value="3,0,0,0" />
+		<Setter Property="Padding" Value="4,0,0,0" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
+
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RadioButton}">
-					<Grid>
+					<Grid SnapsToDevicePixels="True">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
 						</Grid.ColumnDefinitions>
+
 						<Border
-							x:Name="PART_Border"
-							Width="13"
-							Height="13"
+							x:Name="PART_BoxBorder"
+							Width="{DynamicResource CheckBoxWidth}"
+							Height="{DynamicResource CheckBoxHeight}"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 							Background="{TemplateBinding Background}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}"
-							CornerRadius="100"
-							SnapsToDevicePixels="True">
+							BorderBrush="{DynamicResource InputControl_Glyph}"
+							BorderThickness="{DynamicResource Default_BorderThickness}"
+							CornerRadius="100">
 							<Ellipse
 								x:Name="PART_OptionMark"
 								Width="6"
@@ -35,33 +34,29 @@
 								Fill="{DynamicResource GreySelection}"
 								Visibility="Hidden" />
 						</Border>
-						<ContentPresenter
-							x:Name="PART_ContentPresenter"
-							Grid.Column="1"
-							Margin="{TemplateBinding Padding}"
-							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-							Content="{TemplateBinding Content}"
-							ContentTemplate="{TemplateBinding ContentTemplate}"
-							RecognizesAccessKey="True" />
+						<Border Grid.Column="1" Background="{TemplateBinding Background}">
+							<ContentPresenter
+								Margin="{TemplateBinding Padding}"
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}" />
+						</Border>
 					</Grid>
+
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="true">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource LightText}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource LightestBackground}" />
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+						</Trigger>
+
+						<Trigger Property="IsChecked" Value="True">
 							<Setter TargetName="PART_OptionMark" Property="Visibility" Value="Visible" />
 						</Trigger>
-						<Trigger Property="IsMouseOver" Value="true">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource BlueHighlight}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource BlueSelection}" />
-						</Trigger>
-						<Trigger Property="IsPressed" Value="true">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource GreyHighlight}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource GreySelection}" />
-						</Trigger>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource GreyHighlight}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource GreySelection}" />
+
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

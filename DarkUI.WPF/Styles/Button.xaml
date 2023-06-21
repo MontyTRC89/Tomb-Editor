@@ -29,12 +29,11 @@
 						</Border>
 						<Border
 							x:Name="PART_HoverIndicatorBorder"
-							Margin="{DynamicResource Default_BorderThickness}"
+							Margin="{TemplateBinding BorderBrush}"
 							Background="{DynamicResource InputControl_HoverHighlight}"
 							Opacity="{DynamicResource InputControl_HoverHighlight_Opacity}"
 							Visibility="Hidden" />
 					</Grid>
-
 
 					<ControlTemplate.Triggers>
 						<MultiTrigger>
