@@ -22,7 +22,17 @@ namespace TombIDE.Shared.SharedClasses
 			level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 			level.Settings.GameVersion = destProject.GameVersion;
 
-			if (dataFileName is not null)
+			if (string.IsNullOrWhiteSpace(dataFileName))
+			{
+				string fileName = Path.GetFileName(level.Settings.GameLevelFilePath);
+
+				if (fileName is not null)
+				{
+					string filePath = Path.Combine(engineDirectory, "data", fileName);
+					level.Settings.GameLevelFilePath = level.Settings.MakeRelative(filePath, VariableType.LevelDirectory);
+				}
+			}
+			else
 			{
 				string fileName = dataFileName + destProject.DataFileExtension;
 				string filePath = Path.Combine(engineDirectory, "data", fileName);

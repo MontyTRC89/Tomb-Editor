@@ -1524,10 +1524,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var p in room.Portals)
             {
                 if (_portalRemapping.ContainsKey(p))
-                {
-                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
-                        continue;
-                }
+				{
+					if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces &&
+						room.OriginalRoom.Properties.LightInterpolationMode != RoomLightInterpolationMode.Interpolate)
+					{
+						continue;
+					}
+				}
 
                 var otherRoom = roomList[p.AdjoiningRoom];
 

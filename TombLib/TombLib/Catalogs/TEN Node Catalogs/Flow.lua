@@ -41,7 +41,7 @@ end
 -- !Section "Game flow"
 -- !Description "Checks current game secret count."
 -- !Conditional "True"
--- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [0 | 99 ], Secret count"
+-- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 99 ], Secret count"
 
 LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
     return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)

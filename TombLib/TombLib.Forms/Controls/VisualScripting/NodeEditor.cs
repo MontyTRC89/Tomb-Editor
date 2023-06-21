@@ -166,6 +166,14 @@ namespace TombLib.Controls.VisualScripting
         public void OnLocatedItemFound(IHasLuaName item)
             => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
+        public event EventHandler SoundtrackPlayed;
+        public void OnSoundtrackPlayed(string name)
+            => SoundtrackPlayed?.Invoke(name, EventArgs.Empty);
+
+        public event EventHandler SoundEffectPlayed;
+        public void OnSoundEffectPlayed(string sound)
+            => SoundEffectPlayed?.Invoke(sound, EventArgs.Empty);
+
         public NodeEditor()
         {
             SetStyle(ControlStyles.UserPaint | 

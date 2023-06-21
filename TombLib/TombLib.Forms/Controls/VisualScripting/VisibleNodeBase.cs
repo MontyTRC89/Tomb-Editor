@@ -11,6 +11,7 @@ using DarkUI.Icons;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -88,6 +89,8 @@ namespace TombLib.Controls.VisualScripting
 
                 control.ValueChanged -= Ctrl_ValueChanged;
                 control.LocatedItemFound -= Ctrl_LocatedItemFound;
+                control.SoundEffectPlayed -= Ctrl_SoundEffectPlayed;
+                control.SoundtrackPlayed -= Ctrl_SoundtrackPlayed;
 
                 if (Controls.Contains(control))
                     Controls.Remove(control);
@@ -232,6 +235,8 @@ namespace TombLib.Controls.VisualScripting
                 ctrl.Location = new Point(newX, newY);
                 ctrl.ValueChanged += Ctrl_ValueChanged;
                 ctrl.LocatedItemFound += Ctrl_LocatedItemFound;
+                ctrl.SoundEffectPlayed += Ctrl_SoundEffectPlayed;
+                ctrl.SoundtrackPlayed += Ctrl_SoundtrackPlayed;
             }
 
             var newHeight = scaledSpacing +
@@ -270,6 +275,18 @@ namespace TombLib.Controls.VisualScripting
         {
             if (sender is IHasLuaName)
                 Editor.OnLocatedItemFound(sender as IHasLuaName);
+        }
+
+        private void Ctrl_SoundtrackPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+                Editor.OnSoundtrackPlayed(sender as string);
+        }
+
+        private void Ctrl_SoundEffectPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+                Editor.OnSoundEffectPlayed(sender as string);
         }
 
         private void Ctrl_ValueChanged(object sender, EventArgs e)

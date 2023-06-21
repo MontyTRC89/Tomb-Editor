@@ -91,7 +91,16 @@ LevelFuncs.Engine.Node.GetRoomFlag = function(value)
 	if (value == 5) then return Objects.RoomFlagID.DAMAGE end
 	if (value == 6) then return Objects.RoomFlagID.NOLENSFLARE end
 
-	return 0;
+	return Objects.RoomFlagID.WATER
+end
+
+LevelFuncs.Engine.Node.GetSoundTrackType = function(value)
+
+	if (value == 0) then return Misc.SoundTrackType.ONESHOT end
+	if (value == 1) then return Misc.SoundTrackType.LOOPED end
+	if (value == 2) then return Misc.SoundTrackType.VOICE end
+
+	return Misc.SoundTrackType.ONESHOT
 end
 
 LevelFuncs.Engine.Node.GetBlendMode = function(index)

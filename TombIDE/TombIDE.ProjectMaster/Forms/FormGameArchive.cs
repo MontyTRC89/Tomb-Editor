@@ -144,7 +144,7 @@ namespace TombIDE.ProjectMaster.Forms
 			allImportantFiles.AddRange(importantFiles);
 			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dll", SearchOption.TopDirectoryOnly));
 
-			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
+			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText, true);
 		}
 
 		public void GenerateTR4Archive(string filePath, string readmeText)
@@ -207,7 +207,7 @@ namespace TombIDE.ProjectMaster.Forms
 		}
 
 		private void CreateArchive(IEnumerable<string> importantFolders, IEnumerable<string> importantFiles,
-			string filePath, string readmeText)
+			string filePath, string readmeText, bool createSavesFolder = false)
 		{
 			string tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -227,6 +227,9 @@ namespace TombIDE.ProjectMaster.Forms
 
 				SharedMethods.CopyFilesRecursively(folder, targetPath);
 			}
+
+			if (createSavesFolder)
+				Directory.CreateDirectory(Path.Combine(targetTempEngineDirectory, "saves"));
 
 			foreach (string file in importantFiles)
 			{
