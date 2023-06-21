@@ -61,7 +61,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Catalogs\TEN Node Catalogs\Dynamic Lights.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Lara.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Particles.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
@@ -167,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="BCnEncoder.Net" Version="2.1.0" />
     <PackageReference Include="CH.SipHash.Core" Version="1.0.2" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
     <PackageReference Include="MiniZ.NET.Core" Version="1.0.0" />

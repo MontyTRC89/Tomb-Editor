@@ -10,9 +10,9 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.IO
 {
-    public static class Prj2TombEngineConverter
-    {
-        private static readonly string _tenReferenceWad = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
+    public static class TombEngineConverter
+	{
+        public static readonly string ReferenceWadPath = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
         public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter)
         {
@@ -187,6 +187,32 @@ namespace TombLib.LevelData.IO
                     break;
             }
 
+            // Detect flipped switch states
+
+            if (newSlotName.Contains("SWITCH_TYPE"))
+            {
+                if (moveable.Animations.Count > 0 &&
+                    moveable.Animations.Any(a => a.KeyFrames.Count == 1) &&
+                    moveable.Animations.First(a => a.KeyFrames.Count == 1).StateId == 0)
+                {
+                    progressReporter?.ReportInfo("    Fixing switch state ID order for " + newSlotName);
+
+                    foreach (var anim in moveable.Animations)
+                    {
+                        if (anim.StateId > 1 || anim.KeyFrames.Count != 1)
+                            continue;
+
+                        var newStateId = (ushort)(1 - anim.StateId);
+
+                        foreach (var sc in anim.StateChanges)
+                            if (sc.StateId == newStateId)
+                                sc.StateId = anim.StateId;
+
+                        anim.StateId = newStateId;
+                    }
+                }
+            }
+
             // Adjust bridge thickness
 
             if (newSlotName == "TWOBLOCK_PLATFORM" ||
@@ -248,7 +274,7 @@ namespace TombLib.LevelData.IO
                     try
                     {
                         uint soundId = (uint)(command.Parameter2 & 0x3FFF);
-                        uint newSoundId = TrCatalog.GetTombEngineSound(refWad.GameVersion, soundId);
+                        uint newSoundId = TrCatalog.GetTombEngineSound(sourceVersion, soundId);
                         command.Parameter2 = (short)((short)(command.Parameter2 & 0xC000) | (short)newSoundId);
                     }
                     catch (Exception)
@@ -266,7 +292,7 @@ namespace TombLib.LevelData.IO
             try
             {
                 // Load new TombEngine reference Wad2
-                Wad2 referenceWad = Wad2Loader.LoadFromFile(_tenReferenceWad, true);
+                Wad2 referenceWad = Wad2Loader.LoadFromFile(ReferenceWadPath, true);
 
                 // Load level and all related resources
                 Level level = Path.GetExtension(source).ToLower() == ".prj" ?
@@ -343,7 +369,7 @@ namespace TombLib.LevelData.IO
                             continue;
                         }
 
-                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, wad, progressReporter);
+                        moveable.Value.ConvertMoveable(level.Settings.GameVersion, referenceWad, progressReporter);
 
                         if (!addedTimex &&
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||

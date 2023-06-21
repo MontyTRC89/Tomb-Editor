@@ -400,7 +400,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
                         bool clearShades = entry.ClearShades;
                         int meshVertexBase = roomVertices.Count;
-                        var worldTransform = staticMesh.RotationMatrix *
+                        var worldTransform = staticMesh.ScaleMatrix *
+                                             staticMesh.RotationMatrix *
                                              Matrix4x4.CreateTranslation(staticMesh.Position);
                         var normalTransform = staticMesh.RotationMatrix;
                         WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
@@ -907,7 +908,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                if (!light.Enabled || !light.IsDynamicallyUsed || light.Type == LightType.FogBulb)
+                if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
 
                 if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)
@@ -1523,10 +1524,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var p in room.Portals)
             {
                 if (_portalRemapping.ContainsKey(p))
-                {
-                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
-                        continue;
-                }
+				{
+					if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces &&
+						room.OriginalRoom.Properties.LightInterpolationMode != RoomLightInterpolationMode.Interpolate)
+					{
+						continue;
+					}
+				}
 
                 var otherRoom = roomList[p.AdjoiningRoom];
 

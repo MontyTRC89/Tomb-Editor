@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -23,7 +24,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public LuaStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public LuaStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
 		{
 			DockPanelState = IDE.Global.IDEConfiguration.Lua_DockPanelState;
 
@@ -32,7 +33,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TombEngine);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -278,6 +279,28 @@ namespace TombIDE.ScriptingStudio
 		{
 			// Nothing.
 		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.LuaBasics:
+					string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
+
+					var process = new ProcessStartInfo
+					{
+						FileName = url,
+						UseShellExecute = true
+					};
+
+					Process.Start(process);
+					break;
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation() => throw new NotImplementedException();
 
 		#endregion Other methods
 	}

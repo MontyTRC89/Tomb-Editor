@@ -16866,7 +16866,7 @@
 					<FileName>TR3_Vehicle_Minecart_Wrench.wav</FileName>
 				</WadSample>
 			</Samples>
-			<Global>false</Global>
+			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
@@ -20921,6 +20921,21 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
+			<Id>1070</Id>
+			<Name>TR5_Empty1</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
 			<Id>1071</Id>
 			<Name>TR5_Modem_Loop</Name>
 			<Volume>55</Volume>
@@ -22442,17 +22457,40 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1070</Id>
-			<Name>TR5_Empty1</Name>
+			<Id>1143</Id>
+			<Name>TR1_SLAMDOOR_OPEN</Name>
 			<Volume>100</Volume>
-			<RangeInSectors>10</RangeInSectors>
+			<RangeInSectors>8</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>TR1_SLAMDOOR_OPEN_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1144</Id>
+			<Name>TR1_SLAMDOOR_CLOSE</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>8</RangeInSectors>
 			<Chance>100</Chance>
 			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>TR1_SLAMDOOR_CLOSE_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>

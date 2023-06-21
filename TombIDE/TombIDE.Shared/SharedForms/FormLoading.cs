@@ -1,7 +1,10 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.Shared.SharedForms
@@ -46,7 +49,7 @@ namespace TombIDE.Shared.SharedForms
 
 		private void ScanLevelsDirectory()
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(_ide.Project.LevelsPath);
+			var directoryInfo = new DirectoryInfo(_ide.Project.LevelsDirectoryPath);
 
 			// Get all subdirectories of the project's /Levels/ folder
 			DirectoryInfo[] levelDirectories = directoryInfo.GetDirectories();
@@ -74,16 +77,12 @@ namespace TombIDE.Shared.SharedForms
 					}
 
 					// Create a new ProjectLevel instance from the folder
-					ProjectLevel detectedLevel = new ProjectLevel
-					{
-						Name = directory.Name,
-						FolderPath = directory.FullName
-					};
+					var detectedLevel = new LevelProject(directory.Name, directory.FullName);
 
 					// Update the settings of all the .prj2 files in the folder to match the project settings
-					UpdateAllPrj2GameSettings(directory, detectedLevel);
+					UpdateAllPrj2GameSettings(detectedLevel);
 
-					_ide.Project.Levels.Add(detectedLevel);
+					detectedLevel.Save();
 				}
 
 				progressBar.Increment(1);
@@ -99,39 +98,31 @@ namespace TombIDE.Shared.SharedForms
 			if (directoryInfo.GetFiles("*.prj2", SearchOption.TopDirectoryOnly).Length > 0)
 			{
 				DarkMessageBox.Show(this, "Some .prj2 files were found directly placed in the project's /Levels/ folder.\n" +
-					"Please make sure to create seperate subfolders for them as having floating .prj2 files is not allowed.",
+					"Please make sure to create separate sub-folders for them as having floating .prj2 files is not allowed.",
 					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
 
 		private bool IsFolderKnownForProject(DirectoryInfo directory)
-		{
-			foreach (ProjectLevel level in _ide.Project.Levels)
-			{
-				if (Path.GetFileName(level.FolderPath) == directory.Name)
-					return true;
-			}
-
-			return false;
-		}
+			=> _ide.Project.KnownLevelProjectFilePaths.Any(level => Path.GetDirectoryName(level).Equals(directory.FullName, StringComparison.OrdinalIgnoreCase));
 
 		private bool FolderOnlyContainsBackupFiles(DirectoryInfo directory)
 		{
 			foreach (FileInfo file in directory.GetFiles("*.prj2", SearchOption.TopDirectoryOnly))
 			{
-				if (!ProjectLevel.IsBackupFile(file.Name))
+				if (!Prj2Helper.IsBackupFile(file.FullName))
 					return false; // We got a non-backup file
 			}
 
 			return true;
 		}
 
-		private void UpdateAllPrj2GameSettings(DirectoryInfo directory, ProjectLevel detectedLevel)
+		private void UpdateAllPrj2GameSettings(ILevelProject levelProject)
 		{
-			foreach (FileInfo file in directory.GetFiles("*.prj2", SearchOption.TopDirectoryOnly))
+			foreach (string filePath in Directory.GetFiles(levelProject.DirectoryPath, "*.prj2", SearchOption.TopDirectoryOnly))
 			{
-				if (!ProjectLevel.IsBackupFile(file.Name))
-					LevelHandling.UpdatePrj2GameSettings(file.FullName, detectedLevel, _ide.Project);
+				if (!Prj2Helper.IsBackupFile(filePath))
+					LevelHandling.UpdatePrj2GameSettings(filePath, _ide.Project);
 			}
 		}
 	}

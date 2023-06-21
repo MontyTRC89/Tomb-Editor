@@ -15,8 +15,20 @@ namespace TombEditor.Controls
 {
     public class DepthBar
     {
-        public const float MinDepth = -128;
-        public const float MaxDepth = 127;
+        public float MinDepth 
+        { 
+            get { return _minDepth; }
+            set { _minDepth = _selectedLimit0 = value; InvalidateParent?.Invoke(); }
+        }
+        private float _minDepth;
+
+        public float MaxDepth
+        {
+            get { return _maxDepth; }
+            set { _maxDepth = _selectedLimit1 = value; InvalidateParent?.Invoke(); }
+        }
+        private float _maxDepth;
+
         public readonly List<DepthProbe> DepthProbes = new List<DepthProbe>();
         public event Action InvalidateParent;
         public event Func<IWin32Window> GetParent;
@@ -32,15 +44,13 @@ namespace TombEditor.Controls
         private const float _heightStringLineDistance = 6.0f;
         private const float _heightStringFadeDistance = 12.0f;
         private const float _heightStringArrowSize = 3.0f;
-        private const float _selectionInsideOffset = -1.0f;
-        private const float _selectionOutsideOffset = -2.0f;
         private const float _selectionMaxPixelDistanceForMove = 8.0f;
         private const float _minDepthDifferenceBetweenIndependentlyMergedSequences = 12.0f;
 
         private Editor _editor;
 
-        private float _selectedLimit0 { get; set; } = MinDepth;
-        private float _selectedLimit1 { get; set; } = MaxDepth;
+        private float _selectedLimit0 { get; set; }
+        private float _selectedLimit1 { get; set; }
         private Room _roomMouseClicked;
         private int _groupMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
@@ -82,7 +92,7 @@ namespace TombEditor.Controls
 
             public DepthProbe(DepthBar parent)
             {
-                Color = parent.getProbeColor();
+                Color = parent.GetProbeColor();
             }
         }
 
@@ -119,7 +129,7 @@ namespace TombEditor.Controls
             _roomsWallBrush = new SolidBrush(_editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor());
         }
 
-        public RectangleF getBarArea(Size parentControlSize)
+        public RectangleF GetBarArea(Size parentControlSize)
         {
             float barsWidth = _barWidth * (DepthProbes.Count + 1);
             return new RectangleF(
@@ -127,7 +137,7 @@ namespace TombEditor.Controls
                 barsWidth, Math.Max(parentControlSize.Height - (_marginYUp + _marginYDown), 64.0f));
         }
 
-        private Color getProbeColor()
+        private Color GetProbeColor()
         {
             return DepthProbes
                 .Select(probe => probe.Color)
@@ -137,14 +147,14 @@ namespace TombEditor.Controls
                 .First().First(); // Use first color of the least occurring color group.
         }
 
-        private static float FromVisualY(RectangleF barArea, float y)
+        private float FromVisualY(RectangleF barArea, float y)
         {
             float depth = MaxDepth - (y - barArea.Y) / barArea.Height * (MaxDepth - MinDepth);
             depth = Math.Max(Math.Min(depth, MaxDepth), MinDepth);
             return depth;
         }
 
-        private static float ToVisualY(RectangleF barArea, float depth)
+        private float ToVisualY(RectangleF barArea, float depth)
         {
             return (MaxDepth - depth) / (MaxDepth - MinDepth) * barArea.Height + barArea.Y;
         }
@@ -156,7 +166,7 @@ namespace TombEditor.Controls
             _overallDelta = 0;
 
             // check if the mouse click was in the bar area
-            RectangleF barArea = getBarArea(parentControlSize);
+            RectangleF barArea = GetBarArea(parentControlSize);
             RectangleF selectionArea = barArea;
             selectionArea.Inflate(10.0f, _selectionMaxPixelDistanceForMove * 0.8f);
             if (!selectionArea.Contains(e.Location))
@@ -248,7 +258,7 @@ namespace TombEditor.Controls
 
         public void MouseMove(MouseEventArgs e, Size parentControlSize)
         {
-            RectangleF barArea = getBarArea(parentControlSize);
+            RectangleF barArea = GetBarArea(parentControlSize);
 
             switch (_selectionMode)
             {
@@ -381,7 +391,7 @@ namespace TombEditor.Controls
 
         public void Draw(PaintEventArgs e, Size parentControlSize, Vector2 cursorPos, Func<Room, Brush, ConditionallyOwned<Brush>> getRoomBrush)
         {
-            RectangleF barArea = getBarArea(parentControlSize);
+            RectangleF barArea = GetBarArea(parentControlSize);
             float selectedLimit0PosY = ToVisualY(barArea, _selectedLimit0);
             float selectedLimit1PosY = ToVisualY(barArea, _selectedLimit1);
 
@@ -533,7 +543,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth, bool selection = false)
+        private void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth, bool selection = false)
         {
             if (barArea.Contains(e.ClipRectangle))
                 return;
@@ -556,7 +566,10 @@ namespace TombEditor.Controls
 
             RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
                 barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
-            string text = string.Format(selection ? "y = {0:F0}" : "{0:F0}", depth);
+
+            string value = Math.Abs(depth) < 1000 ? string.Format("{0:F0}", depth) : string.Format("{0:F0}", depth / 1000) + "k";
+            string text = selection ? "y = " + value : value;
+
             e.Graphics.DrawString(text, _heightStringFont, pen.Brush, textArea, _heightStringLayout);
 
             e.Graphics.SmoothingMode = SmoothingMode.Default;

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
@@ -209,6 +210,7 @@ namespace TombLib.LevelData
         public bool RearrangeVerticalRooms { get; set; } = true;
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
+        public bool CompressTextures { get; set; } = false;
         public bool Dither16BitTextures { get; set; } = true;
         public bool RemapAnimatedTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
@@ -293,15 +295,15 @@ namespace TombLib.LevelData
 
         public List<string> GetListOfSoundtracks()
         {
-            var path = Path.Combine(Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath)), "Audio");
+            var path = Path.Combine(MakeAbsolute(GameDirectory), WadSounds.AudioFolder);
 
             if (!Directory.Exists(path))
                 return new List<string>();
 
-            var ext = new List<string> { "wav", "mp3", "ogg" };
+            var extList = Enum.GetValues(typeof(WadSounds.SoundtrackFormat)).Cast<object>().Select(s => s.ToString().ToLowerInvariant());
 
             return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                            .Where(s => ext.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
+                            .Where(s => extList.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
                             .Select(s => Path.GetFileNameWithoutExtension(s)).Distinct().ToList();
         }
 
@@ -563,7 +565,7 @@ namespace TombLib.LevelData
             switch (GameVersion.Native())
             {
                 case TRVersion.Game.TombEngine:
-                    wadName = DefaultPaths.ProgramDirectory + "\\Assets\\Wads\\TombEngine.wad2";
+                    wadName = TombEngineConverter.ReferenceWadPath;
                     break;
             }
 
@@ -581,6 +583,34 @@ namespace TombLib.LevelData
             }
 
             return false;
+        }
+
+        public bool ConvertLegacyTombEngineExecutablePath()
+        {
+            if (GameVersion != TRVersion.Game.TombEngine)
+                return false;
+
+            var exePath = Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath));
+            var exeName = Path.GetFileName(MakeAbsolute(GameExecutableFilePath));
+
+            if (!Directory.Exists(Path.Combine(exePath, "Bin")))
+                return false;
+
+            if (Environment.Is64BitOperatingSystem)
+                exePath = Path.Combine(exePath, "Bin", "x64");
+            else
+                exePath = Path.Combine(exePath, "Bin", "x86");
+
+            if (!Directory.Exists(Path.Combine(exePath)))
+                return false;
+
+            exePath = Path.Combine(exePath, exeName);
+
+            if (!File.Exists(exePath))
+                return false;
+
+            GameExecutableFilePath = MakeRelative(exePath, VariableType.GameDirectory);
+            return true;
         }
 
         public bool LoadDefaultSoundCatalog()

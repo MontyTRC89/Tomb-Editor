@@ -1,6 +1,8 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
@@ -22,7 +24,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public GameFlowScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public GameFlowScriptStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
 		{
 			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
 
@@ -33,7 +35,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TR2);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR2);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -183,6 +185,42 @@ namespace TombIDE.ScriptingStudio
 
 			DockPanel.RemoveContent();
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.Tomb3ExtraCommands:
+					string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "GameFlow", "TRGameflow extra commands.pdf");
+
+					var process = new ProcessStartInfo
+					{
+						FileName = pdfPath,
+						UseShellExecute = true
+					};
+
+					if (File.Exists(pdfPath))
+						Process.Start(process);
+
+					break;
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation()
+		{
+			string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "GameFlow", "TRGameflow.pdf");
+
+			var process = new ProcessStartInfo
+			{
+				FileName = pdfPath,
+				UseShellExecute = true
+			};
+
+			if (File.Exists(pdfPath))
+				Process.Start(process);
 		}
 
 		#endregion Other methods

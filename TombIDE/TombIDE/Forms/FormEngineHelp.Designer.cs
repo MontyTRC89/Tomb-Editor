@@ -56,6 +56,7 @@
 		}
 
 		#endregion
+
 		private DarkUI.Controls.DarkLabel label;
 	}
 }

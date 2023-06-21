@@ -1219,7 +1219,6 @@ namespace TombLib.LevelData.Compilers
             return new VectorInt2(atlasWidth, atlasHeight);
         }
 
-
         private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
@@ -1288,6 +1287,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 image.HasNormalMap = true;
                                 image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                image.NormalMap.Fill(new ColorC(128, 128, 255));
                             }
                             image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
                             AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
@@ -1324,6 +1324,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 image.HasNormalMap = true;
                                 image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                image.NormalMap.Fill(new ColorC(128, 128, 255));
                             }
 
                             if (level != BumpMappingLevel.None)
@@ -1498,7 +1499,7 @@ namespace TombLib.LevelData.Compilers
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
             MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numMoveablesAtlases, false, true, 0, atlasSize);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
@@ -1540,7 +1541,6 @@ namespace TombLib.LevelData.Compilers
         }
 
         // Compiles all final texture infos into final list to be written into level file.
-
         private void BuildTextureInfos()
         {
             float maxSize = (float)MaxTileSize - (1.0f / (float)(MaxTileSize - 1));
@@ -1553,7 +1553,7 @@ namespace TombLib.LevelData.Compilers
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
                         var newObjectTexture = new ObjectTexture(parent, child, maxSize);
-
+#if DEBUG
                         if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
                             newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
                             newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
@@ -1567,10 +1567,9 @@ namespace TombLib.LevelData.Compilers
                         {
                             _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
-
+#endif
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
-
             foreach (var animTexture in _actualAnimTextures)
             {
                 SortOutAlpha(animTexture.CompiledAnimation);

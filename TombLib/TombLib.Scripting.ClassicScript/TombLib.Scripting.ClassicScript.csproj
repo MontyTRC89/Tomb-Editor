@@ -63,6 +63,9 @@
     <None Update="Resources\ClassicScript\Descriptions\OLD Commands.rdda">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\ClassicScript\TRNG Script Reference Manual.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />

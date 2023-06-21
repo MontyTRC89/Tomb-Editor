@@ -529,7 +529,7 @@ namespace TombLib.Wad.Tr4Wad
                         WadAnimDispatch animDispatch = stateChange.Dispatches[j];
 
                         // HACK: Probably WadMerger's bug
-                        if (animDispatch.NextAnimation > 32767)
+                        if (animDispatch.NextAnimation > short.MaxValue)
                         {
                             animDispatch.NextAnimation = 0;
                             animDispatch.NextFrame = 0;

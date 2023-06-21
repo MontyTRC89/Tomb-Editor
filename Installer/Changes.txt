@@ -1,16 +1,86 @@
+Version 1.6.8
+=============
+
+Tomb Editor:
+ * Add preview button for sound playback node functions.
+ * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
+ * Fix TEN level compiler producing incorrect normals for imported geometry.
+ * Fix TEN level compiler not scaling merged static meshes.
+
+WadTool:
+ * Fix broken sound remap when copying objects from legacy wads to TEN wad.
+ 
+TombIDE:
+ * Many minor bugfixes.
+
+Version 1.6.7
+=============
+
+Tomb Editor:
+ * Add a set of particle and dynamic light node functions.
+ * Add ability to search for invisible texture tiles.
+ * Use more consistent naming for newly generated flipped and split rooms.
+ * Write catalog file reading errors to a log file.
+ * Build status window now displays the path to the built level.
+ * Don't throw useless invalid texture warnings when building a level.
+ * Fix TEN texture packer crash if static meshes have more textures than moveables.
+ * Fix nodes made from context menu incorrectly linking to selected node as next instead of previous.
+ * Fix script ID assignment when duplicating rooms from the context menu or via hotkey command.
+ * Fix Lua ID assignment when pasting a group of objects.
+ * Fix exception when autosave interval was set to 0 in editor options.
+ * Fix several TEN object remaps in TrCatalog.xml.
+ * Fix light interpolation if 32 bit lighting is active.
+
+WadTool:
+ * Automatically fix incorrect state IDs for switch objects when converting them to TEN format.
+ * Fix incorrect conversion of Lara object in legacy wads to TEN format.
+ * Fix incorrect conversion of several objects such as LARA_HOLSTERS to TEN format.
+ * Fix exception in mesh editor when a mesh with incorrect sphere radius is selected.
+ * Fix more cases of incorrect animation importing.
+ * TEN Base WAD:
+   - Improve TEN Lara wad base equipment such as pistol holsters.
+   - Fix TEN Lara head rotation in shotgun, crossbow, and harpoon gun.
+   
+TombIDE:
+ * Update tomb3 preset to 2.0.2.
+
+Version 1.6.6
+=============
+
+Tomb Editor:
+ * Add precise movement hotkeys into settings.
+
+WadTool:
+ * TEN Base WAD:
+   - Amended Lara's sliding back animation to prevent falling backwards too far after sliding.
+
+TombIDE:
+ * Update Tomb1Main preset to 2.14.
+ * Update tomb3 preset to 1.6.
+ * Fix Tomb1Main preset not having title.phd in the package.
+
+
 Version 1.6.5
 =============
 
 Tomb Editor:
+ * Add an option to level settings to apply DirectX texture compression for TEN target.
+ * Extend 2D map depth bar range for TEN target.
+ * Detect TEN version when building a level and throw a warning if target editor version does not match.
+ * Initialize nonexistent Lua variables in nodes as initial value for assignment operations.
  * Fix exception when trying to select floor below object out of room bounds.
  * Fix incorrect lighting bit depth when 32-bit lighting option is set for TRNG target.
 
 WadTool:
  * Fix sound previews not working for interpolated frames.
- * Amended slot name for Sophia-Leigh in TEN. 
-
+ * Amended slot name for Sophia Leigh in TEN.
+ * TEN Base WAD:
+   - Addition of ID_BURNING_TORCH_ITEM and fix default hand mesh.
+   - Addition of dedicated slot ID_MINECART_SWITCH for the minecart vehicle.
+   - Removal of duplicated animations in ID_LARA_EXTRA_ANIMS.
+  
 TombIDE:
- * Amended the TEN preset with the sound file corrections for "Sophia-Leigh" 
+ * Amended the TEN preset with the sound file corrections for Sophia Leigh. 
  
 Version 1.6.4
 =============
@@ -21,7 +91,7 @@ Tomb Editor:
  * Add an option to enable 32-bit lighting for TRNG to fix "rainbow bug" (requires FLEP patch).
  * Extend pathfinding data over slopes for flying enemies in TEN levels.
  * Fix possible issues with pathfinding on extended heights in TEN levels.
- * Fix broken lua event sets which had non-alphanumerical characters in their name.
+ * Fix broken Lua event sets which had non-alphanumerical characters in their name.
  * Fix variable comparer nodes not working correctly without initialized variable.
  * Fix incorrect light interpolation between rooms with non-traversable portals.
 
@@ -55,7 +125,7 @@ Tomb Editor:
  * Add TestMoveableFrameNumber node function for moveables.
  * Allow free axis rotation for dart emitter object in TEN projects.
  * Offset pasted nodes if they land on same position.
- * Fix exception when trying to copy lua name to clipboard for objects without a name.
+ * Fix exception when trying to copy Lua name to clipboard for objects without a name.
  * Fix sound sources not properly compiled for TEN.
  * Fix game executable path field not displaying properly for TEN target in level settings.
 
@@ -1120,7 +1190,7 @@ Fixed flipon/off greater than 0
 Fixed group texturing
 Fixed horizon rendering
 Allow deselect object when clicking away
-Fixed 45° rotation of objects
+Fixed 45Â° rotation of objects
 Merged Selected block and Selected geometry context menus (now you can add objects also on selected areas)
 Added debug texture "out of bounds" when parent area in group texturing is invalid (EXPERIMENTAL)
 Fixed Color dialog position (now it's located at top-left corner of screen instead of middle of 3D area)
@@ -1361,7 +1431,7 @@ Fixes to dark UI controls
 Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
 Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's PerÃ¹ animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug

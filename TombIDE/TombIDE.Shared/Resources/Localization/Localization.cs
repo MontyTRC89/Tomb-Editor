@@ -76,6 +76,9 @@ namespace TombIDE.Shared.Local
 		public string ToolStrip { get; set; }
 		public string StatusStrip { get; set; }
 
+		public string ScriptingDocumentation { get; set; }
+		public string Tomb3ExtraCommands { get; set; }
+		public string LuaBasics { get; set; }
 		public string About { get; set; }
 
 		public string TypeFirstAvailableId { get; set; }

@@ -83,6 +83,7 @@ namespace TombLib.Utils
     public enum TextureSearchType
     {
         Empty,
+        Invisible,
         Broken,
         ExactMatch,
         PartialMatch,

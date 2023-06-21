@@ -597,7 +597,9 @@ namespace TombEditor
             {
                 objectList = objectList.OrderByDescending(o =>
                 {
-                    string objectName = o.ToString().ToLower();
+                    var objectName = string.Empty;
+					if (o is MoveableInstance)
+						objectName = (o as MoveableInstance).WadObjectId.ShortName(_editor.Level.Settings.GameVersion).ToLower();
 
                     bool isSwitch = objectName.Contains("switch") || objectName.Contains("pulley");
                     bool isHole = objectName.Contains("hole") &&
@@ -1389,6 +1391,11 @@ namespace TombEditor
                             {
                                 case TextureSearchType.Empty:
                                     if (tex == TextureArea.None)
+                                        result.Add(entry);
+                                    break;
+
+                                case TextureSearchType.Invisible:
+                                    if (tex == TextureArea.Invisible)
                                         result.Add(entry);
                                     break;
 
@@ -2985,7 +2992,7 @@ namespace TombEditor
             // Disable lock flag to prevent deadlocks
             newRoom.Properties.Locked = false;
 
-            newRoom.Name = "Flipped of " + room;
+            newRoom.Name = room + " (Flipped)";
             newRoom.BuildGeometry();
             newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
@@ -3726,10 +3733,18 @@ namespace TombEditor
 
             // Split alternate room
             var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
-            Room splitRoom = room.Split(_editor.Level, area);
-            _editor.Level.AssignRoomToFree(splitRoom);
+
+            var splitRoom = room.Split(_editor.Level, area);
+            int newRoomIndex = _editor.Level.AssignRoomToFree(splitRoom);
+            splitRoom.Name = "Room " + newRoomIndex + " (split from " + room.Name + ")";
+
             if (room.Alternated)
-                _editor.Level.AssignRoomToFree(room.AlternateRoom.Split(_editor.Level, area, splitRoom));
+            {
+                var alternateSplitRoom = room.AlternateRoom.Split(_editor.Level, area, splitRoom);
+                int newAlternateRoomIndex = _editor.Level.AssignRoomToFree(alternateSplitRoom);
+                alternateSplitRoom.Name = "Room " + newRoomIndex + " Split from " + room.AlternateRoom.Name + ")";
+
+            }
 
             relevantRooms.Add(room);
             relevantRooms.Add(splitRoom);
@@ -3962,7 +3977,11 @@ namespace TombEditor
             if (AutoLoadSamplePath(level.Settings))
                 whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Stock samples" : "\nAlso stock samples") + " were assigned because some samples were missing.";
 
-            if (!string.IsNullOrEmpty(whatLoaded))
+
+			if (level.Settings.ConvertLegacyTombEngineExecutablePath())
+				whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Executable path" : "\nAlso executable path") + " was upgraded to new TEN directory structure.";
+
+			if (!string.IsNullOrEmpty(whatLoaded))
                 _editor.SendMessage(whatLoaded, PopupType.Info);
 
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
@@ -4982,7 +5001,7 @@ namespace TombEditor
             var newLevel = string.Empty;
 
             using (var form = new FormOperationDialog("TombEngine level converter", false, true, progressReporter =>
-                newLevel = Prj2TombEngineConverter.Start(fileName, owner, progressReporter)))
+                newLevel = TombEngineConverter.Start(fileName, owner, progressReporter)))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK || string.IsNullOrEmpty(newLevel))
                     return false;

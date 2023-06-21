@@ -13,6 +13,7 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -69,11 +70,14 @@ namespace TombEditor.Controls
         {
             if (disposing)
             {
-                _editor.EditorEventRaised -= EditorEventRaised;
+                WadSoundPlayer.StopSample();
 
+                _editor.EditorEventRaised      -= EditorEventRaised;
                 nodeEditor.ViewPositionChanged -= NodeEditor_ViewPostionChanged;
-                nodeEditor.SelectionChanged -= NodeEditor_SelectionChanged;
-                nodeEditor.LocatedItemFound -= NodeEditor_LocatedItemFound;
+                nodeEditor.SelectionChanged    -= NodeEditor_SelectionChanged;
+                nodeEditor.LocatedItemFound    -= NodeEditor_LocatedItemFound;
+                nodeEditor.SoundEffectPlayed   -= NodeEditor_SoundEffectPlayed;
+                nodeEditor.SoundtrackPlayed    -= NodeEditor_SoundtrackPlayed;
 
                 if (components != null)
                     components.Dispose();
@@ -97,14 +101,31 @@ namespace TombEditor.Controls
             rbLevelScript.Checked = _editor.Configuration.NodeEditor_DefaultEventMode == 0;
 
             nodeEditor.ViewPositionChanged += NodeEditor_ViewPostionChanged;
-            nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
-            nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
+            nodeEditor.SelectionChanged  += NodeEditor_SelectionChanged;
+            nodeEditor.LocatedItemFound  += NodeEditor_LocatedItemFound;
+            nodeEditor.SoundEffectPlayed += NodeEditor_SoundEffectPlayed;
+            nodeEditor.SoundtrackPlayed  += NodeEditor_SoundtrackPlayed;
         }
 
         private void NodeEditor_LocatedItemFound(object sender, EventArgs e)
         {
             if (sender is PositionBasedObjectInstance)
                 _editor.ShowObject(sender as PositionBasedObjectInstance);
+        }
+
+        private void NodeEditor_SoundEffectPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+                WadSoundPlayer.PlaySoundInfo(_editor.Level, _editor.Level.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name == (string)sender));
+        }
+
+        private void NodeEditor_SoundtrackPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+            {
+                WadSoundPlayer.StopSample();
+                WadSoundPlayer.PlaySoundtrack(_editor.Level, sender as string);
+            }
         }
 
         private void NodeEditor_SelectionChanged(object sender, EventArgs e)
@@ -192,6 +213,9 @@ namespace TombEditor.Controls
             butExport.Enabled = nodeEditor.Nodes.Count > 0;
 
             butUnassign.Visible = rbLevelScript.Checked;
+
+            // Stop any currently active sound previews on any UI update event
+            WadSoundPlayer.StopSample();
         }
 
         private void ReloadScriptFunctions(List<string> scriptFunctions = null)

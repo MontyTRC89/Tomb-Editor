@@ -14,7 +14,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         private static readonly bool _writeDbgWadTxt = false;
         private List<int> _finalSelectedSoundsList;
-        private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -676,65 +675,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _finalSoundInfosList.Add(soundInfo);
                 }
 
-            // Step 2: Prepare indices list to be written (needed only for TR2-3).
-            // For that, we iterate through ALL sound infos available and count how many samples
-            // each of them have. Then we build a list of needed sound IDs with appropriate 
-            // sample count, which is used later to store indices.
-            // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+            // Step 2: create the sound map
 
-            _finalSoundIndicesList = new List<int>();
-            int currentIndex = 0;
-            foreach (var sound in _level.Settings.GlobalSoundMap)
-            {
-                // Don't include indices for non-indexed sounds
-                if (_level.Settings.GameVersion.UsesMainSfx() && !sound.Indexed) continue;
-
-                if (_finalSoundInfosList.Contains(sound))
-                    foreach (var sample in sound.Samples)
-                    {
-                        _finalSoundIndicesList.Add(currentIndex);
-                        currentIndex++;
-                    }
-                else
-                    currentIndex += sound.Samples.Count;
-            }
-
-            // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
-            // There is no other way of guessing it except looking if there is a specific object in any of wads.
-
-            if (_level.IsNG)
-            {
-                Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
-                {
-                    if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == moveableTypeToCheck))))
-                    {
-                        if (!_finalSelectedSoundsList.Contains(remappedId) && _finalSelectedSoundsList.Contains(originalId))
-                        {
-                            _progressReporter.ReportWarn("TRNG object with ID " + moveableTypeToCheck + " was found which uses missing hardcoded sound ID " + remappedId + " in embedded soundmap. Trying to remap sound ID from legacy ID (" + originalId + ").");
-                            _finalSelectedSoundsList.Add(remappedId);
-
-                            var oldSound = _finalSoundInfosList.FirstOrDefault(snd => snd.Id == originalId);
-                            if (oldSound != null)
-                            {
-                                var newSound = new WadSoundInfo(oldSound);
-                                newSound.Id = remappedId;
-                                _finalSoundInfosList.Add(newSound);
-                            }
-                        }
-                    }
-                };
-
-                // Motorboat
-                AddRemappedNGSound(465, 308, 1053);
-                AddRemappedNGSound(465, 307, 1055);
-
-                // Rubber boat
-                AddRemappedNGSound(467, 308, 1423);
-                AddRemappedNGSound(467, 307, 1425);
-            }
-
-            // Step 3: create the sound map
-             _soundMapSize = 4096;
+             _soundMapSize = _limits[Limit.SoundMapSize];
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
             {
@@ -746,7 +689,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
             }
 
-            // Step 4: load samples
+            // Step 3: load samples
             var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, _progressReporter);
             _finalSamplesList = loadedSamples.Values.ToList();
         }

@@ -6,7 +6,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 
@@ -14,14 +15,14 @@ namespace TombIDE.ProjectMaster
 {
 	public partial class FormImportLevel : DarkForm
 	{
-		public ProjectLevel ImportedLevel { get; private set; }
+		public ILevelProject ImportedLevel { get; private set; }
 		public List<string> GeneratedScriptLines { get; private set; }
 
-		private Project _targetProject;
+		private IGameProject _targetProject;
 
 		#region Initialization
 
-		public FormImportLevel(Project targetProject, string prj2FilePath)
+		public FormImportLevel(IGameProject targetProject, string prj2FilePath)
 		{
 			_targetProject = targetProject;
 
@@ -44,7 +45,6 @@ namespace TombIDE.ProjectMaster
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 30;
-				Height -= 30;
 			}
 
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
@@ -72,13 +72,6 @@ namespace TombIDE.ProjectMaster
 				if (radioButton_SelectedCopy.Checked && treeView.SelectedNodes.Count == 0)
 					throw new ArgumentException("You must select which .prj2 files you want to import.");
 
-				// Check for name duplicates
-				foreach (ProjectLevel projectLevel in _targetProject.Levels)
-				{
-					if (projectLevel.Name.ToLower() == levelName.ToLower())
-						throw new ArgumentException("A level with the same name already exists on the list.");
-				}
-
 				string dataFileName = textBox_CustomFileName.Text.Trim();
 
 				if (string.IsNullOrWhiteSpace(dataFileName))
@@ -103,7 +96,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string fullSpecifiedPrj2FilePath = textBox_Prj2Path.Tag.ToString();
 
-			string levelFolderPath = Path.Combine(_targetProject.LevelsPath, levelName); // A path inside the project's /Levels/ folder
+			string levelFolderPath = Path.Combine(_targetProject.LevelsDirectoryPath, levelName); // A path inside the project's /Levels/ folder
 			string specificFileName = Path.GetFileName(fullSpecifiedPrj2FilePath); // The user-specified file name
 
 			// Create the level folder
@@ -122,7 +115,7 @@ namespace TombIDE.ProjectMaster
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
-				// Check if the user-specified file was selected on the list, if not, then set the SpecificFile property to "$(LatestFile)"
+				// Check if the user-specified file was selected on the list, if not, then set the TargetPrj2FileName property to null
 				bool specificFileSelected = false;
 
 				// Copy all selected files into the created levelFolderPath
@@ -137,7 +130,7 @@ namespace TombIDE.ProjectMaster
 				}
 
 				if (!specificFileSelected) // If the user-specified file was not selected on the list
-					specificFileName = "$(LatestFile)";
+					specificFileName = null;
 			}
 
 			CreateAndAddLevelToProject(levelName, levelFolderPath, dataFileName, specificFileName);
@@ -155,16 +148,10 @@ namespace TombIDE.ProjectMaster
 
 		private void CreateAndAddLevelToProject(string levelName, string levelFolderPath, string dataFileName, string specificFileName)
 		{
-			// Create the ProjectLevel instance
-			ProjectLevel importedLevel = new ProjectLevel
-			{
-				Name = levelName,
-				FolderPath = levelFolderPath,
-				DataFileName = dataFileName,
-				SpecificFile = specificFileName
-			};
+			// Create the LevelProject instance
+			var importedLevel = new LevelProject(levelName, levelFolderPath, specificFileName);
 
-			UpdateLevelSettings(importedLevel);
+			UpdateLevelSettings(importedLevel, dataFileName);
 
 			if (checkBox_GenerateSection.Checked)
 			{
@@ -172,27 +159,29 @@ namespace TombIDE.ProjectMaster
 				bool horizon = checkBox_EnableHorizon.Checked;
 
 				// // // //
-				GeneratedScriptLines = LevelHandling.GenerateScriptLines(importedLevel, _targetProject.GameVersion, ambientSoundID, horizon);
+				GeneratedScriptLines = LevelHandling.GenerateScriptLines(levelName, dataFileName, _targetProject.GameVersion, ambientSoundID, horizon);
 				// // // //
 			}
+
+			importedLevel.Save();
 
 			// // // //
 			ImportedLevel = importedLevel;
 			// // // //
 		}
 
-		private void UpdateLevelSettings(ProjectLevel importedLevel)
+		private void UpdateLevelSettings(ILevelProject importedLevel, string dataFileName)
 		{
 			if (radioButton_SpecifiedCopy.Checked)
 			{
 				string specifiedFileName = Path.GetFileName(textBox_Prj2Path.Tag.ToString());
-				string internalFilePath = Path.Combine(importedLevel.FolderPath, specifiedFileName);
+				string internalFilePath = Path.Combine(importedLevel.DirectoryPath, specifiedFileName);
 
-				LevelHandling.UpdatePrj2GameSettings(internalFilePath, importedLevel, _targetProject);
+				LevelHandling.UpdatePrj2GameSettings(internalFilePath, _targetProject, dataFileName);
 			}
 			else if (radioButton_SelectedCopy.Checked)
 			{
-				UpdateAllPrj2FilesInLevelDirectory(importedLevel);
+				UpdateAllPrj2FilesInLevelDirectory(importedLevel, dataFileName);
 			}
 			else if (radioButton_FolderKeep.Checked)
 			{
@@ -200,13 +189,13 @@ namespace TombIDE.ProjectMaster
 					"specified folder to match the project settings?", "Update settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
-					UpdateAllPrj2FilesInLevelDirectory(importedLevel);
+					UpdateAllPrj2FilesInLevelDirectory(importedLevel, dataFileName);
 			}
 		}
 
-		private void UpdateAllPrj2FilesInLevelDirectory(ProjectLevel importedLevel)
+		private void UpdateAllPrj2FilesInLevelDirectory(ILevelProject importedLevel, string dataFileName)
 		{
-			string[] files = Directory.GetFiles(importedLevel.FolderPath, "*.prj2", SearchOption.TopDirectoryOnly);
+			string[] files = Directory.GetFiles(importedLevel.DirectoryPath, "*.prj2", SearchOption.TopDirectoryOnly);
 
 			progressBar.Visible = true;
 			progressBar.BringToFront();
@@ -214,8 +203,8 @@ namespace TombIDE.ProjectMaster
 
 			foreach (string file in files)
 			{
-				if (!ProjectLevel.IsBackupFile(Path.GetFileName(file)))
-					LevelHandling.UpdatePrj2GameSettings(file, importedLevel, _targetProject);
+				if (!Prj2Helper.IsBackupFile(file))
+					LevelHandling.UpdatePrj2GameSettings(file, _targetProject, dataFileName);
 
 				progressBar.Increment(1);
 			}
@@ -313,10 +302,10 @@ namespace TombIDE.ProjectMaster
 
 			foreach (string file in Directory.GetFiles(textBox_Prj2Path.Text, "*.prj2", SearchOption.TopDirectoryOnly))
 			{
-				if (ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+				if (Prj2Helper.IsBackupFile(file))
 					continue;
 
-				DarkTreeNode node = new DarkTreeNode
+				var node = new DarkTreeNode
 				{
 					Text = Path.GetFileName(file),
 					Tag = file,
@@ -347,7 +336,7 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+			SharedMethods.OpenInExplorer(Path.Combine(_targetProject.GetEngineRootDirectoryPath(), "audio"));
 
 		#endregion Script section generating
 	}
