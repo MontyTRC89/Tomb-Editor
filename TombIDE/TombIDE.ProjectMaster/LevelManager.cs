@@ -1,8 +1,11 @@
 ﻿using DarkUI.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
@@ -53,8 +56,8 @@ namespace TombIDE.ProjectMaster
 			section_LevelProperties.Initialize(ide);
 
 			// Initialize the watchers
-			prj2FileWatcher.Path = _ide.Project.LevelsPath;
-			levelFolderWatcher.Path = _ide.Project.LevelsPath;
+			prj2FileWatcher.Path = _ide.Project.LevelsDirectoryPath;
+			levelFolderWatcher.Path = _ide.Project.LevelsDirectoryPath;
 		}
 
 		// Deleting .prj2 files is critical, so watch out
@@ -76,7 +79,9 @@ namespace TombIDE.ProjectMaster
 
 		private void button_RebuildAll_Click(object sender, System.EventArgs e)
 		{
-			if (_ide.Project.Levels.Count == 0)
+			LevelProject[] levels = _ide.Project.GetAllValidLevelProjects();
+
+			if (levels.Length == 0)
 			{
 				DarkMessageBox.Show(this,
 					"There are no levels in the current project.",
@@ -85,16 +90,16 @@ namespace TombIDE.ProjectMaster
 				return;
 			}
 
-			BatchCompileList batchList = new BatchCompileList();
+			var batchList = new BatchCompileList();
 
-			foreach (ProjectLevel level in _ide.Project.Levels)
+			foreach (ILevelProject level in levels)
 			{
 				string prj2Path;
 
-				if (level.SpecificFile == "$(LatestFile)")
-					prj2Path = Path.Combine(level.FolderPath, level.GetLatestPrj2File());
+				if (level.TargetPrj2FileName is null)
+					prj2Path = Path.Combine(level.DirectoryPath, level.GetMostRecentlyModifiedPrj2FileName());
 				else
-					prj2Path = Path.Combine(level.FolderPath, level.SpecificFile);
+					prj2Path = Path.Combine(level.DirectoryPath, level.TargetPrj2FileName);
 
 				batchList.Files.Add(prj2Path);
 			}
@@ -102,10 +107,12 @@ namespace TombIDE.ProjectMaster
 			string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
 			BatchCompileList.SaveToXml(batchListFilePath, batchList);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-				Arguments = "\"" + batchListFilePath + "\""
+				Arguments = "\"" + batchListFilePath + "\"",
+				WorkingDirectory = DefaultPaths.ProgramDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

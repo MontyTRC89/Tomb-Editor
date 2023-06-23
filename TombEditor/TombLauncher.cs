@@ -37,7 +37,8 @@ namespace TombEditor
                 {
                     WorkingDirectory = Path.GetDirectoryName(executablePath),
                     FileName = executablePath,
-                    Arguments = arguments
+                    Arguments = arguments,
+                    UseShellExecute = true
                 };
 
                 // Start the game (i.e. "tomb4.exe")

@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -15,7 +15,7 @@ namespace TombIDE
 {
 	public partial class FormProjectSetup : DarkForm
 	{
-		public Project CreatedProject { get; private set; }
+		public IGameProject CreatedProject { get; private set; }
 
 		public string _musicZipFilePath;
 
@@ -77,35 +77,29 @@ namespace TombIDE
 
 		private void button_BrowseProject_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new BrowseFolderDialog())
-			{
-				dialog.Title = "Choose where you want to install your project";
+			using var dialog = new BrowseFolderDialog();
+			dialog.Title = "Choose where you want to install your project";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim()));
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				textBox_ProjectPath.Text = Path.Combine(dialog.Folder, PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim()));
 		}
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new BrowseFolderDialog())
-			{
-				dialog.Title = "Choose a custom /Script/ folder for your project";
+			using var dialog = new BrowseFolderDialog();
+			dialog.Title = "Choose a custom /Script/ folder for your project";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_ScriptPath.Text = dialog.Folder;
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				textBox_ScriptPath.Text = dialog.Folder;
 		}
 
 		private void button_BrowseLevels_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new BrowseFolderDialog())
-			{
-				dialog.Title = "Choose a custom /Levels/ folder for your project";
+			using var dialog = new BrowseFolderDialog();
+			dialog.Title = "Choose a custom /Levels/ folder for your project";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_LevelsPath.Text = dialog.Folder;
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				textBox_LevelsPath.Text = dialog.Folder;
 		}
 
 		private void button_Next_Click(object sender, EventArgs e)
@@ -133,7 +127,7 @@ namespace TombIDE
 
 				tableLayoutPanel_Content02.Controls.Clear();
 
-				if (comboBox_EngineType.SelectedIndex == 1 || comboBox_EngineType.SelectedIndex == 6)
+				if (comboBox_EngineType.SelectedIndex is 1 or 6)
 				{
 					tableLayoutPanel_Content02.Controls.Add(panel_LevelsRadioChoice, 0, 0);
 					tableLayoutPanel_Content02.Controls.Add(progressBar, 0, 4);
@@ -231,49 +225,47 @@ namespace TombIDE
 
 						if (result == DialogResult.Yes)
 						{
-							using (var dialog = new BrowseFolderDialog())
+							using var dialog = new BrowseFolderDialog();
+							string gameName = comboBox_EngineType.SelectedIndex == 2 ? "Tomb Raider 2" : "Tomb Raider 3";
+
+							dialog.Title = $"Select an original {gameName} /audio/ folder.";
+
+							if (dialog.ShowDialog(this) == DialogResult.OK)
 							{
-								string gameName = comboBox_EngineType.SelectedIndex == 2 ? "Tomb Raider 2" : "Tomb Raider 3";
+								var directory = new DirectoryInfo(dialog.Folder);
+								FileInfo[] files = directory.GetFiles();
 
-								dialog.Title = $"Select an original {gameName} /audio/ folder.";
+								string audioDir = Path.Combine(enginePath, "audio");
 
-								if (dialog.ShowDialog(this) == DialogResult.OK)
+								switch (comboBox_EngineType.SelectedIndex)
 								{
-									var directory = new DirectoryInfo(dialog.Folder);
-									FileInfo[] files = directory.GetFiles();
+									case 2:
+										_cdaudioDatFile = Array.Find(files, x => x.Name.Equals("cdaudio.dat", StringComparison.OrdinalIgnoreCase));
 
-									string audioDir = Path.Combine(enginePath, "audio");
+										if (_cdaudioDatFile == null)
+											throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.dat file.");
 
-									switch (comboBox_EngineType.SelectedIndex)
-									{
-										case 2:
-											_cdaudioDatFile = Array.Find(files, x => x.Name.Equals("cdaudio.dat", StringComparison.OrdinalIgnoreCase));
+										_cdaudioMp3File = Array.Find(files, x => x.Name.Equals("cdaudio.mp3", StringComparison.OrdinalIgnoreCase));
 
-											if (_cdaudioDatFile == null)
-												throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.dat file.");
+										if (_cdaudioMp3File == null)
+											throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.mp3 file.");
 
-											_cdaudioMp3File = Array.Find(files, x => x.Name.Equals("cdaudio.mp3", StringComparison.OrdinalIgnoreCase));
+										break;
 
-											if (_cdaudioMp3File == null)
-												throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.mp3 file.");
+									case 3:
+										_cdaudioWadFile = Array.Find(files, x => x.Name.Equals("cdaudio.wad", StringComparison.OrdinalIgnoreCase));
 
-											break;
+										if (_cdaudioWadFile == null)
+											throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.wad file.");
 
-										case 3:
-											_cdaudioWadFile = Array.Find(files, x => x.Name.Equals("cdaudio.wad", StringComparison.OrdinalIgnoreCase));
-
-											if (_cdaudioWadFile == null)
-												throw new ArgumentException("Selected /audio/ folder doesn't have a valid cdaudio.wad file.");
-
-											break;
-									}
+										break;
 								}
-								else
-								{
-									button_Create.Enabled = true;
-									DialogResult = DialogResult.None;
-									return;
-								}
+							}
+							else
+							{
+								button_Create.Enabled = true;
+								DialogResult = DialogResult.None;
+								return;
 							}
 						}
 						else if (result == DialogResult.Cancel)
@@ -305,7 +297,7 @@ namespace TombIDE
 					throw new ArgumentException("Selected /Levels/ folder is not empty.");
 
 				// Create the Project instance
-				Project createdProject = CreateNewProject(projectName, projectPath, enginePath, scriptPath, levelsPath);
+				IGameProject createdProject = CreateNewProject(projectName, projectPath, scriptPath, levelsPath);
 
 				switch (createdProject.GameVersion)
 				{
@@ -343,7 +335,7 @@ namespace TombIDE
 
 		#region Methods
 
-		private Project CreateNewProject(string projectName, string projectPath, string enginePath, string scriptPath, string levelsPath)
+		private IGameProject CreateNewProject(string projectName, string projectPath, string scriptPath, string levelsPath)
 		{
 			TRVersion.Game gameVersion = 0;
 
@@ -357,33 +349,23 @@ namespace TombIDE
 				case 6: gameVersion = TRVersion.Game.TombEngine; break;
 			}
 
-			string launchFilePath = Path.Combine(projectPath, "PLAY.exe");
+			string launcherFilePath = Path.Combine(projectPath, "PLAY.exe");
 
-			var project = new Project
+			IGameProject gameProject = gameVersion switch
 			{
-				Name = projectName,
-				GameVersion = gameVersion,
-				DefaultLanguage = GameLanguage.English,
-				LaunchFilePath = launchFilePath,
-				ProjectPath = projectPath,
-				EnginePath = enginePath,
-				EngineExecutableDirectory = enginePath,
-				ScriptPath = scriptPath,
-				LevelsPath = levelsPath
+				TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectPath, levelsPath),
+				TRVersion.Game.TR2 => new TR2GameProject(projectName, projectPath, levelsPath, scriptPath),
+				TRVersion.Game.TR3 => new TR3GameProject(projectName, projectPath, levelsPath, scriptPath),
+				TRVersion.Game.TR4 => new TR4GameProject(projectName, projectPath, levelsPath, scriptPath),
+				TRVersion.Game.TRNG => new TRNGGameProject(projectName, projectPath, levelsPath, scriptPath, Path.Combine(projectPath, "Plugins")),
+				TRVersion.Game.TombEngine => new TENGameProject(projectName, projectPath, levelsPath),
+				_ => throw new NotImplementedException()
 			};
 
-			if (project.GameVersion == TRVersion.Game.TombEngine)
-			{
-				if (Environment.Is64BitOperatingSystem)
-					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x64");
-				else
-					project.EngineExecutableDirectory = Path.Combine(project.EnginePath, "Bin", "x86");
-			}
-
-			return project;
+			return gameProject;
 		}
 
-		private void InstallTR1Engine(Project targetProject)
+		private void InstallTR1Engine(IGameProject targetProject)
 		{
 			progressBar.Maximum = 1;
 
@@ -392,22 +374,22 @@ namespace TombIDE
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 				ExtractEntries(engineArchive.Entries.ToList(), targetProject);
 
-			string musicDir = Path.Combine(targetProject.EnginePath, "music");
+			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
+			string musicDir = Path.Combine(engineRootDirectory, "music");
 
 			if (!Directory.Exists(musicDir))
 				Directory.CreateDirectory(musicDir);
 
 			if (_musicZipFilePath != null)
 			{
-				using (var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath)))
+				using var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath));
+
+				foreach (ZipArchiveEntry entry in musicArchive.Entries)
 				{
-					foreach (ZipArchiveEntry entry in musicArchive.Entries)
-					{
-						if (entry.FullName.EndsWith("/"))
-							Directory.CreateDirectory(Path.Combine(targetProject.EnginePath, entry.FullName));
-						else
-							entry.ExtractToFile(Path.Combine(targetProject.EnginePath, entry.FullName));
-					}
+					if (entry.FullName.EndsWith("/"))
+						Directory.CreateDirectory(Path.Combine(engineRootDirectory, entry.FullName));
+					else
+						entry.ExtractToFile(Path.Combine(engineRootDirectory, entry.FullName));
 				}
 			}
 
@@ -415,7 +397,7 @@ namespace TombIDE
 			progressBar.Increment(1);
 		}
 
-		private void InstallTR2Engine(Project targetProject)
+		private void InstallTR2Engine(IGameProject targetProject)
 		{
 			progressBar.Maximum = 1;
 
@@ -426,7 +408,7 @@ namespace TombIDE
 
 			if (_cdaudioDatFile != null && _cdaudioMp3File != null)
 			{
-				string audioDir = Path.Combine(targetProject.EnginePath, "audio");
+				string audioDir = Path.Combine(targetProject.GetEngineRootDirectoryPath(), "audio");
 
 				_cdaudioDatFile.CopyTo(Path.Combine(audioDir, _cdaudioDatFile.Name));
 				_cdaudioMp3File.CopyTo(Path.Combine(audioDir, _cdaudioMp3File.Name));
@@ -436,7 +418,7 @@ namespace TombIDE
 			progressBar.Increment(1);
 		}
 
-		private void InstallTR3Engine(Project targetProject)
+		private void InstallTR3Engine(IGameProject targetProject)
 		{
 			progressBar.Maximum = 1;
 
@@ -447,7 +429,7 @@ namespace TombIDE
 
 			if (_cdaudioWadFile != null)
 			{
-				string audioDir = Path.Combine(targetProject.EnginePath, "audio");
+				string audioDir = Path.Combine(targetProject.GetEngineRootDirectoryPath(), "audio");
 				_cdaudioWadFile.CopyTo(Path.Combine(audioDir, _cdaudioWadFile.Name));
 			}
 
@@ -455,7 +437,7 @@ namespace TombIDE
 			progressBar.Increment(1);
 		}
 
-		private void InstallTR4Engine(Project targetProject)
+		private void InstallTR4Engine(IGameProject targetProject)
 		{
 			progressBar.Maximum = 1;
 
@@ -479,7 +461,7 @@ namespace TombIDE
 			progressBar.Increment(1);
 		}
 
-		private void InstallTRNGEngine(Project targetProject, bool includeFLEP)
+		private void InstallTRNGEngine(IGameProject targetProject, bool includeFLEP)
 		{
 			progressBar.Maximum = 1;
 
@@ -508,7 +490,7 @@ namespace TombIDE
 			progressBar.Increment(1);
 		}
 
-		private void InstallTENEngine(Project targetProject)
+		private void InstallTENEngine(IGameProject targetProject)
 		{
 			const int extraSteps = 2;
 			progressBar.Maximum = 1 + extraSteps;
@@ -526,34 +508,36 @@ namespace TombIDE
 				ExtractEntries(allFiles, targetProject);
 			}
 
-			Directory.Move(Path.Combine(targetProject.EnginePath, "audio"), Path.Combine(targetProject.EnginePath, "audio_temp"));
+			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
+
+			Directory.Move(Path.Combine(engineRootDirectory, "audio"), Path.Combine(engineRootDirectory, "audio_temp"));
 			progressBar.Increment(1);
 
-			Directory.Move(Path.Combine(targetProject.EnginePath, "audio_temp"), Path.Combine(targetProject.EnginePath, "Audio"));
+			Directory.Move(Path.Combine(engineRootDirectory, "audio_temp"), Path.Combine(engineRootDirectory, "Audio"));
 			progressBar.Increment(1);
-
-			if (!Directory.Exists(targetProject.EngineExecutableDirectory))
-				targetProject.EngineExecutableDirectory = targetProject.EnginePath; // Legacy project structure support
 
 			targetProject.Save();
 			progressBar.Increment(1);
 		}
 
-		private void AddLauncherToProject(Project targetProject)
+		private void AddLauncherToProject(IGameProject targetProject)
 		{
 			string sharedLauncherFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "PLAY.exe");
 			string sharedSplashPropertiesFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "splash.xml");
 
+			string launcherFile = Path.Combine(targetProject.DirectoryPath, "PLAY.exe");
+			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
+
 			// Copy launcher to project
-			File.Copy(sharedLauncherFilePath, targetProject.LaunchFilePath, true);
-			File.Copy(sharedSplashPropertiesFilePath, Path.Combine(targetProject.EnginePath, "splash.xml"), true);
+			File.Copy(sharedLauncherFilePath, launcherFile, true);
+			File.Copy(sharedSplashPropertiesFilePath, Path.Combine(engineRootDirectory, "splash.xml"), true);
 
 			// Apply icon to launcher
 			string icoFilePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Defaults", "Game Icons", targetProject.GameVersion + ".ico");
-			IconUtilities.InjectIcon(targetProject.LaunchFilePath, icoFilePath);
+			IconUtilities.InjectIcon(launcherFile, icoFilePath);
 		}
 
-		private void ExtractEntries(List<ZipArchiveEntry> entries, Project targetProject)
+		private void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
 		{
 			progressBar.Maximum += entries.Count;
 
@@ -561,13 +545,13 @@ namespace TombIDE
 			{
 				if (entry.FullName.EndsWith("/"))
 				{
-					string dirPath = Path.Combine(targetProject.ProjectPath, entry.FullName);
+					string dirPath = Path.Combine(targetProject.DirectoryPath, entry.FullName);
 
 					if (!Directory.Exists(dirPath))
 						Directory.CreateDirectory(dirPath);
 				}
 				else
-					entry.ExtractToFile(Path.Combine(targetProject.ProjectPath, entry.FullName), true);
+					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
 
 				progressBar.Increment(1);
 			}

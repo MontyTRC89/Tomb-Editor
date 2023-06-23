@@ -460,7 +460,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void CopyNodeScripts()
         {
-            var scriptDirectory = Path.Combine(Path.GetDirectoryName(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)), 
+            var scriptDirectory = Path.Combine(_level.Settings.MakeAbsolute(_level.Settings.GameDirectory), 
                                                ScriptingUtils.GameNodeScriptPath);
 
             if (!Directory.Exists(ScriptingUtils.NodeScriptPath))
@@ -470,7 +470,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             if (!Directory.Exists(scriptDirectory))
-                Directory.CreateDirectory(scriptDirectory);
+			{
+				Directory.CreateDirectory(scriptDirectory);
+			}
             else
             {
                 foreach (var file in Directory.GetFiles(scriptDirectory))
@@ -490,7 +492,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     File.SetAttributes(dest, FileAttributes.Normal);
 
                 File.Copy(src, dest, true);
-                File.SetAttributes(dest, FileAttributes.ReadOnly);
             });
         }
 

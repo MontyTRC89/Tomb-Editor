@@ -45,6 +45,8 @@
 	</Item>
 
 	<Item LangKey="Help" Position="5">
+		<Item LangKey="ScriptingDocumentation" Command="ScriptingDocumentation" />
+		<Separator />
 		<Item LangKey="About" Command="About" Icon="About_16" />
 	</Item>
 </Items>

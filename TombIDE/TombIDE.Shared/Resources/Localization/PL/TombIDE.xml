@@ -87,6 +87,9 @@
 	<ToolStrip>Pasek narzędzi</ToolStrip>
 	<StatusStrip>Pasek stanu</StatusStrip>
 
+	<ScriptingDocumentation>Dokumentacja skryptowania...</ScriptingDocumentation>
+	<Tomb3ExtraCommands>Dodatkowe komendy tomb3...</Tomb3ExtraCommands>
+	<LuaBasics>Podstawy języka Lua...</LuaBasics>
 	<About>O TombIDE...</About>
 
 	<TypeFirstAvailableId>Podaj pierwszy dostępny indeks</TypeFirstAvailableId>

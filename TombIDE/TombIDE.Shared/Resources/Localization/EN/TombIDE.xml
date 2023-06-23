@@ -87,6 +87,9 @@
 	<ToolStrip>Tool Strip</ToolStrip>
 	<StatusStrip>Status Strip</StatusStrip>
 
+	<ScriptingDocumentation>Scripting Documentation...</ScriptingDocumentation>
+	<Tomb3ExtraCommands>tomb3 Extra Commands...</Tomb3ExtraCommands>
+	<LuaBasics>Lua Basics...</LuaBasics>
 	<About>About...</About>
 
 	<TypeFirstAvailableId>Type First Available ID if Applicable</TypeFirstAvailableId>

@@ -24,7 +24,7 @@ namespace TombIDE.ProjectMaster
 		{
 			base.OnShown(e);
 
-			textBox_NewName.Text = Path.GetFileNameWithoutExtension(_ide.Project.LaunchFilePath);
+			textBox_NewName.Text = Path.GetFileNameWithoutExtension(_ide.Project.GetLauncherFilePath());
 			textBox_NewName.SelectAll();
 		}
 
@@ -36,21 +36,18 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
+				string launcherFilePath = _ide.Project.GetLauncherFilePath();
 				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(newName))
 					throw new ArgumentException("Invalid file name.");
 
-				if (newName == Path.GetFileName(_ide.Project.LaunchFilePath))
+				if (newName == Path.GetFileNameWithoutExtension(launcherFilePath))
 					DialogResult = DialogResult.Cancel;
 				else
 				{
-					string newPath = Path.Combine(Path.GetDirectoryName(_ide.Project.LaunchFilePath), newName + ".exe");
-
-					File.Move(_ide.Project.LaunchFilePath, newPath);
-
-					_ide.Project.LaunchFilePath = newPath;
-					_ide.Project.Save();
+					string newPath = Path.Combine(Path.GetDirectoryName(launcherFilePath), newName + ".exe");
+					File.Move(launcherFilePath, newPath);
 				}
 			}
 			catch (Exception ex)

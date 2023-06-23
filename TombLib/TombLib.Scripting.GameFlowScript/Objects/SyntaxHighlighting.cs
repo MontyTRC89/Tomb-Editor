@@ -40,6 +40,17 @@ namespace TombLib.Scripting.GameFlowScript.Objects
 
 				ruleSet.Rules.Add(new HighlightingRule
 				{
+					Regex = new Regex(Patterns.BlockComments),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
+						FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
+					}
+				});
+
+				ruleSet.Rules.Add(new HighlightingRule
+				{
 					Regex = new Regex(Patterns.Sections, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{

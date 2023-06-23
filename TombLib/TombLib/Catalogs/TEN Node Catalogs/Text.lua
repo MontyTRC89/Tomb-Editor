@@ -7,8 +7,8 @@
 
 LevelFuncs.Engine.Node.DrawText = function(text, x, y, center, shadow, color)
 
-	local string = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
-	TEN.Strings.ShowString(string, 1 / 30)
+	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
+	TEN.Strings.ShowString(str, 1 / 30)
 end
 
 -- !Name "Draw text for a time span"
@@ -21,6 +21,23 @@ end
 
 LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, center, shadow, color)
 
-	local string = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
-	TEN.Strings.ShowString(string, time)
+	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
+	TEN.Strings.ShowString(str, time)
+end
+
+-- !Name "Draw subtitle for the voice track"
+-- !Section "Text"
+-- !Description "If voice track is active and subtitle file with the same name as voice track exists in same folder, try to display a subtitle."
+-- !Arguments "NewLine, Numerical, 20, X position, [ 0 | 100 ]" "Numerical, 20, Y position, [ 0 | 100 ]" 
+-- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 20, Text color"
+
+LevelFuncs.Engine.Node.DrawSubtitle = function(x, y, center, shadow, color)
+
+	local text = Misc.GetCurrentSubtitle()
+	
+	if (text ~= nil) then
+		local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, center, shadow, color)
+		TEN.Strings.ShowString(str, 1 / 30)
+	end
+	
 end

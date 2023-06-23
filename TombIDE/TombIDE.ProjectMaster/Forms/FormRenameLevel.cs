@@ -20,7 +20,7 @@ namespace TombIDE.ProjectMaster
 			InitializeComponent();
 
 			// Disable renaming external level folders (level folders which are outside of the project's /Levels/ folder)
-			if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+			if (_ide.SelectedLevel.IsExternal(_ide.Project.LevelsDirectoryPath))
 			{
 				checkBox_RenameDirectory.Text = "Can't rename external level folders";
 				checkBox_RenameDirectory.Checked = false;
@@ -38,9 +38,10 @@ namespace TombIDE.ProjectMaster
 					label_LanguageError.Visible = true;
 				}
 			}
-			else if (_ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR1
-				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR2
-				|| _ide.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3)
+			else if (_ide.Project.GameVersion
+				is TombLib.LevelData.TRVersion.Game.TR1
+				or TombLib.LevelData.TRVersion.Game.TR2
+				or TombLib.LevelData.TRVersion.Game.TR3)
 			{
 				checkBox_RenameScriptEntry.Text = "Rename script entry as well (Recommended)";
 
@@ -109,9 +110,12 @@ namespace TombIDE.ProjectMaster
 				if (newName == _ide.SelectedLevel.Name)
 				{
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
-					if (Path.GetFileName(_ide.SelectedLevel.FolderPath) != newName && renameDirectory)
+					if (Path.GetFileName(_ide.SelectedLevel.DirectoryPath) != newName && renameDirectory)
 					{
-						HandleDirectoryRenaming();
+						string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath), newName);
+
+						if (Directory.Exists(newDirectory))
+							throw new ArgumentException("A directory with the same name already exists in the parent directory.");
 
 						_ide.SelectedLevel.Rename(newName, true);
 						_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
@@ -121,23 +125,10 @@ namespace TombIDE.ProjectMaster
 				}
 				else
 				{
-					// Check if a level with the same name already exists on the list
-					foreach (ProjectLevel projectLevel in _ide.Project.Levels)
-					{
-						if (projectLevel.Name.ToLower() == newName.ToLower())
-						{
-							// Check if the level we found IS the current _ide.SelectedLevel
-							if (projectLevel.FolderPath.ToLower() == _ide.SelectedLevel.FolderPath.ToLower())
-							{
-								if (renameDirectory)
-									HandleDirectoryRenaming();
+					string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath), newName);
 
-								break;
-							}
-							else
-								throw new ArgumentException("A level with the same name already exists on the list.");
-						}
-					}
+					if (renameDirectory && Directory.Exists(newDirectory) && !newDirectory.Equals(_ide.SelectedLevel.DirectoryPath, StringComparison.OrdinalIgnoreCase))
+						throw new ArgumentException("A directory with the same name already exists in the parent directory.");
 
 					if (renameScriptEntry)
 						_ide.ScriptEditor_RenameLevel(_ide.SelectedLevel.Name, newName);
@@ -159,10 +150,10 @@ namespace TombIDE.ProjectMaster
 			textBoxContent = LevelHandling.RemoveIllegalNameSymbols(textBoxContent);
 
 			// If the name hasn't changed, but the level folder name is different
-			if (textBoxContent == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) != textBoxContent)
+			if (textBoxContent == _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.DirectoryPath) != textBoxContent)
 			{
 				// If the level is not an external level
-				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+				if (!_ide.SelectedLevel.IsExternal(_ide.Project.LevelsDirectoryPath))
 				{
 					checkBox_RenameDirectory.Enabled = true;
 					checkBox_RenameDirectory.Checked = true;
@@ -172,7 +163,7 @@ namespace TombIDE.ProjectMaster
 				checkBox_RenameScriptEntry.Enabled = false;
 			}
 			// If the name changed, but the level folder name is the same
-			else if (textBoxContent != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.FolderPath) == textBoxContent)
+			else if (textBoxContent != _ide.SelectedLevel.Name && Path.GetFileName(_ide.SelectedLevel.DirectoryPath) == textBoxContent)
 			{
 				checkBox_RenameDirectory.Checked = false;
 				checkBox_RenameDirectory.Enabled = false;
@@ -196,7 +187,7 @@ namespace TombIDE.ProjectMaster
 			else // Basically every other scenario
 			{
 				// If the level is not an external level
-				if (_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
+				if (!_ide.SelectedLevel.IsExternal(_ide.Project.LevelsDirectoryPath))
 				{
 					checkBox_RenameDirectory.Enabled = true;
 					checkBox_RenameDirectory.Checked = true;
@@ -214,19 +205,5 @@ namespace TombIDE.ProjectMaster
 		}
 
 		#endregion Events
-
-		#region Methods
-
-		private void HandleDirectoryRenaming()
-		{
-			// Allow renaming directories to the same name, but with different letter cases
-			// To do that, we must add a "_TEMP" suffix at the end of the directory name
-			// _ide.SelectedLevel.Rename() will then handle the rest
-
-			string tempPath = _ide.SelectedLevel.FolderPath + "_TEMP";
-			Directory.Move(_ide.SelectedLevel.FolderPath, tempPath);
-		}
-
-		#endregion Methods
 	}
 }

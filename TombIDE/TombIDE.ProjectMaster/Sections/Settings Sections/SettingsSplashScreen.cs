@@ -24,7 +24,7 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
+			if (_ide.Project.DirectoryPath.Equals(_ide.Project.GetEngineRootDirectoryPath(), StringComparison.OrdinalIgnoreCase))
 			{
 				label_NotSupported.Visible = true;
 
@@ -42,7 +42,8 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Preview_Click(object sender, EventArgs e)
 		{
-			string originalFileName = FileVersionInfo.GetVersionInfo(_ide.Project.LaunchFilePath).OriginalFilename;
+			string launcherExecutable = _ide.Project.GetLauncherFilePath();
+			string originalFileName = FileVersionInfo.GetVersionInfo(launcherExecutable).OriginalFilename;
 
 			if (!originalFileName.Equals("launch.exe", StringComparison.OrdinalIgnoreCase))
 			{
@@ -52,8 +53,10 @@ namespace TombIDE.ProjectMaster
 
 			var startInfo = new ProcessStartInfo
 			{
-				FileName = _ide.Project.LaunchFilePath,
-				Arguments = "-p"
+				FileName = launcherExecutable,
+				Arguments = "-p",
+				WorkingDirectory = Path.GetDirectoryName(launcherExecutable),
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);
@@ -61,13 +64,11 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new OpenFileDialog())
-			{
-				dialog.Filter = "Bitmap Files|*.bmp";
+			using var dialog = new OpenFileDialog();
+			dialog.Filter = "Bitmap Files|*.bmp";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					ReplaceImage(dialog.FileName);
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				ReplaceImage(dialog.FileName);
 		}
 
 		private void button_Remove_Click(object sender, EventArgs e)
@@ -79,7 +80,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string splashImagePath = Path.Combine(_ide.Project.EnginePath, "splash.bmp");
+					string splashImagePath = Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "splash.bmp");
 
 					if (File.Exists(splashImagePath))
 						File.Delete(splashImagePath);
@@ -101,18 +102,17 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				using (Image image = Image.FromFile(imagePath))
+				using var image = Image.FromFile(imagePath);
+
+				if ((image.Width == 1024 && image.Height == 512) ||
+					(image.Width == 768 && image.Height == 384) ||
+					(image.Width == 512 && image.Height == 256))
 				{
-					if ((image.Width == 1024 && image.Height == 512)
-						|| (image.Width == 768 && image.Height == 384)
-						|| (image.Width == 512 && image.Height == 256))
-					{
-						File.Copy(imagePath, Path.Combine(_ide.Project.EnginePath, "splash.bmp"), true);
-						UpdatePreview();
-					}
-					else
-						throw new ArgumentException("Wrong image size.");
+					File.Copy(imagePath, Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "splash.bmp"), true);
+					UpdatePreview();
 				}
+				else
+					throw new ArgumentException("Wrong image size.");
 			}
 			catch (Exception ex)
 			{
@@ -124,22 +124,22 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string splashImagePath = Path.Combine(_ide.Project.EnginePath, "splash.bmp");
+				string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+				string splashImagePath = Path.Combine(engineDirectory, "splash.bmp");
 
 				if (File.Exists(splashImagePath))
 				{
-					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "splash.bmp")))
+					using var image = Image.FromFile(Path.Combine(engineDirectory, "splash.bmp"));
+
+					if ((image.Width == 1024 && image.Height == 512) ||
+						(image.Width == 768 && image.Height == 384) ||
+						(image.Width == 512 && image.Height == 256))
 					{
-						if ((image.Width == 1024 && image.Height == 512)
-							|| (image.Width == 768 && image.Height == 384)
-							|| (image.Width == 512 && image.Height == 256))
-						{
-							panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 460, 230);
-							label_Blank.Visible = false;
-						}
-						else
-							label_Blank.Visible = true;
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 460, 230);
+						label_Blank.Visible = false;
 					}
+					else
+						label_Blank.Visible = true;
 				}
 				else
 					label_Blank.Visible = true;

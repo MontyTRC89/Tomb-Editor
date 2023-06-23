@@ -37,6 +37,8 @@
 	</Item>
 
 	<Item LangKey="Help" Position="5">
+		<Item LangKey="LuaBasics" Command="LuaBasics" />
+		<Separator />
 		<Item LangKey="About" Command="About" Icon="About_16" />
 	</Item>
 </Items>

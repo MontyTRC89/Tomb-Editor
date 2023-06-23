@@ -46,8 +46,8 @@
             this.panelColor = new DarkUI.Controls.DarkPanel();
             this.tabList = new System.Windows.Forms.TabPage();
             this.cbList = new TombLib.Controls.DarkSearchableComboBox();
-            this.panelLocate = new DarkUI.Controls.DarkPanel();
-            this.butLocate = new DarkUI.Controls.DarkButton();
+            this.panelAction = new DarkUI.Controls.DarkPanel();
+            this.butAction = new DarkUI.Controls.DarkButton();
             this.container.SuspendLayout();
             this.tabBoolean.SuspendLayout();
             this.tabNumerical.SuspendLayout();
@@ -61,7 +61,7 @@
             this.panelMultiline.SuspendLayout();
             this.tabColor.SuspendLayout();
             this.tabList.SuspendLayout();
-            this.panelLocate.SuspendLayout();
+            this.panelAction.SuspendLayout();
             this.SuspendLayout();
             // 
             // container
@@ -315,7 +315,7 @@
             // tabList
             // 
             this.tabList.Controls.Add(this.cbList);
-            this.tabList.Controls.Add(this.panelLocate);
+            this.tabList.Controls.Add(this.panelAction);
             this.tabList.Location = new System.Drawing.Point(4, 22);
             this.tabList.Margin = new System.Windows.Forms.Padding(1);
             this.tabList.Name = "tabList";
@@ -336,26 +336,26 @@
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
             this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
             this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.cbList_DragEnter);
-            // 
-            // panelLocate
-            // 
-            this.panelLocate.Controls.Add(this.butLocate);
-            this.panelLocate.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelLocate.Location = new System.Drawing.Point(406, 0);
-            this.panelLocate.Name = "panelLocate";
-            this.panelLocate.Size = new System.Drawing.Size(24, 23);
-            this.panelLocate.TabIndex = 1;
-            // 
-            // butLocate
-            // 
-            this.butLocate.Checked = false;
-            this.butLocate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butLocate.Image = global::TombLib.Properties.Resources.general_target_16;
-            this.butLocate.Location = new System.Drawing.Point(0, 0);
-            this.butLocate.Name = "butLocate";
-            this.butLocate.Size = new System.Drawing.Size(24, 23);
-            this.butLocate.TabIndex = 0;
-            this.butLocate.Click += new System.EventHandler(this.butLocate_Click);
+			// 
+			// panelAction
+			// 
+			this.panelAction.Controls.Add(this.butAction);
+            this.panelAction.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelAction.Location = new System.Drawing.Point(406, 0);
+            this.panelAction.Name = "panelAction";
+            this.panelAction.Size = new System.Drawing.Size(24, 23);
+            this.panelAction.TabIndex = 1;
+			// 
+			// butAction
+			// 
+			this.butAction.Checked = false;
+            this.butAction.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butAction.Image = global::TombLib.Properties.Resources.general_target_16;
+            this.butAction.Location = new System.Drawing.Point(0, 0);
+            this.butAction.Name = "butAction";
+            this.butAction.Size = new System.Drawing.Size(24, 23);
+            this.butAction.TabIndex = 0;
+            this.butAction.Click += new System.EventHandler(this.butAction_Click);
             // 
             // ArgumentEditor
             // 
@@ -380,7 +380,7 @@
             this.panelMultiline.ResumeLayout(false);
             this.tabColor.ResumeLayout(false);
             this.tabList.ResumeLayout(false);
-            this.panelLocate.ResumeLayout(false);
+            this.panelAction.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -402,8 +402,8 @@
         private DarkUI.Controls.DarkTextBox tbString;
         private DarkUI.Controls.DarkPanel panelColor;
         private DarkSearchableComboBox cbList;
-        private DarkUI.Controls.DarkPanel panelLocate;
-        private DarkUI.Controls.DarkButton butLocate;
+        private DarkUI.Controls.DarkPanel panelAction;
+        private DarkUI.Controls.DarkButton butAction;
         private DarkUI.Controls.DarkCheckBox cbBool;
         private DarkUI.Controls.DarkPanel panelMultiline;
         private DarkUI.Controls.DarkButton butMultiline;

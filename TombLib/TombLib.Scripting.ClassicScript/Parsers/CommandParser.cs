@@ -188,7 +188,12 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			// Search in PluginMnemonics
 			foreach (PluginConstant pluginMnemonic in MnemonicData.PluginConstants)
 				if (pluginMnemonic.FlagName.Equals(key, StringComparison.OrdinalIgnoreCase))
-					return Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
+				{
+					string[] parts = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase);
+
+					if (parts.Length > 1)
+						return parts[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
+				}
 
 			return null;
 		}

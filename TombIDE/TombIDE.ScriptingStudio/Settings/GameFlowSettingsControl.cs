@@ -9,7 +9,6 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using TombLib.Scripting;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Objects;
 using TombLib.Scripting.Objects;
@@ -194,7 +193,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.GameFlowColorConfigsDirectory
+				Arguments = DefaultPaths.GameFlowColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);
