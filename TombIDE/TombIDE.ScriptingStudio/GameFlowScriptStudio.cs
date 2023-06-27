@@ -163,10 +163,26 @@ namespace TombIDE.ScriptingStudio
 
 			try
 			{
-				bool success = ScriptCompiler.Compile(
-					ScriptRootDirectoryPath, EngineDirectoryPath,
-					IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
-					IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				string engineExecutable = IDE.Global.Project.GetEngineExecutableFilePath();
+				var fileVersionInfo = FileVersionInfo.GetVersionInfo(engineExecutable);
+				var productVersion = new Version(fileVersionInfo.ProductVersion ?? "0.0");
+
+				bool success;
+
+				if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
+					&& productVersion >= new Version(2, 0, 0, 0))
+				{
+					success = ScriptCompiler.CompileTR3Version2Plus(
+						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
+						IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				}
+				else
+				{
+					success = ScriptCompiler.ClassicCompile(
+						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
+						IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
+						IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				}
 
 				if (success)
 					CompilerLogs.UpdateLogs("Script compiled successfully!");
