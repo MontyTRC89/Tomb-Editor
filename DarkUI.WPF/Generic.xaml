@@ -10,7 +10,7 @@
 		<ResourceDictionary Source="Styles/ComboBox.xaml" />
 		<ResourceDictionary Source="Styles/GroupBox.xaml" />
 		<ResourceDictionary Source="Styles/Label.xaml" />
-		<ResourceDictionary Source="Styles/ListView.xaml" />
+		<ResourceDictionary Source="Styles/ListBox.xaml" />
 		<ResourceDictionary Source="Styles/Menu.xaml" />
 		<ResourceDictionary Source="Styles/NumericUpDown.xaml" />
 		<ResourceDictionary Source="Styles/RadioButton.xaml" />
