@@ -10,6 +10,7 @@
 		<Setter Property="ScrollViewer.PanningMode" Value="Both" />
 		<Setter Property="Stylus.IsFlicksEnabled" Value="False" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="AlternationCount" Value="2" />
 
 		<Setter Property="Template">
 			<Setter.Value>
@@ -85,6 +86,12 @@
 						</MultiTrigger>
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter TargetName="Bd" Property="TextElement.Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+						</Trigger>
+						<Trigger Property="ItemsControl.AlternationIndex" Value="0">
+							<Setter Property="Background" Value="{DynamicResource HeaderBackground}" />
+						</Trigger>
+						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
+							<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

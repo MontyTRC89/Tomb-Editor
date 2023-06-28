@@ -5,7 +5,7 @@
 		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="Padding" Value="3" />
+		<Setter Property="Padding" Value="6,3" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 

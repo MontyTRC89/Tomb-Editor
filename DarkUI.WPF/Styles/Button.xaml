@@ -5,7 +5,7 @@
 		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="Padding" Value="3" />
+		<Setter Property="Padding" Value="6,3" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 
@@ -59,6 +59,10 @@
 						<Trigger Property="IsDefault" Value="True">
 							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Defaulted}" />
 							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Defaulted}" />
+						</Trigger>
+
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

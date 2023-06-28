@@ -8,6 +8,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
 					<Border
+						x:Name="PART_Border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
@@ -28,6 +29,7 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
 							<Setter TargetName="PART_ArrowDown" Property="Fill" Value="{DynamicResource Default_Text_Disabled}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
@@ -196,6 +198,9 @@
 				<Setter Property="Padding" Value="2" />
 				<Setter Property="Template" Value="{DynamicResource ComboBoxEditableTemplate}" />
 			</Trigger>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+			</Trigger>
 		</Style.Triggers>
 	</Style>
 
@@ -226,7 +231,7 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_Border" Property="TextElement.Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
 						</Trigger>
 
 						<Trigger Property="IsSelected" Value="True">

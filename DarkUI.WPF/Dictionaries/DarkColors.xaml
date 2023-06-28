@@ -86,7 +86,7 @@
 	<SolidColorBrush x:Key="InputControl_Glyph_Hovered" Color="{DynamicResource BlueHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Pressed" Color="{DynamicResource ActiveControlColor}" />
 	<SolidColorBrush x:Key="InputControl_HoverHighlight" Color="White" />
-	<sys:Double x:Key="InputControl_HoverHighlight_Opacity">0.25</sys:Double>
+	<sys:Double x:Key="InputControl_HoverHighlight_Opacity">0.15</sys:Double>
 
 	<SolidColorBrush x:Key="ScrollViewer_Border" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="ScrollViewer_Glyph" Color="{DynamicResource GreySelectionColor}" />

@@ -4,8 +4,10 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
 		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
 		<Setter Property="CaretBrush" Value="{DynamicResource Default_Text}" />
+		<Setter Property="FontSize" Value="11" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="{DynamicResource TinyPadding}" />
+		<Setter Property="Padding" Value="2,2,2,3" />
+
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TextBox}">
@@ -21,6 +23,14 @@
 							HorizontalScrollBarVisibility="Hidden"
 							VerticalScrollBarVisibility="Hidden" />
 					</Border>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Disabled}" />
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
