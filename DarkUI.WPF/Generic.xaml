@@ -8,6 +8,7 @@
 		<ResourceDictionary Source="Styles/CheckBox.xaml" />
 		<ResourceDictionary Source="Styles/ColorPickerButton.xaml" />
 		<ResourceDictionary Source="Styles/ComboBox.xaml" />
+		<ResourceDictionary Source="Styles/DataGrid.xaml" />
 		<ResourceDictionary Source="Styles/GroupBox.xaml" />
 		<ResourceDictionary Source="Styles/Label.xaml" />
 		<ResourceDictionary Source="Styles/ListBox.xaml" />
@@ -21,6 +22,7 @@
 		<ResourceDictionary Source="Styles/TextBox.xaml" />
 		<ResourceDictionary Source="Styles/ToggleButton.xaml" />
 		<ResourceDictionary Source="Styles/ToolBar.xaml" />
+		<ResourceDictionary Source="Styles/TreeView.xaml" />
 		<ResourceDictionary Source="Styles/Window.xaml" />
 
 		<ResourceDictionary Source="/AvalonDock.Themes.VS2013;component/Themes/Generic.xaml" />

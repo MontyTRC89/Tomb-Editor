@@ -28,7 +28,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RepeatButton}">
-					<Grid SnapsToDevicePixels="True">
+					<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 						<Border
 							x:Name="PART_Border"
 							Padding="{TemplateBinding Padding}"
@@ -93,7 +93,8 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="True">
+						SnapsToDevicePixels="True"
+						UseLayoutRounding="True">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition x:Name="firstContentColumn" Width="*" />

@@ -4,7 +4,7 @@
 	xmlns:controls="clr-namespace:DarkUI.WPF.Controls">
 
 	<ControlTemplate x:Key="SearchableComboBoxTemplate" TargetType="{x:Type controls:SearchableComboBox}">
-		<Grid SnapsToDevicePixels="True">
+		<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="0" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />

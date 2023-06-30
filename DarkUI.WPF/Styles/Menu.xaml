@@ -8,7 +8,9 @@
 					<Border
 						Background="{DynamicResource GreyBackground}"
 						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="0,0,0,1">
+						BorderThickness="0,0,0,1"
+						SnapsToDevicePixels="True"
+						UseLayoutRounding="True">
 						<StackPanel
 							ClipToBounds="True"
 							IsItemsHost="True"

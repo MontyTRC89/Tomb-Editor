@@ -48,7 +48,8 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="true">
+						SnapsToDevicePixels="true"
+						UseLayoutRounding="True">
 						<Canvas
 							Width="7"
 							Height="6"

@@ -1,4 +1,6 @@
 ﻿using DarkUI.Controls;
+using System.Collections.Generic;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,6 +38,23 @@ namespace DarkUI.WPF.Demo
 			darkTreeView1.Nodes.Add(longRoot);
 
 			darkDataGridView1.Font = new Font("Segoe UI", 8F);
+
+			// Generate random person records
+			var people = new List<Person>();
+			var random = new Random();
+
+			for (int i = 0; i < 10; i++)
+			{
+				people.Add(new Person
+				{
+					FirstName = "First " + i,
+					LastName = "Last " + i,
+					Age = random.Next(18, 65),
+					Country = "Country " + i
+				});
+			}
+
+			darkDataGridView1.DataSource = people;
 		}
 
 		private void darkCheckBox8_CheckedChanged(object sender, System.EventArgs e)

@@ -2,10 +2,10 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:DarkUI.WPF.Controls">
+
 	<Style TargetType="{x:Type controls:ColorPickerButton}">
 		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
 		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
-		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 
 		<Setter Property="Template">
@@ -16,7 +16,23 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="True" />
+						SnapsToDevicePixels="True"
+						UseLayoutRounding="True" />
+
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="True" />
+								<Condition Property="IsPressed" Value="False" />
+							</MultiTrigger.Conditions>
+
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+						</MultiTrigger>
+
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

@@ -23,7 +23,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Window}">
-					<Grid>
+					<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 						<Border
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"

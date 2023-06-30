@@ -9,7 +9,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RadioButton}">
-					<Grid SnapsToDevicePixels="True">
+					<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />

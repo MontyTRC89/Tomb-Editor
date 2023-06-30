@@ -2,7 +2,6 @@
 	<Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Height" Value="24" />
 
 		<Setter Property="Template">
 			<Setter.Value>
@@ -12,7 +11,8 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="True">
+						SnapsToDevicePixels="True"
+						UseLayoutRounding="True">
 						<Border
 							Width="17"
 							HorizontalAlignment="Right"
@@ -39,7 +39,7 @@
 	</Style>
 
 	<ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
-		<Grid SnapsToDevicePixels="True">
+		<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="0" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
@@ -105,7 +105,7 @@
 	</Style>
 
 	<ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
-		<Grid SnapsToDevicePixels="True">
+		<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="0" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
@@ -184,7 +184,7 @@
 		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
-		<Setter Property="Padding" Value="6,3,5,3" />
+		<Setter Property="Padding" Value="6,4" />
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.PanningMode" Value="Both" />
@@ -222,7 +222,8 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="True">
+						SnapsToDevicePixels="True"
+						UseLayoutRounding="True">
 						<ContentPresenter
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
