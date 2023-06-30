@@ -274,32 +274,33 @@
 						Text="TreeView" />
 
 					<TreeView
+						x:Name="treeView"
 						Width="200"
 						Height="100"
 						HorizontalAlignment="Left">
-						<TreeViewItem Header="Root 1">
-							<TreeViewItem Header="Child 1">
-								<TreeViewItem Header="Child 1.1" />
-								<TreeViewItem Header="Child 1.2" />
-							</TreeViewItem>
-							<TreeViewItem Header="Child 2">
-								<TreeViewItem Header="Child 2.1" />
-								<TreeViewItem Header="Child 2.2" />
-							</TreeViewItem>
-							<TreeViewItem Header="Child 3" />
-						</TreeViewItem>
-						<TreeViewItem Header="Root 2">
-							<TreeViewItem Header="Child 1">
-								<TreeViewItem Header="Child 1.1" />
-								<TreeViewItem Header="Child 1.2" />
-							</TreeViewItem>
-							<TreeViewItem Header="Child 2">
-								<TreeViewItem Header="Child 2.1" />
-								<TreeViewItem Header="Child 2.2" />
-							</TreeViewItem>
-							<TreeViewItem Header="Child 3" />
-						</TreeViewItem>
-						<TreeViewItem Header="Very long item name which exceeds the width of the TreeView" />
+						<controls:TreeViewItemEx Header="Root 1">
+							<controls:TreeViewItemEx Header="Child 1">
+								<controls:TreeViewItemEx Header="Child 1.1" />
+								<controls:TreeViewItemEx Header="Child 1.2" />
+							</controls:TreeViewItemEx>
+							<controls:TreeViewItemEx Header="Child 2">
+								<controls:TreeViewItemEx Header="Child 2.1" />
+								<controls:TreeViewItemEx Header="Child 2.2" />
+							</controls:TreeViewItemEx>
+							<controls:TreeViewItemEx Header="Child 3" />
+						</controls:TreeViewItemEx>
+						<controls:TreeViewItemEx Header="Root 2">
+							<controls:TreeViewItemEx Header="Child 1">
+								<controls:TreeViewItemEx Header="Child 1.1" />
+								<controls:TreeViewItemEx Header="Child 1.2" />
+							</controls:TreeViewItemEx>
+							<controls:TreeViewItemEx Header="Child 2">
+								<controls:TreeViewItemEx Header="Child 2.1" />
+								<controls:TreeViewItemEx Header="Child 2.2" />
+							</controls:TreeViewItemEx>
+							<controls:TreeViewItemEx Header="Child 3" />
+						</controls:TreeViewItemEx>
+						<controls:TreeViewItemEx Header="Very long item name which exceeds the width of the TreeView" />
 					</TreeView>
 				</StackPanel>
 
