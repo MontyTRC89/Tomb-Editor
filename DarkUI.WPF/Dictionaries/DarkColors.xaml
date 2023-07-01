@@ -53,6 +53,7 @@
 	<SolidColorBrush x:Key="DarkGreySelection" Color="{DynamicResource DarkGreySelectionColor}" />
 
 	<!--  Highlights  -->
+	<Color x:Key="ActiveTabTextColor">#98C4E8</Color>
 	<Color x:Key="ActiveControlColor">#9FB2C4</Color>
 	<Color x:Key="GreyHighlightColor">#7A8084</Color>
 	<Color x:Key="BlueHighlightColor">#6897BB</Color>
@@ -71,22 +72,37 @@
 	<SolidColorBrush x:Key="Default_Border_HighContrast" Color="{DynamicResource DarkBorderColor}" />
 
 	<SolidColorBrush x:Key="InputControl_Background" Color="{DynamicResource LightBackgroundColor}" />
+	<SolidColorBrush x:Key="InputControl_Background_Checked" Color="{DynamicResource HighlightFillColor}" />
 	<SolidColorBrush x:Key="InputControl_Background_Defaulted" Color="{DynamicResource DarkBlueBackgroundColor}" />
 	<SolidColorBrush x:Key="InputControl_Background_Disabled" Color="{DynamicResource DarkGreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Background_Pressed" Color="{DynamicResource DarkBackgroundColor}" />
-	<SolidColorBrush x:Key="InputControl_Background_Checked" Color="{DynamicResource HighlightFillColor}" />
 	<SolidColorBrush x:Key="InputControl_Border" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="InputControl_Border_Checked" Color="{DynamicResource BlueHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Defaulted" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Disabled" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Hovered" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Pressed" Color="{DynamicResource BlueHighlightColor}" />
-	<SolidColorBrush x:Key="InputControl_Border_Checked" Color="{DynamicResource BlueHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph" Color="{DynamicResource LightestBackgroundColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Disabled" Color="{DynamicResource GreyHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Hovered" Color="{DynamicResource BlueHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Pressed" Color="{DynamicResource ActiveControlColor}" />
 	<SolidColorBrush x:Key="InputControl_HoverHighlight" Color="White" />
 	<sys:Double x:Key="InputControl_HoverHighlight_Opacity">0.15</sys:Double>
+
+	<SolidColorBrush x:Key="TabControl_Backgreound" Color="{DynamicResource GreyBackgroundColor}" />
+	<SolidColorBrush x:Key="TabControl_Backgreound_Disabled" Color="{DynamicResource DarkGreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Backgreound_HoveredTab" Color="{DynamicResource MediumBackgroundColor}" />
+	<SolidColorBrush x:Key="TabControl_Backgreound_InactiveTab" Color="{DynamicResource MediumBackgroundColor}" />
+	<SolidColorBrush x:Key="TabControl_Backgreound_SelectedTab" Color="{DynamicResource GreyBackgroundColor}" />
+	<SolidColorBrush x:Key="TabControl_Border" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Border_Disabled" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Border_HoveredTab" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Border_InactiveTab" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Border_SelectedTab" Color="{DynamicResource GreySelectionColor}" />
+	<SolidColorBrush x:Key="TabControl_Text_Disabled" Color="{DynamicResource DisabledTextColor}" />
+	<SolidColorBrush x:Key="TabControl_Text_HoveredTab" Color="{DynamicResource LightTextColor}" />
+	<SolidColorBrush x:Key="TabControl_Text_InactiveTab" Color="{DynamicResource LightestBackgroundColor}" />
+	<SolidColorBrush x:Key="TabControl_Text_SelectedTab" Color="{DynamicResource ActiveTabTextColor}" />
 
 	<SolidColorBrush x:Key="ScrollViewer_Border" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="ScrollViewer_Track_Backgreound" Color="{DynamicResource MediumBackgroundColor}" />

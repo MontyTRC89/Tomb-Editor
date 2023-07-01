@@ -29,6 +29,15 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Styles\ContextMenu.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Styles\StatusBar.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Styles\ProgressBar.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
     <Page Update="Styles\TreeView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

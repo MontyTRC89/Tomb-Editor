@@ -83,10 +83,21 @@
 			darkLabel17 = new DarkUI.Controls.DarkLabel();
 			darkDataGridView1 = new DarkUI.Controls.DarkDataGridView();
 			darkButton12 = new DarkUI.Controls.DarkButton();
+			tabControl1 = new System.Windows.Forms.CustomTabControl();
+			tabPage1 = new System.Windows.Forms.TabPage();
+			tabPage2 = new System.Windows.Forms.TabPage();
+			tabPage3 = new System.Windows.Forms.TabPage();
+			tabPage4 = new System.Windows.Forms.TabPage();
+			darkButton13 = new DarkUI.Controls.DarkButton();
+			darkLabel18 = new DarkUI.Controls.DarkLabel();
+			darkLabel19 = new DarkUI.Controls.DarkLabel();
+			darkProgressBar1 = new DarkUI.Controls.DarkProgressBar();
 			((System.ComponentModel.ISupportInitialize)darkNumericUpDown1).BeginInit();
 			((System.ComponentModel.ISupportInitialize)darkNumericUpDown2).BeginInit();
 			darkGroupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)darkDataGridView1).BeginInit();
+			tabControl1.SuspendLayout();
+			tabPage4.SuspendLayout();
 			SuspendLayout();
 			// 
 			// darkButton1
@@ -759,11 +770,135 @@
 			darkButton12.TabIndex = 50;
 			darkButton12.Text = "Defaulted";
 			// 
+			// tabControl1
+			// 
+			tabControl1.Controls.Add(tabPage1);
+			tabControl1.Controls.Add(tabPage2);
+			tabControl1.Controls.Add(tabPage3);
+			tabControl1.Controls.Add(tabPage4);
+			tabControl1.DisplayStyle = System.Windows.Forms.TabStyle.Dark;
+			tabControl1.DisplayStyleProvider.BorderColor = System.Drawing.Color.FromArgb(96, 96, 96);
+			tabControl1.DisplayStyleProvider.BorderColorHot = System.Drawing.Color.FromArgb(96, 96, 96);
+			tabControl1.DisplayStyleProvider.BorderColorSelected = System.Drawing.Color.FromArgb(96, 96, 96);
+			tabControl1.DisplayStyleProvider.CloserColor = System.Drawing.Color.White;
+			tabControl1.DisplayStyleProvider.CloserColorActive = System.Drawing.Color.FromArgb(152, 196, 232);
+			tabControl1.DisplayStyleProvider.FocusTrack = false;
+			tabControl1.DisplayStyleProvider.HotTrack = false;
+			tabControl1.DisplayStyleProvider.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			tabControl1.DisplayStyleProvider.Opacity = 1F;
+			tabControl1.DisplayStyleProvider.Overlap = 0;
+			tabControl1.DisplayStyleProvider.Padding = new System.Drawing.Point(6, 3);
+			tabControl1.DisplayStyleProvider.Radius = 10;
+			tabControl1.DisplayStyleProvider.ShowTabCloser = false;
+			tabControl1.DisplayStyleProvider.TextColor = System.Drawing.Color.FromArgb(153, 153, 153);
+			tabControl1.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.FromArgb(96, 96, 96);
+			tabControl1.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.FromArgb(152, 196, 232);
+			tabControl1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			tabControl1.Location = new System.Drawing.Point(0, 1216);
+			tabControl1.Margin = new System.Windows.Forms.Padding(0);
+			tabControl1.Name = "tabControl1";
+			tabControl1.SelectedIndex = 0;
+			tabControl1.Size = new System.Drawing.Size(300, 100);
+			tabControl1.TabIndex = 51;
+			// 
+			// tabPage1
+			// 
+			tabPage1.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			tabPage1.Location = new System.Drawing.Point(4, 23);
+			tabPage1.Name = "tabPage1";
+			tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			tabPage1.Size = new System.Drawing.Size(292, 73);
+			tabPage1.TabIndex = 0;
+			tabPage1.Text = "tabPage1";
+			// 
+			// tabPage2
+			// 
+			tabPage2.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			tabPage2.Location = new System.Drawing.Point(4, 26);
+			tabPage2.Name = "tabPage2";
+			tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			tabPage2.Size = new System.Drawing.Size(192, 70);
+			tabPage2.TabIndex = 1;
+			tabPage2.Text = "tabPage2";
+			// 
+			// tabPage3
+			// 
+			tabPage3.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			tabPage3.Location = new System.Drawing.Point(4, 26);
+			tabPage3.Name = "tabPage3";
+			tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			tabPage3.Size = new System.Drawing.Size(192, 70);
+			tabPage3.TabIndex = 2;
+			tabPage3.Text = "tabPage3";
+			// 
+			// tabPage4
+			// 
+			tabPage4.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			tabPage4.Controls.Add(darkButton13);
+			tabPage4.Location = new System.Drawing.Point(4, 26);
+			tabPage4.Margin = new System.Windows.Forms.Padding(0);
+			tabPage4.Name = "tabPage4";
+			tabPage4.Padding = new System.Windows.Forms.Padding(5);
+			tabPage4.Size = new System.Drawing.Size(192, 70);
+			tabPage4.TabIndex = 3;
+			tabPage4.Text = "tabPage4";
+			// 
+			// darkButton13
+			// 
+			darkButton13.Checked = false;
+			darkButton13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton13.Location = new System.Drawing.Point(5, 5);
+			darkButton13.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
+			darkButton13.Name = "darkButton13";
+			darkButton13.Size = new System.Drawing.Size(51, 22);
+			darkButton13.TabIndex = 53;
+			darkButton13.Text = "Normal";
+			// 
+			// darkLabel18
+			// 
+			darkLabel18.AutoSize = true;
+			darkLabel18.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			darkLabel18.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel18.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel18.Location = new System.Drawing.Point(0, 1183);
+			darkLabel18.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel18.Name = "darkLabel18";
+			darkLabel18.Size = new System.Drawing.Size(108, 28);
+			darkLabel18.TabIndex = 52;
+			darkLabel18.Text = "TabControl";
+			// 
+			// darkLabel19
+			// 
+			darkLabel19.AutoSize = true;
+			darkLabel19.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			darkLabel19.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel19.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel19.Location = new System.Drawing.Point(0, 1329);
+			darkLabel19.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel19.Name = "darkLabel19";
+			darkLabel19.Size = new System.Drawing.Size(115, 28);
+			darkLabel19.TabIndex = 53;
+			darkLabel19.Text = "ProgressBar";
+			// 
+			// darkProgressBar1
+			// 
+			darkProgressBar1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkProgressBar1.Location = new System.Drawing.Point(0, 1362);
+			darkProgressBar1.Margin = new System.Windows.Forms.Padding(0);
+			darkProgressBar1.Name = "darkProgressBar1";
+			darkProgressBar1.Size = new System.Drawing.Size(296, 23);
+			darkProgressBar1.TabIndex = 54;
+			darkProgressBar1.Value = 25;
+			// 
 			// OriginalComparison
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			Controls.Add(darkProgressBar1);
+			Controls.Add(darkLabel19);
+			Controls.Add(darkLabel18);
+			Controls.Add(tabControl1);
 			Controls.Add(darkButton12);
 			Controls.Add(darkDataGridView1);
 			Controls.Add(darkLabel17);
@@ -821,11 +956,14 @@
 			((System.ComponentModel.ISupportInitialize)darkNumericUpDown2).EndInit();
 			darkGroupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)darkDataGridView1).EndInit();
+			tabControl1.ResumeLayout(false);
+			tabPage4.ResumeLayout(false);
 			ResumeLayout(false);
 			PerformLayout();
 		}
 
 		#endregion
+
 		private DarkUI.Controls.DarkButton darkButton1;
 		private DarkUI.Controls.DarkButton darkButton2;
 		private DarkUI.Controls.DarkButton darkButton3;
@@ -880,5 +1018,14 @@
 		private DarkUI.Controls.DarkLabel darkLabel17;
 		private DarkUI.Controls.DarkDataGridView darkDataGridView1;
 		private DarkUI.Controls.DarkButton darkButton12;
+		private System.Windows.Forms.CustomTabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private DarkUI.Controls.DarkLabel darkLabel18;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.TabPage tabPage4;
+		private DarkUI.Controls.DarkButton darkButton13;
+		private DarkUI.Controls.DarkLabel darkLabel19;
+		private DarkUI.Controls.DarkProgressBar darkProgressBar1;
 	}
 }

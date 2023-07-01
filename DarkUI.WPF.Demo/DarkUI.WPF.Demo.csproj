@@ -19,6 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CustomTabControl">
+      <HintPath>..\Libs\CustomTabControl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -528,10 +528,21 @@
 						Text="ProgressBar" />
 
 					<ProgressBar
-						Width="200"
-						Height="20"
+						Width="296"
 						HorizontalAlignment="Left"
-						Value="25" />
+						Value="100" />
+				</StackPanel>
+
+				<StackPanel Margin="0,0,0,15">
+					<TextBlock
+						Margin="0,0,0,5"
+						FontSize="20"
+						Text="Slider" />
+
+					<Slider
+						Width="296"
+						HorizontalAlignment="Left"
+						Value="5" />
 				</StackPanel>
 			</StackPanel>
 
