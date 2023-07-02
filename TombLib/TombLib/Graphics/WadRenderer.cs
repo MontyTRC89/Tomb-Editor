@@ -44,7 +44,7 @@ namespace TombLib.Graphics
 
         // Size of the atlas
         // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
-        public const int TextureAtlasSize = 4096;
+        public const int TextureAtlasSize = 8192;
 
         public void Dispose()
         {
