@@ -10,10 +10,10 @@ LevelFuncs.noA = function() end
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, LuaFunction)
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LuaFunction)
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, luaFunction)
         PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
     else
         PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
