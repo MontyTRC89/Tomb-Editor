@@ -1,7 +1,7 @@
 local Timer = require("Engine.Timer")
 LevelFuncs.noA = function() end
 
--- !Name "Create Timer with Function"
+-- !Name "Create timer with function"
 -- !Conditional "False"
 -- !Description "after a specified number of seconds, the specified thing happens"
 -- !Section "Timer"
@@ -20,7 +20,7 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minu
     end
 end
 
--- !Name "Create Timer"
+-- !Name "Create timer"
 -- !Conditional "False"
 -- !Description "Basic timer"
 -- !Section "Timer"
@@ -38,7 +38,7 @@ LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds
     end
 end
 
--- !Name "Start Timer"
+-- !Name "Start timer"
 -- !Conditional "False"
 -- !Description "Begin or unpause a timer"
 -- !Section "Timer"
@@ -56,7 +56,7 @@ LevelFuncs.Engine.Node.StartTimer = function(name)
     end
 end
 
--- !Name "Stop Timer"
+-- !Name "Stop timer"
 -- !Conditional "False"
 -- !Description "Stop the timer"
 -- !Section "Timer"
@@ -95,7 +95,7 @@ LevelFuncs.Engine.Node.IsTimerActive = function(name)
     end
 end
 
--- !Name "Set Paused Timer"
+-- !Name "Set paused timer"
 -- !Conditional "False"
 -- !Description "Pause or unpause the timer"
 -- !Section "Timer"
@@ -130,7 +130,7 @@ LevelFuncs.Engine.Node.IsTimerPaused = function(name)
     end
 end
 
--- !Name "Get Remaining Time (in seconds) in console"
+-- !Name "Get remaining time (in seconds) in console"
 -- !Conditional "False"
 -- !Description "Gets the remaining time (in seconds) of a timer"
 -- !Section "Timer"
@@ -147,7 +147,7 @@ LevelFuncs.Engine.Node.GetRemainingTime = function(name)
     end
 end
 
--- !Name "Set Remaining Time"
+-- !Name "Set remaining time"
 -- !Conditional "False"
 -- !Description "Set the remaining time (in seconds) of a timer"
 -- !Section "Timer"
@@ -165,7 +165,7 @@ LevelFuncs.Engine.Node.SetRemainingTime = function(name, remainingTime)
     end
 end
 
--- !Name "Get Total Time (in seconds) in console"
+-- !Name "Get total time (in seconds) in console"
 -- !Conditional "False"
 -- !Description "This is the amount of time the timer will start with, as well as when starting a new loop"
 -- !Section "Timer"
@@ -182,7 +182,7 @@ LevelFuncs.Engine.Node.GetTotalTime = function(name)
     end
 end
 
--- !Name "Set Total Time"
+-- !Name "Set total time"
 -- !Conditional "False"
 -- !Description "Set the total time (in seconds) for a timer"
 -- !Section "Timer"
@@ -200,7 +200,7 @@ LevelFuncs.Engine.Node.SetTotalTime = function(name, totalTime)
     end
 end
 
--- !Name "Set Timer Loop"
+-- !Name "Set timer loop"
 -- !Conditional "False"
 -- !Description "Set whether or not the timer loops"
 -- !Section "Timer"
@@ -218,7 +218,7 @@ LevelFuncs.Engine.Node.SetLooping = function(name, looping)
     end
 end
 
--- !Name "If Timer has expired..."
+-- !Name "If timer has expired..."
 -- !Conditional "True"
 -- !Description "Check if the timer is expired"
 -- !Section "Timer"
@@ -255,7 +255,7 @@ LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, time)
     end
 end
 
--- !Name "If Total Time is..."
+-- !Name "If total time is..."
 -- !Conditional "True"
 -- !Description "check if the Total Time is equal to ..."
 -- !Section "Timer"
