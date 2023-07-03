@@ -3,17 +3,17 @@ LevelFuncs.noA = function() end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
--- !Description "after a specified number of seconds, the specified thing happens"
+-- !Description "After a specified number of seconds, the specified thing happens"
 -- !Section "Timer"
--- !Arguments "NewLine, String, 57,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 2 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, fucs)
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, LuaFunction)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, fucs)
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LuaFunction)
         PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
     else
         PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
@@ -24,7 +24,7 @@ end
 -- !Conditional "False"
 -- !Description "Basic timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String, 57,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 2 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
@@ -42,7 +42,7 @@ end
 -- !Conditional "False"
 -- !Description "Begin or unpause a timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.StartTimer = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -60,7 +60,7 @@ end
 -- !Conditional "False"
 -- !Description "Stop the timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.StopTimer = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -78,7 +78,7 @@ end
 -- !Conditional "True"
 -- !Description "Get whether or not the timer is active"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerActive = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -99,7 +99,7 @@ end
 -- !Conditional "False"
 -- !Description "Pause or unpause the timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String, 67,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
 -- !Arguments "Boolean , 33, Pause"
 LevelFuncs.Engine.Node.SetPausedTimer = function(name, isOnPause)
     if name ~= '' then
@@ -117,7 +117,7 @@ end
 -- !Conditional "True"
 -- !Description "Get whether or not the timer is paused"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerPaused = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -134,7 +134,7 @@ end
 -- !Conditional "False"
 -- !Description "Gets the remaining time (in seconds) of a timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetRemainingTime = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -151,7 +151,7 @@ end
 -- !Conditional "False"
 -- !Description "Set the remaining time (in seconds) of a timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String,67,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String,67, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 33, [ 0 | 1000 | 2 ], the new time remaining for the timer"
 LevelFuncs.Engine.Node.SetRemainingTime = function(name, remainingTime)
     if name ~= '' then
@@ -169,7 +169,7 @@ end
 -- !Conditional "False"
 -- !Description "This is the amount of time the timer will start with, as well as when starting a new loop"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetTotalTime = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -186,7 +186,7 @@ end
 -- !Conditional "False"
 -- !Description "Set the total time (in seconds) for a timer"
 -- !Section "Timer"
--- !Arguments "NewLine, String,67,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String,67, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 33, [ 0 | 1000 | 2 ], timer's new total time"
 LevelFuncs.Engine.Node.SetTotalTime = function(name, totalTime)
     if name ~= '' then
@@ -204,7 +204,7 @@ end
 -- !Conditional "False"
 -- !Description "Set whether or not the timer loops"
 -- !Section "Timer"
--- !Arguments "NewLine, String, 67,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
 -- !Arguments "Boolean , 33, Is it on a loop?"
 LevelFuncs.Engine.Node.SetLooping = function(name, looping)
     if name ~= '' then
@@ -222,7 +222,7 @@ end
 -- !Conditional "True"
 -- !Description "Check if the timer is expired"
 -- !Section "Timer"
--- !Arguments "NewLine, String,[ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IfTimerExpired = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -240,7 +240,7 @@ end
 -- !Conditional "True"
 -- !Description "Check if the remaining time is equal to, greater to, less to..."
 -- !Section "Timer"
--- !Arguments "NewLine, String,50,[ NoMultiline ], Timer name" "CompareOperator, 30"
+-- !Arguments "NewLine, String,50, [ NoMultiline ], Timer name" "CompareOperator, 30"
 -- !Arguments "Numerical, 20, [ 0 | 1000 | 1 ], remaining time (in seconds)"
 LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, time)
     if name ~= '' then
@@ -257,9 +257,9 @@ end
 
 -- !Name "If total time is..."
 -- !Conditional "True"
--- !Description "check if the Total Time is equal to ..."
+-- !Description "Check if the Total Time is equal to ..."
 -- !Section "Timer"
--- !Arguments "NewLine, String,50,[ NoMultiline ], Timer name" "CompareOperator, 30"
+-- !Arguments "NewLine, String,50, [ NoMultiline ], Timer name" "CompareOperator, 30"
 -- !Arguments "Numerical, 20, [ 0 | 1000 | 1 ], Total Time (in seconds)"
 LevelFuncs.Engine.Node.IfTotalTimeIs = function(name, operator, time)
     if name ~= '' then
