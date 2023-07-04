@@ -1,5 +1,4 @@
 local Timer = require("Engine.Timer")
-LevelFuncs.noA = function() end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
@@ -31,7 +30,7 @@ end
 LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.noA)
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, nil)
         PrintLog('Timer "' .. name .. '" successfully created', LogLevel.INFO)
     else
         PrintLog('Error in the "Create Timer" node. The name of Timer is empty', LogLevel.ERROR)
