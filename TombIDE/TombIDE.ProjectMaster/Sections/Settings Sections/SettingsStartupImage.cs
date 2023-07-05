@@ -40,7 +40,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+					using (var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
 
 					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = false;
@@ -59,7 +59,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
+					using (var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
 					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = true;
@@ -74,13 +74,11 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Change_Click(object sender, EventArgs e)
 		{
-			using (OpenFileDialog dialog = new OpenFileDialog())
-			{
-				dialog.Filter = "Bitmap Files|*.bmp";
+			using var dialog = new OpenFileDialog();
+			dialog.Filter = "Bitmap Files|*.bmp";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					ReplaceImage(dialog.FileName);
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				ReplaceImage(dialog.FileName);
 		}
 
 		private void button_UseBlank_Click(object sender, EventArgs e)
@@ -92,10 +90,10 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					using (Bitmap bitmap = new Bitmap(1, 1))
+					using (var bitmap = new Bitmap(1, 1))
 					{
 						bitmap.SetPixel(0, 0, Color.Black);
-						bitmap.Save(Path.Combine(_ide.Project.EnginePath, "load.bmp"), ImageFormat.Bmp);
+						bitmap.Save(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"), ImageFormat.Bmp);
 					}
 
 					UpdatePreview();
@@ -127,7 +125,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				File.Copy(imagePath, Path.Combine(_ide.Project.EnginePath, "load.bmp"), true);
+				File.Copy(imagePath, Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"), true);
 				UpdatePreview();
 			}
 			catch (Exception ex)
@@ -140,15 +138,14 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
-				{
-					if (radioButton_Wide.Checked)
-						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
-					else if (radioButton_Standard.Checked)
-						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
+				using var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"));
 
-					label_Blank.Visible = image.Width == 1 && image.Height == 1;
-				}
+				if (radioButton_Wide.Checked)
+					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
+				else if (radioButton_Standard.Checked)
+					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
+
+				label_Blank.Visible = image.Width == 1 && image.Height == 1;
 			}
 			catch (Exception ex)
 			{

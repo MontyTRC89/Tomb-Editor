@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
@@ -7,6 +8,8 @@ namespace TombIDE.Shared.NewStructure
 {
 	public interface IGameProject : IProject
 	{
+		Version TargetTrprojVersion { get; }
+
 		/// <summary>
 		/// Game engine version. (e.g. <c>TR4</c>, <c>TRNG</c>, <c>TombEngine</c>, ...)
 		/// </summary>
@@ -23,19 +26,14 @@ namespace TombIDE.Shared.NewStructure
 		string EngineExecutableFileName { get; }
 
 		/// <summary>
-		/// The path where all the project's newly created / imported maps are stored.
+		/// The path where all the project's newly created / imported levels are stored.
 		/// </summary>
-		string MapsDirectoryPath { get; }
-
-		/// <summary>
-		/// The path where the project's script files are stored.
-		/// </summary>
-		string ScriptRootDirectoryPath { get; }
+		string LevelsDirectoryPath { get; set; }
 
 		/// <summary>
 		/// The path where the project's plugins are stored (if the game engine supports them).
 		/// </summary>
-		string PluginsDirectoryPath { get; }
+		string PluginsDirectoryPath { get; set; }
 
 		/// <summary>
 		/// The path of the main script file. (e.g. <c>"C:\...\Script\Script.txt"</c>, <c>"C:\...\Engine\Scripts\Gameflow.lua"</c>, ...)
@@ -45,12 +43,12 @@ namespace TombIDE.Shared.NewStructure
 		/// <summary>
 		/// The name of the default game language chosen by the author. (e.g. <c>"English"</c>, <c>"German"</c>, <c>"French"</c>, ...)
 		/// </summary>
-		string DefaultGameLanguageName { get; }
+		string DefaultGameLanguageName { get; set; }
 
-		/// <summary>
-		/// A list of .trmap files which are not stored in the project's Maps directory.
-		/// </summary>
-		List<string> ExternalMapFilePaths { get; }
+		bool SupportsCustomScriptPaths { get; }
+		bool SupportsPlugins { get; }
+
+		List<string> KnownLevelProjectFilePaths { get; }
 
 		/// <summary>
 		/// A list of all available game languages. (e.g. <c>"English"</c>, <c>"German"</c>, <c>"French"</c>, ...)
@@ -83,14 +81,16 @@ namespace TombIDE.Shared.NewStructure
 		string GetDefaultGameLanguageFilePath();
 
 		/// <summary>
-		/// Returns a list of all valid .trmap files in the project's Maps directory and external map file paths.
+		/// Returns a list of all valid .trlvl files in the project's Levels directory and external level file paths.
 		/// </summary>
-		FileInfo[] GetAllValidTrmapFiles();
+		FileInfo[] GetAllValidTrlvlFiles();
 
 		/// <summary>
-		/// Returns a list of all valid map projects in the project's Maps directory and external map file paths.
+		/// Returns a list of all valid level projects in the project's Levels directory and external level file paths.
 		/// </summary>
-		MapProject[] GetAllValidMapProjects();
+		LevelProject[] GetAllValidLevelProjects();
+
+		string GetScriptRootDirectory();
 
 		/// <summary>
 		/// Sets the project's script root directory to the given path. May require a restart of the IDE, depending on the implementation.

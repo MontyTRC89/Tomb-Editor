@@ -17,10 +17,11 @@ namespace TombIDE.Shared.SharedClasses
 			else
 				directoryPath = Path.GetDirectoryName(fileOrDirectoryPath);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo
+			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = directoryPath
+				Arguments = directoryPath,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

@@ -304,6 +304,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected abstract void ApplyUserSettings();
 		protected abstract void Build();
 		protected abstract void RestoreDefaultLayout();
+		protected abstract void ShowDocumentation();
 
 		#endregion Abstract region
 
@@ -484,6 +485,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.RestoreDefaultLayout: RestoreDefaultLayout(); break;
 
 				// Help
+				case UICommand.ScriptingDocumentation: ShowDocumentation(); break;
 				case UICommand.About: ShowAboutForm(); break;
 			}
 

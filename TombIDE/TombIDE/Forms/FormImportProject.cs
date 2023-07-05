@@ -5,7 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -14,27 +15,38 @@ namespace TombIDE
 {
 	public partial class FormImportProject : DarkForm
 	{
-		public Project ImportedProject { get; private set; }
+		public IGameProject ImportedProject { get; private set; }
+		public GameProjectDTO ProjectDTO { get; private set; }
 
 		#region Initialization
 
-		public FormImportProject(string gameExeFilePath, string launcherFilePath)
+		public FormImportProject(GameProjectDTO projectDTO)
 		{
 			InitializeComponent();
 
-			/* Setup some information */
+			ProjectDTO = projectDTO;
 
-			textBox_ExePath.Text = gameExeFilePath;
-			textBox_LauncherPath.Text = launcherFilePath;
+			textBox_ExePath.Text = projectDTO.EngineExecutableFilePath;
+			textBox_LauncherPath.Text = projectDTO.LauncherExecutableFilePath;
 
-			textBox_ProjectName.Text = Path.GetFileName(GetProjectDirectory(gameExeFilePath));
+			textBox_ProjectName.Text = projectDTO.ProjectName;
 
-			FillScriptPathTextBoxIfPossible(gameExeFilePath, out bool isHardcodedScriptPath);
-			FillLevelsPathTextBoxIfPossible(gameExeFilePath);
+			textBox_ScriptPath.Text = projectDTO.ScriptDirectoryPath;
+			textBox_LevelsPath.Text = projectDTO.LevelsDirectoryPath;
 
-			button_Import.Text = "Import " + GetGameVersion(gameExeFilePath) + " Project";
+			if (string.IsNullOrEmpty(textBox_LevelsPath.Text)) // If still no /Levels/ or /Maps/ folder was found
+			{
+				// Suggest a path
+				textBox_LevelsPath.Text = Path.Combine(Path.GetDirectoryName(projectDTO.LauncherExecutableFilePath), "Levels");
 
-			if (isHardcodedScriptPath)
+				// Highlight the textBox and add a toolTip for it to indicate that the pre-set path is just a suggestion
+				textBox_LevelsPath.BackColor = Color.FromArgb(48, 96, 64);
+				toolTip.SetToolTip(textBox_LevelsPath, "Suggested path");
+			}
+
+			button_Import.Text = "Import " + projectDTO.GameVersion + " Project";
+
+			if (projectDTO.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TombEngine) // Hardcoded script paths
 			{
 				textBox_ScriptPath.ReadOnly = true;
 				button_BrowseScript.Enabled = false;
@@ -44,151 +56,7 @@ namespace TombIDE
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
-
-			if (textBox_ProjectName.Text.Equals("engine", StringComparison.OrdinalIgnoreCase)) // This will ONLY happen when the user intentionally tries to break the software
-			{
-				DarkMessageBox.Show(this, "LOL you did that on purpose, didn't you? Your project directory cannot be named \"Engine\",\n" +
-					"because it will cause many conflicts inside the software. Please rename the directory before importing.", "Why?",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-				DialogResult = DialogResult.Cancel;
-				return;
-			}
-
 			textBox_ProjectName.Focus();
-		}
-
-		private void FillScriptPathTextBoxIfPossible(string exeFilePath, out bool isHardcoded)
-		{
-			/* Find the /Script/ directory */
-
-			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
-
-			if (Path.GetFileName(exeFilePath).Equals("Tomb1Main.exe", StringComparison.OrdinalIgnoreCase))
-			{
-				textBox_ScriptPath.Text = Path.Combine(gameExeDirectory, "cfg");
-				isHardcoded = true;
-				return;
-			}
-			else if (Path.GetFileName(exeFilePath).Equals("TombEngine.exe", StringComparison.OrdinalIgnoreCase))
-			{
-				string targetParentDirectory = gameExeDirectory;
-				string directoryName = Path.GetFileName(gameExeDirectory);
-
-				if (directoryName.Equals("x64", StringComparison.OrdinalIgnoreCase) || directoryName.Equals("x86", StringComparison.OrdinalIgnoreCase))
-					targetParentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory)); // 2 steps back
-
-				textBox_ScriptPath.Text = Path.Combine(targetParentDirectory, "Scripts");
-				isHardcoded = true;
-				return;
-			}
-
-			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
-			{
-				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
-
-				foreach (string directory in Directory.GetDirectories(parentDirectory))
-				{
-					if (Path.GetFileName(directory).Equals("script", StringComparison.OrdinalIgnoreCase))
-					{
-						// Check if a script.txt file exists in the /Script/ directory, if not, then leave the textBox empty
-						if (File.Exists(Path.Combine(directory, "script.txt")))
-							textBox_ScriptPath.Text = directory;
-
-						break;
-					}
-				}
-			}
-
-			if (string.IsNullOrEmpty(textBox_ScriptPath.Text))
-			{
-				// Method reaches this point if the project is using the old format or no valid /Script/ folder was found in the parent directory
-
-				foreach (string directory in Directory.GetDirectories(gameExeDirectory))
-				{
-					if (Path.GetFileName(directory).Equals("script", StringComparison.OrdinalIgnoreCase))
-					{
-						// Check if a script.txt file exists in the /Script/ directory, if not, then leave the textBox empty
-						if (File.Exists(Path.Combine(directory, "script.txt")))
-							textBox_ScriptPath.Text = directory;
-
-						break;
-					}
-				}
-			}
-
-			isHardcoded = false;
-		}
-
-		private void FillLevelsPathTextBoxIfPossible(string exeFilePath)
-		{
-			/* Find the /Levels/ (or /Maps/) directory */
-
-			string gameExeDirectory = Path.GetDirectoryName(exeFilePath);
-
-			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
-			{
-				string parentDirectory = Path.GetDirectoryName(gameExeDirectory);
-
-				foreach (string directory in Directory.GetDirectories(parentDirectory))
-				{
-					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
-					{
-						textBox_LevelsPath.Text = directory;
-						break;
-					}
-				}
-			}
-
-			if (Path.GetFileName(gameExeDirectory).Equals("x64", StringComparison.OrdinalIgnoreCase)
-				|| Path.GetFileName(gameExeDirectory).Equals("x86", StringComparison.OrdinalIgnoreCase))
-			{
-				string parentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory))); // 3 steps back
-
-				foreach (string directory in Directory.GetDirectories(parentDirectory))
-				{
-					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
-					{
-						textBox_LevelsPath.Text = directory;
-						break;
-					}
-				}
-			}
-
-			if (string.IsNullOrEmpty(textBox_LevelsPath.Text))
-			{
-				// Method reaches this point if the project is using the old format or no /Levels/ folder was found in the parent directory
-
-				string levelsPath = string.Empty;
-				string mapsPath = string.Empty; // Legacy solution
-
-				foreach (string directory in Directory.GetDirectories(gameExeDirectory))
-				{
-					if (Path.GetFileName(directory).Equals("levels", StringComparison.OrdinalIgnoreCase))
-						levelsPath = directory;
-					else if (Path.GetFileName(directory).Equals("maps", StringComparison.OrdinalIgnoreCase))
-						mapsPath = directory;
-				}
-
-				if (Directory.Exists(levelsPath) && !Directory.Exists(mapsPath))
-					textBox_LevelsPath.Text = levelsPath;
-				else if (!Directory.Exists(levelsPath) && Directory.Exists(mapsPath))
-					textBox_LevelsPath.Text = mapsPath;
-				else if (Directory.Exists(levelsPath) && Directory.Exists(mapsPath))
-					textBox_LevelsPath.Text = levelsPath; // Prefer the new solution
-			}
-
-			if (string.IsNullOrEmpty(textBox_LevelsPath.Text)) // If still no /Levels/ or /Maps/ folder was found
-			{
-				// Suggest a path
-				textBox_LevelsPath.Text = Path.Combine(Path.GetDirectoryName(exeFilePath), "Levels");
-
-				// Highlight the textBox and add a toolTip for it to indicate that the pre-set path is just a suggestion
-				textBox_LevelsPath.BackColor = Color.FromArgb(48, 96, 64);
-				toolTip.SetToolTip(textBox_LevelsPath, "Suggested path");
-			}
 		}
 
 		#endregion Initialization
@@ -207,24 +75,20 @@ namespace TombIDE
 
 		private void button_BrowseScript_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new BrowseFolderDialog())
-			{
-				dialog.Title = "Select an existing /Script/ folder for the project";
+			using var dialog = new BrowseFolderDialog();
+			dialog.Title = "Select an existing script directory for the project...";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_ScriptPath.Text = dialog.Folder;
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				textBox_ScriptPath.Text = dialog.Folder;
 		}
 
 		private void button_BrowseLevels_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new BrowseFolderDialog())
-			{
-				dialog.Title = "Choose a /Levels/ folder for the project";
+			using var dialog = new BrowseFolderDialog();
+			dialog.Title = "Choose a /Levels/ directory for the project...";
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_LevelsPath.Text = dialog.Folder;
-			}
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				textBox_LevelsPath.Text = dialog.Folder;
 		}
 
 		private void button_Import_Click(object sender, EventArgs e)
@@ -233,101 +97,64 @@ namespace TombIDE
 
 			try
 			{
-				if (!File.Exists(textBox_ExePath.Text))
-					throw new FileNotFoundException("The game's .exe file doesn't exist anymore.");
-
-				if (!File.Exists(textBox_LauncherPath.Text))
-					throw new FileNotFoundException("The project's launcher file doesn't exist anymore.");
-
 				string projectName = PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
+				string projectDirectory = Path.GetDirectoryName(ProjectDTO.LauncherExecutableFilePath);
 
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for the project.");
 
-				if (projectName.Equals("engine", StringComparison.OrdinalIgnoreCase)) // Safety
+				if (projectName.Equals("Engine", StringComparison.OrdinalIgnoreCase)) // Safety
 					throw new ArgumentException("Illegal project name.");
 
 				if (string.IsNullOrWhiteSpace(textBox_ScriptPath.Text))
-					throw new ArgumentException("You must specify the /Script/ folder path of the project.");
+					throw new ArgumentException("You must specify the Script directory path of the project.");
 
 				if (string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
-					throw new ArgumentException("You must specify the /Levels/ folder path for the project.");
+					throw new ArgumentException("You must specify the Levels directory path for the project.");
 
-				TRVersion.Game gameVersion = GetGameVersion(textBox_ExePath.Text);
-
-				string launcherFilePath = textBox_LauncherPath.Text;
-
-				string projectPath = GetProjectDirectory(textBox_ExePath.Text);
-				string enginePath = Path.GetDirectoryName(textBox_ExePath.Text);
-				string scriptPath = textBox_ScriptPath.Text.Trim();
-				string levelsPath = textBox_LevelsPath.Text.Trim();
-
-				// Check if a script.txt file exists in the specified /Script/ folder
-				if (gameVersion != TRVersion.Game.TR1 && gameVersion != TRVersion.Game.TombEngine && !File.Exists(Path.Combine(scriptPath, "script.txt"))) // TODO: T1M and TEN need script files too !!!
-					throw new FileNotFoundException("Selected /Script/ folder does not contain a Script.txt file.");
+				string scriptDirectoryPath = textBox_ScriptPath.Text.Trim();
+				string levelsDirectoryPath = textBox_LevelsPath.Text.Trim();
 
 				// Check if the levelsPath directory exists, if so, check if it contains any valid .prj2 files
-				if (Directory.Exists(levelsPath))
+				if (Directory.Exists(levelsDirectoryPath))
 				{
 					// Check if the directory contains non-backup .prj2 files
-					List<string> prj2Files = LevelHandling.GetValidPrj2FilesFromDirectory(levelsPath);
+					List<string> prj2Files = LevelHandling.GetValidPrj2FilesFromDirectory(levelsDirectoryPath);
 
 					if (prj2Files.Count > 0)
 					{
 						DialogResult result = DarkMessageBox.Show(this,
 							"TombIDE will change the \"Game\" settings of all the .prj2 files\n" +
 							"in the specified /Levels/ folder to match the imported project settings.\n" +
-							"Would you like to to create a backup of the folder first?", "Create backup?",
+							"Would you like to create a backup of the folder first?", "Create backup?",
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 						if (result == DialogResult.Yes)
-							CreateLevelsBackup(levelsPath);
+							CreateLevelsBackup(levelsDirectoryPath);
 					}
 				}
 				else
-					Directory.CreateDirectory(levelsPath);
+					Directory.CreateDirectory(levelsDirectoryPath);
 
-				var importedProject = new Project
+				IGameProject importedProject = ProjectDTO.GameVersion switch
 				{
-					Name = projectName,
-					GameVersion = gameVersion,
-					DefaultLanguage = GameLanguage.English,
-					LaunchFilePath = launcherFilePath,
-					ProjectPath = projectPath,
-					EnginePath = enginePath,
-					ScriptPath = scriptPath,
-					LevelsPath = levelsPath
+					TRVersion.Game.TR1 => new Tomb1MainGameProject(projectName, projectDirectory, levelsDirectoryPath),
+					TRVersion.Game.TR2 => new TR2GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
+					TRVersion.Game.TR3 => new TR3GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
+					TRVersion.Game.TR4 => new TR4GameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath),
+					TRVersion.Game.TRNG => new TRNGGameProject(projectName, projectDirectory, levelsDirectoryPath, scriptDirectoryPath, ProjectDTO.PluginsDirectoryPath),
+					TRVersion.Game.TombEngine => new TENGameProject(projectName, projectDirectory, levelsDirectoryPath),
+					_ => throw new NotImplementedException("Detected game version doesn't match a supported version.")
 				};
 
-				if (importedProject.GameVersion == TRVersion.Game.TombEngine)
-				{
-					if (Path.GetDirectoryName(textBox_ExePath.Text).Equals("x64", StringComparison.OrdinalIgnoreCase)
-						|| Path.GetDirectoryName(textBox_ExePath.Text).Equals("x86", StringComparison.OrdinalIgnoreCase))
-					{
-						if (Environment.Is64BitOperatingSystem)
-							importedProject.EngineExecutableDirectory = Path.Combine(importedProject.EnginePath, "Bin", "x64");
-						else
-							importedProject.EngineExecutableDirectory = Path.Combine(importedProject.EnginePath, "Bin", "x86");
-					}
-					else
-						importedProject.EngineExecutableDirectory = importedProject.EnginePath;
-				}
-				else
-					importedProject.EngineExecutableDirectory = importedProject.EnginePath;
-
-				// Create the .trproj file
-				importedProject.Save(); // .trproj = .xml but .trproj can be opened with TombIDE
-
-				// // // // // // // //
+				importedProject.Save();
 				ImportedProject = importedProject;
-				// // // // // // // //
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				button_Import.Enabled = true;
-
 				DialogResult = DialogResult.None;
 			}
 		}
@@ -354,13 +181,11 @@ namespace TombIDE
 					newBackupFolderPath = levelsPath + "_BACKUP_2";
 				else
 				{
-					List<int> existingNumbers = new List<int>();
+					var existingNumbers = new List<int>();
 
 					foreach (string existingBackupFolder in existingBackupFolders)
 					{
-						int result;
-
-						if (int.TryParse(Path.GetFileNameWithoutExtension(existingBackupFolder).Split('_')[2], out result))
+						if (int.TryParse(Path.GetFileNameWithoutExtension(existingBackupFolder).Split('_')[2], out int result))
 							existingNumbers.Add(result);
 					}
 
@@ -378,7 +203,7 @@ namespace TombIDE
 				// Copy all the .prj2 files
 				foreach (string file in Directory.GetFiles(levelsPath, "*.prj2", SearchOption.AllDirectories))
 				{
-					if (!ProjectLevel.IsBackupFile(Path.GetFileName(file)))
+					if (!Prj2Helper.IsBackupFile(file))
 						File.Copy(file, file.Replace(levelsPath, newBackupFolderPath));
 				}
 
@@ -389,53 +214,6 @@ namespace TombIDE
 			{
 				DarkMessageBox.Show(this, "Failed to create backup.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}
-
-		private string GetProjectDirectory(string gameExeFilePath)
-		{
-			string gameExeDirectory = Path.GetDirectoryName(gameExeFilePath);
-
-			// Check if the project is using the new format
-			if (Path.GetFileName(gameExeDirectory).Equals("engine", StringComparison.OrdinalIgnoreCase))
-				return Path.GetDirectoryName(gameExeDirectory);
-			else if (Path.GetFileName(gameExeDirectory).Equals("x64", StringComparison.OrdinalIgnoreCase)
-				|| Path.GetFileName(gameExeDirectory).Equals("x86", StringComparison.OrdinalIgnoreCase)) // New TEN
-				return Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(gameExeDirectory)));
-			else
-				return gameExeDirectory;
-		}
-
-		private TRVersion.Game GetGameVersion(string exeFilePath)
-		{
-			TRVersion.Game gameVersion = 0;
-
-			switch (Path.GetFileName(exeFilePath).ToLower())
-			{
-				case "tomb1main.exe":
-					gameVersion = TRVersion.Game.TR1;
-					break;
-
-				case "tomb2.exe":
-					gameVersion = TRVersion.Game.TR2;
-					break;
-
-				case "tomb3.exe":
-					gameVersion = TRVersion.Game.TR3;
-					break;
-
-				case "tomb4.exe":
-					gameVersion = TRVersion.Game.TR4;
-					break;
-
-				case "tombengine.exe":
-					gameVersion = TRVersion.Game.TombEngine;
-					break;
-			}
-
-			if (gameVersion == TRVersion.Game.TR4 && File.Exists(Path.Combine(Path.GetDirectoryName(exeFilePath), "tomb_nextgeneration.dll")))
-				gameVersion = TRVersion.Game.TRNG;
-
-			return gameVersion;
 		}
 
 		#endregion Methods

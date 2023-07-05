@@ -64,6 +64,9 @@
 
 		// Help:
 
+		ScriptingDocumentation,
+		Tomb3ExtraCommands,
+		LuaBasics,
 		About,
 
 		// Other:
