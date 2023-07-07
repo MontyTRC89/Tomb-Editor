@@ -946,9 +946,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Length = light.InnerRange * Level.BlockSizeUnit;
                         newLight.CutOff = light.OuterRange * Level.BlockSizeUnit;
                         Vector3 spotDirection = light.GetDirection();
-                        newLight.Direction.X = -spotDirection.X;
-                        newLight.Direction.Y = spotDirection.Y;
-                        newLight.Direction.Z = -spotDirection.Z;
+                        newLight.Direction.X = spotDirection.X;
+                        newLight.Direction.Y = -spotDirection.Y;
+                        newLight.Direction.Z = spotDirection.Z;
                         newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.Sun:
@@ -958,9 +958,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Length = 0;
                         newLight.CutOff = 0;
                         Vector3 sunDirection = light.GetDirection();
-                        newLight.Direction.X = -sunDirection.X;
-                        newLight.Direction.Y = sunDirection.Y;
-                        newLight.Direction.Z = -sunDirection.Z;
+                        newLight.Direction.X = sunDirection.X;
+                        newLight.Direction.Y = -sunDirection.Y;
+                        newLight.Direction.Z = sunDirection.Z;
                         newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.FogBulb:
