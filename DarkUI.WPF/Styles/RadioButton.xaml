@@ -1,15 +1,26 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:DarkUI.WPF">
+
 	<Style TargetType="{x:Type RadioButton}">
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
+		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="4,0,0,0" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
+
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Default}" />
+			</Setter.Value>
+		</Setter>
 
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RadioButton}">
-					<Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
+					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
@@ -17,25 +28,26 @@
 
 						<Border
 							x:Name="PART_BoxBorder"
-							Width="{DynamicResource CheckBoxWidth}"
-							Height="{DynamicResource CheckBoxHeight}"
+							Width="{x:Static local:Defaults.RadioButtonBoxWidth}"
+							Height="{x:Static local:Defaults.RadioButtonBoxHeight}"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{DynamicResource InputControl_Glyph}"
-							BorderThickness="{DynamicResource Default_BorderThickness}"
+							BorderThickness="{x:Static local:Defaults.Thickness_Border}"
 							CornerRadius="100">
 							<Ellipse
 								x:Name="PART_OptionMark"
-								Width="7"
-								Height="7"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
+								Margin="{x:Static local:Defaults.Margin_CheckMark}"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
 								Fill="{DynamicResource InputControl_Glyph}"
+								Stretch="Uniform"
 								Visibility="Hidden" />
 						</Border>
 						<Border Grid.Column="1" Background="{TemplateBinding Background}">
 							<ContentPresenter
+								x:Name="PART_ContentPresenter"
 								Margin="{TemplateBinding Padding}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -57,7 +69,7 @@
 
 						<Trigger Property="IsPressed" Value="True">
 							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Disabled}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource InputControl_Border_Disabled}" />
+							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource InputControl_Border}" />
 						</Trigger>
 
 						<Trigger Property="IsChecked" Value="True">
@@ -66,8 +78,8 @@
 
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Disabled}" />
-							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource InputControl_Border_Disabled}" />
-							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="PART_OptionMark" Property="Fill" Value="{DynamicResource InputControl_Border}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

@@ -1,4 +1,4 @@
-﻿using DarkUI.WPF.Controls;
+﻿using DarkUI.WPF.CustomControls;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;

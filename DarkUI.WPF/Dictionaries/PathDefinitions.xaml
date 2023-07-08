@@ -5,5 +5,5 @@
 	<PathGeometry x:Key="WideArrowRight" Figures="M 5 5 L 0 10 L 0 0 Z" />
 	<PathGeometry x:Key="NarrowArrowUp" Figures="M 3 -4 L 6 0 L 0 0 Z" />
 	<PathGeometry x:Key="NarrowArrowDown" Figures="M 3 4 L 6 0 L 0 0 Z" />
-	<PathGeometry x:Key="CheckMark" Figures="M 0 5 L 3 9 M 3 9 L 9 0" />
+	<PathGeometry x:Key="CheckMark" Figures="M 0 4 L 3 7 L 8 0" />
 </ResourceDictionary>

@@ -1,7 +1,7 @@
 ﻿using AvalonDock;
 using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
-using DarkUI.WPF.Controls;
+using DarkUI.WPF.CustomControls;
 using NLog;
 using System;
 using System.ComponentModel;

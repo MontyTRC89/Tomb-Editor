@@ -1,12 +1,25 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style x:Key="DarkTextBox" TargetType="{x:Type TextBox}">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:DarkUI.WPF">
+
+	<Style TargetType="{x:Type TextBox}">
 		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{DynamicResource Default_BorderThickness}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
 		<Setter Property="CaretBrush" Value="{DynamicResource Default_Text}" />
-		<Setter Property="FontSize" Value="11" />
+		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="2,2,2,3" />
+		<Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" Top="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" />
+			</Setter.Value>
+		</Setter>
 
 		<Setter Property="Template">
 			<Setter.Value>
@@ -16,20 +29,27 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
-						SnapsToDevicePixels="True"
-						UseLayoutRounding="True">
+						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<ScrollViewer
 							x:Name="PART_ContentHost"
 							Focusable="False"
 							HorizontalScrollBarVisibility="Hidden"
-							VerticalScrollBarVisibility="Hidden" />
+							VerticalScrollBarVisibility="Hidden">
+							<ScrollViewer.ContentTemplate>
+								<DataTemplate>
+									<Grid Background="{Binding Background, ElementName=PART_ContentHost}" RenderOptions.ClearTypeHint="Enabled">
+										<ContentPresenter Content="{Binding Path=Content, ElementName=PART_ContentHost}" />
+									</Grid>
+								</DataTemplate>
+							</ScrollViewer.ContentTemplate>
+						</ScrollViewer>
 					</Border>
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Disabled}" />
-							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter TargetName="PART_ContentHost" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -39,10 +59,8 @@
 
 	<Style
 		x:Key="FlatDarkTextBox"
-		BasedOn="{StaticResource DarkTextBox}"
+		BasedOn="{StaticResource {x:Type TextBox}}"
 		TargetType="{x:Type TextBox}">
 		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
 	</Style>
-
-	<Style BasedOn="{StaticResource DarkTextBox}" TargetType="{x:Type TextBox}" />
 </ResourceDictionary>

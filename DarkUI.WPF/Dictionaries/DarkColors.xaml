@@ -67,9 +67,9 @@
 	<SolidColorBrush x:Key="Default_Background" Color="{DynamicResource GreyBackgroundColor}" />
 	<SolidColorBrush x:Key="Default_Backdrop" Color="{DynamicResource DarkBackgroundColor}" />
 	<SolidColorBrush x:Key="Default_Text" Color="{DynamicResource LightTextColor}" />
-	<SolidColorBrush x:Key="Default_Text_Disabled" Color="{DynamicResource DisabledTextColor}" />
 	<SolidColorBrush x:Key="Default_Border" Color="{DynamicResource LightBorderColor}" />
 	<SolidColorBrush x:Key="Default_Border_HighContrast" Color="{DynamicResource DarkBorderColor}" />
+	<sys:Double x:Key="DisabledContent_Opacity">0.5</sys:Double>
 
 	<SolidColorBrush x:Key="InputControl_Background" Color="{DynamicResource LightBackgroundColor}" />
 	<SolidColorBrush x:Key="InputControl_Background_Checked" Color="{DynamicResource HighlightFillColor}" />
@@ -78,14 +78,11 @@
 	<SolidColorBrush x:Key="InputControl_Background_Pressed" Color="{DynamicResource DarkBackgroundColor}" />
 	<SolidColorBrush x:Key="InputControl_Border" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Checked" Color="{DynamicResource BlueHighlightColor}" />
-	<SolidColorBrush x:Key="InputControl_Border_Defaulted" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="InputControl_Border_Disabled" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="InputControl_Border_Hovered" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="InputControl_Border_Pressed" Color="{DynamicResource BlueHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph" Color="{DynamicResource LightestBackgroundColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Disabled" Color="{DynamicResource GreyHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_Glyph_Hovered" Color="{DynamicResource BlueHighlightColor}" />
-	<SolidColorBrush x:Key="InputControl_Glyph_Pressed" Color="{DynamicResource ActiveControlColor}" />
+	<SolidColorBrush x:Key="InputControl_Glyph_Pressed" Color="{DynamicResource GreyHighlightColor}" />
 	<SolidColorBrush x:Key="InputControl_HoverHighlight" Color="White" />
 	<sys:Double x:Key="InputControl_HoverHighlight_Opacity">0.15</sys:Double>
 
@@ -95,10 +92,6 @@
 	<SolidColorBrush x:Key="TabControl_Backgreound_InactiveTab" Color="{DynamicResource MediumBackgroundColor}" />
 	<SolidColorBrush x:Key="TabControl_Backgreound_SelectedTab" Color="{DynamicResource GreyBackgroundColor}" />
 	<SolidColorBrush x:Key="TabControl_Border" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="TabControl_Border_Disabled" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="TabControl_Border_HoveredTab" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="TabControl_Border_InactiveTab" Color="{DynamicResource GreySelectionColor}" />
-	<SolidColorBrush x:Key="TabControl_Border_SelectedTab" Color="{DynamicResource GreySelectionColor}" />
 	<SolidColorBrush x:Key="TabControl_Text_Disabled" Color="{DynamicResource DisabledTextColor}" />
 	<SolidColorBrush x:Key="TabControl_Text_HoveredTab" Color="{DynamicResource LightTextColor}" />
 	<SolidColorBrush x:Key="TabControl_Text_InactiveTab" Color="{DynamicResource LightestBackgroundColor}" />
@@ -111,11 +104,15 @@
 	<SolidColorBrush x:Key="ScrollViewer_Glyph_Hovered" Color="{DynamicResource GreyHighlightColor}" />
 	<SolidColorBrush x:Key="ScrollViewer_Glyph_Pressed" Color="{DynamicResource ActiveControlColor}" />
 
+	<SolidColorBrush x:Key="ItemControl_Item_Background_Alternation" Color="{DynamicResource HeaderBackgroundColor}" />
 	<SolidColorBrush x:Key="ItemControl_Item_Background_Selected" Color="{DynamicResource BlueSelectionColor}" />
 	<SolidColorBrush x:Key="ItemControl_Item_Background_Selected_LostFocus" Color="{DynamicResource GreySelectionColor}" />
 
 	<SolidColorBrush x:Key="WindowHeader_Background" Color="{DynamicResource LightBackgroundColor}" />
 	<SolidColorBrush x:Key="WindowHeader_Background_Active" Color="{DynamicResource BlueBackgroundColor}" />
+
+	<sys:Double x:Key="DropShadow_Opacity">0.3</sys:Double>
+	<sys:Double x:Key="DropShadow_Depth">3</sys:Double>
 
 	<!--  - - - - - - - - - - - - - - - - - - - - - -  -->
 	<!--  - - - - - - Avalon Dock brushes - - - - - -  -->

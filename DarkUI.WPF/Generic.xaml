@@ -4,6 +4,9 @@
 		<ResourceDictionary Source="Dictionaries/MarginsPaddingsAndSizes.xaml" />
 		<ResourceDictionary Source="Dictionaries/PathDefinitions.xaml" />
 
+		<ResourceDictionary Source="Styles/TextBlock.xaml" />
+		<ResourceDictionary Source="Styles/TextBox.xaml" />
+
 		<ResourceDictionary Source="Styles/Button.xaml" />
 		<ResourceDictionary Source="Styles/CheckBox.xaml" />
 		<ResourceDictionary Source="Styles/ColorPickerButton.xaml" />
@@ -21,8 +24,6 @@
 		<ResourceDictionary Source="Styles/SearchableComboBox.xaml" />
 		<ResourceDictionary Source="Styles/StatusBar.xaml" />
 		<ResourceDictionary Source="Styles/TabControl.xaml" />
-		<ResourceDictionary Source="Styles/TextBlock.xaml" />
-		<ResourceDictionary Source="Styles/TextBox.xaml" />
 		<ResourceDictionary Source="Styles/ToggleButton.xaml" />
 		<ResourceDictionary Source="Styles/ToolBar.xaml" />
 		<ResourceDictionary Source="Styles/TreeView.xaml" />

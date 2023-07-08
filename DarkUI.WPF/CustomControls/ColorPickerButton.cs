@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace DarkUI.WPF.Controls
+namespace DarkUI.WPF.CustomControls
 {
 	public class ColorPickerButton : Button
 	{
@@ -20,7 +20,7 @@ namespace DarkUI.WPF.Controls
 				nameof(SelectedColor),
 				typeof(Color),
 				typeof(ColorPickerButton),
-				new FrameworkPropertyMetadata(Colors.Transparent, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+				new FrameworkPropertyMetadata(Colors.White, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

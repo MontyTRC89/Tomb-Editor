@@ -1,12 +1,12 @@
-﻿using AvalonDock.Controls;
+﻿using DarkUI.WPF.Extensions;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DarkUI.WPF.Controls
+namespace DarkUI.WPF.CustomControls
 {
-	public class TreeViewItemEx : TreeViewItem
+	public class AlternatingTreeViewItem : TreeViewItem
 	{
-		public TreeViewItemEx()
+		public AlternatingTreeViewItem()
 		{
 			Loaded += TreeViewItemEx_Changed;
 			Expanded += TreeViewItemEx_Changed;
