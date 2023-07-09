@@ -57,10 +57,10 @@
 			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" t5m="SKATEBOARD_KID" />
 			<moveable id="31" name="Cowboy" essential="false" t5m="COWBOY" />
 			<moveable id="32" name="Mr. T" essential="false" t5m="KOLD" />
-			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="WINGED_NATLA" />
+			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
-			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="36" name="Swinging blade" essential="false" t5m="SWINGING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="39" name="Dart" hidden="true" />
@@ -72,10 +72,10 @@
 			<moveable id="45" name="Thor's hammer's block" essential="false" />
 			<moveable id="46" name="Lightning ball / Some kind of box?" essential="false" t5m="ANIMATING34" />
 			<moveable id="47" name="Metal rod / Powered mining cart" essential="false" />
-			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
-			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
-			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
+			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
+			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE3" />
+			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE4" />
 			<moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100" />
 			<moveable id="53" name="Falling ceiling" essential="false" t5m="FALLING_CEILING" />
 			<moveable id="54" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
@@ -845,10 +845,10 @@
 			<moveable id="64" name="Slamming door" essential="false" />
 			<moveable id="65" name="Elevator" essential="false" t5m="LIFT" />
 			<moveable id="66" name="Minisub" essential="false" />
-			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
-			<moveable id="69" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
-			<moveable id="70" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
+			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
+			<moveable id="69" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE3" />
+			<moveable id="70" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE4" />
 			<moveable id="71" name="Big bowl (Ice Palace)" essential="false" t5m="ANIMATING1" />
 			<moveable id="72" name="Breakable window (can shoot out)" essential="false" t5m="SMASH_OBJECT1" />
 			<moveable id="73" name="Breakable window (must jump through)" essential="false" t5m="SMASH_OBJECT2" />
@@ -1565,8 +1565,8 @@
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="SLAMMING_DOORS" />
-			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2"/>
+			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2"/>
 			<moveable id="101" name="Destroyable boarded-up window" essential="false" t5m="SMASH_OBJECT1" />
 			<moveable id="102" name="Destroyable boarded-up window / wall" essential="false" t5m="SMASH_OBJECT2" />
 			<moveable id="106" name="Overhead pulley hook" essential="false" t5m="MOVING_BLADE" />
@@ -6201,9 +6201,7 @@
 			<moveable id="221" name="CENTAUR_MUTANT" />
 			<moveable id="222" name="DOPPELGANGER" use_body_from="225" />
 			<moveable id="223" name="NATLA" />
-			<moveable id="224" name="WINGED_NATLA" />
 			<moveable id="225" name="GIANT_MUTANT" />
-			<moveable id="226" name="PROJ_NATLA" />
 			<moveable id="227" name="PROJ_SHARD" />
 			<moveable id="228" name="PROJ_BOMB" />
 			<moveable id="229" name="YETI" />
@@ -6403,6 +6401,7 @@
 			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="448" name="ELECTRIC_CLEANER" />
 			<moveable id="449" name="SLAMMING_DOORS" />
+			<moveable id="450" name="SWINGING_BLADE" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
@@ -7040,6 +7039,7 @@
 			<sprite_sequence id="1375" name="AIR_BAR_TEXTURE" />
 			<sprite_sequence id="1376" name="DASH_BAR_TEXTURE" />
 			<sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
+			<sprite_sequence id="1380" name="CROSSHAIR" />
 		</sprite_sequences>
 		<sounds max="8192">
 			<sound id="0" name="TR4_LARA_FOOTSTEPS" t5m="0" />
@@ -8189,22 +8189,33 @@
 			<sound id="1144" name="TR1_SLAMDOOR_CLOSE" t5m="1144" />
 		</sounds>
 		<animations>
+			<!--LARA  -->
+			<anim item="0" id="343" name="PUSHABLE_OBJECT_PULL" />
+			<anim item="0" id="345" name="PUSHABLE_OBJECT_PUSH" />
+			<anim item="0" id="364" name="PUSHABLE_OBJECT_PUSH_EDGE_SLIP" />
+			<anim item="0" id="366" name="PUSHABLE_BLOCK_PUSH_EDGE_SLIP" />
+			<anim item="0" id="417" name="PUSHABLE_OBJECT_PUSH_TO_STAND" />
+			<anim item="0" id="418" name="PUSHABLE_OBJECT_PULL_TO_STAND" />
+			<anim item="0" id="442" name="UNUSED_FREE_SLOT" />
+
 			<!--LARA EXTRA ANIMATIONS -->
-			<anim item="1" id="0" name="UNSURE?" />
-			<anim item="1" id="1" name="WAKING_UP" />
-			<anim item="1" id="2" name="XIAN_SPEAR_GUARD_IMPALE" />
-			<anim item="1" id="3" name="SUBWAY_TRAIN_DEATH"/>
+			<anim item="1" id="0" name="PULL_DAGGER_FROM_DRAGON" />
+			<anim item="1" id="1" name="WAKE_UP" />
+			<anim item="1" id="2" name="SPEAR_GUARDIAN_DEATH" />
+			<anim item="1" id="3" name="TRAIN_DEATH_START"/>
 			<anim item="1" id="4" name="TYRANNOSAUR_DEATH" />
-			<anim item="1" id="5" name="UNSURE?" />
+			<anim item="1" id="5" name="SHARK_DEATH" />
 			<anim item="1" id="6" name="GIANT_MUTANT_DEATH" />
-			<anim item="1" id="7" name="SHIVA_IMPALE_DEATH" />
-			<anim item="1" id="8" name="TNT_ACTIVATION" />
-			<anim item="1" id="9" name="MIDAS_LEAD_TO_GOLD" />
+			<anim item="1" id="7" name="SHIVA_DEATH" />
+			<anim item="1" id="8" name="ACTIVATE_TNT_SWITCH" />
+			<anim item="1" id="9" name="MIDAS_GOLD_SWITCH" />
 			<anim item="1" id="10" name="MIDAS_GOLDEN_DEATH" />
-			<anim item="1" id="11" name="GONG_STRIKE" />
-			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
-			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
-			<anim item="1" id="14" name="DEATH_SETH" />
+			<anim item="1" id="11" name="STRIKE_GONG" />
+			<anim item="1" id="12" name="WILLARD_DEATH" />
+			<anim item="1" id="13" name="TRAIN_DEATH_END" />
+			<anim item="1" id="14" name="SETH_DEATH" />
+			<anim item="1" id="15" name="YETI_SETH" />
+			<anim item="1" id="16" name="BIG_SCORPION_DEATH" />
 			
 			<!--APE -->
 			<anim item="102" id="0" name="IDLE" />
@@ -8599,6 +8610,9 @@
 			<state item="0" id="171" name="CROUCH_TURN_180" />
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
+			<state item="0" id="189" name="REMOVE_PUZZLE" />
+			<state item="0" id="190" name="PUSHABLE_EDGE_SLIP" />
+			<state item="0" id="191" name="SPRINT_SLIDE" />
 			
 			<!-- APE -->
 			<state item="102" id="1" name="IDLE" />
