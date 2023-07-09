@@ -7,20 +7,13 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 {
 	public static class ScriptCompiler
 	{
-		public static bool Compile(string projectScriptPath, string projectEnginePath, bool isTR3, bool showLogs)
+		public static bool ClassicCompile(string inputDirectory, string outputDirectory, bool isTR3, bool pause = true)
 		{
-			string gameflowExecutablePath = isTR3 ? DefaultPaths.GameFlow3Executable : DefaultPaths.GameFlow2Executable;
-			string gameflowDirectory = isTR3 ? DefaultPaths.GameFlow3Directory : DefaultPaths.GameFlow2Directory;
-
-			CopyFilesToGFScriptDirectory(projectScriptPath, gameflowDirectory);
+			string gameflowDirectory = DefaultPaths.GameFlow2Directory;
+			CopyFilesToGFScriptDirectory(inputDirectory, gameflowDirectory);
 
 			string batchFilePath = Path.Combine(gameflowDirectory, "compile.bat");
-
-			string batchFileContent = isTR3
-				? $"TRGameFlow Script.txt\n" +
-					(showLogs ? "@pause" : string.Empty)
-				: $"gameflow -Game 2\n" +
-					(showLogs ? "@pause" : string.Empty);
+			string batchFileContent = $"gameflow -Game " + (isTR3 ? 3 : 2) + "\n" + (pause ? "@pause" : string.Empty);
 
 			File.WriteAllText(batchFilePath, batchFileContent);
 
@@ -36,23 +29,64 @@ namespace TombLib.Scripting.GameFlowScript.Utils
 			process.WaitForExit();
 			process.Close();
 
-			string compiledScriptFilePath = isTR3
-				? Path.Combine(gameflowDirectory, "Script.dat")
-				: Path.Combine(gameflowDirectory, "tombpc.dat");
-
+			string compiledScriptFilePath = Path.Combine(gameflowDirectory, "tombpc.dat");
 			bool success = false;
 
 			if (File.Exists(compiledScriptFilePath))
 			{
-				File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "data", "tombpc.dat"), true);
+				File.Copy(compiledScriptFilePath, Path.Combine(outputDirectory, "tombpc.dat"), true);
 				success = true;
 			}
 
 			var gfScriptDirectory = new DirectoryInfo(gameflowDirectory);
 
-			foreach (FileSystemInfo fileSystemInfo in gfScriptDirectory.EnumerateFileSystemInfos().Where(x
-				=> !x.Name.Equals("gameFlow.exe", StringComparison.OrdinalIgnoreCase)
-				&& !x.Name.Equals("TRGameFlow.exe", StringComparison.OrdinalIgnoreCase)))
+			foreach (FileSystemInfo fileSystemInfo in gfScriptDirectory.EnumerateFileSystemInfos()
+				.Where(x => !x.Name.Equals("gameFlow.exe", StringComparison.OrdinalIgnoreCase)))
+			{
+				if (fileSystemInfo is DirectoryInfo dir)
+					dir.Delete(true);
+				else
+					fileSystemInfo.Delete();
+			}
+
+			return success;
+		}
+
+		public static bool CompileTR3Version2Plus(string inputDirectory, string outputDirectory, bool pause = true)
+		{
+			string gameflowDirectory = DefaultPaths.GameFlow3Directory;
+			CopyFilesToGFScriptDirectory(inputDirectory, gameflowDirectory);
+
+			string batchFilePath = Path.Combine(gameflowDirectory, "compile.bat");
+			string batchFileContent = $"TRGameFlow Script.txt\n" + (pause ? "@pause" : string.Empty);
+
+			File.WriteAllText(batchFilePath, batchFileContent);
+
+			var startInfo = new ProcessStartInfo
+			{
+				FileName = batchFilePath,
+				WorkingDirectory = gameflowDirectory,
+				UseShellExecute = true
+			};
+
+			var process = Process.Start(startInfo);
+
+			process.WaitForExit();
+			process.Close();
+
+			string compiledScriptFilePath = Path.Combine(gameflowDirectory, "Script.dat");
+			bool success = false;
+
+			if (File.Exists(compiledScriptFilePath))
+			{
+				File.Copy(compiledScriptFilePath, Path.Combine(outputDirectory, "tombpc.dat"), true);
+				success = true;
+			}
+
+			var gfScriptDirectory = new DirectoryInfo(gameflowDirectory);
+
+			foreach (FileSystemInfo fileSystemInfo in gfScriptDirectory.EnumerateFileSystemInfos()
+				.Where(x => !x.Name.Equals("TRGameFlow.exe", StringComparison.OrdinalIgnoreCase)))
 			{
 				if (fileSystemInfo is DirectoryInfo dir)
 					dir.Delete(true);
