@@ -6201,9 +6201,7 @@
 			<moveable id="221" name="CENTAUR_MUTANT" />
 			<moveable id="222" name="DOPPELGANGER" use_body_from="225" />
 			<moveable id="223" name="NATLA" />
-			<moveable id="224" name="WINGED_NATLA" />
 			<moveable id="225" name="GIANT_MUTANT" />
-			<moveable id="226" name="PROJ_NATLA" />
 			<moveable id="227" name="PROJ_SHARD" />
 			<moveable id="228" name="PROJ_BOMB" />
 			<moveable id="229" name="YETI" />
