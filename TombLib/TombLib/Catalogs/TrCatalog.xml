@@ -57,7 +57,7 @@
 			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" t5m="SKATEBOARD_KID" />
 			<moveable id="31" name="Cowboy" essential="false" t5m="COWBOY" />
 			<moveable id="32" name="Mr. T" essential="false" t5m="KOLD" />
-			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="WINGED_NATLA" />
+			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
