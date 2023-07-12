@@ -10,6 +10,7 @@ Tomb Editor:
  * Fix particle emitter node not working.
 
 WadTool:
+ * Don't recalculate normals silently when importing mesh through static mesh editor.
  * Fix broken sound remap when copying objects from legacy wads to TEN wad.
  
 TombIDE:
