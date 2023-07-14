@@ -4,12 +4,14 @@ Version 1.6.8
 Tomb Editor:
  * Add preview button for sound playback node functions.
  * Add nodes to manage timers.
+ * Fix current node item list remaining open after scrolling node graph with mouse wheel.
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
  * Fix TEN level compiler producing incorrect normals for imported geometry.
  * Fix TEN level compiler not scaling merged static meshes.
  * Fix particle emitter node not working.
 
 WadTool:
+ * Don't recalculate normals silently when importing mesh through static mesh editor.
  * Fix broken sound remap when copying objects from legacy wads to TEN wad.
  
 TombIDE:
