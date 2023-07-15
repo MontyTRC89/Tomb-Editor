@@ -1,11 +1,28 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:DarkUI.WPF">
+
 	<Style TargetType="{x:Type Label}">
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="0,2,2,2" />
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness
+					Bottom="{x:Static local:Defaults.ThicknessWidth_Tiny}"
+					Right="{x:Static local:Defaults.ThicknessWidth_Tiny}"
+					Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
+			</Setter.Value>
+		</Setter>
 	</Style>
 
-	<Style x:Key="ExtraHorizontalMarginLabel" TargetType="{x:Type Label}">
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="4,0,4,0" />
+	<Style
+		x:Key="ExtraHorizontalMarginLabel"
+		BasedOn="{StaticResource {x:Type Label}}"
+		TargetType="{x:Type Label}">
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Default}" Right="{x:Static local:Defaults.ThicknessWidth_Default}" />
+			</Setter.Value>
+		</Setter>
 	</Style>
 </ResourceDictionary>

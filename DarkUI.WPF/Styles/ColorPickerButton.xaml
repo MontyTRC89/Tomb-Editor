@@ -5,19 +5,25 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type controls:ColorPickerButton}">
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Padding_Tiny}" />
+		<!--  Layout  -->
+		<Setter Property="Width" Value="{x:Static local:Defaults.InputControlWidth}" />
 		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
-		<Setter Property="HorizontalAlignment" Value="Stretch" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="Width" Value="{x:Static local:Defaults.InputControlWidth}" />
 
+		<!--  Brushes  -->
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Padding_InputControl}" />
+
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type controls:ColorPickerButton}">
 					<Border
-						x:Name="PART_Border"
+						x:Name="border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
@@ -25,25 +31,25 @@
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}" />
 
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="border" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+						</Trigger>
+
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+						</Trigger>
+
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsMouseOver" Value="True" />
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
 						</MultiTrigger>
 
-						<Trigger Property="IsFocused" Value="True">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
-						</Trigger>
-
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-						</Trigger>
-
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_Border" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

@@ -4,28 +4,35 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
 					<Border
-						x:Name="PART_Border"
+						x:Name="border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							Width="17"
+							Width="{x:Static local:Defaults.ComboBoxArrowBoxWidth}"
 							HorizontalAlignment="Right"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="1,0,0,0">
+							BorderBrush="{TemplateBinding BorderBrush}">
+							<Border.BorderThickness>
+								<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Border}" />
+							</Border.BorderThickness>
+
 							<Path
-								x:Name="PART_ArrowDown"
+								x:Name="arrowDown"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Data="{DynamicResource WideArrowDown}"
@@ -35,8 +42,8 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_ArrowDown" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter TargetName="arrowDown" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -45,19 +52,28 @@
 	</Style>
 
 	<Style TargetType="{x:Type ComboBox}">
+		<!--  Layout  -->
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
+
+		<!--  Brushes  -->
 		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
 		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_Default}" />
+
+		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.PanningMode" Value="Both" />
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
-		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
 
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ComboBox}">
@@ -75,7 +91,7 @@
 							Placement="Bottom"
 							PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
 							<Border
-								x:Name="PART_DropDownBorder"
+								x:Name="dropDownBorder"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
@@ -91,9 +107,9 @@
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-							Style="{DynamicResource ComboBoxToggleButton}" />
+							Style="{StaticResource ComboBoxToggleButton}" />
 						<ContentPresenter
-							x:Name="PART_ContentPresenter"
+							x:Name="contentPresenter"
 							Margin="{TemplateBinding Padding}"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -105,12 +121,12 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="HasItems" Value="False">
-							<Setter TargetName="PART_DropDownBorder" Property="Height" Value="20" />
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
 						</Trigger>
 
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+						<Trigger Property="HasItems" Value="False">
+							<Setter TargetName="dropDownBorder" Property="Height" Value="20" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -119,21 +135,28 @@
 	</Style>
 
 	<Style TargetType="{x:Type ComboBoxItem}">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Layout  -->
 		<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_ListViewItem}" />
+		<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_ListViewItem}" />
+
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ComboBoxItem}">
 					<Border
-						x:Name="PART_Border"
+						x:Name="border"
 						Padding="{TemplateBinding Padding}"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
@@ -141,22 +164,22 @@
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<ContentPresenter
-							x:Name="PART_ContentPresenter"
+							x:Name="contentPresenter"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 					</Border>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Alternation}" />
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
 						</Trigger>
 
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Alternation}" />
 						</Trigger>
 
 						<Trigger Property="IsSelected" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -165,7 +188,7 @@
 								<Condition Property="IsKeyboardFocused" Value="True" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
 						</MultiTrigger>
 
 						<MultiTrigger>
@@ -174,7 +197,7 @@
 								<Condition Property="IsKeyboardFocused" Value="True" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected_LostFocus}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected_LostFocus}" />
 						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

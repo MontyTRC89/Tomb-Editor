@@ -6,20 +6,26 @@
 
 	<converters:ValueToPercentConverter x:Key="ValueToPercentConverter" />
 
-	<Style x:Key="TombRaiderBar" TargetType="{x:Type ProgressBar}">
-		<Setter Property="Background" Value="{DynamicResource MediumBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+	<Style TargetType="{x:Type ProgressBar}">
+		<!--  Layout  -->
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource MediumBackground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ProgressBar}">
 					<Grid
-						x:Name="TemplateRoot"
+						x:Name="templateRoot"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
@@ -31,10 +37,10 @@
 							x:Name="PART_Indicator"
 							Margin="{x:Static local:Defaults.Margin_Tiny}"
 							HorizontalAlignment="Left"
-							ClipToBounds="true">
-							<Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}" />
+							ClipToBounds="True">
+							<Rectangle x:Name="indicator" Fill="{TemplateBinding Foreground}" />
 							<Rectangle
-								x:Name="Animation"
+								x:Name="animation"
 								Fill="{DynamicResource LighterBackground}"
 								RenderTransformOrigin="0.5,0.5">
 								<Rectangle.RenderTransform>
@@ -64,12 +70,12 @@
 								<VisualState x:Name="Determinate" />
 								<VisualState x:Name="Indeterminate">
 									<Storyboard RepeatBehavior="Forever">
-										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="Animation" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="animation" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
 											<EasingDoubleKeyFrame KeyTime="0" Value="0.25" />
 											<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.25" />
 											<EasingDoubleKeyFrame KeyTime="0:0:2" Value="0.25" />
 										</DoubleAnimationUsingKeyFrames>
-										<PointAnimationUsingKeyFrames Storyboard.TargetName="Animation" Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)">
+										<PointAnimationUsingKeyFrames Storyboard.TargetName="animation" Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)">
 											<EasingPointKeyFrame KeyTime="0" Value="-0.5,0.5" />
 											<EasingPointKeyFrame KeyTime="0:0:1" Value="0.5,0.5" />
 											<EasingPointKeyFrame KeyTime="0:0:2" Value="1.5,0.5" />
@@ -79,16 +85,18 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 					</Grid>
+
 					<ControlTemplate.Triggers>
 						<Trigger Property="Orientation" Value="Vertical">
-							<Setter TargetName="TemplateRoot" Property="LayoutTransform">
+							<Setter TargetName="templateRoot" Property="LayoutTransform">
 								<Setter.Value>
 									<RotateTransform Angle="-90" />
 								</Setter.Value>
 							</Setter>
 						</Trigger>
-						<Trigger Property="IsIndeterminate" Value="true">
-							<Setter TargetName="Indicator" Property="Visibility" Value="Collapsed" />
+
+						<Trigger Property="IsIndeterminate" Value="True">
+							<Setter TargetName="indicator" Property="Visibility" Value="Collapsed" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -96,7 +104,8 @@
 		</Setter>
 	</Style>
 
-	<Style TargetType="{x:Type ProgressBar}">
+	<Style x:Key="TombRaiderBar" TargetType="{x:Type ProgressBar}">
+		<!--  Brushes  -->
 		<Setter Property="Background" Value="Black" />
 		<Setter Property="BorderBrush">
 			<Setter.Value>
@@ -107,13 +116,16 @@
 				</LinearGradientBrush>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="BorderThickness" Value="2" />
 		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="2" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ProgressBar}">
-					<Grid x:Name="TemplateRoot" SnapsToDevicePixels="True">
+					<Grid x:Name="templateRoot" SnapsToDevicePixels="True">
 						<Border
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
@@ -124,8 +136,8 @@
 							x:Name="PART_Indicator"
 							Margin="4.5"
 							HorizontalAlignment="Left"
-							ClipToBounds="true">
-							<Rectangle x:Name="Animation" RenderTransformOrigin="0.5,0.5">
+							ClipToBounds="True">
+							<Rectangle x:Name="animation" RenderTransformOrigin="0.5,0.5">
 								<Rectangle.RenderTransform>
 									<TransformGroup>
 										<ScaleTransform />
@@ -191,9 +203,10 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 					</Grid>
+
 					<ControlTemplate.Triggers>
 						<Trigger Property="Orientation" Value="Vertical">
-							<Setter TargetName="TemplateRoot" Property="LayoutTransform">
+							<Setter TargetName="templateRoot" Property="LayoutTransform">
 								<Setter.Value>
 									<RotateTransform Angle="-90" />
 								</Setter.Value>

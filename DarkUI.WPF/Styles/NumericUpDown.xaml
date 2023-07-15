@@ -6,36 +6,33 @@
 	xmlns:prim="clr-namespace:Xceed.Wpf.Toolkit.Primitives;assembly=Xceed.Wpf.Toolkit.NET5"
 	xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit.NET5">
 
-	<conv:InverseBoolConverter x:Key="InverseBoolConverter" />
 	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-	<DataTemplate x:Key="DefaultWatermarkTemplate">
-		<ContentControl
-			Margin="0,0,3,0"
-			Content="{Binding}"
-			Focusable="False"
-			Foreground="Gray" />
-	</DataTemplate>
+	<conv:InverseBoolConverter x:Key="InverseBoolConverter" />
 
 	<Style x:Key="NumericRepeatButton" TargetType="{x:Type RepeatButton}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness">
 			<Setter.Value>
 				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Border}" />
 			</Setter.Value>
 		</Setter>
 
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RepeatButton}">
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							x:Name="PART_Border"
+							x:Name="border"
 							Padding="{TemplateBinding Padding}"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
@@ -44,11 +41,10 @@
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								Content="{TemplateBinding Content}"
-								ContentTemplate="{TemplateBinding ContentTemplate}"
-								Focusable="False" />
+								ContentTemplate="{TemplateBinding ContentTemplate}" />
 						</Border>
 						<Border
-							x:Name="PART_HoverIndicatorBorder"
+							x:Name="hoverIndicationBorder"
 							Margin="{TemplateBinding BorderBrush}"
 							Background="{DynamicResource InputControl_HoverHighlight}"
 							Opacity="{DynamicResource InputControl_HoverHighlight_Opacity}"
@@ -56,22 +52,22 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+						</Trigger>
+
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsMouseOver" Value="True" />
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="PART_HoverIndicatorBorder" Property="Visibility" Value="Visible" />
+							<Setter TargetName="hoverIndicationBorder" Property="Visibility" Value="Visible" />
 						</MultiTrigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
-						</Trigger>
-
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -80,29 +76,32 @@
 	</Style>
 
 	<Style TargetType="{x:Type xceed:ButtonSpinner}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Focusable" Value="False" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Layout  -->
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="IsTabStop" Value="True" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
 		<Setter Property="Padding">
 			<Setter.Value>
-				<!--  Why does this need to be 2? Because for some reason this custom control has some vertical alignment problems with text.  -->
-				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" Top="2" />
+				<!--  Why does "Top" need to be "ThicknessWidth_Tiny"? Because for some reason this custom control has vertical alignment problems with text.  -->
+				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
 			</Setter.Value>
 		</Setter>
 
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type xceed:ButtonSpinner}">
 					<Border
-						x:Name="Border"
+						x:Name="border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
@@ -120,7 +119,6 @@
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								Focusable="False" />
-
 							<Grid
 								x:Name="gridContent"
 								Grid.Column="1"
@@ -133,13 +131,16 @@
 
 								<RepeatButton
 									x:Name="PART_IncreaseButton"
-									BorderThickness="1,0,0,1"
 									IsTabStop="{TemplateBinding IsTabStop}"
 									Style="{DynamicResource NumericRepeatButton}">
+									<RepeatButton.BorderThickness>
+										<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_Border}" Left="{x:Static local:Defaults.ThicknessWidth_Border}" />
+									</RepeatButton.BorderThickness>
+
 									<Path
-										x:Name="ArrowUp"
-										Margin="2"
-										Data="{DynamicResource NarrowArrowUp}"
+										x:Name="arrowUp"
+										Margin="{x:Static local:Defaults.Margin_Tiny}"
+										Data="{DynamicResource NarrowarrowUp}"
 										Fill="{TemplateBinding Foreground}"
 										Stretch="Uniform" />
 								</RepeatButton>
@@ -147,13 +148,16 @@
 								<RepeatButton
 									x:Name="PART_DecreaseButton"
 									Grid.Row="1"
-									BorderThickness="1,1,0,0"
 									IsTabStop="{TemplateBinding IsTabStop}"
 									Style="{DynamicResource NumericRepeatButton}">
+									<RepeatButton.BorderThickness>
+										<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Border}" Top="{x:Static local:Defaults.ThicknessWidth_Border}" />
+									</RepeatButton.BorderThickness>
+
 									<Path
-										x:Name="ArrowDown"
-										Margin="2"
-										Data="{DynamicResource NarrowArrowDown}"
+										x:Name="arrowDown"
+										Margin="{x:Static local:Defaults.Margin_Tiny}"
+										Data="{DynamicResource NarrowarrowDown}"
 										Fill="{TemplateBinding Foreground}"
 										Stretch="Uniform" />
 								</RepeatButton>
@@ -175,18 +179,18 @@
 						</Trigger>
 
 						<Trigger SourceName="PART_IncreaseButton" Property="IsEnabled" Value="False">
-							<Setter TargetName="ArrowUp" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter TargetName="arrowUp" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
 						</Trigger>
 
 						<Trigger SourceName="PART_DecreaseButton" Property="IsEnabled" Value="False">
-							<Setter TargetName="ArrowDown" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter TargetName="arrowDown" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
 						</Trigger>
 
 						<Trigger Property="SpinnerLocation" Value="Left">
+							<Setter TargetName="gridContent" Property="Grid.Column" Value="0" />
 							<Setter TargetName="firstContentColumn" Property="Width" Value="Auto" />
 							<Setter TargetName="secondContentColumn" Property="Width" Value="*" />
 							<Setter TargetName="contentPresenter" Property="Grid.Column" Value="1" />
-							<Setter TargetName="gridContent" Property="Grid.Column" Value="0" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -195,20 +199,27 @@
 	</Style>
 
 	<Style x:Key="NumericUpDown" TargetType="{x:Type prim:InputBase}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Control properties  -->
+		<Setter Property="IsTabStop" Value="False" />
+
+		<!--  Layout  -->
 		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
 		<Setter Property="HorizontalContentAlignment" Value="Right" />
-		<Setter Property="IsTabStop" Value="False" />
-		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
-		<Setter Property="TextAlignment" Value="Right" />
-		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
-		<Setter Property="WatermarkTemplate" Value="{StaticResource DefaultWatermarkTemplate}" />
+		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
+		<Setter Property="TextAlignment" Value="Right" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
@@ -338,14 +349,6 @@
 	<!--  SingleUpDown  -->
 	<!--  ===============================================================================  -->
 	<Style BasedOn="{StaticResource NumericUpDown}" TargetType="{x:Type xceed:SingleUpDown}" />
-
-	<!--  ===============================================================================  -->
-	<!--  Style for all internal derived types of NumericUpDown will be done in code-behind  -->
-	<!--  for external themes to redefine the default style. The reason is that the  -->
-	<!--  toolkit.dll uses the InternalsVisibleTo attribute which makes internal data only  -->
-	<!--  available in code-behind (not xaml).  -->
-	<!--  (ex. Office2007 theme)  -->
-	<!--  ===============================================================================  -->
 
 	<!--  ===============================================================================  -->
 	<!--  SByteUpDown  -->

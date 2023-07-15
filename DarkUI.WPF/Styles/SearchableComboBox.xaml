@@ -73,8 +73,8 @@
 										Width="Auto"
 										Padding="{x:Static local:Defaults.Padding_ButtonWithIconOnly}">
 										<Image
-											Width="{x:Static local:Defaults.IconWidth}"
-											Height="{x:Static local:Defaults.IconHeight}"
+											Width="{x:Static local:Defaults.MaxIconWidth}"
+											Height="{x:Static local:Defaults.MaxIconHeight}"
 											Source="/DarkUI.WPF;component/Resources/search-16.png" />
 									</Button>
 

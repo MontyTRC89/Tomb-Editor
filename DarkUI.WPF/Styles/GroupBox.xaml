@@ -6,14 +6,20 @@
 	<BorderGapMaskConverter x:Key="BorderGapMaskConverter" />
 
 	<Style TargetType="{x:Type GroupBox}">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_Default}" />
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_Default}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type GroupBox}">
@@ -37,7 +43,7 @@
 							Grid.ColumnSpan="4">
 							<Border.OpacityMask>
 								<MultiBinding Converter="{StaticResource BorderGapMaskConverter}" ConverterParameter="6">
-									<Binding ElementName="PART_Header" Path="ActualWidth" />
+									<Binding ElementName="headerBorder" Path="ActualWidth" />
 									<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
 									<Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}" />
 								</MultiBinding>
@@ -46,10 +52,13 @@
 							<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
 						</Border>
 						<Border
-							x:Name="PART_Header"
+							x:Name="headerBorder"
 							Grid.RowSpan="2"
-							Grid.Column="1"
-							Padding="3,0">
+							Grid.Column="1">
+							<Border.Padding>
+								<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Default}" Right="{x:Static local:Defaults.ThicknessWidth_Default}" />
+							</Border.Padding>
+
 							<ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
 						</Border>
 						<ContentPresenter

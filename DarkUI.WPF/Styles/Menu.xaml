@@ -3,20 +3,32 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
-	<Style x:Key="{x:Type Menu}" TargetType="{x:Type Menu}">
-		<Setter Property="OverridesDefaultStyle" Value="True" />
+	<Style TargetType="{x:Type Menu}">
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness">
+			<Setter.Value>
+				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_Border}" />
+			</Setter.Value>
+		</Setter>
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Menu}">
 					<Border
-						Background="{DynamicResource GreyBackground}"
-						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="0,0,0,1"
-						SnapsToDevicePixels="True"
-						UseLayoutRounding="True">
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<StackPanel
 							ClipToBounds="True"
 							IsItemsHost="True"
@@ -28,46 +40,65 @@
 	</Style>
 
 	<Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
-		<Setter Property="Height" Value="1" />
-		<Setter Property="Margin" Value="2" />
+		<!--  Layout  -->
+		<Setter Property="Height" Value="{x:Static local:Defaults.ThicknessWidth_Border}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="Margin" Value="{x:Static local:Defaults.Margin_Tiny}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Separator}">
-					<Border BorderBrush="{DynamicResource LightBorder}" BorderThickness="1" />
+					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
 
 	<Style x:Key="MenuScrollButton" TargetType="{x:Type RepeatButton}">
+		<!--  Control properties  -->
 		<Setter Property="ClickMode" Value="Hover" />
-		<Setter Property="MinWidth" Value="10" />
+
+		<!--  Layout  -->
 		<Setter Property="MinHeight" Value="10" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_Tiny}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RepeatButton}">
 					<Border
-						x:Name="PART_Border"
-						Background="{DynamicResource LightBackground}"
-						BorderBrush="{DynamicResource LightBorder}"
-						BorderThickness="{DynamicResource Default_BorderThickness}"
-						SnapsToDevicePixels="True">
-						<ContentPresenter
-							x:Name="ContentContainer"
-							Margin="2"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Bottom" />
+						x:Name="border"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
+						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 					</Border>
+
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource DarkBackground}" />
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource BlueHighlight}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

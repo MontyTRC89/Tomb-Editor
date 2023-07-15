@@ -4,17 +4,21 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type Button}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
-		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<!--  Layout  -->
 		<Setter Property="Width" Value="{x:Static local:Defaults.InputControlWidth}" />
 		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness
@@ -25,27 +29,28 @@
 			</Setter.Value>
 		</Setter>
 
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							x:Name="PART_Border"
+							x:Name="border"
 							Padding="{TemplateBinding Padding}"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}">
 							<ContentPresenter
-								x:Name="PART_ContentPresenter"
+								x:Name="contentPresenter"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								Content="{TemplateBinding Content}"
 								ContentTemplate="{TemplateBinding ContentTemplate}"
-								Focusable="False"
 								RecognizesAccessKey="True" />
 						</Border>
 						<Border
-							x:Name="PART_HoverIndicatorBorder"
+							x:Name="hoverIndicatingBorder"
 							Margin="{TemplateBinding BorderBrush}"
 							Background="{DynamicResource InputControl_HoverHighlight}"
 							Opacity="{DynamicResource InputControl_HoverHighlight_Opacity}"
@@ -53,31 +58,31 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+						</Trigger>
+
+						<Trigger Property="IsDefault" Value="True">
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Defaulted}" />
+						</Trigger>
+
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+						</Trigger>
+
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsMouseOver" Value="True" />
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="PART_HoverIndicatorBorder" Property="Visibility" Value="Visible" />
+							<Setter TargetName="hoverIndicatingBorder" Property="Visibility" Value="Visible" />
 						</MultiTrigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
-						</Trigger>
-
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
-						</Trigger>
-
-						<Trigger Property="IsDefault" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Defaulted}" />
-						</Trigger>
-
-						<Trigger Property="IsFocused" Value="True">
-							<Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -90,6 +95,19 @@
 		BasedOn="{StaticResource {x:Type Button}}"
 		TargetType="{x:Type Button}">
 		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_InputControl}" />
-		<Setter Property="Width" Value="Auto" />
+		<Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}" />
+
+		<Style.Resources>
+			<Style TargetType="{x:Type Path}">
+				<Setter Property="Fill" Value="White" />
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.MaxIconHeight}" />
+				<Setter Property="Stretch" Value="Uniform" />
+			</Style>
+			<Style TargetType="{x:Type Image}">
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.MaxIconHeight}" />
+			</Style>
+		</Style.Resources>
 	</Style>
 </ResourceDictionary>

@@ -5,10 +5,10 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style x:Key="CustomWindowStyle" TargetType="{x:Type Window}">
-		<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource BlueBackground}" />
+		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource WindowHeader_Background_Active}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
@@ -80,7 +80,7 @@
 												Width="12"
 												Margin="0"
 												VerticalAlignment="Center"
-												Stroke="{DynamicResource LightText}"
+												Stroke="{DynamicResource Default_Text}"
 												StrokeThickness="2" />
 										</Button>
 
@@ -95,7 +95,7 @@
 											<Grid Width="12" Height="12">
 												<Rectangle
 													Margin="0"
-													Stroke="{DynamicResource LightText}"
+													Stroke="{DynamicResource Default_Text}"
 													StrokeThickness="2" />
 											</Grid>
 										</Button>
@@ -110,14 +110,14 @@
 											WindowChrome.IsHitTestVisibleInChrome="True">
 											<Grid Margin="0,1,0,0">
 												<Line
-													Stroke="{DynamicResource LightText}"
+													Stroke="{DynamicResource Default_Text}"
 													StrokeThickness="2"
 													X1="0"
 													X2="11"
 													Y1="0"
 													Y2="11" />
 												<Line
-													Stroke="{DynamicResource LightText}"
+													Stroke="{DynamicResource Default_Text}"
 													StrokeThickness="2"
 													X1="0"
 													X2="11"
@@ -137,12 +137,12 @@
 									<Grid Width="14" Height="14">
 										<Rectangle
 											Margin="3,0,0,3"
-											Stroke="{DynamicResource LightText}"
+											Stroke="{DynamicResource Default_Text}"
 											StrokeThickness="2" />
 										<Rectangle
 											Margin="0,4,4,0"
-											Fill="{DynamicResource BlueBackground}"
-											Stroke="{DynamicResource LightText}"
+											Fill="{DynamicResource WindowHeader_Background_Active}"
+											Stroke="{DynamicResource Default_Text}"
 											StrokeThickness="2" />
 									</Grid>
 								</Setter.Value>
@@ -154,7 +154,7 @@
 									<Grid Width="12" Height="12">
 										<Rectangle
 											Margin="0"
-											Stroke="{DynamicResource LightText}"
+											Stroke="{DynamicResource Default_Text}"
 											StrokeThickness="2" />
 									</Grid>
 								</Setter.Value>
@@ -205,9 +205,9 @@
 				<Setter TargetName="border" Property="BorderBrush" Value="#FF940A14" />
 			</Trigger>
 			<Trigger Property="IsEnabled" Value="false">
-				<Setter TargetName="border" Property="Background" Value="{DynamicResource GreyBackground}" />
+				<Setter TargetName="border" Property="Background" Value="{DynamicResource Default_Background}" />
 				<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LightBorder}" />
-				<Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{DynamicResource DisabledText}" />
+				<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
 			</Trigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>

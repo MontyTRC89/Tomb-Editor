@@ -4,19 +4,24 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type CheckBox}">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Layout  -->
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+
+		<!--  Thicknesses  -->
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Default}" />
 			</Setter.Value>
 		</Setter>
 
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type CheckBox}">
@@ -27,7 +32,7 @@
 						</Grid.ColumnDefinitions>
 
 						<Border
-							x:Name="PART_BoxBorder"
+							x:Name="boxBorder"
 							Width="{x:Static local:Defaults.CheckBoxWidth}"
 							Height="{x:Static local:Defaults.CheckBoxHeight}"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -37,14 +42,14 @@
 							BorderThickness="{x:Static local:Defaults.Thickness_Border}">
 							<Grid>
 								<Path
-									x:Name="PART_CheckMark"
+									x:Name="checkMark"
 									Data="{DynamicResource CheckMark}"
 									Stretch="Uniform"
 									Stroke="{DynamicResource InputControl_Glyph}"
 									StrokeThickness="{x:Static local:Defaults.CheckMarkStrokeWidth}"
 									Visibility="Hidden" />
 								<Rectangle
-									x:Name="PART_IndeterminateMark"
+									x:Name="indeterminateMark"
 									Margin="{x:Static local:Defaults.Margin_CheckMark}"
 									Fill="{DynamicResource InputControl_Glyph}"
 									Stretch="Uniform"
@@ -53,7 +58,7 @@
 						</Border>
 						<Border Grid.Column="1" Background="{TemplateBinding Background}">
 							<ContentPresenter
-								x:Name="PART_ContentPresenter"
+								x:Name="contentPresenter"
 								Margin="{TemplateBinding Padding}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -63,37 +68,37 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Hovered}" />
-							<Setter TargetName="PART_CheckMark" Property="Stroke" Value="{DynamicResource InputControl_Glyph_Hovered}" />
-							<Setter TargetName="PART_IndeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="boxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter TargetName="checkMark" Property="Stroke" Value="{DynamicResource InputControl_Border}" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="indeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Border}" />
 						</Trigger>
 
 						<Trigger Property="IsFocused" Value="True">
-							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Hovered}" />
-							<Setter TargetName="PART_CheckMark" Property="Stroke" Value="{DynamicResource InputControl_Glyph_Hovered}" />
-							<Setter TargetName="PART_IndeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="boxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="checkMark" Property="Stroke" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="indeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+						</Trigger>
+
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="boxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="checkMark" Property="Stroke" Value="{DynamicResource InputControl_Glyph_Hovered}" />
+							<Setter TargetName="indeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Hovered}" />
 						</Trigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Pressed}" />
-							<Setter TargetName="PART_CheckMark" Property="Stroke" Value="{DynamicResource InputControl_Border}" />
-							<Setter TargetName="PART_IndeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Pressed}" />
+							<Setter TargetName="boxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Pressed}" />
+							<Setter TargetName="checkMark" Property="Stroke" Value="{DynamicResource InputControl_Border}" />
+							<Setter TargetName="indeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Glyph_Pressed}" />
 						</Trigger>
 
 						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="PART_CheckMark" Property="Visibility" Value="Visible" />
+							<Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
 						</Trigger>
 
 						<Trigger Property="IsChecked" Value="{x:Null}">
-							<Setter TargetName="PART_IndeterminateMark" Property="Visibility" Value="Visible" />
-						</Trigger>
-
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_BoxBorder" Property="BorderBrush" Value="{DynamicResource InputControl_Glyph_Disabled}" />
-							<Setter TargetName="PART_CheckMark" Property="Stroke" Value="{DynamicResource InputControl_Border}" />
-							<Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
-							<Setter TargetName="PART_IndeterminateMark" Property="Fill" Value="{DynamicResource InputControl_Border}" />
+							<Setter TargetName="indeterminateMark" Property="Visibility" Value="Visible" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

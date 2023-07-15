@@ -60,7 +60,7 @@ namespace DarkUI.WPF.CustomControls
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property.Name == nameof(SearchText))
+			if (e.Property.Name == nameof(SearchText) && IsPerformingSearch && string.IsNullOrEmpty(SearchText))
 				ClearFilter();
 
 			if (e.Property.Name == nameof(IsDropDownOpen) && PerformedSpecialAction)
@@ -68,8 +68,10 @@ namespace DarkUI.WPF.CustomControls
 				IsDropDownOpen = true;
 				PerformedSpecialAction = false;
 			}
-			else if (e.Property.Name == nameof(IsDropDownOpen) && !IsDropDownOpen)
+			else if (e.Property.Name == nameof(IsDropDownOpen) && !IsDropDownOpen && Items.Filter is not null)
 				ClearFilter();
+			else if (e.Property.Name == nameof(IsDropDownOpen) && !IsDropDownOpen)
+				SearchText = string.Empty;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -103,7 +105,9 @@ namespace DarkUI.WPF.CustomControls
 		{
 			if (string.IsNullOrWhiteSpace(SearchText))
 			{
-				ClearFilter();
+				if (IsPerformingSearch)
+					ClearFilter();
+
 				return;
 			}
 

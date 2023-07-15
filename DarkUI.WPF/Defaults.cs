@@ -9,8 +9,8 @@ namespace DarkUI.WPF
 		public const double InputControlWidth = 75;
 		public const double InputControlHeight = 24;
 
-		public const double IconWidth = 16;
-		public const double IconHeight = 16;
+		public const double MaxIconWidth = 12;
+		public const double MaxIconHeight = 12;
 
 		public const double CheckBoxWidth = 13;
 		public const double CheckBoxHeight = 13;
@@ -18,6 +18,11 @@ namespace DarkUI.WPF
 
 		public const double RadioButtonBoxWidth = 13;
 		public const double RadioButtonBoxHeight = 13;
+
+		public const double ComboBoxArrowBoxWidth = 17;
+
+		public const double DataGridColumnHeaderGripperWidth = 8;
+		public const double DataGridColumnHeaderSortingArrowWidth = 10;
 
 		public const double ThicknessWidth_Border = 1;
 		public const double ThicknessWidth_InputControl_DefaultPadding = 3;
@@ -33,7 +38,7 @@ namespace DarkUI.WPF
 		public const bool UseLayoutRounding = true;
 
 		public static readonly Thickness Thickness_Border = new(ThicknessWidth_Border);
-		public static readonly Thickness Padding_InputControl = new(ThicknessWidth_InputControl_DefaultPadding, 2, ThicknessWidth_InputControl_DefaultPadding, ThicknessWidth_InputControl_DefaultPadding);
+		public static readonly Thickness Padding_InputControl = new(ThicknessWidth_InputControl_DefaultPadding);
 		public static readonly Thickness Margin_CheckMark = new(ThicknessWidth_CheckMarkMargin);
 
 		public static readonly Thickness Margin_Tiny = new(ThicknessWidth_Tiny);
