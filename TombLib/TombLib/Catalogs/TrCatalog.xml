@@ -53,11 +53,11 @@
 			<moveable id="25" name="DinoWarrior" essential="false" />
 			<moveable id="27" name="Larson" essential="false" t5m="LARSON" />
 			<moveable id="28" name="Pierre" essential="false" t5m="PIERRE" />
-			<moveable id="29" name="Skateboard" show_with="30" essential="false" hidden="true" />
-			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" />
+			<moveable id="29" name="Skateboard" show_with="30" essential="false" hidden="true" t5m="SKATEBOARD" />
+			<moveable id="30" name="Skateboard kid" show_with="29" essential="false" t5m="SKATEBOARD_KID" />
 			<moveable id="31" name="Cowboy" essential="false" t5m="COWBOY" />
-			<moveable id="32" name="Mr. T" essential="false" />
-			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="WINGED_NATLA" />
+			<moveable id="32" name="Mr. T" essential="false" t5m="KOLD" />
+			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
 			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
@@ -78,7 +78,7 @@
 			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
 			<moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100" />
 			<moveable id="53" name="Falling ceiling" essential="false" t5m="FALLING_CEILING" />
-			<moveable id="54" name="Sword of Damocles" essential="false" t5m="SLICER_DICER" />
+			<moveable id="54" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
 			<moveable id="55" name="Above-water switch" essential="false" t5m="SWITCH_TYPE10" />
 			<moveable id="56" name="Underwater switch" essential="false" t5m="UNDERWATER_SWITCH1" />
 			<moveable id="57" name="Door" essential="false" t5m="DOOR_TYPE1" />
@@ -417,6 +417,7 @@
 			<sound id="205" name="GYM_HINT_26" t5m="205" />
 		</sounds>
 		<animations>
+		<!-- Lara -->
 			<anim item="0" id="0" name="RUN" />
 			<anim item="0" id="1" name="WALK_FORWARD" />
 			<anim item="0" id="2" name="WALK_STOP_RIGHT" />
@@ -577,8 +578,80 @@
 			<anim item="0" id="157" name="SWANDIVE_RIGHT" />
 			<anim item="0" id="158" name="SWANDIVE_START" />
 			<anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
+			
+			<!--APE -->
+			<anim item="15" id="0" name="IDLE" />
+			<anim item="15" id="1" name="POUND_CHEST" />
+			<anim item="15" id="2" name="POUND_GROUND" />
+			<anim item="15" id="3" name="IDLE_TO_RUN_FORWARD" />
+			<anim item="15" id="4" name="RUN_FORWARD_TO_IDLE" />
+			<anim item="15" id="5" name="JUMP" />
+			<anim item="15" id="6" name="RUN_FORWARD" />
+			<anim item="15" id="7" name="DEATH_1" />
+			<anim item="15" id="8" name="DEATH_2" />
+			<anim item="15" id="9" name="ATTACK_START" />
+			<anim item="15" id="10" name="ATTACK_CONTINUE_1" />
+			<anim item="15" id="11" name="ATTACK_CONTINUE_2" />
+			<anim item="15" id="12" name="ATTACK_END" />
+			<anim item="15" id="13" name="RUN_LEFT" />
+			<anim item="15" id="14" name="RUN_RIGHT" />
+			<anim item="15" id="15" name="RUN_LEFT_TO_IDLE" />
+			<anim item="15" id="16" name="RUN_RIGHT_TO_IDLE" />
+			<anim item="15" id="17" name="IDLE_TO_RUN_LEFT" />
+			<anim item="15" id="18" name="IDLE_TO_RUN_RIGHT" />
+			<anim item="15" id="19" name="VAULT" />
+			
+			<!-- SKATEBOARD -->			
+			<anim item="29" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="29" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="29" id="2" name="SKATE_ACCEL_END" />
+			<anim item="29" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="29" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="29" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="29" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="29" id="7" name="IDLE" />
+			<anim item="29" id="8" name="SKATE_ACCEL_START" />
+			<anim item="29" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="29" id="10" name="IDLE_SHOOT" />
+			<anim item="29" id="11" name="SKATE_SHOOT" />
+			<anim item="29" id="12" name="SKATE" />
+			<anim item="29" id="13" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<anim item="30" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="30" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="30" id="2" name="SKATE_ACCEL_END" />
+			<anim item="30" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="30" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="30" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="30" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="30" id="7" name="IDLE" />
+			<anim item="30" id="8" name="SKATE_ACCEL_START" />
+			<anim item="30" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="30" id="10" name="IDLE_SHOOT" />
+			<anim item="30" id="11" name="SKATE_SHOOT" />
+			<anim item="30" id="12" name="SKATE" />
+			<anim item="30" id="13" name="DEATH" />      
+		
+			<!-- MR.T -->
+			<anim item="32" id="0" name="RUN_TO_IDLE_START" />
+			<anim item="32" id="1" name="RUN_TO_IDLE_END"/>
+			<anim item="32" id="2" name="AIM_START" />
+			<anim item="32" id="3" name="IDLE_TO_RUN_START" />
+			<anim item="32" id="4" name="IDLE_TO_RUN_END" />
+			<anim item="32" id="5" name="AIM_END" />
+			<anim item="32" id="6" name="UNAIM" />
+			<anim item="32" id="7" name="IDLE" />
+			<anim item="32" id="8" name="RUN " />
+			<anim item="32" id="9" name="WALK" />
+			<anim item="32" id="10" name="RELOAD" />
+			<anim item="32" id="11" name="SHOOT" />
+			<anim item="32" id="12" name="IDLE_TO_WALK" />
+			<anim item="32" id="13" name="WALK_TO_IDLE" />
+			<anim item="32" id="14" name="DEATH" />
 		</animations>
 		<states>
+		<!-- LARA -->
 			<state item="0" id="0" name="WALK_FORWARD" />
 			<state item="0" id="1" name="RUN_FORWARD" />
 			<state item="0" id="2" name="STOP" />
@@ -635,6 +708,52 @@
 			<state item="0" id="53" name="SWANDIVE_END" />
 			<state item="0" id="54" name="HANDSTAND" />
 			<state item="0" id="55" name="ONWATER_EXIT" />
+			 			
+			<!-- APE -->
+			<state item="15" id="1" name="IDLE" />
+			<state item="15" id="2" name="WALK_FORWARD" />
+			<state item="15" id="3" name="RUN_FORWARD" />
+			<state item="15" id="4" name="ATTACK" />
+			<state item="15" id="5" name="DEATH" />
+			<state item="15" id="6" name="POUND_CHEST" />
+			<state item="15" id="7" name="POUND_GROUND" />
+			<state item="15" id="8" name="RUN_LEFT" />
+			<state item="15" id="9" name="RUN_RIGHT" />
+			<state item="15" id="10" name="JUMP" />
+			<state item="15" id="11" name="VAULT" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<state item="29" id="0" name="IDLE" />
+			<state item="29" id="1" name="SHOOT_IDLE" />
+			<state item="29" id="2" name="SKATE" />
+			<state item="29" id="3" name="SKATE_ACCELERATE" />
+			<state item="29" id="4" name="SKATE_SHOOT" />
+			<state item="29" id="5" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<state item="30" id="0" name="IDLE" />
+			<state item="30" id="1" name="SHOOT_IDLE" />
+			<state item="30" id="2" name="SKATE" />
+			<state item="30" id="3" name="SKATE_ACCELERATE" />
+			<state item="30" id="4" name="SKATE_SHOOT" />
+			<state item="30" id="5" name="DEATH" />
+			
+			<!-- MR.T -->
+			<anim item="32" id="0" name="RUN_TO_IDLE_START" />
+			<anim item="32" id="1" name="RUN_TO_IDLE_END"/>
+			<anim item="32" id="2" name="AIM_START" />
+			<anim item="32" id="3" name="IDLE_TO_RUN_START" />
+			<anim item="32" id="4" name="IDLE_TO_RUN_END" />
+			<anim item="32" id="5" name="AIM_END" />
+			<anim item="32" id="6" name="UNAIM" />
+			<anim item="32" id="7" name="IDLE" />
+			<anim item="32" id="8" name="RUN " />
+			<anim item="32" id="9" name="WALK" />
+			<anim item="32" id="10" name="RELOAD" />
+			<anim item="32" id="11" name="SHOOT" />
+			<anim item="32" id="12" name="IDLE_TO_WALK" />
+			<anim item="32" id="13" name="WALK_TO_IDLE" />
+			<anim item="32" id="14" name="DEATH = 14" />
 		</states>
 	</game>
 	<game id="TR2">
@@ -6077,13 +6196,12 @@
 			<moveable id="195" name="CYBORG" />
 			<moveable id="196" name="SNIPER" />
 			<moveable id="197" name="CHEF" />
+			<moveable id="219" name="KOLD" />
 			<moveable id="220" name="WINGED_MUMMY" />
 			<moveable id="221" name="CENTAUR_MUTANT" />
 			<moveable id="222" name="DOPPELGANGER" use_body_from="225" />
 			<moveable id="223" name="NATLA" />
-			<moveable id="224" name="WINGED_NATLA" />
 			<moveable id="225" name="GIANT_MUTANT" />
-			<moveable id="226" name="PROJ_NATLA" />
 			<moveable id="227" name="PROJ_SHARD" />
 			<moveable id="228" name="PROJ_BOMB" />
 			<moveable id="229" name="YETI" />
@@ -6714,7 +6832,7 @@
 			<moveable id="1082" name="WATERFALLSS1" />
 			<moveable id="1083" name="WATERFALLSS2" />
 			<moveable id="1084" name="FISHTANK" />
-			<moveable id="1085" name="BACON_REFERENCE" hidden="true" use_body_from="0" />
+			<moveable id="1085" name="DOPPLEGANGER_ORIGIN" hidden="true" use_body_from="0" />
 			<moveable id="1086" name="CORPSE" />
 			<moveable id="1087" name="WRAITH_TRAP" />
 			<moveable id="1100" name="MESHSWAP1" />
@@ -7107,7 +7225,7 @@
 			<sound id="182" name="TR4_THUNDER_RUMBLE" t5m="182" />
 			<sound id="183" name="TR4_THUNDER_CRACK" t5m="183" />
 			<sound id="184" name="TR4_WRAITH_WHISPERS" t5m="184" />
-			<sound id="185" name="TR4_LARA_FOOSTEPS_SAND" t5m="185" />
+			<sound id="185" name="TR4_LARA_FOOTSTEPS_SAND" t5m="185" />
 			<sound id="186" name="TR4_LARA_POLE_SQUEAK" t5m="186" />
 			<sound id="187" name="TR4_SKELETON_FOOTSTEPS" t5m="187" />
 			<sound id="188" name="TR4_SKELETON_ATTACK" t5m="188" />
@@ -8086,149 +8204,35 @@
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<anim item="1" id="14" name="DEATH_SETH" />
 			
-			<!--CIVVY-->
-			<anim item="247" id="0" name="WALK" />
-			<anim item="247" id="1" name="WALKING_PUNCH_PREPARE" />
-			<anim item="247" id="2" name="WALKING_PUNCH_TO_IDLE" />
-			<anim item="247" id="3" name="WALKING_PUNCH_TO_WALK" />
-			<anim item="247" id="4" name="WALKING_PUNCH_ATTACK" />
-			<anim item="247" id="5" name="IDLE_TO_WALK" />
-			<anim item="247" id="6" name="IDLE" />
-			<anim item="247" id="7" name="WALKING_PUNCH_CANCEL" />
-			<anim item="247" id="8" name="WALK_TO_IDLE_LEFT" />
-			<anim item="247" id="9" name="CLOSE_PUNCH_CANCEL" />
-			<anim item="247" id="10" name="CLOSE_PUNCH_PREPARE" />
-			<anim item="247" id="11" name="FAR_PUNCH_CANCEL" />
-			<anim item="247" id="12" name="FAR_PUNCH_PREPARE" />
-			<anim item="247" id="13" name="CLOSE_PUNCH_TO_IDLE" />
-			<anim item="247" id="14" name="FAR_PUNCH_TO_IDLE" />
-			<anim item="247" id="15" name="FAR_PUNCH_TO_WALK" />
-			<anim item="247" id="16" name="CLOSE_PUNCH_ATTACK" />
-			<anim item="247" id="17" name="FAR_PUNCH_ATTACK" />
-			<anim item="247" id="18" name="IDLE_TO_WAIT" />
-			<anim item="247" id="19" name="WAIT_TO_IDLE" />
-			<anim item="247" id="20" name="WAIT" />
-			<anim item="247" id="21" name="RUN" />
-			<anim item="247" id="22" name="WALK_TO_RUN" />
-			<anim item="247" id="23" name="RUN_TO_WALK_LEFT" />
-			<anim item="247" id="24" name="RUN_TO_IDLE" />
-			<anim item="247" id="25" name="IDLE_TO_RUN" />
-			<anim item="247" id="26" name="DEATH" />
-			<anim item="247" id="27" name="CLIMB_4CLICKS" />
-			<anim item="247" id="28" name="CLIMB_2CLICKS" />
-			<anim item="247" id="29" name="CLIMB_3CLICKS" />
-			<anim item="247" id="31" name="FALL_4CLICKS" />
-			<anim item="247" id="31" name="RUN_TO_WALK_RIGHT" />
-			
+			<!--APE -->
+			<anim item="102" id="0" name="IDLE" />
+			<anim item="102" id="1" name="POUND_CHEST" />
+			<anim item="102" id="2" name="POUND_GROUND" />
+			<anim item="102" id="3" name="IDLE_TO_RUN_FORWARD" />
+			<anim item="102" id="4" name="RUN_FORWARD_TO_IDLE" />
+			<anim item="102" id="5" name="JUMP" />
+			<anim item="102" id="6" name="RUN_FORWARD" />
+			<anim item="102" id="7" name="DEATH_1" />
+			<anim item="102" id="8" name="DEATH_2" />
+			<anim item="102" id="9" name="ATTACK_START" />
+			<anim item="102" id="10" name="ATTACK_CONTINUE_1" />
+			<anim item="102" id="11" name="ATTACK_CONTINUE_2" />
+			<anim item="102" id="12" name="ATTACK_END" />
+			<anim item="102" id="13" name="RUN_LEFT" />
+			<anim item="102" id="14" name="RUN_RIGHT" />
+			<anim item="102" id="15" name="RUN_LEFT_TO_IDLE" />
+			<anim item="102" id="16" name="RUN_RIGHT_TO_IDLE" />
+			<anim item="102" id="17" name="IDLE_TO_RUN_LEFT" />
+			<anim item="102" id="18" name="IDLE_TO_RUN_RIGHT" />
+			<anim item="102" id="19" name="VAULT" />
+		
 			<!--COMPSOGNATHUS -->
 			<anim item="113" id="0" name="IDLE" />
-			<anim item="113" id="1" name= "RUN" />
-			<anim item="113" id="2" name= "JUMP_ATTACK" />
-			<anim item="113" id="3" name= "ATTACK" />	 
+			<anim item="113" id="1" name="RUN" />
+			<anim item="113" id="2" name="JUMP_ATTACK" />
+			<anim item="113" id="3" name="ATTACK" />
 			
-			<!--COWBOY -->
-			<anim item="239" id="0" name="RUN" />
-			<anim item="239" id="1" name="RUN_TO_IDLE" />
-			<anim item="239" id="2" name="RUN_TO_IDLE_END" />
-			<anim item="239" id="3" name="IDLE_TO_AIM" />
-			<anim item="239" id="4" name="SHOOT" />
-			<anim item="239" id="5" name="AIM" />
-			<anim item="239" id="6" name="AIM_TO_IDLE" />
-			<anim item="239" id="7" name="DEATH" />
-			<anim item="239" id="8" name="WALK" />
-			<anim item="239" id="9" name="WALK_TO_IDLE_START" />
-			<anim item="239" id="10" name="WALK_TO_IDLE_END" />
-			<anim item="239" id="11" name="IDLE_TO_WALK_START" />
-			<anim item="239" id="12" name="IDLE_TO_WALK_END" />
-			<anim item="239" id="13" name="IDLE_TO_RUN" />
-			<anim item="239" id="14" name="IDLE" />
-			
-			<!-- GUARD -->
-			<anim item="186" id="0" name = "IDLE" />
-			<anim item="186" id="1" name = "TURN 180 PART 1" />
-			<anim item="186" id="2" name = "SINGLE FIRE ATTACK" />
-			<anim item="186" id="3" name = "AIM" />
-			<anim item="186" id="4" name = "START WALK" />
-			<anim item="186" id="5" name = "WALK FORWARD" />
-			<anim item="186" id="6" name = "WALK FORWARD TO IDLE" />
-			<anim item="186" id="7" name = "WALK FORWARD TO AIM" />
-			<anim item="186" id="8" name = "AIM TO WALK" />
-			<anim item="186" id="9" name = "AIM TO STOP" />
-			<anim item="186" id="10" name = "STOP TO AIM" />
-			<anim item="186" id="11" name = "DEATH 1" />
-			<anim item="186" id="12" name = "RUN FORWARD" />
-			<anim item="186" id="13" name = "AIM TO RUN" />
-			<anim item="186" id="14" name = "RUN FORWARD TO AIM" />
-			<anim item="186" id="15" name = "RUN FORWARD TO WALK" />
-			<anim item="186" id="16" name = "DEATH 2" />
-			<anim item="186" id="17" name = "WALK FORWARD TO RUN" />
-			<anim item="186" id="18" name = "STOP TO RUN" />
-			<anim item="186" id="19" name = "CROUCH AIM HAND UP START" />
-			<anim item="186" id="20" name = "CROUCH AIM HAND UP" />
-			<anim item="186" id="21" name = "CROUCH HAND UP SINGLE SHOOT" />
-			<anim item="186" id="22" name = "CROUCH HAND UP TO IDLE 3" />
-			<anim item="186" id="23" name = "RELOAD" />
-			<anim item="186" id="24" name = "THROW GRENADE" />
-			<anim item="186" id="25" name = "OPEN DOOR KICK" />
-			<anim item="186" id="26" name = "ROPE DOWN FAST" />
-			<anim item="186" id="27" name = "ROPE DOWN FAST TO AIM FRONT" />
-			<anim item="186" id="28" name = "ROPE DOWN" />
-			<anim item="186" id="29" name = "ROPE TO AIM" />
-			<anim item="186" id="30" name = "SLEEPING" />
-			<anim item="186" id="31" name = "SLEEPING TO AIM" />
-			<anim item="186" id="32" name = "WAITING ON WALL" />
-			<anim item="186" id="33" name = "WAITING ON WALL TO IDLE" />
-			<anim item="186" id="34" name = "UNKNOWN" />
-			<anim item="186" id="35" name = "VAULT 2 STEPS UP" />
-			<anim item="186" id="36" name = "VAULT 3 STEPS UP" />
-			<anim item="186" id="37" name = "VAULT 4 STEPS UP" />
-			<anim item="186" id="38" name = "VAULT 4 STEPS DOWN" />
-			<anim item="186" id="39" name = "VAULT 3 STEPS DOWN" />
-			<anim item="186" id="40" name = "VAULT 2 STEPS DOWN" />
-			<anim item="186" id="41" name = "JUMP 1 BLOCK" />
-			<anim item="186" id="42" name = "JUMP END" />
-			<anim item="186" id="43" name = "JUMP 2 BLOCKS" />
-			<anim item="186" id="44" name = "HUNT WALK FORWARD" />
-			<anim item="186" id="45" name = "HUNT" />
-			<anim item="186" id="46" name = "HUNT TO IDLE" />
-			<anim item="186" id="47" name = "STOP TO HUNT" />
-			<anim item="186" id="48" name = "TURN 180 PART 2" />
-			<anim item="186" id="49" name = "JUMP START" />
-			<anim item="186" id="50" name = "STOP TO CROUCH AIM HAND DOWN" />
-			<anim item="186" id="51" name = "CROUCH AIM HAND DOWN" />
-			<anim item="186" id="52" name = "CROUCH HAND DOWN SHOOT FAST" />
-			<anim item="186" id="53" name = "CROUCH HAND DOWN TO IDLE" />
-			<anim item="186" id="54" name = "RAPID FIRE ATTACK" />
-			<anim item="186" id="55" name = "INSERT CODE" />
-			<anim item="186" id="56" name = "USE KEYPAD" />
-			<anim item="186" id="57" name = "USE COMPUTER START" />
-			<anim item="186" id="58" name = "USE COMPUTER" />
-			<anim item="186" id="59" name = "USE COMPUTER TO IDLE" />
-			<anim item="186" id="60" name = "SURRENDER START" />
-			<anim item="186" id="61" name = "SURRENDER" />
-			<anim item="186" id="62" name = "SURRENDER TO IDLE" />
-			
-			<!-- IMP -->			
-			<anim item="283" id="0" name="WALK" />
-			<anim item="283" id="1" name="IDLE" />
-			<anim item="283" id="2" name="RUN" />
-			<anim item="283" id="3" name="ATTACK" />
-			<anim item="283" id="4" name="CRY" />
-			<anim item="283" id="5" name="JUMP_ATTACK" />
-			<anim item="283" id="6" name="SCARED_RUN_AWAY" />
-			<anim item="283" id="7" name="CLIMB_UP" />
-			<anim item="283" id="8" name="BARREL_ROLL" />
-			<anim item="283" id="9" name="FALL_BACKWARDS" />
-			<anim item="283" id="10" name="FALL_FORWARD" />
-			<anim item="283" id="11" name="LEFT_FOOT_START_WALK" />
-			<anim item="283" id="12" name="RIGHT_FOOT_START_WALK"  />
-			<anim item="283" id="13" name="SLOW_TO_WAIT_LEFT"  />
-			<anim item="283" id="14" name="SLOW_TO_WAIT_RIGHT" /> 
-			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
-			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
-			<anim item="283" id="17" name="THROW_ROCK" />
-			
-			<!-- KNIFE THROWER -->	
+			 <!-- KNIFE THROWER -->	
 			<anim item="162" id="0" name="IDLE" />
 			<anim item="162" id="1" name="WALK_KNIFE_ATTACK_LEFT_START" />
 			<anim item="162" id="2" name="WALK_KNIFE_ATTACK_LEFT_CANCEL" />
@@ -8253,31 +8257,6 @@
 			<anim item="162" id="21" name="WALK_KNIFE_ATTACK_RIGHT_END" />
 			<anim item="162" id="22" name="IDLE_KNIFE_ATTACK_CANCEL" />
 			<anim item="162" id="23" name="DEATH" />
-			
-			<!--SHIVA-->
-			<anim item="244" id="0" name="IDLE" />
-			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
-			<anim item="244" id="2" name="WALK_TO_IDLE_RIGHT" />
-			<anim item="244" id="3" name="WALK_TO_IDLE_LEFT" />
-			<anim item="244" id="4" name="IDLE_TO_GUARD_IDLE" />
-			<anim item="244" id="5" name="GUARD_IDLE" />
-			<anim item="244" id="6" name="GUARD_IDLE_TO_IDLE" />
-			<anim item="244" id="7" name="WALK_FORWARD" />
-			<anim item="244" id="8" name="WALK_FORWARD_GUARDED" />
-			<anim item="244" id="9" name="WALK_FORWARD_TO_GUARDED_RIGHT_3" />
-			<anim item="244" id="10" name="WALK_FORWARD_TO_GUARDED_LEFT_1" />
-			<anim item="244" id="11" name="WALK_FORWARD_TO_GUARDED_LEFT_2" />
-			<anim item="244" id="12" name="WALK_FORWARD_TO_GUARDED_RIGHT_1" />
-			<anim item="244" id="13" name="WALK_FORWARD_TO_GUARDED_RIGHT_2" />
-			<anim item="244" id="14" name="INACTIVE" />
-			<anim item="244" id="15" name="WALK_FORWARD_UNGUARD_RIGHT" />
-			<anim item="244" id="16" name="WALK_FORWARD_UNGUARD_LEFT" />
-			<anim item="244" id="17" name="ATTACK_GRAB" />
-			<anim item="244" id="18" name="KILL" />
-			<anim item="244" id="19" name="ATTACK" />
-			<anim item="244" id="20" name="WALK_BACK_LEFT" />
-			<anim item="244" id="21" name="WALK_BACK_RIGHT" />
-			<anim item="244" id="22" name="DEATH" />
 			
 			<!-- SWAT -->
 			<anim item="184" id="0" name = "IDLE" />
@@ -8344,15 +8323,129 @@
 			<anim item="184" id="61" name = "SURRENDER" />
 			<anim item="184" id="62" name = "SURRENDER TO IDLE" />
 			
-			<!-- WASP_MUTANT -->
-			<anim item="294" id="0" name= "FLY_IDLE" />
-			<anim item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
-			<anim item="294" id="2" name= "IDLE" />
-			<anim item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
-			<anim item="294" id="4" name= "ATTACK" />
-			<anim item="294" id="5" name= "FALL" />
-			<anim item="294" id="6" name= "DEATH" />
-			<anim item="294" id="7" name= "FLY_FORWARD" />
+			<!-- GUARD -->
+			<anim item="186" id="0" name = "IDLE" />
+			<anim item="186" id="1" name = "TURN 180 PART 1" />
+			<anim item="186" id="2" name = "SINGLE FIRE ATTACK" />
+			<anim item="186" id="3" name = "AIM" />
+			<anim item="186" id="4" name = "START WALK" />
+			<anim item="186" id="5" name = "WALK FORWARD" />
+			<anim item="186" id="6" name = "WALK FORWARD TO IDLE" />
+			<anim item="186" id="7" name = "WALK FORWARD TO AIM" />
+			<anim item="186" id="8" name = "AIM TO WALK" />
+			<anim item="186" id="9" name = "AIM TO STOP" />
+			<anim item="186" id="10" name = "STOP TO AIM" />
+			<anim item="186" id="11" name = "DEATH 1" />
+			<anim item="186" id="12" name = "RUN FORWARD" />
+			<anim item="186" id="13" name = "AIM TO RUN" />
+			<anim item="186" id="14" name = "RUN FORWARD TO AIM" />
+			<anim item="186" id="15" name = "RUN FORWARD TO WALK" />
+			<anim item="186" id="16" name = "DEATH 2" />
+			<anim item="186" id="17" name = "WALK FORWARD TO RUN" />
+			<anim item="186" id="18" name = "STOP TO RUN" />
+			<anim item="186" id="19" name = "CROUCH AIM HAND UP START" />
+			<anim item="186" id="20" name = "CROUCH AIM HAND UP" />
+			<anim item="186" id="21" name = "CROUCH HAND UP SINGLE SHOOT" />
+			<anim item="186" id="22" name = "CROUCH HAND UP TO IDLE 3" />
+			<anim item="186" id="23" name = "RELOAD" />
+			<anim item="186" id="24" name = "THROW GRENADE" />
+			<anim item="186" id="25" name = "OPEN DOOR KICK" />
+			<anim item="186" id="26" name = "ROPE DOWN FAST" />
+			<anim item="186" id="27" name = "ROPE DOWN FAST TO AIM FRONT" />
+			<anim item="186" id="28" name = "ROPE DOWN" />
+			<anim item="186" id="29" name = "ROPE TO AIM" />
+			<anim item="186" id="30" name = "SLEEPING" />
+			<anim item="186" id="31" name = "SLEEPING TO AIM" />
+			<anim item="186" id="32" name = "WAITING ON WALL" />
+			<anim item="186" id="33" name = "WAITING ON WALL TO IDLE" />
+			<anim item="186" id="34" name = "UNKNOWN" />
+			<anim item="186" id="35" name = "VAULT 2 STEPS UP" />
+			<anim item="186" id="36" name = "VAULT 3 STEPS UP" />
+			<anim item="186" id="37" name = "VAULT 4 STEPS UP" />
+			<anim item="186" id="38" name = "VAULT 4 STEPS DOWN" />
+			<anim item="186" id="39" name = "VAULT 3 STEPS DOWN" />
+			<anim item="186" id="40" name = "VAULT 2 STEPS DOWN" />
+			<anim item="186" id="41" name = "JUMP 1 BLOCK" />
+			<anim item="186" id="42" name = "JUMP END" />
+			<anim item="186" id="43" name = "JUMP 2 BLOCKS" />
+			<anim item="186" id="44" name = "HUNT WALK FORWARD" />
+			<anim item="186" id="45" name = "HUNT" />
+			<anim item="186" id="46" name = "HUNT TO IDLE" />
+			<anim item="186" id="47" name = "STOP TO HUNT" />
+			<anim item="186" id="48" name = "TURN 180 PART 2" />
+			<anim item="186" id="49" name = "JUMP START" />
+			<anim item="186" id="50" name = "STOP TO CROUCH AIM HAND DOWN" />
+			<anim item="186" id="51" name = "CROUCH AIM HAND DOWN" />
+			<anim item="186" id="52" name = "CROUCH HAND DOWN SHOOT FAST" />
+			<anim item="186" id="53" name = "CROUCH HAND DOWN TO IDLE" />
+			<anim item="186" id="54" name = "RAPID FIRE ATTACK" />
+			<anim item="186" id="55" name = "INSERT CODE" />
+			<anim item="186" id="56" name = "USE KEYPAD" />
+			<anim item="186" id="57" name = "USE COMPUTER START" />
+			<anim item="186" id="58" name = "USE COMPUTER" />
+			<anim item="186" id="59" name = "USE COMPUTER TO IDLE" />
+			<anim item="186" id="60" name = "SURRENDER START" />
+			<anim item="186" id="61" name = "SURRENDER" />
+			<anim item="186" id="62" name = "SURRENDER TO IDLE" />
+			
+			<!-- KOLD -->
+			<anim item="219" id="0" name="RUN_TO_IDLE_START" />
+			<anim item="219" id="1" name="RUN_TO_IDLE_END"/>
+			<anim item="219" id="2" name="AIM_START" />
+			<anim item="219" id="3" name="IDLE_TO_RUN_START" />
+			<anim item="219" id="4" name="IDLE_TO_RUN_END" />
+			<anim item="219" id="5" name="AIM_END" />
+			<anim item="219" id="6" name="UNAIM" />
+			<anim item="219" id="7" name="IDLE" />
+			<anim item="219" id="8" name="RUN " />
+			<anim item="219" id="9" name="WALK" />
+			<anim item="219" id="10" name="RELOAD" />
+			<anim item="219" id="11" name="SHOOT" />
+			<anim item="219" id="12" name="IDLE_TO_WALK" />
+			<anim item="219" id="13" name="WALK_TO_IDLE" />
+			<anim item="219" id="14" name="DEATH" />
+			
+			<!--COWBOY -->
+			<anim item="239" id="0" name="RUN" />
+			<anim item="239" id="1" name="RUN_TO_IDLE" />
+			<anim item="239" id="2" name="RUN_TO_IDLE_END" />
+			<anim item="239" id="3" name="IDLE_TO_AIM" />
+			<anim item="239" id="4" name="SHOOT" />
+			<anim item="239" id="5" name="AIM" />
+			<anim item="239" id="6" name="AIM_TO_IDLE" />
+			<anim item="239" id="7" name="DEATH" />
+			<anim item="239" id="8" name="WALK" />
+			<anim item="239" id="9" name="WALK_TO_IDLE_START" />
+			<anim item="239" id="10" name="WALK_TO_IDLE_END" />
+			<anim item="239" id="11" name="IDLE_TO_WALK_START" />
+			<anim item="239" id="12" name="IDLE_TO_WALK_END" />
+			<anim item="239" id="13" name="IDLE_TO_RUN" />
+			<anim item="239" id="14" name="IDLE" />
+			
+			<!--SHIVA-->
+			<anim item="244" id="0" name="IDLE" />
+			<anim item="244" id="1" name="IDLE_TO_WALK_RIGHT" />
+			<anim item="244" id="2" name="WALK_TO_IDLE_RIGHT" />
+			<anim item="244" id="3" name="WALK_TO_IDLE_LEFT" />
+			<anim item="244" id="4" name="IDLE_TO_GUARD_IDLE" />
+			<anim item="244" id="5" name="GUARD_IDLE" />
+			<anim item="244" id="6" name="GUARD_IDLE_TO_IDLE" />
+			<anim item="244" id="7" name="WALK_FORWARD" />
+			<anim item="244" id="8" name="WALK_FORWARD_GUARDED" />
+			<anim item="244" id="9" name="WALK_FORWARD_TO_GUARDED_RIGHT_3" />
+			<anim item="244" id="10" name="WALK_FORWARD_TO_GUARDED_LEFT_1" />
+			<anim item="244" id="11" name="WALK_FORWARD_TO_GUARDED_LEFT_2" />
+			<anim item="244" id="12" name="WALK_FORWARD_TO_GUARDED_RIGHT_1" />
+			<anim item="244" id="13" name="WALK_FORWARD_TO_GUARDED_RIGHT_2" />
+			<anim item="244" id="14" name="INACTIVE" />
+			<anim item="244" id="15" name="WALK_FORWARD_UNGUARD_RIGHT" />
+			<anim item="244" id="16" name="WALK_FORWARD_UNGUARD_LEFT" />
+			<anim item="244" id="17" name="ATTACK_GRAB" />
+			<anim item="244" id="18" name="KILL" />
+			<anim item="244" id="19" name="ATTACK" />
+			<anim item="244" id="20" name="WALK_BACK_LEFT" />
+			<anim item="244" id="21" name="WALK_BACK_RIGHT" />
+			<anim item="244" id="22" name="DEATH" />
 			
 			<!--WILLARD-->
 			<anim item="246" id="0" name= "STOP" />
@@ -8369,7 +8462,103 @@
 			<anim item="246" id="11" name= "WALK_ATTACK_LEFT" />
 			<anim item="246" id="12" name= "JUMP_TURN_180" />
 			<anim item="246" id="13" name= "SHOOT" />
-				
+			
+			<!--CIVVY-->
+			<anim item="247" id="0" name="WALK" />
+			<anim item="247" id="1" name="WALKING_PUNCH_PREPARE" />
+			<anim item="247" id="2" name="WALKING_PUNCH_TO_IDLE" />
+			<anim item="247" id="3" name="WALKING_PUNCH_TO_WALK" />
+			<anim item="247" id="4" name="WALKING_PUNCH_ATTACK" />
+			<anim item="247" id="5" name="IDLE_TO_WALK" />
+			<anim item="247" id="6" name="IDLE" />
+			<anim item="247" id="7" name="WALKING_PUNCH_CANCEL" />
+			<anim item="247" id="8" name="WALK_TO_IDLE_LEFT" />
+			<anim item="247" id="9" name="CLOSE_PUNCH_CANCEL" />
+			<anim item="247" id="10" name="CLOSE_PUNCH_PREPARE" />
+			<anim item="247" id="11" name="FAR_PUNCH_CANCEL" />
+			<anim item="247" id="12" name="FAR_PUNCH_PREPARE" />
+			<anim item="247" id="13" name="CLOSE_PUNCH_TO_IDLE" />
+			<anim item="247" id="14" name="FAR_PUNCH_TO_IDLE" />
+			<anim item="247" id="15" name="FAR_PUNCH_TO_WALK" />
+			<anim item="247" id="16" name="CLOSE_PUNCH_ATTACK" />
+			<anim item="247" id="17" name="FAR_PUNCH_ATTACK" />
+			<anim item="247" id="18" name="IDLE_TO_WAIT" />
+			<anim item="247" id="19" name="WAIT_TO_IDLE" />
+			<anim item="247" id="20" name="WAIT" />
+			<anim item="247" id="21" name="RUN" />
+			<anim item="247" id="22" name="WALK_TO_RUN" />
+			<anim item="247" id="23" name="RUN_TO_WALK_LEFT" />
+			<anim item="247" id="24" name="RUN_TO_IDLE" />
+			<anim item="247" id="25" name="IDLE_TO_RUN" />
+			<anim item="247" id="26" name="DEATH" />
+			<anim item="247" id="27" name="CLIMB_4CLICKS" />
+			<anim item="247" id="28" name="CLIMB_2CLICKS" />
+			<anim item="247" id="29" name="CLIMB_3CLICKS" />
+			<anim item="247" id="31" name="FALL_4CLICKS" />
+			<anim item="247" id="31" name="RUN_TO_WALK_RIGHT" />
+			
+			<!-- IMP -->			
+			<anim item="283" id="0" name="WALK" />
+			<anim item="283" id="1" name="IDLE" />
+			<anim item="283" id="2" name="RUN" />
+			<anim item="283" id="3" name="ATTACK" />
+			<anim item="283" id="4" name="CRY" />
+			<anim item="283" id="5" name="JUMP_ATTACK" />
+			<anim item="283" id="6" name="SCARED_RUN_AWAY" />
+			<anim item="283" id="7" name="CLIMB_UP" />
+			<anim item="283" id="8" name="BARREL_ROLL" />
+			<anim item="283" id="9" name="FALL_BACKWARDS" />
+			<anim item="283" id="10" name="FALL_FORWARD" />
+			<anim item="283" id="11" name="LEFT_FOOT_START_WALK" />
+			<anim item="283" id="12" name="RIGHT_FOOT_START_WALK"  />
+			<anim item="283" id="13" name="SLOW_TO_WAIT_LEFT"  />
+			<anim item="283" id="14" name="SLOW_TO_WAIT_RIGHT" /> 
+			<anim item="283" id="15" name="SLOW_TO_RUN" /> 
+			<anim item="283" id="16" name="SLOW_TO_WALK" /> 
+			<anim item="283" id="17" name="THROW_ROCK" />
+	
+			<!-- WASP_MUTANT -->
+			<anim item="294" id="0" name= "FLY_IDLE" />
+			<anim item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+			<anim item="294" id="2" name= "IDLE" />
+			<anim item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+			<anim item="294" id="4" name= "ATTACK" />
+			<anim item="294" id="5" name= "FALL" />
+			<anim item="294" id="6" name= "DEATH" />
+			<anim item="294" id="7" name= "FLY_FORWARD" />
+			
+			<!-- SKATEBOARD -->			
+			<anim item="296" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="296" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="296" id="2" name="SKATE_ACCEL_END" />
+			<anim item="296" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="296" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="296" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="296" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="296" id="7" name="IDLE" />
+			<anim item="296" id="8" name="SKATE_ACCEL_START" />
+			<anim item="296" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="296" id="10" name="IDLE_SHOOT" />
+			<anim item="296" id="11" name="SKATE_SHOOT" />
+			<anim item="296" id="12" name="SKATE" />
+			<anim item="296" id="13" name="DEATH" />
+			
+			<!-- SKATEBOARD_KID -->			
+			<anim item="297" id="0" name="IDLE_TO_SKATE_CONTINUE" />
+			<anim item="297" id="1" name="IDLE_TO_SKATE_END" />
+			<anim item="297" id="2" name="SKATE_ACCEL_END" />
+			<anim item="297" id="3" name="SKATE_ACCEL_CONTINUE" />
+			<anim item="297" id="4" name="SKATE_TO_IDLE_START" />
+			<anim item="297" id="5" name="SKATE_TO_IDLE_CONT" />
+			<anim item="297" id="6" name="SKATE_TO_IDLE_END" />
+			<anim item="297" id="7" name="IDLE" />
+			<anim item="297" id="8" name="SKATE_ACCEL_START" />
+			<anim item="297" id="9" name="IDLE_TO_SKATE_START" />
+			<anim item="297" id="10" name="IDLE_SHOOT" />
+			<anim item="297" id="11" name="SKATE_SHOOT" />
+			<anim item="297" id="12" name="SKATE" />
+			<anim item="297" id="13" name="DEATH" />
+		
 		</animations>
 		<states>
 			<!-- Lara -->
@@ -8409,6 +8598,78 @@
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
 			
+			<!-- APE -->
+			<state item="102" id="1" name="IDLE" />
+			<state item="102" id="2" name="WALK_FORWARD" />
+			<state item="102" id="3" name="RUN_FORWARD" />
+			<state item="102" id="4" name="ATTACK" />
+			<state item="102" id="5" name="DEATH" />
+			<state item="102" id="6" name="POUND_CHEST" />
+			<state item="102" id="7" name="POUND_GROUND" />
+			<state item="102" id="8" name="RUN_LEFT" />
+			<state item="102" id="9" name="RUN_RIGHT" />
+			<state item="102" id="10" name="JUMP" />
+			<state item="102" id="11" name="VAULT" />
+			
+			<!-- COMPSOGNATHUS -->
+			<state item="113" id="0" name="IDLE" />
+			<state item="113" id="1" name="RUN" />
+			<state item="113" id="2" name="JUMP_ATTACK" />
+			<state item="113" id="3" name="ATTACK" />
+			
+			<!-- KNIFE THROWER -->
+			<state item="162" id="1" name= "IDLE" />
+			<state item="162" id="2" name= "WALK_FORWARD" />
+			<state item="162" id="3" name= "RUN_FORWARD" />
+			<state item="162" id="4" name= "WALK_KNIFE_ATTACK_LEFT_START" />
+			<state item="162" id="5" name= "WALK_KNIFE_ATTACK_LEFT_CONTINUE" />
+			<state item="162" id="6" name= "WALK_KNIFE_ATTACK_RIGHT_START" />
+			<state item="162" id="7" name= "WALK_KNIFE_ATTACK_RIGHT_CONTINUE" />
+			<state item="162" id="8" name= "IDLE_KNIFE_ATTACK_START" />
+			<state item="162" id="9" name= "IDLE_KNIFE_ATTACK_CONTINUE" />
+			<state item="162" id="10" name= "DEATH" />
+			
+			<!-- KOLD -->
+			<state item="219" id="0" name="DEATH" />
+			<state item="219" id="1" name="IDLE" />
+			<state item="219" id="2" name="WALK" />
+			<state item="219" id="3" name="RUN" />
+			<state item="219" id="4" name="AIM" />
+			<state item="219" id="6" name="SHOOT" />
+			
+			<!-- COWBOY -->
+			<state item="239" id="1" name="STOP" />
+			<state item="239" id="2" name="WALK" />
+			<state item="239" id="3" name="RUN" />
+			<state item="239" id="4" name="AIM" />
+			<state item="239" id="5" name="DEATH" />
+			<state item="239" id="6" name="SHOOT" />
+			
+			<!-- SHIVA -->
+			<state item="244" id="0" name="IDLE "/>
+			<state item="244" id="1" name="WALK_FORWARD "/>
+			<state item="244" id="2" name="GUARD_IDLE "/>
+			<state item="244" id="3" name="WALK_FORWARD_GUARDING "/>
+			<state item="244" id="4" name="INACTIVE "/>
+			<state item="244" id="5" name="ATTACK_GRAB "/>
+			<state item="244" id="6" name="KILL "/>
+			<state item="244" id="7" name="ATTACK "/>
+			<state item="244" id="8" name="WALK_BACK "/>
+			<state item="244" id="9" name="DEATH "/>
+			
+			<!-- WILLARD -->
+			<state item="246" id="0" name= "STOP" />
+			<state item="246" id="1" name= "WALK" />
+			<state item="246" id="2" name= "ATTACK" />
+			<state item="246" id="3" name= "KILL_LARA" />
+			<state item="246" id="4" name= "STUN_START" />
+			<state item="246" id="5" name= "STUN" />
+			<state item="246" id="6" name= "STUN_END" />
+			<state item="246" id="7" name= "WALK_ATTACK_RIGHT" />
+			<state item="246" id="8" name= "WALK_ATTACK_LEFT" />
+			<state item="246" id="9" name= "JUMP_TURN_180" />
+			<state item="246" id="10" name= "SHOOT" />
+			
 			<!-- CIVVY -->
 			<state item="247" id="1" name= "IDLE" />
 			<state item="247" id="2" name= "WALK" />
@@ -8425,21 +8686,7 @@
 			<state item="247" id="13" name= "CLIMB_3CLICKS" />
 			<state item="247" id="14" name= "CLIMB_4CLICKS" />
 			<state item="247" id="15" name= "FALL_4CLICKS" />
-			
-			<!-- COMPSOGNATHUS -->
-			<state item="113" id="0" name="IDLE" />
-			<state item="113" id="1" name="RUN" />
-			<state item="113" id="2" name="JUMP_ATTACK" />
-			<state item="113" id="3" name="ATTACK" />	
-
-			<!-- COWBOY -->
-			<state item="239" id="1" name="STOP" />
-			<state item="239" id="2" name="WALK" />
-			<state item="239" id="3" name="RUN" />
-			<state item="239" id="4" name="AIM" />
-			<state item="239" id="5" name="DEATH" />
-			<state item="239" id="6" name="SHOOT" />
-			
+							
 			<!-- IMP -->			
 			<state item="283" id="0" name= "WALK" />
 			<state item="283" id="1" name= "IDLE" />
@@ -8451,31 +8698,7 @@
 			<state item="283" id="8" name= "START_ROLL" />
 			<state item="283" id="9" name= "DEATH" />
 			<state item="283" id="11" name= "THROW_STONES" />
-
-			<!-- KNIFE THROWER -->
-			<state item="162" id="1" name= "IDLE" />
-			<state item="162" id="2" name= "WALK_FORWARD" />
-			<state item="162" id="3" name= "RUN_FORWARD" />
-			<state item="162" id="4" name= "WALK_KNIFE_ATTACK_LEFT_START" />
-			<state item="162" id="5" name= "WALK_KNIFE_ATTACK_LEFT_CONTINUE" />
-			<state item="162" id="6" name= "WALK_KNIFE_ATTACK_RIGHT_START" />
-			<state item="162" id="7" name= "WALK_KNIFE_ATTACK_RIGHT_CONTINUE" />
-			<state item="162" id="8" name= "IDLE_KNIFE_ATTACK_START" />
-			<state item="162" id="9" name= "IDLE_KNIFE_ATTACK_CONTINUE" />
-			<state item="162" id="10" name= "DEATH" />
-			
-			<!-- SHIVA -->
-			<state item="244" id="0" name="IDLE "/>
-			<state item="244" id="1" name="WALK_FORWARD "/>
-			<state item="244" id="2" name="GUARD_IDLE "/>
-			<state item="244" id="3" name="WALK_FORWARD_GUARDING "/>
-			<state item="244" id="4" name="INACTIVE "/>
-			<state item="244" id="5" name="ATTACK_GRAB "/>
-			<state item="244" id="6" name="KILL "/>
-			<state item="244" id="7" name="ATTACK "/>
-			<state item="244" id="8" name="WALK_BACK "/>
-			<state item="244" id="9" name="DEATH "/>
-			
+			 			
 			<!-- WASP_MUTANT -->
 			<state item="294" id="0" name= "FLY_IDLE" />
 			<state item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
@@ -8486,19 +8709,22 @@
 			<state item="294" id="6" name= "DEATH" />
 			<state item="294" id="7" name= "FLY_FORWARD" />
 			
-			<!-- WILLARD -->
-			<state item="246" id="0" name= "STOP" />
-			<state item="246" id="1" name= "WALK" />
-			<state item="246" id="2" name= "ATTACK" />
-			<state item="246" id="3" name= "KILL_LARA" />
-			<state item="246" id="4" name= "STUN_START" />
-			<state item="246" id="5" name= "STUN" />
-			<state item="246" id="6" name= "STUN_END" />
-			<state item="246" id="7" name= "WALK_ATTACK_RIGHT" />
-			<state item="246" id="8" name= "WALK_ATTACK_LEFT" />
-			<state item="246" id="9" name= "JUMP_TURN_180" />
-			<state item="246" id="10" name= "SHOOT" />
+			<!-- SKATEBOARD -->			
+			<state item="296" id="0" name="IDLE" />
+			<state item="296" id="1" name="SHOOT_IDLE" />
+			<state item="296" id="2" name="SKATE" />
+			<state item="296" id="3" name="SKATE_ACCELERATE" />
+			<state item="296" id="4" name="SKATE_SHOOT" />
+			<state item="296" id="5" name="DEATH" />
 			
+			<!-- SKATEBOARD_KID -->			
+			<state item="297" id="0" name="IDLE" />
+			<state item="297" id="1" name="SHOOT_IDLE" />
+			<state item="297" id="2" name="SKATE" />
+			<state item="297" id="3" name="SKATE_ACCELERATE" />
+			<state item="297" id="4" name="SKATE_SHOOT" />
+			<state item="297" id="5" name="DEATH" />
+		   			
 		</states>
 	</game>
 </xml>
