@@ -26,12 +26,12 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return ItemType +
-                   ", Room = " + (Room?.ToString() ?? "NULL") +
+                   " (" + (Room?.ToString() ?? "NULL") + ")" +
                    ", Ocb = " + Ocb +
                    GetScriptIDOrName(false);
         }
 
-        public string ShortName() => ItemType.ShortName() + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public string ShortName() => ItemType.ShortName() + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
 
         public static ItemInstance FromItemType(ItemType item)
         {

@@ -85,13 +85,13 @@ namespace TombLib.LevelData
             return "Flyby " +
                 ", Sequence = " + Sequence +
                 ", Number = " + Number +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
+                " (" + (Room?.ToString() ?? "NULL") + ")" +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y +
                 GetScriptIDOrName(false);
         }
 
-        public string ShortName() => "Flyby cam (" + Sequence + ":" + Number + ")" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public string ShortName() => "Flyby cam (" + Sequence + ":" + Number + ")"  + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
 
         public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         {

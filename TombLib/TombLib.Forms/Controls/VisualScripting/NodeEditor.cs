@@ -1265,6 +1265,8 @@ namespace TombLib.Controls.VisualScripting
             }))
                 return;
 
+            Capture = true; // Capture mouse for zoom and panning
+
             var delta = e.Delta * _mouseWheelScrollFactor;
 
             if (Control.ModifierKeys == Keys.Shift)
