@@ -16,6 +16,7 @@ WadTool:
  
 TombIDE:
  * Many minor bugfixes.
+ * Update Tomb1Main preset to 2.5.2.
 
 Version 1.6.7
 =============
