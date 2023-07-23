@@ -5,7 +5,7 @@ local Timer = require("Engine.Timer")
 -- !Description "After a specified number of seconds, the specified thing happens"
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
--- !Arguments "Numerical, 30, [ 0 | 1000 | 2 ], The duration of the timer in seconds"
+-- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
@@ -24,7 +24,7 @@ end
 -- !Description "Basic timer"
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
--- !Arguments "Numerical, 30, [ 0 | 1000 | 2 ], The duration of the timer in seconds"
+-- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds)
