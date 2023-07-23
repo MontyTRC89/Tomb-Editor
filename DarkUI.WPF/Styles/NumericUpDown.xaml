@@ -15,46 +15,58 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_ClickableControl}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness">
 			<Setter.Value>
-				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Border}" />
+				<Thickness Left="{x:Static local:Defaults.BorderThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
 		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RepeatButton}">
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
 							x:Name="border"
-							Padding="{TemplateBinding Padding}"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}" />
+
+						<Rectangle
+							x:Name="pressRect"
+							Margin="{TemplateBinding BorderThickness}"
+							Fill="{DynamicResource Brush_PressHighlight}"
+							Opacity="{DynamicResource Opacity_PressedHighlight}"
+							Visibility="Hidden" />
+
+						<Border Padding="{TemplateBinding Padding}" BorderThickness="{TemplateBinding BorderThickness}">
 							<ContentPresenter
+								x:Name="contentPresenter"
+								Margin="{x:Static local:Defaults.NumericUpDown_RepeatButtonPadding}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								Content="{TemplateBinding Content}"
 								ContentTemplate="{TemplateBinding ContentTemplate}" />
 						</Border>
-						<Border
-							x:Name="hoverIndicationBorder"
-							Margin="{TemplateBinding BorderBrush}"
-							Background="{DynamicResource InputControl_HoverHighlight}"
-							Opacity="{DynamicResource InputControl_HoverHighlight_Opacity}"
+
+						<Rectangle
+							x:Name="hoverRect"
+							Margin="{TemplateBinding BorderThickness}"
+							Fill="{DynamicResource Brush_HoverHighlight}"
+							Opacity="{DynamicResource Opacity_HoveredHighlight}"
 							Visibility="Hidden" />
 					</Grid>
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -63,11 +75,11 @@
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="hoverIndicationBorder" Property="Visibility" Value="Visible" />
+							<Setter TargetName="hoverRect" Property="Visibility" Value="Visible" />
 						</MultiTrigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Pressed}" />
+							<Setter TargetName="pressRect" Property="Visibility" Value="Visible" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -83,16 +95,16 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_ClickableControl}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 		<Setter Property="Padding">
 			<Setter.Value>
 				<!--  Why does "Top" need to be "ThicknessWidth_Tiny"? Because for some reason this custom control has vertical alignment problems with text.  -->
-				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
+				<Thickness Bottom="{x:Static local:Defaults.InputControl_DefaultPaddingWidth}" Top="{x:Static local:Defaults.TinyThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -109,7 +121,7 @@
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition x:Name="firstContentColumn" Width="*" />
+								<ColumnDefinition x:Name="firstContentColumn" />
 								<ColumnDefinition x:Name="secondContentColumn" Width="Auto" />
 							</Grid.ColumnDefinitions>
 
@@ -117,16 +129,14 @@
 								x:Name="contentPresenter"
 								Margin="{TemplateBinding Padding}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-								Focusable="False" />
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 							<Grid
 								x:Name="gridContent"
 								Grid.Column="1"
-								Width="{TemplateBinding SpinnerWidth}"
-								Height="{TemplateBinding SpinnerHeight}">
+								Width="{x:Static local:Defaults.NumericUpDown_SpinnerWidth}">
 								<Grid.RowDefinitions>
-									<RowDefinition Height="*" />
-									<RowDefinition Height="*" />
+									<RowDefinition />
+									<RowDefinition />
 								</Grid.RowDefinitions>
 
 								<RepeatButton
@@ -134,15 +144,16 @@
 									IsTabStop="{TemplateBinding IsTabStop}"
 									Style="{DynamicResource NumericRepeatButton}">
 									<RepeatButton.BorderThickness>
-										<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_Border}" Left="{x:Static local:Defaults.ThicknessWidth_Border}" />
+										<Thickness Bottom="{x:Static local:Defaults.BorderThicknessWidth}" Left="{x:Static local:Defaults.BorderThicknessWidth}" />
 									</RepeatButton.BorderThickness>
 
 									<Path
 										x:Name="arrowUp"
-										Margin="{x:Static local:Defaults.Margin_Tiny}"
-										Data="{DynamicResource NarrowarrowUp}"
+										Data="{DynamicResource NarrowArrowUp}"
 										Fill="{TemplateBinding Foreground}"
-										Stretch="Uniform" />
+										SnapsToDevicePixels="False"
+										Stretch="Uniform"
+										UseLayoutRounding="False" />
 								</RepeatButton>
 
 								<RepeatButton
@@ -151,15 +162,16 @@
 									IsTabStop="{TemplateBinding IsTabStop}"
 									Style="{DynamicResource NumericRepeatButton}">
 									<RepeatButton.BorderThickness>
-										<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Border}" Top="{x:Static local:Defaults.ThicknessWidth_Border}" />
+										<Thickness Left="{x:Static local:Defaults.BorderThicknessWidth}" Top="{x:Static local:Defaults.BorderThicknessWidth}" />
 									</RepeatButton.BorderThickness>
 
 									<Path
 										x:Name="arrowDown"
-										Margin="{x:Static local:Defaults.Margin_Tiny}"
-										Data="{DynamicResource NarrowarrowDown}"
+										Data="{DynamicResource NarrowArrowDown}"
 										Fill="{TemplateBinding Foreground}"
-										Stretch="Uniform" />
+										SnapsToDevicePixels="False"
+										Stretch="Uniform"
+										UseLayoutRounding="False" />
 								</RepeatButton>
 							</Grid>
 						</Grid>
@@ -175,15 +187,15 @@
 						</Trigger>
 
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
 						</Trigger>
 
 						<Trigger SourceName="PART_IncreaseButton" Property="IsEnabled" Value="False">
-							<Setter TargetName="arrowUp" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter TargetName="arrowUp" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger SourceName="PART_DecreaseButton" Property="IsEnabled" Value="False">
-							<Setter TargetName="arrowDown" Property="Fill" Value="{DynamicResource InputControl_Glyph_Disabled}" />
+							<Setter TargetName="arrowDown" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger Property="SpinnerLocation" Value="Left">
@@ -203,7 +215,7 @@
 		<Setter Property="IsTabStop" Value="False" />
 
 		<!--  Layout  -->
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControl_Height}" />
 		<Setter Property="HorizontalContentAlignment" Value="Right" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
@@ -212,14 +224,15 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_TextControl}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 
 		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
@@ -240,7 +253,6 @@
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<xceed:WatermarkTextBox
 							x:Name="PART_TextBox"
-							MinWidth="20"
 							Padding="{TemplateBinding Padding}"
 							HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -302,8 +314,8 @@
 						</DataTrigger>
 
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter TargetName="PART_TextBox" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
+							<Setter TargetName="PART_TextBox" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger Property="IsFocused" Value="True">

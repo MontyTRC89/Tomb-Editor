@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dictionaries\LightColors.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
     <Page Update="Dictionaries\DarkColors.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

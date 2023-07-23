@@ -4,47 +4,53 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type TabControl}">
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource TabControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_Default}" />
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Brush_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TabControl}">
 					<Grid
-						x:Name="PART_TemplateRoot"
 						ClipToBounds="True"
 						KeyboardNavigation.TabNavigation="Local"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition x:Name="ColumnDefinition0" />
-							<ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
+							<ColumnDefinition x:Name="columnDefinition0" />
+							<ColumnDefinition x:Name="columnDefinition1" Width="0" />
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
-							<RowDefinition x:Name="RowDefinition0" Height="Auto" />
-							<RowDefinition x:Name="RowDefinition1" />
+							<RowDefinition x:Name="rowDefinition0" Height="Auto" />
+							<RowDefinition x:Name="rowDefinition1" />
 						</Grid.RowDefinitions>
 
 						<TabPanel
-							x:Name="PART_HeaderPanel"
-							Grid.Row="0"
-							Grid.Column="0"
-							Margin="2,2,2,0"
+							x:Name="headerPanel"
 							Panel.ZIndex="1"
 							Background="Transparent"
 							IsItemsHost="True"
-							KeyboardNavigation.TabIndex="1" />
+							KeyboardNavigation.TabIndex="1">
+							<TabPanel.Margin>
+								<Thickness
+									Left="{x:Static local:Defaults.TinyThicknessWidth}"
+									Right="{x:Static local:Defaults.TinyThicknessWidth}"
+									Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+							</TabPanel.Margin>
+						</TabPanel>
 						<Border
-							x:Name="PART_ContentPanel"
+							x:Name="contentPanel"
 							Grid.Row="1"
-							Grid.Column="0"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
@@ -59,40 +65,64 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="PART_SelectedContentHost" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+						</Trigger>
+
 						<Trigger Property="TabStripPlacement" Value="Bottom">
-							<Setter TargetName="PART_ContentPanel" Property="Grid.Row" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Grid.Row" Value="1" />
-							<Setter TargetName="PART_HeaderPanel" Property="Margin" Value="2,0,2,2" />
-							<Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-							<Setter TargetName="RowDefinition1" Property="Height" Value="Auto" />
+							<Setter TargetName="contentPanel" Property="Grid.Row" Value="0" />
+							<Setter TargetName="headerPanel" Property="Grid.Row" Value="1" />
+							<Setter TargetName="rowDefinition0" Property="Height" Value="*" />
+							<Setter TargetName="rowDefinition1" Property="Height" Value="Auto" />
+
+							<Setter TargetName="headerPanel" Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+										Left="{x:Static local:Defaults.TinyThicknessWidth}"
+										Right="{x:Static local:Defaults.TinyThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</Trigger>
 
 						<Trigger Property="TabStripPlacement" Value="Left">
-							<Setter TargetName="ColumnDefinition0" Property="Width" Value="Auto" />
-							<Setter TargetName="ColumnDefinition1" Property="Width" Value="*" />
-							<Setter TargetName="PART_ContentPanel" Property="Grid.Column" Value="1" />
-							<Setter TargetName="PART_ContentPanel" Property="Grid.Row" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Grid.Column" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Grid.Row" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Margin" Value="2,2,0,2" />
-							<Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-							<Setter TargetName="RowDefinition1" Property="Height" Value="0" />
+							<Setter TargetName="columnDefinition0" Property="Width" Value="Auto" />
+							<Setter TargetName="columnDefinition1" Property="Width" Value="*" />
+							<Setter TargetName="contentPanel" Property="Grid.Column" Value="1" />
+							<Setter TargetName="contentPanel" Property="Grid.Row" Value="0" />
+							<Setter TargetName="headerPanel" Property="Grid.Column" Value="0" />
+							<Setter TargetName="headerPanel" Property="Grid.Row" Value="0" />
+							<Setter TargetName="rowDefinition0" Property="Height" Value="*" />
+							<Setter TargetName="rowDefinition1" Property="Height" Value="0" />
+
+							<Setter TargetName="headerPanel" Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+										Left="{x:Static local:Defaults.TinyThicknessWidth}"
+										Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</Trigger>
 
 						<Trigger Property="TabStripPlacement" Value="Right">
-							<Setter TargetName="ColumnDefinition0" Property="Width" Value="*" />
-							<Setter TargetName="ColumnDefinition1" Property="Width" Value="Auto" />
-							<Setter TargetName="PART_ContentPanel" Property="Grid.Column" Value="0" />
-							<Setter TargetName="PART_ContentPanel" Property="Grid.Row" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Grid.Column" Value="1" />
-							<Setter TargetName="PART_HeaderPanel" Property="Grid.Row" Value="0" />
-							<Setter TargetName="PART_HeaderPanel" Property="Margin" Value="0,2,2,2" />
-							<Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-							<Setter TargetName="RowDefinition1" Property="Height" Value="0" />
-						</Trigger>
+							<Setter TargetName="columnDefinition0" Property="Width" Value="*" />
+							<Setter TargetName="columnDefinition1" Property="Width" Value="Auto" />
+							<Setter TargetName="contentPanel" Property="Grid.Column" Value="0" />
+							<Setter TargetName="contentPanel" Property="Grid.Row" Value="0" />
+							<Setter TargetName="headerPanel" Property="Grid.Column" Value="1" />
+							<Setter TargetName="headerPanel" Property="Grid.Row" Value="0" />
+							<Setter TargetName="rowDefinition0" Property="Height" Value="*" />
+							<Setter TargetName="rowDefinition1" Property="Height" Value="0" />
 
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_TemplateRoot" Property="TextElement.Foreground" Value="{DynamicResource Default_Text_Disabled}" />
+							<Setter TargetName="headerPanel" Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+										Right="{x:Static local:Defaults.TinyThicknessWidth}"
+										Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -101,46 +131,52 @@
 	</Style>
 
 	<Style TargetType="{x:Type TabItem}">
-		<Setter Property="Background" Value="{DynamicResource TabControl_Backgreound_InactiveTab}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource TabControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="Margin" Value="0" />
-		<Setter Property="Padding" Value="6,3" />
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Stretch" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_Low}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness
+					Bottom="{x:Static local:Defaults.MediumThicknessWidth}"
+					Left="{x:Static local:Defaults.LargeThicknessWidth}"
+					Right="{x:Static local:Defaults.LargeThicknessWidth}"
+					Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+			</Setter.Value>
+		</Setter>
+
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TabItem}">
-					<Grid
-						x:Name="PART_TemplateRoot"
-						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
+					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							x:Name="PART_MainBorder"
-							Margin="0"
+							x:Name="mainBorder"
 							Background="{TemplateBinding Background}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="1,1,1,0">
+							BorderBrush="{TemplateBinding BorderBrush}">
 							<Border
-								x:Name="PART_InnerBorder"
-								Margin="-1"
-								Background="{DynamicResource TabControl_Backgreound_SelectedTab}"
-								BorderBrush="{DynamicResource TabControl_Border_SelectedTab}"
-								BorderThickness="1,1,1,0"
-								Opacity="0" />
+								x:Name="innerBorder"
+								Margin="{x:Static local:Defaults.InvertedBorderThickness}"
+								Background="{DynamicResource Brush_Background}"
+								BorderBrush="{DynamicResource Brush_Border}"
+								Visibility="Hidden" />
 						</Border>
 						<ContentPresenter
-							x:Name="PART_ContentPresenter"
+							x:Name="contentPresenter"
 							Margin="{TemplateBinding Padding}"
 							HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
 							VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
 							ContentSource="Header"
-							Focusable="False"
 							RecognizesAccessKey="True" />
 					</Grid>
+
 					<ControlTemplate.Triggers>
 						<MultiDataTrigger>
 							<MultiDataTrigger.Conditions>
@@ -148,11 +184,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_HoveredTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,0,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,0,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -161,11 +210,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_HoveredTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,0,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,0,1,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -174,11 +236,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_HoveredTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="0,1,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="0,1,1,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -187,11 +262,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_HoveredTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,1,0" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_HoveredTab}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,1,0" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -200,11 +288,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_Disabled}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,0,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,0,1" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -213,11 +314,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_Disabled}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,0,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,0,1,1" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -226,11 +340,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_Disabled}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="0,1,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="0,1,1,1" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -239,11 +366,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_Disabled}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,1,0" />
-							<Setter TargetName="PART_MainBorder" Property="Background" Value="{DynamicResource TabControl_Backgreound_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderBrush" Value="{DynamicResource TabControl_Border_Disabled}" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,1,0" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -253,9 +393,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_InactiveTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,0,1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,0,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Border_High}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -264,12 +419,33 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_SelectedTab}" />
-							<Setter Property="Margin" Value="-2,-2,0,-2" />
 							<Setter Property="Panel.ZIndex" Value="1" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,0,1" />
-							<Setter TargetName="PART_InnerBorder" Property="Opacity" Value="1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,0,1" />
+							<Setter TargetName="innerBorder" Property="Visibility" Value="Visible" />
+
+							<Setter Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Left="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Top="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -279,9 +455,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_InactiveTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,0,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,0,1,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Border_High}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -290,12 +481,33 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_SelectedTab}" />
-							<Setter Property="Margin" Value="-2,0,-2,-2" />
 							<Setter Property="Panel.ZIndex" Value="1" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,0,1,1" />
-							<Setter TargetName="PART_InnerBorder" Property="Opacity" Value="1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,0,1,1" />
+							<Setter TargetName="innerBorder" Property="Visibility" Value="Visible" />
+
+							<Setter Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Left="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Right="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -305,9 +517,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_InactiveTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="0,1,1,1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="0,1,1,1" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Border_High}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -316,12 +543,33 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_SelectedTab}" />
-							<Setter Property="Margin" Value="0,-2,-2,-2" />
 							<Setter Property="Panel.ZIndex" Value="1" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="0,1,1,1" />
-							<Setter TargetName="PART_InnerBorder" Property="Opacity" Value="1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="0,1,1,1" />
+							<Setter TargetName="innerBorder" Property="Visibility" Value="Visible" />
+
+							<Setter Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Right="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Top="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Bottom="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -331,9 +579,24 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_InactiveTab}" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,1,0" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,1,0" />
+							<Setter Property="Foreground" Value="{DynamicResource Brush_Border_High}" />
+
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -342,12 +605,33 @@
 								<Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top" />
 							</MultiDataTrigger.Conditions>
 
-							<Setter Property="Foreground" Value="{DynamicResource TabControl_Text_SelectedTab}" />
-							<Setter Property="Margin" Value="-2,-2,-2,0" />
 							<Setter Property="Panel.ZIndex" Value="1" />
-							<Setter TargetName="PART_InnerBorder" Property="BorderThickness" Value="1,1,1,0" />
-							<Setter TargetName="PART_InnerBorder" Property="Opacity" Value="1" />
-							<Setter TargetName="PART_MainBorder" Property="BorderThickness" Value="1,1,1,0" />
+							<Setter TargetName="innerBorder" Property="Visibility" Value="Visible" />
+
+							<Setter Property="Margin">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Right="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}"
+										Top="{x:Static local:Defaults.TabControl_SelectedTabMarginOffset}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="mainBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
+							<Setter TargetName="innerBorder" Property="BorderThickness">
+								<Setter.Value>
+									<Thickness
+										Left="{x:Static local:Defaults.BorderThicknessWidth}"
+										Right="{x:Static local:Defaults.BorderThicknessWidth}"
+										Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+								</Setter.Value>
+							</Setter>
 						</MultiDataTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

@@ -9,14 +9,12 @@ namespace DarkUI.WPF.Converters
 {
 	public class IndentToMarginConverter : IValueConverter
 	{
-		private const double Indentation = 19.0;
-
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value is not TreeViewItem item)
 				return new Thickness(0);
 
-			double leftMargin = Indentation * item.GetDepth();
+			double leftMargin = Defaults.TreeView_Indentation.Value * item.GetDepth();
 			return new Thickness(leftMargin, 0, 0, 0);
 		}
 

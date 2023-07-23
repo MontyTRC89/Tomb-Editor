@@ -8,57 +8,63 @@
 	<converters:IndentToMarginConverter x:Key="IndentToMarginConverter" />
 
 	<Style TargetType="{x:Type TreeView}">
+		<!--  Control properties  -->
 		<Setter Property="AlternationCount" Value="2" />
+
+		<!--  Layout  -->
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
+
+		<!--  Brushes  -->
 		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 		<Setter Property="Padding" Value="0" />
+
+		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.PanningMode" Value="Both" />
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
-		<Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
 
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TreeView}">
 					<Border
-						x:Name="Bd"
+						x:Name="border"
+						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-						<!--  CanContentScroll must be false, otherwise scrolling breaks  -->
+						<!--  CanContentScroll must be False, otherwise scrolling breaks  -->
 						<ScrollViewer
-							x:Name="_tv_scrollviewer_"
+							x:Name="scrollViewer"
 							Padding="{TemplateBinding Padding}"
-							Background="{TemplateBinding Background}"
-							CanContentScroll="false"
-							Focusable="false"
-							HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-							VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+							CanContentScroll="False">
 							<ItemsPresenter />
 						</ScrollViewer>
 					</Border>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter TargetName="Bd" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Disabled}" />
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
 						</Trigger>
-						<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
-							<Setter TargetName="_tv_scrollviewer_" Property="CanContentScroll" Value="true" />
+
+						<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="True">
+							<Setter TargetName="scrollViewer" Property="CanContentScroll" Value="True" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
 		<Style.Triggers>
-			<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+			<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="True">
 				<Setter Property="ItemsPanel">
 					<Setter.Value>
 						<ItemsPanelTemplate>
@@ -70,69 +76,48 @@
 		</Style.Triggers>
 	</Style>
 
-	<Style x:Key="TreeViewItemFocusVisual">
-		<Setter Property="Control.Template">
-			<Setter.Value>
-				<ControlTemplate>
-					<Rectangle />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
-	<PathGeometry x:Key="TreeArrow" Figures="M 0 0 L0 5 L5 0 z" />
-
 	<Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Background" Value="{DynamicResource Default_Text}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Default_Text}" />
+		<!--  Control properties  -->
 		<Setter Property="Focusable" Value="False" />
-		<Setter Property="Height" Value="16" />
+
+		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="Width" Value="16" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Brush_Text}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
 					<Border
-						Width="16"
-						Height="16"
-						Padding="2,4"
+						Width="{x:Static local:Defaults.Path_MaxIconWidth}"
+						Height="{x:Static local:Defaults.Path_MaxIconHeight}"
 						Background="Transparent"
-						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
+						SnapsToDevicePixels="False"
+						UseLayoutRounding="False">
 						<Path
-							x:Name="ExpandPath"
-							Data="{StaticResource TreeArrow}"
-							Fill="Transparent"
-							Stroke="{DynamicResource Default_Text}">
-							<Path.RenderTransform>
-								<RotateTransform Angle="135" CenterX="3" CenterY="3" />
-							</Path.RenderTransform>
-						</Path>
+							x:Name="expandPath"
+							Margin="{x:Static local:Defaults.TreeView_ExpanderIconNormalMargin}"
+							Data="{DynamicResource TreeArrow}"
+							Stretch="Uniform"
+							Stroke="{DynamicResource Brush_Text}" />
 					</Border>
+
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="true">
-							<Setter TargetName="ExpandPath" Property="RenderTransform">
-								<Setter.Value>
-									<RotateTransform Angle="180" CenterX="4" CenterY="3" />
-								</Setter.Value>
-							</Setter>
-							<Setter TargetName="ExpandPath" Property="Fill" Value="{DynamicResource Default_Text}" />
-							<Setter TargetName="ExpandPath" Property="Stroke" Value="{DynamicResource Default_Text}" />
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="expandPath" Property="Data" Value="{DynamicResource TreeArrowChecked}" />
+							<Setter TargetName="expandPath" Property="Margin" Value="{x:Static local:Defaults.TreeView_ExpanderIconCheckedMargin}" />
+							<Setter TargetName="expandPath" Property="Fill" Value="{DynamicResource Brush_Text}" />
+							<Setter TargetName="expandPath" Property="Stroke" Value="{DynamicResource Brush_Text}" />
 						</Trigger>
+
 						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="ExpandPath" Property="Fill" Value="{DynamicResource Default_Text}" />
-							<Setter TargetName="ExpandPath" Property="Stroke" Value="{DynamicResource Default_Text}" />
+							<Setter TargetName="expandPath" Property="Fill" Value="{DynamicResource Brush_Text}" />
+							<Setter TargetName="expandPath" Property="Stroke" Value="{DynamicResource Brush_Text}" />
 						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsMouseOver" Value="True" />
-								<Condition Property="IsChecked" Value="True" />
-							</MultiTrigger.Conditions>
-							<Setter TargetName="ExpandPath" Property="Fill" Value="{DynamicResource Default_Text}" />
-							<Setter TargetName="ExpandPath" Property="Stroke" Value="{DynamicResource Default_Text}" />
-						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
@@ -140,49 +125,58 @@
 	</Style>
 
 	<Style TargetType="{x:Type controls:AlternatingTreeViewItem}">
-		<Setter Property="AlternationCount" Value="2" />
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Control properties  -->
+		<Setter Property="AlternationCount" Value="{Binding AlternationCount, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+
+		<!--  Layout  -->
 		<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-		<Setter Property="Padding" Value="0,2" />
+		<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness Bottom="{x:Static local:Defaults.TinyThicknessWidth}" Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+			</Setter.Value>
+		</Setter>
+
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type controls:AlternatingTreeViewItem}">
 					<StackPanel>
 						<Border
-							x:Name="Bd"
-							Padding="{TemplateBinding Padding}"
+							x:Name="border"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 							UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-							<Grid>
+							<Grid x:Name="contentRoot">
 								<Grid.Style>
 									<Style TargetType="{x:Type Grid}">
 										<Setter Property="Margin" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource IndentToMarginConverter}}" />
 									</Style>
 								</Grid.Style>
-
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="19" />
+									<ColumnDefinition Width="{x:Static local:Defaults.TreeView_Indentation}" />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
 								<ToggleButton
-									x:Name="Expander"
+									x:Name="expander"
 									ClickMode="Press"
 									IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
 									Style="{StaticResource ExpandCollapseToggleStyle}" />
 								<ContentPresenter
 									x:Name="PART_Header"
 									Grid.Column="1"
+									Margin="{TemplateBinding Padding}"
 									HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 									ContentSource="Header"
 									SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -193,39 +187,42 @@
 					</StackPanel>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsExpanded" Value="false">
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="contentRoot" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
+						</Trigger>
+
+						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Alternative}" />
+						</Trigger>
+
+						<Trigger Property="HasItems" Value="False">
+							<Setter TargetName="expander" Property="Visibility" Value="Hidden" />
+						</Trigger>
+
+						<Trigger Property="IsExpanded" Value="False">
 							<Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
 						</Trigger>
-						<Trigger Property="HasItems" Value="false">
-							<Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+
+						<Trigger Property="IsSelected" Value="True">
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Selection}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Selection}" />
 						</Trigger>
-						<Trigger Property="IsSelected" Value="true">
-							<Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
-							<Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
-						</Trigger>
+
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
-								<Condition Property="IsSelected" Value="true" />
-								<Condition Property="IsSelectionActive" Value="false" />
+								<Condition Property="IsSelected" Value="True" />
+								<Condition Property="IsSelectionActive" Value="False" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected_LostFocus}" />
-							<Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource ItemControl_Item_Background_Selected_LostFocus}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Selection_LostFocus}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Selection_LostFocus}" />
 						</MultiTrigger>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter Property="Foreground" Value="{DynamicResource Default_Text_Disabled}" />
-						</Trigger>
-						<Trigger Property="ItemsControl.AlternationIndex" Value="0">
-							<Setter Property="Background" Value="{DynamicResource HeaderBackground}" />
-						</Trigger>
-						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
-							<Setter Property="Background" Value="{DynamicResource GreyBackground}" />
-						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
 		<Style.Triggers>
-			<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+			<Trigger Property="VirtualizingPanel.IsVirtualizing" Value="True">
 				<Setter Property="ItemsPanel">
 					<Setter.Value>
 						<ItemsPanelTemplate>

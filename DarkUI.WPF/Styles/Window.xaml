@@ -5,27 +5,33 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style x:Key="CustomWindowStyle" TargetType="{x:Type Window}">
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource WindowHeader_Background_Active}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<!--  Window properties  -->
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
-		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
-		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 		<Setter Property="WindowStyle" Value="SingleBorderWindow" />
 		<Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
-
 		<Setter Property="WindowChrome.WindowChrome">
 			<Setter.Value>
 				<WindowChrome
-					CaptionHeight="26"
-					CornerRadius="0"
-					GlassFrameThickness="1"
-					NonClientFrameEdges="None"
-					ResizeBorderThickness="6"
+					CaptionHeight="{x:Static local:Defaults.TitleBar_ChromeHeight}"
+					GlassFrameThickness="{x:Static local:Defaults.LargeThickness}"
+					ResizeBorderThickness="{x:Static local:Defaults.MediumThickness}"
 					UseAeroCaptionButtons="False" />
 			</Setter.Value>
 		</Setter>
+
+		<!--  Layout  -->
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
+
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Brush_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_WindowBorder}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
+
+		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Window}">
@@ -35,93 +41,96 @@
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}">
 							<Grid>
-								<AdornerDecorator Margin="0,30,0,0">
+								<AdornerDecorator>
+									<AdornerDecorator.Margin>
+										<Thickness Top="{x:Static local:Defaults.TitleBar_Height}" />
+									</AdornerDecorator.Margin>
+
 									<ContentPresenter />
 								</AdornerDecorator>
 								<Grid
-									x:Name="titlebar"
-									Height="30"
-									Margin="0"
+									x:Name="titleBar"
+									Height="{x:Static local:Defaults.TitleBar_Height}"
 									VerticalAlignment="Top"
 									Background="{TemplateBinding BorderBrush}">
-									<DockPanel Margin="0,0,130,0">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
 										<Image
-											Height="64"
-											Margin="0,-12,-4,0"
-											HorizontalAlignment="Left"
-											VerticalAlignment="Top"
-											Opacity="0.5"
-											Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+											Height="{x:Static local:Defaults.TitleBar_IconWidth}"
+											Opacity="{DynamicResource Opacity_DisabledContent}"
+											Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}">
+											<Image.Margin>
+												<Thickness Top="{x:Static local:Defaults.TitleBar_IconVerticalOffset}" />
+											</Image.Margin>
+										</Image>
 										<TextBlock
 											Grid.Column="1"
-											Width="Auto"
-											Margin="5,3"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"
-											FontSize="14"
+											FontSize="{x:Static local:Defaults.TitleBar_FontSize}"
 											Foreground="{TemplateBinding Foreground}"
-											Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}"
-											TextAlignment="Left"
-											TextWrapping="NoWrap" />
-									</DockPanel>
+											Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}" />
+									</Grid>
 									<StackPanel
 										Grid.Column="0"
 										HorizontalAlignment="Right"
 										Orientation="Horizontal">
 										<Button
 											x:Name="btnMinimize"
-											Width="40"
-											VerticalAlignment="Stretch"
+											Width="{x:Static local:Defaults.TitleBar_ButtonWidth}"
+											Height="Auto"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="Minimize_Event"
 											WindowChrome.IsHitTestVisibleInChrome="True">
 											<Rectangle
-												Width="12"
-												Margin="0"
-												VerticalAlignment="Center"
-												Stroke="{DynamicResource Default_Text}"
-												StrokeThickness="2" />
+												Width="{x:Static local:Defaults.Path_MaxIconWidth}"
+												Stroke="{DynamicResource Brush_Text}"
+												StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}" />
 										</Button>
-
 										<Button
 											x:Name="btnRestore"
-											Width="40"
-											VerticalAlignment="Stretch"
+											Width="{x:Static local:Defaults.TitleBar_ButtonWidth}"
+											Height="Auto"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="AutoMinimize_Event"
 											WindowChrome.IsHitTestVisibleInChrome="True">
-											<Grid Width="12" Height="12">
-												<Rectangle
-													Margin="0"
-													Stroke="{DynamicResource Default_Text}"
-													StrokeThickness="2" />
+											<Grid MaxWidth="{x:Static local:Defaults.Path_MaxIconWidth}" MaxHeight="{x:Static local:Defaults.Path_MaxIconHeight}">
+												<Rectangle Stroke="{DynamicResource Brush_Text}" StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}" />
 											</Grid>
 										</Button>
 										<Button
 											x:Name="btnClose"
-											Width="40"
-											VerticalAlignment="Stretch"
+											Width="{x:Static local:Defaults.TitleBar_ButtonWidth}"
+											Height="Auto"
 											Background="Transparent"
 											BorderBrush="Transparent"
 											Click="CloseWindow_Event"
 											Template="{DynamicResource CloseWindowButton}"
 											WindowChrome.IsHitTestVisibleInChrome="True">
-											<Grid Margin="0,1,0,0">
+											<Grid>
+												<Grid.Margin>
+													<Thickness Top="{x:Static local:Defaults.BorderThicknessWidth}" />
+												</Grid.Margin>
+
 												<Line
-													Stroke="{DynamicResource Default_Text}"
-													StrokeThickness="2"
+													Stroke="{DynamicResource Brush_Text}"
+													StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}"
 													X1="0"
-													X2="11"
+													X2="{x:Static local:Defaults.Path_MaxIconWidth}"
 													Y1="0"
-													Y2="11" />
+													Y2="{x:Static local:Defaults.Path_MaxIconHeight}" />
 												<Line
-													Stroke="{DynamicResource Default_Text}"
-													StrokeThickness="2"
+													Stroke="{DynamicResource Brush_Text}"
+													StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}"
 													X1="0"
-													X2="11"
-													Y1="11"
+													X2="{x:Static local:Defaults.Path_MaxIconWidth}"
+													Y1="{x:Static local:Defaults.Path_MaxIconHeight}"
 													Y2="0" />
 											</Grid>
 										</Button>
@@ -130,32 +139,36 @@
 							</Grid>
 						</Border>
 					</Grid>
+
 					<ControlTemplate.Triggers>
-						<Trigger Property="WindowState" Value="Maximized">
+						<Trigger Property="WindowState" Value="Normal">
 							<Setter TargetName="btnRestore" Property="Content">
 								<Setter.Value>
-									<Grid Width="14" Height="14">
-										<Rectangle
-											Margin="3,0,0,3"
-											Stroke="{DynamicResource Default_Text}"
-											StrokeThickness="2" />
-										<Rectangle
-											Margin="0,4,4,0"
-											Fill="{DynamicResource WindowHeader_Background_Active}"
-											Stroke="{DynamicResource Default_Text}"
-											StrokeThickness="2" />
+									<Grid Width="{x:Static local:Defaults.Path_MaxIconWidth}" Height="{x:Static local:Defaults.Path_MaxIconHeight}">
+										<Rectangle Stroke="{DynamicResource Brush_Text}" StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}" />
 									</Grid>
 								</Setter.Value>
 							</Setter>
 						</Trigger>
-						<Trigger Property="WindowState" Value="Normal">
+
+						<Trigger Property="WindowState" Value="Maximized">
 							<Setter TargetName="btnRestore" Property="Content">
 								<Setter.Value>
-									<Grid Width="12" Height="12">
+									<Grid Width="{x:Static local:Defaults.Path_MaxIconWidth}" Height="{x:Static local:Defaults.Path_MaxIconHeight}">
+										<Rectangle Stroke="{DynamicResource Brush_Text}" StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}">
+											<Rectangle.Margin>
+												<Thickness Bottom="{x:Static local:Defaults.TinyThicknessWidth}" Left="{x:Static local:Defaults.TinyThicknessWidth}" />
+											</Rectangle.Margin>
+										</Rectangle>
+
 										<Rectangle
-											Margin="0"
-											Stroke="{DynamicResource Default_Text}"
-											StrokeThickness="2" />
+											Fill="{DynamicResource Brush_WindowBorder}"
+											Stroke="{DynamicResource Brush_Text}"
+											StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}">
+											<Rectangle.Margin>
+												<Thickness Right="{x:Static local:Defaults.TinyThicknessWidth}" Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+											</Rectangle.Margin>
+										</Rectangle>
 									</Grid>
 								</Setter.Value>
 							</Setter>
@@ -164,12 +177,16 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
 		<Style.Triggers>
-			<Trigger Property="WindowState" Value="Maximized">
-				<Setter Property="BorderThickness" Value="8" />
-			</Trigger>
+			<!--  These shouldn't scale, they are system constants.  -->
+
 			<Trigger Property="WindowState" Value="Normal">
 				<Setter Property="BorderThickness" Value="1" />
+			</Trigger>
+
+			<Trigger Property="WindowState" Value="Maximized">
+				<Setter Property="BorderThickness" Value="8" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -182,32 +199,40 @@
 			Background="{TemplateBinding Background}"
 			BorderBrush="{TemplateBinding BorderBrush}"
 			BorderThickness="{TemplateBinding BorderThickness}"
-			SnapsToDevicePixels="true">
+			SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+			UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 			<ContentPresenter
 				x:Name="contentPresenter"
 				Margin="{TemplateBinding Padding}"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
-				Focusable="False"
-				RecognizesAccessKey="True"
-				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+				RecognizesAccessKey="True" />
 		</Border>
+
 		<ControlTemplate.Triggers>
-			<Trigger Property="IsDefaulted" Value="true">
-				<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LighterBackground}" />
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background}" />
+				<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+				<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 			</Trigger>
-			<Trigger Property="IsMouseOver" Value="true">
-				<Setter TargetName="border" Property="Background" Value="#FFF01428" />
-				<Setter TargetName="border" Property="BorderBrush" Value="#FFF01428" />
+
+			<Trigger Property="IsDefaulted" Value="True">
+				<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Background_High}" />
 			</Trigger>
-			<Trigger Property="IsPressed" Value="true">
-				<Setter TargetName="border" Property="Background" Value="#FF940A14" />
-				<Setter TargetName="border" Property="BorderBrush" Value="#FF940A14" />
+
+			<Trigger Property="IsKeyboardFocused" Value="True">
+				<Setter TargetName="border" Property="Background" Value="#F01428" />
+				<Setter TargetName="border" Property="BorderBrush" Value="#F01428" />
 			</Trigger>
-			<Trigger Property="IsEnabled" Value="false">
-				<Setter TargetName="border" Property="Background" Value="{DynamicResource Default_Background}" />
-				<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LightBorder}" />
-				<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter TargetName="border" Property="Background" Value="#F01428" />
+				<Setter TargetName="border" Property="BorderBrush" Value="#F01428" />
+			</Trigger>
+
+			<Trigger Property="IsPressed" Value="True">
+				<Setter TargetName="border" Property="Background" Value="#940A14" />
+				<Setter TargetName="border" Property="BorderBrush" Value="#940A14" />
 			</Trigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>

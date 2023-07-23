@@ -6,6 +6,7 @@
 	<Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
 		<Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
+
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 	</Style>

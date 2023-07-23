@@ -5,20 +5,23 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type controls:ColorPickerButton}">
+		<!--  Control properties  -->
+		<Setter Property="Focusable" Value="True" />
+
 		<!--  Layout  -->
-		<Setter Property="Width" Value="{x:Static local:Defaults.InputControlWidth}" />
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+		<Setter Property="Width" Value="{x:Static local:Defaults.InputControl_Width}" />
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControl_Height}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Padding_InputControl}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
 
 		<!--  Template  -->
-		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type controls:ColorPickerButton}">
@@ -32,11 +35,11 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="border" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="border" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger Property="IsFocused" Value="True">
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Border_Focused}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -45,11 +48,11 @@
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border_Pressed}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_FocusHighlight}" />
 						</MultiTrigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
+							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

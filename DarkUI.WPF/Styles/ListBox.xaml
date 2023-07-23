@@ -6,6 +6,7 @@
 	<Style TargetType="{x:Type ListBox}">
 		<!--  Control properties  -->
 		<Setter Property="AlternationCount" Value="2" />
+		<Setter Property="Focusable" Value="True" />
 
 		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
@@ -13,11 +14,12 @@
 
 		<!--  Brushes  -->
 		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
+		<Setter Property="Padding" Value="0" />
 
 		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
@@ -26,6 +28,7 @@
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
 
 		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ListBox}">
@@ -43,7 +46,7 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -72,7 +75,15 @@
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.Padding_ListViewItem}" />
+		<Setter Property="Padding">
+			<Setter.Value>
+				<Thickness
+					Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+					Left="{x:Static local:Defaults.MediumThicknessWidth}"
+					Right="{x:Static local:Defaults.MediumThicknessWidth}"
+					Top="{x:Static local:Defaults.TinyThicknessWidth}" />
+			</Setter.Value>
+		</Setter>
 
 		<!--  Template  -->
 		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -95,11 +106,11 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger Property="ItemsControl.AlternationIndex" Value="1">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Alternation}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Alternative}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -108,7 +119,7 @@
 								<Condition Property="IsSelected" Value="True" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Selection}" />
 						</MultiTrigger>
 
 						<MultiTrigger>
@@ -117,7 +128,7 @@
 								<Condition Property="IsSelected" Value="True" />
 							</MultiTrigger.Conditions>
 
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource ItemControl_Item_Background_Selected_LostFocus}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Selection_LostFocus}" />
 						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

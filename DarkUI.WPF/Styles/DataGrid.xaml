@@ -10,6 +10,7 @@
 		<!--  Control properties  -->
 		<Setter Property="AlternationCount" Value="2" />
 		<Setter Property="CanUserReorderColumns" Value="False" />
+		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
 		<Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
 
 		<!--  Layout  -->
@@ -17,14 +18,14 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
-		<Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource Default_Border_HighContrast}" />
-		<Setter Property="VerticalGridLinesBrush" Value="{DynamicResource Default_Border_HighContrast}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+		<Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource Brush_Border_Low}" />
+		<Setter Property="VerticalGridLinesBrush" Value="{DynamicResource Brush_Border_Low}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 
 		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
@@ -90,7 +91,7 @@
 											x:Name="Corner"
 											Grid.Row="2"
 											Grid.Column="1"
-											Fill="{DynamicResource ScrollViewer_Track_Backgreound}" />
+											Fill="{DynamicResource Brush_Background_Low}" />
 									</Grid>
 								</ControlTemplate>
 							</ScrollViewer.Template>
@@ -103,7 +104,7 @@
 								<VisualState x:Name="Disabled">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource DarkGreySelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Background_Disabled}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -129,15 +130,15 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource Default_Backdrop}" />
-		<Setter Property="CaretBrush" Value="{DynamicResource Default_Text}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_Low}" />
+		<Setter Property="CaretBrush" Value="{DynamicResource Brush_Text}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_Tiny}" Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
+				<Thickness Bottom="{x:Static local:Defaults.TinyThicknessWidth}" Top="{x:Static local:Defaults.TinyThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -177,16 +178,16 @@
 		<!--  Brushes  -->
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness
-					Bottom="{x:Static local:Defaults.ThicknessWidth_Default}"
-					Left="{x:Static local:Defaults.ThicknessWidth_Tiny}"
-					Right="{x:Static local:Defaults.ThicknessWidth_Tiny}"
-					Top="{x:Static local:Defaults.ThicknessWidth_Default}" />
+					Bottom="{x:Static local:Defaults.MediumThicknessWidth}"
+					Left="{x:Static local:Defaults.TinyThicknessWidth}"
+					Right="{x:Static local:Defaults.TinyThicknessWidth}"
+					Top="{x:Static local:Defaults.MediumThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -215,7 +216,7 @@
 								<VisualState x:Name="Current">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource BlueSelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -231,7 +232,7 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="{x:Type DataGridCell}">
-							<Border Padding="{x:Static local:Defaults.Padding_Tiny}">
+							<Border Padding="{x:Static local:Defaults.TinyThickness}">
 								<TextBox
 									FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
 									Style="{StaticResource EditableDataGridCell}"
@@ -285,7 +286,7 @@
 								<VisualState x:Name="Normal_AlternatingRow">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource HeaderBackgroundColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Background_Alternative}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -293,7 +294,7 @@
 								<VisualState x:Name="Normal_Selected">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource BlueSelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -301,7 +302,7 @@
 								<VisualState x:Name="Normal_Editing">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource GreySelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection_LostFocus}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -309,7 +310,7 @@
 								<VisualState x:Name="Unfocused_Selected">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource GreySelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection_LostFocus}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -317,7 +318,7 @@
 								<VisualState x:Name="MouseOver_Selected">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource BlueSelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -325,7 +326,7 @@
 								<VisualState x:Name="MouseOver_Unfocused_Selected">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource GreySelectionColor}" />
+											<EasingColorKeyFrame KeyTime="0" Value="{DynamicResource Color_Selection_LostFocus}" />
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -342,7 +343,7 @@
 		<Setter Property="Cursor" Value="SizeWE" />
 
 		<!--  Layout  -->
-		<Setter Property="Width" Value="{x:Static local:Defaults.DataGridColumnHeaderGripperWidth}" />
+		<Setter Property="Width" Value="{x:Static local:Defaults.DataGrid_ColumnHeader_GripperWidth}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
@@ -372,7 +373,7 @@
 		<!--  Brushes  -->
 		<Setter Property="Background">
 			<Setter.Value>
-				<SolidColorBrush Color="{DynamicResource MediumBackgroundColor}" />
+				<SolidColorBrush Color="{DynamicResource Color_Background_Low}" />
 			</Setter.Value>
 		</Setter>
 
@@ -381,10 +382,10 @@
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness
-					Bottom="{x:Static local:Defaults.ThicknessWidth_Tiny}"
-					Left="{x:Static local:Defaults.ThicknessWidth_Default}"
-					Right="{x:Static local:Defaults.ThicknessWidth_Default}"
-					Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
+					Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+					Left="{x:Static local:Defaults.MediumThicknessWidth}"
+					Right="{x:Static local:Defaults.MediumThicknessWidth}"
+					Top="{x:Static local:Defaults.TinyThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -407,12 +408,12 @@
 								<Path
 									x:Name="sortingArrow"
 									Grid.Column="1"
-									Width="{x:Static local:Defaults.DataGridColumnHeaderSortingArrowWidth}"
+									Width="{x:Static local:Defaults.DataGrid_ColumnHeader_SortingArrowWidth}"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									Fill="{DynamicResource Default_Text}">
+									Fill="{DynamicResource Brush_Text}">
 									<Path.Margin>
-										<Thickness Left="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" />
+										<Thickness Left="{x:Static local:Defaults.InputControl_DefaultPaddingWidth}" />
 									</Path.Margin>
 								</Path>
 							</Grid>

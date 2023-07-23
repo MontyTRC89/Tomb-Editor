@@ -8,17 +8,17 @@
 
 	<Style TargetType="{x:Type ProgressBar}">
 		<!--  Layout  -->
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControl_Height}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource MediumBackground}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_Low}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 
 		<!--  Template  -->
 		<Setter Property="Template">
@@ -35,13 +35,15 @@
 						<Rectangle x:Name="PART_Track" />
 						<Grid
 							x:Name="PART_Indicator"
-							Margin="{x:Static local:Defaults.Margin_Tiny}"
+							Margin="{x:Static local:Defaults.TinyThickness}"
 							HorizontalAlignment="Left"
-							ClipToBounds="True">
+							ClipToBounds="True"
+							SnapsToDevicePixels="False"
+							UseLayoutRounding="False">
 							<Rectangle x:Name="indicator" Fill="{TemplateBinding Foreground}" />
 							<Rectangle
 								x:Name="animation"
-								Fill="{DynamicResource LighterBackground}"
+								Fill="{DynamicResource Brush_Background_High}"
 								RenderTransformOrigin="0.5,0.5">
 								<Rectangle.RenderTransform>
 									<TransformGroup>
@@ -54,7 +56,7 @@
 							</Rectangle>
 						</Grid>
 						<TextBlock
-							Margin="{x:Static local:Defaults.Margin_Default}"
+							Margin="{x:Static local:Defaults.MediumThickness}"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
 							<TextBlock.Text>
@@ -116,7 +118,7 @@
 				</LinearGradientBrush>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="2" />

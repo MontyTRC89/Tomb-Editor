@@ -9,25 +9,26 @@
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
 
 		<!--  Brushes  -->
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Default_Border}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Background" Value="{DynamicResource Brush_Background}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 
 		<!--  Template  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ContextMenu}">
 					<Border
+						Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border.Effect>
-							<DropShadowEffect Opacity="{DynamicResource DropShadow_Opacity}" ShadowDepth="{DynamicResource DropShadow_Depth}" />
+							<DropShadowEffect Opacity="{x:Static local:Defaults.DropShadow_Opacity}" ShadowDepth="{x:Static local:Defaults.DropShadow_Depth}" />
 						</Border.Effect>
 
 						<ScrollViewer VerticalScrollBarVisibility="Hidden">

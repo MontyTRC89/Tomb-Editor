@@ -4,13 +4,13 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type Label}">
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness
-					Bottom="{x:Static local:Defaults.ThicknessWidth_Tiny}"
-					Right="{x:Static local:Defaults.ThicknessWidth_Tiny}"
-					Top="{x:Static local:Defaults.ThicknessWidth_Tiny}" />
+					Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
+					Right="{x:Static local:Defaults.TinyThicknessWidth}"
+					Top="{x:Static local:Defaults.TinyThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 	</Style>
@@ -21,7 +21,7 @@
 		TargetType="{x:Type Label}">
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Left="{x:Static local:Defaults.ThicknessWidth_Default}" Right="{x:Static local:Defaults.ThicknessWidth_Default}" />
+				<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 	</Style>

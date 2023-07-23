@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:DarkUI.WPF.Demo"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
@@ -11,171 +12,299 @@
 	Title="DarkUI WPF - Demo"
 	Width="680"
 	Height="1800"
+	Icon="/DarkUI.WPF.Demo;component/Resources/TE.png"
 	Style="{DynamicResource CustomWindowStyle}"
 	mc:Ignorable="d">
 
 	<ScrollViewer>
-		<Grid Margin="15">
+		<Grid Margin="{x:Static darkUI:Defaults.JumboThickness}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
 			<StackPanel>
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="Button" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Button">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
 					<StackPanel Orientation="Horizontal">
-						<Button Width="Auto" Margin="0,0,5,0">Normal</Button>
-						<Button Width="Auto" Margin="0,0,5,0">
+						<Button Width="Auto">
+							<Button.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</Button.Margin>
+							Normal
+						</Button>
+						<Button Width="Auto" Style="{DynamicResource ButtonIconText}">
+							<Button.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</Button.Margin>
+
 							<StackPanel Orientation="Horizontal">
-								<Image Width="16" Source="/DarkUI.WPF;component/Resources/search-16.png" />
-								<TextBlock Margin="3,0,0,0" Text="With icon" />
+								<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+								<TextBlock Text="With icon" />
 							</StackPanel>
 						</Button>
-						<Button
-							Width="Auto"
-							Margin="0,0,5,0"
-							IsDefault="True">
+						<Button Width="Auto" IsDefault="True">
+							<Button.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</Button.Margin>
 							Defaulted
 						</Button>
-						<Button
-							Width="Auto"
-							Margin="0,0,5,0"
-							IsEnabled="False">
+						<Button Width="Auto" IsEnabled="False">
 							Disabled
 						</Button>
 					</StackPanel>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ToggleButton" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ToggleButton">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
 					<StackPanel Orientation="Horizontal">
-						<ToggleButton Width="Auto" Margin="0,0,5,0">Normal</ToggleButton>
-						<ToggleButton Width="Auto" Margin="0,0,5,0">
+						<ToggleButton Width="Auto">
+							<ToggleButton.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</ToggleButton.Margin>
+							Normal
+						</ToggleButton>
+						<ToggleButton Width="Auto" Style="{DynamicResource ToggleButtonIconText}">
+							<ToggleButton.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</ToggleButton.Margin>
+
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="0"
-									Source="/DarkUI.WPF;component/Resources/search-16.png" />
-								<TextBlock Margin="3,0,0,0" Text="With icon" />
+								<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+								<TextBlock Text="With icon" />
 							</StackPanel>
 						</ToggleButton>
-						<ToggleButton
-							Width="Auto"
-							Margin="0,0,5,0"
-							IsChecked="True">
+						<ToggleButton Width="Auto" IsChecked="True">
+							<ToggleButton.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</ToggleButton.Margin>
 							Checked
 						</ToggleButton>
-						<ToggleButton
-							Width="Auto"
-							Margin="0,0,5,0"
-							IsEnabled="False">
+						<ToggleButton Width="Auto" IsEnabled="False">
 							Disabled
 						</ToggleButton>
 					</StackPanel>
 				</StackPanel>
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ColorPickerButton" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ColorPickerButton">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
 					<StackPanel Orientation="Horizontal">
-						<Label Margin="0,0,5,0" Content="Normal:" />
-						<controls:ColorPickerButton Margin="0,0,5,0" Content="Normal" />
+						<Label VerticalAlignment="Center">
+							<Label.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</Label.Margin>
+							Normal:
+						</Label>
+						<controls:ColorPickerButton Content="Normal">
+							<controls:ColorPickerButton.Margin>
+								<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</controls:ColorPickerButton.Margin>
+						</controls:ColorPickerButton>
 
-						<Label Margin="15,0,5,0" Content="Disabled:" />
+						<Label VerticalAlignment="Center">
+							<Label.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.JumboThicknessWidth}" Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</Label.Margin>
+							Disabled:
+						</Label>
 						<controls:ColorPickerButton Content="Disabled" IsEnabled="False" />
 					</StackPanel>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="CheckBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-						<CheckBox Margin="0,0,15,0">Normal</CheckBox>
-						<CheckBox Margin="0,0,15,0" IsChecked="True">Checked</CheckBox>
-						<CheckBox Margin="0,0,15,0" IsChecked="{x:Null}">Intermediate</CheckBox>
-					</StackPanel>
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="CheckBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
-					<StackPanel Orientation="Horizontal">
-						<CheckBox Margin="0,0,9,0" IsEnabled="False">Disabled</CheckBox>
-						<CheckBox
-							Margin="0,0,15,0"
-							IsChecked="True"
-							IsEnabled="False">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<CheckBox>
+							<CheckBox.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</CheckBox.Margin>
+							Normal
+						</CheckBox>
+						<CheckBox Grid.Column="1" IsChecked="True">
+							<CheckBox.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</CheckBox.Margin>
 							Checked
 						</CheckBox>
-						<CheckBox
-							Margin="0,0,15,0"
-							IsChecked="{x:Null}"
-							IsEnabled="False">
+						<CheckBox Grid.Column="2" IsChecked="{x:Null}">
+							<CheckBox.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</CheckBox.Margin>
 							Intermediate
 						</CheckBox>
-					</StackPanel>
-				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="RadioButton" />
-
-					<StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-						<RadioButton Margin="0,0,15,0">Normal</RadioButton>
-						<RadioButton Margin="0,0,15,0" IsChecked="True">Checked</RadioButton>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<RadioButton Margin="0,0,9,0" IsEnabled="False">Disabled</RadioButton>
-						<RadioButton
-							Margin="0,0,15,0"
+						<CheckBox Grid.Row="1" IsEnabled="False">Disabled</CheckBox>
+						<CheckBox
+							Grid.Row="1"
+							Grid.Column="1"
 							IsChecked="True"
 							IsEnabled="False">
+							<CheckBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</CheckBox.Margin>
+							Checked
+						</CheckBox>
+						<CheckBox
+							Grid.Row="1"
+							Grid.Column="2"
+							IsChecked="{x:Null}"
+							IsEnabled="False">
+							<CheckBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</CheckBox.Margin>
+							Intermediate
+						</CheckBox>
+					</Grid>
+
+					<StackPanel Orientation="Horizontal" />
+				</StackPanel>
+
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="RadioButton">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<RadioButton>
+							<RadioButton.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</RadioButton.Margin>
+							Normal
+						</RadioButton>
+						<RadioButton Grid.Column="1" IsChecked="True">
+							<RadioButton.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</RadioButton.Margin>
 							Checked
 						</RadioButton>
-					</StackPanel>
+
+						<RadioButton Grid.Row="1" IsEnabled="False">
+							Disabled
+						</RadioButton>
+						<RadioButton
+							Grid.Row="1"
+							Grid.Column="1"
+							IsChecked="True"
+							IsEnabled="False">
+							<RadioButton.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+							</RadioButton.Margin>
+							Checked
+						</RadioButton>
+					</Grid>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="TextBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBox Width="80" Margin="0,0,5,0">Normal</TextBox>
-						<TextBox
-							Width="80"
-							Margin="0,0,5,0"
-							IsEnabled="False">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TextBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<TextBox>Normal</TextBox>
+						<TextBox Grid.Column="1" IsEnabled="False">
+							<TextBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</TextBox.Margin>
 							Disabled
 						</TextBox>
-						<TextBox Width="80" Style="{StaticResource FlatDarkTextBox}">Flat</TextBox>
-					</StackPanel>
+						<TextBox Grid.Column="2" Style="{DynamicResource FlatDarkTextBox}">
+							<TextBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</TextBox.Margin>
+							Flat
+						</TextBox>
+					</Grid>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ComboBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Orientation="Horizontal">
-						<ComboBox
-							Width="100"
-							Margin="0,0,5,0"
-							SelectedIndex="0">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ComboBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<ComboBox SelectedIndex="0">
 							<ComboBoxItem>(0) LARA</ComboBoxItem>
 							<ComboBoxItem>(1) PISTOLS_ANIM</ComboBoxItem>
 							<ComboBoxItem>(2) UZI_ANIM</ComboBoxItem>
@@ -210,25 +339,36 @@
 						</ComboBox>
 
 						<ComboBox
-							Width="100"
+							Grid.Column="1"
 							IsEnabled="False"
 							SelectedIndex="0">
+							<ComboBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</ComboBox.Margin>
+
 							<ComboBoxItem>Disabled</ComboBoxItem>
 						</ComboBox>
-					</StackPanel>
+					</Grid>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="SearchableComboBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Orientation="Horizontal">
-						<controls:SearchableComboBox
-							Width="140"
-							Margin="0,0,5,0"
-							SelectedIndex="0">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="SearchableComboBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<controls:SearchableComboBox SelectedIndex="0">
 							<ComboBoxItem>(0) LARA</ComboBoxItem>
 							<ComboBoxItem>(1) PISTOLS_ANIM</ComboBoxItem>
 							<ComboBoxItem>(2) UZI_ANIM</ComboBoxItem>
@@ -263,68 +403,85 @@
 						</controls:SearchableComboBox>
 
 						<controls:SearchableComboBox
-							Width="140"
+							Grid.Column="1"
 							IsEnabled="False"
 							SelectedIndex="0">
+							<controls:SearchableComboBox.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</controls:SearchableComboBox.Margin>
+
 							<ComboBoxItem>Disabled</ComboBoxItem>
 						</controls:SearchableComboBox>
-					</StackPanel>
+					</Grid>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="NumericUpDown" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Orientation="Horizontal">
-						<Label Margin="0,0,5,0">Normal:</Label>
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="NumericUpDown">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
 						<xctk:DoubleUpDown
-							Width="60"
-							Margin="0,0,15,0"
 							FormatString="F2"
 							Increment="0.01"
 							Value="2.50" />
-
-						<Label Margin="0,0,5,0">Disabled:</Label>
 						<xctk:DoubleUpDown
-							Width="60"
-							Margin="0,0,15,0"
+							Grid.Column="1"
 							FormatString="F2"
 							Increment="0.01"
 							IsEnabled="False"
-							Value="2.50" />
-					</StackPanel>
+							Value="2.50">
+							<xctk:DoubleUpDown.Margin>
+								<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+							</xctk:DoubleUpDown.Margin>
+						</xctk:DoubleUpDown>
+					</Grid>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="GroupBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StackPanel Orientation="Horizontal">
-						<GroupBox Header="Testing GroupBox">
-							<StackPanel Orientation="Horizontal">
-								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
-								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
-								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
-								<Button Width="Auto">Button</Button>
-							</StackPanel>
-						</GroupBox>
-					</StackPanel>
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="GroupBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<GroupBox Header="Testing GroupBox">
+						<StackPanel Orientation="Horizontal">
+							<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+							<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+							<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+							<Button Width="Auto">Button</Button>
+						</StackPanel>
+					</GroupBox>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ListBox" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<ListBox
-						Width="200"
-						Height="100"
-						HorizontalAlignment="Left">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ListBox">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<ListBox Height="160" HorizontalAlignment="Left">
 						<ListBoxItem>Item 1</ListBoxItem>
 						<ListBoxItem>Item 2</ListBoxItem>
 						<ListBoxItem>Item 3</ListBoxItem>
@@ -338,16 +495,20 @@
 					</ListBox>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="TreeView" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TreeView">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
 					<TreeView
 						x:Name="treeView"
-						Width="200"
-						Height="100"
+						Height="160"
 						HorizontalAlignment="Left">
 						<controls:AlternatingTreeViewItem Header="Root 1">
 							<controls:AlternatingTreeViewItem Header="Child 1">
@@ -375,27 +536,35 @@
 					</TreeView>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="DataGrid" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
+
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="DataGrid">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
 
 					<DataGrid
 						x:Name="dataGrid"
-						Width="300"
-						Height="100"
-						HorizontalAlignment="Left"
+						Height="160"
 						AlternationCount="2" />
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="TabControl" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<TabControl Width="300" HorizontalAlignment="Left">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TabControl">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<TabControl>
 						<TabItem Header="Tab Page 1">
 							<StackPanel Margin="5" Orientation="Horizontal">
 								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
@@ -425,48 +594,72 @@
 					</TabControl>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="Menu" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<Border
-						Width="300"
-						HorizontalAlignment="Left"
-						BorderBrush="{DynamicResource Default_Border}"
-						BorderThickness="1">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Menu">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
 						<Menu Margin="10">
 							<MenuItem Header="File">
-								<MenuItem Header="New...">
+								<MenuItem Header="New..." InputGestureText="Ctrl+N">
 									<MenuItem.Icon>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 									</MenuItem.Icon>
-									<MenuItem Header="Project..." />
+									<MenuItem Header="Project..." InputGestureText="Ctrl+N" />
 									<MenuItem Header="Empty file...">
 										<MenuItem.Icon>
 											<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 										</MenuItem.Icon>
 									</MenuItem>
 									<Separator />
-									<MenuItem Header="Disabled Item" IsEnabled="False" />
+									<MenuItem
+										Header="Disabled Item"
+										InputGestureText="Ctrl+F"
+										IsEnabled="False" />
 									<MenuItem
 										Header="Checkable Item"
+										InputGestureText="Ctrl+M"
 										IsCheckable="True"
 										IsChecked="True" />
 									<MenuItem
 										Header="Disabled Checkable Item"
+										InputGestureText="Ctrl+A"
 										IsCheckable="True"
 										IsChecked="True"
 										IsEnabled="False" />
+									<MenuItem
+										Header="Checkable Item Icon"
+										InputGestureText="Ctrl+P"
+										IsCheckable="True"
+										IsChecked="True">
+										<MenuItem.Icon>
+											<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem
+										Header="Disabled Checkable Item Icon"
+										IsCheckable="True"
+										IsChecked="True"
+										IsEnabled="False">
+										<MenuItem.Icon>
+											<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+										</MenuItem.Icon>
+									</MenuItem>
 								</MenuItem>
 								<Separator />
-								<MenuItem Header="Save">
+								<MenuItem Header="Save" InputGestureText="Ctrl+S">
 									<MenuItem.Icon>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 									</MenuItem.Icon>
 								</MenuItem>
-								<MenuItem Header="Save As..." />
+								<MenuItem Header="Save As..." InputGestureText="Ctrl+Shift+S" />
 								<Separator />
 								<MenuItem Header="Disabled Item" IsEnabled="False" />
 								<MenuItem
@@ -478,6 +671,24 @@
 									IsCheckable="True"
 									IsChecked="True"
 									IsEnabled="False" />
+								<MenuItem
+									Header="Checkable Item Icon"
+									IsCheckable="True"
+									IsChecked="True">
+									<MenuItem.Icon>
+										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+									</MenuItem.Icon>
+								</MenuItem>
+								<MenuItem
+									Header="Disabled Checkable Item Icon"
+									InputGestureText="Alt+F4"
+									IsCheckable="True"
+									IsChecked="True"
+									IsEnabled="False">
+									<MenuItem.Icon>
+										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
+									</MenuItem.Icon>
+								</MenuItem>
 							</MenuItem>
 							<MenuItem Header="Edit">
 								<MenuItem Header="Undo">
@@ -497,17 +708,18 @@
 					</Border>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ToolBar" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<Border
-						Width="300"
-						HorizontalAlignment="Left"
-						BorderBrush="{DynamicResource Default_Border}"
-						BorderThickness="1">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ToolBar">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
 						<ToolBarTray Margin="10">
 							<ToolBar>
 								<Button>
@@ -536,36 +748,36 @@
 									<Image Width="16" Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
 									<xctk:DropDownButton.DropDownContent>
-										<StackPanel>
+										<Menu>
 											<MenuItem Header="Item 1" />
 											<MenuItem Header="Item 2" />
 											<Separator />
 											<MenuItem Header="Item 3" />
-										</StackPanel>
+										</Menu>
 									</xctk:DropDownButton.DropDownContent>
 								</xctk:DropDownButton>
 								<xctk:DropDownButton>
 									<Image Width="16" Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
 									<xctk:DropDownButton.DropDownContent>
-										<StackPanel>
+										<Menu>
 											<MenuItem Header="Item 1" />
 											<MenuItem Header="Item 2" />
 											<Separator />
 											<MenuItem Header="Item 3" />
-										</StackPanel>
+										</Menu>
 									</xctk:DropDownButton.DropDownContent>
 								</xctk:DropDownButton>
 								<xctk:DropDownButton>
 									<Image Width="16" Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
 									<xctk:DropDownButton.DropDownContent>
-										<StackPanel>
+										<Menu>
 											<MenuItem Header="Item 1" />
 											<MenuItem Header="Item 2" />
 											<Separator />
 											<MenuItem Header="Item 3" />
-										</StackPanel>
+										</Menu>
 									</xctk:DropDownButton.DropDownContent>
 								</xctk:DropDownButton>
 							</ToolBar>
@@ -573,13 +785,18 @@
 					</Border>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="StatusBar" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<StatusBar Width="300" HorizontalAlignment="Left">
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="StatusBar">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<StatusBar>
 						<StatusBarItem>Item 1</StatusBarItem>
 						<StatusBarItem>Item 2</StatusBarItem>
 						<StatusBarItem>Item 3</StatusBarItem>
@@ -592,30 +809,32 @@
 					</StatusBar>
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="ProgressBar" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<ProgressBar
-						x:Name="ProgressBar"
-						Width="300"
-						HorizontalAlignment="Left"
-						Value="10" />
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ProgressBar">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<ProgressBar x:Name="ProgressBar" Value="10" />
 				</StackPanel>
 
-				<StackPanel Margin="0,0,0,15">
-					<TextBlock
-						Margin="0,0,0,5"
-						FontSize="20"
-						Text="Slider" />
+				<StackPanel>
+					<StackPanel.Margin>
+						<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+					</StackPanel.Margin>
 
-					<Slider
-						Width="296"
-						HorizontalAlignment="Left"
-						Maximum="100"
-						Value="{Binding ElementName=ProgressBar, Path=Value}" />
+					<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Slider">
+						<TextBlock.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+						</TextBlock.Margin>
+					</TextBlock>
+
+					<Slider Maximum="100" Value="{Binding ElementName=ProgressBar, Path=Value}" />
 				</StackPanel>
 			</StackPanel>
 

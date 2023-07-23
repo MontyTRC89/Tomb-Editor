@@ -4,28 +4,36 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type TextBox}">
-		<Setter Property="Background" Value="{DynamicResource InputControl_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource InputControl_Border}" />
-		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.Thickness_Border}" />
-		<Setter Property="CaretBrush" Value="{DynamicResource Default_Text}" />
+		<!--  Control properties  -->
 		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
-		<Setter Property="Foreground" Value="{DynamicResource Default_Text}" />
 		<Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
+
+		<!--  Layout  -->
+		<Setter Property="Height" Value="{x:Static local:Defaults.InputControl_Height}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
-		<Setter Property="Height" Value="{x:Static local:Defaults.InputControlHeight}" />
 
+		<!--  Brushes  -->
+		<Setter Property="Background" Value="{DynamicResource Brush_Background_TextControl}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+		<Setter Property="CaretBrush" Value="{DynamicResource Brush_Text}" />
+		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Bottom="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" Top="{x:Static local:Defaults.ThicknessWidth_InputControl_DefaultPadding}" />
+				<Thickness Bottom="{x:Static local:Defaults.InputControl_DefaultPaddingWidth}" Top="{x:Static local:Defaults.InputControl_DefaultPaddingWidth}" />
 			</Setter.Value>
 		</Setter>
 
+		<!--  Template  -->
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TextBox}">
 					<Border
-						x:Name="PART_Border"
+						x:Name="border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
@@ -48,8 +56,8 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="PART_Border" Property="Background" Value="{DynamicResource InputControl_Background_Disabled}" />
-							<Setter TargetName="PART_ContentHost" Property="Opacity" Value="{DynamicResource DisabledContent_Opacity}" />
+							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
+							<Setter TargetName="PART_ContentHost" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -61,6 +69,6 @@
 		x:Key="FlatDarkTextBox"
 		BasedOn="{StaticResource {x:Type TextBox}}"
 		TargetType="{x:Type TextBox}">
-		<Setter Property="Background" Value="{DynamicResource Default_Background}" />
+		<Setter Property="Background" Value="Transparent" />
 	</Style>
 </ResourceDictionary>

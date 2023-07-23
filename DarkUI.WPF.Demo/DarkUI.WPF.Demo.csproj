@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\TE.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\TE.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
   </ItemGroup>
 
