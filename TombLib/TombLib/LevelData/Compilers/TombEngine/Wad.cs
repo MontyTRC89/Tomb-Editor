@@ -95,11 +95,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     newMesh.Polygons.Add(newPoly);
 
-                    newMesh.Vertices[indices[0]].Polygons.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[1]].Polygons.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[2]].Polygons.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[0]].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[1]].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[2]].NormalHelpers.Add(new NormalHelper(newPoly));
                     if (!poly.IsTriangle)
-                        newMesh.Vertices[indices[3]].Polygons.Add(new NormalHelper(newPoly));
+                        newMesh.Vertices[indices[3]].NormalHelpers.Add(new NormalHelper(newPoly));
 
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
@@ -140,7 +140,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
                         poly.Tangents.Add(Vector3.Zero);
-                        poly.Bitangents.Add(Vector3.Zero);
+                        poly.Binormals.Add(Vector3.Zero);
                     }
 
                     bucket.Polygons.Add(poly);
@@ -151,7 +151,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
                         poly.Tangents.Add(poly.Tangent);
-                        poly.Bitangents.Add(poly.Bitangent);
+                        poly.Binormals.Add(poly.Binormal);
                     }
 
                     bucket.Polygons.Add(poly);
@@ -162,21 +162,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < mesh.Vertices.Count; i++)
             {
                 var vertex = mesh.Vertices[i];
-                var polygons = vertex.Polygons;
+                var normalHelpers = vertex.NormalHelpers;
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
+                    var normalHelper = normalHelpers[j];
 
-                    var e1 = mesh.Vertices[poly.Polygon.Indices[1]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
-                    var e2 = mesh.Vertices[poly.Polygon.Indices[2]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
+                    var e1 = mesh.Vertices[normalHelper.Polygon.Indices[1]].Position - mesh.Vertices[normalHelper.Polygon.Indices[0]].Position;
+                    var e2 = mesh.Vertices[normalHelper.Polygon.Indices[2]].Position - mesh.Vertices[normalHelper.Polygon.Indices[0]].Position;
 
-                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
-                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+                    var uv1 = normalHelper.Polygon.TextureCoordinates[1] - normalHelper.Polygon.TextureCoordinates[0];
+                    var uv2 = normalHelper.Polygon.TextureCoordinates[2] - normalHelper.Polygon.TextureCoordinates[0];
 
                     float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
-                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
-                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                    normalHelper.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    normalHelper.Polygon.Binormal = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
                 }
             }
 
@@ -184,36 +184,35 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < mesh.Vertices.Count; i++)
             {
                 var vertex = mesh.Vertices[i];
-                var polygons = vertex.Polygons;
+                var normalHelpers = vertex.NormalHelpers;
 
                 var tangent = Vector3.Zero;
-                var bitangent = Vector3.Zero;
+                var binormal = Vector3.Zero;
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
-                    tangent += poly.Polygon.Tangent;
-                    bitangent += poly.Polygon.Bitangent;
+                    var normalHelper = normalHelpers[j];
+                    tangent += normalHelper.Polygon.Tangent;
+                    binormal += normalHelper.Polygon.Binormal;
                 }
 
-                if (polygons.Count > 0)
+                if (normalHelpers.Count > 0)
                 {
-                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
-                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                    tangent = Vector3.Normalize(tangent / (float)normalHelpers.Count);
+                    binormal = Vector3.Normalize(binormal / (float)normalHelpers.Count);
                 }
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
+                    var normalHelper = normalHelpers[j];
 
-                    // TODO: for now we smooth all tangents and bitangents
-                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
+                    for (int k = 0; k < normalHelper.Polygon.Indices.Count; k++)
                     {
-                        int index = poly.Polygon.Indices[k];
+                        int index = normalHelper.Polygon.Indices[k];
                         if (index == i)
                         {
-                            poly.Polygon.Tangents[k] = tangent;
-                            poly.Polygon.Bitangents[k] = bitangent;
+                            normalHelper.Polygon.Tangents[k] = tangent;
+                            normalHelper.Polygon.Binormals[k] = binormal;
                             break;
                         }
                     }

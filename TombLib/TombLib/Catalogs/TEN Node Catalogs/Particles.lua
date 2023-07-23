@@ -10,7 +10,7 @@
 -- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 0 ], Lifetime (in seconds)"
 -- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
-	LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, velocity, spriteID, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, damage, poison)
+	LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)
 
 		local origin = TEN.Objects.GetMoveableByName(entity):GetJointPosition(meshnum)
 		local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
