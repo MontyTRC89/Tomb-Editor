@@ -15,7 +15,7 @@
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	mc:Ignorable="d">
 
-	<Grid Margin="{x:Static darkUI:Defaults.Margin_Default}">
+	<Grid Margin="{x:Static darkUI:Defaults.MediumThickness}">
 		<Grid.RowDefinitions>
 			<RowDefinition />
 			<RowDefinition Height="Auto" />

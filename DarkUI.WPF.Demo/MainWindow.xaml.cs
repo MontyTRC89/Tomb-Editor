@@ -41,4 +41,13 @@ public partial class MainWindow : Window
 
 		dataGrid.ItemsSource = people;
 	}
+
+	private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+	{
+		if (scaler is null)
+			return;
+
+		scaler.ScaleX = e.NewValue;
+		scaler.ScaleY = e.NewValue;
+    }
 }

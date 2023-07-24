@@ -36,7 +36,6 @@
 				<ControlTemplate TargetType="{x:Type Button}">
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							x:Name="border"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}" />
@@ -68,16 +67,16 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
 							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
 						<Trigger Property="IsDefault" Value="True">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Defaulted}" />
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Defaulted}" />
 						</Trigger>
 
 						<Trigger Property="IsFocused" Value="True">
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_FocusHighlight}" />
+							<Setter Property="BorderBrush" Value="{DynamicResource Brush_FocusHighlight}" />
 						</Trigger>
 
 						<MultiTrigger>
@@ -96,6 +95,22 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
+		<Style.Resources>
+			<Style TargetType="{x:Type Path}">
+				<Setter Property="Fill" Value="{DynamicResource Brush_Text}" />
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
+				<Setter Property="Stretch" Value="Uniform" />
+			</Style>
+
+			<Style TargetType="{x:Type Image}">
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
+			</Style>
+		</Style.Resources>
 	</Style>
 
 	<Style
@@ -107,6 +122,7 @@
 				<Setter Property="Fill" Value="{DynamicResource Brush_Text}" />
 				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
 				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
 				<Setter Property="Stretch" Value="Uniform" />
 
 				<Setter Property="Margin">
@@ -119,6 +135,7 @@
 			<Style TargetType="{x:Type Image}">
 				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
 				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
 
 				<Setter Property="Margin">
 					<Setter.Value>
@@ -135,19 +152,23 @@
 		TargetType="{x:Type Button}">
 		<Setter Property="Padding" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
 		<Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}" />
+	</Style>
 
-		<Style.Resources>
-			<Style TargetType="{x:Type Path}">
-				<Setter Property="Fill" Value="{DynamicResource Brush_Text}" />
-				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
-				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
-				<Setter Property="Stretch" Value="Uniform" />
-			</Style>
+	<Style
+		x:Key="{x:Static ToolBar.ButtonStyleKey}"
+		BasedOn="{StaticResource {x:Type Button}}"
+		TargetType="{x:Type Button}">
+		<Setter Property="Width" Value="Auto" />
 
-			<Style TargetType="{x:Type Image}">
-				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
-				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
-			</Style>
-		</Style.Resources>
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+
+		<Setter Property="Padding" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
+
+		<Style.Triggers>
+			<Trigger Property="IsFocused" Value="True">
+				<Setter Property="BorderBrush" Value="Transparent" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 </ResourceDictionary>

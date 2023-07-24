@@ -51,6 +51,7 @@
 									x:Name="checkMark"
 									Margin="{x:Static local:Defaults.CheckBox_CheckMarkMargin}"
 									Data="{DynamicResource CheckMark}"
+									FlowDirection="LeftToRight"
 									SnapsToDevicePixels="False"
 									Stretch="Uniform"
 									Stroke="{DynamicResource Brush_Border_High}"
@@ -127,4 +128,9 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style
+		x:Key="{x:Static ToolBar.CheckBoxStyleKey}"
+		BasedOn="{StaticResource {x:Type CheckBox}}"
+		TargetType="{x:Type CheckBox}" />
 </ResourceDictionary>

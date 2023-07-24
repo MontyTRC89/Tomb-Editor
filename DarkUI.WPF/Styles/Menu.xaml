@@ -340,13 +340,17 @@
 							x:Name="checkMark"
 							Width="{x:Static local:Defaults.Path_MaxIconWidth}"
 							Height="{x:Static local:Defaults.Path_MaxIconHeight}"
+							FlowDirection="LeftToRight"
 							Stretch="Uniform"
 							Stroke="{TemplateBinding Foreground}"
 							StrokeThickness="{x:Static local:Defaults.CheckBox_CheckMarkStrokeWidth}"
 							Visibility="Hidden" />
 					</Grid>
 				</Border>
-				<ContentPresenter x:Name="icon" ContentSource="Icon" />
+				<ContentPresenter
+					x:Name="icon"
+					ContentSource="Icon"
+					FlowDirection="LeftToRight" />
 				<ContentPresenter
 					Grid.Column="1"
 					HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -414,7 +418,10 @@
 					Background="{DynamicResource Brush_HoverHighlight}"
 					Opacity="{DynamicResource Opacity_HoveredHighlight}"
 					Visibility="Hidden" />
-				<ContentPresenter x:Name="icon" ContentSource="Icon" />
+				<ContentPresenter
+					x:Name="icon"
+					ContentSource="Icon"
+					FlowDirection="LeftToRight" />
 				<ContentPresenter
 					Grid.Column="1"
 					HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

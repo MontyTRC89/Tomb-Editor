@@ -152,5 +152,14 @@ namespace DarkUI.WPF
 		public static readonly double TitleBar_IconVerticalOffset = -12 * ScaleFactor;
 
 		public static readonly double TabControl_SelectedTabMarginOffset = -2 * ScaleFactor;
+
+		public static readonly double ToolBar_GripperSize = 6 * ScaleFactor;
+		public static readonly double ToolBar_GripperMarginWidth = 3 * ScaleFactor;
+		public static readonly Thickness ToolBar_GripperMargin = new(ToolBar_GripperMarginWidth);
+		public static readonly Rect ToolBar_GripperPatternViewbox = new(0, 0, 4, 4);
+		public static readonly Rect ToolBar_GripperPatternViewport = new(0, 0, 4, 4);
+		public static readonly double ToolBar_OverflowButtonSize = 14 * ScaleFactor;
+		public static readonly double ToolBar_MaxOverflowPopupWidth = 200 * ScaleFactor;
+		public static readonly double ToolBar_DropDownButtonArrowWidth = 6 * ScaleFactor;
 	}
 }

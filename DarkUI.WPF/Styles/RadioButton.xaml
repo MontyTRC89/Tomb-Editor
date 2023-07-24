@@ -110,4 +110,9 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style
+		x:Key="{x:Static ToolBar.RadioButtonStyleKey}"
+		BasedOn="{StaticResource {x:Type RadioButton}}"
+		TargetType="{x:Type RadioButton}" />
 </ResourceDictionary>

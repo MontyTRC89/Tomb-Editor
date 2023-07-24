@@ -36,7 +36,6 @@
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
-							x:Name="border"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}" />
@@ -68,7 +67,7 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="border" Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
+							<Setter Property="Background" Value="{DynamicResource Brush_Background_Disabled}" />
 							<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 						</Trigger>
 
@@ -83,18 +82,34 @@
 						</MultiTrigger>
 
 						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_CheckedHighlight}" />
+							<Setter Property="BorderBrush" Value="{DynamicResource Brush_CheckedHighlight}" />
 							<Setter TargetName="checkedRect" Property="Visibility" Value="Visible" />
 						</Trigger>
 
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+							<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
 							<Setter TargetName="checkedRect" Property="Visibility" Value="Visible" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
+		<Style.Resources>
+			<Style TargetType="{x:Type Path}">
+				<Setter Property="Fill" Value="{DynamicResource Brush_Text}" />
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
+				<Setter Property="Stretch" Value="Uniform" />
+			</Style>
+
+			<Style TargetType="{x:Type Image}">
+				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
+				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
+			</Style>
+		</Style.Resources>
 	</Style>
 
 	<Style
@@ -104,8 +119,9 @@
 		<Style.Resources>
 			<Style TargetType="{x:Type Path}">
 				<Setter Property="Fill" Value="{DynamicResource Brush_Text}" />
-				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
-				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
+				<Setter Property="Width" Value="{x:Static local:Defaults.Path_MaxIconWidth}" />
+				<Setter Property="Height" Value="{x:Static local:Defaults.Path_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
 				<Setter Property="Stretch" Value="Uniform" />
 
 				<Setter Property="Margin">
@@ -116,8 +132,9 @@
 			</Style>
 
 			<Style TargetType="{x:Type Image}">
-				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
-				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
+				<Setter Property="Width" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
+				<Setter Property="Height" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
+				<Setter Property="FlowDirection" Value="LeftToRight" />
 
 				<Setter Property="Margin">
 					<Setter.Value>
@@ -130,9 +147,21 @@
 
 	<Style
 		x:Key="IconOnlyToggleButton"
-		BasedOn="{StaticResource ToggleButtonIconText}"
+		BasedOn="{StaticResource {x:Type ToggleButton}}"
 		TargetType="{x:Type ToggleButton}">
-		<Setter Property="Padding" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
 		<Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
+	</Style>
+
+	<Style
+		x:Key="{x:Static ToolBar.ToggleButtonStyleKey}"
+		BasedOn="{StaticResource {x:Type ToggleButton}}"
+		TargetType="{x:Type ToggleButton}">
+		<Setter Property="Width" Value="Auto" />
+
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+
+		<Setter Property="Padding" Value="{x:Static local:Defaults.InputControl_DefaultPadding}" />
 	</Style>
 </ResourceDictionary>
