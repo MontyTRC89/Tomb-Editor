@@ -40,8 +40,9 @@
 					<Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 						<Border
 							Background="{TemplateBinding Background}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}" />
+							BorderBrush="{DynamicResource Brush_Border_High}"
+							BorderThickness="1,1,0,0" />
+						<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="0,0,1,1" />
 
 						<Rectangle
 							x:Name="hoverRect"
@@ -92,6 +93,12 @@
 
 						<Trigger Property="IsPressed" Value="True">
 							<Setter TargetName="pressRect" Property="Visibility" Value="Visible" />
+
+							<Setter TargetName="contentPresenter" Property="Effect">
+								<Setter.Value>
+									<local:InvertEffect />
+								</Setter.Value>
+							</Setter>
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

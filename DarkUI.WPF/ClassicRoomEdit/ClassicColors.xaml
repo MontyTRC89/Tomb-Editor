@@ -24,19 +24,19 @@
 	<Color x:Key="Color_Border_High">White</Color>
 	<Color x:Key="Color_Border_Low">#888888</Color>
 
-	<Color x:Key="Color_Highlight">Transparent</Color>
+	<Color x:Key="Color_Highlight">#333333</Color>
 	<Color x:Key="Color_Selection">Black</Color>
 	<Color x:Key="Color_Selection_LostFocus">#888888</Color>
 
 	<Color x:Key="Color_HoveredHighlight">Transparent</Color>
 	<Color x:Key="Color_PressedHighlight">Black</Color>
 
-	<Color x:Key="Color_WindowBorder">#888888</Color>
+	<Color x:Key="Color_WindowBorder">White</Color>
 
 	<!--  Opacities  -->
 	<sys:Double x:Key="Opacity_HoveredHighlight">0.0</sys:Double>
 	<sys:Double x:Key="Opacity_PressedHighlight">1.0</sys:Double>
-	<sys:Double x:Key="Opacity_CheckedHighlight">0.25</sys:Double>
+	<sys:Double x:Key="Opacity_CheckedHighlight">1.0</sys:Double>
 	<sys:Double x:Key="Opacity_DisabledContent">0.5</sys:Double>
 
 	<sys:Double x:Key="DropShadow_Opacity">0.3</sys:Double>
@@ -48,7 +48,7 @@
 	<SolidColorBrush x:Key="Brush_Background" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_Alternative" Color="{DynamicResource Color_Background_Alternative}" />
 	<SolidColorBrush x:Key="Brush_Background_TextControl" Color="{DynamicResource Color_Background_Control}" />
-	<SolidColorBrush x:Key="Brush_Background_ClickableControl" Color="{DynamicResource Color_Background_Control}" />
+	<SolidColorBrush x:Key="Brush_Background_ClickableControl" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_Defaulted" Color="{DynamicResource Color_Background_Defaulted}" />
 	<SolidColorBrush x:Key="Brush_Background_Disabled" Color="{DynamicResource Color_Background_Disabled}" />
 	<SolidColorBrush x:Key="Brush_Background_High" Color="{DynamicResource Color_Background_High}" />

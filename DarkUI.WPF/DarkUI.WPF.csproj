@@ -49,9 +49,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\ClassicButton.xaml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
     <Page Update="Styles\Icon.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
