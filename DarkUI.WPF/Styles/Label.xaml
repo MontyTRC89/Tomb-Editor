@@ -4,6 +4,7 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type Label}">
+		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 		<Setter Property="Padding">
 			<Setter.Value>

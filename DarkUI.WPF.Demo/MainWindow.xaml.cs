@@ -50,4 +50,9 @@ public partial class MainWindow : Window
 		scaler.ScaleX = e.NewValue;
 		scaler.ScaleY = e.NewValue;
     }
+
+	private void Button_Click(object sender, RoutedEventArgs e)
+	{
+		App.SwitchTheme();
+	}
 }

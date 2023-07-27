@@ -4,6 +4,10 @@
 	xmlns:converters="clr-namespace:DarkUI.WPF.Converters"
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/DarkUI.WPF;component/Styles/Icon.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 	<converters:AddValueConverter x:Key="AddValueConverter" />
 
 	<Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
@@ -101,7 +105,7 @@
 							<Border
 								x:Name="dropDownBorder"
 								Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
-								Background="{TemplateBinding Background}"
+								Background="{DynamicResource Brush_Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
 								<Border.Effect>
@@ -224,5 +228,15 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+	</Style>
+
+	<Style
+		x:Key="ComboBoxItemWithIconAndText"
+		BasedOn="{StaticResource {x:Type ComboBoxItem}}"
+		TargetType="{x:Type ComboBoxItem}">
+		<Style.Resources>
+			<Style BasedOn="{StaticResource SmallImageIconForButtonsWithText}" TargetType="{x:Type Image}" />
+			<Style BasedOn="{StaticResource SmallPathIconForButtonsWithText}" TargetType="{x:Type Path}" />
+		</Style.Resources>
 	</Style>
 </ResourceDictionary>

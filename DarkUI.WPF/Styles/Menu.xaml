@@ -2,6 +2,9 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:DarkUI.WPF">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/DarkUI.WPF;component/Styles/Icon.xaml" />
+	</ResourceDictionary.MergedDictionaries>
 
 	<MenuScrollingVisibilityConverter x:Key="MenuScrollingVisibilityConverter" />
 
@@ -497,11 +500,7 @@
 
 		<!--  Resources  -->
 		<Style.Resources>
-			<!--  Force images to be 16x16  -->
-			<Style TargetType="{x:Type Image}">
-				<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
-				<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
-			</Style>
+			<Style BasedOn="{StaticResource SmallImageIcon}" TargetType="{x:Type Image}" />
 		</Style.Resources>
 
 		<!--  Triggers  -->

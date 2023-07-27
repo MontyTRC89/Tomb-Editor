@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
@@ -22,12 +23,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Menu x:Name="menuStrip" VerticalAlignment="Stretch">
-			<Menu.Resources>
-				<Style TargetType="Image">
-					<Setter Property="Width" Value="16" />
-				</Style>
-			</Menu.Resources>
-
 			<MenuItem Header="File">
 				<MenuItem
 					x:Name="newLevelToolStripMenuItem"
@@ -867,38 +862,48 @@
 			</MenuItem>
 		</Menu>
 
-		<sg:SpacedGrid Margin="{DynamicResource TinyMargin}" HorizontalAlignment="Right">
+		<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.TinyThickness}" HorizontalAlignment="Right">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="200" />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			<TextBox
-				x:Name="tbSearchMenu"
-				Grid.Column="0"
-				ToolTip="Search for menu entry" />
+			<AdornerDecorator>
+				<TextBox x:Name="tbSearchMenu" Style="{DynamicResource FlatDarkTextBox}">
+					<darkUI:WatermarkService.Watermark>
+						<TextBlock Foreground="{DynamicResource Brush_Text}" Text="Search for menu entry..." />
+					</darkUI:WatermarkService.Watermark>
+				</TextBox>
+			</AdornerDecorator>
 			<Button
 				x:Name="butFindMenu"
 				Grid.Column="1"
+				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Search for menu entry">
-				<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
 			</Button>
 		</sg:SpacedGrid>
 
 		<DockingManager x:Name="dockManager" Grid.Row="1">
 			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
 				<LayoutPanel Orientation="Horizontal">
-					<LayoutAnchorablePaneGroup DockWidth="286" Orientation="Vertical">
-						<LayoutAnchorablePane DockMinHeight="279">
+					<LayoutAnchorablePaneGroup DockWidth="287" Orientation="Vertical">
+						<LayoutAnchorablePane
+							DockHeight="279"
+							DockMinHeight="279"
+							DockMinWidth="287">
 							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
 								<toolwindows:SectorOptions x:Name="SectorOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane DockMinHeight="223">
+						<LayoutAnchorablePane
+							DockHeight="223"
+							DockMinHeight="223"
+							DockMinWidth="287">
 							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
 								<toolwindows:RoomOptions x:Name="RoomOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane DockHeight="250" DockMinHeight="250">
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
 							<LayoutAnchorable Title="Items" ContentId="Items">
 								<toolwindows:ItemBrowser x:Name="Items" />
 							</LayoutAnchorable>
@@ -906,7 +911,7 @@
 								<toolwindows:ImportedGeometryBrowser x:Name="ImportedGeometry" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane>
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
 							<LayoutAnchorable Title="Triggers" ContentId="Triggers">
 								<toolwindows:TriggerList x:Name="Triggers" />
 							</LayoutAnchorable>
@@ -928,137 +933,137 @@
 									<ToolBarTray>
 										<ToolBar>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_2DView-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_2DView-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_3DView-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_3DView-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TextureMode-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TextureMode-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_light_on-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_light_on-16.png" />
 											</ToggleButton>
 										</ToolBar>
 										<ToolBar>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
 											</Button>
 										</ToolBar>
 										<ToolBar>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
 											</Button>
 										</ToolBar>
 										<ToolBar>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawPortals-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawPortals-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawAllRooms-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawAllRooms-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_horizon-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_horizon-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_generic_text-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_generic_text-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawCardinalDirections-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawCardinalDirections-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Transparent_1-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Transparent_1-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_AlphaTest-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_AlphaTest-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Slide-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Slide-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideCustomGeometry_1-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideCustomGeometry_1-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideHiddenRooms-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideHiddenRooms-16.png" />
 											</ToggleButton>
 											<xceed:DropDownButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawObjects-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawObjects-16.png" />
 											</xceed:DropDownButton>
 										</ToolBar>
 										<ToolBar>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_link-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_link-16.png" />
 											</ToggleButton>
 										</ToolBar>
 										<ToolBar>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
 											</Button>
 										</ToolBar>
 										<ToolBar>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Solid-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Solid-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity-16.png" />
 											</ToggleButton>
 											<ToggleButton>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity2-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity2-16.png" />
 											</ToggleButton>
 										</ToolBar>
 										<ToolBar>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
 											</Button>
 										</ToolBar>
 										<ToolBar>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
 											</Button>
 											<Button>
-												<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play_fast-16.png" />
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play_fast-16.png" />
 											</Button>
 										</ToolBar>
 									</ToolBarTray>
@@ -1077,12 +1082,12 @@
 						</LayoutDocumentPane>
 
 						<LayoutAnchorablePaneGroup DockHeight="140" Orientation="Horizontal">
-							<LayoutAnchorablePane DockMinWidth="370" DockWidth="0.5*">
+							<LayoutAnchorablePane DockMinWidth="370" DockWidth="370">
 								<LayoutAnchorable Title="Lighting" ContentId="Lighting">
 									<toolwindows:Lighting x:Name="Lighting" />
 								</LayoutAnchorable>
 							</LayoutAnchorablePane>
-							<LayoutAnchorablePane DockWidth="1.5*">
+							<LayoutAnchorablePane DockWidth="*">
 								<LayoutAnchorable Title="Palette" ContentId="Palette">
 									<toolwindows:Palette x:Name="Palette" />
 								</LayoutAnchorable>
@@ -1098,10 +1103,7 @@
 				</LayoutPanel>
 			</LayoutRoot>
 		</DockingManager>
-		<StatusBar
-			Grid.Row="2"
-			Background="{DynamicResource GreyBackground}"
-			Foreground="{DynamicResource LightText}">
+		<StatusBar Grid.Row="2">
 			<TextBlock Text="Selected room: Name = Room 0 | Size = 18 x 18 | Pos = (0,0,0) | Floor = 0 | Ceiling = 12" />
 		</StatusBar>
 	</Grid>

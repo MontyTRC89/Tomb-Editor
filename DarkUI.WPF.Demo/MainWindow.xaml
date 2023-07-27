@@ -53,13 +53,13 @@
 						</TextBlock>
 
 						<StackPanel Orientation="Horizontal">
-							<Button Width="Auto">
+							<Button Width="Auto" Click="Button_Click">
 								<Button.Margin>
 									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</Button.Margin>
 								Normal
 							</Button>
-							<Button Width="Auto" Style="{DynamicResource ButtonIconText}">
+							<Button Width="Auto" Style="{DynamicResource ButtonWithIconAndText}">
 								<Button.Margin>
 									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</Button.Margin>
@@ -99,7 +99,7 @@
 								</ToggleButton.Margin>
 								Normal
 							</ToggleButton>
-							<ToggleButton Width="Auto" Style="{DynamicResource ToggleButtonIconText}">
+							<ToggleButton Width="Auto" Style="{DynamicResource ToggleButtonWithIconAndText}">
 								<ToggleButton.Margin>
 									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</ToggleButton.Margin>
@@ -138,7 +138,7 @@
 								</Label.Margin>
 								Normal:
 							</Label>
-							<controls:ColorPickerButton Content="Normal">
+							<controls:ColorPickerButton Width="60">
 								<controls:ColorPickerButton.Margin>
 									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</controls:ColorPickerButton.Margin>
@@ -150,7 +150,7 @@
 								</Label.Margin>
 								Disabled:
 							</Label>
-							<controls:ColorPickerButton Content="Disabled" IsEnabled="False" />
+							<controls:ColorPickerButton Width="60" IsEnabled="False" />
 						</StackPanel>
 					</StackPanel>
 
@@ -744,7 +744,7 @@
 								Width="Auto"
 								Margin="10"
 								HorizontalAlignment="Left"
-								Orientation="Vertical">
+								Orientation="Horizontal">
 								<ToolBar>
 									<Button>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />

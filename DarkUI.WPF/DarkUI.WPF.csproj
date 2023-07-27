@@ -8,11 +8,15 @@
 
   <ItemGroup>
     <None Remove="Resources\down-right-16.png" />
+    <None Remove="Resources\Invert.ps" />
     <None Remove="Resources\search-16.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\down-right-16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Invert.ps">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\search-16.png">
@@ -28,6 +32,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dictionaries\BlackColors.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Dictionaries\ClassicColors.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
     <Page Update="Dictionaries\LightColors.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -36,6 +48,12 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\ClassicButton.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Styles\Icon.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
     <Page Update="Styles\ContextMenu.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

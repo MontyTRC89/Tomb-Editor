@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -11,7 +12,7 @@
 	d:DesignWidth="375"
 	mc:Ignorable="d">
 
-	<sg:SpacedGrid Margin="{DynamicResource DefaultMargin}">
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition />
@@ -36,64 +37,46 @@
 					</Grid.ColumnDefinitions>
 
 					<ComboBox>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_LightPoint-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_LightPoint-16.png" />
 								<TextBlock Text="Point" />
 							</StackPanel>
 						</ComboBoxItem>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Shadow-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Shadow-16.png" />
 								<TextBlock Text="Shadow" />
 							</StackPanel>
 						</ComboBoxItem>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Spotlight-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Spotlight-16.png" />
 								<TextBlock Text="Spot" />
 							</StackPanel>
 						</ComboBoxItem>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Effect-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Effect-16.png" />
 								<TextBlock Text="Effect" />
 							</StackPanel>
 						</ComboBoxItem>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_sun-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_sun-16.png" />
 								<TextBlock Text="Sun" />
 							</StackPanel>
 						</ComboBoxItem>
-						<ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image
-									Width="16"
-									Margin="{DynamicResource ButtonIconTextMargin}"
-									Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Fog-16.png" />
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Fog-16.png" />
 								<TextBlock Text="Fog bulb" />
 							</StackPanel>
 						</ComboBoxItem>
 					</ComboBox>
 
-					<Button Grid.Column="1">
-						<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
 					</Button>
 				</sg:SpacedGrid>
 
@@ -102,7 +85,7 @@
 				</ComboBox>
 			</sg:SpacedGrid>
 
-			<sg:SpacedGrid Grid.Row="1" ColumnSpacing="15">
+			<sg:SpacedGrid Grid.Row="1" ColumnSpacing="{x:Static darkUI:Defaults.JumboThicknessWidth}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -143,14 +126,6 @@
 		</sg:SpacedGrid>
 
 		<sg:SpacedGrid Grid.Column="1" ColumnSpacing="0">
-			<Grid.Resources>
-				<Style TargetType="Label">
-					<Setter Property="HorizontalAlignment" Value="Right" />
-					<Setter Property="Margin" Value="3,0,0,0" />
-					<Setter Property="TextBlock.Foreground" Value="{DynamicResource LightText}" />
-				</Style>
-			</Grid.Resources>
-
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition />
@@ -166,68 +141,107 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<Label Content="Color" />
+			<Label
+				HorizontalAlignment="Right"
+				Content="Color"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
 			<controls:ColorPickerButton Grid.Column="1" Height="22" />
-			<Label Grid.Row="1" Content="Intensity" />
+			<Label
+				Grid.Row="1"
+				HorizontalAlignment="Right"
+				Content="Intensity"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
 			<xctk:DoubleUpDown
 				Grid.Row="1"
 				Grid.Column="1"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
-			<Label Grid.Row="2" Content="In d" />
+				Value="2.50" />
+			<Label
+				Grid.Row="2"
+				HorizontalAlignment="Right"
+				Content="In d"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
 			<xctk:DoubleUpDown
 				Grid.Row="2"
 				Grid.Column="1"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
-			<Label Grid.Row="3" Content="Out d" />
+				Value="2.50" />
+			<Label
+				Grid.Row="3"
+				HorizontalAlignment="Right"
+				Content="Out d"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
 			<xctk:DoubleUpDown
 				Grid.Row="3"
 				Grid.Column="1"
-				Margin="0,1,0,0"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
+				Value="2.50" />
 
-			<Label Grid.Column="2" Content="In α" />
+			<Label
+				Grid.Column="2"
+				HorizontalAlignment="Right"
+				Content="In α"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</Label.Margin>
+			</Label>
 			<xctk:DoubleUpDown
 				Grid.Column="3"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
+				Value="2.50" />
 			<Label
 				Grid.Row="1"
 				Grid.Column="2"
-				Content="Out α" />
+				HorizontalAlignment="Right"
+				Content="Out α"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</Label.Margin>
+			</Label>
 			<xctk:DoubleUpDown
 				Grid.Row="1"
 				Grid.Column="3"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
+				Value="2.50" />
 			<Label
 				Grid.Row="2"
 				Grid.Column="2"
-				Content="Dir Y" />
+				HorizontalAlignment="Right"
+				Content="Dir Y"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</Label.Margin>
+			</Label>
 			<xctk:DoubleUpDown
 				Grid.Row="2"
 				Grid.Column="3"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
+				Value="2.50" />
 			<Label
 				Grid.Row="3"
 				Grid.Column="2"
-				Content="Dir X" />
+				HorizontalAlignment="Right"
+				Content="Dir X"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</Label.Margin>
+			</Label>
 			<xctk:DoubleUpDown
 				Grid.Row="3"
 				Grid.Column="3"
-				Margin="0,1,0,0"
-				VerticalContentAlignment="Top"
+				FormatString="F2"
 				Increment="0.01"
-				Value="2.55" />
+				Value="2.50" />
 		</sg:SpacedGrid>
 	</sg:SpacedGrid>
 </UserControl>

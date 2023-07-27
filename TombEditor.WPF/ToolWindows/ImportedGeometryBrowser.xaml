@@ -4,13 +4,14 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	d:DesignHeight="250"
 	d:DesignWidth="285"
 	mc:Ignorable="d">
 
-	<sg:SpacedGrid Margin="{DynamicResource DefaultMargin}">
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
@@ -25,8 +26,8 @@
 
 			<controls:SearchableComboBox />
 
-			<Button Grid.Column="1">
-				<Image Width="16" Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+			<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
 			</Button>
 		</sg:SpacedGrid>
 
@@ -40,18 +41,18 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="1" Width="90">
+			<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconAndText}">
 				<StackPanel Orientation="Horizontal">
-					<Image Margin="{DynamicResource ButtonIconTextMargin}" Source="/TombEditor.WPF;component/Resources/icons_general/general_target-16.png" />
+					<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_target-16.png" />
 					<TextBlock Text="Locate item" />
 				</StackPanel>
 			</Button>
 
-			<Button Grid.Column="2">
+			<Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
 				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowUp-16.png" />
 			</Button>
 
-			<Button Grid.Column="3">
+			<Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
 				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png" />
 			</Button>
 		</sg:SpacedGrid>

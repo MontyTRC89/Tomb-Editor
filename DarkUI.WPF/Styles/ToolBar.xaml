@@ -6,6 +6,7 @@
 	xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit.NET5">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/Xceed.Wpf.Toolkit.NET5;component/Themes/Generic/Glyphs.xaml" />
+		<ResourceDictionary Source="/DarkUI.WPF;component/Styles/Icon.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<conv:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -428,5 +429,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+
+		<Style.Resources>
+			<Style BasedOn="{StaticResource SmallImageIcon}" TargetType="{x:Type Image}" />
+			<Style BasedOn="{StaticResource SmallPathIcon}" TargetType="{x:Type Path}" />
+		</Style.Resources>
 	</Style>
 </ResourceDictionary>

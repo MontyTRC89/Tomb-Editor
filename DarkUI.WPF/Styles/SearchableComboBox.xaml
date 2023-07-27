@@ -86,7 +86,7 @@
 									<Button
 										x:Name="PART_SearchButton"
 										Grid.Column="1"
-										Style="{DynamicResource IconOnlyButton}">
+										Style="{DynamicResource ButtonWithIconOnly}">
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 									</Button>
 

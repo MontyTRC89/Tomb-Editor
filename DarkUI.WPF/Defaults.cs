@@ -1,9 +1,28 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 
 namespace DarkUI.WPF
 {
 	public static class Defaults
 	{
+		public static Theme CurrentTheme = Theme.Dark;
+
+		public static event PropertyChangedEventHandler ShouldIconsInvertPropertyChanged;
+
+		private static void OnShouldIconsInvertPropertyChanged(string propertyName)
+			=> ShouldIconsInvertPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+
+		private static bool _shouldIconsInvert = true;
+		public static bool ShouldIconsInvert
+		{
+			get => _shouldIconsInvert;
+			set
+			{
+				_shouldIconsInvert = value;
+				OnShouldIconsInvertPropertyChanged(nameof(ShouldIconsInvert));
+			}
+		}
+
 		#region Constants
 
 		public const double ScaleFactor = 1.0;
