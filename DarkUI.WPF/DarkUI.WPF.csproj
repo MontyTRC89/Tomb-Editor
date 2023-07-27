@@ -36,7 +36,7 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
-    <Page Update="Dictionaries\ClassicColors.xaml">
+    <Page Update="ClassicRoomEdit\ClassicColors.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
@@ -65,24 +65,24 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
-    <Page Update="Styles\ToggleButton.xaml">
+    <Page Update="ClassicRoomEdit\ToggleButton.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
-    <Page Update="Styles\Button.xaml">
+    <Page Update="ClassicRoomEdit\Button.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\CheckBox.xaml">
+    <Page Update="ClassicRoomEdit\CheckBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\ComboBox.xaml">
+    <Page Update="ClassicRoomEdit\ComboBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\NumericUpDown.xaml">
+    <Page Update="ClassicRoomEdit\NumericUpDown.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
@@ -100,7 +100,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\TextBox.xaml">
+    <Page Update="ClassicRoomEdit\TextBox.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <SubType>Designer</SubType>

@@ -283,9 +283,7 @@
 				<ColumnDefinition Width="40" />
 			</Grid.ColumnDefinitions>
 
-			<controls:ColorPickerButton
-				x:Name="panelRoomAmbientLight"
-				Width="60" />
+			<controls:ColorPickerButton x:Name="panelRoomAmbientLight" Width="60" />
 			<ComboBox x:Name="comboPortalShade" Grid.Column="1">
 				<ComboBoxItem>Default</ComboBoxItem>
 				<ComboBoxItem>Smooth</ComboBoxItem>
