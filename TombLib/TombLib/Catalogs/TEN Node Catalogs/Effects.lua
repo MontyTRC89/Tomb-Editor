@@ -108,8 +108,19 @@ end
 -- !Arguments "NewLine, 75, SoundTracks, Name of the audiotrack to play"
 -- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ]"
 
-LevelFuncs.Engine.Node.PlayAudioTrack = function(name, looped)
-	TEN.Misc.PlayAudioTrack(name, looped)
+LevelFuncs.Engine.Node.PlayAudioTrack = function(name, type)
+
+    -- LEGACY: Make pre-1.1.0 nodes compatible with updated audio track enumeration.
+    local realType = 0;
+    if (type == true) then 
+        realType = 1 
+    elseif (type == false) then
+        realType = 0
+    else
+        realType = type
+    end
+
+	TEN.Misc.PlayAudioTrack(name, realType)
 end
 
 -- !Name "Stop audio track"
