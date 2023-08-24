@@ -579,6 +579,29 @@
 			<anim item="0" id="158" name="SWANDIVE_START" />
 			<anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
 			
+			<!--BEAR -->
+			<anim item="8" id="0" name="LOW_IDLE" />
+			<anim item="8" id="1" name="LOW_IDLE_TO_RUN" />
+			<anim item="8" id="2" name="LOW_RUN" />
+			<anim item="8" id="3" name="LOW_RUN_TO_IDLE" />
+			<anim item="8" id="4" name="HIGH_IDLE_TO_LOW_IDLE" />
+			<anim item="8" id="5" name="HIGH_ROAR" />
+			<anim item="8" id="6" name="HIGH_WALK" />
+			<anim item="8" id="7" name="HIGH_IDLE" />
+			<anim item="8" id="8" name="LOW_IDLE_TO_HIGH_IDLE" />
+			<anim item="8" id="9" name="HIGH_IDLE_TO_WALK" />
+			<anim item="8" id="10" name="HIGH_WALK_TO_IDLE" />
+			<anim item="8" id="11" name="LOW_ROAR" />
+			<anim item="8" id="12" name="LOW_CHARGE_ATTACK_START" />
+			<anim item="8" id="13" name="LOW_CHARGE_ATTACK_END" />
+			<anim item="8" id="14" name="HIGH_ATTACK" />
+			<anim item="8" id="15" name="LOW_BITE_ATTACK" />
+			<anim item="8" id="16" name="LOW_IDLE_TO_WALK" />
+			<anim item="8" id="17" name="LOW_WALK" />
+			<anim item="8" id="18" name="LOW_WALK_TO_IDLE" />
+			<anim item="8" id="19" name="HIGH_DEATH" />
+			<anim item="8" id="20" name="LOW_DEATH" />
+			
 			<!--APE -->
 			<anim item="15" id="0" name="IDLE" />
 			<anim item="15" id="1" name="POUND_CHEST" />
@@ -708,6 +731,18 @@
 			<state item="0" id="53" name="SWANDIVE_END" />
 			<state item="0" id="54" name="HANDSTAND" />
 			<state item="0" id="55" name="ONWATER_EXIT" />
+			
+			<!-- BEAR -->
+			<state item="8" id="0" name="LOW_WALK" />
+			<state item="8" id="1" name="LOW_IDLE" />
+			<state item="8" id="2" name="HIGH_WALK" />
+			<state item="8" id="3" name="LOW_RUN" />
+			<state item="8" id="4" name="HIGH_IDLE" />
+			<state item="8" id="5" name="ROAR" />
+			<state item="8" id="6" name="LOW_CHARGE_ATTACK" />
+			<state item="8" id="7" name="HIGH_CLAW_ATTACK" />
+			<state item="8" id="8" name="LOW_BITE_ATTACK" />
+			<state item="8" id="9" name="DEATH" />
 			 			
 			<!-- APE -->
 			<state item="15" id="1" name="IDLE" />
@@ -8204,6 +8239,29 @@
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
 			<anim item="1" id="14" name="DEATH_SETH" />
 			
+			<!--BEAR -->
+			<anim item="101" id="0" name="LOW_IDLE" />
+			<anim item="101" id="1" name="LOW_IDLE_TO_RUN" />
+			<anim item="101" id="2" name="LOW_RUN" />
+			<anim item="101" id="3" name="LOW_RUN_TO_IDLE" />
+			<anim item="101" id="4" name="HIGH_IDLE_TO_LOW_IDLE" />
+			<anim item="101" id="5" name="HIGH_ROAR" />
+			<anim item="101" id="6" name="HIGH_WALK" />
+			<anim item="101" id="7" name="HIGH_IDLE" />
+			<anim item="101" id="8" name="LOW_IDLE_TO_HIGH_IDLE" />
+			<anim item="101" id="9" name="HIGH_IDLE_TO_WALK" />
+			<anim item="101" id="10" name="HIGH_WALK_TO_IDLE" />
+			<anim item="101" id="11" name="LOW_ROAR" />
+			<anim item="101" id="12" name="LOW_CHARGE_ATTACK_START" />
+			<anim item="101" id="13" name="LOW_CHARGE_ATTACK_END" />
+			<anim item="101" id="14" name="HIGH_ATTACK" />
+			<anim item="101" id="15" name="LOW_BITE_ATTACK" />
+			<anim item="101" id="16" name="LOW_IDLE_TO_WALK" />
+			<anim item="101" id="17" name="LOW_WALK" />
+			<anim item="101" id="18" name="LOW_WALK_TO_IDLE" />
+			<anim item="101" id="19" name="HIGH_DEATH" />
+			<anim item="101" id="20" name="LOW_DEATH" />
+			
 			<!--APE -->
 			<anim item="102" id="0" name="IDLE" />
 			<anim item="102" id="1" name="POUND_CHEST" />
@@ -8597,6 +8655,18 @@
 			<state item="0" id="171" name="CROUCH_TURN_180" />
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
+			
+			<!-- BEAR -->
+			<state item="101" id="0" name="LOW_WALK" />
+			<state item="101" id="1" name="LOW_IDLE" />
+			<state item="101" id="2" name="HIGH_WALK" />
+			<state item="101" id="3" name="LOW_RUN" />
+			<state item="101" id="4" name="HIGH_IDLE" />
+			<state item="101" id="5" name="ROAR" />
+			<state item="101" id="6" name="LOW_CHARGE_ATTACK" />
+			<state item="101" id="7" name="HIGH_CLAW_ATTACK" />
+			<state item="101" id="8" name="LOW_BITE_ATTACK" />
+			<state item="101" id="9" name="DEATH" />
 			
 			<!-- APE -->
 			<state item="102" id="1" name="IDLE" />
