@@ -8223,12 +8223,12 @@
 		</sounds>
 		<animations>
 			<!--LARA EXTRA ANIMATIONS -->
-			<anim item="1" id="0" name="UNSURE?" />
+			<anim item="1" id="0" name="DAGGER_PICKUP" />
 			<anim item="1" id="1" name="WAKING_UP" />
 			<anim item="1" id="2" name="XIAN_SPEAR_GUARD_IMPALE" />
 			<anim item="1" id="3" name="SUBWAY_TRAIN_DEATH"/>
 			<anim item="1" id="4" name="TYRANNOSAUR_DEATH" />
-			<anim item="1" id="5" name="UNSURE?" />
+			<anim item="1" id="5" name="SHARK_DEATH" />
 			<anim item="1" id="6" name="GIANT_MUTANT_DEATH" />
 			<anim item="1" id="7" name="SHIVA_IMPALE_DEATH" />
 			<anim item="1" id="8" name="TNT_ACTIVATION" />
