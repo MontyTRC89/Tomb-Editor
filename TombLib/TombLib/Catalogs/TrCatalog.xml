@@ -8237,7 +8237,8 @@
 			<anim item="1" id="11" name="GONG_STRIKE" />
 			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
 			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
-			<anim item="1" id="14" name="DEATH_SETH" />
+			<anim item="1" id="14" name="SETH_DEATH" />
+			<anim item="1" id="15" name="YETI_DEATH" />
 			
 			<!--BEAR -->
 			<anim item="101" id="0" name="LOW_IDLE" />
