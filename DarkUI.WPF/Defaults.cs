@@ -12,7 +12,7 @@ namespace DarkUI.WPF
 		private static void OnShouldIconsInvertPropertyChanged(string propertyName)
 			=> ShouldIconsInvertPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-		private static bool _shouldIconsInvert = true;
+		private static bool _shouldIconsInvert = false;
 		public static bool ShouldIconsInvert
 		{
 			get => _shouldIconsInvert;

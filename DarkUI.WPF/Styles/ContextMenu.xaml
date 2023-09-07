@@ -22,6 +22,7 @@
 				<ControlTemplate TargetType="{x:Type ContextMenu}">
 					<Border
 						Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
+						Padding="{x:Static local:Defaults.TinyThickness}"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"

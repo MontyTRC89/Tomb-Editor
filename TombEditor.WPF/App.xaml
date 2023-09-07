@@ -7,7 +7,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/DarkUI.WPF;component/Generic.xaml" />
-				<ResourceDictionary Source="/DarkUI.WPF;component/Dictionaries/LightColors.xaml" />
+				<ResourceDictionary Source="/DarkUI.WPF;component/Dictionaries/DarkColors.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

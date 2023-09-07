@@ -1,5 +1,14 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:avalonDock="clr-namespace:AvalonDock;assembly=AvalonDock"
+	xmlns:avalonDockControls="clr-namespace:AvalonDock.Controls;assembly=AvalonDock"
+	xmlns:avalonDockConverters="clr-namespace:AvalonDock.Converters;assembly=AvalonDock"
+	xmlns:avalonDockProperties="clr-namespace:AvalonDock.Properties;assembly=AvalonDock"
+	xmlns:reskeys="clr-namespace:AvalonDock.Themes.VS2013.Themes;assembly=AvalonDock.Themes.VS2013"
+	xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=AvalonDock">
 	<ResourceDictionary.MergedDictionaries>
+
 		<ResourceDictionary Source="Dictionaries/MarginsPaddingsAndSizes.xaml" />
 		<ResourceDictionary Source="Dictionaries/PathDefinitions.xaml" />
 
@@ -28,6 +37,6 @@
 		<ResourceDictionary Source="Styles/TreeView.xaml" />
 		<ResourceDictionary Source="Styles/Window.xaml" />
 
-		<ResourceDictionary Source="/AvalonDock.Themes.VS2013;component/Themes/Generic.xaml" />
+		<ResourceDictionary Source="Styles/AvalonDock.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
