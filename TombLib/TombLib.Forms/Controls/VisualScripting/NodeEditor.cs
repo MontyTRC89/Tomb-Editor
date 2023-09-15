@@ -79,6 +79,10 @@ namespace TombLib.Controls.VisualScripting
         private List<string> _cachedLuaFunctions = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedEventSets { get { return _cachedEventSets; } }
+        private List<string> _cachedEventSets = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<MoveableInstance> CachedMoveables { get { return _cachedMoveables; } }
         private List<MoveableInstance> _cachedMoveables = new List<MoveableInstance>();
         [Browsable(false)]
@@ -232,6 +236,7 @@ namespace TombLib.Controls.VisualScripting
             _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;
+            _cachedEventSets = level.Settings.EventSets.Select(s => s.Name).ToList();
 
             if (scriptFunctions != null)
                 _cachedLuaFunctions = scriptFunctions;
@@ -679,24 +684,7 @@ namespace TombLib.Controls.VisualScripting
 
         public List<TriggerNode> LinearizedNodes()
         {
-            var result = new List<TriggerNode>();
-
-            foreach (var node in Nodes)
-                AddNodeToLinearizedList(node, result);
-
-            return result;
-        }
-
-        private void AddNodeToLinearizedList(TriggerNode node, List<TriggerNode> list)
-        {
-            if (!list.Contains(node))
-                list.Add(node);
-
-            if (node.Next != null)
-                AddNodeToLinearizedList(node.Next, list);
-
-            if (node is TriggerNodeCondition && (node as TriggerNodeCondition).Else != null)
-                AddNodeToLinearizedList((node as TriggerNodeCondition).Else, list);
+            return TriggerNode.LinearizeNodes(Nodes);
         }
 
         private void DisconnectPreviousNode(TriggerNode node)

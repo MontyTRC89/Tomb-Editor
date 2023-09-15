@@ -368,7 +368,7 @@ namespace TombEditor.Forms
             this.tbName.SelectOnClick = true;
             this.tbName.Size = new System.Drawing.Size(425, 22);
             this.tbName.TabIndex = 28;
-            this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
+            this.tbName.Validated += new System.EventHandler(this.tbName_Validated);
             // 
             // FormVolume
             // 
