@@ -137,6 +137,8 @@ namespace TombLib.LevelData
         public VolumeEvent OnLeave;
         public VolumeEvent OnInside;
 
+        public List<VolumeEvent> Events => new List<VolumeEvent>() { OnEnter, OnInside, OnLeave };
+
         public VolumeEventSet()
         {
             Activators = VolumeActivators.Player;

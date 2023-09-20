@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -121,6 +120,10 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.LuaScript:
                     foreach (var item in editor.CachedLuaFunctions)
                         cbList.Items.Add(new ComboBoxItem(item, "LevelFuncs." + item));
+                    break;
+                case ArgumentType.EventSets:
+                    foreach (var item in editor.CachedEventSets)
+                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.Sinks:
                     foreach (var item in editor.CachedSinks)

@@ -37,6 +37,7 @@ namespace TombLib.LevelData.VisualScripting
         String,
         Color,
         LuaScript,      // Listable
+        EventSets,      // Listable
         Moveables,      // Listable
         Statics,        // Listable
         Cameras,        // Listable

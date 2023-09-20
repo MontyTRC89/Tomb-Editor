@@ -177,6 +177,32 @@ namespace TombEditor.Forms
             lstEvents.ClearSelection();
         }
 
+		private void ReplaceEventSetNames(string oldName, string newName)
+		{
+			var funcList = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
+
+			foreach (var set in _editor.Level.Settings.EventSets)
+				foreach (var evt in set.Events)
+					foreach (var node in TriggerNode.LinearizeNodes(evt.Nodes))
+					{
+						var func = funcList.FirstOrDefault(f => f.Signature == node.Function && 
+														   f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
+						if (func == null)
+							continue;
+
+						for (int i = 0; i < func.Arguments.Count; i++)
+						{
+							if (func.Arguments[i].Type == ArgumentType.EventSets &&
+								node.Arguments.Count > i &&
+								TextExtensions.Unquote(node.Arguments[i]) == oldName)
+							{
+								node.Arguments[i] = TextExtensions.Quote(newName);
+							}
+						}
+
+					}
+		}
+
         private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
         {
             _instance.EventSet = newEventSet;
@@ -320,14 +346,6 @@ namespace TombEditor.Forms
             ModifyActivators();
         }
 
-        private void tbName_TextChanged(object sender, EventArgs e)
-        {
-            if (_instance.EventSet == null || _lockUI)
-                return;
-
-            _instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
-        }
-
         private void butSearch_Click(object sender, EventArgs e)
         {
             var searchPopUp = new PopUpSearch(lstEvents) { ShowAboveControl = true };
@@ -395,5 +413,18 @@ namespace TombEditor.Forms
         {
             _instance.EventSet.LastUsedEventIndex = tcEvents.SelectedIndex;
         }
-    }
+
+		private void tbName_Validated(object sender, EventArgs e)
+		{
+			if (_instance.EventSet == null || _lockUI)
+				return;
+
+			if (_instance.EventSet.Name == tbName.Text)
+				return;
+
+			ReplaceEventSetNames(_instance.EventSet.Name, tbName.Text);
+			_instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
+			_editor.EventSetsChange();
+		}
+	}
 }
