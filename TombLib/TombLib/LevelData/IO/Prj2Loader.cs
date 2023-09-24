@@ -9,6 +9,7 @@ using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.LevelData.VisualScripting;
+using System.Threading;
 
 namespace TombLib.LevelData.IO
 {
@@ -23,14 +24,12 @@ namespace TombLib.LevelData.IO
             public bool IgnoreSoundsCatalogs = false;
         }
 
-        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
-        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter, Settings loadSettings)
+        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter,CancellationToken cancelToken, Settings loadSettings)
         {
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return LoadFromPrj2(filename, fileStream, progressReporter, loadSettings);
+                return LoadFromPrj2(filename, fileStream, progressReporter,cancelToken, loadSettings);
         }
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, stream, progressReporter, new Settings());
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter,CancellationToken cancelToken, Settings loadSettings)
         {
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {

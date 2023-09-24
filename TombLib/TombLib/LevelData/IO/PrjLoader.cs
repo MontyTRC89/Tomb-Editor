@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
@@ -94,7 +95,7 @@ namespace TombLib.LevelData.IO
 
         public static Level LoadFromPrj(string filename, string soundsPath, 
                                         bool remapFlybyBitmask, bool adjustUV,
-                                        IProgressReporter progressReporter)
+                                        IProgressReporter progressReporter,CancellationToken cancelToken)
         {
             var level = new Level();
 

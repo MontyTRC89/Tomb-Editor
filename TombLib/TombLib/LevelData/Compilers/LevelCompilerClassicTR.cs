@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -65,7 +66,7 @@ namespace TombLib.LevelData.Compilers
                 _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
-        public override CompilerStatistics CompileLevel()
+        public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
             ReportProgress(0, "Tomb Raider Level Compiler");
 
@@ -73,16 +74,17 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
-
+			cancelToken.ThrowIfCancellationRequested();
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
 
             // Prepare level data
             ConvertWad2DataToTrData(_level);
             BuildRooms();
+			cancelToken.ThrowIfCancellationRequested();
 
-            // Compile textures
-            ReportProgress(30, "Packing textures");
+			// Compile textures
+			ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData(_level.Settings.GameVersion);
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
@@ -91,16 +93,18 @@ namespace TombLib.LevelData.Compilers
             int texInfoLimit = _limits[Limit.TexInfos];
             if (_textureInfoManager.TexInfoCount > texInfoLimit)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
-            
-            GetAllReachableRooms();
+			cancelToken.ThrowIfCancellationRequested();
+
+			GetAllReachableRooms();
             BuildPathFindingData();
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
             BuildFloorData();
+			cancelToken.ThrowIfCancellationRequested();
 
-            // Combine the texture data collected
-            var pageCount = PrepareTextures();
+			// Combine the texture data collected
+			var pageCount = PrepareTextures();
 
             int texPageLimit = _limits[Limit.TexPages];
             if (pageCount > texPageLimit)
@@ -134,7 +138,7 @@ namespace TombLib.LevelData.Compilers
             }
             
             // Needed to make decision about backup (delete or restore)
-            _compiledSuccessfully = true;
+            _compiledSuccessfully = !cancelToken.IsCancellationRequested;
 
             _progressReporter.ReportInfo("\nOutput file: " + _finalDest);
 

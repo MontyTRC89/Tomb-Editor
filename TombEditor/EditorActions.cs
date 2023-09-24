@@ -3985,7 +3985,7 @@ namespace TombEditor
                 _editor.SendMessage(whatLoaded, PopupType.Info);
 
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
-                progressReporter =>
+                (progressReporter,cancelToken) =>
                 {
                     using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
                             (LevelCompiler)(new LevelCompilerClassicTR(level, fileName, progressReporter)) :
@@ -3993,7 +3993,7 @@ namespace TombEditor
                     {
                         var watch = new Stopwatch();
                         watch.Start();
-                        var statistics = compiler.CompileLevel();
+                        var statistics = compiler.CompileLevel(cancelToken);
                         watch.Stop();
                         progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
 
@@ -5000,8 +5000,8 @@ namespace TombEditor
 
             var newLevel = string.Empty;
 
-            using (var form = new FormOperationDialog("TombEngine level converter", false, true, progressReporter =>
-                newLevel = TombEngineConverter.Start(fileName, owner, progressReporter)))
+            using (var form = new FormOperationDialog("TombEngine level converter", false, true, (progressReporter,cancelToken) =>
+                newLevel = TombEngineConverter.Start(fileName, owner, progressReporter,cancelToken)))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK || string.IsNullOrEmpty(newLevel))
                     return false;
@@ -5026,8 +5026,8 @@ namespace TombEditor
             Level newLevel = null;
             try
             {
-                using (var form = new FormOperationDialog("Open level", true, true, progressReporter =>
-                    newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter)))
+                using (var form = new FormOperationDialog("Open level", true, true, (progressReporter,cancelToken) =>
+                    newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter,cancelToken, new Prj2Loader.Settings())))
                 {
                     // Make sure form displays correctly if we're running in silent mode without parent window
                     if (owner == null)
@@ -5123,11 +5123,11 @@ namespace TombEditor
                     return;
 
                 Level newLevel = null;
-                using (var form = new FormOperationDialog("Import PRJ", false, false, progressReporter =>
+                using (var form = new FormOperationDialog("Import PRJ", false, false, (progressReporter,cancelToken) =>
                     newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath,
                     formImport.RespectMousepatchOnFlybyHandling,
                     formImport.UseHalfPixelCorrection,
-                    progressReporter)))
+                    progressReporter,cancelToken)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Threading;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -64,7 +65,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
-        public override CompilerStatistics CompileLevel()
+        public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
             ReportProgress(0, "Tomb Engine Level Compiler");
 
@@ -73,7 +74,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             DetectTombEngineVersion(false);
             DetectTombEngineVersion(true);
-
+			cancelToken.ThrowIfCancellationRequested();
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Prepare level data in parallel to the sounds
@@ -86,7 +87,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-            
+			cancelToken.ThrowIfCancellationRequested();
             GetAllReachableRooms();
             BuildPathFindingData();
             PrepareSoundSources();
@@ -94,7 +95,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             BuildCamerasAndSinks();
             BuildFloorData();
             BuildSprites();
-
+			cancelToken.ThrowIfCancellationRequested();
             PrepareRoomsBuckets();
             PrepareMeshBuckets();
 
@@ -104,7 +105,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             CopyNodeScripts();
             
             // Needed to make decision about backup (delete or restore)
-            _compiledSuccessfully = true;
+            _compiledSuccessfully = !cancelToken.IsCancellationRequested;
 
             _progressReporter.ReportInfo("\nOutput file: " + _finalDest);
 
