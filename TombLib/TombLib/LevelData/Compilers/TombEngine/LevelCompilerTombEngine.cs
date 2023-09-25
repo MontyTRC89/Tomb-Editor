@@ -74,7 +74,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             DetectTombEngineVersion(false);
             DetectTombEngineVersion(true);
-			cancelToken.ThrowIfCancellationRequested();
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Prepare level data in parallel to the sounds
@@ -87,7 +86,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-			cancelToken.ThrowIfCancellationRequested();
             GetAllReachableRooms();
             BuildPathFindingData();
             PrepareSoundSources();
@@ -95,7 +93,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             BuildCamerasAndSinks();
             BuildFloorData();
             BuildSprites();
-			cancelToken.ThrowIfCancellationRequested();
             PrepareRoomsBuckets();
             PrepareMeshBuckets();
 
