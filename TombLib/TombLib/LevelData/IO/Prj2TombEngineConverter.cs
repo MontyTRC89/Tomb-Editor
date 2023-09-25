@@ -15,7 +15,7 @@ namespace TombLib.LevelData.IO
 	{
         public static readonly string ReferenceWadPath = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
-        public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter,CancellationToken cancelToken)
+        public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             if (!File.Exists(fileName))
             {
