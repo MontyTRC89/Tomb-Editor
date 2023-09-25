@@ -95,7 +95,7 @@ namespace TombLib.LevelData.IO
 
         public static Level LoadFromPrj(string filename, string soundsPath, 
                                         bool remapFlybyBitmask, bool adjustUV,
-                                        IProgressReporter progressReporter,CancellationToken cancelToken)
+                                        IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             var level = new Level();
 
