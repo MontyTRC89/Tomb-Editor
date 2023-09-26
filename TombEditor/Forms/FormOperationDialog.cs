@@ -48,9 +48,13 @@ namespace TombEditor.Forms
 			Run();
 		}
 
-		private void OnOperationFailure()
+		private void OnOperationFailure(Exception ex)
 		{
-			TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Error);
+			if( ex is not OperationCanceledException)
+				TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Error);
+			else
+				TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
+
 			TaskbarProgress.FlashWindow();
 			pbStato.Value = 0;
 			butCancel.Enabled = true;
@@ -116,7 +120,7 @@ namespace TombEditor.Forms
 			}
 			catch (Exception ex)
 			{
-				OnOperationFailure();
+				OnOperationFailure(ex);
 				logger.Error(ex, "Operation failed: " + Text);
 
 				string message = "There was an error. Message: " + ex.Message;
