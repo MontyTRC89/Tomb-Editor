@@ -26,7 +26,7 @@ namespace TombLib.LevelData.IO
             progressReporter.ReportInfo("TombEngine Project Converter");
             progressReporter.ReportInfo(" ");
 
-            string newProject = ConvertProject(fileName, progressReporter,cancelToken);
+            string newProject = ConvertProject(fileName, progressReporter, cancelToken);
 
             if (string.IsNullOrEmpty(newProject))
             {
@@ -297,7 +297,7 @@ namespace TombLib.LevelData.IO
 
                 // Load level and all related resources
                 Level level = Path.GetExtension(source).ToLower() == ".prj" ?
-                    PrjLoader.LoadFromPrj(source, string.Empty, true, false, null,cancelToken) : Prj2Loader.LoadFromPrj2(source, null,cancelToken,new Prj2Loader.Settings());
+                    PrjLoader.LoadFromPrj(source, string.Empty, true, false, null, cancelToken) : Prj2Loader.LoadFromPrj2(source, null, cancelToken, new Prj2Loader.Settings());
 
                 if (level == null)
                 {
