@@ -79,28 +79,47 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Prepare level data in parallel to the sounds
             ConvertWad2DataToTombEngine();
+
+			cancelToken.ThrowIfCancellationRequested();
+
             BuildRooms();
 
-            // Compile textures
-            ReportProgress(30, "Packing textures");
+			cancelToken.ThrowIfCancellationRequested();
+
+			// Compile textures
+			ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData();
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
-            BuildPathFindingData();
-            PrepareSoundSources();
+
+			cancelToken.ThrowIfCancellationRequested();
+
+			BuildPathFindingData();
+
+			cancelToken.ThrowIfCancellationRequested();
+
+			PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
-            BuildFloorData();
+
+			cancelToken.ThrowIfCancellationRequested();
+
+			BuildFloorData();
             BuildSprites();
             PrepareRoomsBuckets();
             PrepareMeshBuckets();
 
-            _progressReporter.ReportInfo("\nWriting level file...\n");
+			cancelToken.ThrowIfCancellationRequested();
+
+			_progressReporter.ReportInfo("\nWriting level file...\n");
 
             WriteLevelTombEngine();
-            CopyNodeScripts();
+
+			cancelToken.ThrowIfCancellationRequested();
+
+			CopyNodeScripts();
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = !cancelToken.IsCancellationRequested;
