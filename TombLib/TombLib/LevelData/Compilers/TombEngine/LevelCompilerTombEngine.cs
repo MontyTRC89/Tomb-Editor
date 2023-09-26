@@ -82,7 +82,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 			cancelToken.ThrowIfCancellationRequested();
 
-            BuildRooms();
+            BuildRooms(cancelToken);
 
 			cancelToken.ThrowIfCancellationRequested();
 
