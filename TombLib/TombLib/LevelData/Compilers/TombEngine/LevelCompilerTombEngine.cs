@@ -74,6 +74,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             DetectTombEngineVersion(false);
             DetectTombEngineVersion(true);
+
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
             // Prepare level data in parallel to the sounds
