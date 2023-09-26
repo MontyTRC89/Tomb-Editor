@@ -11,6 +11,7 @@ using DarkUI.Extensions;
 using DarkUI.Config;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Microsoft.Build.Tasks;
 
 namespace TombEditor.Forms
 {
@@ -47,87 +48,91 @@ namespace TombEditor.Forms
 			Run();
 		}
 
-		private void FormOperationDialog_FormClosing(object sender, FormClosingEventArgs e)
+		private void OnOperationFailure()
 		{
-			if (_task != null)
-			{
-				e.Cancel = true;
-				if (e.CloseReason == CloseReason.UserClosing && !_cancellationTokenSource.IsCancellationRequested)
-				{
-					butCancel.Enabled = false;
-					EndThread();
-				}
-			}
+			TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Error);
+			TaskbarProgress.FlashWindow();
+			pbStato.Value = 0;
+			butCancel.Enabled = true;
+			butOk.Enabled = false;
+			lstLog.BackColor = lstLog.BackColor = Color.LightPink;
+
 		}
 
-		private void Run()
+		private void OnOperationSuccess()
 		{
-#if !DEBUG
+			TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
+			TaskbarProgress.FlashWindow();
+
+			pbStato.Value = 100;
+
+			butOk.Enabled = true;
+			butCancel.Enabled = false;
+			butOk.Focus();
+
+			if (_autoCloseWhenDone)
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			lstLog.BackColor = Color.LightGreen.Multiply(Colors.Brightness);
+		}
+
+		private void FormOperationDialog_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			// We shouldn't close the window when the task is still running
+			if(_task.Status <= TaskStatus.Running)
+			{
+				// So we cancel the closing
+				e.Cancel = true;
+				// If the task isn't canceled yet
+				if(!_cancellationTokenSource.IsCancellationRequested)
+					//cancel it
+					EndThread();
+			}
+
+			TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
+
+		}
+
+		private async void Run()
+		{
+
 			try
 			{
-#endif
-				var task = Task.Run(() =>
+				butCancel.Enabled = true;
+				butOk.Enabled = false;
+				_task = Task.Factory.StartNew(() =>
 				{
 					_operation(this, _cancellationTokenSource.Token);
+					_cancellationTokenSource.Token.ThrowIfCancellationRequested();
 				});
-				// Done
-
-				task.ContinueWith((t) =>
-				{
-					BeginInvoke(() =>
-					{
-						TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
-						TaskbarProgress.FlashWindow();
-
-						pbStato.Value = 100;
-
-						butOk.Enabled = true;
-						butCancel.Enabled = false;
-						butOk.Focus();
-
-						if (_autoCloseWhenDone)
-						{
-							DialogResult = DialogResult.OK;
-							Close();
-						}
-						lstLog.BackColor = Color.LightGreen.Multiply(Colors.Brightness);
-					});
-				});
+				// Syntax with await is much easier to handle because it propagates Exceptions nicely.
+				await _task;
+				//Done
+				OnOperationSuccess();
 
 				
-#if !DEBUG
 			}
 			catch (Exception ex)
 			{
-				while (ex is AggregateException) // Improve error messages from exceptions of Task.* threads
-					ex = ex.InnerException;
-
+				OnOperationFailure();
 				logger.Error(ex, "Operation failed: " + Text);
 
 				string message = "There was an error. Message: " + ex.Message;
-				Invoke(() =>
-					{
-						pbStato.Value = 0;
-						TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.NoProgress);
-
-						if (!string.IsNullOrEmpty(message))
-						{
-							lstLog.SelectionBackColor = Color.Tomato;
-							lstLog.AppendText(message + "\n");
-							lstLog.ScrollToCaret();
-						}
-
-						lstLog.BackColor = Color.LightPink;
-						butCancel.Enabled = true;
-						butOk.Enabled = false;
-						butCancel.Focus();
-					});
-			}
+				lstLog.SelectionBackColor = Color.Tomato;
+				lstLog.AppendText(message + "\n");
+				lstLog.ScrollToCaret();
+#if DEBUG		// keep Debug and Release the same, but in Debug we rethrow to get the proper exception and it's stacktrace
+				throw;
 #endif
+			}
 		}
 
 		void AddMessage(float? progress, string message, bool isWarning)
 		{
+			if (_cancellationTokenSource.IsCancellationRequested)
+				return;
 			BeginInvoke(() =>
 			{
 				if (progress.HasValue)
@@ -171,7 +176,11 @@ namespace TombEditor.Forms
 
 		private void butCancel_Click(object sender, EventArgs e)
 		{
-			Close();
+			DialogResult = DialogResult.Cancel;
+			if(_task.Status >= TaskStatus.RanToCompletion)
+				Close();
+			else 
+				EndThread();
 		}
 
 		private void butOk_Click(object sender, EventArgs e)
@@ -184,8 +193,8 @@ namespace TombEditor.Forms
 		{
 			Invoke(() =>
 			{
-				DialogResult = DialogResult.Cancel;
 				_cancellationTokenSource.Cancel();
+				DialogResult = DialogResult.Cancel;
 				// Try shutting down the thread softly
 				lstLog.SelectionBackColor = Color.Tomato;
 				lstLog.AppendText("Stopping the process...\n");
