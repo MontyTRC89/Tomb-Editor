@@ -6,7 +6,7 @@
 -- !Arguments "Numerical, 15, [ 1 | 100 ], Percentage of event occurence"
 
 LevelFuncs.Engine.Node.TestPercentageChance = function(percentageRange)
-    return (math.random() * 100 <= percentageRange)
+	return (math.random() * 100 <= percentageRange)
 end
 
 -- !Name "End level"
@@ -16,7 +16,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 99 ], Next level number"
 
 LevelFuncs.Engine.Node.EndLevel = function(number)
-    Flow.EndLevel(number)
+	Flow.EndLevel(number)
 end
 
 -- !Name "Add secret"
@@ -25,7 +25,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 7 ], Level secret index"
 
 LevelFuncs.Engine.Node.AddSecret = function(number)
-    TEN.Flow.AddSecret(number)
+	TEN.Flow.AddSecret(number)
 end
 
 -- !Name "Set secret count"
@@ -34,7 +34,7 @@ end
 -- !Arguments "Numerical, 15, [0 | 99 ], New secret count"
 
 LevelFuncs.Engine.Node.SetSecretCount = function(number)
-    TEN.Flow.SetSecretCount(number)
+	TEN.Flow.SetSecretCount(number)
 end
 
 -- !Name "If game secret count is..."
@@ -44,7 +44,7 @@ end
 -- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 99 ], Secret count"
 
 LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
-    return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
+	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
 end
 
 -- !Name "Run event from another event set"
@@ -55,12 +55,11 @@ end
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
-
 	if (setName == '' or setName == nil) then
 		print("There is no specified event set in level!")
 		return
 	end
-	
+
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
 end
 
@@ -71,13 +70,12 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunLuaScript = function(funcName, args)
-
 	if (funcName == nil) then
 		print("There is no specified function in level script!")
 		return
 	end
-	
-    funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
+
+	funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
 end
 
 -- !Name "If script function returns..."
@@ -90,12 +88,47 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunConditionalLuaScript = function(operator, result, funcName, args)
-
 	if (funcName == nil) then
 		print("There is no specified function in level script!")
 		return 0
 	end
-	
-    local params = LevelFuncs.Engine.Node.SplitString(args, ",")
-    return LevelFuncs.Engine.Node.CompareValue(funcName(table.unpack(params)), result, operator)
+
+	local params = LevelFuncs.Engine.Node.SplitString(args, ",")
+	return LevelFuncs.Engine.Node.CompareValue(funcName(table.unpack(params)), result, operator)
+end
+
+-- !Name "Save the game"
+-- !Conditional "False"
+-- !Description "Saves the current game in a specific slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.SaveGame = function(slot)
+	SaveGame(slot)
+end
+
+-- !Name "Load the game"
+-- !Conditional "False"
+-- !Description "Load the selected save slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.LoadGame = function(slot)
+	LoadGame(slot)
+end
+
+-- !Name "Delete Save slot"
+-- !Conditional "False"
+-- !Description "Delete a specific save slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.DeleteSaveGame = function(slot)
+	DeleteSaveGame(slot)
+end
+
+-- !Name "If SaveGame exists..."
+-- !Conditional "True"
+-- !Description "Check if SaveGame exists in a specific slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.DoesSaveGameExist = function(slot)
+	return DoesSaveGameExist(slot)
 end
