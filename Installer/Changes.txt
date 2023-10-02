@@ -3,6 +3,7 @@ Version 1.6.9
 
 Tomb Editor:
  * Add a node to call events from other event sets.
+ * Show selection size instead of local area.
 
 Version 1.6.8
 =============
