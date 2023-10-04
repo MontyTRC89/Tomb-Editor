@@ -39,10 +39,10 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return true;
 		}
 
-		public static void Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
+		public static bool Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
 		{
 			if (!AreLibrariesRegistered())
-				return;
+				throw new Exception("The required libraries are not registered.");
 
 			CopyFilesToVGEScriptDirectory(projectScriptPath, DefaultPaths.VGEScriptDirectory);
 
@@ -60,8 +60,10 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			Process.Start(process).WaitForExit();
 
-			FixLogs(projectEnginePath);
+			FixLogs(projectEnginePath, out bool containsError);
 			CopyCompiledFilesToProject(projectEnginePath);
+
+			return !containsError;
 		}
 
 		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
@@ -153,7 +155,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return newLines.ToArray();
 		}
 
-		private static void FixLogs(string projectEnginePath)
+		private static void FixLogs(string projectEnginePath, out bool constainsError)
 		{
 			string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
 			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
@@ -163,6 +165,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				.Replace(DefaultPaths.VGEDirectory, projectEnginePath)
 				.Replace("ERROR: unknonw ", "ERROR: unknown ");
 
+			constainsError = newFileContent.Contains("ERROR:");
 			File.WriteAllText(logFilePath, newFileContent, Encoding.GetEncoding(1252));
 		}
 

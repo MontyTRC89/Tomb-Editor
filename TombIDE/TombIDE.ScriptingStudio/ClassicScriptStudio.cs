@@ -391,14 +391,17 @@ namespace TombIDE.ScriptingStudio
 		{
 			try
 			{
-				NGCompiler.Compile(
+				bool success = NGCompiler.Compile(
 					ScriptRootDirectoryPath, EngineDirectoryPath,
 					IDE.Global.IDEConfiguration.UseNewIncludeMethod);
 
 				string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
 				CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
 
-				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+				if (!success)
+					DarkMessageBox.Show(this, "Script compilation yielded and error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
 				{
 					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
