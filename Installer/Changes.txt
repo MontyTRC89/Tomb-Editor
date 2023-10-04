@@ -6,6 +6,11 @@ Tomb Editor:
  * Show selection size instead of local area.
  * Fix exception when trying to assign footstep sound if no material was selected.
 
+TombIDE:
+ * Update NG_Center.
+ * Change the way TRNG script compiling is done.
+ * Fix library registration not working when launching NG_Center for the first time.
+
 Version 1.6.8
 =============
 
