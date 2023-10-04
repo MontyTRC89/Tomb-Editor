@@ -106,7 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.101" />
-    <PackageReference Include="FlaUI.UIA2" Version="3.2.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 </Project>
