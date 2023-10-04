@@ -4,6 +4,7 @@ Version 1.6.9
 Tomb Editor:
  * Add a node to call events from other event sets.
  * Show selection size instead of local area.
+ * Fix exception when trying to assign footstep sound if no material was selected.
 
 Version 1.6.8
 =============
