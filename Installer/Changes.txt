@@ -2,6 +2,7 @@ Version 1.6.9
 =============
 
 Tomb Editor:
+ * Allow to immediately cancel level building and project opening.
  * Add a node to call events from other event sets.
 
 Version 1.6.8
