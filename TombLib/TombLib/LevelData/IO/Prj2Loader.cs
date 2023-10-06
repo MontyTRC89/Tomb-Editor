@@ -29,7 +29,7 @@ namespace TombLib.LevelData.IO
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return LoadFromPrj2(filename, fileStream, progressReporter,cancelToken, loadSettings);
         }
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter,CancellationToken cancelToken, Settings loadSettings)
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, CancellationToken cancelToken, Settings loadSettings)
         {
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {
@@ -40,10 +40,12 @@ namespace TombLib.LevelData.IO
                     LevelSettings settings = null;
                     if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref settings, loadSettings, progressReporter))
                     {
+                        cancelToken.ThrowIfCancellationRequested();
+
                         level.ApplyNewLevelSettings(settings);
                         return true;
                     }
-                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, progressReporter))
+                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, progressReporter, cancelToken))
                         return true;
                     return false;
                 });
@@ -690,7 +692,7 @@ namespace TombLib.LevelData.IO
             return true;
         }
 
-        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, IProgressReporter progressReporter = null)
+        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             if (idOuter != Prj2Chunks.Rooms)
                 return false;
@@ -713,6 +715,7 @@ namespace TombLib.LevelData.IO
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
+                    cancelToken.ThrowIfCancellationRequested();
                     // Read basic room properties
                     if (id2 == Prj2Chunks.RoomIndex)
                         roomIndex = chunkIO.ReadChunkLong(chunkSize2);
@@ -734,7 +737,9 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomSectors)
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 != Prj2Chunks.Sector)
+							cancelToken.ThrowIfCancellationRequested();
+
+							if (id3 != Prj2Chunks.Sector)
                                 return false;
 
                             int ReadPos = chunkIO.Raw.ReadInt32();
@@ -744,7 +749,8 @@ namespace TombLib.LevelData.IO
 
                             chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
-                                    if (id4 == Prj2Chunks.SectorProperties)
+									cancelToken.ThrowIfCancellationRequested();
+									if (id4 == Prj2Chunks.SectorProperties)
                                     {
                                         long flag = chunkIO.ReadChunkLong(chunkSize4);
                                         if ((flag & 1) != 0 && block.Type != BlockType.BorderWall)
@@ -920,7 +926,9 @@ namespace TombLib.LevelData.IO
                         long alternateRoomIndex = -1;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Prj2Chunks.AlternateGroup)
+							cancelToken.ThrowIfCancellationRequested();
+
+							if (id3 == Prj2Chunks.AlternateGroup)
                                 alternateGroup = chunkIO.ReadChunkShort(chunkSize3);
                             else if (id3 == Prj2Chunks.AlternateRoom)
                                 alternateRoomIndex = chunkIO.ReadChunkLong(chunkSize3);
@@ -967,29 +975,43 @@ namespace TombLib.LevelData.IO
 
             // Link rooms
             foreach (var roomLinkAction in roomLinkActions)
-                try
-                {
-                    roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "An exception was raised while trying to perform room link action.");
-                }
+            {
+				cancelToken.ThrowIfCancellationRequested();
+
+				try
+				{
+					roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
+				}
+				catch (Exception exc)
+				{
+					logger.Error(exc, "An exception was raised while trying to perform room link action.");
+				}
+			}
+                
 
             // Link objects
             foreach (var objectLinkAction in objectLinkActions)
-                try
-                {
-                    objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "An exception was raised while trying to perform room link objects.");
-                }
+            {
+				cancelToken.ThrowIfCancellationRequested();
+
+				try
+				{
+					objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
+				}
+				catch (Exception exc)
+				{
+					logger.Error(exc, "An exception was raised while trying to perform room link objects.");
+				}
+			}
+
 
             // Now build the real geometry and update geometry buffers
+            ParallelOptions parallelOptions = new ParallelOptions()
+            {
+                CancellationToken = cancelToken,
+            };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
             return true;
         }
 
