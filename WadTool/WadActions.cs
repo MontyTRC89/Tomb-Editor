@@ -209,7 +209,7 @@ namespace WadTool
             if (string.IsNullOrEmpty(path))
                 return false;
 
-            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(path, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(path, null, CancellationToken.None, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
 
             if (tool.ReferenceLevel != null)
             {

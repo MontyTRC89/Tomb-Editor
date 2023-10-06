@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -18,10 +19,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 
-        private void BuildRooms()
+        private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
-            Parallel.ForEach(_level.ExistingRooms, (room) =>
+
+			ParallelOptions parallelOptions = new ParallelOptions()
+			{
+				CancellationToken = cancelToken
+			};
+
+			Parallel.ForEach(_level.ExistingRooms, parallelOptions, (room) =>
             {
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
@@ -37,12 +44,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var room in _roomRemapping.Keys)
-                _tempRooms.Add(room, BuildRoom(room));
+			{
+				cancelToken.ThrowIfCancellationRequested();
+				_tempRooms.Add(room, BuildRoom(room));
+			}
 
-            // Remove WaterScheme values for water rooms
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+			// Remove WaterScheme values for water rooms
+			Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
             {
                 for (int i = 0; i < trRoom.Polygons.Count; i++)
                 {
@@ -63,10 +73,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
-                        MatchDoorShades(rooms, room, false, flipped == 1);
-            }
+					{
+						cancelToken.ThrowIfCancellationRequested();
+						MatchDoorShades(rooms, room, false, flipped == 1);
+					}
+			}
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {

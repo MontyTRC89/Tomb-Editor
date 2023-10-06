@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -11,10 +12,10 @@ using TombLib.Wad.Catalog;
 namespace TombLib.LevelData.IO
 {
     public static class TombEngineConverter
-	{
+    {
         public static readonly string ReferenceWadPath = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
-        public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter)
+        public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             if (!File.Exists(fileName))
             {
@@ -25,7 +26,7 @@ namespace TombLib.LevelData.IO
             progressReporter.ReportInfo("TombEngine Project Converter");
             progressReporter.ReportInfo(" ");
 
-            string newProject = ConvertProject(fileName, progressReporter);
+            string newProject = ConvertProject(fileName, progressReporter, cancelToken);
 
             if (string.IsNullOrEmpty(newProject))
             {
@@ -287,7 +288,7 @@ namespace TombLib.LevelData.IO
             return moveable;
         }
 
-        private static string ConvertProject(string source, IProgressReporter progressReporter)
+        private static string ConvertProject(string source, IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             try
             {
@@ -296,7 +297,7 @@ namespace TombLib.LevelData.IO
 
                 // Load level and all related resources
                 Level level = Path.GetExtension(source).ToLower() == ".prj" ?
-                    PrjLoader.LoadFromPrj(source, string.Empty, true, false, null) : Prj2Loader.LoadFromPrj2(source, null);
+                    PrjLoader.LoadFromPrj(source, string.Empty, true, false, null, cancelToken) : Prj2Loader.LoadFromPrj2(source, null, cancelToken, new Prj2Loader.Settings());
 
                 if (level == null)
                 {
@@ -325,6 +326,7 @@ namespace TombLib.LevelData.IO
 
                 foreach (ReferencedWad wadRef in level.Settings.Wads)
                 {
+                    cancelToken.ThrowIfCancellationRequested();
                     Wad2 wad = wadRef.Wad;
                     Wad2 newWad = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
 
@@ -428,6 +430,7 @@ namespace TombLib.LevelData.IO
                     // Copy all sprite sequences
                     foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sequence in wad.SpriteSequences)
                     {
+                        cancelToken.ThrowIfCancellationRequested();
                         uint newSlot;
                         string oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, sequence.Key.TypeId);
                         string newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
@@ -501,6 +504,7 @@ namespace TombLib.LevelData.IO
 
                 foreach (Room room in level.Rooms)
                 {
+                    cancelToken.ThrowIfCancellationRequested();
                     if (room != null)
                     {
                         foreach (var instance in room.Objects)
