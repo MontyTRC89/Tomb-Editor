@@ -80,46 +80,46 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Prepare level data in parallel to the sounds
             ConvertWad2DataToTombEngine();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
             BuildRooms(cancelToken);
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			// Compile textures
-			ReportProgress(30, "Packing textures");
+            // Compile textures
+            ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData();
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			BuildPathFindingData();
+            BuildPathFindingData();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			PrepareSoundSources();
+            PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			BuildFloorData();
+            BuildFloorData();
             BuildSprites();
             PrepareRoomsBuckets();
             PrepareMeshBuckets();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			_progressReporter.ReportInfo("\nWriting level file...\n");
+            _progressReporter.ReportInfo("\nWriting level file...\n");
 
             WriteLevelTombEngine();
 
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			CopyNodeScripts();
+            CopyNodeScripts();
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = !cancelToken.IsCancellationRequested;
@@ -488,9 +488,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             if (!Directory.Exists(scriptDirectory))
-			{
-				Directory.CreateDirectory(scriptDirectory);
-			}
+            {
+                Directory.CreateDirectory(scriptDirectory);
+            }
             else
             {
                 foreach (var file in Directory.GetFiles(scriptDirectory))

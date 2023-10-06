@@ -74,17 +74,17 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
 
             // Prepare level data
             ConvertWad2DataToTrData(_level);
             BuildRooms();
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			// Compile textures
-			ReportProgress(30, "Packing textures");
+            // Compile textures
+            ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData(_level.Settings.GameVersion);
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
@@ -93,18 +93,18 @@ namespace TombLib.LevelData.Compilers
             int texInfoLimit = _limits[Limit.TexInfos];
             if (_textureInfoManager.TexInfoCount > texInfoLimit)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			GetAllReachableRooms();
+            GetAllReachableRooms();
             BuildPathFindingData();
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
             BuildFloorData();
-			cancelToken.ThrowIfCancellationRequested();
+            cancelToken.ThrowIfCancellationRequested();
 
-			// Combine the texture data collected
-			var pageCount = PrepareTextures();
+            // Combine the texture data collected
+            var pageCount = PrepareTextures();
 
             int texPageLimit = _limits[Limit.TexPages];
             if (pageCount > texPageLimit)

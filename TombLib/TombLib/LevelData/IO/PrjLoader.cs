@@ -154,8 +154,8 @@ namespace TombLib.LevelData.IO
                 {
                     cancelToken.ThrowIfCancellationRequested();
 
-					// Room is defined?
-					short defined = reader.ReadInt16();
+                    // Room is defined?
+                    short defined = reader.ReadInt16();
                     if (defined == 0x01)
                         continue;
 
@@ -203,9 +203,9 @@ namespace TombLib.LevelData.IO
                     }
                     for (int j = 0; j < numPortals; j++)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						ushort direction = reader.ReadUInt16();
+                        ushort direction = reader.ReadUInt16();
                         short portalZ = reader.ReadInt16();
                         short portalX = reader.ReadInt16();
                         short portalZBlocks = reader.ReadInt16();
@@ -278,7 +278,7 @@ namespace TombLib.LevelData.IO
                     {
                         cancelToken.ThrowIfCancellationRequested();
 
-						short objectType = reader.ReadInt16();
+                        short objectType = reader.ReadInt16();
                         short objPosZ = reader.ReadInt16();
                         short objPosX = reader.ReadInt16();
                         short objSizeZ = reader.ReadInt16();
@@ -494,16 +494,16 @@ namespace TombLib.LevelData.IO
 
                     for (int j = 0; j < numObjects2; j++)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						objectsThings2[j] = reader.ReadInt16();
+                        objectsThings2[j] = reader.ReadInt16();
                     }
 
                     for (int j = 0; j < numObjects2; j++)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						short objectType = reader.ReadInt16();
+                        short objectType = reader.ReadInt16();
                         short objPosZ = reader.ReadInt16();
                         short objPosX = reader.ReadInt16();
                         short objSizeZ = reader.ReadInt16();
@@ -705,9 +705,9 @@ namespace TombLib.LevelData.IO
                     for (int x = 0; x < room.NumXSectors; x++)
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
-							cancelToken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-							short blockType = reader.ReadInt16();
+                            short blockType = reader.ReadInt16();
                             short blockFlags1 = reader.ReadInt16();
                             short blockYfloor = reader.ReadInt16();
                             short blockYceiling = reader.ReadInt16();
@@ -1087,9 +1087,9 @@ namespace TombLib.LevelData.IO
                     progressReporter?.ReportProgress(32, "Setup portals");
                     foreach (var tempRoom in tempRooms)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						Room room = level.Rooms[tempRoom.Key];
+                        Room room = level.Rooms[tempRoom.Key];
                         foreach (PortalInstance portal in room.Portals)
                         {
                             // Figure out opacity of the portal
@@ -1177,9 +1177,9 @@ namespace TombLib.LevelData.IO
                     // Promote NoCollision
                     foreach (var tempRoom in tempRooms)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						Room room = level.Rooms[tempRoom.Key];
+                        Room room = level.Rooms[tempRoom.Key];
                         for (int z = 0; z < room.NumZSectors; ++z)
                             for (int x = 0; x < room.NumXSectors; ++x)
                             {
@@ -1201,9 +1201,9 @@ namespace TombLib.LevelData.IO
                     // (This also improves cases from earlier with alternate rooms.)
                     foreach (var tempRoom in tempRooms)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						Room room = level.Rooms[tempRoom.Key];
+                        Room room = level.Rooms[tempRoom.Key];
                         foreach (PortalInstance portal in room.Portals)
                         {
                             if (portal.Direction == PortalDirection.Ceiling)
@@ -1340,9 +1340,9 @@ namespace TombLib.LevelData.IO
                         if (sfx.Sounds != null)
                             foreach (var soundInfo in sfx.Sounds.SoundInfos)
                             {
-								cancelToken.ThrowIfCancellationRequested();
+                                cancelToken.ThrowIfCancellationRequested();
 
-								if (sounds != null)
+                                if (sounds != null)
                                 {
                                     var catalogInfo = sounds.TryGetSoundInfo(soundInfo.Id);
                                     if (catalogInfo != null)
@@ -1402,9 +1402,9 @@ namespace TombLib.LevelData.IO
                 // After loading slots, I compare them to legacy names and I add moveables and statics
                 for (var i = 0; i < numRooms; i++)
                 {
-					cancelToken.ThrowIfCancellationRequested();
+                    cancelToken.ThrowIfCancellationRequested();
 
-					if (level.Rooms[i] == null)
+                    if (level.Rooms[i] == null)
                         continue;
 
                     for (var j = 0; j < tempObjects[i].Count; j++)
@@ -1470,9 +1470,9 @@ namespace TombLib.LevelData.IO
                     foreach (var room in level.ExistingRooms)
                         foreach (var instance in room.Triggers.ToList())
                         {
-							cancelToken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-							instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
+                            instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
                                 NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer), objectLookup, progressReporter);
                             instance.Timer  = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Timer,
                                 NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target), objectLookup, progressReporter);
@@ -1504,9 +1504,9 @@ namespace TombLib.LevelData.IO
 
                 for (int i = 0; i < 40; i++)
                 {
-					cancelToken.ThrowIfCancellationRequested();
+                    cancelToken.ThrowIfCancellationRequested();
 
-					int defined = reader.ReadInt32();
+                    int defined = reader.ReadInt32();
                     int firstTexture = reader.ReadInt32();
                     int lastTexture = reader.ReadInt32();
 
@@ -1539,9 +1539,9 @@ namespace TombLib.LevelData.IO
                     int skippedBytes = 0;
                     for (int i = 0; i < 256;)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
+                        var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound((i + 1) % 4, i / 4, FootStepSound);
                         texture.SetFootStepSound(i % 4, ((i) / 4) + 1, FootStepSound);
@@ -1567,9 +1567,9 @@ namespace TombLib.LevelData.IO
                 {
                     for (int i = 0; i < 256; i++)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
 
-						var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
+                        var FootStepSound = (TextureFootStep.Type)(reader.ReadByte() & 0xf);
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                     }
                 }
@@ -1603,9 +1603,9 @@ namespace TombLib.LevelData.IO
                             // Parse NG chunks
                             while (reader.BaseStream.Position < reader.BaseStream.Length)
                             {
-								cancelToken.ThrowIfCancellationRequested();
+                                cancelToken.ThrowIfCancellationRequested();
 
-								var size = reader.ReadUInt16();
+                                var size = reader.ReadUInt16();
                                 var chunkId = reader.ReadUInt16();
 
                                 if (size == 0x474E && chunkId == 0x454C)
@@ -1684,9 +1684,9 @@ namespace TombLib.LevelData.IO
                     for (int z = 0; z < room.NumZSectors; z++)
                         for (int x = 0; x < room.NumXSectors; x++)
                         {
-							cancelToken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-							var prjBlock = tempRooms[i]._blocks[x, z];
+                            var prjBlock = tempRooms[i]._blocks[x, z];
 
                             // 0: BLOCK_TEX_FLOOR
                             LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock._faces[0], progressReporter);

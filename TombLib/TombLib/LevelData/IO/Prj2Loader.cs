@@ -294,9 +294,9 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.TextureCompression)
                     settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RearrangeRooms)
-					settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
-				else if (id == Prj2Chunks.RemoveUnusedObjects)
-					settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);
+                    settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.RemoveUnusedObjects)
+                    settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.EnableCustomSampleRate)
                     settings.EnableCustomSampleRate = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.CustomSampleRate)
@@ -737,9 +737,9 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomSectors)
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-							cancelToken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-							if (id3 != Prj2Chunks.Sector)
+                            if (id3 != Prj2Chunks.Sector)
                                 return false;
 
                             int ReadPos = chunkIO.Raw.ReadInt32();
@@ -749,8 +749,8 @@ namespace TombLib.LevelData.IO
 
                             chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
-									cancelToken.ThrowIfCancellationRequested();
-									if (id4 == Prj2Chunks.SectorProperties)
+                                    cancelToken.ThrowIfCancellationRequested();
+                                    if (id4 == Prj2Chunks.SectorProperties)
                                     {
                                         long flag = chunkIO.ReadChunkLong(chunkSize4);
                                         if ((flag & 1) != 0 && block.Type != BlockType.BorderWall)
@@ -926,9 +926,9 @@ namespace TombLib.LevelData.IO
                         long alternateRoomIndex = -1;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-							cancelToken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-							if (id3 == Prj2Chunks.AlternateGroup)
+                            if (id3 == Prj2Chunks.AlternateGroup)
                                 alternateGroup = chunkIO.ReadChunkShort(chunkSize3);
                             else if (id3 == Prj2Chunks.AlternateRoom)
                                 alternateRoomIndex = chunkIO.ReadChunkLong(chunkSize3);
@@ -976,33 +976,33 @@ namespace TombLib.LevelData.IO
             // Link rooms
             foreach (var roomLinkAction in roomLinkActions)
             {
-				cancelToken.ThrowIfCancellationRequested();
+                cancelToken.ThrowIfCancellationRequested();
 
-				try
-				{
-					roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
-				}
-				catch (Exception exc)
-				{
-					logger.Error(exc, "An exception was raised while trying to perform room link action.");
-				}
-			}
+                try
+                {
+                    roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "An exception was raised while trying to perform room link action.");
+                }
+            }
                 
 
             // Link objects
             foreach (var objectLinkAction in objectLinkActions)
             {
-				cancelToken.ThrowIfCancellationRequested();
+                cancelToken.ThrowIfCancellationRequested();
 
-				try
-				{
-					objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
-				}
-				catch (Exception exc)
-				{
-					logger.Error(exc, "An exception was raised while trying to perform room link objects.");
-				}
-			}
+                try
+                {
+                    objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "An exception was raised while trying to perform room link objects.");
+                }
+            }
 
 
             // Now build the real geometry and update geometry buffers

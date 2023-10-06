@@ -12,7 +12,7 @@ using TombLib.Wad.Catalog;
 namespace TombLib.LevelData.IO
 {
     public static class TombEngineConverter
-	{
+    {
         public static readonly string ReferenceWadPath = Path.Combine(DefaultPaths.ProgramDirectory, "Assets", "Wads", "TombEngine.wad2");
 
         public static string Start(string fileName, IWin32Window owner, IProgressReporter progressReporter, CancellationToken cancelToken)
@@ -326,7 +326,7 @@ namespace TombLib.LevelData.IO
 
                 foreach (ReferencedWad wadRef in level.Settings.Wads)
                 {
-					cancelToken.ThrowIfCancellationRequested();
+                    cancelToken.ThrowIfCancellationRequested();
                     Wad2 wad = wadRef.Wad;
                     Wad2 newWad = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
 
@@ -430,7 +430,7 @@ namespace TombLib.LevelData.IO
                     // Copy all sprite sequences
                     foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sequence in wad.SpriteSequences)
                     {
-						cancelToken.ThrowIfCancellationRequested();
+                        cancelToken.ThrowIfCancellationRequested();
                         uint newSlot;
                         string oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, sequence.Key.TypeId);
                         string newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
@@ -504,7 +504,7 @@ namespace TombLib.LevelData.IO
 
                 foreach (Room room in level.Rooms)
                 {
-					cancelToken.ThrowIfCancellationRequested();
+                    cancelToken.ThrowIfCancellationRequested();
                     if (room != null)
                     {
                         foreach (var instance in room.Objects)
