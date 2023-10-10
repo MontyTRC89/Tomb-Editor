@@ -107,7 +107,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = LineParser.RemoveComments(lineText);
 
-				return new ErrorLine("Broken NextLine \">\" symbols were found.\nMake sure they are ONLY at the end of the line and there is only ONE of them in each line.",
+				return new ErrorLine("Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.",
 					line.LineNumber, errorSegmentText);
 			}
 
