@@ -16,7 +16,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 99 ], Next level number"
 
 LevelFuncs.Engine.Node.EndLevel = function(number)
-	Flow.EndLevel(number)
+	TEN.Flow.EndLevel(number)
 end
 
 -- !Name "Add secret"
@@ -103,7 +103,7 @@ end
 -- !Section "Game flow"
 -- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.SaveGame = function(slot)
-	SaveGame(slot)
+	TEN.Flow.SaveGame(slot)
 end
 
 -- !Name "Load the game"
@@ -112,7 +112,7 @@ end
 -- !Section "Game flow"
 -- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.LoadGame = function(slot)
-	LoadGame(slot)
+	TEN.Flow.LoadGame(slot)
 end
 
 -- !Name "Delete Save slot"
@@ -121,7 +121,7 @@ end
 -- !Section "Game flow"
 -- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.DeleteSaveGame = function(slot)
-	DeleteSaveGame(slot)
+	TEN.Flow.DeleteSaveGame(slot)
 end
 
 -- !Name "If SaveGame exists..."
@@ -130,5 +130,5 @@ end
 -- !Section "Game flow"
 -- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.DoesSaveGameExist = function(slot)
-	return DoesSaveGameExist(slot)
+	return TEN.Flow.DoesSaveGameExist(slot)
 end
