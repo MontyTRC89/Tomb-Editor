@@ -73,7 +73,7 @@ namespace TombLib.Scripting.ClassicScript.Resources
 			{
 				foreach (string file in Directory.GetFiles(ngcPath, "plugin_*.script", SearchOption.TopDirectoryOnly))
 				{
-					string[] lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
+					string[] lines = File.ReadAllLines(file);
 
 					foreach (string line in lines)
 					{

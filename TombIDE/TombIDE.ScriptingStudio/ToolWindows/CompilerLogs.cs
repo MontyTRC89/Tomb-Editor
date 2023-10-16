@@ -17,9 +17,10 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		public void UpdateLogs(string text)
 		{
 			richTextBox.Text = text;
+			richTextBox.ScrollToBottom();
+
 			SetTextColor(richTextBox, "ERROR:", Color.Red);
 			SetTextColor(richTextBox, "Completed compilation", Color.LightGreen);
-			richTextBox.ScrollToBottom();
 		}
 
 		private static void SetTextColor(RichTextBox textBox, string regexPattern, Color color)

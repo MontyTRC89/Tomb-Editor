@@ -93,11 +93,11 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			_visitedFiles.Push(vgeScriptFilePath);
 
-			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string[] lines = File.ReadAllLines(vgeScriptFilePath);
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
-			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, newFileContent);
 
 			_visitedFiles.Clear();
 		}
@@ -106,12 +106,12 @@ namespace TombLib.Scripting.ClassicScript.Utils
 		{
 			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
 
-			string fileContent = File.ReadAllText(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string fileContent = File.ReadAllText(vgeScriptFilePath);
 
 			while (fileContent.Contains(" ="))
 				fileContent = fileContent.Replace(" =", "=");
 
-			File.WriteAllText(vgeScriptFilePath, fileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, fileContent);
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines)
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
 
-							string[] includeLines = File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252));
+							string[] includeLines = File.ReadAllLines(includedFilePath);
 							includeLines = ReplaceIncludesWithFileContents(includeLines);
 
 							newLines.AddRange(includeLines);
@@ -158,7 +158,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 		private static void FixLogs(string projectEnginePath, out bool constainsError)
 		{
 			string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
-			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
+			string logFileContent = File.ReadAllText(logFilePath);
 
 			// Replace the VGE paths in the log file with the current project ones
 			string newFileContent = logFileContent
@@ -166,7 +166,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				.Replace("ERROR: unknonw ", "ERROR: unknown ");
 
 			constainsError = newFileContent.Contains("ERROR:");
-			File.WriteAllText(logFilePath, newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(logFilePath, newFileContent);
 		}
 
 		private static void CopyCompiledFilesToProject(string projectEnginePath)
