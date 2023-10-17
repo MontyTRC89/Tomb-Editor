@@ -60,7 +60,7 @@
 			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
-			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="36" name="Swinging blade" essential="false" t5m="SWINGING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="39" name="Dart" hidden="true" />
@@ -6436,6 +6436,7 @@
 			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="448" name="ELECTRIC_CLEANER" />
 			<moveable id="449" name="SLAMMING_DOORS" />
+			<moveable id="450" name="SWINGING_BLADE" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
