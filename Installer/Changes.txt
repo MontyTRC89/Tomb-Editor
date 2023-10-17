@@ -1,3 +1,17 @@
+Version 1.6.9
+=============
+
+Tomb Editor:
+ * Allow to immediately cancel level building and project opening.
+ * Add a node to call events from other event sets.
+ * Show selection size instead of local area.
+ * Fix exception when trying to assign footstep sound if no material was selected.
+
+TombIDE:
+ * Update NG_Center.
+ * Change the way TRNG script compiling is done.
+ * Fix library registration not working when launching NG_Center for the first time.
+
 Version 1.6.8
 =============
 
@@ -16,6 +30,7 @@ WadTool:
  
 TombIDE:
  * Many minor bugfixes.
+ * Update Tomb1Main preset to 2.5.2.
 
 Version 1.6.7
 =============

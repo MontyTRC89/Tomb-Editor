@@ -35,7 +35,7 @@ namespace TombIDE.Shared
 
 		/* ScriptEditor */
 
-		public bool UseNewIncludeMethod { get; set; } = true;
+		public bool UseNewIncludeMethod { get; set; } = false;
 		public bool ShowCompilerLogsAfterBuild { get; set; } = true;
 		public bool ReindentOnSave { get; set; } = false;
 

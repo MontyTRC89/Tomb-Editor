@@ -13,10 +13,12 @@ namespace TombIDE.ScriptingStudio
 	internal static class NativeMethods
 	{
 		private const int WM_SCROLL = 276;
+		private const int WM_VSCROLL = 0x115;
 		private const int SB_LINELEFT = 0;
 		private const int SB_LINERIGHT = 1;
 		private const int SB_LEFT = 6;
 		private const int SB_RIGHT = 7;
+		private const int SB_BOTTOM = 7;
 
 		private const int WM_SETREDRAW = 11;
 
@@ -54,6 +56,9 @@ namespace TombIDE.ScriptingStudio
 					break;
 			}
 		}
+
+		public static void ScrollToBottom(this TextBoxBase textBox)
+			=> SendMessage(textBox.Handle, WM_VSCROLL, (IntPtr)SB_BOTTOM, IntPtr.Zero);
 
 		/// <summary>
 		/// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
