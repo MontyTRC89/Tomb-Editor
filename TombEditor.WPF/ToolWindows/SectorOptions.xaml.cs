@@ -1,22 +1,17 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using TombEditor.Controls;
+using TombEditor.WPF.ViewModels;
 using TombLib.LevelData;
 using TombLib.Rendering;
 
 namespace TombEditor.WPF.ToolWindows;
-/// <summary>
-/// Interaction logic for SectorOptions.xaml
-/// </summary>
+
 public partial class SectorOptions : UserControl
 {
-	public TombEditor.ToolWindows.SectorOptions WinFormsLayer { get; }
-
 	private readonly Editor _editor;
-	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 	private const float iconSwitchBrightnessThreshold = 0.8f;
 
@@ -24,38 +19,30 @@ public partial class SectorOptions : UserControl
 
 	public SectorOptions()
 	{
-		InitializeComponent();
-
 		_editor = Editor.Instance;
 		_editor.EditorEventRaised += EditorEventRaised;
+
+		DataContext = new SectorOptionsViewModel(_editor);
+
+		InitializeComponent();
 
 		panel2DGrid.Room = _editor.SelectedRoom;
 		Panel2DHost.Child = panel2DGrid;
 
-		Loaded += SectorOptions_Loaded;
-
-		Editor.Instance.RaiseEvent(new Editor.InitEvent());
-	}
-
-	private void SectorOptions_Loaded(object sender, RoutedEventArgs e)
-	{
-		CommandHandler.AssignCommandsToControls(Editor.Instance, this);
+		_editor.RaiseEvent(new Editor.InitEvent());
 	}
 
 	private void EditorEventRaised(IEditorEvent obj)
 	{
-		if (obj is Editor.SelectedRoomChangedEvent)
-			panel2DGrid.Room = ((Editor.SelectedRoomChangedEvent)obj).Current;
+		if (obj is Editor.SelectedRoomChangedEvent srce)
+			panel2DGrid.Room = srce.Current;
 
-		// Update tooltip texts
-		if (obj is Editor.ConfigurationChangedEvent)
-		{
-			if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
-				CommandHandler.AssignCommandsToControls(_editor, this, true);
-		}
+		// Update tool tip texts
+		if (obj is Editor.ConfigurationChangedEvent cce && cce.UpdateKeyboardShortcuts)
+			CommandHandler.AssignCommandsToControls(_editor, this, true);
 
 		// Update color scheme on buttons
-		if (obj is Editor.ConfigurationChangedEvent || obj is Editor.InitEvent)
+		if (obj is Editor.ConfigurationChangedEvent or Editor.InitEvent)
 		{
 			butFloor.Background = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWPFColor();
 			butFloor_Image.Source = new BitmapImage(new Uri((butFloor.Background.GetBrightness() > iconSwitchBrightnessThreshold) ? "pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Floor_neg-16.png" : "pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Floor_1-16.png"));
@@ -76,9 +63,9 @@ public partial class SectorOptions : UserControl
 		}
 
 		// Disable version-specific controls
-		if (obj is Editor.InitEvent ||
-			obj is Editor.GameVersionChangedEvent ||
-			obj is Editor.LevelChangedEvent)
+		if (obj is Editor.InitEvent or
+			Editor.GameVersionChangedEvent or
+			Editor.LevelChangedEvent)
 		{
 			bool isTR2 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR2;
 			bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
@@ -98,7 +85,6 @@ public partial class SectorOptions : UserControl
 			}
 			else
 			{
-
 				butFlagTriggerTriggerer_Image.Source = new BitmapImage(new Uri("pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_MinecartLeft-16.png"));
 				butFlagBeetle_Image.Source = new BitmapImage(new Uri("pack://application:,,,/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_MinecartRight-16.png"));
 			}
@@ -106,9 +92,7 @@ public partial class SectorOptions : UserControl
 	}
 
 	private void but_MouseEnter(object sender, RoutedEventArgs e)
-	{
-		SetSectorColoringInfoPriority(sender as Control);
-	}
+		=> SetSectorColoringInfoPriority((Control)sender);
 
 	private void SetSectorColoringInfoPriority(Control button)
 	{

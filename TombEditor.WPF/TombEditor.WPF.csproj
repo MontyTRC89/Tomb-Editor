@@ -45,6 +45,7 @@
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\i18n\en.json" />
     <None Remove="Resources\icons_actions\actions_2DView-16.png" />
     <None Remove="Resources\icons_actions\actions_3DView-16.png" />
     <None Remove="Resources\icons_actions\actions_AlphaTest-16.png" />
@@ -201,6 +202,7 @@
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
+    <PackageReference Include="ReactiveUI" Version="19.5.1" />
     <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
     <PackageReference Include="WPFCustomMessageBox.joly0" Version="2.0.0" />
   </ItemGroup>
@@ -685,94 +687,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Forms\FormSink.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormSoundSource.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormSprite.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormStatic.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormTextureRemap.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormToolBarLayout.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormTrigger.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormKeyboardLayout.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormLevelSettings.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormMoveable.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <EmbeddedResource Include="Assets\i18n\en.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Forms\FormOptions.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormPreviewTexture.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormPreviewWad.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormQuickItemgroup.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormReplaceObject.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormResizeRoom.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormRoomProperties.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormSearch.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormSelectRoomByTags.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormVolume.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormOperationDialog.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormBumpMaps.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormCamera.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormChooseRoom.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormFindTextures.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormFlybyCamera.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormFootStepSounds.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormImportPrj.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormMemo.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Forms\FormImportedGeometry.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="ToolWindows\ItemBrowser.xaml.cs">

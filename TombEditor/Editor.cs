@@ -1409,5 +1409,19 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
-    }
+
+		public bool IsValidRoomAndSectorSelection
+		{
+            get
+            {
+				if (SelectedRoom == null || !SelectedSectors.Valid)
+				{
+					SendMessage("Please select a valid group of sectors.", PopupType.Error);
+					return false;
+				}
+
+				return true;
+			}	
+		}
+	}
 }

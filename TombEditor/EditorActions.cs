@@ -3807,7 +3807,9 @@ namespace TombEditor
             _editor.SelectedRoom = newRoom;
         }
 
-        public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
+        public static bool CheckForRoomAndBlockSelection() => CheckForRoomAndBlockSelection(null);
+
+		public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
             if (_editor.SelectedRoom == null || !_editor.SelectedSectors.Valid)
             {

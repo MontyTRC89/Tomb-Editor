@@ -13,7 +13,6 @@ using TombLib.Wad.Catalog;
 using WinFormsApp = System.Windows.Forms.Application;
 using System.IO;
 using DarkUI.Config;
-using TombEditor.Forms;
 
 namespace TombEditor.WPF;
 /// <summary>
@@ -25,6 +24,8 @@ public partial class App : Application
 
 	protected override void OnStartup(StartupEventArgs e)
 	{
+		Localizer.Instance.LoadLanguage("en");
+
 		Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
 		string[] args = e.Args;

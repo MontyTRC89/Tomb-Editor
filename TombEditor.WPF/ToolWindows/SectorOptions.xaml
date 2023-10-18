@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	MinWidth="285"
@@ -44,137 +45,143 @@
 
 			<Button
 				x:Name="butFloor"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding SetFloorCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetFloor">
+				ToolTip="{local:Localize SetFloor}">
 				<Image x:Name="butFloor_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Floor_1-16.png" />
 			</Button>
 			<Button
-				x:Name="butBox"
-				Grid.Row="1"
-				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
-				MouseEnter="but_MouseEnter"
-				Tag="SetBox">
-				<Image x:Name="butBox_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Box-16.png" />
-			</Button>
-			<Button
-				x:Name="butMonkey"
-				Grid.Row="2"
-				MouseEnter="but_MouseEnter"
+				x:Name="butCeiling"
+				Grid.Column="1"
+				Command="{Binding SetCeilingCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetMonkeyswing">
-				<Image x:Name="butMonkey_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Monkey-16.png" />
-			</Button>
-			<Button
-				x:Name="butPortal"
-				Grid.Row="3"
-				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
-				MouseEnter="but_MouseEnter"
-				Tag="AddPortal">
-				<Image x:Name="butPortal_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
-			</Button>
-			<Button
-				x:Name="butFlagTriggerTriggerer"
-				Grid.Row="4"
-				MouseEnter="but_MouseEnter"
-				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetTriggerTriggerer">
-				<Image x:Name="butFlagTriggerTriggerer_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_TriggerTriggerer-16.png" />
-			</Button>
-			<Button
-				x:Name="butClimbPositiveZ"
-				Grid.Row="5"
-				MouseEnter="but_MouseEnter"
-				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetClimbPositiveZ">
-				<Image x:Name="butClimbPositiveZ_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbNorth-16.png" />
-			</Button>
-			<Button
-				x:Name="butClimbNegativeX"
-				Grid.Row="6"
-				MouseEnter="but_MouseEnter"
-				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetClimbNegativeX">
-				<Image x:Name="butClimbNegativeX_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbWest-16.png" />
-			</Button>
-			<Button
-				x:Name="butAddGhostBlock"
-				Grid.Row="7"
-				MouseEnter="but_MouseEnter"
-				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="AddGhostBlocksToSelection">
-				<Image x:Name="butAddGhostBlock_Image" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+				ToolTip="{local:Localize SetCeiling}">
+				<Image x:Name="butCeiling_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Roof-16.png" />
 			</Button>
 
 			<Button
-				x:Name="butCeiling"
-				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				x:Name="butBox"
+				Grid.Row="1"
+				Command="{Binding SetBoxSectorCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetCeiling">
-				<Image x:Name="butCeiling_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Roof-16.png" />
+				ToolTip="{local:Localize SetBox}">
+				<Image x:Name="butBox_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Box-16.png" />
 			</Button>
 			<Button
 				x:Name="butNotWalkableBox"
 				Grid.Row="1"
 				Grid.Column="1"
-				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
-				MouseEnter="but_MouseEnter"
-				Tag="SetNotWalkable">
+				Command="{Binding SetNotWalkableCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetNotWalkable}">
 				<Image x:Name="butNotWalkableBox_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_NotWalkable-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butMonkey"
+				Grid.Row="2"
+				Command="{Binding SetMonkeyswingSectorCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetMonkeyswing}">
+				<Image x:Name="butMonkey_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Monkey-16.png" />
 			</Button>
 			<Button
 				x:Name="butDeath"
 				Grid.Row="2"
 				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding SetDeathSectorCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetDeath">
+				ToolTip="{local:Localize SetDeath}">
 				<Image x:Name="butDeath_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Death-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butPortal"
+				Grid.Row="3"
+				Command="{Binding AddPortalCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize AddPortal}">
+				<Image x:Name="butPortal_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
 			</Button>
 			<Button
 				x:Name="butWall"
 				Grid.Row="3"
 				Grid.Column="1"
-				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
-				MouseEnter="but_MouseEnter"
-				Tag="SetWall">
+				Command="{Binding SetWallCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetWall}">
 				<Image x:Name="butWall_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Wall_1-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butFlagTriggerTriggerer"
+				Grid.Row="4"
+				Command="{Binding SetTriggerTriggererCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetTriggerTriggerer}">
+				<Image x:Name="butFlagTriggerTriggerer_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_TriggerTriggerer-16.png" />
 			</Button>
 			<Button
 				x:Name="butFlagBeetle"
 				Grid.Row="4"
 				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding SetBeetleCheckpointCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetBeetleCheckpoint">
+				ToolTip="{local:Localize SetBeetleCheckpoint}">
 				<Image x:Name="butFlagBeetle_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Beetle-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butClimbPositiveZ"
+				Grid.Row="5"
+				Command="{Binding SetClimbPositiveZCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetClimbPositiveZ}">
+				<Image x:Name="butClimbPositiveZ_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbNorth-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbNegativeZ"
 				Grid.Row="5"
 				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding SetClimbNegativeZCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetClimbNegativeZ">
+				ToolTip="{local:Localize SetClimbNegativeZ}">
 				<Image x:Name="butClimbNegativeZ_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbSouth_1-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butClimbNegativeX"
+				Grid.Row="6"
+				Command="{Binding SetClimbNegativeXCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize SetClimbNegativeX}">
+				<Image x:Name="butClimbNegativeX_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbWest-16.png" />
 			</Button>
 			<Button
 				x:Name="butClimbPositiveX"
 				Grid.Row="6"
 				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding SetClimbPositiveXCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="SetClimbPositiveX">
+				ToolTip="{local:Localize SetClimbPositiveX}">
 				<Image x:Name="butClimbPositiveX_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ClimbEast-16.png" />
+			</Button>
+
+			<Button
+				x:Name="butAddGhostBlock"
+				Grid.Row="7"
+				Command="{Binding AddGhostBlocksCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="{local:Localize AddGhostBlocksToSelection}">
+				<Image x:Name="butAddGhostBlock_Image" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
 			</Button>
 			<Button
 				x:Name="butForceSolidFloor"
 				Grid.Row="7"
 				Grid.Column="1"
-				MouseEnter="but_MouseEnter"
+				Command="{Binding ForceSolidFloorCommandCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				Tag="ToggleForceFloorSolid">
+				ToolTip="{local:Localize ToggleForceFloorSolid}">
 				<Image x:Name="butForceSolidFloor_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ForceSolidFloor-16 copy.png" />
 			</Button>
 		</sg:SpacedGrid>
@@ -189,7 +196,7 @@
 			<Button Style="{DynamicResource ButtonWithIconAndText}" Tag="SetDiagonalFloorStep">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
-					<TextBlock Text="Floor step" />
+					<TextBlock Text="{local:Localize FloorStep}" />
 				</StackPanel>
 			</Button>
 			<Button
@@ -199,7 +206,7 @@
 				Tag="SetDiagonalCeilingStep">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
-					<TextBlock Text="Ceiling step" />
+					<TextBlock Text="{local:Localize CeilingStep}" />
 				</StackPanel>
 			</Button>
 			<Button
@@ -208,7 +215,7 @@
 				Tag="SetDiagonalWall">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
-					<TextBlock Text="Diag wall" />
+					<TextBlock Text="{local:Localize DiagonalWall}" />
 				</StackPanel>
 			</Button>
 		</sg:SpacedGrid>

@@ -1334,18 +1334,18 @@
 			</TabControl>
 		</Border>
 
-		<ListView
+		<ListBox
 			x:Name="TabSelection"
 			Grid.Column="0"
 			Width="200"
 			ItemsSource="{Binding ElementName=SelectedOption, Path=Items, Mode=OneWay}"
 			SelectedIndex="0">
-			<ListView.ItemTemplate>
+			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Path=Header}" />
 				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+			</ListBox.ItemTemplate>
+		</ListBox>
 		<sg:SpacedGrid Grid.Row="1" Grid.Column="0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
