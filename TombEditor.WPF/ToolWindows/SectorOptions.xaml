@@ -100,7 +100,7 @@
 				Grid.Row="3"
 				Command="{Binding AddPortalCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{local:Localize AddPortal}">
+				ToolTip="{local:Localize AddPortal, FindHotkeys=True}">
 				<Image x:Name="butPortal_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
 			</Button>
 			<Button

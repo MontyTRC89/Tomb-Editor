@@ -10,6 +10,7 @@ namespace TombEditor.WPF;
 public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 {
 	public string Key { get; set; }
+	public bool FindHotkeys { get; set; }
 
 	public LocalizeExtension(string key)
 		=> Key = key;
@@ -25,17 +26,20 @@ public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 			Source = Localizer.Instance,
 		});
 
-		HotkeySets uiKeys = Editor.Instance.Configuration.UI_Hotkeys;
-
-		if (uiKeys.Any(keyPair => keyPair.Key == keyToUse && keyPair.Value.Count > 0))
+		if (FindHotkeys)
 		{
-			binding.Bindings.Add(new Binding($"[{keyToUse}]")
-			{
-				Mode = BindingMode.OneWay,
-				Source = uiKeys,
-			});
-		}
+			HotkeySets uiKeys = Editor.Instance.Configuration.UI_Hotkeys;
 
+			if (uiKeys.Any(keyPair => keyPair.Key == keyToUse && keyPair.Value.Count > 0))
+			{
+				binding.Bindings.Add(new Binding($"[{keyToUse}]")
+				{
+					Mode = BindingMode.OneWay,
+					Source = uiKeys,
+				});
+			}
+		}
+		
 		return binding.ProvideValue(serviceProvider);
 	}
 
