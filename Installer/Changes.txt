@@ -1,19 +1,43 @@
+Version 1.6.9
+=============
+
+Tomb Editor:
+ * Allow to immediately cancel level building and project opening.
+ * Add a node to call events from other event sets.
+ * Show selection size instead of local area.
+ * Fix exception when trying to assign footstep sound if no material was selected.
+ * TEN Base WAD:
+	- New pushable animations integrated.
+	- Update names for ID_LARA_EXTRA_ANIMS.
+	- Additional death animation added (YETI_DEATH) to LARA_EXTRA_ANIMS.
+	- Removal of ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
+	- Removal of PUZZLE_ITEM1 (Jeep keys) as no longer required in TombEngine.
+	- Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
+
+TombIDE:
+ * Update NG_Center.
+ * Change the way TRNG script compiling is done.
+ * Fix library registration not working when launching NG_Center for the first time.
+
 Version 1.6.8
 =============
 
 Tomb Editor:
  * Add preview button for sound playback node functions.
- * Add timer nodes to manage timers.
+ * Add nodes to manage timers.
+ * Fix current node item list remaining open after scrolling node graph with mouse wheel.
  * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
  * Fix TEN level compiler producing incorrect normals for imported geometry.
  * Fix TEN level compiler not scaling merged static meshes.
  * Fix particle emitter node not working.
 
 WadTool:
+ * Don't recalculate normals silently when importing mesh through static mesh editor.
  * Fix broken sound remap when copying objects from legacy wads to TEN wad.
  
 TombIDE:
  * Many minor bugfixes.
+ * Update Tomb1Main preset to 2.5.2.
 
 Version 1.6.7
 =============
