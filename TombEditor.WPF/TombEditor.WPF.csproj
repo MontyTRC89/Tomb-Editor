@@ -200,11 +200,10 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.71.2" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
-    <PackageReference Include="ReactiveUI" Version="19.5.1" />
     <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
-    <PackageReference Include="WPFCustomMessageBox.joly0" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

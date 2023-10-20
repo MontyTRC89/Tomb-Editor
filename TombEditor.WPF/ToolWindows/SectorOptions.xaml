@@ -62,7 +62,7 @@
 			<Button
 				x:Name="butBox"
 				Grid.Row="1"
-				Command="{Binding SetBoxSectorCommand}"
+				Command="{Binding SetBoxCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="{local:Localize SetBox}">
 				<Image x:Name="butBox_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Box-16.png" />
@@ -80,7 +80,7 @@
 			<Button
 				x:Name="butMonkey"
 				Grid.Row="2"
-				Command="{Binding SetMonkeyswingSectorCommand}"
+				Command="{Binding SetMonkeyswingCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="{local:Localize SetMonkeyswing}">
 				<Image x:Name="butMonkey_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Monkey-16.png" />
@@ -89,7 +89,7 @@
 				x:Name="butDeath"
 				Grid.Row="2"
 				Grid.Column="1"
-				Command="{Binding SetDeathSectorCommand}"
+				Command="{Binding SetDeathCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="{local:Localize SetDeath}">
 				<Image x:Name="butDeath_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Death-16.png" />
@@ -100,7 +100,8 @@
 				Grid.Row="3"
 				Command="{Binding AddPortalCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{local:Localize AddPortal, FindHotkeys=True}">
+				ToolTip="{local:Localize AddPortal,
+				                         FindHotkeys=True}">
 				<Image x:Name="butPortal_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_Portal -16.png" />
 			</Button>
 			<Button
@@ -170,7 +171,7 @@
 			<Button
 				x:Name="butAddGhostBlock"
 				Grid.Row="7"
-				Command="{Binding AddGhostBlocksCommand}"
+				Command="{Binding AddGhostBlocksToSelectionCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="{local:Localize AddGhostBlocksToSelection}">
 				<Image x:Name="butAddGhostBlock_Image" Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
@@ -179,7 +180,7 @@
 				x:Name="butForceSolidFloor"
 				Grid.Row="7"
 				Grid.Column="1"
-				Command="{Binding ForceSolidFloorCommandCommand}"
+				Command="{Binding ToggleForceFloorSolidCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="{local:Localize ToggleForceFloorSolid}">
 				<Image x:Name="butForceSolidFloor_Image" Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_ForceSolidFloor-16 copy.png" />
@@ -193,7 +194,7 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Button Style="{DynamicResource ButtonWithIconAndText}" Tag="SetDiagonalFloorStep">
+			<Button Command="{Binding FloorStepCommand}" Style="{DynamicResource ButtonWithIconAndText}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
 					<TextBlock Text="{local:Localize FloorStep}" />
@@ -202,8 +203,8 @@
 			<Button
 				Grid.Column="1"
 				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
-				Style="{DynamicResource ButtonWithIconAndText}"
-				Tag="SetDiagonalCeilingStep">
+				Command="{Binding CeilingStepCommand}"
+				Style="{DynamicResource ButtonWithIconAndText}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
 					<TextBlock Text="{local:Localize CeilingStep}" />
@@ -211,8 +212,8 @@
 			</Button>
 			<Button
 				Grid.Column="2"
-				Style="{DynamicResource ButtonWithIconAndText}"
-				Tag="SetDiagonalWall">
+				Command="{Binding DiagonalWallCommand}"
+				Style="{DynamicResource ButtonWithIconAndText}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
 					<TextBlock Text="{local:Localize DiagonalWall}" />

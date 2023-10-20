@@ -1,14 +1,15 @@
 ﻿using NLog;
-using ReactiveUI;
 using System;
 using System.Windows.Input;
 using TombEditor.WPF.Commands;
 using TombLib.Forms;
 using TombLib.LevelData;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace TombEditor.WPF.ViewModels;
 
-public class SectorOptionsViewModel : ViewModelBase
+public class SectorOptionsViewModel : ObservableObject
 {
 	private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -28,9 +29,9 @@ public class SectorOptionsViewModel : ViewModelBase
 	public ICommand SetClimbNegativeXCommand { get; }
 	public ICommand AddGhostBlocksToSelectionCommand { get; }
 	public ICommand ToggleForceFloorSolidCommand { get; }
-	public ICommand SetDiagonalFloorStepCommand { get; }
-	public ICommand SetDiagonalCeilingStepCommand { get; }
-	public ICommand SetDiagonalWallCommand { get; }
+	public ICommand FloorStepCommand { get; }
+	public ICommand CeilingStepCommand { get; }
+	public ICommand DiagonalWallCommand { get; }
 
 	public SectorOptionsViewModel(Editor editor)
 	{
@@ -41,7 +42,7 @@ public class SectorOptionsViewModel : ViewModelBase
 		SetMonkeyswingCommand = new SetSectorFlagsCommand(editor, BlockFlags.Monkey);
 		SetDeathCommand = new SetSectorFlagsCommand(editor, BlockFlags.DeathFire);
 
-		AddPortalCommand = ReactiveCommand.Create(() =>
+		AddPortalCommand = new RelayCommand(() =>
 		{
 			if (EditorActions.CheckForRoomAndBlockSelection(null))
 			{
@@ -55,7 +56,7 @@ public class SectorOptionsViewModel : ViewModelBase
 					editor.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
 				}
 			}
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 
 		SetWallCommand = new SetWallCommand(editor);
 
@@ -66,44 +67,44 @@ public class SectorOptionsViewModel : ViewModelBase
 		SetClimbNegativeZCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbNegativeZ);
 		SetClimbNegativeXCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbNegativeX);
 
-		AddGhostBlocksToSelectionCommand = ReactiveCommand.Create(() =>
+		AddGhostBlocksToSelectionCommand = new RelayCommand(() =>
 		{
 			if (!EditorActions.CheckForRoomAndBlockSelection(null))
 				return;
 
 			EditorActions.AddGhostBlocks(editor.SelectedRoom, editor.SelectedSectors.Area);
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 
-		ToggleForceFloorSolidCommand = ReactiveCommand.Create(() =>
+		ToggleForceFloorSolidCommand = new RelayCommand(() =>
 		{
 			if (!EditorActions.CheckForRoomAndBlockSelection(null))
 				return;
 
 			EditorActions.ToggleForceFloorSolid(editor.SelectedRoom, editor.SelectedSectors.Area);
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 
-		SetDiagonalFloorStepCommand = ReactiveCommand.Create(() =>
+		FloorStepCommand = new RelayCommand(() =>
 		{
 			if (!EditorActions.CheckForRoomAndBlockSelection(null))
 				return;
 
 			EditorActions.SetDiagonalFloorSplit(editor.SelectedRoom, editor.SelectedSectors.Area);
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 
-		SetDiagonalCeilingStepCommand = ReactiveCommand.Create(() =>
+		CeilingStepCommand = new RelayCommand(() =>
 		{
 			if (!EditorActions.CheckForRoomAndBlockSelection(null))
 				return;
 
 			EditorActions.SetDiagonalCeilingSplit(editor.SelectedRoom, editor.SelectedSectors.Area);
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 
-		SetDiagonalWallCommand = ReactiveCommand.Create(() =>
+		DiagonalWallCommand = new RelayCommand(() =>
 		{
 			if (!EditorActions.CheckForRoomAndBlockSelection(null))
 				return;
 
 			EditorActions.SetDiagonalWall(editor.SelectedRoom, editor.SelectedSectors.Area);
-		}, outputScheduler: RxApp.TaskpoolScheduler);
+		});
 	}
 }
