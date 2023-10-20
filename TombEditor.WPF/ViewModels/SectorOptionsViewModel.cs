@@ -1,17 +1,21 @@
-﻿using NLog;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NLog;
 using System;
 using System.Windows.Input;
 using TombEditor.WPF.Commands;
 using TombLib.Forms;
 using TombLib.LevelData;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using TombLib.Rendering;
 
 namespace TombEditor.WPF.ViewModels;
 
-public class SectorOptionsViewModel : ObservableObject
+public partial class SectorOptionsViewModel : ObservableObject
 {
 	private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+	private readonly Editor _editor;
+
+	public Configuration Configuration { get; }
 
 	public ICommand SetFloorCommand { get; }
 	public ICommand SetCeilingCommand { get; }
@@ -35,6 +39,9 @@ public class SectorOptionsViewModel : ObservableObject
 
 	public SectorOptionsViewModel(Editor editor)
 	{
+		_editor = editor;
+		Configuration = _editor.Configuration;
+
 		SetFloorCommand = new SetFloorCommand(editor);
 		SetCeilingCommand = new SetCeilingCommand(editor);
 		SetBoxCommand = new SetSectorFlagsCommand(editor, BlockFlags.Box);
@@ -106,5 +113,14 @@ public class SectorOptionsViewModel : ObservableObject
 
 			EditorActions.SetDiagonalWall(editor.SelectedRoom, editor.SelectedSectors.Area);
 		});
+	}
+
+	[RelayCommand]
+	private void SetSectorColoringInfoPriority(SectorColoringType type)
+	{
+		if (!_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
+			return;
+
+		_editor.SectorColoringManager.SetPriority(type);
 	}
 }

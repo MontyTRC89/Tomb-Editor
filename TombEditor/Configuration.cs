@@ -1,4 +1,5 @@
-﻿using DarkUI.Docking;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DarkUI.Docking;
 using System.Collections.Generic;
 using System.Drawing;
 using TombLib;
@@ -8,9 +9,10 @@ using TombLib.Rendering;
 
 namespace TombEditor
 {
-    // Just add properties to this class to add now configuration options.
-    // They will be loaded and saved automatically.
-    public class Configuration : ConfigurationBase
+	// Just add properties to this class to add now configuration options.
+	// They will be loaded and saved automatically.
+	[ObservableObject]
+	public partial class Configuration : ConfigurationBase
     {
         public override string ConfigName { get { return "TombEditorConfiguration.xml"; } }
 
@@ -173,7 +175,8 @@ namespace TombEditor
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public float UI_FormColor_Brightness { get; set; } = 100.0f;
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
-        public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
+
+        [ObservableProperty] private ColorScheme _UI_ColorScheme = ColorScheme.Default;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Toolbar button order

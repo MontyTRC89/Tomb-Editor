@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace TombEditor.WPF.Converters
@@ -15,7 +11,7 @@ namespace TombEditor.WPF.Converters
 		{
 			var colString = (string)value;
 			var col = ColorTranslator.FromHtml(colString);
-			return System.Windows.Media.Color.FromArgb(col.A,col.R,col.G,col.B);
+			return System.Windows.Media.Color.FromArgb(col.A, col.R, col.G, col.B);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

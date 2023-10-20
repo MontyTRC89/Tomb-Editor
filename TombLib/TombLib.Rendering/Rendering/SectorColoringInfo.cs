@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -46,36 +47,37 @@ namespace TombLib.Rendering
         public SectorColoringShape Shape;
         public Vector4 Color;
     }
-    public class ColorScheme
-    {
-        public Vector4 ColorSelection;
-        public Vector4 ColorIllegalSlope;
-        public Vector4 ColorSlideDirection;
-        public Vector4 Color3DBackground;
-        public Vector4 Color2DBackground;
-        public Vector4 ColorFlipRoom;
-        public Vector4 ColorPortal;
-        public Vector4 ColorPortalFace;
-        public Vector4 ColorFloor;
-        public Vector4 ColorBorderWall;
-        public Vector4 ColorWall;
-        public Vector4 ColorWallLower;
-        public Vector4 ColorWallUpper;
-        public Vector4 ColorTrigger;
-        public Vector4 ColorMonkey;
-        public Vector4 ColorClimb;
-        public Vector4 ColorBox;
-        public Vector4 ColorDeath;
-        public Vector4 ColorNotWalkable;
-        public Vector4 ColorBeetle;
-        public Vector4 ColorTriggerTriggerer;
-        public Vector4 ColorForceSolidFloor;
-        public Vector4 Color2DRoomsAbove;
-        public Vector4 Color2DRoomsBelow;
-        public Vector4 Color2DRoomsMoved;
+
+    public partial class ColorScheme : ObservableObject
+	{
+        [ObservableProperty] private Vector4 _colorSelection;
+        [ObservableProperty] private Vector4 _colorIllegalSlope;
+        [ObservableProperty] private Vector4 _colorSlideDirection;
+        [ObservableProperty] private Vector4 _color3DBackground;
+        [ObservableProperty] private Vector4 _color2DBackground;
+        [ObservableProperty] private Vector4 _colorFlipRoom;
+        [ObservableProperty] private Vector4 _colorPortal;
+        [ObservableProperty] private Vector4 _colorPortalFace;
+        [ObservableProperty] private Vector4 _colorFloor;
+        [ObservableProperty] private Vector4 _colorBorderWall;
+        [ObservableProperty] private Vector4 _colorWall;
+        [ObservableProperty] private Vector4 _colorWallLower;
+        [ObservableProperty] private Vector4 _colorWallUpper;
+        [ObservableProperty] private Vector4 _colorTrigger;
+        [ObservableProperty] private Vector4 _colorMonkey;
+        [ObservableProperty] private Vector4 _colorClimb;
+        [ObservableProperty] private Vector4 _colorBox;
+        [ObservableProperty] private Vector4 _colorDeath;
+        [ObservableProperty] private Vector4 _colorNotWalkable;
+        [ObservableProperty] private Vector4 _colorBeetle;
+        [ObservableProperty] private Vector4 _colorTriggerTriggerer;
+        [ObservableProperty] private Vector4 _colorForceSolidFloor;
+        [ObservableProperty] private Vector4 _color2DRoomsAbove;
+        [ObservableProperty] private Vector4 _color2DRoomsBelow;
+        [ObservableProperty] private Vector4 _color2DRoomsMoved;
         public Vector4[] CustomColors = new Vector4[16];
         
-        public static readonly ColorScheme Default = new ColorScheme()
+        public static readonly ColorScheme Default = new()
         {
             ColorSelection        = new Vector4(255, 0, 0, 255) / 255.0f,
             ColorIllegalSlope     = new Vector4(255, 132, 0, 255) / 255.0f,
@@ -104,7 +106,7 @@ namespace TombLib.Rendering
             Color2DRoomsMoved     = new Vector4(230, 230, 20, 255) / 255.0f,
         };
 
-        public static readonly ColorScheme Gray = new ColorScheme()
+        public static readonly ColorScheme Gray = new()
         {
             ColorSelection        =  new Vector4(201, 173, 173, 255) / 255.0f,
             ColorIllegalSlope     =  new Vector4(157, 150, 145, 255) / 255.0f,
@@ -133,7 +135,7 @@ namespace TombLib.Rendering
             Color2DRoomsMoved     =  new Vector4(216, 216, 216, 255) / 255.0f
         };
         
-        public static readonly ColorScheme Pastel = new ColorScheme()
+        public static readonly ColorScheme Pastel = new()
         {
             ColorSelection         =  new Vector4(255, 120, 120, 255) / 255.0f,
             ColorIllegalSlope      =  new Vector4(255, 171, 79, 255) / 255.0f,
@@ -162,7 +164,7 @@ namespace TombLib.Rendering
             Color2DRoomsMoved      =  new Vector4(230, 230, 20, 255) / 255.0f
         };
 
-        public static readonly ColorScheme Dark = new ColorScheme()
+        public static readonly ColorScheme Dark = new()
         {
             ColorSelection         = new Vector4(102, 38, 38, 255) / 255.0f,
             ColorIllegalSlope      = new Vector4(122, 86, 18, 255) / 255.0f,
