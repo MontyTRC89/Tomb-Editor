@@ -6,6 +6,23 @@ Tomb Editor:
  * Add a node to call events from other event sets.
  * Show selection size instead of local area.
  * Fix exception when trying to assign footstep sound if no material was selected.
+ * TEN Base WAD:
+	- New pushable animations integrated.
+	- Update names for ID_LARA_EXTRA_ANIMS.
+	- Additional death animation added (YETI_DEATH) to LARA_EXTRA_ANIMS.
+	- Removal of ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
+	- Removal of PUZZLE_ITEM1 (Jeep keys) as no longer required in TombEngine.
+	- Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
+ * TRCatalog Updates:
+	- Add Lara state 191: SPRINT_SLIDE (TEN).
+	- Amend TR1-> TEN remap for Natla.
+	- Removal of redundant ObjectIDs that aren't used for TombEngine.
+	- Add ID_CROSSHAIR to TEN (1380).
+	- Update tr1-tr3 pushable tr1/2/3 -> TEN remappings.
+	- Amended Lara Extra Animation names.
+	- Added ID_SWINGING_BLADE for TombEngine.  
+	- Remove Lara Anim 442 name and moved to Lara Extra Anims (TEN). Will only change for a TEN WAD2. Will not affect other versions.
+	- Add Yeti and Big Scorpion Death to Extra Anims (TEN).
 
 TombIDE:
  * Update NG_Center.
