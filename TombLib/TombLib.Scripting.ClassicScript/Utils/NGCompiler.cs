@@ -1,22 +1,16 @@
-﻿using FlaUI.Core;
-using FlaUI.Core.AutomationElements;
-using FlaUI.Core.Exceptions;
-using FlaUI.Core.Input;
-using FlaUI.Core.WindowsAPI;
-using FlaUI.UIA2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
 	public static class NGCompiler
 	{
+		private static Stack<string> _visitedFiles = new();
+
 		public static bool AreLibrariesRegistered()
 		{
 			bool requiredFilesExist = File.Exists(DefaultPaths.MscomctlSystemFile)
@@ -25,18 +19,30 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				&& File.Exists(DefaultPaths.Comdlg32SystemFile);
 
 			if (!requiredFilesExist)
-				try { Process.Start(DefaultPaths.LibraryRegistrationExecutable).WaitForExit(); }
-				catch { return false; }
+			{
+				try
+				{
+					var process = new ProcessStartInfo
+					{
+						FileName = DefaultPaths.LibraryRegistrationExecutable,
+						UseShellExecute = true
+					};
+
+					Process.Start(process).WaitForExit();
+				}
+				catch
+				{
+					return false;
+				}
+			}
 
 			return true;
 		}
 
-		public static async Task<bool> Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = true)
+		public static bool Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
 		{
-			await Task.Delay(1); // Allow UI to refresh
-
 			if (!AreLibrariesRegistered())
-				return false;
+				throw new Exception("The required libraries are not registered.");
 
 			CopyFilesToVGEScriptDirectory(projectScriptPath, DefaultPaths.VGEScriptDirectory);
 
@@ -45,62 +51,19 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			AdjustFormatting();
 
-			using UIA2Automation automation = new();
-			var ngCenter = Application.Launch(DefaultPaths.NGCExecutable); // Runs NG_Center.exe
-			return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter); // Does some actions in NG Center
-		}
-
-		private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, UIA2Automation automation, Application ngCenter)
-		{
-			try
+			var process = new ProcessStartInfo
 			{
-				Window window = ngCenter.GetAllTopLevelWindows(automation).FirstOrDefault();
+				FileName = DefaultPaths.NGCExecutable,
+				Arguments = $"\"{DefaultPaths.VGEScriptDirectory}\\Script.txt\" -Log -NoMsgBox -NoWait -Concise",
+				UseShellExecute = true
+			};
 
-				if (window == null)
-					return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
+			Process.Start(process).WaitForExit();
 
-				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
-				{
-					Keyboard.Press(VirtualKeyShort.ESCAPE);
-					Keyboard.Release(VirtualKeyShort.ESCAPE);
-				}
+			FixLogs(projectEnginePath, out bool containsError);
+			CopyCompiledFilesToProject(projectEnginePath);
 
-				Button buildButton = window.FindFirstDescendant(cf => cf.ByText("Build"))?.AsButton();
-
-				if (buildButton == null)
-					return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
-
-				buildButton.Click();
-
-				if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
-				{
-					Keyboard.Press(VirtualKeyShort.ESCAPE);
-					Keyboard.Release(VirtualKeyShort.ESCAPE);
-
-					buildButton.Click();
-
-					if (window.ModalWindows.Any(x => x.Title == "NG_CENTER"))
-						return false;
-				}
-
-				Button logButton = window.FindFirstDescendant(cf => cf.ByText("Show Log"))?.AsButton();
-				logButton.Click();
-
-				UpdatePathsInsideLogs(projectEnginePath);
-
-				ngCenter.Close();
-
-				CopyCompiledFilesToProject(projectEnginePath);
-
-				await KillNotepadProcess();
-
-				return true;
-			}
-			catch (ElementNotAvailableException)
-			{
-				// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
-				return await RunScriptedNGCenterEvents(projectEnginePath, automation, ngCenter);
-			}
+			return !containsError;
 		}
 
 		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
@@ -122,8 +85,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
 		}
 
-		private static Stack<string> _visitedFiles = new Stack<string>();
-
 		private static void MergeIncludes()
 		{
 			_visitedFiles.Clear();
@@ -132,11 +93,11 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			_visitedFiles.Push(vgeScriptFilePath);
 
-			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string[] lines = File.ReadAllLines(vgeScriptFilePath);
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
-			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, newFileContent);
 
 			_visitedFiles.Clear();
 		}
@@ -145,12 +106,12 @@ namespace TombLib.Scripting.ClassicScript.Utils
 		{
 			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
 
-			string fileContent = File.ReadAllText(vgeScriptFilePath, Encoding.GetEncoding(1252));
+			string fileContent = File.ReadAllText(vgeScriptFilePath);
 
 			while (fileContent.Contains(" ="))
 				fileContent = fileContent.Replace(" =", "=");
 
-			File.WriteAllText(vgeScriptFilePath, fileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, fileContent);
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines)
@@ -174,7 +135,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
 
-							string[] includeLines = File.ReadAllLines(includedFilePath, Encoding.GetEncoding(1252));
+							string[] includeLines = File.ReadAllLines(includedFilePath);
 							includeLines = ReplaceIncludesWithFileContents(includeLines);
 
 							newLines.AddRange(includeLines);
@@ -194,15 +155,18 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return newLines.ToArray();
 		}
 
-		private static void UpdatePathsInsideLogs(string projectEnginePath)
+		private static void FixLogs(string projectEnginePath, out bool constainsError)
 		{
-			string logFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "script_log.txt");
-			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
+			string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
+			string logFileContent = File.ReadAllText(logFilePath);
 
 			// Replace the VGE paths in the log file with the current project ones
-			string newFileContent = logFileContent.Replace(DefaultPaths.VGEDirectory, projectEnginePath);
+			string newFileContent = logFileContent
+				.Replace(DefaultPaths.VGEDirectory, projectEnginePath)
+				.Replace("ERROR: unknonw ", "ERROR: unknown ");
 
-			File.WriteAllText(logFilePath, newFileContent, Encoding.GetEncoding(1252));
+			constainsError = newFileContent.Contains("ERROR:");
+			File.WriteAllText(logFilePath, newFileContent);
 		}
 
 		private static void CopyCompiledFilesToProject(string projectEnginePath)
@@ -216,24 +180,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			if (File.Exists(compiledEnglishFilePath))
 				File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
-		}
-
-		private static Task KillNotepadProcess()
-		{
-			CancellationToken token = new CancellationTokenSource(TimeSpan.FromSeconds(3)).Token;
-
-			Action KillProcess = () =>
-			{
-				while (!token.IsCancellationRequested)
-					foreach (Process process in Process.GetProcessesByName("notepad"))
-						if (process.MainWindowTitle.Contains("script_log"))
-						{
-							process.Kill();
-							return;
-						}
-			};
-
-			return Task.Run(KillProcess, token);
 		}
 	}
 }

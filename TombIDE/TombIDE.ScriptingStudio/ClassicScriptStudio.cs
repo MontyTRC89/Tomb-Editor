@@ -2,7 +2,6 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -36,9 +35,6 @@ namespace TombIDE.ScriptingStudio
 		#region Fields
 
 		private FormReferenceInfo FormReferenceInfo = new FormReferenceInfo();
-		private FormNGCompilingStatus FormCompiling = new FormNGCompilingStatus();
-
-		private BackgroundWorker NGCBackgroundWorker = new BackgroundWorker();
 
 		public ReferenceBrowser ReferenceBrowser = new ReferenceBrowser();
 
@@ -51,9 +47,6 @@ namespace TombIDE.ScriptingStudio
 			DockPanelState = IDE.Global.IDEConfiguration.CS_DockPanelState;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
-
-			NGCBackgroundWorker.DoWork += NGCBackgroundWorker_DoWork;
-			NGCBackgroundWorker.RunWorkerCompleted += NGCBackgroundWorker_RunWorkerCompleted;
 
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 
@@ -335,20 +328,6 @@ namespace TombIDE.ScriptingStudio
 			FormReferenceInfo.Show(word, type);
 		}
 
-		private void NGCBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			Process ngCenterProcess = Array.Find(Process.GetProcesses(), x => x.ProcessName.Contains("NG_Center"));
-
-			if (ngCenterProcess != null)
-				ngCenterProcess.WaitForExit();
-		}
-
-		private void NGCBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (FormCompiling.Visible)
-				FormCompiling.Close();
-		}
-
 		private void ReferenceBrowser_ReferenceDefinitionRequested(object sender, ReferenceDefinitionEventArgs e)
 			=> FormReferenceInfo.Show(e.Keyword, e.Type);
 
@@ -408,49 +387,33 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private async void CompileTRNGScript()
+		private void CompileTRNGScript()
 		{
 			try
 			{
-				FormCompiling.ShowCompilingMode();
-				FormCompiling.Show();
-
-				bool success = await NGCompiler.Compile(
+				bool success = NGCompiler.Compile(
 					ScriptRootDirectoryPath, EngineDirectoryPath,
 					IDE.Global.IDEConfiguration.UseNewIncludeMethod);
 
-				if (success)
+				string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
+				CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
+
+				if (!success)
+					DarkMessageBox.Show(this, "Script compilation yielded and error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
 				{
-					string logFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "script_log.txt");
-					CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
-
-					if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
-						if (!DockPanel.ContainsContent(CompilerLogs))
-						{
-							CompilerLogs.DockArea = DarkDockArea.Bottom;
-							DockPanel.AddContent(CompilerLogs);
-						}
-
-						CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+						CompilerLogs.DockArea = DarkDockArea.Bottom;
+						DockPanel.AddContent(CompilerLogs);
 					}
 
-					if (FormCompiling.Visible)
-						FormCompiling.Close();
-				}
-				else
-				{
-					FormCompiling.ShowDebugMode();
-
-					if (!NGCBackgroundWorker.IsBusy)
-						NGCBackgroundWorker.RunWorkerAsync();
+					CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
 				}
 			}
 			catch (Exception ex)
 			{
-				if (FormCompiling.Visible)
-					FormCompiling.Close();
-
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}

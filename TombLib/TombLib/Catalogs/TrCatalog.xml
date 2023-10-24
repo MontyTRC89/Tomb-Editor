@@ -60,7 +60,7 @@
 			<moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" essential="false" t5m="NATLA" />
 			<moveable id="34" name="Giant mutant" essential="false" t5m="GIANT_MUTANT" />
 			<moveable id="35" name="Collapsible floor" essential="false" t5m="CRUMBLING_FLOOR" />
-			<moveable id="36" name="Swinging blade" essential="false" t5m="MOVING_BLADE" />
+			<moveable id="36" name="Swinging blade" essential="false" t5m="SWINGING_BLADE" />
 			<moveable id="37" name="Spikes" essential="false" t5m="TEETH_SPIKES" />
 			<moveable id="38" name="Boulder" essential="false" t5m="CLASSIC_ROLLINGBALL" />
 			<moveable id="39" name="Dart" hidden="true" />
@@ -72,10 +72,10 @@
 			<moveable id="45" name="Thor's hammer's block" essential="false" />
 			<moveable id="46" name="Lightning ball / Some kind of box?" essential="false" t5m="ANIMATING34" />
 			<moveable id="47" name="Metal rod / Powered mining cart" essential="false" />
-			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
-			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
-			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
+			<moveable id="48" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="49" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
+			<moveable id="50" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE3" />
+			<moveable id="51" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE4" />
 			<moveable id="52" name="Movable tall block" essential="false" t5m="ANIMATING_100" />
 			<moveable id="53" name="Falling ceiling" essential="false" t5m="FALLING_CEILING" />
 			<moveable id="54" name="Sword of Damocles" essential="false" t5m="DAMOCLES_SWORD" />
@@ -579,29 +579,6 @@
 			<anim item="0" id="158" name="SWANDIVE_START" />
 			<anim item="0" id="159" name="CLIMB_ON_HANDSTAND" />
 			
-			<!--BEAR -->
-			<anim item="8" id="0" name="LOW_IDLE" />
-			<anim item="8" id="1" name="LOW_IDLE_TO_RUN" />
-			<anim item="8" id="2" name="LOW_RUN" />
-			<anim item="8" id="3" name="LOW_RUN_TO_IDLE" />
-			<anim item="8" id="4" name="HIGH_IDLE_TO_LOW_IDLE" />
-			<anim item="8" id="5" name="HIGH_ROAR" />
-			<anim item="8" id="6" name="HIGH_WALK" />
-			<anim item="8" id="7" name="HIGH_IDLE" />
-			<anim item="8" id="8" name="LOW_IDLE_TO_HIGH_IDLE" />
-			<anim item="8" id="9" name="HIGH_IDLE_TO_WALK" />
-			<anim item="8" id="10" name="HIGH_WALK_TO_IDLE" />
-			<anim item="8" id="11" name="LOW_ROAR" />
-			<anim item="8" id="12" name="LOW_CHARGE_ATTACK_START" />
-			<anim item="8" id="13" name="LOW_CHARGE_ATTACK_END" />
-			<anim item="8" id="14" name="HIGH_ATTACK" />
-			<anim item="8" id="15" name="LOW_BITE_ATTACK" />
-			<anim item="8" id="16" name="LOW_IDLE_TO_WALK" />
-			<anim item="8" id="17" name="LOW_WALK" />
-			<anim item="8" id="18" name="LOW_WALK_TO_IDLE" />
-			<anim item="8" id="19" name="HIGH_DEATH" />
-			<anim item="8" id="20" name="LOW_DEATH" />
-			
 			<!--APE -->
 			<anim item="15" id="0" name="IDLE" />
 			<anim item="15" id="1" name="POUND_CHEST" />
@@ -731,18 +708,6 @@
 			<state item="0" id="53" name="SWANDIVE_END" />
 			<state item="0" id="54" name="HANDSTAND" />
 			<state item="0" id="55" name="ONWATER_EXIT" />
-			
-			<!-- BEAR -->
-			<state item="8" id="0" name="LOW_WALK" />
-			<state item="8" id="1" name="LOW_IDLE" />
-			<state item="8" id="2" name="HIGH_WALK" />
-			<state item="8" id="3" name="LOW_RUN" />
-			<state item="8" id="4" name="HIGH_IDLE" />
-			<state item="8" id="5" name="ROAR" />
-			<state item="8" id="6" name="LOW_CHARGE_ATTACK" />
-			<state item="8" id="7" name="HIGH_CLAW_ATTACK" />
-			<state item="8" id="8" name="LOW_BITE_ATTACK" />
-			<state item="8" id="9" name="DEATH" />
 			 			
 			<!-- APE -->
 			<state item="15" id="1" name="IDLE" />
@@ -880,10 +845,10 @@
 			<moveable id="64" name="Slamming door" essential="false" />
 			<moveable id="65" name="Elevator" essential="false" t5m="LIFT" />
 			<moveable id="66" name="Minisub" essential="false" />
-			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2" />
-			<moveable id="69" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT3" />
-			<moveable id="70" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT4" />
+			<moveable id="67" name="Movable cubical block (pushable)"   essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="68" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2" />
+			<moveable id="69" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE3" />
+			<moveable id="70" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE4" />
 			<moveable id="71" name="Big bowl (Ice Palace)" essential="false" t5m="ANIMATING1" />
 			<moveable id="72" name="Breakable window (can shoot out)" essential="false" t5m="SMASH_OBJECT1" />
 			<moveable id="73" name="Breakable window (must jump through)" essential="false" t5m="SMASH_OBJECT2" />
@@ -1600,8 +1565,8 @@
 			<moveable id="90" name="Disk (like dart)" hidden="true" t5m="DART" />
 			<moveable id="91" name="Dart emitter" essential="false" t5m="DART_EMITTER" />
 			<moveable id="94" name="Spiked frame / Slamming door" essential="false" t5m="SLAMMING_DOORS" />
-			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT1" />
-			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT2"/>
+			<moveable id="97" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE1" />
+			<moveable id="98" name="Movable cubical block (pushable)" essential="false" t5m="PUSHABLE_OBJECT_CLIMBABLE2"/>
 			<moveable id="101" name="Destroyable boarded-up window" essential="false" t5m="SMASH_OBJECT1" />
 			<moveable id="102" name="Destroyable boarded-up window / wall" essential="false" t5m="SMASH_OBJECT2" />
 			<moveable id="106" name="Overhead pulley hook" essential="false" t5m="MOVING_BLADE" />
@@ -6436,6 +6401,7 @@
 			<moveable id="447" name="DAMOCLES_SWORD" />
 			<moveable id="448" name="ELECTRIC_CLEANER" />
 			<moveable id="449" name="SLAMMING_DOORS" />
+			<moveable id="450" name="SWINGING_BLADE" />
 			<moveable id="500" name="PUZZLE_ITEM1" />
 			<moveable id="501" name="PUZZLE_ITEM2" />
 			<moveable id="502" name="PUZZLE_ITEM3" />
@@ -7073,6 +7039,7 @@
 			<sprite_sequence id="1375" name="AIR_BAR_TEXTURE" />
 			<sprite_sequence id="1376" name="DASH_BAR_TEXTURE" />
 			<sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
+			<sprite_sequence id="1380" name="CROSSHAIR" />
 		</sprite_sequences>
 		<sounds max="8192">
 			<sound id="0" name="TR4_LARA_FOOTSTEPS" t5m="0" />
@@ -8222,145 +8189,33 @@
 			<sound id="1144" name="TR1_SLAMDOOR_CLOSE" t5m="1144" />
 		</sounds>
 		<animations>
-		 	<!-- LARA -->
-			<anim item="0" id="474" name="VAULT_TO_CROUCH_1_STEP" />
-		    <anim item="0" id="475" name="VAULT_TO_CROUCH_2_STEP" />			
-		    <anim item="0" id="476" name="VAULT_TO_CROUCH_3_STEP" />			
-		    <anim item="0" id="477" name="CRAWL_JUMP_DOWN_1_STEP" />			
-		    <anim item="0" id="478" name="CRAWL_JUMP_DOWN = 478" />						
-		    <anim item="0" id="479" name="CRAWL_STEP_UP = 479" />							
-		    <anim item="0" id="480" name="CRAWL_STEP_DOWN = 480" />					
-		    <anim item="0" id="481" name="ONWATER_TO_CROUCH_1_STEP" />
-		    <anim item="0" id="482" name="ONWATER_TO_CROUCH_0_STEP" />
-		    <anim item="0" id="483" name="ONWATER_TO_CROUCH_M1_STEP" />
-		    <anim item="0" id="484" name="LADDER_TO_MONKEY" />
-		    <anim item="0" id="485" name="ONWATER_TURN_180_START" />
-		    <anim item="0" id="486" name="ONWATER_TURN_180_END" />
-		    <anim item="0" id="487" name="MONKEY_TO_LADDER_OVERHEAD_START" />
-		    <anim item="0" id="488" name="MONKEY_TO_LADDER_OVERHEAD_END" />
-		    <anim item="0" id="489" name="JUMP_PREPARE_TO_STAND" />
-		    <anim item="0" id="490" name="MONKEY_IDLE_TO_BACK_LEFT" />
-		    <anim item="0" id="491" name="MONKEY_IDLE_TO_BACK_RIGHT" />
-		    <anim item="0" id="492" name="MONKEY_BACK" />
-		    <anim item="0" id="493" name="MONKEY_BACK_TO_IDLE_LEFT" />
-		    <anim item="0" id="494" name="MONKEY_BACK_TO_IDLE_RIGHT" />
-		    <anim item="0" id="495" name="REACH_TO_HANG_OSCILLATE" />
-		    <anim item="0" id="496" name="SWANDIVE_ROLL_TO_RUN" />
-		    <anim item="0" id="497" name="LADDER_DISMOUNT_LEFT_START" />
-		    <anim item="0" id="498" name="LADDER_DISMOUNT_LEFT_END" />
-		    <anim item="0" id="499" name="LADDER_DISMOUNT_RIGHT_START" />
-		    <anim item="0" id="500" name="LADDER_DISMOUNT_RIGHT_END" />
-		    <anim item="0" id="501" name="ONWATER_TO_LADDER" />
-		    <anim item="0" id="502" name="POSE_START" />
-		    <anim item="0" id="503" name="POSE_CONTINUE" />
-		    <anim item="0" id="504" name="POSE_END"	 />
-		    <anim item="0" id="505" name="OVERHANG_IDLE_LEFT" />
-		    <anim item="0" id="506" name="OVERHANG_IDLE_RIGHT" />
-		    <anim item="0" id="507" name="OVERHANG_CLIMB_UP_LEFT" />
-		    <anim item="0" id="508" name="OVERHANG_CLIMB_UP_RIGHT" />
-		    <anim item="0" id="509" name="OVERHANG_CLIMB_DOWN_LEFT" />
-		    <anim item="0" id="510" name="OVERHANG_CLIMB_DOWN_RIGHT" />
-		    <anim item="0" id="511" name="OVERHANG_DROP_LEFT" />
-		    <anim item="0" id="512" name="OVERHANG_DROP_RIGHT" />
-		    <anim item="0" id="513" name="OVERHANG_IDLE_2_HANG_LEFT" />
-		    <anim item="0" id="514" name="OVERHANG_IDLE_2_HANG_RIGHT" />
-		    <anim item="0" id="515" name="OVERHANG_HANG_2_IDLE_LEFT" />
-		    <anim item="0" id="516" name="OVERHANG_HANG_2_IDLE_RIGHT" />
-		    <anim item="0" id="517" name="OVERHANG_HANG_SWING" />
-		    <anim item="0" id="518" name="OVERHANG_HANG_LOOP" />
-		    <anim item="0" id="519" name="OVERHANG_HANG_DROP" />
-		    <anim item="0" id="520" name="OVERHANG_SHIMMY_LEFT" />
-		    <anim item="0" id="521" name="OVERHANG_SHIMMY_LEFT_STOP" />
-		    <anim item="0" id="522" name="OVERHANG_SHIMMY_RIGHT" />
-		    <anim item="0" id="523" name="OVERHANG_SHIMMY_RIGHT_STOP" />
-		    <anim item="0" id="524" name="OVERHANG_LEDGE_VAULT_START" />
-		    <anim item="0" id="525" name="OVERHANG_LEDGE_VAULT" />
-		    <anim item="0" id="526" name="OVERHANG_LADDER_SLOPE_CONCAVE" />
-		    <anim item="0" id="527" name="OVERHANG_SLOPE_LADDER_CONCAVE" />
-		    <anim item="0" id="528" name="OVERHANG_LADDER_SLOPE_CONVEX" />
-		    <anim item="0" id="529" name="OVERHANG_SLOPE_LADDER_CONVEX_START" />
-		    <anim item="0" id="530" name="OVERHANG_SLOPE_LADDER_CONVEX" />
-		    <anim item="0" id="531" name="OVERHANG_MONKEY_SLOPE_CONCAVE" />
-		    <anim item="0" id="532" name="OVERHANG_SLOPE_MONKEY_CONCAVE" />
-		    <anim item="0" id="533" name="OVERHANG_SLOPE_MONKEY_CONCAVE_END" />
-		    <anim item="0" id="534" name="OVERHANG_MONKEY_SLOPE_CONVEX" />
-		    <anim item="0" id="535" name="OVERHANG_MONKEY_SLOPE_CONVEX_END" />
-		    <anim item="0" id="536" name="OVERHANG_SLOPE_MONKEY_CONVEX" />
-		    <anim item="0" id="537" name="OVERHANG_EXIT_MONKEY_FORWARD" />
-		    <anim item="0" id="538" name="OVERHANG_EXIT_MONKEY_IDLE" />
-		    <anim item="0" id="539" name="OVERHANG_EXIT_LADDER" />
-		    <anim item="0" id="540" name="OVERHANG_EXIT_VAULT" />
-		    <anim item="0" id="541" name="OVERHANG_EXIT_DROP" />
-		    <anim item="0" id="542" name="OVERHANG_EXIT_HANG" />
-			<anim item="0" id="543" name="VAULT_TO_STAND_3_STEPS_END" />
-		    <anim item="0" id="544" name="RUN_START_LEFT" />
-		    <anim item="0" id="545" name="RUN_TO_STAND_LEFT_SOFT" />
-		    <anim item="0" id="546" name="RUN_TO_STAND_RIGHT_SOFT" />
-		    <anim item="0" id="547" name="MONKEY_JUMP_START" />
-		    <anim item="0" id="548" name="MONKEY_JUMP_CONTINUE" />
-		    <anim item="0" id="549" name="SPRINT_JUMP_LEFT_START" />
-		    <anim item="0" id="550" name="SPRINT_JUMP_LEFT_CONTINUE" />
-		    <anim item="0" id="551" name="SPRINT_JUMP_LEFT_TO_REACH_1" />
-		    <anim item="0" id="552" name="SPRINT_JUMP_LEFT_TO_REACH_2" />
-		    <anim item="0" id="553" name="SPRINT_JUMP_LEFT_TO_REACH_3" />
-		    <anim item="0" id="554" name="SPRINT_JUMP_LEFT_TO_REACH_4" />
-		    <anim item="0" id="555" name="SPRINT_JUMP_RIGHT_START" />
-		    <anim item="0" id="556" name="SPRINT_JUMP_RIGHT_CONTINUE" />
-		    <anim item="0" id="557" name="SPRINT_JUMP_RIGHT_TO_REACH_1" />
-		    <anim item="0" id="558" name="SPRINT_JUMP_RIGHT_TO_REACH_2" />
-		    <anim item="0" id="559" name="SPRINT_JUMP_RIGHT_TO_REACH_3" />
-		    <anim item="0" id="560" name="SPRINT_JUMP_RIGHT_TO_REACH_4" />
-		    <anim item="0" id="561" name="CROUCH_TURN_180_START" />
-		    <anim item="0" id="562" name="CROUCH_TURN_180_END" />
-		    <anim item="0" id="563" name="CRAWL_TURN_180_START" />
-		    <anim item="0" id="564" name="CRAWL_TURN_180_END" />
-		    <anim item="0" id="565" name="LEDGE_JUMP_UP_START" />
-		    <anim item="0" id="566" name="LEDGE_JUMP_UP_END" />
-		    <anim item="0" id="567" name="LEDGE_JUMP_BACK_START" />
-		    <anim item="0" id="568" name="LEDGE_JUMP_BACK_END" />
-		    <anim item="0" id="569" name="PUSHABLE_EDGE" />
-		    <anim item="0" id="570" name="PUSHABLE_CLASSIC_EDGE" />
-		
+			<!--LARA  -->
+			<anim item="0" id="343" name="PUSHABLE_OBJECT_PULL" />
+			<anim item="0" id="345" name="PUSHABLE_OBJECT_PUSH" />
+			<anim item="0" id="364" name="PUSHABLE_OBJECT_PUSH_EDGE_SLIP" />
+			<anim item="0" id="366" name="PUSHABLE_BLOCK_PUSH_EDGE_SLIP" />
+			<anim item="0" id="417" name="PUSHABLE_OBJECT_PUSH_TO_STAND" />
+			<anim item="0" id="418" name="PUSHABLE_OBJECT_PULL_TO_STAND" />
+			<anim item="0" id="442" name="UNUSED_FREE_SLOT" />
+
 			<!--LARA EXTRA ANIMATIONS -->
-			<anim item="1" id="0" name="DAGGER_PICKUP" />
-			<anim item="1" id="1" name="WAKING_UP" />
-			<anim item="1" id="2" name="XIAN_SPEAR_GUARD_IMPALE" />
-			<anim item="1" id="3" name="SUBWAY_TRAIN_DEATH"/>
+			<anim item="1" id="0" name="PULL_DAGGER_FROM_DRAGON" />
+			<anim item="1" id="1" name="WAKE_UP" />
+			<anim item="1" id="2" name="SPEAR_GUARDIAN_DEATH" />
+			<anim item="1" id="3" name="TRAIN_DEATH_START"/>
 			<anim item="1" id="4" name="TYRANNOSAUR_DEATH" />
 			<anim item="1" id="5" name="SHARK_DEATH" />
 			<anim item="1" id="6" name="GIANT_MUTANT_DEATH" />
-			<anim item="1" id="7" name="SHIVA_IMPALE_DEATH" />
-			<anim item="1" id="8" name="TNT_ACTIVATION" />
-			<anim item="1" id="9" name="MIDAS_LEAD_TO_GOLD" />
+			<anim item="1" id="7" name="SHIVA_DEATH" />
+			<anim item="1" id="8" name="ACTIVATE_TNT_SWITCH" />
+			<anim item="1" id="9" name="MIDAS_GOLD_SWITCH" />
 			<anim item="1" id="10" name="MIDAS_GOLDEN_DEATH" />
-			<anim item="1" id="11" name="GONG_STRIKE" />
-			<anim item="1" id="12" name="WILLARD_MUTANT_DEATH" />
-			<anim item="1" id="13" name="SUBWAY_TRAIN_DEATH_END" />
+			<anim item="1" id="11" name="STRIKE_GONG" />
+			<anim item="1" id="12" name="WILLARD_DEATH" />
+			<anim item="1" id="13" name="TRAIN_DEATH_END" />
 			<anim item="1" id="14" name="SETH_DEATH" />
-			<anim item="1" id="15" name="YETI_DEATH" />
-			
-			<!--BEAR -->
-			<anim item="101" id="0" name="LOW_IDLE" />
-			<anim item="101" id="1" name="LOW_IDLE_TO_RUN" />
-			<anim item="101" id="2" name="LOW_RUN" />
-			<anim item="101" id="3" name="LOW_RUN_TO_IDLE" />
-			<anim item="101" id="4" name="HIGH_IDLE_TO_LOW_IDLE" />
-			<anim item="101" id="5" name="HIGH_ROAR" />
-			<anim item="101" id="6" name="HIGH_WALK" />
-			<anim item="101" id="7" name="HIGH_IDLE" />
-			<anim item="101" id="8" name="LOW_IDLE_TO_HIGH_IDLE" />
-			<anim item="101" id="9" name="HIGH_IDLE_TO_WALK" />
-			<anim item="101" id="10" name="HIGH_WALK_TO_IDLE" />
-			<anim item="101" id="11" name="LOW_ROAR" />
-			<anim item="101" id="12" name="LOW_CHARGE_ATTACK_START" />
-			<anim item="101" id="13" name="LOW_CHARGE_ATTACK_END" />
-			<anim item="101" id="14" name="HIGH_ATTACK" />
-			<anim item="101" id="15" name="LOW_BITE_ATTACK" />
-			<anim item="101" id="16" name="LOW_IDLE_TO_WALK" />
-			<anim item="101" id="17" name="LOW_WALK" />
-			<anim item="101" id="18" name="LOW_WALK_TO_IDLE" />
-			<anim item="101" id="19" name="HIGH_DEATH" />
-			<anim item="101" id="20" name="LOW_DEATH" />
+			<anim item="1" id="15" name="YETI_SETH" />
+			<anim item="1" id="16" name="BIG_SCORPION_DEATH" />
 			
 			<!--APE -->
 			<anim item="102" id="0" name="IDLE" />
@@ -8756,19 +8611,8 @@
 			<state item="0" id="172" name="CRAWL_TURN_180" />
 			<state item="0" id="173" name="TURN_180" />
 			<state item="0" id="189" name="REMOVE_PUZZLE" />
-			<state item="0" id="190" name="PUSHABLE_EDGE" />
-			
-			<!-- BEAR -->
-			<state item="101" id="0" name="LOW_WALK" />
-			<state item="101" id="1" name="LOW_IDLE" />
-			<state item="101" id="2" name="HIGH_WALK" />
-			<state item="101" id="3" name="LOW_RUN" />
-			<state item="101" id="4" name="HIGH_IDLE" />
-			<state item="101" id="5" name="ROAR" />
-			<state item="101" id="6" name="LOW_CHARGE_ATTACK" />
-			<state item="101" id="7" name="HIGH_CLAW_ATTACK" />
-			<state item="101" id="8" name="LOW_BITE_ATTACK" />
-			<state item="101" id="9" name="DEATH" />
+			<state item="0" id="190" name="PUSHABLE_EDGE_SLIP" />
+			<state item="0" id="191" name="SPRINT_SLIDE" />
 			
 			<!-- APE -->
 			<state item="102" id="1" name="IDLE" />

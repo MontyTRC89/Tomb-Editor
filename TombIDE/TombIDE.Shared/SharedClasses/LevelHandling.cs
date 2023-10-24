@@ -11,7 +11,7 @@ namespace TombIDE.Shared.SharedClasses
 	{
 		public static void UpdatePrj2GameSettings(string prj2FilePath, IGameProject destProject, string dataFileName = null)
 		{
-			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null);
+			Level level = Prj2Loader.LoadFromPrj2(prj2FilePath, null, System.Threading.CancellationToken.None, new Prj2Loader.Settings());
 
 			string exeFilePath = destProject.GetEngineExecutableFilePath();
 			string engineDirectory = destProject.GetEngineRootDirectoryPath();
