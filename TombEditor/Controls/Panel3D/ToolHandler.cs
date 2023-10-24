@@ -48,32 +48,40 @@ namespace TombEditor.Controls.Panel3D
                                     if (ReferencePicking.Face == BlockFace.FloorTriangle2 ||
                                         ReferencePicking.Face == BlockFace.NegativeZ_QA ||
                                         ReferencePicking.Face == BlockFace.NegativeZ_ED ||
-                                        ReferencePicking.Face == BlockFace.PositiveX_QA ||
-                                        ReferencePicking.Face == BlockFace.PositiveX_ED)
+										ReferencePicking.Face == BlockFace.NegativeZ_Floor3 ||
+										ReferencePicking.Face == BlockFace.PositiveX_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_ED ||
+										ReferencePicking.Face == BlockFace.PositiveX_Floor3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZn:
                                     if (ReferencePicking.Face == BlockFace.Floor ||
                                         ReferencePicking.Face == BlockFace.NegativeX_QA ||
                                         ReferencePicking.Face == BlockFace.NegativeX_ED ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_QA ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_ED)
+										ReferencePicking.Face == BlockFace.NegativeX_Floor3 ||
+										ReferencePicking.Face == BlockFace.PositiveZ_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_ED ||
+										ReferencePicking.Face == BlockFace.PositiveZ_Floor3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZp:
                                     if (ReferencePicking.Face == BlockFace.FloorTriangle2 ||
                                         ReferencePicking.Face == BlockFace.NegativeX_QA ||
                                         ReferencePicking.Face == BlockFace.NegativeX_ED ||
-                                        ReferencePicking.Face == BlockFace.NegativeZ_QA ||
-                                        ReferencePicking.Face == BlockFace.NegativeZ_ED)
+										ReferencePicking.Face == BlockFace.NegativeX_Floor3 ||
+										ReferencePicking.Face == BlockFace.NegativeZ_QA ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_ED ||
+										ReferencePicking.Face == BlockFace.NegativeZ_Floor3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XnZn:
                                     if (ReferencePicking.Face == BlockFace.Floor ||
                                         ReferencePicking.Face == BlockFace.PositiveX_QA ||
                                         ReferencePicking.Face == BlockFace.PositiveX_ED ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_QA ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_ED)
+										ReferencePicking.Face == BlockFace.PositiveX_Floor3 ||
+										ReferencePicking.Face == BlockFace.PositiveZ_QA ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_ED ||
+										ReferencePicking.Face == BlockFace.PositiveZ_Floor3)
                                         return true;
                                     break;
                             }
@@ -86,32 +94,40 @@ namespace TombEditor.Controls.Panel3D
                                     if (ReferencePicking.Face == BlockFace.CeilingTriangle2 ||
                                         ReferencePicking.Face == BlockFace.NegativeZ_WS ||
                                         ReferencePicking.Face == BlockFace.NegativeZ_RF ||
-                                        ReferencePicking.Face == BlockFace.PositiveX_WS ||
-                                        ReferencePicking.Face == BlockFace.PositiveX_RF)
+										ReferencePicking.Face == BlockFace.NegativeZ_Ceiling3 ||
+										ReferencePicking.Face == BlockFace.PositiveX_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveX_RF ||
+									    ReferencePicking.Face == BlockFace.PositiveX_Ceiling3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZn:
                                     if (ReferencePicking.Face == BlockFace.Ceiling ||
                                         ReferencePicking.Face == BlockFace.NegativeX_WS ||
                                         ReferencePicking.Face == BlockFace.NegativeX_RF ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_WS ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_RF)
+										ReferencePicking.Face == BlockFace.NegativeX_Ceiling3 ||
+										ReferencePicking.Face == BlockFace.PositiveZ_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_RF ||
+										ReferencePicking.Face == BlockFace.PositiveZ_Ceiling3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XpZp:
                                     if (ReferencePicking.Face == BlockFace.CeilingTriangle2 ||
                                         ReferencePicking.Face == BlockFace.NegativeX_WS ||
                                         ReferencePicking.Face == BlockFace.NegativeX_RF ||
-                                        ReferencePicking.Face == BlockFace.NegativeZ_WS ||
-                                        ReferencePicking.Face == BlockFace.NegativeZ_RF)
+										ReferencePicking.Face == BlockFace.NegativeX_Ceiling3 ||
+										ReferencePicking.Face == BlockFace.NegativeZ_WS ||
+                                        ReferencePicking.Face == BlockFace.NegativeZ_RF ||
+										ReferencePicking.Face == BlockFace.NegativeZ_Ceiling3)
                                         return true;
                                     break;
                                 case DiagonalSplit.XnZn:
                                     if (ReferencePicking.Face == BlockFace.Ceiling ||
                                         ReferencePicking.Face == BlockFace.PositiveX_WS ||
                                         ReferencePicking.Face == BlockFace.PositiveX_RF ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_WS ||
-                                        ReferencePicking.Face == BlockFace.PositiveZ_RF)
+										ReferencePicking.Face == BlockFace.PositiveX_Ceiling3 ||
+										ReferencePicking.Face == BlockFace.PositiveZ_WS ||
+                                        ReferencePicking.Face == BlockFace.PositiveZ_RF ||
+										ReferencePicking.Face == BlockFace.PositiveZ_Ceiling3)
                                         return true;
                                     break;
                             }

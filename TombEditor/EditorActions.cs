@@ -1470,7 +1470,15 @@ namespace TombEditor
                 case BlockFace.NegativeZ_RF:
                 case BlockFace.NegativeX_RF:
                 case BlockFace.PositiveX_RF:
-                    return room.Blocks[pos.X, pos.Y].WallPortal != null;
+				case BlockFace.PositiveZ_Floor3:
+				case BlockFace.NegativeZ_Floor3:
+				case BlockFace.NegativeX_Floor3:
+				case BlockFace.PositiveX_Floor3:
+				case BlockFace.PositiveZ_Ceiling3:
+				case BlockFace.NegativeZ_Ceiling3:
+				case BlockFace.NegativeX_Ceiling3:
+				case BlockFace.PositiveX_Ceiling3:
+					return room.Blocks[pos.X, pos.Y].WallPortal != null;
 
                 case BlockFace.Floor:
                 case BlockFace.FloorTriangle2:
@@ -1769,6 +1777,8 @@ namespace TombEditor
                             segments.Add(BlockFace.PositiveZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_WS))
                             segments.Add(BlockFace.PositiveZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_WS) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3))
+							segments.Add(BlockFace.PositiveZ_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3) });
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
@@ -1776,6 +1786,8 @@ namespace TombEditor
                             segments.Add(BlockFace.PositiveZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_QA) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_ED))
                             segments.Add(BlockFace.PositiveZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_ED) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Floor3))
+                            segments.Add(BlockFace.PositiveZ_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Floor3) });
                     }
                     if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Middle))
                         segments.Add(BlockFace.PositiveZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle) });
@@ -1788,6 +1800,8 @@ namespace TombEditor
                             segments.Add(BlockFace.NegativeZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_WS))
                             segments.Add(BlockFace.NegativeZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_WS) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3))
+                            segments.Add(BlockFace.NegativeZ_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3) });
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
@@ -1795,6 +1809,8 @@ namespace TombEditor
                             segments.Add(BlockFace.NegativeZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_QA) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_ED))
                             segments.Add(BlockFace.NegativeZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_ED) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Floor3))
+                            segments.Add(BlockFace.NegativeZ_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Floor3) });
                     }
                     if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Middle))
                         segments.Add(BlockFace.NegativeZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle) });
@@ -1807,14 +1823,18 @@ namespace TombEditor
                             segments.Add(BlockFace.PositiveX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_WS))
                             segments.Add(BlockFace.PositiveX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_WS) });
-                    }
+						if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3))
+							segments.Add(BlockFace.PositiveX_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3) });
+					}
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_QA))
                             segments.Add(BlockFace.PositiveX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_QA) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_ED))
                             segments.Add(BlockFace.PositiveX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_ED) });
-                    }
+						if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Floor3))
+							segments.Add(BlockFace.PositiveX_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Floor3) });
+					}
                     if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Middle))
                         segments.Add(BlockFace.PositiveX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle) });
                     break;
@@ -1826,6 +1846,8 @@ namespace TombEditor
                             segments.Add(BlockFace.NegativeX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_WS))
                             segments.Add(BlockFace.NegativeX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_WS) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3))
+                            segments.Add(BlockFace.NegativeX_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3) });
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
@@ -1833,6 +1855,8 @@ namespace TombEditor
                             segments.Add(BlockFace.NegativeX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_QA) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_ED))
                             segments.Add(BlockFace.NegativeX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_ED) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Floor3))
+                            segments.Add(BlockFace.NegativeX_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Floor3) });
                     }
                     if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Middle))
                         segments.Add(BlockFace.NegativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle) });
@@ -1845,6 +1869,8 @@ namespace TombEditor
                             segments.Add(BlockFace.DiagonalRF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalRF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalRF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalWS))
                             segments.Add(BlockFace.DiagonalWS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalWS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalWS) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalCeiling3))
+                            segments.Add(BlockFace.DiagonalCeiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalCeiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalCeiling3) });
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
@@ -1852,6 +1878,8 @@ namespace TombEditor
                             segments.Add(BlockFace.DiagonalQA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalQA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalQA) });
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalED))
                             segments.Add(BlockFace.DiagonalED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalED) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalFloor3))
+                            segments.Add(BlockFace.DiagonalFloor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalFloor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalFloor3) });
                     }
                     if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalMiddle))
                         segments.Add(BlockFace.DiagonalMiddle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalMiddle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalMiddle) });
@@ -1999,6 +2027,7 @@ namespace TombEditor
                         {
                             case BlockFace.NegativeX_QA:
                             case BlockFace.NegativeX_ED:
+                            case BlockFace.NegativeX_Floor3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
                                 break;
 
@@ -2008,11 +2037,13 @@ namespace TombEditor
 
                             case BlockFace.NegativeX_RF:
                             case BlockFace.NegativeX_WS:
+                            case BlockFace.NegativeX_Ceiling3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.PositiveX_QA:
                             case BlockFace.PositiveX_ED:
+                            case BlockFace.PositiveX_Floor3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
                                 break;
 
@@ -2022,11 +2053,13 @@ namespace TombEditor
 
                             case BlockFace.PositiveX_RF:
                             case BlockFace.PositiveX_WS:
+                            case BlockFace.PositiveX_Ceiling3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.NegativeZ_QA:
                             case BlockFace.NegativeZ_ED:
+                            case BlockFace.NegativeZ_Floor3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
                                 break;
 
@@ -2036,11 +2069,13 @@ namespace TombEditor
 
                             case BlockFace.NegativeZ_RF:
                             case BlockFace.NegativeZ_WS:
+                            case BlockFace.NegativeZ_Ceiling3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.PositiveZ_QA:
                             case BlockFace.PositiveZ_ED:
+                            case BlockFace.PositiveZ_Floor3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
                                 break;
 
@@ -2050,11 +2085,13 @@ namespace TombEditor
 
                             case BlockFace.PositiveZ_RF:
                             case BlockFace.PositiveZ_WS:
+                            case BlockFace.PositiveZ_Ceiling3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.DiagonalQA:
                             case BlockFace.DiagonalED:
+                            case BlockFace.DiagonalFloor3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
                                 break;
 
@@ -2064,6 +2101,7 @@ namespace TombEditor
 
                             case BlockFace.DiagonalRF:
                             case BlockFace.DiagonalWS:
+                            case BlockFace.DiagonalCeiling3:
                                 TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
                                 break;
                         }

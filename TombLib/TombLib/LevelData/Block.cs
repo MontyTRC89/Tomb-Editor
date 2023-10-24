@@ -74,13 +74,17 @@ namespace TombLib.LevelData
         Ceiling,
         Ed,
         Rf,
+
+        Floor3,
+        Ceiling3,
+
         Count
     }
 
     public static class BlockVerticalExtensions
     {
-        public static bool IsOnFloor(this BlockVertical vertical) => vertical == BlockVertical.Floor || vertical == BlockVertical.Ed;
-        public static bool IsOnCeiling(this BlockVertical vertical) => vertical == BlockVertical.Ceiling || vertical == BlockVertical.Rf;
+        public static bool IsOnFloor(this BlockVertical vertical) => vertical is BlockVertical.Floor or BlockVertical.Ed or BlockVertical.Floor3;
+        public static bool IsOnCeiling(this BlockVertical vertical) => vertical is BlockVertical.Ceiling or BlockVertical.Rf or BlockVertical.Ceiling3;
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -92,8 +96,10 @@ namespace TombLib.LevelData
         PositiveZ_WS = 15, NegativeZ_WS = 16, NegativeX_WS = 17, PositiveX_WS = 18, DiagonalWS = 19,
         PositiveZ_RF = 20, NegativeZ_RF = 21, NegativeX_RF = 22, PositiveX_RF = 23, DiagonalRF = 24,
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28,
+		PositiveZ_Floor3 = 29, NegativeZ_Floor3 = 30, NegativeX_Floor3 = 31, PositiveX_Floor3 = 32, DiagonalFloor3 = 33,
+		PositiveZ_Ceiling3 = 34, NegativeZ_Ceiling3 = 35, NegativeX_Ceiling3 = 36, PositiveX_Ceiling3 = 37, DiagonalCeiling3 = 38,
 
-        Count
+		Count
     }
 
     public enum BlockFaceType
@@ -117,35 +123,45 @@ namespace TombLib.LevelData
                 case BlockFace.PositiveZ_Middle:
                 case BlockFace.PositiveZ_WS:
                 case BlockFace.PositiveZ_RF:
-                    return Direction.PositiveZ;
+                case BlockFace.PositiveZ_Floor3:
+				case BlockFace.PositiveZ_Ceiling3:
+					return Direction.PositiveZ;
 
                 case BlockFace.NegativeZ_QA:
                 case BlockFace.NegativeZ_ED:
                 case BlockFace.NegativeZ_Middle:
                 case BlockFace.NegativeZ_WS:
                 case BlockFace.NegativeZ_RF:
-                    return Direction.NegativeZ;
+				case BlockFace.NegativeZ_Floor3:
+				case BlockFace.NegativeZ_Ceiling3:
+					return Direction.NegativeZ;
 
                 case BlockFace.NegativeX_QA:
                 case BlockFace.NegativeX_ED:
                 case BlockFace.NegativeX_Middle:
                 case BlockFace.NegativeX_WS:
                 case BlockFace.NegativeX_RF:
-                    return Direction.NegativeX;
+				case BlockFace.NegativeX_Floor3:
+				case BlockFace.NegativeX_Ceiling3:
+					return Direction.NegativeX;
 
                 case BlockFace.PositiveX_QA:
                 case BlockFace.PositiveX_ED:
                 case BlockFace.PositiveX_Middle:
                 case BlockFace.PositiveX_WS:
                 case BlockFace.PositiveX_RF:
-                    return Direction.PositiveX;
+				case BlockFace.PositiveX_Floor3:
+				case BlockFace.PositiveX_Ceiling3:
+					return Direction.PositiveX;
 
                 case BlockFace.DiagonalQA:
                 case BlockFace.DiagonalED:
                 case BlockFace.DiagonalMiddle:
                 case BlockFace.DiagonalWS:
                 case BlockFace.DiagonalRF:
-                    return Direction.Diagonal;
+				case BlockFace.DiagonalFloor3:
+				case BlockFace.DiagonalCeiling3:
+					return Direction.Diagonal;
 
                 case BlockFace.Floor:
                 case BlockFace.FloorTriangle2:
@@ -389,7 +405,9 @@ namespace TombLib.LevelData
         public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
         private short[] _ed { get; } = new short[4];
         private short[] _rf { get; } = new short[4];
-        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)BlockFace.Count];
+		private short[] _floor3 { get; } = new short[4];
+		private short[] _ceiling3 { get; } = new short[4];
+		private TextureArea[] _faceTextures { get; } = new TextureArea[(int)BlockFace.Count];
 
         public BlockSurface Floor;
         public BlockSurface Ceiling;
@@ -409,7 +427,9 @@ namespace TombLib.LevelData
             Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
             _ed[0] = _ed[1] = _ed[2] = _ed[3] = (short)floor;
             _rf[0] = _rf[1] = _rf[2] = _rf[3] = (short)ceiling;
-            Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
+            _floor3[0] = _floor3[1] = _floor3[2] = _floor3[3] = (short)floor;
+            _ceiling3[0] = _ceiling3[1] = _ceiling3[2] = _ceiling3[3] = (short)ceiling;
+			Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
         }
 
         public Block Clone()
@@ -424,7 +444,11 @@ namespace TombLib.LevelData
                 result._ed[i] = _ed[i];
             for (int i = 0; i < 4; i++)
                 result._rf[i] = _rf[i];
-            result.Floor = Floor;
+			for (int i = 0; i < 4; i++)
+				result._floor3[i] = _floor3[i];
+			for (int i = 0; i < 4; i++)
+				result._ceiling3[i] = _ceiling3[i];
+			result.Floor = Floor;
             result.Ceiling = Ceiling;
             return result;
         }
@@ -509,7 +533,11 @@ namespace TombLib.LevelData
                     return _ed[(int)edge];
                 case BlockVertical.Rf:
                     return _rf[(int)edge];
-                default:
+				case BlockVertical.Floor3:
+					return _floor3[(int)edge];
+				case BlockVertical.Ceiling3:
+					return _ceiling3[(int)edge];
+				default:
                     throw new ArgumentOutOfRangeException();
             }
         }
@@ -530,6 +558,12 @@ namespace TombLib.LevelData
                 case BlockVertical.Rf:
                     _rf[(int)edge] = checked((short)newValue);
                     return;
+                case BlockVertical.Floor3:
+                    _floor3[(int)edge] = checked((short)newValue);
+                    return;
+                case BlockVertical.Ceiling3:
+                    _ceiling3[(int)edge] = checked((short)newValue);
+					return;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -690,7 +724,8 @@ namespace TombLib.LevelData
                 Floor.DiagonalSplit = TransformDiagonalSplit(Floor.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Floor.XpZp, ref Floor.XnZp, ref Floor.XnZn, ref Floor.XpZn);
                 transformation.TransformValueDiagonalQuad(ref _ed[(int)BlockEdge.XpZp], ref _ed[(int)BlockEdge.XnZp], ref _ed[(int)BlockEdge.XnZn], ref _ed[(int)BlockEdge.XpZn]);
-                if (requiredFloorSplitDirectionIsXEqualsZ != Floor.SplitDirectionIsXEqualsZ)
+				transformation.TransformValueDiagonalQuad(ref _floor3[(int)BlockEdge.XpZp], ref _floor3[(int)BlockEdge.XnZp], ref _floor3[(int)BlockEdge.XnZn], ref _floor3[(int)BlockEdge.XpZn]);
+				if (requiredFloorSplitDirectionIsXEqualsZ != Floor.SplitDirectionIsXEqualsZ)
                     Floor.SplitDirectionToggled = !Floor.SplitDirectionToggled;
 
                 if (HasGhostBlock)
@@ -705,6 +740,7 @@ namespace TombLib.LevelData
                 Ceiling.DiagonalSplit = TransformDiagonalSplit(Ceiling.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Ceiling.XpZp, ref Ceiling.XnZp, ref Ceiling.XnZn, ref Ceiling.XpZn);
                 transformation.TransformValueDiagonalQuad(ref _rf[(int)BlockEdge.XpZp], ref _rf[(int)BlockEdge.XnZp], ref _rf[(int)BlockEdge.XnZn], ref _rf[(int)BlockEdge.XpZn]);
+                transformation.TransformValueDiagonalQuad(ref _ceiling3[(int)BlockEdge.XpZp], ref _ceiling3[(int)BlockEdge.XnZp], ref _ceiling3[(int)BlockEdge.XnZn], ref _ceiling3[(int)BlockEdge.XpZn]);
                 if (requiredCeilingSplitDirectionIsXEqualsZ != Ceiling.SplitDirectionIsXEqualsZ)
                     Ceiling.SplitDirectionToggled = !Ceiling.SplitDirectionToggled;
 
@@ -729,7 +765,13 @@ namespace TombLib.LevelData
                     MirrorWallTexture(BlockFace.NegativeX_ED, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.NegativeZ_ED, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.DiagonalED, oldFaceIsTriangle);
-                }
+
+					MirrorWallTexture(BlockFace.PositiveX_Floor3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.PositiveZ_Floor3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.NegativeX_Floor3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.NegativeZ_Floor3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.DiagonalFloor3, oldFaceIsTriangle);
+				}
                 transformation.TransformValueQuad(
                     ref _faceTextures[(int)BlockFace.PositiveX_QA],
                     ref _faceTextures[(int)BlockFace.PositiveZ_QA],
@@ -740,9 +782,14 @@ namespace TombLib.LevelData
                     ref _faceTextures[(int)BlockFace.PositiveZ_ED],
                     ref _faceTextures[(int)BlockFace.NegativeX_ED],
                     ref _faceTextures[(int)BlockFace.NegativeZ_ED]);
+				transformation.TransformValueQuad(
+					ref _faceTextures[(int)BlockFace.PositiveX_Floor3],
+					ref _faceTextures[(int)BlockFace.PositiveZ_Floor3],
+					ref _faceTextures[(int)BlockFace.NegativeX_Floor3],
+					ref _faceTextures[(int)BlockFace.NegativeZ_Floor3]);
 
-                // Fix floor textures
-                if (Floor.IsQuad)
+				// Fix floor textures
+				if (Floor.IsQuad)
                 {
                     _faceTextures[(int)BlockFace.Floor] = _faceTextures[(int)BlockFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
@@ -785,7 +832,13 @@ namespace TombLib.LevelData
                     MirrorWallTexture(BlockFace.NegativeX_RF, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.NegativeZ_RF, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.DiagonalRF, oldFaceIsTriangle);
-                }
+
+					MirrorWallTexture(BlockFace.PositiveX_Ceiling3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.PositiveZ_Ceiling3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.NegativeX_Ceiling3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.NegativeZ_Ceiling3, oldFaceIsTriangle);
+					MirrorWallTexture(BlockFace.DiagonalCeiling3, oldFaceIsTriangle);
+				}
                 transformation.TransformValueQuad(
                     ref _faceTextures[(int)BlockFace.PositiveX_WS],
                     ref _faceTextures[(int)BlockFace.PositiveZ_WS],
@@ -796,9 +849,14 @@ namespace TombLib.LevelData
                     ref _faceTextures[(int)BlockFace.PositiveZ_RF],
                     ref _faceTextures[(int)BlockFace.NegativeX_RF],
                     ref _faceTextures[(int)BlockFace.NegativeZ_RF]);
+				transformation.TransformValueQuad(
+					ref _faceTextures[(int)BlockFace.PositiveX_Ceiling3],
+					ref _faceTextures[(int)BlockFace.PositiveZ_Ceiling3],
+					ref _faceTextures[(int)BlockFace.NegativeX_Ceiling3],
+					ref _faceTextures[(int)BlockFace.NegativeZ_Ceiling3]);
 
-                // Fix ceiling textures
-                if (Ceiling.IsQuad)
+				// Fix ceiling textures
+				if (Ceiling.IsQuad)
                 {
                     _faceTextures[(int)BlockFace.Ceiling] = _faceTextures[(int)BlockFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
@@ -850,8 +908,10 @@ namespace TombLib.LevelData
             {
                 SetHeight(BlockVertical.Ed, i, Math.Min(GetHeight(BlockVertical.Ed, i), Floor.GetHeight(i)));
                 SetHeight(BlockVertical.Rf, i, Math.Max(GetHeight(BlockVertical.Rf, i), Ceiling.GetHeight(i)));
+				SetHeight(BlockVertical.Floor3, i, Math.Min(GetHeight(BlockVertical.Floor3, i), GetHeight(BlockVertical.Ed, i)));
+				SetHeight(BlockVertical.Ceiling3, i, Math.Max(GetHeight(BlockVertical.Ceiling3, i), GetHeight(BlockVertical.Rf, i)));
 
-                if (vertical == null || vertical.Value.IsOnFloor())
+				if (vertical == null || vertical.Value.IsOnFloor())
                     if (Floor.DiagonalSplit != DiagonalSplit.None)
                         Floor.SetHeight(i, Math.Min(Floor.GetHeight(i), Ceiling.Min));
                     else

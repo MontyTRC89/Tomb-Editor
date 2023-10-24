@@ -121,7 +121,12 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_ED:
                 case BlockFace.PositiveX_ED:
                 case BlockFace.DiagonalED:
-                    Color = ColoringInfo.SectorColorScheme.ColorWallLower;
+				case BlockFace.PositiveZ_Floor3:
+				case BlockFace.NegativeZ_Floor3:
+				case BlockFace.NegativeX_Floor3:
+				case BlockFace.PositiveX_Floor3:
+				case BlockFace.DiagonalFloor3:
+					Color = ColoringInfo.SectorColorScheme.ColorWallLower;
                     if (room.Blocks[x, z].WallPortal != null)
                         Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
                     break;
@@ -146,7 +151,12 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_RF:
                 case BlockFace.PositiveX_RF:
                 case BlockFace.DiagonalRF:
-                    Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
+				case BlockFace.PositiveZ_Ceiling3:
+				case BlockFace.NegativeZ_Ceiling3:
+				case BlockFace.NegativeX_Ceiling3:
+				case BlockFace.PositiveX_Ceiling3:
+				case BlockFace.DiagonalCeiling3:
+					Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
                     if (room.Blocks[x, z].WallPortal != null)
                         Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
                     break;
@@ -196,7 +206,9 @@ namespace TombLib.Rendering
                 case BlockFace.PositiveX_QA:
                 case BlockFace.PositiveX_RF:
                 case BlockFace.PositiveX_WS:
-                    {
+				case BlockFace.PositiveX_Floor3:
+				case BlockFace.PositiveX_Ceiling3:
+					{
                         var lookupBlock = room.ProbeLowestBlock(x + 1, z, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeX))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
@@ -207,7 +219,9 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeX_QA:
                 case BlockFace.NegativeX_RF:
                 case BlockFace.NegativeX_WS:
-                    {
+				case BlockFace.NegativeX_Floor3:
+				case BlockFace.NegativeX_Ceiling3:
+					{
                         var lookupBlock = room.ProbeLowestBlock(x - 1, z, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveX))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
@@ -218,7 +232,9 @@ namespace TombLib.Rendering
                 case BlockFace.NegativeZ_QA:
                 case BlockFace.NegativeZ_RF:
                 case BlockFace.NegativeZ_WS:
-                    {
+				case BlockFace.NegativeZ_Floor3:
+				case BlockFace.NegativeZ_Ceiling3:
+					{
                         var lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
@@ -229,7 +245,9 @@ namespace TombLib.Rendering
                 case BlockFace.PositiveZ_QA:
                 case BlockFace.PositiveZ_RF:
                 case BlockFace.PositiveZ_WS:
-                    {
+				case BlockFace.PositiveZ_Floor3:
+				case BlockFace.PositiveZ_Ceiling3:
+					{
                         var lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
                         if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
                             Color = ColoringInfo.SectorColorScheme.ColorClimb;
@@ -314,7 +332,8 @@ namespace TombLib.Rendering
                     // South faces ------------------------------------------------------------------------------
                     case BlockFace.NegativeZ_QA:
                     case BlockFace.NegativeZ_ED:
-                        switch (SelectionArrow)
+					case BlockFace.NegativeZ_Floor3:
+						switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
                             case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
@@ -329,6 +348,7 @@ namespace TombLib.Rendering
 
                     case BlockFace.NegativeZ_WS:
                     case BlockFace.NegativeZ_RF:
+                    case BlockFace.NegativeZ_Ceiling3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
@@ -359,6 +379,7 @@ namespace TombLib.Rendering
                     // East faces ------------------------------------------------------------------------------
                     case BlockFace.NegativeX_QA:
                     case BlockFace.NegativeX_ED:
+                    case BlockFace.NegativeX_Floor3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw; break;
@@ -374,6 +395,7 @@ namespace TombLib.Rendering
 
                     case BlockFace.NegativeX_WS:
                     case BlockFace.NegativeX_RF:
+                    case BlockFace.NegativeX_Ceiling3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_sw; break;
@@ -404,6 +426,7 @@ namespace TombLib.Rendering
                     // North faces ------------------------------------------------------------------------------
                     case BlockFace.PositiveZ_QA:
                     case BlockFace.PositiveZ_ED:
+                    case BlockFace.PositiveZ_Floor3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
@@ -419,6 +442,7 @@ namespace TombLib.Rendering
 
                     case BlockFace.PositiveZ_WS:
                     case BlockFace.PositiveZ_RF:
+                    case BlockFace.PositiveZ_Ceiling3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_down; break;
@@ -449,6 +473,7 @@ namespace TombLib.Rendering
                     // West faces ------------------------------------------------------------------------------
                     case BlockFace.PositiveX_QA:
                     case BlockFace.PositiveX_ED:
+                    case BlockFace.PositiveX_Floor3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne; break;
@@ -464,6 +489,7 @@ namespace TombLib.Rendering
 
                     case BlockFace.PositiveX_WS:
                     case BlockFace.PositiveX_RF:
+                    case BlockFace.PositiveX_Ceiling3:
                         switch (SelectionArrow)
                         {
                             case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_se; break;
@@ -494,6 +520,7 @@ namespace TombLib.Rendering
                     // Diagonal faces ------------------------------------------------------------------------------
                     case BlockFace.DiagonalQA:
                     case BlockFace.DiagonalED:
+                    case BlockFace.DiagonalFloor3:
                         switch (room.Blocks[x, z].Floor.DiagonalSplit)
                         {
                             case DiagonalSplit.XnZp: // OK
@@ -556,6 +583,7 @@ namespace TombLib.Rendering
 
                     case BlockFace.DiagonalWS:
                     case BlockFace.DiagonalRF:
+                    case BlockFace.DiagonalCeiling3:
                         switch (room.Blocks[x, z].Floor.DiagonalSplit)
                         {
                             case DiagonalSplit.XnZp: // OK
