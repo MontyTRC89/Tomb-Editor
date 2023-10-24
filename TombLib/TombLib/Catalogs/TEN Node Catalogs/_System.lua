@@ -87,9 +87,9 @@ end
 LevelFuncs.Engine.Node.GetSoundTrackType = function(value)
 	local SoundTrackType =
 	{
-		[0] = Misc.SoundTrackType.ONESHOT,
-		[1] = Misc.SoundTrackType.LOOPED,
-		[2] = Misc.SoundTrackType.VOICE,
+		[0] = Sound.SoundTrackType.ONESHOT,
+		[1] = Sound.SoundTrackType.LOOPED,
+		[2] = Sound.SoundTrackType.VOICE,
 	}
 	return SoundTrackType[value]
 end
