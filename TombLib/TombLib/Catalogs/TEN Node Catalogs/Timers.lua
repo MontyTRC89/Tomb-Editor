@@ -1,6 +1,25 @@
 local Timer = require("Engine.Timer")
 LevelVars.TimerRemainingTime = {}
 
+-- !Name "Create timer"
+-- !Conditional "False"
+-- !Description "Basic timer"
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
+-- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
+-- !Arguments "Boolean , 13, Loop"
+-- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
+LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds)
+    if name ~= '' then
+        LevelVars[name] = Timer.Create(name, time, loop,
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, nil)
+        LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
+        TEN.Util.PrintLog('Timer "' .. name .. '" successfully created', LogLevel.INFO)
+    else
+        TEN.Util.PrintLog('Error in the "Create Timer" node. The name of Timer is empty', LogLevel.ERROR)
+    end
+end
+
 -- !Name "Create timer with function"
 -- !Conditional "False"
 -- !Description "After a specified number of seconds, the specified thing happens"
@@ -42,25 +61,6 @@ LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minu
         TEN.Util.PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
     else
         TEN.Util.PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Create timer"
--- !Conditional "False"
--- !Description "Basic timer"
--- !Section "Timer"
--- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
--- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
--- !Arguments "Boolean , 13, Loop"
--- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
-LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds)
-    if name ~= '' then
-        LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, nil)
-        LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer "' .. name .. '" successfully created', LogLevel.INFO)
-    else
-        TEN.Util.PrintLog('Error in the "Create Timer" node. The name of Timer is empty', LogLevel.ERROR)
     end
 end
 
