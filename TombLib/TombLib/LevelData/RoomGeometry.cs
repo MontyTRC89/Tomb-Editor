@@ -1330,7 +1330,7 @@ namespace TombLib.LevelData
                     break;
             }
 
-            var subdivide = false;
+            bool subdivide = false, hasThirdLayer = false;
 
             // Always check these
             if (qA >= cA && qB >= cB)
@@ -1383,7 +1383,9 @@ namespace TombLib.LevelData
                 if (eA >= yA && eB >= yB && qA >= eA && qB >= eB && !(eA == yA && eB == yB))
                 {
                     subdivide = true;
-                    yA = eA;
+                    hasThirdLayer = floor3A >= yA && floor3B >= yB && qA >= floor3A && qB >= floor3B && !(floor3A == yA && floor3B == yB);
+
+					yA = eA;
                     yB = eB;
                 }
 
@@ -1414,10 +1416,10 @@ namespace TombLib.LevelData
                 // ED
                 if (subdivide)
                 {
-                    yA = floor3A;
-                    yB = floor3B;
+                    yA = hasThirdLayer ? floor3A : fA;
+                    yB = hasThirdLayer ? floor3B : fB;
 
-                    face = b.GetFaceTexture(edFace);
+					face = b.GetFaceTexture(edFace);
 
                     if (eA > yA && eB > yB)
                         AddQuad(x, z, edFace,
@@ -1439,31 +1441,34 @@ namespace TombLib.LevelData
                             new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
 
-					yA = fA;
-					yB = fB;
+					if (hasThirdLayer)
+					{
+						yA = fA;
+						yB = fB;
 
-					// Floor3
-					face = b.GetFaceTexture(floor3Face);
+						// Floor3
+						face = b.GetFaceTexture(floor3Face);
 
-					if (floor3A > yA && floor3B > yB)
-						AddQuad(x, z, floor3Face,
-							new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                    else if (floor3A > yA && floor3B == yB)
-						AddTriangle(x, z, floor3Face,
-							new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                    else if (floor3A == yA && floor3B > yB)
-                        AddTriangle(x, z, floor3Face,
-                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						if (floor3A > yA && floor3B > yB)
+							AddQuad(x, z, floor3Face,
+								new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (floor3A > yA && floor3B == yB)
+							AddTriangle(x, z, floor3Face,
+								new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						else if (floor3A == yA && floor3B > yB)
+							AddTriangle(x, z, floor3Face,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					}
 				}
             }
 
@@ -1478,7 +1483,9 @@ namespace TombLib.LevelData
                 if (rA <= yA && rB <= yB && wA <= rA && wB <= rB && !(rA == yA && rB == yB))
                 {
                     subdivide = true;
-                    yA = rA;
+					hasThirdLayer = ceiling3A <= yA && ceiling3B <= yB && wA <= ceiling3A && wB <= ceiling3B && !(ceiling3A == yA && ceiling3B == yB);
+
+					yA = rA;
                     yB = rB;
                 }
 
@@ -1509,10 +1516,10 @@ namespace TombLib.LevelData
                 // RF
                 if (subdivide)
                 {
-                    yA = ceiling3A;
-                    yB = ceiling3B;
+					yA = hasThirdLayer ? ceiling3A : cA;
+					yB = hasThirdLayer ? ceiling3B : cB;
 
-                    face = b.GetFaceTexture(rfFace);
+					face = b.GetFaceTexture(rfFace);
 
                     if (rA < yA && rB < yB)
                         AddQuad(x, z, rfFace,
@@ -1534,31 +1541,34 @@ namespace TombLib.LevelData
                             new Vector3(xB * Level.BlockSizeUnit, rB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
 
-					yA = cA;
-					yB = cB;
+                    if (hasThirdLayer)
+                    {
+						yA = cA;
+						yB = cB;
 
-					// Ceiling3
-					face = b.GetFaceTexture(ceiling3Face);
+						// Ceiling3
+						face = b.GetFaceTexture(ceiling3Face);
 
-                    if (ceiling3A < yA && ceiling3B < yB)
-						AddQuad(x, z, ceiling3Face,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-					else if (ceiling3A < yA && ceiling3B == yB)
-						AddTriangle(x, z, ceiling3Face,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-					else if (ceiling3A == yA && ceiling3B < yB)
-						AddTriangle(x, z, ceiling3Face,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						if (ceiling3A < yA && ceiling3B < yB)
+							AddQuad(x, z, ceiling3Face,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (ceiling3A < yA && ceiling3B == yB)
+							AddTriangle(x, z, ceiling3Face,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						else if (ceiling3A == yA && ceiling3B < yB)
+							AddTriangle(x, z, ceiling3Face,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					}
 				}
             }
 
