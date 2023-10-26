@@ -2,19 +2,19 @@
 -- !Section "Sprites"
 -- !Conditional "False"
 -- !Description "Draw a display sprite on the frame that this node is active."
--- !Arguments "Newline, Enumeration, 60, [ DEFAULT_SPRITES | MISC_SPRITES | CUSTOM_SPRITES | FIRE_SPRITES | SMOKE_SPRITES | SPARK_SPRITE | DRIP_SPRITE | EXPLOSION_SPRITES ], Sprite sequence object ID"
---!Arguments "Number, 40, [ 0 | 1000 | 0 ], Sprite ID in sprite sequence"
+-- !Arguments "Newline, Enumeration, 62, [ SKY_GRAPHICS | DEFAULT_SPRITES | MISC_SPRITES | CUSTOM_SPRITES | FIRE_SPRITES | SMOKE_SPRITES | SPARK_SPRITE | DRIP_SPRITE | EXPLOSION_SPRITES | MOTORBOAT_FOAM_SPRITES | RUBBER_BOAT_WAVE_SPRITES | SKIDOO_SNOW_TRAIL_SPRITES | KAYAK_PADDLE_TRAIL_SPRITE | KAYAK_WAKE_SPRTIES | BINOCULAR_GRAPHIC | LASER_SIGHT_GRAPHIC | CAUSTICS_TEXTURES | BAR_BORDER_GRAPHIC | HEALTH_BAR_TEXTURE | AIR_BAR_TEXTURE | DASH_BAR_TEXTURE | SFX_BAR_TEXTURE |	CROSSHAIR ], Sprite sequence object ID"
+--!Arguments "Number, 19.3, [ 0 | 9999 | 0 ], Sprite ID in sprite sequence"
+--!Arguments "Number, 20, [ 0 | 9999 | 0 ], Draw priority"
 --!Arguments "Newline, Number, 20, [ 0 | 100 | 1 ], Position X (%)"
 --!Arguments "Number, 20, [ 0 | 100 | 1 ], Position Y (%)"
 --!Arguments "Number, 20, [ -360 | 360 | 1 ], Rotation"
 --!Arguments "Number, 20, [ 0 | 100 | 1 ], Scale X (%)"
 --!Arguments "Number, 20, [ 0 | 100 | 1 ], Scale Y (%)"
---!Arguments "NewLine, Color, 50, Color of sprite"
---!Arguments "Number, 50, [ 0 | 500 | 0 ], Draw priority"
---!Arguments "NewLine, Enumeration, 35, [ CENTER | CENTER_TOP | CENTER_BOTTOM | CENTER_LEFT | CENTER_RIGHT | TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT ], Align mode"
---!Arguments "Enumeration, 32.5, [ FIT | FILL | STRETCH ], Scale mode"
---!Arguments "Enumeration, 32.5, [ OPAQUE | ALPHATEST | ADDITIVE | SUBTRACTIVE | EXCLUDE | SCREEN | LIGHTEN | ALPHABLEND ], Blend mode"
-LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, posX, posY, rot, scaleX, scaleY, color, priority,
+--!Arguments "NewLine, Color, 14.6, Color of sprite"
+--!Arguments "Enumeration, 34.81, [ CENTER | CENTER_TOP | CENTER_BOTTOM | CENTER_LEFT | CENTER_RIGHT | TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT ], Align mode"
+--!Arguments "Enumeration, 21.5, [ FIT | FILL | STRETCH ], Scale mode"
+--!Arguments "Enumeration, 28.6, [ OPAQUE | ALPHATEST | ADDITIVE | SUBTRACTIVE | EXCLUDE | SCREEN | LIGHTEN | ALPHABLEND ], Blend mode"
+LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, priority, posX, posY, rot, scaleX, scaleY, color,
                                                 alignMode, scaleMode, blendMode)
     local object = LevelFuncs.Engine.Node.GetSpriteSlot(objectID)
     local pos = TEN.Vec2(posX, posY)

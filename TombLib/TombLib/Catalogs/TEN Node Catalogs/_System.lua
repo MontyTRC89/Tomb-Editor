@@ -139,14 +139,29 @@ end
 LevelFuncs.Engine.Node.GetSpriteSlot = function(index)
 	local spriteSlot =
 	{
-		[0] = TEN.Objects.ObjID.DEFAULT_SPRITES,
-		[1] = TEN.Objects.ObjID.MISC_SPRITES,
-		[2] = TEN.Objects.ObjID.CUSTOM_SPRITES,
-		[3] = TEN.Objects.ObjID.FIRE_SPRITES,
-		[4] = TEN.Objects.ObjID.SMOKE_SPRITES,
-		[5] = TEN.Objects.ObjID.SPARK_SPRITE,
-		[6] = TEN.Objects.ObjID.DRIP_SPRITE,
-		[7] = TEN.Objects.ObjID.EXPLOSION_SPRITES
+		[0] = TEN.Objects.ObjID.SKY_GRAPHICS,
+		[1] = TEN.Objects.ObjID.DEFAULT_SPRITES,
+		[2] = TEN.Objects.ObjID.MISC_SPRITES,
+		[3] = TEN.Objects.ObjID.CUSTOM_SPRITES,
+		[4] = TEN.Objects.ObjID.FIRE_SPRITES,
+		[5] = TEN.Objects.ObjID.SMOKE_SPRITES,
+		[6] = TEN.Objects.ObjID.SPARK_SPRITE,
+		[7] = TEN.Objects.ObjID.DRIP_SPRITE,
+		[8] = TEN.Objects.ObjID.EXPLOSION_SPRITES,
+		[9] = TEN.Objects.ObjID.MOTORBOAT_FOAM_SPRITES,
+		[10] = TEN.Objects.ObjID.RUBBER_BOAT_WAVE_SPRITES,
+		[11] = TEN.Objects.ObjID.SKIDOO_SNOW_TRAIL_SPRITES,
+		[12] = TEN.Objects.ObjID.KAYAK_PADDLE_TRAIL_SPRITE,
+		[13] = TEN.Objects.ObjID.KAYAK_WAKE_SPRTIES,
+		[14] = TEN.Objects.ObjID.BINOCULAR_GRAPHIC,
+		[15] = TEN.Objects.ObjID.LASER_SIGHT_GRAPHIC,
+		[16] = TEN.Objects.ObjID.CAUSTICS_TEXTURES,
+		[17] = TEN.Objects.ObjID.BAR_BORDER_GRAPHIC,
+		[18] = TEN.Objects.ObjID.HEALTH_BAR_TEXTURE,
+		[19] = TEN.Objects.ObjID.AIR_BAR_TEXTURE,
+		[20] = TEN.Objects.ObjID.DASH_BAR_TEXTURE,
+		[21] = TEN.Objects.ObjID.SFX_BAR_TEXTURE,
+		[22] = TEN.Objects.ObjID.CROSSHAIR,
 	}
 	return spriteSlot[index]
 end
