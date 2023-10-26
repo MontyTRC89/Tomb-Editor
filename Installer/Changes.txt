@@ -4,6 +4,9 @@ Version 1.6.9
 Tomb Editor:
  * Allow to immediately cancel level building and project opening.
  * Add a node to call events from other event sets.
+ * Add a node to draw sprites
+ * Add nodes to load, save, delete and check existence of savegames
+ * Modifying nodes for timer management. Please note: For existing projects check all nodes "Create timer..."
  * Show selection size instead of local area.
  * Fix exception when trying to assign footstep sound if no material was selected.
  * TEN Base WAD:
