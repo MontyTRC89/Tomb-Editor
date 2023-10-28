@@ -25,5 +25,3 @@ LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, color, posX,
     local sprite = TEN.DisplaySprite(object, spriteID, pos, rot, scale, color)
     sprite:Draw(priority, alignM, scaleM, blendID)
 end
-
--- "Enumeration, 34.81, [ CENTER | CENTER_TOP | CENTER_BOTTOM | CENTER_LEFT | CENTER_RIGHT | TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT ], Align mode"
