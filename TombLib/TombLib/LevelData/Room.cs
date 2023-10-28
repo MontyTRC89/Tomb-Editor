@@ -1824,6 +1824,28 @@ namespace TombLib.LevelData
             vertices = roomVertices.Count;
         }
 
-        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+        public bool IsBlockSubdivisionInVoid(BlockVertical vertical, int x, int z)
+		{
+			Block block = Blocks[x, z];
+
+			if (vertical.IsExtraFloorSubdivision())
+			{
+				int index = vertical.GetExtraSubdivisionIndex();
+				Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAt(index);
+
+                return subdivision.Edges.Min() < GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+			}
+			else if (vertical.IsExtraCeilingSubdivision())
+			{
+				int index = vertical.GetExtraSubdivisionIndex();
+				Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAt(index);
+
+				return subdivision.Edges.Max() > GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+			}
+
+            throw new InvalidOperationException();
+		}
+
+		bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 }

@@ -766,17 +766,6 @@ namespace TombLib.LevelData.IO
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.SetHeight(BlockVertical.Ed, edge, LEB128.ReadShort(chunkIO.Raw));
 
-                                        byte subdivisionCount = LEB128.ReadByte(chunkIO.Raw);
-
-                                        for (int i = 0; i < subdivisionCount; i++)
-                                        {
-                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
-                                            block.ExtraFloorSubdivisions.Add(new Subdivision());
-
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
-                                        }
-
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
@@ -788,21 +777,36 @@ namespace TombLib.LevelData.IO
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.SetHeight(BlockVertical.Rf, edge, LEB128.ReadShort(chunkIO.Raw));
 
-                                        byte subdivisionCount = LEB128.ReadByte(chunkIO.Raw);
-
-                                        for (int i = 0; i < subdivisionCount; i++)
-                                        {
-                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
-                                            block.ExtraCeilingSubdivisions.Add(new Subdivision());
-
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
-                                        }
-
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.TextureLevelTexture ||
+									else if (id4 == Prj2Chunks.SectorExtraFloorSubdivisions)
+									{
+										byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+										for (int i = 0; i < extraSubdivisionCount; i++)
+										{
+											BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+											block.ExtraFloorSubdivisions.Add(new Subdivision());
+
+											for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+												block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+										}
+									}
+									else if (id4 == Prj2Chunks.SectorExtraCeilingSubdivisions)
+									{
+										byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+										for (int i = 0; i < extraSubdivisionCount; i++)
+										{
+											BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+											block.ExtraCeilingSubdivisions.Add(new Subdivision());
+
+											for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+												block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+										}
+									}
+									else if (id4 == Prj2Chunks.TextureLevelTexture ||
                                              id4 == Prj2Chunks.TextureLevelTexture2)
                                     {
                                         BlockFace face = (BlockFace)LEB128.ReadLong(chunkIO.Raw);

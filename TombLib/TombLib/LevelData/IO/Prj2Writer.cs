@@ -425,18 +425,7 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
-
-                                            // Write floor subdivision count into file
-                                            LEB128.Write(chunkIO.Raw, (byte)b.ExtraFloorSubdivisions.Count);
-
-                                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
-                                            {
-                                                BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
-
-                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
-                                            }
-                                        }
+										}
                                         using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
@@ -445,18 +434,7 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
-
-                                            // Write ceiling subdivision count into file
-                                            LEB128.Write(chunkIO.Raw, (byte)b.ExtraCeilingSubdivisions.Count);
-
-                                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
-                                            {
-                                                BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
-
-                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
-                                            }
-                                        }
+										}
                                         for (BlockFace face = 0; face < BlockFace.Count; face++)
                                         {
                                             var texture = b.GetFaceTexture(face);
@@ -492,7 +470,53 @@ namespace TombLib.LevelData.IO
                                             else
                                                 throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
                                         }
-                                        chunkIO.WriteChunkEnd();
+										using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorExtraFloorSubdivisions, LEB128.MaximumSize1Byte))
+										{
+											byte subdivisionCount = 0;
+											var heights = new List<short>();
+
+											for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+											{
+												BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+
+												if (room.IsBlockSubdivisionInVoid(subdivisionVertical, x, z))
+													continue;
+
+												for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+													heights.Add(b.GetHeight(subdivisionVertical, edge));
+
+												subdivisionCount++;
+											}
+
+											LEB128.Write(chunkIO.Raw, subdivisionCount);
+
+											foreach (short height in heights)
+												LEB128.Write(chunkIO.Raw, height);
+										}
+										using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorExtraCeilingSubdivisions, LEB128.MaximumSize1Byte))
+										{
+											byte subdivisionCount = 0;
+											var heights = new List<short>();
+
+											for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+											{
+												BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+
+												if (room.IsBlockSubdivisionInVoid(subdivisionVertical, x, z))
+													continue;
+
+												for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+													heights.Add(b.GetHeight(subdivisionVertical, edge));
+
+												subdivisionCount++;
+											}
+
+											LEB128.Write(chunkIO.Raw, subdivisionCount);
+
+											foreach (short height in heights)
+												LEB128.Write(chunkIO.Raw, height);
+										}
+										chunkIO.WriteChunkEnd();
                                     }
                             chunkIO.WriteChunkEnd();
                         }
