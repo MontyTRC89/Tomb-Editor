@@ -143,7 +143,7 @@ namespace TombLib.LevelData
                         oldBlock.Raise(BlockVertical.Ed, floor);
 
                         for (int i = 0; i < oldBlock.ExtraFloorSubdivisions.Count; i++)
-							oldBlock.Raise(BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
+                            oldBlock.Raise(BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
 
                         oldBlock.Raise(BlockVertical.Ceiling, ceiling);
                         oldBlock.Raise(BlockVertical.Rf, ceiling);
@@ -911,13 +911,13 @@ namespace TombLib.LevelData
                         if (ignoreCorners)
                         {
                             if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
-								continue;
+                                continue;
                         }
 
-						max = Math.Max(max, Blocks[x, z].Ceiling.Max);
-					}
+                        max = Math.Max(max, Blocks[x, z].Ceiling.Max);
+                    }
 
-			return max == int.MinValue ? DefaultHeight : max;
+            return max == int.MinValue ? DefaultHeight : max;
         }
 
         public int GetHighestCorner()
@@ -934,16 +934,16 @@ namespace TombLib.LevelData
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                     {
-						if (ignoreCorners)
-						{
-							if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
-								continue;
-						}
+                        if (ignoreCorners)
+                        {
+                            if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
+                                continue;
+                        }
 
-						min = Math.Min(min, Blocks[x, z].Floor.Min);
-					}
+                        min = Math.Min(min, Blocks[x, z].Floor.Min);
+                    }
             
-			return min == int.MaxValue ? 0 : min;
+            return min == int.MaxValue ? 0 : min;
         }
 
         public int GetLowestCorner()
@@ -1824,28 +1824,50 @@ namespace TombLib.LevelData
             vertices = roomVertices.Count;
         }
 
-        public bool IsBlockSubdivisionInVoid(BlockVertical vertical, int x, int z)
-		{
-			Block block = Blocks[x, z];
+        public bool IsInvalidBlockSubdivision(BlockVertical vertical, int x, int z) // TODO: Implement "isFlattened" optimization
+        {
+            Block block = Blocks[x, z];
 
-			if (vertical.IsExtraFloorSubdivision())
-			{
-				int index = vertical.GetExtraSubdivisionIndex();
-				Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAt(index);
+            if (vertical.IsExtraFloorSubdivision())
+            {
+                int index = vertical.GetExtraSubdivisionIndex();
+                //short[] lastEdges;
 
-                return subdivision.Edges.Min() < GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
-			}
-			else if (vertical.IsExtraCeilingSubdivision())
-			{
-				int index = vertical.GetExtraSubdivisionIndex();
-				Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAt(index);
+                //if (index == 0)
+                //    lastEdges = block.GetED();
+                //else
+                //    lastEdges = block.ExtraFloorSubdivisions.ElementAt(index - 1).Edges;
 
-				return subdivision.Edges.Max() > GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
-			}
+                Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAt(index);
+                int lowest = GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+
+                bool isInVoid = subdivision.Edges.Max() <= lowest;
+                //bool isFlattened = subdivision.Edges.SequenceEqual(lastEdges);
+
+                return isInVoid;
+            }
+            else if (vertical.IsExtraCeilingSubdivision())
+            {
+                int index = vertical.GetExtraSubdivisionIndex();
+                //short[] lastEdges;
+
+                //if (index == 0)
+                //	lastEdges = block.GetRF();
+                //else
+                //	lastEdges = block.ExtraCeilingSubdivisions.ElementAt(index - 1).Edges;
+
+                Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAt(index);
+                int highest = GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+
+                bool isInVoid = subdivision.Edges.Min() >= highest;
+                //bool isFlattened = subdivision.Edges.SequenceEqual(lastEdges);
+
+                return isInVoid;
+            }
 
             throw new InvalidOperationException();
-		}
+        }
 
-		bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 }

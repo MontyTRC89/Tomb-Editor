@@ -115,32 +115,6 @@ namespace TombLib.LevelData
 		public static bool IsSubdivision(this BlockVertical vertical)
 		   => vertical.ToString().Contains("Subdivision");
 
-		public static BlockVertical[] GetFloorVerticals() => new BlockVertical[]
-		{
-			BlockVertical.Floor,
-			BlockVertical.Ed,
-			BlockVertical.FloorSubdivision3,
-			BlockVertical.FloorSubdivision4,
-			BlockVertical.FloorSubdivision5,
-			BlockVertical.FloorSubdivision6,
-			BlockVertical.FloorSubdivision7,
-			BlockVertical.FloorSubdivision8,
-			BlockVertical.FloorSubdivision9
-		};
-
-		public static BlockVertical[] GetCeilingVerticals() => new BlockVertical[]
-		{
-			BlockVertical.Ceiling,
-			BlockVertical.Rf,
-			BlockVertical.CeilingSubdivision3,
-			BlockVertical.CeilingSubdivision4,
-			BlockVertical.CeilingSubdivision5,
-			BlockVertical.CeilingSubdivision6,
-			BlockVertical.CeilingSubdivision7,
-			BlockVertical.CeilingSubdivision8,
-			BlockVertical.CeilingSubdivision9
-		};
-
 		public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
         {
             string enumName = $"FloorSubdivision{subdivisionIndex + 3}";
@@ -864,8 +838,11 @@ namespace TombLib.LevelData
             if (increment == 0)
                 return;
 
+            // Check if subdivision doesn't exist and is a valid next subdivision
             if (vertical.IsSubdivision() && !SubdivisionExists(vertical) && IsValidNextSubdivision(vertical))
             {
+                // Create the new subdivision if applicable
+
                 if (vertical.IsExtraFloorSubdivision())
                 {
                     if (increment > 0)

@@ -479,7 +479,7 @@ namespace TombLib.LevelData.IO
 											{
 												BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
 
-												if (room.IsBlockSubdivisionInVoid(subdivisionVertical, x, z))
+												if (room.IsInvalidBlockSubdivision(subdivisionVertical, x, z))
 													continue;
 
 												for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
@@ -502,7 +502,7 @@ namespace TombLib.LevelData.IO
 											{
 												BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
 
-												if (room.IsBlockSubdivisionInVoid(subdivisionVertical, x, z))
+												if (room.IsInvalidBlockSubdivision(subdivisionVertical, x, z))
 													continue;
 
 												for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
