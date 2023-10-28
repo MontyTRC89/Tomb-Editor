@@ -864,7 +864,7 @@ namespace TombLib.LevelData
             if (increment == 0)
                 return;
 
-            if (vertical.IsSubdivision() && !SubdivisionExists(vertical))
+            if (vertical.IsSubdivision() && !SubdivisionExists(vertical) && IsValidNextSubdivision(vertical))
             {
                 if (vertical.IsExtraFloorSubdivision())
                 {
@@ -891,6 +891,16 @@ namespace TombLib.LevelData
             
             SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
         }
+
+        public bool IsValidNextSubdivision(BlockVertical vertical)
+        {
+			if (vertical.IsExtraFloorSubdivision())
+				return vertical.GetExtraSubdivisionIndex() == ExtraFloorSubdivisions.Count;
+			else if (vertical.IsExtraCeilingSubdivision())
+				return vertical.GetExtraSubdivisionIndex() == ExtraCeilingSubdivisions.Count;
+			else
+				return false;
+		}
 
         public bool SubdivisionExists(BlockVertical vertical)
         {
