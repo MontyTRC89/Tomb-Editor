@@ -765,6 +765,18 @@ namespace TombLib.LevelData.IO
                                             block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.SetHeight(BlockVertical.Ed, edge, LEB128.ReadShort(chunkIO.Raw));
+
+                                        byte subdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < subdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+                                            block.ExtraFloorSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                        }
+
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
@@ -775,6 +787,18 @@ namespace TombLib.LevelData.IO
                                             block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.SetHeight(BlockVertical.Rf, edge, LEB128.ReadShort(chunkIO.Raw));
+
+                                        byte subdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < subdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+                                            block.ExtraCeilingSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                        }
+
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }

@@ -369,7 +369,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);

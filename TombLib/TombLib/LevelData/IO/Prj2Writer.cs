@@ -425,6 +425,17 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
+
+                                            // Write floor subdivision count into file
+                                            LEB128.Write(chunkIO.Raw, (byte)b.ExtraFloorSubdivisions.Count);
+
+                                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                                            {
+                                                BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                            }
                                         }
                                         using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
                                         {
@@ -434,11 +445,25 @@ namespace TombLib.LevelData.IO
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
+
+                                            // Write ceiling subdivision count into file
+                                            LEB128.Write(chunkIO.Raw, (byte)b.ExtraCeilingSubdivisions.Count);
+
+                                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                                            {
+                                                BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                            }
                                         }
                                         for (BlockFace face = 0; face < BlockFace.Count; face++)
                                         {
                                             var texture = b.GetFaceTexture(face);
                                             if (texture.Texture == null)
+                                                continue;
+
+                                            if (face.IsSubdivision() && !b.IsSubdivisionFaceUsed(face))
                                                 continue;
 
                                             if (texture.Texture is LevelTexture)
@@ -460,7 +485,7 @@ namespace TombLib.LevelData.IO
                                                         LEB128.Write(chunkIO.Raw, textureIndex);
                                                     }
                                                 else
-                                                    logger.Warn("Room " + room.Name + " has a texture refering to a texture file " + t.Path + " which is missing from project.");
+                                                    logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
                                             }
                                             else if (texture.Texture == TextureInvisible.Instance)
                                                 chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);

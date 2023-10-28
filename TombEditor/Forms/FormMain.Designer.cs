@@ -234,32 +234,32 @@ namespace TombEditor.Forms
 			this.lowerFloor3MenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.lowerFloor3MenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.lowerFloor3MenuItem.Name = "lowerFloor3MenuItem";
-			this.lowerFloor3MenuItem.Tag = "LowerFloor31Click";
-			this.lowerFloor3MenuItem.Text = "LowerFloor31Click";
+			this.lowerFloor3MenuItem.Tag = "AddCeilingSubdivision";
+			this.lowerFloor3MenuItem.Text = "AddCeilingSubdivision";
 			// 
 			// lowerCeiling3MenuItem
 			// 
 			this.lowerCeiling3MenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.lowerCeiling3MenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.lowerCeiling3MenuItem.Name = "lowerCeiling3MenuItem";
-			this.lowerCeiling3MenuItem.Tag = "LowerCeiling31Click";
-			this.lowerCeiling3MenuItem.Text = "LowerCeiling31Click";
+			this.lowerCeiling3MenuItem.Tag = "RemoveLastCeilingSubdivision";
+			this.lowerCeiling3MenuItem.Text = "RemoveLastCeilingSubdivision";
 			// 
 			// lowerFloor3MenuItem
 			// 
 			this.raiseFloor3MenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.raiseFloor3MenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.raiseFloor3MenuItem.Name = "raiseFloor3MenuItem";
-			this.raiseFloor3MenuItem.Tag = "RaiseFloor31Click";
-			this.raiseFloor3MenuItem.Text = "RaiseFloor31Click";
+			this.raiseFloor3MenuItem.Tag = "AddFloorSubdivision";
+			this.raiseFloor3MenuItem.Text = "AddFloorSubdivision";
 			// 
 			// raiseCeiling3MenuItem
 			// 
 			this.raiseCeiling3MenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.raiseCeiling3MenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.raiseCeiling3MenuItem.Name = "raiseCeiling3MenuItem";
-			this.raiseCeiling3MenuItem.Tag = "RaiseCeiling31Click";
-			this.raiseCeiling3MenuItem.Text = "RaiseCeiling31Click";
+			this.raiseCeiling3MenuItem.Tag = "RemoveLastFloorSubdivision";
+			this.raiseCeiling3MenuItem.Text = "RemoveLastFloorSubdivision";
 			// 
 			// menuStrip
 			// 

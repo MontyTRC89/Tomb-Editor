@@ -119,6 +119,7 @@ namespace TombEditor.Controls.Panel3D
         private bool _dragObjectPicked = false;
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
+        private Keys _currentNumberKey = Keys.None;
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
@@ -360,6 +361,9 @@ namespace TombEditor.Controls.Panel3D
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
+
+            if (e.KeyCode is Keys.D0 or Keys.D1 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+				_currentNumberKey = e.KeyCode;
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -369,7 +373,9 @@ namespace TombEditor.Controls.Panel3D
 
             if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
-        }
+
+            _currentNumberKey = Keys.None;
+		}
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {

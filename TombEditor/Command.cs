@@ -462,25 +462,29 @@ namespace TombEditor
                 GenericDirectionalControlCommand(args, BlockVertical.Ed, -1, false, false);
             });
 
-			AddCommand("RaiseFloor31Click", "Raise 3rd floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
+            // // // //
+
+			AddCommand("RaiseFloor31Click", "Raise 2nd floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
 			{
-				GenericDirectionalControlCommand(args, BlockVertical.Floor3, 1, false, false);
+				GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision3, 1, false, false);
 			});
 
-			AddCommand("LowerFloor31Click", "Lower 3rd floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
+			AddCommand("LowerFloor31Click", "Lower 2nd floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
 			{
-				GenericDirectionalControlCommand(args, BlockVertical.Floor3, -1, false, false);
+				GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision3, -1, false, false);
 			});
 
-			AddCommand("RaiseCeiling31Click", "Raise 3rd ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
+			AddCommand("RaiseCeiling31Click", "Raise 2nd ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
 			{
-				GenericDirectionalControlCommand(args, BlockVertical.Ceiling3, 1, false, false);
+				GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision3, 1, false, false);
 			});
 
-			AddCommand("LowerCeiling31Click", "Lower 3rd ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
+			AddCommand("LowerCeiling31Click", "Lower 2nd ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
 			{
-				GenericDirectionalControlCommand(args, BlockVertical.Ceiling3, -1, false, false);
+				GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision3, -1, false, false);
 			});
+
+            // // // //
 
 			AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
@@ -2234,7 +2238,27 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -8, 0), new Vector3(), true);
             });
 
-            _commands = _commands.OrderBy(o => o.Type).ToList();
+			AddCommand("AddCeilingSubdivision", "Add ceiling subdivision", CommandType.Geometry, delegate (CommandArgs args)
+			{
+				EditorActions.PushCeilingSubdivisions(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+			});
+
+			AddCommand("RemoveLastCeilingSubdivision", "Remove last ceiling subdivision", CommandType.Geometry, delegate (CommandArgs args)
+			{
+				EditorActions.PopCeilingSubdivisions(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+			});
+
+			AddCommand("AddFloorSubdivision", "Add floor subdivision", CommandType.Geometry, delegate (CommandArgs args)
+			{
+				EditorActions.PushFloorSubdivisions(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+			});
+
+			AddCommand("RemoveLastFloorSubdivision", "Remove last floor subdivision", CommandType.Geometry, delegate (CommandArgs args)
+			{
+				EditorActions.PopFloorSubdivision(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
+			});
+
+			_commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
 }

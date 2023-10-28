@@ -23,11 +23,12 @@ namespace TombEditor.Controls.Panel3D
             public Room Room { get; set; }
             public BlockFace Face { get; set; }
 
-            public bool IsFloorHorizontalPlane => Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2;
-            public bool IsCeilingHorizontalPlane => Face == BlockFace.Ceiling || Face == BlockFace.CeilingTriangle2;
+            public bool IsFloorHorizontalPlane => Face.IsFloor();
+            public bool IsCeilingHorizontalPlane => Face.IsCeiling();
             public bool IsVerticalPlane => !IsFloorHorizontalPlane && !IsCeilingHorizontalPlane;
-            public bool BelongsToFloor => IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle;
-            public bool BelongsToCeiling => IsCeilingHorizontalPlane || Face > BlockFace.DiagonalMiddle;
+            public bool BelongsToFloor => IsFloorHorizontalPlane || Face.IsFloorWall();
+            public bool BelongsToCeiling => IsCeilingHorizontalPlane || Face.IsCeilingWall();
+
             public PickingResultBlock(float distance, float verticalCoord, VectorInt2 pos, Room room, BlockFace face)
             {
                 Distance = distance;

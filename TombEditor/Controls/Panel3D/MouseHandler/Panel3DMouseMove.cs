@@ -117,9 +117,32 @@ namespace TombEditor.Controls.Panel3D
                     }
                     else if (_editor.SelectedSectors.Valid)
                     {
-                        BlockVertical subdivisionToEdit = _toolHandler.ReferencePicking.BelongsToFloor ?
-                            ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Ed : BlockVertical.Floor :
-                            ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Rf : BlockVertical.Ceiling;
+                        BlockVertical subdivisionToEdit;
+                        
+                        if (_toolHandler.ReferencePicking.BelongsToFloor)
+                        {
+                            if (ModifierKeys.HasFlag(Keys.Control) || _currentNumberKey is Keys.D2)
+                                subdivisionToEdit = BlockVertical.Ed;
+                            else if (_currentNumberKey is Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+                            {
+                                int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
+								subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 3);
+							}   
+							else
+								subdivisionToEdit = BlockVertical.Floor;
+						}
+                        else
+                        {
+							if (ModifierKeys.HasFlag(Keys.Control) || _currentNumberKey is Keys.D2)
+								subdivisionToEdit = BlockVertical.Rf;
+							else if (_currentNumberKey is Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+							{
+								int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
+								subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 3);
+							}
+							else
+								subdivisionToEdit = BlockVertical.Ceiling;
+						}
 
                         switch (_editor.Tool.Tool)
                         {

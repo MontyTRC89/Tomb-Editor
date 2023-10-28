@@ -892,7 +892,7 @@ namespace TombLib.LevelData
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
-        public int GetHighestCorner(RectangleInt2 area)
+        public int GetHighestCorner(RectangleInt2 area, bool ignoreCorners = false)
         {
             area = area.Intersect(LocalArea);
 
@@ -900,8 +900,17 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                        max = Math.Max(max, Blocks[x, z].Ceiling.Max);
-            return (max == int.MinValue ? DefaultHeight : max);
+                    {
+                        if (ignoreCorners)
+                        {
+                            if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
+								continue;
+                        }
+
+						max = Math.Max(max, Blocks[x, z].Ceiling.Max);
+					}
+
+			return max == int.MinValue ? DefaultHeight : max;
         }
 
         public int GetHighestCorner()
@@ -909,7 +918,7 @@ namespace TombLib.LevelData
             return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public int GetLowestCorner(RectangleInt2 area)
+        public int GetLowestCorner(RectangleInt2 area, bool ignoreCorners = false)
         {
             area = area.Intersect(LocalArea);
 
@@ -917,8 +926,17 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                        min = Math.Min(min, Blocks[x, z].Floor.Min);
-            return (min == int.MaxValue ? 0 : min);
+                    {
+						if (ignoreCorners)
+						{
+							if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
+								continue;
+						}
+
+						min = Math.Min(min, Blocks[x, z].Floor.Min);
+					}
+            
+			return min == int.MaxValue ? 0 : min;
         }
 
         public int GetLowestCorner()

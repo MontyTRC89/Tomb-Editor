@@ -1355,7 +1355,9 @@ namespace TombEditor
                     area.DoubleSided = _editor.SelectedTexture.DoubleSided;
                 }
 
-                if (face >= BlockFace.Ceiling) area.Mirror(area.TextureIsTriangle);
+                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                    area.Mirror(area.TextureIsTriangle);
+
                 _editor.SelectTextureAndCenterView(area.RestoreQuad());
             }
         }
@@ -1377,9 +1379,9 @@ namespace TombEditor
                         foreach (var face in Enum.GetValues(typeof(BlockFace)).Cast<BlockFace>())
                         {
                             // Filter out impossible combinations right away
-                            if (face >= BlockFace.Floor && block.IsAnyWall) continue;
-                            if (face == BlockFace.FloorTriangle2 && block.Floor.IsQuad) continue;
-                            if (face == BlockFace.CeilingTriangle2 && block.Ceiling.IsQuad) continue;
+                            if (face.IsNonWall() && block.IsAnyWall) continue;
+                            if (face == BlockFace.Floor_Triangle2 && block.Floor.IsQuad) continue;
+                            if (face == BlockFace.Ceiling_Triangle2 && block.Ceiling.IsQuad) continue;
 
                             // Filter out undefined faces
                             if (!room.IsFaceDefined(x, z, face)) continue;
@@ -1448,58 +1450,16 @@ namespace TombEditor
 
         private static bool FaceIsPortal(Room room, VectorInt2 pos, BlockFace face)
         {
-            switch (face)
-            {
-                case BlockFace.PositiveZ_QA:
-                case BlockFace.NegativeZ_QA:
-                case BlockFace.NegativeX_QA:
-                case BlockFace.PositiveX_QA:
-                case BlockFace.PositiveZ_ED:
-                case BlockFace.NegativeZ_ED:
-                case BlockFace.NegativeX_ED:
-                case BlockFace.PositiveX_ED:
-                case BlockFace.PositiveZ_Middle:
-                case BlockFace.NegativeZ_Middle:
-                case BlockFace.NegativeX_Middle:
-                case BlockFace.PositiveX_Middle:
-                case BlockFace.PositiveZ_WS:
-                case BlockFace.NegativeZ_WS:
-                case BlockFace.NegativeX_WS:
-                case BlockFace.PositiveX_WS:
-                case BlockFace.PositiveZ_RF:
-                case BlockFace.NegativeZ_RF:
-                case BlockFace.NegativeX_RF:
-                case BlockFace.PositiveX_RF:
-				case BlockFace.PositiveZ_Floor3:
-				case BlockFace.NegativeZ_Floor3:
-				case BlockFace.NegativeX_Floor3:
-				case BlockFace.PositiveX_Floor3:
-				case BlockFace.PositiveZ_Ceiling3:
-				case BlockFace.NegativeZ_Ceiling3:
-				case BlockFace.NegativeX_Ceiling3:
-				case BlockFace.PositiveX_Ceiling3:
-					return room.Blocks[pos.X, pos.Y].WallPortal != null;
-
-                case BlockFace.Floor:
-                case BlockFace.FloorTriangle2:
-                    return room.Blocks[pos.X, pos.Y].FloorPortal != null;
-
-                case BlockFace.Ceiling:
-                case BlockFace.CeilingTriangle2:
-                    return room.Blocks[pos.X, pos.Y].CeilingPortal != null;
-
-                // TODO: In TombEngine, possibly diagonal portals can be implemented?
-
-                case BlockFace.DiagonalQA:
-                case BlockFace.DiagonalWS:
-                case BlockFace.DiagonalED:
-                case BlockFace.DiagonalRF:
-                case BlockFace.DiagonalMiddle:
-                    return false;
-
-                default:
-                    return false;
-            }
+            if (face.IsNonDiagonalWall())
+                return room.Blocks[pos.X, pos.Y].WallPortal != null;
+            else if (face.IsFloor())
+                return room.Blocks[pos.X, pos.Y].FloorPortal != null;
+            else if (face.IsCeiling())
+                return room.Blocks[pos.X, pos.Y].CeilingPortal != null;
+            else if (face.IsDiagonal())
+                return false; // TODO: In TombEngine, possibly diagonal portals can be implemented?
+            else
+                return false;
         }
 
         private static void CheckTextureAttributes(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
@@ -1549,14 +1509,14 @@ namespace TombEditor
             texture.ClampToBounds();
 
             // HACK: Ceiling vertex order is hardly messed up, we need to do some transforms.
-            if (autocorrectCeiling && face >= BlockFace.Ceiling) texture.Mirror();
+            if (autocorrectCeiling && face.IsCeiling()) texture.Mirror();
 
             if (!_editor.Tool.TextureUVFixer ||
                 (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
             {
                 if (shape == BlockFaceShape.Triangle)
                 {
-                    if (face >= BlockFace.Ceiling)
+                    if (face.IsCeiling())
                         texture.Rotate(3); // WTF? But it works!
                     texture.TexCoord3 = texture.TexCoord2;
                 }
@@ -1591,9 +1551,9 @@ namespace TombEditor
                     processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     break;
 
-                case BlockFace.FloorTriangle2:
-                case BlockFace.CeilingTriangle2:
-                    BlockSurface surface2 = face == BlockFace.FloorTriangle2 ? block.Floor : block.Ceiling;
+                case BlockFace.Floor_Triangle2:
+                case BlockFace.Ceiling_Triangle2:
+                    BlockSurface surface2 = face == BlockFace.Floor_Triangle2 ? block.Floor : block.Ceiling;
                     if (shape == BlockFaceShape.Quad)
                         break;
                     if (surface2.DiagonalSplit == DiagonalSplit.XnZn || 
@@ -1766,123 +1726,228 @@ namespace TombEditor
 
             bool sectionIsWall = room.GetBlockTry(pos.X, pos.Y).IsAnyWall;
 
-            Dictionary<BlockFace, float[]> segments = new Dictionary<BlockFace, float[]>();
+            var segments = new Dictionary<BlockFace, float[]>();
 
             switch (direction)
             {
                 case Direction.PositiveZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_RF))
-                            segments.Add(BlockFace.PositiveZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_RF) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_WS))
-                            segments.Add(BlockFace.PositiveZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_WS) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3))
-							segments.Add(BlockFace.PositiveZ_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Ceiling3) });
+                        var positiveZ_RF = BlockFace.Wall_PositiveZ_RF;
+                        var positiveZ_WS = BlockFace.Wall_PositiveZ_WS;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_RF))
+                            segments.Add(positiveZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_RF) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_WS))
+                            segments.Add(positiveZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_WS) });
+                        
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }    
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_QA))
-                            segments.Add(BlockFace.PositiveZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_ED))
-                            segments.Add(BlockFace.PositiveZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_ED) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Floor3))
-                            segments.Add(BlockFace.PositiveZ_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Floor3) });
+                        var positiveZ_QA = BlockFace.Wall_PositiveZ_QA;
+                        var positiveZ_ED = BlockFace.Wall_PositiveZ_ED;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_QA))
+                            segments.Add(positiveZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_QA) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_ED))
+                            segments.Add(positiveZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_ED) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
-                    if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_Middle))
-                        segments.Add(BlockFace.PositiveZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle) });
+
+                    var positiveZ_Middle = BlockFace.Wall_PositiveZ_Middle;
+
+                    if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_Middle))
+                        segments.Add(positiveZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_Middle) });
                     break;
 
                 case Direction.NegativeZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_RF))
-                            segments.Add(BlockFace.NegativeZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_RF) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_WS))
-                            segments.Add(BlockFace.NegativeZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_WS) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3))
-                            segments.Add(BlockFace.NegativeZ_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Ceiling3) });
+                        var negativeZ_RF = BlockFace.Wall_NegativeZ_RF;
+                        var negativeZ_WS = BlockFace.Wall_NegativeZ_WS;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_RF))
+                            segments.Add(negativeZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_RF) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_WS))
+                            segments.Add(negativeZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_WS) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_QA))
-                            segments.Add(BlockFace.NegativeZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_ED))
-                            segments.Add(BlockFace.NegativeZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_ED) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Floor3))
-                            segments.Add(BlockFace.NegativeZ_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Floor3) });
+                        var negativeZ_QA = BlockFace.Wall_NegativeZ_QA;
+                        var negativeZ_ED = BlockFace.Wall_NegativeZ_ED;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_QA))
+                            segments.Add(negativeZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_QA) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_ED))
+                            segments.Add(negativeZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_ED) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
-                    if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_Middle))
-                        segments.Add(BlockFace.NegativeZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle) });
+
+                    var negativeZ_Middle = BlockFace.Wall_NegativeZ_Middle;
+
+                    if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_Middle))
+                        segments.Add(negativeZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_Middle) });
                     break;
 
                 case Direction.PositiveX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_RF))
-                            segments.Add(BlockFace.PositiveX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_RF) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_WS))
-                            segments.Add(BlockFace.PositiveX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_WS) });
-						if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3))
-							segments.Add(BlockFace.PositiveX_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Ceiling3) });
-					}
+                        var positiveX_RF = BlockFace.Wall_PositiveX_RF;
+                        var positiveX_WS = BlockFace.Wall_PositiveX_WS;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_RF))
+                            segments.Add(positiveX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_RF) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_WS))
+                            segments.Add(positiveX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_WS) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
+                    }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_QA))
-                            segments.Add(BlockFace.PositiveX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_ED))
-                            segments.Add(BlockFace.PositiveX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_ED) });
-						if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Floor3))
-							segments.Add(BlockFace.PositiveX_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Floor3) });
-					}
-                    if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_Middle))
-                        segments.Add(BlockFace.PositiveX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle) });
+                        var positiveX_QA = BlockFace.Wall_PositiveX_QA;
+                        var positiveX_ED = BlockFace.Wall_PositiveX_ED;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_QA))
+                            segments.Add(positiveX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_QA) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_ED))
+                            segments.Add(positiveX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_ED) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
+                    }
+
+                    var positiveX_Middle = BlockFace.Wall_PositiveX_Middle;
+
+                    if (room.IsFaceDefined(pos.X, pos.Y, positiveX_Middle))
+                        segments.Add(positiveX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_Middle) });
                     break;
 
                 case Direction.NegativeX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_RF))
-                            segments.Add(BlockFace.NegativeX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_RF) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_WS))
-                            segments.Add(BlockFace.NegativeX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_WS) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3))
-                            segments.Add(BlockFace.NegativeX_Ceiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Ceiling3) });
+                        var negativeX_RF = BlockFace.Wall_NegativeX_RF;
+                        var negativeX_WS = BlockFace.Wall_NegativeX_WS;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_RF))
+                            segments.Add(negativeX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_RF) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_WS))
+                            segments.Add(negativeX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_WS) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_QA))
-                            segments.Add(BlockFace.NegativeX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_ED))
-                            segments.Add(BlockFace.NegativeX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_ED) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Floor3))
-                            segments.Add(BlockFace.NegativeX_Floor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Floor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Floor3) });
+                        var negativeX_QA = BlockFace.Wall_NegativeX_QA;
+                        var negativeX_ED = BlockFace.Wall_NegativeX_ED;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_QA))
+                            segments.Add(negativeX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_QA) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_ED))
+                            segments.Add(negativeX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_ED) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
-                    if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_Middle))
-                        segments.Add(BlockFace.NegativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle) });
+
+                    var negativeX_Middle = BlockFace.Wall_NegativeX_Middle;
+
+                    if (room.IsFaceDefined(pos.X, pos.Y, negativeX_Middle))
+                        segments.Add(negativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_Middle) });
                     break;
 
                 case Direction.Diagonal:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalRF))
-                            segments.Add(BlockFace.DiagonalRF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalRF), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalRF) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalWS))
-                            segments.Add(BlockFace.DiagonalWS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalWS), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalWS) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalCeiling3))
-                            segments.Add(BlockFace.DiagonalCeiling3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalCeiling3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalCeiling3) });
+                        var diagonalRF = BlockFace.Wall_Diagonal_RF;
+                        var diagonalWS = BlockFace.Wall_Diagonal_WS;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalRF))
+                            segments.Add(diagonalRF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalRF), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalRF) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalWS))
+                            segments.Add(diagonalWS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalWS), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalWS) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalQA))
-                            segments.Add(BlockFace.DiagonalQA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalQA), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalQA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalED))
-                            segments.Add(BlockFace.DiagonalED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalED), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalED) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalFloor3))
-                            segments.Add(BlockFace.DiagonalFloor3, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalFloor3), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalFloor3) });
+                        var diagonalQA = BlockFace.Wall_Diagonal_QA;
+                        var diagonalED = BlockFace.Wall_Diagonal_ED;
+
+                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalQA))
+                            segments.Add(diagonalQA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalQA), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalQA) });
+                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalED))
+                            segments.Add(diagonalED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalED), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalED) });
+
+                        for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
+                        {
+                            var face = BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, i);
+
+                            if (room.IsFaceDefined(pos.X, pos.Y, face))
+                                segments.Add(face, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, face), room.GetFaceLowestPoint(pos.X, pos.Y, face) });
+                        }
                     }
-                    if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalMiddle))
-                        segments.Add(BlockFace.DiagonalMiddle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.DiagonalMiddle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.DiagonalMiddle) });
+
+                    var diagonalMiddle = BlockFace.Wall_Diagonal_Middle;
+
+                    if (room.IsFaceDefined(pos.X, pos.Y, diagonalMiddle))
+                        segments.Add(diagonalMiddle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalMiddle), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalMiddle) });
                     break;
             }
 
@@ -2009,10 +2074,10 @@ namespace TombEditor
             if (!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
             
-            if (pickedFace >= BlockFace.Ceiling) texture.Mirror();
+            if (pickedFace.IsCeiling()) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
 
-            if (pickedFace < BlockFace.Floor)
+            if (pickedFace.IsWall())
             {
                 int xSubs = subdivideWalls ? 0 : area.X1 - area.X0;
                 int zSubs = subdivideWalls ? 0 : area.Y1 - area.Y0;
@@ -2023,88 +2088,36 @@ namespace TombEditor
                         if (room.CoordinateInvalid(x, z) || (workArea != SectorSelection.None && !workArea.Area.Contains(new VectorInt2(x, z))))
                             continue;
 
-                        switch (pickedFace)
-                        {
-                            case BlockFace.NegativeX_QA:
-                            case BlockFace.NegativeX_ED:
-                            case BlockFace.NegativeX_Floor3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
-                                break;
-
-                            case BlockFace.NegativeX_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
-                                break;
-
-                            case BlockFace.NegativeX_RF:
-                            case BlockFace.NegativeX_WS:
-                            case BlockFace.NegativeX_Ceiling3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
-                                break;
-
-                            case BlockFace.PositiveX_QA:
-                            case BlockFace.PositiveX_ED:
-                            case BlockFace.PositiveX_Floor3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
-                                break;
-
-                            case BlockFace.PositiveX_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
-                                break;
-
-                            case BlockFace.PositiveX_RF:
-                            case BlockFace.PositiveX_WS:
-                            case BlockFace.PositiveX_Ceiling3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
-                                break;
-
-                            case BlockFace.NegativeZ_QA:
-                            case BlockFace.NegativeZ_ED:
-                            case BlockFace.NegativeZ_Floor3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
-                                break;
-
-                            case BlockFace.NegativeZ_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
-                                break;
-
-                            case BlockFace.NegativeZ_RF:
-                            case BlockFace.NegativeZ_WS:
-                            case BlockFace.NegativeZ_Ceiling3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
-                                break;
-
-                            case BlockFace.PositiveZ_QA:
-                            case BlockFace.PositiveZ_ED:
-                            case BlockFace.PositiveZ_Floor3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
-                                break;
-
-                            case BlockFace.PositiveZ_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
-                                break;
-
-                            case BlockFace.PositiveZ_RF:
-                            case BlockFace.PositiveZ_WS:
-                            case BlockFace.PositiveZ_Ceiling3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
-                                break;
-
-                            case BlockFace.DiagonalQA:
-                            case BlockFace.DiagonalED:
-                            case BlockFace.DiagonalFloor3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
-                                break;
-
-                            case BlockFace.DiagonalMiddle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
-                                break;
-
-                            case BlockFace.DiagonalRF:
-                            case BlockFace.DiagonalWS:
-                            case BlockFace.DiagonalCeiling3:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
-                                break;
-                        }
+                        if (pickedFace.IsFloorWall() && pickedFace.IsNegativeX())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
+                        else if (pickedFace is BlockFace.Wall_NegativeX_Middle)
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
+                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeX())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
+                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveX())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
+                        else if (pickedFace is BlockFace.Wall_PositiveX_Middle)
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
+                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveX())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
+                        else if (pickedFace.IsFloorWall() && pickedFace.IsNegativeZ())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
+                        else if (pickedFace is BlockFace.Wall_NegativeZ_Middle)
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
+                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeZ())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
+                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveZ())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
+                        else if (pickedFace is BlockFace.Wall_PositiveZ_Middle)
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
+                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveZ())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
+                        else if (pickedFace.IsFloorWall() && pickedFace.IsDiagonal())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
+                        else if (pickedFace is BlockFace.Wall_Diagonal_Middle)
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
+                        else if (pickedFace.IsCeilingWall() && pickedFace.IsDiagonal())
+							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
                     }
             }
             else
@@ -2143,15 +2156,15 @@ namespace TombEditor
                         switch (pickedFace)
                         {
                             case BlockFace.Floor:
-                            case BlockFace.FloorTriangle2:
+                            case BlockFace.Floor_Triangle2:
                                 ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, currentTexture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor_Triangle2, currentTexture);
                                 break;
 
                             case BlockFace.Ceiling:
-                            case BlockFace.CeilingTriangle2:
+                            case BlockFace.Ceiling_Triangle2:
                                 ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, currentTexture, false);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, currentTexture, false);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling_Triangle2, currentTexture, false);
                                 break;
                         }
                     }
@@ -2181,7 +2194,7 @@ namespace TombEditor
                             if (!room.Blocks[x, z].IsFullWall)
                             {
                                 ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.FloorTriangle2, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Floor_Triangle2, texture);
                             }
                             break;
 
@@ -2189,12 +2202,12 @@ namespace TombEditor
                             if (!room.Blocks[x, z].IsFullWall)
                             {
                                 ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling_Triangle2, texture);
                             }
                             break;
 
                         case BlockFaceType.Wall:
-                            for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
+                            foreach (BlockFace face in BlockFaceExtensions.GetWalls())
                                 if (room.IsFaceDefined(x, z, face))
                                     ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), face, texture);
                             break;
@@ -5696,5 +5709,109 @@ namespace TombEditor
 
 			}
 		}
-    }
+
+        public static void PushFloorSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
+        {
+			if (!disableUndo)
+				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+					var block = room.Blocks[x, z];
+
+                    if (block.ExtraFloorSubdivisions.Count >= Block.MAX_EXTRA_SUBDIVISIONS)
+                    {
+                        _editor.SendMessage($"Maximum number of floor subdivisions ({Block.MAX_EXTRA_SUBDIVISIONS + 2}) reached on block ({x},{z}).\nConsider adding another room.", PopupType.Warning);
+                        continue;
+                    }
+
+					short initialHeight = block.ExtraFloorSubdivisions.LastOrDefault()?.Edges.Min() ?? block.GetED().Min();
+
+					if (initialHeight - 1 <= room.GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true))
+					{
+						_editor.SendMessage($"Cannot create a new subdivision in the void (Block ({x},{z})).\nMake sure that the lowest subdivision is at least 2 clicks away from the floor.", PopupType.Warning);
+						continue;
+					}
+
+					block.ExtraFloorSubdivisions.Add(new Subdivision((short)(initialHeight - 1)));
+				}
+
+			SmartBuildGeometry(room, area);
+		}
+
+        public static void PushCeilingSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+					var block = room.Blocks[x, z];
+
+                    if (block.ExtraCeilingSubdivisions.Count >= Block.MAX_EXTRA_SUBDIVISIONS)
+                    {
+						_editor.SendMessage($"Maximum number of extra ceiling subdivisions ({Block.MAX_EXTRA_SUBDIVISIONS + 2}) reached on block ({x},{z}).\nConsider adding another room.", PopupType.Warning);
+						continue;
+					}
+
+					short initialHeight = block.ExtraCeilingSubdivisions.LastOrDefault()?.Edges.Max() ?? block.GetRF().Max();
+
+                    if (initialHeight + 1 >= room.GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true))
+					{
+						_editor.SendMessage($"Cannot create a new subdivision in the void (Block ({x},{z})).\nMake sure that the highest subdivision is at least 2 clicks away from the ceiling.", PopupType.Warning);
+						continue;
+					}
+
+					block.ExtraCeilingSubdivisions.Add(new Subdivision((short)(initialHeight + 1)));
+				}
+
+			SmartBuildGeometry(room, area);
+		}
+
+		public static void PopFloorSubdivision(Room room, RectangleInt2 area, bool disableUndo = false)
+		{
+			if (!disableUndo)
+				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+			for (int x = area.X0; x <= area.X1; x++)
+				for (int z = area.Y0; z <= area.Y1; z++)
+				{
+					var block = room.Blocks[x, z];
+
+                    if (block.ExtraFloorSubdivisions.Count == 0)
+                    {
+                        _editor.SendMessage($"No extra floor subdivisions to remove on block ({x},{z}).", PopupType.Info);
+                        continue;
+                    }
+
+					block.ExtraFloorSubdivisions.RemoveAt(block.ExtraFloorSubdivisions.Count - 1);
+				}
+
+			SmartBuildGeometry(room, area);
+		}
+
+		public static void PopCeilingSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
+		{
+			if (!disableUndo)
+				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+
+			for (int x = area.X0; x <= area.X1; x++)
+				for (int z = area.Y0; z <= area.Y1; z++)
+				{
+					var block = room.Blocks[x, z];
+
+					if (block.ExtraFloorSubdivisions.Count == 0)
+					{
+						_editor.SendMessage($"No extra ceiling subdivisions to remove on block ({x},{z}).", PopupType.Info);
+						continue;
+					}
+
+					block.ExtraCeilingSubdivisions.RemoveAt(block.ExtraFloorSubdivisions.Count - 1);
+				}
+
+			SmartBuildGeometry(room, area);
+		}
+	}
 }
