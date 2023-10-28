@@ -11,9 +11,9 @@
 --!Arguments "Number, 20, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
 --!Arguments "Number, 20, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
 --!Arguments "NewLine, Number, 14.6, [ 0 | 9999 | 0 ], Draw priority\nRange [0 to 9999]"
---!Arguments "Enumeration, 34.81, [ CENTER | CENTER_TOP | CENTER_BOTTOM | CENTER_LEFT | CENTER_RIGHT | TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT ], Align mode"
---!Arguments "Enumeration, 21.5, [ FIT | FILL | STRETCH ], Scale mode"
---!Arguments "Enumeration, 28.6, [ OPAQUE | ALPHATEST | ADDITIVE | SUBTRACTIVE | EXCLUDE | SCREEN | LIGHTEN | ALPHABLEND ], Blend mode"
+--!Arguments "Enumeration, 34.81, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], Align mode"
+--!Arguments "Enumeration, 21.5, [ Fit | Fill | Stretch ], Scale mode"
+--!Arguments "Enumeration, 28.6, [ Opaque | Alphatest | Additive | Noztest | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
 LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, color, posX, posY, rot, scaleX, scaleY, priority,
                                                 alignMode, scaleMode, blendMode)
     local object = LevelFuncs.Engine.Node.GetSpriteSlot(objectID)
@@ -25,3 +25,5 @@ LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, color, posX,
     local sprite = TEN.DisplaySprite(object, spriteID, pos, rot, scale, color)
     sprite:Draw(priority, alignM, scaleM, blendID)
 end
+
+-- "Enumeration, 34.81, [ CENTER | CENTER_TOP | CENTER_BOTTOM | CENTER_LEFT | CENTER_RIGHT | TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT ], Align mode"

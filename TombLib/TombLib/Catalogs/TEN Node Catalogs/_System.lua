@@ -100,11 +100,13 @@ LevelFuncs.Engine.Node.GetBlendMode = function(index)
 		[0] = TEN.Effects.BlendID.OPAQUE,
 		[1] = TEN.Effects.BlendID.ALPHATEST,
 		[2] = TEN.Effects.BlendID.ADDITIVE,
-		[3] = TEN.Effects.BlendID.SUBTRACTIVE,
-		[4] = TEN.Effects.BlendID.EXCLUDE,
-		[5] = TEN.Effects.BlendID.SCREEN,
-		[6] = TEN.Effects.BlendID.LIGHTEN,
-		[7] = TEN.Effects.BlendID.ALPHABLEND
+		[3] = TEN.Effects.BlendID.NOZTEST,
+		[4] = TEN.Effects.BlendID.SUBTRACTIVE,
+		[5] = TEN.Effects.BlendID.WIREFRAME,
+		[6] = TEN.Effects.BlendID.EXCLUDE,
+		[7] = TEN.Effects.BlendID.SCREEN,
+		[8] = TEN.Effects.BlendID.LIGHTEN,
+		[9] = TEN.Effects.BlendID.ALPHABLEND
 	}
 	return blendID[index]
 end
