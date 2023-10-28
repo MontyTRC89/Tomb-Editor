@@ -12,7 +12,7 @@ namespace TombEditor.Controls.Panel3D
         {
             private class ReferenceCell
             {
-                public readonly short[,] Heights = new short[2, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+                public readonly short[,] Heights = new short[9, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, };
                 public bool Processed = false;
             }
 
@@ -154,11 +154,17 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Floor.GetHeight(edge);
                                 _actionGrid[x, z].Heights[1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVertical.Ed, edge);
-                            }
+
+								for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
+									_actionGrid[x, z].Heights[i + 2, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge);
+							}
                             else
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Ceiling.GetHeight(edge);
                                 _actionGrid[x, z].Heights[1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVertical.Rf, edge);
+
+                                for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraCeilingSubdivisions.Count; i++)
+                                    _actionGrid[x, z].Heights[i + 2, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge);
                             }
                     }
             }
@@ -406,11 +412,17 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 ReferenceRoom.Blocks[x, z].Floor.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
                                 ReferenceRoom.Blocks[x, z].SetHeight(BlockVertical.Ed, edge, _actionGrid[x, z].Heights[1, (int)edge]);
+
+                                for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
+                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);
                             }
                             else
                             {
                                 ReferenceRoom.Blocks[x, z].Ceiling.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
                                 ReferenceRoom.Blocks[x, z].SetHeight(BlockVertical.Rf, edge, _actionGrid[x, z].Heights[1, (int)edge]);
+
+                                for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraCeilingSubdivisions.Count; i++)
+                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);
                             }
                         }
                     }

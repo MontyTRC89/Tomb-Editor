@@ -112,7 +112,36 @@ namespace TombLib.LevelData
         public static bool IsExtraFloorSubdivision(this BlockVertical vertical)
             => vertical.ToString().StartsWith("FloorSubdivision");
 
-        public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
+		public static bool IsSubdivision(this BlockVertical vertical)
+		   => vertical.ToString().Contains("Subdivision");
+
+		public static BlockVertical[] GetFloorVerticals() => new BlockVertical[]
+		{
+			BlockVertical.Floor,
+			BlockVertical.Ed,
+			BlockVertical.FloorSubdivision3,
+			BlockVertical.FloorSubdivision4,
+			BlockVertical.FloorSubdivision5,
+			BlockVertical.FloorSubdivision6,
+			BlockVertical.FloorSubdivision7,
+			BlockVertical.FloorSubdivision8,
+			BlockVertical.FloorSubdivision9
+		};
+
+		public static BlockVertical[] GetCeilingVerticals() => new BlockVertical[]
+		{
+			BlockVertical.Ceiling,
+			BlockVertical.Rf,
+			BlockVertical.CeilingSubdivision3,
+			BlockVertical.CeilingSubdivision4,
+			BlockVertical.CeilingSubdivision5,
+			BlockVertical.CeilingSubdivision6,
+			BlockVertical.CeilingSubdivision7,
+			BlockVertical.CeilingSubdivision8,
+			BlockVertical.CeilingSubdivision9
+		};
+
+		public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
         {
             string enumName = $"FloorSubdivision{subdivisionIndex + 3}";
             return Enum.Parse<BlockVertical>(enumName);
@@ -832,13 +861,50 @@ namespace TombLib.LevelData
 
         public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment)
         {
-            if(increment != 0)
-                SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
+            if (increment == 0)
+                return;
+
+            if (vertical.IsSubdivision() && !SubdivisionExists(vertical))
+            {
+                if (vertical.IsExtraFloorSubdivision())
+                {
+                    if (increment > 0)
+						return;
+
+                    if (ExtraFloorSubdivisions.Count == 0)
+						ExtraFloorSubdivisions.Add(new Subdivision(_ed.Min()));
+                    else
+						ExtraFloorSubdivisions.Add(new Subdivision(ExtraFloorSubdivisions.Last().Edges.Min()));
+					
+				}
+				else if (vertical.IsExtraCeilingSubdivision())
+                {
+                    if (increment < 0)
+                        return;
+
+					if (ExtraCeilingSubdivisions.Count == 0)
+                        ExtraCeilingSubdivisions.Add(new Subdivision(_rf.Max()));
+					else
+						ExtraCeilingSubdivisions.Add(new Subdivision(ExtraCeilingSubdivisions.Last().Edges.Max()));
+				}
+            }
+            
+            SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
+        }
+
+        public bool SubdivisionExists(BlockVertical vertical)
+        {
+            if (vertical.IsExtraFloorSubdivision())
+				return ExtraFloorSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
+			else if (vertical.IsExtraCeilingSubdivision())
+				return ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
+			else
+				return false;
         }
 
         public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)
         {
-            var split = vertical == BlockVertical.Floor || vertical == BlockVertical.Ed ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
+            var split = vertical.IsOnFloor() ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
             if (diagonalStep)
             {
                 switch (split)

@@ -145,8 +145,8 @@ namespace TombEditor
                 {
                     if (block == null) return;
 
-                    if (vertical.IsOnFloor()   && (block.Floor.DiagonalSplit   == DiagonalSplit.None || vertical == BlockVertical.Ed) ||
-                        vertical.IsOnCeiling() && (block.Ceiling.DiagonalSplit == DiagonalSplit.None || vertical == BlockVertical.Rf))
+                    if (vertical.IsOnFloor()   && (block.Floor.DiagonalSplit == DiagonalSplit.None || vertical   == BlockVertical.Ed || vertical.IsExtraFloorSubdivision()) ||
+                        vertical.IsOnCeiling() && (block.Ceiling.DiagonalSplit == DiagonalSplit.None || vertical == BlockVertical.Rf || vertical.IsExtraCeilingSubdivision()))
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
@@ -3189,6 +3189,8 @@ namespace TombEditor
                             int floor = floorHeights[(int)edge] ?? floorHeights[((int)edge + 1) % 4] ?? floorHeights[((int)edge + 3) % 4] ?? floorHeights[((int)edge + 2) % 4].Value;
                             int ceiling = ceilingHeights[(int)edge] ?? ceilingHeights[((int)edge + 1) % 4] ?? ceilingHeights[((int)edge + 3) % 4] ?? ceilingHeights[((int)edge + 2) % 4].Value;
 
+                            // TODO: Add support for subdivisions
+
                             block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
                             block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f));
                             block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f));
@@ -3289,6 +3291,9 @@ namespace TombEditor
                                         continue;
                                     break;
                             }
+
+                            // TODO: Add support for subdivisions
+
                             block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
                             block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f));
                             block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f));

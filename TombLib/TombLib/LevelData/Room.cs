@@ -141,8 +141,15 @@ namespace TombLib.LevelData
                     {
                         oldBlock.Raise(BlockVertical.Floor, floor);
                         oldBlock.Raise(BlockVertical.Ed, floor);
+
+                        for (int i = 0; i < oldBlock.ExtraFloorSubdivisions.Count; i++)
+							oldBlock.Raise(BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
+
                         oldBlock.Raise(BlockVertical.Ceiling, ceiling);
                         oldBlock.Raise(BlockVertical.Rf, ceiling);
+
+                        for (int i = 0; i < oldBlock.ExtraCeilingSubdivisions.Count; i++)
+                            oldBlock.Raise(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling);
                     }
 
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
