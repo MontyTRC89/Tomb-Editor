@@ -13,7 +13,7 @@
 --!Arguments "NewLine, Number, 14.6, [ 0 | 9999 | 0 ], Draw priority\nRange [0 to 9999]"
 --!Arguments "Enumeration, 34.81, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], Align mode"
 --!Arguments "Enumeration, 21.5, [ Fit | Fill | Stretch ], Scale mode"
---!Arguments "Enumeration, 28.6, [ Opaque | Alphatest | Additive | Noztest | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
+--!Arguments "Enumeration, 28.6, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
 LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, color, posX, posY, rot, scaleX, scaleY, priority,
                                                 alignMode, scaleMode, blendMode)
     local object = LevelFuncs.Engine.Node.GetSpriteSlot(objectID)
