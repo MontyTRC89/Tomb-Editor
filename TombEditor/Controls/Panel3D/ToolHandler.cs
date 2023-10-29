@@ -47,9 +47,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XnZp:
                                     if (ReferencePicking.Face is BlockFace.Floor_Triangle2 or
                                         BlockFace.Wall_NegativeZ_QA or
-                                        BlockFace.Wall_NegativeZ_ED or
-                                        BlockFace.Wall_PositiveX_QA or
-                                        BlockFace.Wall_PositiveX_ED ||
+                                        BlockFace.Wall_PositiveX_QA ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.NegativeZ) ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.PositiveX))
                                         return true;
@@ -57,9 +55,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XpZn:
                                     if (ReferencePicking.Face is BlockFace.Floor or
                                         BlockFace.Wall_NegativeX_QA or
-                                        BlockFace.Wall_NegativeX_ED or
-                                        BlockFace.Wall_PositiveZ_QA or
-                                        BlockFace.Wall_PositiveZ_ED ||
+                                        BlockFace.Wall_PositiveZ_QA ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.NegativeX) ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.PositiveZ))
                                         return true;
@@ -67,9 +63,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XpZp:
                                     if (ReferencePicking.Face is BlockFace.Floor_Triangle2 or
                                         BlockFace.Wall_NegativeX_QA or
-                                        BlockFace.Wall_NegativeX_ED or
-                                        BlockFace.Wall_NegativeZ_QA or
-                                        BlockFace.Wall_NegativeZ_ED ||
+                                        BlockFace.Wall_NegativeZ_QA ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.NegativeX) ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.NegativeZ))
                                         return true;
@@ -77,9 +71,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XnZn:
                                     if (ReferencePicking.Face is BlockFace.Floor or
                                         BlockFace.Wall_PositiveX_QA or
-                                        BlockFace.Wall_PositiveX_ED or
-                                        BlockFace.Wall_PositiveZ_QA or
-                                        BlockFace.Wall_PositiveZ_ED ||
+                                        BlockFace.Wall_PositiveZ_QA ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.PositiveX) ||
                                         ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.PositiveZ))
                                         return true;
@@ -93,9 +85,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XnZp:
                                     if (ReferencePicking.Face is BlockFace.Ceiling_Triangle2 or
                                         BlockFace.Wall_NegativeZ_WS or
-                                        BlockFace.Wall_NegativeZ_RF or
-                                        BlockFace.Wall_PositiveX_WS or
-                                        BlockFace.Wall_PositiveX_RF ||
+                                        BlockFace.Wall_PositiveX_WS ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.NegativeZ) ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.PositiveX))
                                         return true;
@@ -103,9 +93,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XpZn:
                                     if (ReferencePicking.Face is BlockFace.Ceiling or
                                         BlockFace.Wall_NegativeX_WS or
-                                        BlockFace.Wall_NegativeX_RF or
-                                        BlockFace.Wall_PositiveZ_WS or
-                                        BlockFace.Wall_PositiveZ_RF ||
+                                        BlockFace.Wall_PositiveZ_WS ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.NegativeX) ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.PositiveZ))
                                         return true;
@@ -113,9 +101,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XpZp:
                                     if (ReferencePicking.Face is BlockFace.Ceiling_Triangle2 or
                                         BlockFace.Wall_NegativeX_WS or
-                                        BlockFace.Wall_NegativeX_RF or
-                                        BlockFace.Wall_NegativeZ_WS or
-                                        BlockFace.Wall_NegativeZ_RF ||
+                                        BlockFace.Wall_NegativeZ_WS ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.NegativeX) ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.NegativeZ))
                                         return true;
@@ -123,9 +109,7 @@ namespace TombEditor.Controls.Panel3D
                                 case DiagonalSplit.XnZn:
                                     if (ReferencePicking.Face is BlockFace.Ceiling or
                                         BlockFace.Wall_PositiveX_WS or
-                                        BlockFace.Wall_PositiveX_RF or
-                                        BlockFace.Wall_PositiveZ_WS or
-                                        BlockFace.Wall_PositiveZ_RF ||
+                                        BlockFace.Wall_PositiveZ_WS ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.PositiveX) ||
                                         ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.PositiveZ))
                                         return true;
@@ -153,7 +137,6 @@ namespace TombEditor.Controls.Panel3D
                             if (ReferencePicking.BelongsToFloor)
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Floor.GetHeight(edge);
-                                _actionGrid[x, z].Heights[1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVertical.Ed, edge);
 
 								for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
 									_actionGrid[x, z].Heights[i + 2, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge);
@@ -161,7 +144,6 @@ namespace TombEditor.Controls.Panel3D
                             else
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Ceiling.GetHeight(edge);
-                                _actionGrid[x, z].Heights[1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVertical.Rf, edge);
 
                                 for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraCeilingSubdivisions.Count; i++)
                                     _actionGrid[x, z].Heights[i + 2, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge);
@@ -244,7 +226,7 @@ namespace TombEditor.Controls.Panel3D
                 // for these cases if diagonal step was raised above limit and swapped.
                 // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
 
-                if (ReferencePicking.Face is BlockFace.Wall_Diagonal_ED or BlockFace.Wall_Diagonal_QA)
+                if (ReferencePicking.Face is BlockFace.Wall_Diagonal_FloorSubdivision2 or BlockFace.Wall_Diagonal_QA)
                 {
                     switch (ReferenceBlock.Floor.DiagonalSplit)
                     {
@@ -258,7 +240,7 @@ namespace TombEditor.Controls.Panel3D
                             break;
                     }
                 }
-                else if (ReferencePicking.Face is BlockFace.Wall_Diagonal_WS or BlockFace.Wall_Diagonal_RF)
+                else if (ReferencePicking.Face is BlockFace.Wall_Diagonal_WS or BlockFace.Wall_Diagonal_CeilingSubdivision2)
                 {
                     switch (ReferenceBlock.Ceiling.DiagonalSplit)
                     {
@@ -411,7 +393,6 @@ namespace TombEditor.Controls.Panel3D
                             if (ReferencePicking.BelongsToFloor)
                             {
                                 ReferenceRoom.Blocks[x, z].Floor.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
-                                ReferenceRoom.Blocks[x, z].SetHeight(BlockVertical.Ed, edge, _actionGrid[x, z].Heights[1, (int)edge]);
 
                                 for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
                                     ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);
@@ -419,7 +400,6 @@ namespace TombEditor.Controls.Panel3D
                             else
                             {
                                 ReferenceRoom.Blocks[x, z].Ceiling.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
-                                ReferenceRoom.Blocks[x, z].SetHeight(BlockVertical.Rf, edge, _actionGrid[x, z].Heights[1, (int)edge]);
 
                                 for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraCeilingSubdivisions.Count; i++)
                                     ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);

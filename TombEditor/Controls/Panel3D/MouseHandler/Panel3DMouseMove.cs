@@ -121,24 +121,20 @@ namespace TombEditor.Controls.Panel3D
                         
                         if (_toolHandler.ReferencePicking.BelongsToFloor)
                         {
-                            if (ModifierKeys.HasFlag(Keys.Control) || _currentNumberKey is Keys.D2)
-                                subdivisionToEdit = BlockVertical.Ed;
-                            else if (_currentNumberKey is Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+                            if (_currentNumberKey is Keys.D2 or Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
                             {
                                 int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
-								subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 3);
+								subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
 							}   
 							else
 								subdivisionToEdit = BlockVertical.Floor;
 						}
                         else
                         {
-							if (ModifierKeys.HasFlag(Keys.Control) || _currentNumberKey is Keys.D2)
-								subdivisionToEdit = BlockVertical.Rf;
-							else if (_currentNumberKey is Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+							if (_currentNumberKey is Keys.D2 or Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
 							{
 								int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
-								subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 3);
+								subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
 							}
 							else
 								subdivisionToEdit = BlockVertical.Ceiling;
@@ -227,9 +223,6 @@ namespace TombEditor.Controls.Panel3D
                                             if (belongsToFloor && _toolHandler.ReferencePicking.BelongsToFloor)
                                             {
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceBlock.Floor.Min);
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Ed, edge, Math.Min(
-                                                    Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp)),
-                                                    Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZn))));
 
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Count; i++)
                                                 {
@@ -242,9 +235,6 @@ namespace TombEditor.Controls.Panel3D
                                             else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                             {
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Rf, edge, Math.Min(
-                                                    Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp)),
-                                                    Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZn))));
 
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Count; i++)
                                                 {

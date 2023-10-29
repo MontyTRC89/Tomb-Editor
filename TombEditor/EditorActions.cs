@@ -145,8 +145,8 @@ namespace TombEditor
                 {
                     if (block == null) return;
 
-                    if (vertical.IsOnFloor()   && (block.Floor.DiagonalSplit == DiagonalSplit.None || vertical   == BlockVertical.Ed || vertical.IsExtraFloorSubdivision()) ||
-                        vertical.IsOnCeiling() && (block.Ceiling.DiagonalSplit == DiagonalSplit.None || vertical == BlockVertical.Rf || vertical.IsExtraCeilingSubdivision()))
+                    if (vertical.IsOnFloor()   && (block.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsExtraFloorSubdivision()) ||
+                        vertical.IsOnCeiling() && (block.Ceiling.DiagonalSplit == DiagonalSplit.None || vertical.IsExtraCeilingSubdivision()))
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
@@ -1733,11 +1733,8 @@ namespace TombEditor
                 case Direction.PositiveZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        var positiveZ_RF = BlockFace.Wall_PositiveZ_RF;
                         var positiveZ_WS = BlockFace.Wall_PositiveZ_WS;
 
-                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_RF))
-                            segments.Add(positiveZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_WS))
                             segments.Add(positiveZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_WS) });
                         
@@ -1752,12 +1749,9 @@ namespace TombEditor
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         var positiveZ_QA = BlockFace.Wall_PositiveZ_QA;
-                        var positiveZ_ED = BlockFace.Wall_PositiveZ_ED;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_QA))
                             segments.Add(positiveZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_ED))
-                            segments.Add(positiveZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_ED) });
 
                         for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
                         {
@@ -1777,11 +1771,8 @@ namespace TombEditor
                 case Direction.NegativeZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        var negativeZ_RF = BlockFace.Wall_NegativeZ_RF;
                         var negativeZ_WS = BlockFace.Wall_NegativeZ_WS;
 
-                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_RF))
-                            segments.Add(negativeZ_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_RF), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_WS))
                             segments.Add(negativeZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_WS) });
 
@@ -1796,12 +1787,9 @@ namespace TombEditor
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         var negativeZ_QA = BlockFace.Wall_NegativeZ_QA;
-                        var negativeZ_ED = BlockFace.Wall_NegativeZ_ED;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_QA))
                             segments.Add(negativeZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_ED))
-                            segments.Add(negativeZ_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_ED), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_ED) });
 
                         for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
                         {
@@ -1821,11 +1809,8 @@ namespace TombEditor
                 case Direction.PositiveX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        var positiveX_RF = BlockFace.Wall_PositiveX_RF;
                         var positiveX_WS = BlockFace.Wall_PositiveX_WS;
 
-                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_RF))
-                            segments.Add(positiveX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveX_WS))
                             segments.Add(positiveX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_WS) });
 
@@ -1840,12 +1825,9 @@ namespace TombEditor
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         var positiveX_QA = BlockFace.Wall_PositiveX_QA;
-                        var positiveX_ED = BlockFace.Wall_PositiveX_ED;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveX_QA))
                             segments.Add(positiveX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, positiveX_ED))
-                            segments.Add(positiveX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_ED) });
 
                         for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
                         {
@@ -1865,11 +1847,8 @@ namespace TombEditor
                 case Direction.NegativeX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        var negativeX_RF = BlockFace.Wall_NegativeX_RF;
                         var negativeX_WS = BlockFace.Wall_NegativeX_WS;
 
-                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_RF))
-                            segments.Add(negativeX_RF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_RF), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_RF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeX_WS))
                             segments.Add(negativeX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_WS) });
 
@@ -1884,12 +1863,9 @@ namespace TombEditor
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         var negativeX_QA = BlockFace.Wall_NegativeX_QA;
-                        var negativeX_ED = BlockFace.Wall_NegativeX_ED;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeX_QA))
                             segments.Add(negativeX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_QA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, negativeX_ED))
-                            segments.Add(negativeX_ED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_ED), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_ED) });
 
                         for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
                         {
@@ -1909,11 +1885,8 @@ namespace TombEditor
                 case Direction.Diagonal:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
-                        var diagonalRF = BlockFace.Wall_Diagonal_RF;
                         var diagonalWS = BlockFace.Wall_Diagonal_WS;
 
-                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalRF))
-                            segments.Add(diagonalRF, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalRF), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalRF) });
                         if (room.IsFaceDefined(pos.X, pos.Y, diagonalWS))
                             segments.Add(diagonalWS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalWS), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalWS) });
 
@@ -1928,12 +1901,9 @@ namespace TombEditor
                     if (section == BlockFaceType.Floor || sectionIsWall)
                     {
                         var diagonalQA = BlockFace.Wall_Diagonal_QA;
-                        var diagonalED = BlockFace.Wall_Diagonal_ED;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, diagonalQA))
                             segments.Add(diagonalQA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalQA), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalQA) });
-                        if (room.IsFaceDefined(pos.X, pos.Y, diagonalED))
-                            segments.Add(diagonalED, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalED), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalED) });
 
                         for (int i = 0; i < Block.MAX_EXTRA_SUBDIVISIONS; i++)
                         {
@@ -3191,10 +3161,10 @@ namespace TombEditor
 
                             // TODO: Add support for subdivisions
 
-                            block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
                             block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f));
                             block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.Rf, edge, (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling));
                         }
                     }
                 }
@@ -3294,10 +3264,10 @@ namespace TombEditor
 
                             // TODO: Add support for subdivisions
 
-                            block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
                             block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f));
                             block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.Rf, edge, (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling));
                         }
                     }
                 }
@@ -5713,110 +5683,6 @@ namespace TombEditor
 				}
 
 			}
-		}
-
-        public static void PushFloorSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
-        {
-			if (!disableUndo)
-				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-					var block = room.Blocks[x, z];
-
-                    if (block.ExtraFloorSubdivisions.Count >= Block.MAX_EXTRA_SUBDIVISIONS)
-                    {
-                        _editor.SendMessage($"Maximum number of floor subdivisions ({Block.MAX_EXTRA_SUBDIVISIONS + 2}) reached on block ({x},{z}).\nConsider adding another room.", PopupType.Warning);
-                        continue;
-                    }
-
-					short initialHeight = block.ExtraFloorSubdivisions.LastOrDefault()?.Edges.Min() ?? block.GetED().Min();
-
-					if (initialHeight - 1 <= room.GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true))
-					{
-						_editor.SendMessage($"Cannot create a new subdivision in the void (Block ({x},{z})).\nMake sure that the lowest subdivision is at least 2 clicks away from the floor.", PopupType.Warning);
-						continue;
-					}
-
-					block.ExtraFloorSubdivisions.Add(new Subdivision((short)(initialHeight - 1)));
-				}
-
-			SmartBuildGeometry(room, area);
-		}
-
-        public static void PushCeilingSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
-        {
-            if (!disableUndo)
-                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-					var block = room.Blocks[x, z];
-
-                    if (block.ExtraCeilingSubdivisions.Count >= Block.MAX_EXTRA_SUBDIVISIONS)
-                    {
-						_editor.SendMessage($"Maximum number of extra ceiling subdivisions ({Block.MAX_EXTRA_SUBDIVISIONS + 2}) reached on block ({x},{z}).\nConsider adding another room.", PopupType.Warning);
-						continue;
-					}
-
-					short initialHeight = block.ExtraCeilingSubdivisions.LastOrDefault()?.Edges.Max() ?? block.GetRF().Max();
-
-                    if (initialHeight + 1 >= room.GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true))
-					{
-						_editor.SendMessage($"Cannot create a new subdivision in the void (Block ({x},{z})).\nMake sure that the highest subdivision is at least 2 clicks away from the ceiling.", PopupType.Warning);
-						continue;
-					}
-
-					block.ExtraCeilingSubdivisions.Add(new Subdivision((short)(initialHeight + 1)));
-				}
-
-			SmartBuildGeometry(room, area);
-		}
-
-		public static void PopFloorSubdivision(Room room, RectangleInt2 area, bool disableUndo = false)
-		{
-			if (!disableUndo)
-				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
-			for (int x = area.X0; x <= area.X1; x++)
-				for (int z = area.Y0; z <= area.Y1; z++)
-				{
-					var block = room.Blocks[x, z];
-
-                    if (block.ExtraFloorSubdivisions.Count == 0)
-                    {
-                        _editor.SendMessage($"No extra floor subdivisions to remove on block ({x},{z}).", PopupType.Info);
-                        continue;
-                    }
-
-					block.ExtraFloorSubdivisions.RemoveAt(block.ExtraFloorSubdivisions.Count - 1);
-				}
-
-			SmartBuildGeometry(room, area);
-		}
-
-		public static void PopCeilingSubdivisions(Room room, RectangleInt2 area, bool disableUndo = false)
-		{
-			if (!disableUndo)
-				_editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
-
-			for (int x = area.X0; x <= area.X1; x++)
-				for (int z = area.Y0; z <= area.Y1; z++)
-				{
-					var block = room.Blocks[x, z];
-
-					if (block.ExtraFloorSubdivisions.Count == 0)
-					{
-						_editor.SendMessage($"No extra ceiling subdivisions to remove on block ({x},{z}).", PopupType.Info);
-						continue;
-					}
-
-					block.ExtraCeilingSubdivisions.RemoveAt(block.ExtraFloorSubdivisions.Count - 1);
-				}
-
-			SmartBuildGeometry(room, area);
 		}
 	}
 }

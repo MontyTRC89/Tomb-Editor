@@ -71,8 +71,8 @@ namespace TombLib.LevelData
     {
         Floor, // FloorSubdivision1
 		Ceiling, // CeilingSubdivision1
-		Ed, // FloorSubdivision2
-		Rf, // CeilingSubdivision2
+		FloorSubdivision2,
+		CeilingSubdivision2,
 
 		FloorSubdivision3,
         CeilingSubdivision3,
@@ -101,10 +101,10 @@ namespace TombLib.LevelData
     public static class BlockVerticalExtensions
     {
         public static bool IsOnFloor(this BlockVertical vertical)
-            => vertical is BlockVertical.Floor or BlockVertical.Ed || vertical.IsExtraFloorSubdivision();
+            => vertical is BlockVertical.Floor || vertical.IsExtraFloorSubdivision();
 
         public static bool IsOnCeiling(this BlockVertical vertical)
-            => vertical is BlockVertical.Ceiling or BlockVertical.Rf || vertical.IsExtraCeilingSubdivision();
+            => vertical is BlockVertical.Ceiling || vertical.IsExtraCeilingSubdivision();
 
         public static bool IsExtraCeilingSubdivision(this BlockVertical vertical)
             => vertical.ToString().StartsWith("CeilingSubdivision");
@@ -117,22 +117,22 @@ namespace TombLib.LevelData
 
 		public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
         {
-            string enumName = $"FloorSubdivision{subdivisionIndex + 3}";
+            string enumName = $"FloorSubdivision{subdivisionIndex + 2}";
             return Enum.Parse<BlockVertical>(enumName);
         }
 
         public static BlockVertical GetExtraCeilingSubdivision(int subdivisionIndex)
         {
-            string enumName = $"CeilingSubdivision{subdivisionIndex + 3}";
+            string enumName = $"CeilingSubdivision{subdivisionIndex + 2}";
             return Enum.Parse<BlockVertical>(enumName);
         }
 
         public static int GetExtraSubdivisionIndex(this BlockVertical vertical)
         {
             if (vertical.IsExtraFloorSubdivision())
-                return int.Parse(vertical.ToString()["FloorSubdivision".Length..]) - 3;
+                return int.Parse(vertical.ToString()["FloorSubdivision".Length..]) - 2;
             else if (vertical.IsExtraCeilingSubdivision())
-                return int.Parse(vertical.ToString()["CeilingSubdivision".Length..]) - 3;
+                return int.Parse(vertical.ToString()["CeilingSubdivision".Length..]) - 2;
             else
                 return 0;
         }
@@ -146,11 +146,11 @@ namespace TombLib.LevelData
         Wall_PositiveX_QA = 3, //
         Wall_Diagonal_QA = 4,  //
 
-        Wall_PositiveZ_ED = 5, //
-        Wall_NegativeZ_ED = 6, //
-        Wall_NegativeX_ED = 7, // FloorSubdivision2
-        Wall_PositiveX_ED = 8, //
-        Wall_Diagonal_ED = 9,  //
+        Wall_PositiveZ_FloorSubdivision2 = 5, 
+        Wall_NegativeZ_FloorSubdivision2 = 6,
+        Wall_NegativeX_FloorSubdivision2 = 7, 
+        Wall_PositiveX_FloorSubdivision2 = 8, 
+        Wall_Diagonal_FloorSubdivision2 = 9,  
 
         Wall_PositiveZ_Middle = 10,
         Wall_NegativeZ_Middle = 11,
@@ -164,11 +164,11 @@ namespace TombLib.LevelData
         Wall_PositiveX_WS = 18, //
         Wall_Diagonal_WS = 19,  //
 
-        Wall_PositiveZ_RF = 20, //
-        Wall_NegativeZ_RF = 21, //
-        Wall_NegativeX_RF = 22, // CeilingSubdivision2
-        Wall_PositiveX_RF = 23, //
-        Wall_Diagonal_RF = 24,  //
+        Wall_PositiveZ_CeilingSubdivision2 = 20,
+        Wall_NegativeZ_CeilingSubdivision2 = 21,
+        Wall_NegativeX_CeilingSubdivision2 = 22,
+        Wall_PositiveX_CeilingSubdivision2 = 23,
+        Wall_Diagonal_CeilingSubdivision2 = 24, 
 
         Floor = 25,
         Floor_Triangle2 = 26,
@@ -315,10 +315,10 @@ namespace TombLib.LevelData
             => face.ToString().Contains("Diagonal");
 
         public static bool IsFloorWall(this BlockFace face)
-            => face <= BlockFace.Wall_Diagonal_ED || face.IsFloorSubdivision();
+            => face <= BlockFace.Wall_Diagonal_FloorSubdivision2 || face.IsFloorSubdivision();
 
         public static bool IsCeilingWall(this BlockFace face)
-            => face is >= BlockFace.Wall_PositiveZ_WS and <= BlockFace.Wall_Diagonal_RF || face.IsCeilingSubdivision();
+            => face is >= BlockFace.Wall_PositiveZ_WS and <= BlockFace.Wall_Diagonal_CeilingSubdivision2 || face.IsCeilingSubdivision();
 
         public static bool IsMiddleWall(this BlockFace face)
             => face is >= BlockFace.Wall_PositiveZ_Middle and <= BlockFace.Wall_Diagonal_Middle;
@@ -341,9 +341,9 @@ namespace TombLib.LevelData
         public static int GetExtraSubdivisionIndex(this BlockFace face)
         {
             if (face.IsFloorSubdivision())
-                return int.Parse(face.ToString().Split('_').Last()["FloorSubdivision".Length..]) - 3;
+                return int.Parse(face.ToString().Split('_').Last()["FloorSubdivision".Length..]) - 2;
             else if (face.IsCeilingSubdivision())
-                return int.Parse(face.ToString().Split('_').Last()["CeilingSubdivision".Length..]) - 3;
+                return int.Parse(face.ToString().Split('_').Last()["CeilingSubdivision".Length..]) - 2;
             else
                 return -1;
         }
@@ -356,13 +356,13 @@ namespace TombLib.LevelData
 
         public static BlockFace GetExtraFloorSubdivisionFace(Direction direction, int subdivisionIndex)
         {
-            string enumName = $"Wall_{direction}_FloorSubdivision{subdivisionIndex + 3}";
+            string enumName = $"Wall_{direction}_FloorSubdivision{subdivisionIndex + 2}";
             return Enum.Parse<BlockFace>(enumName);
         }
 
         public static BlockFace GetExtraCeilingSubdivisionFace(Direction direction, int subdivisionIndex)
         {
-            string enumName = $"Wall_{direction}_CeilingSubdivision{subdivisionIndex + 3}";
+            string enumName = $"Wall_{direction}_CeilingSubdivision{subdivisionIndex + 2}";
             return Enum.Parse<BlockFace>(enumName);
         }
     }
@@ -611,14 +611,12 @@ namespace TombLib.LevelData
     [Serializable]
     public class Block : ICloneable
     {
-        public const int MAX_EXTRA_SUBDIVISIONS = 7;
+        public const int MAX_EXTRA_SUBDIVISIONS = 8;
         public static Block Empty { get; } = new Block();
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
         public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
-        private short[] _ed { get; } = new short[4];
-        private short[] _rf { get; } = new short[4];
         public List<Subdivision> ExtraFloorSubdivisions { get; } = new();
         public List<Subdivision> ExtraCeilingSubdivisions { get; } = new();
         private TextureArea[] _faceTextures { get; } = new TextureArea[(int)BlockFace.Count];
@@ -639,8 +637,6 @@ namespace TombLib.LevelData
         public Block(int floor, int ceiling)
         {
             Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
-            _ed[0] = _ed[1] = _ed[2] = _ed[3] = (short)floor;
-            _rf[0] = _rf[1] = _rf[2] = _rf[3] = (short)ceiling;
             Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
         }
 
@@ -652,10 +648,6 @@ namespace TombLib.LevelData
             result.ForceFloorSolid = ForceFloorSolid;
             for (BlockFace face = 0; face < BlockFace.Count; face++)
                 result._faceTextures[(int)face] = _faceTextures[(int)face];
-            for (int i = 0; i < 4; i++)
-                result._ed[i] = _ed[i];
-            for (int i = 0; i < 4; i++)
-                result._rf[i] = _rf[i];
             foreach (Subdivision subdivision in ExtraFloorSubdivisions)
                 result.ExtraFloorSubdivisions.Add((Subdivision)subdivision.Clone());
             foreach (Subdivision subdivision in ExtraCeilingSubdivisions)
@@ -725,9 +717,6 @@ namespace TombLib.LevelData
 
             for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
             {
-                SetHeight(BlockVertical.Ed, edge, replacement.GetHeight(BlockVertical.Ed, edge));
-                SetHeight(BlockVertical.Rf, edge, replacement.GetHeight(BlockVertical.Rf, edge));
-
                 for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
                 {
                     BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
@@ -753,10 +742,6 @@ namespace TombLib.LevelData
                     return Floor.GetHeight(edge);
                 case BlockVertical.Ceiling:
                     return Ceiling.GetHeight(edge);
-                case BlockVertical.Ed:
-                    return _ed[(int)edge];
-                case BlockVertical.Rf:
-                    return _rf[(int)edge];
             }
 
             if (vertical.IsExtraFloorSubdivision())
@@ -767,7 +752,7 @@ namespace TombLib.LevelData
                 if (subdivision == null)
                 {
                     if (index == 0)
-                        return _ed.Min();
+                        return short.MinValue;
                     else
                         return ExtraFloorSubdivisions.ElementAtOrDefault(index - 1)?.Edges[(int)edge] ?? short.MinValue;
                 }
@@ -783,7 +768,7 @@ namespace TombLib.LevelData
                 if (subdivision == null)
                 {
                     if (index == 0)
-                        return _rf.Max();
+                        return short.MaxValue;
                     else
                         return ExtraCeilingSubdivisions.ElementAtOrDefault(index - 1)?.Edges[(int)edge] ?? short.MaxValue;
                 }
@@ -796,6 +781,9 @@ namespace TombLib.LevelData
 
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
+            if (newValue is short.MinValue or short.MaxValue)
+				return;
+
             switch (vertical)
             {
                 case BlockVertical.Floor:
@@ -804,12 +792,6 @@ namespace TombLib.LevelData
                 case BlockVertical.Ceiling:
                     Ceiling.SetHeight(edge, newValue);
                     return;
-                case BlockVertical.Ed:
-                    _ed[(int)edge] = checked((short)newValue);
-                    return;
-                case BlockVertical.Rf:
-                    _rf[(int)edge] = checked((short)newValue);
-                    return;
             }
 
             if (vertical.IsExtraFloorSubdivision())
@@ -817,9 +799,14 @@ namespace TombLib.LevelData
                 Subdivision existingSubdivision = ExtraFloorSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex());
 
                 if (existingSubdivision == null)
-                    return;
-                
-                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                {
+                    if (!IsValidNextSubdivision(vertical))
+                        return;
+
+					existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
+				}
+
+				existingSubdivision.Edges[(int)edge] = checked((short)newValue);
             }
 
             if (vertical.IsExtraCeilingSubdivision())
@@ -827,7 +814,12 @@ namespace TombLib.LevelData
                 Subdivision existingSubdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex());
 
                 if (existingSubdivision == null)
-                    return;
+                {
+                    if (!IsValidNextSubdivision(vertical))
+						return;
+
+					existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
+                }
                 
                 existingSubdivision.Edges[(int)edge] = checked((short)newValue);
             }
@@ -849,7 +841,7 @@ namespace TombLib.LevelData
 						return;
 
                     if (ExtraFloorSubdivisions.Count == 0)
-						ExtraFloorSubdivisions.Add(new Subdivision(_ed.Min()));
+						ExtraFloorSubdivisions.Add(new Subdivision(Floor.Min));
                     else
 						ExtraFloorSubdivisions.Add(new Subdivision(ExtraFloorSubdivisions.Last().Edges.Min()));
 					
@@ -860,7 +852,7 @@ namespace TombLib.LevelData
                         return;
 
 					if (ExtraCeilingSubdivisions.Count == 0)
-                        ExtraCeilingSubdivisions.Add(new Subdivision(_rf.Max()));
+                        ExtraCeilingSubdivisions.Add(new Subdivision(Ceiling.Max));
 					else
 						ExtraCeilingSubdivisions.Add(new Subdivision(ExtraCeilingSubdivisions.Last().Edges.Max()));
 				}
@@ -1037,7 +1029,6 @@ namespace TombLib.LevelData
                 bool requiredFloorSplitDirectionIsXEqualsZ = Floor.SplitDirectionIsXEqualsZ != diagonalChange;
                 Floor.DiagonalSplit = TransformDiagonalSplit(Floor.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Floor.XpZp, ref Floor.XnZp, ref Floor.XnZn, ref Floor.XpZn);
-                transformation.TransformValueDiagonalQuad(ref _ed[(int)BlockEdge.XpZp], ref _ed[(int)BlockEdge.XnZp], ref _ed[(int)BlockEdge.XnZn], ref _ed[(int)BlockEdge.XpZn]);
 
                 foreach (Subdivision subdivision in ExtraFloorSubdivisions)
                     transformation.TransformValueDiagonalQuad(ref subdivision.Edges[(int)BlockEdge.XpZp], ref subdivision.Edges[(int)BlockEdge.XnZp], ref subdivision.Edges[(int)BlockEdge.XnZn], ref subdivision.Edges[(int)BlockEdge.XpZn]);
@@ -1056,7 +1047,6 @@ namespace TombLib.LevelData
                 bool requiredCeilingSplitDirectionIsXEqualsZ = Ceiling.SplitDirectionIsXEqualsZ != diagonalChange;
                 Ceiling.DiagonalSplit = TransformDiagonalSplit(Ceiling.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Ceiling.XpZp, ref Ceiling.XnZp, ref Ceiling.XnZn, ref Ceiling.XpZn);
-                transformation.TransformValueDiagonalQuad(ref _rf[(int)BlockEdge.XpZp], ref _rf[(int)BlockEdge.XnZp], ref _rf[(int)BlockEdge.XnZn], ref _rf[(int)BlockEdge.XpZn]);
 
                 foreach (Subdivision subdivision in ExtraCeilingSubdivisions)
                     transformation.TransformValueDiagonalQuad(ref subdivision.Edges[(int)BlockEdge.XpZp], ref subdivision.Edges[(int)BlockEdge.XnZp], ref subdivision.Edges[(int)BlockEdge.XnZn], ref subdivision.Edges[(int)BlockEdge.XpZn]);
@@ -1080,12 +1070,6 @@ namespace TombLib.LevelData
                     MirrorWallTexture(BlockFace.Wall_NegativeZ_QA, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.Wall_Diagonal_QA, oldFaceIsTriangle);
 
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_ED, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_ED, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_ED, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_ED, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_ED, oldFaceIsTriangle);
-
                     for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
                     {
                         MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
@@ -1100,11 +1084,6 @@ namespace TombLib.LevelData
                     ref _faceTextures[(int)BlockFace.Wall_PositiveZ_QA],
                     ref _faceTextures[(int)BlockFace.Wall_NegativeX_QA],
                     ref _faceTextures[(int)BlockFace.Wall_NegativeZ_QA]);
-                transformation.TransformValueQuad(
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveX_ED],
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveZ_ED],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeX_ED],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeZ_ED]);
 
                 for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
                     transformation.TransformValueQuad(
@@ -1152,12 +1131,6 @@ namespace TombLib.LevelData
                     MirrorWallTexture(BlockFace.Wall_NegativeZ_WS, oldFaceIsTriangle);
                     MirrorWallTexture(BlockFace.Wall_Diagonal_WS, oldFaceIsTriangle);
 
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_RF, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_RF, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_RF, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_RF, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_RF, oldFaceIsTriangle);
-
                     for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
                     {
                         MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
@@ -1172,11 +1145,6 @@ namespace TombLib.LevelData
                     ref _faceTextures[(int)BlockFace.Wall_PositiveZ_WS],
                     ref _faceTextures[(int)BlockFace.Wall_NegativeX_WS],
                     ref _faceTextures[(int)BlockFace.Wall_NegativeZ_WS]);
-                transformation.TransformValueQuad(
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveX_RF],
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveZ_RF],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeX_RF],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeZ_RF]);
 
                 for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
                     transformation.TransformValueQuad(
@@ -1236,20 +1204,17 @@ namespace TombLib.LevelData
         {
             for (BlockEdge i = 0; i < BlockEdge.Count; i++)
             {
-                SetHeight(BlockVertical.Ed, i, Math.Min(GetHeight(BlockVertical.Ed, i), Floor.GetHeight(i)));
-                SetHeight(BlockVertical.Rf, i, Math.Max(GetHeight(BlockVertical.Rf, i), Ceiling.GetHeight(i)));
-
                 for (int j = 0; j < ExtraFloorSubdivisions.Count; j++)
                 {
                     BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(j);
-                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Ed : BlockVerticalExtensions.GetExtraFloorSubdivision(j - 1);     
+                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Floor : BlockVerticalExtensions.GetExtraFloorSubdivision(j - 1);     
                     SetHeight(subdivisionVertical, i, Math.Min(GetHeight(subdivisionVertical, i), GetHeight(lastBlockVertical, i)));
                 }
 
                 for (int j = 0; j < ExtraCeilingSubdivisions.Count; j++)
                 {
                     BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(j);
-                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Rf : BlockVerticalExtensions.GetExtraCeilingSubdivision(j - 1);
+                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Ceiling : BlockVerticalExtensions.GetExtraCeilingSubdivision(j - 1);
                     SetHeight(subdivisionVertical, i, Math.Max(GetHeight(subdivisionVertical, i), GetHeight(lastBlockVertical, i)));
                 }
 
@@ -1412,9 +1377,6 @@ namespace TombLib.LevelData
 
             return slopeDirections;
         }
-
-        public short[] GetED() => _ed;
-        public short[] GetRF() => _rf;
 
         public bool IsSubdivisionFaceUsed(BlockFace face)
         {

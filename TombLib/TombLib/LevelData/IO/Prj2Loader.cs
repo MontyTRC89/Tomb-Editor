@@ -764,7 +764,7 @@ namespace TombLib.LevelData.IO
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.Ed, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -775,7 +775,7 @@ namespace TombLib.LevelData.IO
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.Rf, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);

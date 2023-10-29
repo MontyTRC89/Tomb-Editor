@@ -140,13 +140,11 @@ namespace TombLib.LevelData
                     if (!useFloor.HasValue)
                     {
                         oldBlock.Raise(BlockVertical.Floor, floor);
-                        oldBlock.Raise(BlockVertical.Ed, floor);
 
                         for (int i = 0; i < oldBlock.ExtraFloorSubdivisions.Count; i++)
                             oldBlock.Raise(BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
 
                         oldBlock.Raise(BlockVertical.Ceiling, ceiling);
-                        oldBlock.Raise(BlockVertical.Rf, ceiling);
 
                         for (int i = 0; i < oldBlock.ExtraCeilingSubdivisions.Count; i++)
                             oldBlock.Raise(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling);
@@ -1838,7 +1836,11 @@ namespace TombLib.LevelData
                 //else
                 //    lastEdges = block.ExtraFloorSubdivisions.ElementAt(index - 1).Edges;
 
-                Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAt(index);
+                Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(index);
+
+                if (subdivision == null)
+                    return true;
+
                 int lowest = GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
 
                 bool isInVoid = subdivision.Edges.Max() <= lowest;
@@ -1856,8 +1858,12 @@ namespace TombLib.LevelData
                 //else
                 //	lastEdges = block.ExtraCeilingSubdivisions.ElementAt(index - 1).Edges;
 
-                Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAt(index);
-                int highest = GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+                Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(index);
+
+				if (subdivision == null)
+					return true;
+
+				int highest = GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
 
                 bool isInVoid = subdivision.Edges.Min() >= highest;
                 //bool isFlattened = subdivision.Edges.SequenceEqual(lastEdges);
