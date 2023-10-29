@@ -5,7 +5,7 @@
 -- !Arguments "Enumeration, 35, [ Forward | Back | Left | Right | Step Left | Step Right | Walk | Sprint | Crouch | Jump | Roll | Action | Draw | Look | Accelerate (Vehicle) | Reverse (Vehicle) | Speed (Vehicle) | Slow (Vehicle) | Brake (Vehicle) | Fire (Vehicle) | Flare | Small Medipack | Large Medipack | Previous Weapon | Next Weapon | Weapon 1 | Weapon 2 | Weapon 3 | Weapon 4 | Weapon 5 | Weapon 6 | Weapon 7 | Weapon 8 | Weapon 9 | Weapon 10 | Select | Deselect | Pause | Inventory | Save | Load ]"
 
 LevelFuncs.Engine.Node.KeyIsHit = function(keyCode)
-	return TEN.Misc.KeyIsHit(keyCode)
+	return TEN.Input.KeyIsHit(keyCode)
 end
 
 -- !Name "If key is held..."
@@ -15,7 +15,7 @@ end
 -- !Arguments "Enumeration, 35, [ Forward | Back | Left | Right | Step Left | Step Right | Walk | Sprint | Crouch | Jump | Roll | Action | Draw | Look | Accelerate (Vehicle) | Reverse (Vehicle) | Speed (Vehicle) | Slow (Vehicle) | Brake (Vehicle) | Fire (Vehicle) | Flare | Small Medipack | Large Medipack | Previous Weapon | Next Weapon | Weapon 1 | Weapon 2 | Weapon 3 | Weapon 4 | Weapon 5 | Weapon 6 | Weapon 7 | Weapon 8 | Weapon 9 | Weapon 10 | Select | Deselect | Pause | Inventory | Save | Load ]"
 
 LevelFuncs.Engine.Node.KeyIsHeld = function(keyCode)
-	return TEN.Misc.KeyIsHeld(keyCode)
+	return TEN.Input.KeyIsHeld(keyCode)
 end
 
 -- !Name "Push a key"
@@ -24,7 +24,7 @@ end
 -- !Arguments "Enumeration, 35, [ Forward | Back | Left | Right | Step Left | Step Right | Walk | Sprint | Crouch | Jump | Roll | Action | Draw | Look | Accelerate (Vehicle) | Reverse (Vehicle) | Speed (Vehicle) | Slow (Vehicle) | Brake (Vehicle) | Fire (Vehicle) | Flare | Small Medipack | Large Medipack | Previous Weapon | Next Weapon | Weapon 1 | Weapon 2 | Weapon 3 | Weapon 4 | Weapon 5 | Weapon 6 | Weapon 7 | Weapon 8 | Weapon 9 | Weapon 10 | Select | Deselect | Pause | Inventory | Save | Load ]"
 
 LevelFuncs.Engine.Node.PushKey = function(keyCode)
-	return TEN.Misc.KeyPush(keyCode)
+	return TEN.Input.KeyPush(keyCode)
 end
 
 -- !Name "Clear a key"
@@ -33,5 +33,5 @@ end
 -- !Arguments "Enumeration, 35, [ Forward | Back | Left | Right | Step Left | Step Right | Walk | Sprint | Crouch | Jump | Roll | Action | Draw | Look | Accelerate (Vehicle) | Reverse (Vehicle) | Speed (Vehicle) | Slow (Vehicle) | Brake (Vehicle) | Fire (Vehicle) | Flare | Small Medipack | Large Medipack | Previous Weapon | Next Weapon | Weapon 1 | Weapon 2 | Weapon 3 | Weapon 4 | Weapon 5 | Weapon 6 | Weapon 7 | Weapon 8 | Weapon 9 | Weapon 10 | Select | Deselect | Pause | Inventory | Save | Load ]"
 
 LevelFuncs.Engine.Node.BlockKey = function(keyCode)
-	return TEN.Misc.KeyClear(keyCode)
+	return TEN.Input.KeyClear(keyCode)
 end
