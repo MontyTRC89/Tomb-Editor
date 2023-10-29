@@ -89,20 +89,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(moveable.NumMeshes);
                     writer.Write(moveable.StartingMesh);
                     writer.Write(moveable.MeshTree);
-                    writer.Write(moveable.FrameOffset);
                     writer.Write(moveable.NumAnimations);
 
                     foreach (var animation in moveable.Animations)
                     {
-                        writer.Write((uint)animation.FrameOffset);
-                        writer.Write((uint)animation.FrameRate);
                         writer.Write((uint)animation.StateID);
-                        writer.Write(animation.VelocityStart);
-                        writer.Write(animation.VelocityEnd);
-                        writer.Write((uint)animation.FrameStart);
                         writer.Write((uint)animation.FrameEnd);
                         writer.Write((uint)animation.NextAnimation);
                         writer.Write((uint)animation.NextFrame);
+                        writer.Write((uint)animation.FrameRate);
+                        writer.Write(animation.VelocityStart);
+                        writer.Write(animation.VelocityEnd);
 
                         writer.Write((uint)animation.KeyFrames.Count);
                         foreach (var keyFrame in animation.KeyFrames)
@@ -117,15 +114,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write(keyFrame.Offset.Y);
                             writer.Write(keyFrame.Offset.Z);
                             writer.Write((uint)keyFrame.Angles.Count);
+
                             foreach (var angle in keyFrame.Angles)
                                 writer.Write(angle);
                         }
 
                         writer.Write((uint)animation.StateChanges.Count);
                         writer.WriteBlockArray(animation.StateChanges);
+
                         writer.Write((uint)animation.NumAnimCommands);
-                        writer.Write((uint)animation.CommandData.Count);
-                        writer.WriteBlockArray(animation.CommandData);
+                        foreach (var element in animation.CommandData)
+                        {
+                            if (element is int intComponent)
+                            {
+                                writer.Write(intComponent);
+                            }
+                            else if (element is Vector3 vector3Component)
+                            {
+                                writer.Write(vector3Component);
+                            }
+                        }
                     }
                 }
 

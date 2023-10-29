@@ -576,7 +576,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int NumMeshes;
         public int StartingMesh;
         public int MeshTree;
-        public int FrameOffset;
         public int NumAnimations;
         public List<TombEngineAnimation> Animations;
     }
@@ -594,19 +593,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineAnimation
     {
-        public int FrameOffset;
-        public int FrameRate;
         public int StateID;
-        public Vector3 VelocityStart;
-        public Vector3 VelocityEnd;
-        public int FrameStart;
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
+        public int FrameRate;
+        public Vector3 VelocityStart;
+        public Vector3 VelocityEnd;
         public List<TombEngineKeyFrame> KeyFrames;
         public List<TombEngineStateChange> StateChanges;
         public int NumAnimCommands;
-        public List<int> CommandData;
+        public List<object> CommandData;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

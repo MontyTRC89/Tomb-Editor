@@ -236,43 +236,37 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(1, "Building animations");
 
-            var frameIndexOffset = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new TombEngineMoveable();
                 newMoveable.NumMeshes = oldMoveable.Meshes.Count();
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
-                newMoveable.FrameOffset = 0;
                 newMoveable.NumAnimations = oldMoveable.Animations.Count;
                 newMoveable.Animations = new List<TombEngineAnimation>();
 
                 // Add animations
-                int realFrameBase = 0;
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
                     var newAnimation = new TombEngineAnimation();
 
-                    // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
-
+                    // Clamp EndFrame to max frame count as a last resort to prevent glitching animations.
                     var frameCount = oldAnimation.EndFrame + 1;
-                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
+                    var maxFrame = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
                     if (frameCount > maxFrame)
                         frameCount = maxFrame;
 
                     // Setup the final animation
-                    newAnimation.FrameOffset = frameIndexOffset;
+                    newAnimation.StateID = oldAnimation.StateId;
+                    newAnimation.FrameEnd = frameCount == 0 ? 0 : frameCount - 1;
+                    newAnimation.NextFrame = oldAnimation.NextFrame;
                     newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
                     newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
-                    newAnimation.FrameStart = realFrameBase;
-                    newAnimation.FrameEnd = realFrameBase + (frameCount == 0 ? 0 : frameCount - 1);
-                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
-                    newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.StateID = oldAnimation.StateId;
                     newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
                     newAnimation.StateChanges = new List<TombEngineStateChange>();
-                    newAnimation.CommandData = new List<int>();
+                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
+                    newAnimation.CommandData = new List<object>();
 
                     // Check if next animation contains valid value. If not, set to zero and throw a warning.
                     if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
@@ -306,7 +300,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                         newAnimation.KeyFrames.Add(newFrame);
                     }
-                    frameIndexOffset += newAnimation.KeyFrames.Count;
 
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
@@ -314,45 +307,42 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                newAnimation.CommandData.Add(0x01);
+                                newAnimation.CommandData.Add(1);
 
-                                newAnimation.CommandData.Add(command.Parameter1);
-                                newAnimation.CommandData.Add(command.Parameter2);
-                                newAnimation.CommandData.Add(command.Parameter3);
+                                newAnimation.CommandData.Add(new Vector3(command.Parameter1, command.Parameter2, command.Parameter3));
 
                                 break;
 
                             case WadAnimCommandType.SetJumpDistance:
-                                newAnimation.CommandData.Add(0x02);
+                                newAnimation.CommandData.Add(2);
 
-                                newAnimation.CommandData.Add(command.Parameter1);
-                                newAnimation.CommandData.Add(command.Parameter2);
+                                newAnimation.CommandData.Add(new Vector3(0, command.Parameter1, command.Parameter2));
 
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                newAnimation.CommandData.Add(0x03);
+                                newAnimation.CommandData.Add(3);
 
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                newAnimation.CommandData.Add(0x04);
+                                newAnimation.CommandData.Add(4);
 
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                newAnimation.CommandData.Add(0x05);
+                                newAnimation.CommandData.Add(5);
 
-                                newAnimation.CommandData.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                newAnimation.CommandData.Add(unchecked((short)(command.Parameter2)));
+                                newAnimation.CommandData.Add((int)command.Parameter2);
+                                newAnimation.CommandData.Add((int)command.Parameter1);
 
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
-                                newAnimation.CommandData.Add(0x06);
+                                newAnimation.CommandData.Add(6);
 
-                                newAnimation.CommandData.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                newAnimation.CommandData.Add(command.Parameter2);
+                                newAnimation.CommandData.Add((int)command.Parameter2);
+                                newAnimation.CommandData.Add((int)command.Parameter1);
 
                                 break;
                         }
@@ -378,16 +368,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newStateChange.StateID = stateID;
                             newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
                             newStateChange.NextFrame = (int)dispatch.NextFrame;
-                            newStateChange.Low = unchecked((int)(dispatch.InFrame + newAnimation.FrameStart));
-                            newStateChange.High = unchecked((int)(dispatch.OutFrame + newAnimation.FrameStart));
+                            newStateChange.Low = unchecked((int)(dispatch.InFrame));
+                            newStateChange.High = unchecked((int)(dispatch.OutFrame));
 
                             newAnimation.StateChanges.Add(newStateChange);
                         }
                     }
 
                     newMoveable.Animations.Add(newAnimation);
-
-                    realFrameBase += frameCount < 0 ? 0 : frameCount; // FIXME: Not really needed?
                 }
 
                 newMoveable.MeshTree = _meshTrees.Count;
@@ -430,24 +418,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 _moveables.Add(newMoveable);
-            }
-
-            // Adjust NextFrames
-            foreach (var newMoveable in _moveables)
-            {
-                for (int i = 0; i < newMoveable.Animations.Count; i++)
-                {
-                    var animation = newMoveable.Animations[i];
-                    animation.NextFrame += newMoveable.Animations[animation.NextAnimation].FrameStart;
-                    newMoveable.Animations[i] = animation;
-
-                    for (int j = 0; j < animation.StateChanges.Count; j++)
-                    {
-                        var stateChange = animation.StateChanges[j];
-                        stateChange.NextFrame += newMoveable.Animations[stateChange.NextAnimation].FrameStart;
-                        animation.StateChanges[j] = stateChange;
-                    }
-                }
             }
 
             // Convert static meshes
