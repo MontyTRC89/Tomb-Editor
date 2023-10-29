@@ -19,7 +19,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public Tomb1MainStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public Tomb1MainStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
 		{
 			DockPanelState = IDE.Global.IDEConfiguration.T1M_DockPanelState;
 
@@ -28,7 +28,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TR1);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR1);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -145,6 +145,8 @@ namespace TombIDE.ScriptingStudio
 		{
 			// Nothing.
 		}
+
+		protected override void ShowDocumentation() => throw new NotImplementedException();
 
 		#endregion Other methods
 	}

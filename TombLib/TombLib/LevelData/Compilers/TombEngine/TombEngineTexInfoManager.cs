@@ -1287,6 +1287,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 image.HasNormalMap = true;
                                 image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                image.NormalMap.Fill(new ColorC(128, 128, 255));
                             }
                             image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
                             AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
@@ -1323,6 +1324,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 image.HasNormalMap = true;
                                 image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                image.NormalMap.Fill(new ColorC(128, 128, 255));
                             }
 
                             if (level != BumpMappingLevel.None)

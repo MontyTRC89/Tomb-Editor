@@ -11,13 +11,13 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Sink with strength " + (Strength + 1) +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
+                " (" + (Room?.ToString() ?? "NULL") + ")" +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y +
                 GetScriptIDOrName(false);
         }
 
-        public string ShortName() => "Sink (" + (Strength + 1 ) + ")" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public string ShortName() => "Sink (" + (Strength + 1) + ")" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
 
         public string PrimaryAttribDesc => "Strength";
         public string SecondaryAttribDesc => string.Empty;

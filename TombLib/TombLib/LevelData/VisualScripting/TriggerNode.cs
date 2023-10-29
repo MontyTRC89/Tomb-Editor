@@ -61,7 +61,29 @@ namespace TombLib.LevelData.VisualScripting
 
             return hash;
         }
-    }
+
+		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)
+		{
+			var result = new List<TriggerNode>();
+
+			foreach (var node in list)
+				AddNodeToLinearizedList(node, result);
+
+			return result;
+		}
+
+		private static void AddNodeToLinearizedList(TriggerNode node, List<TriggerNode> list)
+		{
+			if (!list.Contains(node))
+				list.Add(node);
+
+			if (node.Next != null)
+				AddNodeToLinearizedList(node.Next, list);
+
+			if (node is TriggerNodeCondition && (node as TriggerNodeCondition).Else != null)
+				AddNodeToLinearizedList((node as TriggerNodeCondition).Else, list);
+		}
+	}
 
     // TriggerNodeAction implementation is similar to base one
 

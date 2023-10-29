@@ -42,6 +42,14 @@ namespace TombLib.Controls.VisualScripting
         private void OnLocatedItemFound(IHasLuaName item)
             => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
+        public event EventHandler SoundtrackPlayed;
+        private void OnSoundtrackPlayed(string filename)
+            => SoundtrackPlayed?.Invoke(filename, EventArgs.Empty);
+
+        public event EventHandler SoundEffectPlayed;
+        private void OnSoundEffectPlayed(string sound)
+            => SoundEffectPlayed?.Invoke(sound, EventArgs.Empty);
+
         public new string Text 
         { 
             get { return _text; }
@@ -77,12 +85,25 @@ namespace TombLib.Controls.VisualScripting
                     case ArgumentType.Volumes:
                     case ArgumentType.Cameras:
                     case ArgumentType.FlybyCameras:
-                        panelLocate.Size = new Size(cbList.Height, cbList.Height);
-                        panelLocate.Visible = true;
+                    case ArgumentType.SoundTracks:
+                    case ArgumentType.SoundEffects:
+                        panelAction.Size = new Size(cbList.Height, cbList.Height);
+                        panelAction.Visible = true;
+
+                        if (_argumentType == ArgumentType.SoundTracks ||
+                            _argumentType == ArgumentType.SoundEffects)
+                        {
+                            butAction.Image = Properties.Resources.actions_play_16;
+                        }
+                        else
+                        {
+                            butAction.Image = Properties.Resources.general_target_16;
+                        }
+
                         break;
 
                     default:
-                        panelLocate.Visible = false;
+                        panelAction.Visible = false;
                         break;
                 }
 
@@ -99,6 +120,10 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.LuaScript:
                     foreach (var item in editor.CachedLuaFunctions)
                         cbList.Items.Add(new ComboBoxItem(item, "LevelFuncs." + item));
+                    break;
+                case ArgumentType.EventSets:
+                    foreach (var item in editor.CachedEventSets)
+                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.Sinks:
                     foreach (var item in editor.CachedSinks)
@@ -465,13 +490,27 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        private void butLocate_Click(object sender, EventArgs e)
+        private void butAction_Click(object sender, EventArgs e)
         {
-            var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
-            if (item == null)
+            if (cbList.Items.Count == 0 || cbList.SelectedIndex == -1)
                 return;
 
-            OnLocatedItemFound(item);
+            switch (_argumentType)
+            {
+                case ArgumentType.SoundEffects:
+                    OnSoundEffectPlayed(cbList.SelectedItem.ToString());
+                    break;
+
+                case ArgumentType.SoundTracks:
+                    OnSoundtrackPlayed((cbList.SelectedItem.ToString()));
+                    break;
+
+                default:
+                    var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
+                    if (item != null)
+                        OnLocatedItemFound(item);
+                    break;
+            }
         }
 
         private void cbList_DragEnter(object sender, DragEventArgs e)

@@ -137,6 +137,8 @@ namespace TombLib.LevelData
         public VolumeEvent OnLeave;
         public VolumeEvent OnInside;
 
+        public List<VolumeEvent> Events => new List<VolumeEvent>() { OnEnter, OnInside, OnLeave };
+
         public VolumeEventSet()
         {
             Activators = VolumeActivators.Player;
@@ -226,11 +228,11 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Sphere Volume" + GetScriptIDOrName(true) +
-                   ", Room = " + (Room?.ToString() ?? "NULL") + "\n" +
+                   " (" + (Room?.ToString() ?? "NULL") + ")" + "\n" +
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Sphere volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public override string ShortName() => "Sphere volume" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
     }
 
     public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYXRoll
@@ -276,11 +278,11 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Box Volume" + GetScriptIDOrName(true) +
-                   ", Room = " + (Room?.ToString() ?? "NULL") + "\n" +
+                   " (" + (Room?.ToString() ?? "NULL") +")" + "\n" +
                    EventSet?.GetDescription() ?? string.Empty;
         }
 
-        public override string ShortName() => "Box volume" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public override string ShortName() => "Box volume" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
     }
 
     public abstract class VolumeInstance : PositionAndScriptBasedObjectInstance, ISpatial

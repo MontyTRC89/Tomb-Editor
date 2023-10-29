@@ -1,4 +1,5 @@
-﻿using TombIDE.Shared.NewStructure.Implementations;
+﻿using System;
+using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
@@ -7,7 +8,13 @@ namespace TombIDE.Shared.NewStructure
 	{
 		public override TRVersion.Game GameVersion => TRVersion.Game.TRNG;
 
-		public TRNGGameProject(TrprojFile trproj) : base(trproj)
+		public override bool SupportsPlugins => true;
+
+		public TRNGGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		{ }
+
+		public TRNGGameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath)
+			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
 		{ }
 	}
 }

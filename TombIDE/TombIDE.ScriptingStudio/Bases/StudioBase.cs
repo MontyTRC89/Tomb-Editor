@@ -115,6 +115,19 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		public StudioBase(string scriptRootDirectoryPath, string engineDirectoryPath)
 		{
+			if (System.Windows.Application.Current == null)
+				new System.Windows.Application();
+
+			System.Windows.Application.Current.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("pack://application:,,,/TombIDE.ScriptingStudio;component/WPFStyles/DarkColors.xaml")
+			});
+
+			System.Windows.Application.Current.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+			{
+				Source = new Uri("pack://application:,,,/TombIDE.ScriptingStudio;component/WPFStyles/ScrollViewer.xaml")
+			});
+
 			Configs = new ConfigurationCollection();
 
 			InitializeToolStrips();
@@ -304,6 +317,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected abstract void ApplyUserSettings();
 		protected abstract void Build();
 		protected abstract void RestoreDefaultLayout();
+		protected abstract void ShowDocumentation();
 
 		#endregion Abstract region
 
@@ -484,6 +498,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.RestoreDefaultLayout: RestoreDefaultLayout(); break;
 
 				// Help
+				case UICommand.ScriptingDocumentation: ShowDocumentation(); break;
 				case UICommand.About: ShowAboutForm(); break;
 			}
 

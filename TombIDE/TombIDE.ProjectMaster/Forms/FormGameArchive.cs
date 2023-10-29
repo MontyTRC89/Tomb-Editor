@@ -28,7 +28,7 @@ namespace TombIDE.ProjectMaster.Forms
 		{
 			using (var dialog = new SaveFileDialog())
 			{
-				dialog.InitialDirectory = _ide.Project.ProjectPath;
+				dialog.InitialDirectory = _ide.Project.DirectoryPath;
 				dialog.FileName = $"{_ide.Project.Name.Replace(' ', '_')}.zip";
 				dialog.Filter = "Zip Archive (*.zip)|*.zip";
 				dialog.DefaultExt = "zip";
@@ -70,20 +70,22 @@ namespace TombIDE.ProjectMaster.Forms
 
 		public void GenerateTR1Archive(string filePath, string readmeText)
 		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "music"),
-				Path.Combine(_ide.Project.EnginePath, "cfg"),
-				Path.Combine(_ide.Project.EnginePath, "data"),
-				Path.Combine(_ide.Project.EnginePath, "shaders")
+				Path.Combine(engineDirectory, "music"),
+				Path.Combine(engineDirectory, "cfg"),
+				Path.Combine(engineDirectory, "data"),
+				Path.Combine(engineDirectory, "shaders")
 			};
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "Tomb1Main.exe"),
-				Path.Combine(_ide.Project.EnginePath, "Tomb1Main_ConfigTool.exe"),
-				Path.Combine(_ide.Project.EnginePath, "splash.xml")
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "Tomb1Main.exe"),
+				Path.Combine(engineDirectory, "Tomb1Main_ConfigTool.exe"),
+				Path.Combine(engineDirectory, "splash.xml")
 			};
 
 			CreateArchive(importantFolders, importantFiles, filePath, readmeText);
@@ -91,119 +93,128 @@ namespace TombIDE.ProjectMaster.Forms
 
 		public void GenerateTR2Archive(string filePath, string readmeText)
 		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "audio"),
-				Path.Combine(_ide.Project.EnginePath, "data"),
-				Path.Combine(_ide.Project.EnginePath, "ExtraOptions"),
-				Path.Combine(_ide.Project.EnginePath, "music"),
-				Path.Combine(_ide.Project.EnginePath, "pix")
+				Path.Combine(engineDirectory, "audio"),
+				Path.Combine(engineDirectory, "data"),
+				Path.Combine(engineDirectory, "ExtraOptions"),
+				Path.Combine(engineDirectory, "music"),
+				Path.Combine(engineDirectory, "pix")
 			};
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "COPYING.txt"),
-				Path.Combine(_ide.Project.EnginePath, "Tomb2.exe"),
-				Path.Combine(_ide.Project.EnginePath, "TR2Main.json"),
-				Path.Combine(_ide.Project.EnginePath, "splash.xml")
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "COPYING.txt"),
+				Path.Combine(engineDirectory, "Tomb2.exe"),
+				Path.Combine(engineDirectory, "TR2Main.json"),
+				Path.Combine(engineDirectory, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
 			allImportantFiles.AddRange(importantFiles);
-			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dll", SearchOption.TopDirectoryOnly));
+			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dll", SearchOption.TopDirectoryOnly));
 
 			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
 		}
 
 		public void GenerateTR3Archive(string filePath, string readmeText)
 		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "data"),
-				Path.Combine(_ide.Project.EnginePath, "pix")
+				Path.Combine(engineDirectory, "data"),
+				Path.Combine(engineDirectory, "pix")
 			};
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "audio", "cdaudio.wad"),
-				Path.Combine(_ide.Project.EnginePath, "data.bin"),
-				Path.Combine(_ide.Project.EnginePath, "tomb3.exe"),
-				Path.Combine(_ide.Project.EnginePath, "tomb3_ConfigTool.exe"),
-				Path.Combine(_ide.Project.EnginePath, "splash.xml")
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "audio", "cdaudio.wad"),
+				Path.Combine(engineDirectory, "data.bin"),
+				Path.Combine(engineDirectory, "tomb3.exe"),
+				Path.Combine(engineDirectory, "tomb3_ConfigTool.exe"),
+				Path.Combine(engineDirectory, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
 			allImportantFiles.AddRange(importantFiles);
-			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dll", SearchOption.TopDirectoryOnly));
+			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dll", SearchOption.TopDirectoryOnly));
 
-			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
+			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText, true);
 		}
 
 		public void GenerateTR4Archive(string filePath, string readmeText)
 		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "audio"),
-				Path.Combine(_ide.Project.EnginePath, "data"),
-				Path.Combine(_ide.Project.EnginePath, "pix"),
-				Path.Combine(_ide.Project.EnginePath, "patches")
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "audio"),
+				Path.Combine(engineDirectory, "data"),
+				Path.Combine(engineDirectory, "pix"),
+				Path.Combine(engineDirectory, "patches")
 			};
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "load.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "patches.bin"),
-				Path.Combine(_ide.Project.EnginePath, "tomb4.exe"),
-				Path.Combine(_ide.Project.EnginePath, "splash.xml")
+				Path.Combine(engineDirectory, "load.bmp"),
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "patches.bin"),
+				Path.Combine(engineDirectory, "tomb4.exe"),
+				Path.Combine(engineDirectory, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
 			allImportantFiles.AddRange(importantFiles);
-			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dll", SearchOption.TopDirectoryOnly));
-			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dat", SearchOption.TopDirectoryOnly));
+			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dll", SearchOption.TopDirectoryOnly));
+			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dat", SearchOption.TopDirectoryOnly));
 
 			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
 		}
 
 		public void GenerateTENArchive(string filePath, string readmeText)
 		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "Bin"),
-				Path.Combine(_ide.Project.EnginePath, "Audio"),
-				Path.Combine(_ide.Project.EnginePath, "Data"),
-				Path.Combine(_ide.Project.EnginePath, "Screens"),
-				Path.Combine(_ide.Project.EnginePath, "Scripts"),
-				Path.Combine(_ide.Project.EnginePath, "Shaders"),
-				Path.Combine(_ide.Project.EnginePath, "Textures")
+				Path.Combine(engineDirectory, "Bin"),
+				Path.Combine(engineDirectory, "Audio"),
+				Path.Combine(engineDirectory, "Data"),
+				Path.Combine(engineDirectory, "Screens"),
+				Path.Combine(engineDirectory, "Scripts"),
+				Path.Combine(engineDirectory, "Shaders"),
+				Path.Combine(engineDirectory, "Textures")
 			};
 
 			string[] importantFiles = new string[]
 			{
-				Path.Combine(_ide.Project.EnginePath, "splash.bmp"),
-				Path.Combine(_ide.Project.EnginePath, "TombEngine.exe"),
-				Path.Combine(_ide.Project.EnginePath, "splash.xml")
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "TombEngine.exe"),
+				Path.Combine(engineDirectory, "splash.xml")
 			};
 
 			var allImportantFiles = new List<string>();
 			allImportantFiles.AddRange(importantFiles);
-			allImportantFiles.AddRange(Directory.GetFiles(_ide.Project.EnginePath, "*.dll", SearchOption.TopDirectoryOnly));
+			allImportantFiles.AddRange(Directory.GetFiles(engineDirectory, "*.dll", SearchOption.TopDirectoryOnly));
 
 			CreateArchive(importantFolders, allImportantFiles, filePath, readmeText);
 		}
 
 		private void CreateArchive(IEnumerable<string> importantFolders, IEnumerable<string> importantFiles,
-			string filePath, string readmeText)
+			string filePath, string readmeText, bool createSavesFolder = false)
 		{
 			string tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
 			if (!Directory.Exists(tempDirectory))
 				Directory.CreateDirectory(tempDirectory);
 
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
 			string targetTempEngineDirectory = Path.Combine(tempDirectory, "Engine");
 
 			foreach (string folder in importantFolders)
@@ -211,18 +222,21 @@ namespace TombIDE.ProjectMaster.Forms
 				if (!Directory.Exists(folder))
 					continue;
 
-				string pathPart = folder.Remove(0, _ide.Project.EnginePath.Length);
+				string pathPart = folder.Remove(0, engineDirectory.Length);
 				string targetPath = Path.Combine(targetTempEngineDirectory, pathPart.Trim('\\'));
 
 				SharedMethods.CopyFilesRecursively(folder, targetPath);
 			}
+
+			if (createSavesFolder)
+				Directory.CreateDirectory(Path.Combine(targetTempEngineDirectory, "saves"));
 
 			foreach (string file in importantFiles)
 			{
 				if (!File.Exists(file))
 					continue;
 
-				string pathPart = file.Remove(0, _ide.Project.EnginePath.Length);
+				string pathPart = file.Remove(0, engineDirectory.Length);
 				string targetPath = Path.Combine(targetTempEngineDirectory, pathPart.Trim('\\'));
 
 				string targetDirectory = Path.GetDirectoryName(targetPath);
@@ -234,8 +248,10 @@ namespace TombIDE.ProjectMaster.Forms
 			}
 
 			// Copy launch.exe
-			if (File.Exists(_ide.Project.LaunchFilePath))
-				File.Copy(_ide.Project.LaunchFilePath, Path.Combine(tempDirectory, Path.GetFileName(_ide.Project.LaunchFilePath)), true);
+			string launchFilePath = _ide.Project.GetLauncherFilePath();
+
+			if (File.Exists(launchFilePath))
+				File.Copy(launchFilePath, Path.Combine(tempDirectory, Path.GetFileName(launchFilePath)), true);
 
 			if (!string.IsNullOrWhiteSpace(readmeText))
 				File.WriteAllText(Path.Combine(tempDirectory, "README.txt"), readmeText);

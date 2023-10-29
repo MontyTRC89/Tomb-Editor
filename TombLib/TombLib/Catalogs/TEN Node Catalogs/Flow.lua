@@ -41,10 +41,27 @@ end
 -- !Section "Game flow"
 -- !Description "Checks current game secret count."
 -- !Conditional "True"
--- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [0 | 99 ], Secret count"
+-- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 99 ], Secret count"
 
 LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
     return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
+end
+
+-- !Name "Run event from another event set"
+-- !Section "Game flow"
+-- !Description "Runs an event from another event set."
+-- !Arguments "NewLine, 70, EventSets, Target event set"
+-- !Arguments "Enumeration, 30, [ On enter | On inside | On leave ], Event to run"
+-- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
+
+LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
+
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	
+	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
 end
 
 -- !Name "Run script function"

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
@@ -67,6 +66,7 @@ namespace TombEditor.Forms
             // Add texture sounds to combo box
             foreach (var type in TextureFootStep.GetNames(editor.Level.Settings))
                 comboSounds.Items.Add(type);
+            comboSounds.SelectedIndex = 0;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -77,6 +77,12 @@ namespace TombEditor.Forms
 
         private void butAssignSound_Click(object sender, EventArgs e)
         {
+            if (comboSounds.SelectedIndex < 0)
+                return;
+
+            if (textureMap.SelectedTexture.TextureIsInvisible)
+                return;
+
             var sound = (TextureFootStep.Type)comboSounds.SelectedIndex;
 
             Vector2 p0 = textureMap.SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity;
@@ -190,7 +196,7 @@ namespace TombEditor.Forms
 
         private void comboSounds_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            butAssignSound.Enabled = (comboSounds.SelectedIndex >= 0);
         }
     }
 }

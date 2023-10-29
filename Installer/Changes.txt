@@ -1,3 +1,54 @@
+Version 1.6.9
+=============
+
+Tomb Editor:
+ * Allow to immediately cancel level building and project opening.
+ * Add a node to call events from other event sets.
+ * Show selection size instead of local area.
+ * Fix exception when trying to assign footstep sound if no material was selected.
+ * TEN Base WAD:
+	- New pushable animations integrated.
+	- Update names for ID_LARA_EXTRA_ANIMS.
+	- Additional death animation added (YETI_DEATH) to LARA_EXTRA_ANIMS.
+	- Removal of ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
+	- Removal of PUZZLE_ITEM1 (Jeep keys) as no longer required in TombEngine.
+	- Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
+ * TRCatalog Updates:
+	- Add Lara state 191: SPRINT_SLIDE (TEN).
+	- Amend TR1-> TEN remap for Natla.
+	- Removal of redundant ObjectIDs that aren't used for TombEngine.
+	- Add ID_CROSSHAIR to TEN (1380).
+	- Update tr1-tr3 pushable tr1/2/3 -> TEN remappings.
+	- Amended Lara Extra Animation names.
+	- Added ID_SWINGING_BLADE for TombEngine.  
+	- Remove Lara Anim 442 name and moved to Lara Extra Anims (TEN). Will only change for a TEN WAD2. Will not affect other versions.
+	- Add Yeti and Big Scorpion Death to Extra Anims (TEN).
+
+TombIDE:
+ * Update NG_Center.
+ * Change the way TRNG script compiling is done.
+ * Fix library registration not working when launching NG_Center for the first time.
+
+Version 1.6.8
+=============
+
+Tomb Editor:
+ * Add preview button for sound playback node functions.
+ * Add nodes to manage timers.
+ * Fix current node item list remaining open after scrolling node graph with mouse wheel.
+ * Fix legacy triggers wrongly set to switch type in rooms containing "switch" in their name.
+ * Fix TEN level compiler producing incorrect normals for imported geometry.
+ * Fix TEN level compiler not scaling merged static meshes.
+ * Fix particle emitter node not working.
+
+WadTool:
+ * Don't recalculate normals silently when importing mesh through static mesh editor.
+ * Fix broken sound remap when copying objects from legacy wads to TEN wad.
+ 
+TombIDE:
+ * Many minor bugfixes.
+ * Update Tomb1Main preset to 2.5.2.
+
 Version 1.6.7
 =============
 
@@ -1175,7 +1226,7 @@ Fixed flipon/off greater than 0
 Fixed group texturing
 Fixed horizon rendering
 Allow deselect object when clicking away
-Fixed 45° rotation of objects
+Fixed 45Â° rotation of objects
 Merged Selected block and Selected geometry context menus (now you can add objects also on selected areas)
 Added debug texture "out of bounds" when parent area in group texturing is invalid (EXPERIMENTAL)
 Fixed Color dialog position (now it's located at top-left corner of screen instead of middle of 3D area)
@@ -1416,7 +1467,7 @@ Fixes to dark UI controls
 Autoswitch of special sectors in 3D view for seeing correctly overlapped special sectors
 Fixed bugs on the gizmo
 Increased texture atlas to 8K (max 1024 texture pages for rooms and 1024 texture pages for objects)
-Fixed floordata creation for portals (this fixes Caesum's Perù animation bug)
+Fixed floordata creation for portals (this fixes Caesum's PerÃ¹ animation bug)
 Fixed function for getting texture ID of meshes polygons (this fixes NG WADs wrong textures)
 Increased renderer performances while doing dragging operations
 Fixed 1 px cut sprites bug

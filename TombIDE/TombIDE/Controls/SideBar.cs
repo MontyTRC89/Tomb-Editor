@@ -37,7 +37,7 @@ namespace TombIDE.Controls
 				toolTip.SetToolTip(panelButton_PluginManager, "Plugins are not supported by the current game engine.");
 			}
 
-			button_LaunchGame.Image = Icon.ExtractAssociatedIcon(_ide.Project.LaunchFilePath).ToBitmap();
+			button_LaunchGame.Image = Icon.ExtractAssociatedIcon(_ide.Project.GetLauncherFilePath()).ToBitmap();
 
 			InitializeFLEP();
 			AddPinnedPrograms();
@@ -45,7 +45,7 @@ namespace TombIDE.Controls
 
 		private void InitializeFLEP()
 		{
-			string flepExePath = Path.Combine(_ide.Project.EnginePath, "flep.exe");
+			string flepExePath = Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "flep.exe");
 
 			if (File.Exists(flepExePath))
 			{
@@ -183,27 +183,25 @@ namespace TombIDE.Controls
 
 		private void button_AddProgram_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new OpenFileDialog())
+			using var dialog = new OpenFileDialog();
+			dialog.Title = "Select the .exe file of the program you want to add.";
+			dialog.Filter = "Executable Files|*.exe|Batch Files|*.bat";
+
+			if (dialog.ShowDialog(this) == DialogResult.OK)
 			{
-				dialog.Title = "Select the .exe file of the program you want to add.";
-				dialog.Filter = "Executable Files|*.exe|Batch Files|*.bat";
+				bool alreadyExists = flowLayoutPanel_Programs.Controls.OfType<DarkButton>().Any(button
+					=> button.Name.Equals(dialog.FileName, StringComparison.OrdinalIgnoreCase));
 
-				if (dialog.ShowDialog(this) == DialogResult.OK)
+				if (alreadyExists)
 				{
-					bool alreadyExists = flowLayoutPanel_Programs.Controls.OfType<DarkButton>().Any(button
-						=> button.Name.Equals(dialog.FileName, StringComparison.OrdinalIgnoreCase));
+					DarkMessageBox.Show(this,
+						"Program shortcut already exists.",
+						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-					if (alreadyExists)
-					{
-						DarkMessageBox.Show(this,
-							"Program shortcut already exists.",
-							"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-						return;
-					}
-
-					AddProgramButton(dialog.FileName, true);
+					return;
 				}
+
+				AddProgramButton(dialog.FileName, true);
 			}
 		}
 
@@ -279,7 +277,8 @@ namespace TombIDE.Controls
 				var startInfo = new ProcessStartInfo
 				{
 					FileName = programFilePath,
-					WorkingDirectory = Path.GetDirectoryName(programFilePath)
+					WorkingDirectory = Path.GetDirectoryName(programFilePath),
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);
@@ -298,7 +297,7 @@ namespace TombIDE.Controls
 			if (ModifierKeys == Keys.None)
 			{
 				if (e.KeyCode == Keys.F3)
-					SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
+					SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
 
 				if (e.KeyCode == Keys.F4)
 					LaunchGame();
@@ -311,7 +310,7 @@ namespace TombIDE.Controls
 		private void panelButton_Miscellaneous_Click(object sender, EventArgs e) => SelectIDETab(IDETab.Miscellaneous);
 
 		private void button_LaunchGame_Click(object sender, EventArgs e) => LaunchGame();
-		private void button_OpenDirectory_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
+		private void button_OpenDirectory_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
 
@@ -342,7 +341,8 @@ namespace TombIDE.Controls
 
 		private void LaunchFLEP()
 		{
-			string flepExePath = Path.Combine(_ide.Project.EnginePath, "flep.exe");
+			string engineRootDirectory = _ide.Project.GetEngineRootDirectoryPath();
+			string flepExePath = Path.Combine(engineRootDirectory, "flep.exe");
 
 			if (!File.Exists(flepExePath))
 				return;
@@ -352,7 +352,8 @@ namespace TombIDE.Controls
 				var startInfo = new ProcessStartInfo
 				{
 					FileName = flepExePath,
-					WorkingDirectory = _ide.Project.EnginePath
+					WorkingDirectory = engineRootDirectory,
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);
@@ -362,24 +363,16 @@ namespace TombIDE.Controls
 
 		private void LaunchGame()
 		{
-			if (!File.Exists(_ide.Project.LaunchFilePath))
-			{
-				DarkMessageBox.Show(this,
-					"Couldn't find the launcher executable of the project.\n" +
-					"Please restart TombIDE to resolve any issues.",
-					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			string engineRootDirectory = _ide.Project.GetEngineRootDirectoryPath();
 
-				return;
-			}
-
-			if (_ide.Project.GameVersion != TRVersion.Game.TR1 && _ide.Project.GameVersion != TRVersion.Game.TombEngine)
+			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TombEngine)
 			{
 				string scriptDatFilePath = string.Empty;
 
-				if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
-					scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "script.dat");
-				else if (_ide.Project.GameVersion == TRVersion.Game.TR2 || _ide.Project.GameVersion == TRVersion.Game.TR3)
-					scriptDatFilePath = Path.Combine(_ide.Project.EnginePath, "data", "tombpc.dat");
+				if (_ide.Project.GameVersion is TRVersion.Game.TR4 or TRVersion.Game.TRNG)
+					scriptDatFilePath = Path.Combine(engineRootDirectory, "script.dat");
+				else if (_ide.Project.GameVersion is TRVersion.Game.TR2 or TRVersion.Game.TR3)
+					scriptDatFilePath = Path.Combine(engineRootDirectory, "data", "tombpc.dat");
 
 				if (!File.Exists(scriptDatFilePath))
 				{
@@ -395,10 +388,13 @@ namespace TombIDE.Controls
 
 			try
 			{
+				string launcherFilePath = _ide.Project.GetLauncherFilePath();
+
 				var startInfo = new ProcessStartInfo
 				{
-					FileName = _ide.Project.LaunchFilePath,
-					WorkingDirectory = _ide.Project.EngineExecutableDirectory
+					FileName = launcherFilePath,
+					WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
+					UseShellExecute = true
 				};
 
 				Process.Start(startInfo);

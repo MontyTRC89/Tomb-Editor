@@ -73,7 +73,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 writer.Write(n);
                             foreach (var t in poly.Tangents)
                                 writer.Write(t);
-                            foreach (var bt in poly.Bitangents)
+                            foreach (var bt in poly.Binormals)
                                 writer.Write(bt);
                         }
                     }

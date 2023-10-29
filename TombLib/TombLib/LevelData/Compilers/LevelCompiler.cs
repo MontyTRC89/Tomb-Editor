@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -63,6 +64,6 @@ namespace TombLib.LevelData.Compilers
             _progressReporter.ReportProgress(percentage, message);
         }
 
-        public abstract CompilerStatistics CompileLevel();
+        public abstract CompilerStatistics CompileLevel(CancellationToken cancelToken);
     }
 }

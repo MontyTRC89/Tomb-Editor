@@ -295,15 +295,15 @@ namespace TombLib.LevelData
 
         public List<string> GetListOfSoundtracks()
         {
-            var path = Path.Combine(MakeAbsolute(GameDirectory), "Audio");
+            var path = Path.Combine(MakeAbsolute(GameDirectory), WadSounds.AudioFolder);
 
             if (!Directory.Exists(path))
                 return new List<string>();
 
-            var ext = new List<string> { "wav", "mp3", "ogg" };
+            var extList = Enum.GetValues(typeof(WadSounds.SoundtrackFormat)).Cast<object>().Select(s => s.ToString().ToLowerInvariant());
 
             return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                            .Where(s => ext.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
+                            .Where(s => extList.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
                             .Select(s => Path.GetFileNameWithoutExtension(s)).Distinct().ToList();
         }
 
@@ -585,33 +585,33 @@ namespace TombLib.LevelData
             return false;
         }
 
-		public bool ConvertLegacyTombEngineExecutablePath()
-		{
-			if (GameVersion != TRVersion.Game.TombEngine)
-				return false;
+        public bool ConvertLegacyTombEngineExecutablePath()
+        {
+            if (GameVersion != TRVersion.Game.TombEngine)
+                return false;
 
-			var exePath = Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath));
-			var exeName = Path.GetFileName(MakeAbsolute(GameExecutableFilePath));
+            var exePath = Path.GetDirectoryName(MakeAbsolute(GameExecutableFilePath));
+            var exeName = Path.GetFileName(MakeAbsolute(GameExecutableFilePath));
 
-			if (!Directory.Exists(Path.Combine(exePath, "Bin")))
-				return false;
+            if (!Directory.Exists(Path.Combine(exePath, "Bin")))
+                return false;
 
-			if (Environment.Is64BitOperatingSystem)
-				exePath = Path.Combine(exePath, "Bin", "x64");
-			else
-				exePath = Path.Combine(exePath, "Bin", "x86");
+            if (Environment.Is64BitOperatingSystem)
+                exePath = Path.Combine(exePath, "Bin", "x64");
+            else
+                exePath = Path.Combine(exePath, "Bin", "x86");
 
-			if (!Directory.Exists(Path.Combine(exePath)))
-				return false;
+            if (!Directory.Exists(Path.Combine(exePath)))
+                return false;
 
-			exePath = Path.Combine(exePath, exeName);
+            exePath = Path.Combine(exePath, exeName);
 
-			if (!File.Exists(exePath))
-				return false;
+            if (!File.Exists(exePath))
+                return false;
 
-			GameExecutableFilePath = MakeRelative(exePath, VariableType.GameDirectory);
-			return true;
-		}
+            GameExecutableFilePath = MakeRelative(exePath, VariableType.GameDirectory);
+            return true;
+        }
 
         public bool LoadDefaultSoundCatalog()
         {

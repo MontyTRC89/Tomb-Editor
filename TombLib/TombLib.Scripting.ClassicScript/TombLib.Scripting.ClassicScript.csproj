@@ -63,6 +63,9 @@
     <None Update="Resources\ClassicScript\Descriptions\OLD Commands.rdda">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\ClassicScript\TRNG Script Reference Manual.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
@@ -103,7 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.101" />
-    <PackageReference Include="FlaUI.UIA2" Version="3.2.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 </Project>

@@ -23,13 +23,14 @@ namespace TombLib.Scripting.ClassicScript.Utils
 					"-c \"C:\" " +
 					"-c \"script script.txt >> logs.txt\" " +
 					"-c \"exit\" " +
-					"-noconsole"
+					"-noconsole",
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo).WaitForExit();
 
 			string logFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "logs.txt");
-			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
+			string logFileContent = File.ReadAllText(logFilePath);
 
 			string compiledScriptFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "Script.dat");
 			string compiledEnglishFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "English.dat");
@@ -59,12 +60,12 @@ namespace TombLib.Scripting.ClassicScript.Utils
 		{
 			string dosScriptFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "Script.txt");
 
-			string fileContent = File.ReadAllText(dosScriptFilePath, Encoding.GetEncoding(1252));
+			string fileContent = File.ReadAllText(dosScriptFilePath);
 
 			while (fileContent.Contains(" ="))
 				fileContent = fileContent.Replace(" =", "=");
 
-			File.WriteAllText(dosScriptFilePath, fileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(dosScriptFilePath, fileContent);
 		}
 
 		private static void CopyFilesToDOSScriptDirectory(string projectScriptPath, string dosScriptPath)

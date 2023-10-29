@@ -9,6 +9,7 @@ using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.LevelData.VisualScripting;
+using System.Threading;
 
 namespace TombLib.LevelData.IO
 {
@@ -23,14 +24,12 @@ namespace TombLib.LevelData.IO
             public bool IgnoreSoundsCatalogs = false;
         }
 
-        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
-        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter, Settings loadSettings)
+        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter,CancellationToken cancelToken, Settings loadSettings)
         {
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return LoadFromPrj2(filename, fileStream, progressReporter, loadSettings);
+                return LoadFromPrj2(filename, fileStream, progressReporter,cancelToken, loadSettings);
         }
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, stream, progressReporter, new Settings());
-        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, CancellationToken cancelToken, Settings loadSettings)
         {
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {
@@ -41,10 +40,12 @@ namespace TombLib.LevelData.IO
                     LevelSettings settings = null;
                     if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref settings, loadSettings, progressReporter))
                     {
+                        cancelToken.ThrowIfCancellationRequested();
+
                         level.ApplyNewLevelSettings(settings);
                         return true;
                     }
-                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, progressReporter))
+                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, progressReporter, cancelToken))
                         return true;
                     return false;
                 });
@@ -293,9 +294,9 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.TextureCompression)
                     settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RearrangeRooms)
-					settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
-				else if (id == Prj2Chunks.RemoveUnusedObjects)
-					settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);
+                    settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.RemoveUnusedObjects)
+                    settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.EnableCustomSampleRate)
                     settings.EnableCustomSampleRate = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.CustomSampleRate)
@@ -691,7 +692,7 @@ namespace TombLib.LevelData.IO
             return true;
         }
 
-        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, IProgressReporter progressReporter = null)
+        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, IProgressReporter progressReporter, CancellationToken cancelToken)
         {
             if (idOuter != Prj2Chunks.Rooms)
                 return false;
@@ -714,6 +715,7 @@ namespace TombLib.LevelData.IO
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
+                    cancelToken.ThrowIfCancellationRequested();
                     // Read basic room properties
                     if (id2 == Prj2Chunks.RoomIndex)
                         roomIndex = chunkIO.ReadChunkLong(chunkSize2);
@@ -735,6 +737,8 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomSectors)
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
+                            cancelToken.ThrowIfCancellationRequested();
+
                             if (id3 != Prj2Chunks.Sector)
                                 return false;
 
@@ -745,6 +749,7 @@ namespace TombLib.LevelData.IO
 
                             chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
+                                    cancelToken.ThrowIfCancellationRequested();
                                     if (id4 == Prj2Chunks.SectorProperties)
                                     {
                                         long flag = chunkIO.ReadChunkLong(chunkSize4);
@@ -921,6 +926,8 @@ namespace TombLib.LevelData.IO
                         long alternateRoomIndex = -1;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
+                            cancelToken.ThrowIfCancellationRequested();
+
                             if (id3 == Prj2Chunks.AlternateGroup)
                                 alternateGroup = chunkIO.ReadChunkShort(chunkSize3);
                             else if (id3 == Prj2Chunks.AlternateRoom)
@@ -968,6 +975,9 @@ namespace TombLib.LevelData.IO
 
             // Link rooms
             foreach (var roomLinkAction in roomLinkActions)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+
                 try
                 {
                     roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
@@ -976,9 +986,14 @@ namespace TombLib.LevelData.IO
                 {
                     logger.Error(exc, "An exception was raised while trying to perform room link action.");
                 }
+            }
+                
 
             // Link objects
             foreach (var objectLinkAction in objectLinkActions)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+
                 try
                 {
                     objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
@@ -987,10 +1002,16 @@ namespace TombLib.LevelData.IO
                 {
                     logger.Error(exc, "An exception was raised while trying to perform room link objects.");
                 }
+            }
+
 
             // Now build the real geometry and update geometry buffers
+            ParallelOptions parallelOptions = new ParallelOptions()
+            {
+                CancellationToken = cancelToken,
+            };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
             return true;
         }
 
