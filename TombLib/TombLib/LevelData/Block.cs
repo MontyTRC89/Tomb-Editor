@@ -70,11 +70,11 @@ namespace TombLib.LevelData
     public enum BlockVertical : byte
     {
         Floor, // FloorSubdivision1
-		Ceiling, // CeilingSubdivision1
-		FloorSubdivision2,
-		CeilingSubdivision2,
+        Ceiling, // CeilingSubdivision1
+        FloorSubdivision2,
+        CeilingSubdivision2,
 
-		FloorSubdivision3,
+        FloorSubdivision3,
         CeilingSubdivision3,
 
         FloorSubdivision4,
@@ -93,9 +93,7 @@ namespace TombLib.LevelData
         CeilingSubdivision8,
 
         FloorSubdivision9,
-        CeilingSubdivision9,
-
-        Count
+        CeilingSubdivision9
     }
 
     public static class BlockVerticalExtensions
@@ -112,10 +110,10 @@ namespace TombLib.LevelData
         public static bool IsExtraFloorSubdivision(this BlockVertical vertical)
             => vertical.ToString().StartsWith("FloorSubdivision");
 
-		public static bool IsSubdivision(this BlockVertical vertical)
-		   => vertical.ToString().Contains("Subdivision");
+        public static bool IsSubdivision(this BlockVertical vertical)
+           => vertical.ToString().Contains("Subdivision");
 
-		public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
+        public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
         {
             string enumName = $"FloorSubdivision{subdivisionIndex + 2}";
             return Enum.Parse<BlockVertical>(enumName);
@@ -141,7 +139,7 @@ namespace TombLib.LevelData
     public enum BlockFace : byte
     {
         Wall_PositiveZ_QA = 0, //
-		Wall_NegativeZ_QA = 1, //
+        Wall_NegativeZ_QA = 1, //
         Wall_NegativeX_QA = 2, // FloorSubdivision1
         Wall_PositiveX_QA = 3, //
         Wall_Diagonal_QA = 4,  //
@@ -159,7 +157,7 @@ namespace TombLib.LevelData
         Wall_Diagonal_Middle = 14,
 
         Wall_PositiveZ_WS = 15, //
-		Wall_NegativeZ_WS = 16, //
+        Wall_NegativeZ_WS = 16, //
         Wall_NegativeX_WS = 17, // CeilingSubdivision1
         Wall_PositiveX_WS = 18, //
         Wall_Diagonal_WS = 19,  //
@@ -274,6 +272,17 @@ namespace TombLib.LevelData
 
     public static class BlockFaceExtensions
     {
+        public static BlockVertical GetVertical(this BlockFace face)
+        {
+            string enumName = face.ToString();
+			string verticalName = enumName.Split('_').ElementAtOrDefault(2);
+
+            if (Enum.TryParse(verticalName, out BlockVertical vertical))
+                return vertical;
+            else
+                throw new ArgumentException();
+        }
+
         public static Direction GetDirection(this BlockFace face)
         {
             string enumName = face.ToString();
@@ -619,7 +628,7 @@ namespace TombLib.LevelData
         public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
         public List<Subdivision> ExtraFloorSubdivisions { get; } = new();
         public List<Subdivision> ExtraCeilingSubdivisions { get; } = new();
-        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)BlockFace.Count];
+        private Dictionary<BlockFace, TextureArea> _faceTextures { get; } = new();
 
         public BlockSurface Floor;
         public BlockSurface Ceiling;
@@ -646,8 +655,8 @@ namespace TombLib.LevelData
             result.Type = Type;
             result.Flags = Flags;
             result.ForceFloorSolid = ForceFloorSolid;
-            for (BlockFace face = 0; face < BlockFace.Count; face++)
-                result._faceTextures[(int)face] = _faceTextures[(int)face];
+            foreach (KeyValuePair<BlockFace, TextureArea> entry in _faceTextures)
+                result._faceTextures[entry.Key] = entry.Value;
             foreach (Subdivision subdivision in ExtraFloorSubdivisions)
                 result.ExtraFloorSubdivisions.Add((Subdivision)subdivision.Clone());
             foreach (Subdivision subdivision in ExtraCeilingSubdivisions)
@@ -671,12 +680,20 @@ namespace TombLib.LevelData
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            if (texture != TextureArea.None && texture.TextureIsDegenerate)
+            if (texture == TextureArea.None)
+            {
+                if (_faceTextures.ContainsKey(face))
+                    _faceTextures.Remove(face);
+
+                return true;
+            }
+
+            if (texture.TextureIsDegenerate)
                 texture = TextureArea.Invisible;
 
-            if (_faceTextures[(int)face] != texture)
+            if (!_faceTextures.ContainsKey(face) || _faceTextures[face] != texture)
             {
-                _faceTextures[(int)face] = texture;
+                _faceTextures[face] = texture;
                 return true;
             }
             else
@@ -685,7 +702,24 @@ namespace TombLib.LevelData
 
         public TextureArea GetFaceTexture(BlockFace face)
         {
-            return _faceTextures[(int)face];
+            return _faceTextures.GetValueOrDefault(face);
+        }
+
+        public Dictionary<BlockFace, TextureArea> GetFaceTextures()
+        {
+            return _faceTextures;
+        }
+
+        public IEnumerable<BlockVertical> GetVerticals()
+        {
+            yield return BlockVertical.Floor;
+            yield return BlockVertical.Ceiling;
+
+            for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
+                yield return BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+
+            for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
+                yield return BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
         }
 
         public IEnumerable<PortalInstance> Portals
@@ -708,7 +742,7 @@ namespace TombLib.LevelData
             Flags = replacement.Flags;
             ForceFloorSolid = replacement.ForceFloorSolid;
 
-            for (BlockFace face = 0; face < BlockFace.Count; face++)
+            foreach (BlockFace face in replacement.GetFaceTextures().Keys)
             {
                 var texture = replacement.GetFaceTexture(face);
                 if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
@@ -782,7 +816,7 @@ namespace TombLib.LevelData
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
             if (newValue is short.MinValue or short.MaxValue)
-				return;
+                return;
 
             switch (vertical)
             {
@@ -803,22 +837,21 @@ namespace TombLib.LevelData
                     if (!IsValidNextSubdivision(vertical))
                         return;
 
-					existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
-				}
+                    existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
+                }
 
-				existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
             }
-
-            if (vertical.IsExtraCeilingSubdivision())
+            else if (vertical.IsExtraCeilingSubdivision())
             {
                 Subdivision existingSubdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex());
 
                 if (existingSubdivision == null)
                 {
                     if (!IsValidNextSubdivision(vertical))
-						return;
+                        return;
 
-					existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
+                    existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
                 }
                 
                 existingSubdivision.Edges[(int)edge] = checked((short)newValue);
@@ -838,24 +871,24 @@ namespace TombLib.LevelData
                 if (vertical.IsExtraFloorSubdivision())
                 {
                     if (increment > 0)
-						return;
+                        return;
 
                     if (ExtraFloorSubdivisions.Count == 0)
-						ExtraFloorSubdivisions.Add(new Subdivision(Floor.Min));
+                        ExtraFloorSubdivisions.Add(new Subdivision(Floor.Min));
                     else
-						ExtraFloorSubdivisions.Add(new Subdivision(ExtraFloorSubdivisions.Last().Edges.Min()));
-					
-				}
-				else if (vertical.IsExtraCeilingSubdivision())
+                        ExtraFloorSubdivisions.Add(new Subdivision(ExtraFloorSubdivisions.Last().Edges.Min()));
+                    
+                }
+                else if (vertical.IsExtraCeilingSubdivision())
                 {
                     if (increment < 0)
                         return;
 
-					if (ExtraCeilingSubdivisions.Count == 0)
+                    if (ExtraCeilingSubdivisions.Count == 0)
                         ExtraCeilingSubdivisions.Add(new Subdivision(Ceiling.Max));
-					else
-						ExtraCeilingSubdivisions.Add(new Subdivision(ExtraCeilingSubdivisions.Last().Edges.Max()));
-				}
+                    else
+                        ExtraCeilingSubdivisions.Add(new Subdivision(ExtraCeilingSubdivisions.Last().Edges.Max()));
+                }
             }
             
             SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
@@ -863,22 +896,22 @@ namespace TombLib.LevelData
 
         public bool IsValidNextSubdivision(BlockVertical vertical)
         {
-			if (vertical.IsExtraFloorSubdivision())
-				return vertical.GetExtraSubdivisionIndex() == ExtraFloorSubdivisions.Count;
-			else if (vertical.IsExtraCeilingSubdivision())
-				return vertical.GetExtraSubdivisionIndex() == ExtraCeilingSubdivisions.Count;
-			else
-				return false;
-		}
+            if (vertical.IsExtraFloorSubdivision())
+                return vertical.GetExtraSubdivisionIndex() == ExtraFloorSubdivisions.Count;
+            else if (vertical.IsExtraCeilingSubdivision())
+                return vertical.GetExtraSubdivisionIndex() == ExtraCeilingSubdivisions.Count;
+            else
+                return false;
+        }
 
         public bool SubdivisionExists(BlockVertical vertical)
         {
             if (vertical.IsExtraFloorSubdivision())
-				return ExtraFloorSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
-			else if (vertical.IsExtraCeilingSubdivision())
-				return ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
-			else
-				return false;
+                return ExtraFloorSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
+            else if (vertical.IsExtraCeilingSubdivision())
+                return ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
+            else
+                return false;
         }
 
         public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)
@@ -986,17 +1019,22 @@ namespace TombLib.LevelData
 
         private void MirrorWallTexture(BlockFace oldFace, Func<BlockFace, BlockFaceShape> oldFaceIsTriangle)
         {
+            if (!_faceTextures.TryGetValue(oldFace, out TextureArea area))
+                return;
+
             switch (oldFaceIsTriangle(oldFace))
             {
                 case BlockFaceShape.Triangle:
-                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord1);
-                    break;
+                    Swap.Do(ref area.TexCoord0, ref area.TexCoord1);
+					break;
                 case BlockFaceShape.Quad:
-                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord3);
-                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord1, ref _faceTextures[(int)oldFace].TexCoord2);
+                    Swap.Do(ref area.TexCoord0, ref area.TexCoord3);
+                    Swap.Do(ref area.TexCoord1, ref area.TexCoord2);
                     break;
             }
-        }
+
+			_faceTextures[oldFace] = area;
+		}
 
         // Rotates and mirrors a sector according to a given transformation. The transformation can be combination of rotations and mirrors
         // but all possible transformation essentially are boiled down to a mirror on the x axis and a rotation afterwards.
@@ -1079,43 +1117,57 @@ namespace TombLib.LevelData
                         MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
                     }
                 }
-                transformation.TransformValueQuad(
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveX_QA],
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveZ_QA],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeX_QA],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeZ_QA]);
+
+                transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_QA, BlockFace.Wall_PositiveZ_QA, BlockFace.Wall_NegativeX_QA, BlockFace.Wall_NegativeZ_QA);
 
                 for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
-                    transformation.TransformValueQuad(
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i)]);
+                {
+                    transformation.TransformValueQuad(_faceTextures,
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i));
+                }      
 
                 // Fix floor textures
                 if (Floor.IsQuad)
                 {
-                    _faceTextures[(int)BlockFace.Floor] = _faceTextures[(int)BlockFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                    if (_faceTextures.ContainsKey(BlockFace.Floor))
+                        _faceTextures[BlockFace.Floor] = _faceTextures[BlockFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
                 else
                 {
                     // Mirror
                     if (transformation.MirrorX)
                     {
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.Floor_Triangle2]);
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Floor].TexCoord0, ref _faceTextures[(int)BlockFace.Floor].TexCoord2);
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Floor_Triangle2].TexCoord0, ref _faceTextures[(int)BlockFace.Floor_Triangle2].TexCoord2);
+						_faceTextures.TrySwap(BlockFace.Floor, BlockFace.Floor_Triangle2);
+
+                        if (_faceTextures.ContainsKey(BlockFace.Floor))
+                        {
+                            TextureArea floor = _faceTextures[BlockFace.Floor];
+                            Swap.Do(ref floor.TexCoord0, ref floor.TexCoord2);
+                            _faceTextures[BlockFace.Floor] = floor;
+						}
+
+                        if (_faceTextures.ContainsKey(BlockFace.Floor_Triangle2))
+                        {
+                            TextureArea floorTriangle2 = _faceTextures[BlockFace.Floor_Triangle2];
+                            Swap.Do(ref floorTriangle2.TexCoord0, ref floorTriangle2.TexCoord2);
+                            _faceTextures[BlockFace.Floor_Triangle2] = floorTriangle2;
+                        }
+
                         if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.Floor_Triangle2]);
+							_faceTextures.TrySwap(BlockFace.Floor, BlockFace.Floor_Triangle2);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldFloorSplitDirectionIsXEqualsZReal)
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.Floor_Triangle2]);
+                            _faceTextures.TrySwap(BlockFace.Floor, BlockFace.Floor_Triangle2);
                         if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.Floor_Triangle2]);
+                            _faceTextures.TrySwap(BlockFace.Floor, BlockFace.Floor_Triangle2);
+
                         oldFloorSplitDirectionIsXEqualsZReal = !oldFloorSplitDirectionIsXEqualsZReal;
                     }
                 }
@@ -1140,43 +1192,57 @@ namespace TombLib.LevelData
                         MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
                     }
                 }
-                transformation.TransformValueQuad(
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveX_WS],
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveZ_WS],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeX_WS],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeZ_WS]);
+
+                transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_WS, BlockFace.Wall_PositiveZ_WS, BlockFace.Wall_NegativeX_WS, BlockFace.Wall_NegativeZ_WS);
 
                 for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
-                    transformation.TransformValueQuad(
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i)],
-                        ref _faceTextures[(int)BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i)]);
+                {
+                    transformation.TransformValueQuad(_faceTextures,
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i));
+                }   
 
                 // Fix ceiling textures
                 if (Ceiling.IsQuad)
                 {
-                    _faceTextures[(int)BlockFace.Ceiling] = _faceTextures[(int)BlockFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                    if (_faceTextures.ContainsKey(BlockFace.Ceiling))
+                        _faceTextures[BlockFace.Ceiling] = _faceTextures[BlockFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
                 else
                 {
                     // Mirror
                     if (transformation.MirrorX)
                     {
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.Ceiling_Triangle2]);
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling].TexCoord0, ref _faceTextures[(int)BlockFace.Ceiling].TexCoord2);
-                        Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling_Triangle2].TexCoord0, ref _faceTextures[(int)BlockFace.Ceiling_Triangle2].TexCoord2);
+                        _faceTextures.TrySwap(BlockFace.Ceiling, BlockFace.Ceiling_Triangle2);
+
+                        if (_faceTextures.ContainsKey(BlockFace.Ceiling))
+                        {
+							TextureArea ceiling = _faceTextures[BlockFace.Ceiling];
+							Swap.Do(ref ceiling.TexCoord0, ref ceiling.TexCoord2);
+                            _faceTextures[BlockFace.Ceiling] = ceiling;
+						}
+
+                        if (_faceTextures.ContainsKey(BlockFace.Ceiling_Triangle2))
+                        {
+                            TextureArea ceilingTriangle2 = _faceTextures[BlockFace.Ceiling_Triangle2];
+							Swap.Do(ref ceilingTriangle2.TexCoord0, ref ceilingTriangle2.TexCoord2);
+							_faceTextures[BlockFace.Ceiling_Triangle2] = ceilingTriangle2;
+						}
+
                         if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.Ceiling_Triangle2]);
+							_faceTextures.TrySwap(BlockFace.Ceiling, BlockFace.Ceiling_Triangle2);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldCeilingSplitDirectionIsXEqualsZReal)
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.Ceiling_Triangle2]);
+                            _faceTextures.TrySwap(BlockFace.Ceiling, BlockFace.Ceiling_Triangle2);
                         if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.Ceiling_Triangle2]);
+							_faceTextures.TrySwap(BlockFace.Ceiling, BlockFace.Ceiling_Triangle2);
+
                         oldCeilingSplitDirectionIsXEqualsZReal = !oldCeilingSplitDirectionIsXEqualsZReal;
                     }
                 }
@@ -1192,11 +1258,7 @@ namespace TombLib.LevelData
                     MirrorWallTexture(BlockFace.Wall_Diagonal_Middle, oldFaceIsTriangle);
                 }
 
-                transformation.TransformValueQuad(
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveX_Middle],
-                    ref _faceTextures[(int)BlockFace.Wall_PositiveZ_Middle],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeX_Middle],
-                    ref _faceTextures[(int)BlockFace.Wall_NegativeZ_Middle]);
+                transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_Middle, BlockFace.Wall_PositiveZ_Middle, BlockFace.Wall_NegativeX_Middle, BlockFace.Wall_NegativeZ_Middle);
             }
         }
 

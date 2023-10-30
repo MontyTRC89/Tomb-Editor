@@ -36,9 +36,9 @@ namespace TombEditor
                             var currZ = selection.Area.Y0 + z;
                             var b = editor.SelectedRoom.Blocks[currX, currZ];
 
-                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                            foreach (BlockVertical vertical in b.GetVerticals())
                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                    writer.Write((short)b.GetHeight(vertical, edge));
+                                    writer.Write(b.GetHeight(vertical, edge));
 
                             writer.Write((int)b.Type);
                             writer.Write(b.ForceFloorSolid);
@@ -72,7 +72,7 @@ namespace TombEditor
                         {
                             var b = sectors[x, z] = new Block(0, 12);
 
-                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                            foreach (BlockVertical vertical in b.GetVerticals())
                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                     b.SetHeight(vertical, edge, reader.ReadInt16());
 

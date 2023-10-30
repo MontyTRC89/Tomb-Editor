@@ -1018,9 +1018,9 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; x++)
                 {
                     var b = Blocks[x, z];
-                    for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
-                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                            b.SetHeight(vertical, edge, b.GetHeight(vertical, edge) - lowest);
+                    foreach (BlockVertical vertical in b.GetVerticals())
+						for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+							b.SetHeight(vertical, edge, b.GetHeight(vertical, edge) - lowest);
                 }
 
             foreach (var instance in _objects)
@@ -1581,8 +1581,8 @@ namespace TombLib.LevelData
                     for (int x = 0; x < NumXSectors; ++x)
                     {
                         Block block = Blocks[x, z];
-                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
-                        {
+						foreach (BlockFace face in block.GetFaceTextures().Keys)
+						{
                             TextureArea textureArea = block.GetFaceTexture(face);
                             var sourceTexture = textureArea.Texture as LevelTexture;
                             if (sourceTexture != null)
@@ -1615,8 +1615,8 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                 {
                     Block block = Blocks[x, z];
-                    for (BlockFace face = 0; face < BlockFace.Count; ++face)
-                        result.Add(block.GetFaceTexture(face).Texture);
+					foreach (BlockFace face in block.GetFaceTextures().Keys)
+						result.Add(block.GetFaceTexture(face).Texture);
                 }
             return result;
         }
@@ -1642,8 +1642,8 @@ namespace TombLib.LevelData
             if (!Properties.Hidden)
                 for (int z = 0; z < NumZSectors; ++z)
                     for (int x = 0; x < NumXSectors; ++x)
-                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
-                        {
+						foreach (BlockFace face in Blocks[x, z].GetFaceTextures().Keys)
+						{
                             var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
                             var shape = GetFaceShape(x, z, face);
 

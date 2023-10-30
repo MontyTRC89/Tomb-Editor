@@ -103,9 +103,9 @@ namespace TombLib.GeometryIO
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             var block = room.GetBlock(new VectorInt2(x, z));
-                            for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
-                            {
-                                var faceTexture = block.GetFaceTexture((BlockFace)faceType);
+							foreach (BlockFace face in block.GetFaceTextures().Keys)
+							{
+                                var faceTexture = block.GetFaceTexture(face);
                                 if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
                                     continue;
                                 if (!usedTextures.Contains(faceTexture.Texture))
@@ -177,15 +177,15 @@ namespace TombLib.GeometryIO
                     {
                         var block = room.GetBlock(new VectorInt2(x, z));
 
-                        for (int faceType = 0; faceType < (int)BlockFace.Count; faceType++)
-                        {
-                            var faceTexture = block.GetFaceTexture((BlockFace)faceType);
+							foreach (BlockFace face in block.GetFaceTextures().Keys)
+							{
+                            var faceTexture = block.GetFaceTexture(face);
 
                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
                                 continue;
 
-                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, (BlockFace)faceType));
-                            var shape = room.GetFaceShape(x, z, (BlockFace)faceType);
+                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
+                            var shape = room.GetFaceShape(x, z, face);
 
                             if (shape == BlockFaceShape.Quad)
                             {
@@ -216,7 +216,7 @@ namespace TombLib.GeometryIO
                                 int textureWidth = textureArea1.Texture.Image.Width;
                                 int textureHeight = textureArea1.Texture.Image.Height;
 
-                                if (faceType != (int)BlockFace.Ceiling)
+                                if (face != BlockFace.Ceiling)
                                 {
                                     mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] + offset);
                                     mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] + offset);

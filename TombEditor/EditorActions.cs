@@ -3563,7 +3563,7 @@ namespace TombEditor
                         Block newBlock = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos).Clone();
 
                         // Preserve outer wall textures
-                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                        foreach (BlockFace face in oldBlock.GetFaceTextures().Keys)
                         {
                             var direction = face.GetDirection();
                             if (direction == Direction.NegativeX || direction == Direction.PositiveX || direction == Direction.NegativeZ || direction == Direction.PositiveZ)
@@ -3571,7 +3571,7 @@ namespace TombEditor
                         }
 
                         // Transform positions
-                        for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                        foreach (BlockVertical vertical in oldBlock.GetVerticals())
                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                 newBlock.ChangeHeight(vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
 
@@ -3597,6 +3597,7 @@ namespace TombEditor
                         for (BlockFace face = 0; face < BlockFace.Count; ++face)
                         {
                             var direction = face.GetDirection();
+
                             switch (direction)
                             {
                                 case Direction.NegativeX:
@@ -3616,24 +3617,37 @@ namespace TombEditor
 
                         // Copy vertical subdivisions along edge
                         int heightDifference = sector.Value.Position.Y - newRoomToHandle.Position.Y;
-                        for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+
+                        if (thisBlockNegativeX.IsAnyWall)
                         {
-                            if (thisBlockNegativeX.IsAnyWall)
+                            foreach (BlockVertical vertical in thisBlockNegativeX.GetVerticals())
                             {
                                 thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZn, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);
                                 thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
                             }
-                            if (thisBlockPositiveX.IsAnyWall)
+                        }
+
+                        if (thisBlockPositiveX.IsAnyWall)
+                        {
+                            foreach (BlockVertical vertical in thisBlockPositiveX.GetVerticals())
                             {
                                 thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
                                 thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZp, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
                             }
-                            if (thisBlockNegativeZ.IsAnyWall)
+                        }
+
+                        if (thisBlockNegativeZ.IsAnyWall)
+                        {
+							foreach (BlockVertical vertical in thisBlockNegativeZ.GetVerticals())
                             {
-                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XnZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
-                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
-                            }
-                            if (thisBlockPositiveZ.IsAnyWall)
+								thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XnZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
+								thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
+							}	
+                        }
+
+                        if (thisBlockPositiveZ.IsAnyWall)
+                        {
+                            foreach (BlockVertical vertical in thisBlockPositiveZ.GetVerticals())
                             {
                                 thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
                                 thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XpZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);

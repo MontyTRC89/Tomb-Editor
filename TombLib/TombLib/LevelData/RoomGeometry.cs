@@ -592,15 +592,29 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
-                            floorSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
+                        (int, int) newSubdivision;
+
+						for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp));
+
+                            if (i >= floorSubdivisions.Count)
+								floorSubdivisions.Add(newSubdivision);
+                            else
+                                floorSubdivisions[i] = newSubdivision;
+						}       
 
                         for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
-                            ceilingSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp));
+
+                            if (i >= ceilingSubdivisions.Count)
+                                ceilingSubdivisions.Add(newSubdivision);
+							else
+                                ceilingSubdivisions[i] = newSubdivision;
+						}        
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)
@@ -739,15 +753,29 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
-                            floorSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
+                        (int, int) newSubdivision;
+
+						for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn));
+
+							if (i >= floorSubdivisions.Count)
+                                floorSubdivisions.Add(newSubdivision);
+							else
+                                floorSubdivisions[i] = newSubdivision;
+						}  
 
                         for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
-                            ceilingSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn));
+
+							if (i >= ceilingSubdivisions.Count)
+								ceilingSubdivisions.Add(newSubdivision);
+							else
+                                ceilingSubdivisions[i] = newSubdivision;	
+						}
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZp)
@@ -885,16 +913,30 @@ namespace TombLib.LevelData
                         wB = room.Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
-                        
-                        for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
-                            floorSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
+
+                        (int, int) newSubdivision;
+
+						for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp));
+
+                            if (i >= floorSubdivisions.Count)
+								floorSubdivisions.Add(newSubdivision);
+                            else
+                                floorSubdivisions[i] = newSubdivision;
+						}	
 
                         for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
-                            ceilingSubdivisions.Add((
-                            adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
-                            adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp));
+
+                            if (i >= ceilingSubdivisions.Count)
+								ceilingSubdivisions.Add(newSubdivision);
+                            else
+                                ceilingSubdivisions[i] = newSubdivision;
+						}	
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XnZn)
@@ -1270,16 +1312,30 @@ namespace TombLib.LevelData
                         wB = room.Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
-                        
-                        for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
-                            floorSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 
+                        (int, int) newSubdivision;
+
+						for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
+                        {
+							newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn));
+
+                            if (i >= floorSubdivisions.Count)
+                                floorSubdivisions.Add(newSubdivision);
+							else
+                                floorSubdivisions[i] = newSubdivision;
+						}
+					    
                         for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
-                            ceilingSubdivisions.Add((
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
-                                adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
+                        {
+                            newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
+								adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn));
+
+                            if (i >= ceilingSubdivisions.Count)
+								ceilingSubdivisions.Add(newSubdivision);
+                            else
+                                ceilingSubdivisions[i] = newSubdivision;
+						}
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)

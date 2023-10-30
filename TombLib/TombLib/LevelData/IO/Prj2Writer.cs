@@ -427,7 +427,7 @@ namespace TombLib.LevelData.IO
                                             bool invalidSubdivision = room.IsInvalidBlockSubdivision(BlockVertical.FloorSubdivision2, x, z);
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, invalidSubdivision ? short.MinValue : b.GetHeight(BlockVertical.FloorSubdivision2, edge));
+                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.FloorSubdivision2, edge));
 										}
                                         using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
                                         {
@@ -439,10 +439,10 @@ namespace TombLib.LevelData.IO
 											bool invalidSubdivision = room.IsInvalidBlockSubdivision(BlockVertical.CeilingSubdivision2, x, z);
 
 											for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, invalidSubdivision ? short.MaxValue : b.GetHeight(BlockVertical.CeilingSubdivision2, edge));
+                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.CeilingSubdivision2, edge));
 										}
-                                        for (BlockFace face = 0; face < BlockFace.Count; face++)
-                                        {
+										foreach (BlockFace face in b.GetFaceTextures().Keys)
+										{
                                             var texture = b.GetFaceTexture(face);
                                             if (texture.Texture == null)
                                                 continue;
