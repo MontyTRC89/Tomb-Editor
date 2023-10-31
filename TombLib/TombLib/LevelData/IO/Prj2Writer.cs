@@ -441,17 +441,17 @@ namespace TombLib.LevelData.IO
 										{
 											LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
 
-											foreach (BlockVertical subdivisionVertical in validFloorSubdivisions)
+											foreach (var subdivisionVertical in validFloorSubdivisions.Where(s => !s.TextureOnly))
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
 										}
 										using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
 										{
 											LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
 
-											foreach (BlockVertical subdivisionVertical in validCeilingSubdivisions)
+											foreach (var subdivisionVertical in validCeilingSubdivisions.Where(s => !s.TextureOnly))
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
 										}
 										foreach (BlockFace face in b.GetFaceTextures().Keys)
 										{
@@ -464,7 +464,7 @@ namespace TombLib.LevelData.IO
                                             {
 												BlockVertical faceVertical = face.GetVertical();
 
-                                                if (!validFloorSubdivisions.Contains(faceVertical) && !validCeilingSubdivisions.Contains(faceVertical))
+                                                if (!validFloorSubdivisions.Any(s => s.Vertical == faceVertical) && !validCeilingSubdivisions.Any(s => s.Vertical == faceVertical))
                                                     continue;
                                             }
 

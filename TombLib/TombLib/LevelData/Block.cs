@@ -1286,7 +1286,7 @@ namespace TombLib.LevelData
                 for (int j = 0; j < ExtraFloorSubdivisions.Count; j++)
                 {
                     BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(j);
-                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Floor : BlockVerticalExtensions.GetExtraFloorSubdivision(j - 1);     
+                    BlockVertical lastBlockVertical = j == 0 ? BlockVertical.Floor : BlockVerticalExtensions.GetExtraFloorSubdivision(j - 1); 
                     SetHeight(subdivisionVertical, i, Math.Min(GetHeight(subdivisionVertical, i), GetHeight(lastBlockVertical, i)));
                 }
 
