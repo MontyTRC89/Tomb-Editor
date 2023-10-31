@@ -758,7 +758,7 @@ namespace TombLib.LevelData.IO
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloor)
+                                    else if (id4 == Prj2Chunks.SectorFloorClassic)
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
@@ -769,7 +769,7 @@ namespace TombLib.LevelData.IO
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeiling)
+                                    else if (id4 == Prj2Chunks.SectorCeilingClassic)
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
@@ -780,7 +780,25 @@ namespace TombLib.LevelData.IO
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-									else if (id4 == Prj2Chunks.SectorExtraFloorSubdivisions)
+									else if (id4 == Prj2Chunks.SectorFloorOnly)
+									{
+										long flag = LEB128.ReadLong(chunkIO.Raw);
+										for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+											block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+
+										block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+										block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+									}
+									else if (id4 == Prj2Chunks.SectorCeilingOnly)
+									{
+										long flag = LEB128.ReadLong(chunkIO.Raw);
+										for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+											block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+
+										block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+										block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+									}
+									else if (id4 == Prj2Chunks.SectorFloorSubdivisions)
 									{
 										byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
@@ -793,7 +811,7 @@ namespace TombLib.LevelData.IO
 												block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
 										}
 									}
-									else if (id4 == Prj2Chunks.SectorExtraCeilingSubdivisions)
+									else if (id4 == Prj2Chunks.SectorCeilingSubdivisions)
 									{
 										byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 

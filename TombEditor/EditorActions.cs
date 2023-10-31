@@ -221,7 +221,7 @@ namespace TombEditor
                             if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
                                 block.RaiseStepWise(vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             else
-                                block.Raise(vertical, increment, false);
+                                block.Raise(vertical, increment, false, room, x, z);
                         }
                         else
                         {

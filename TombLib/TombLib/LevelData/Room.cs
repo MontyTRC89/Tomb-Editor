@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
+using static SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.LevelData
 {
@@ -897,7 +898,7 @@ namespace TombLib.LevelData
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
-        public int GetHighestCorner(RectangleInt2 area, bool ignoreCorners = false)
+        public int GetHighestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -905,25 +906,41 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                    {
-                        if (ignoreCorners)
-                        {
-                            if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
-                                continue;
-                        }
-
                         max = Math.Max(max, Blocks[x, z].Ceiling.Max);
-                    }
 
             return max == int.MinValue ? DefaultHeight : max;
         }
 
-        public int GetHighestCorner()
+		public int GetHighestNeighborCeiling(int x, int z)
+		{
+            Block n1 = Blocks.TryGet(x - 1, z);
+            Block n2 = Blocks.TryGet(x + 1, z);
+            Block n3 = Blocks.TryGet(x, z - 1);
+            Block n4 = Blocks.TryGet(x, z + 1);
+
+			int max = int.MinValue;
+
+			if (n1 is not null && n1.Type == BlockType.Floor)
+				max = Math.Max(max, n1.Ceiling.Max);
+
+            if (n2 is not null && n2.Type == BlockType.Floor)
+                max = Math.Max(max, n2.Ceiling.Max);
+
+            if (n3 is not null && n3.Type == BlockType.Floor)
+                max = Math.Max(max, n3.Ceiling.Max);
+
+            if (n4 is not null && n4.Type == BlockType.Floor)
+                max = Math.Max(max, n4.Ceiling.Max);
+
+			return max;
+		}
+
+		public int GetHighestCorner()
         {
             return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public int GetLowestCorner(RectangleInt2 area, bool ignoreCorners = false)
+        public int GetLowestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -931,20 +948,36 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                    {
-                        if (ignoreCorners)
-                        {
-                            if (x == area.X0 && z == area.Y0 || x == area.X0 && z == area.Y1 || x == area.X1 && z == area.Y0 || x == area.X1 && z == area.Y1)
-                                continue;
-                        }
-
                         min = Math.Min(min, Blocks[x, z].Floor.Min);
-                    }
             
             return min == int.MaxValue ? 0 : min;
         }
 
-        public int GetLowestCorner()
+		public int GetLowestNeighborFloor(int x, int z)
+		{
+			Block n1 = Blocks.TryGet(x - 1, z);
+			Block n2 = Blocks.TryGet(x + 1, z);
+			Block n3 = Blocks.TryGet(x, z - 1);
+			Block n4 = Blocks.TryGet(x, z + 1);
+
+            int min = int.MaxValue;
+
+            if (n1 is not null && n1.Type == BlockType.Floor)
+				min = Math.Min(min, n1.Floor.Min);
+
+            if (n2 is not null && n2.Type == BlockType.Floor)
+				min = Math.Min(min, n2.Floor.Min);
+
+			if (n3 is not null && n3.Type == BlockType.Floor)
+				min = Math.Min(min, n3.Floor.Min);
+
+			if (n4 is not null && n4.Type == BlockType.Floor)
+				min = Math.Min(min, n4.Floor.Min);
+
+			return min;
+		}
+
+		public int GetLowestCorner()
         {
             return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
@@ -1822,58 +1855,216 @@ namespace TombLib.LevelData
             vertices = roomVertices.Count;
         }
 
-        public bool IsInvalidBlockSubdivision(BlockVertical vertical, int x, int z) // TODO: Implement "isFlattened" optimization
+        public IEnumerable<BlockVertical> GetValidFloorSubdivisionsForBlock(int x, int z) // TODO: Implement "IsFlattened" optimization - needs a lot of work
         {
-            Block block = Blocks[x, z];
+			Room sourceRoom = this,
+                adjoiningRoom = null,
+                targetRoom = sourceRoom;
 
-            if (vertical.IsExtraFloorSubdivision())
+			Block sourceBlock = Blocks[x, z],
+				adjoiningBlock = null,
+				targetBlock = sourceBlock;
+
+			VectorInt2 adjoiningBlockPos = default;
+
+			if (sourceBlock.WallPortal != null)
+			{
+				RoomBlockPair pair = GetBlockTryThroughPortal(x, z);
+
+				if (pair.Room != this)
+				{
+					adjoiningRoom = pair.Room;
+					adjoiningBlock = pair.Block;
+					adjoiningBlockPos = pair.Pos;
+				}
+			}
+
+			int sourceLowestNeighborFloor = sourceRoom.GetLowestNeighborFloor(x, z) + sourceRoom.Position.Y,
+                targetLowestNeighborFloor = sourceLowestNeighborFloor;
+
+			if (adjoiningRoom != null)
+			{
+				targetRoom = adjoiningRoom;
+				targetBlock = adjoiningBlock;
+
+				int adjoiningLowestNeighborFloor = adjoiningRoom.GetLowestNeighborFloor(adjoiningBlockPos.X, adjoiningBlockPos.Y) + adjoiningRoom.Position.Y;
+
+				if (sourceLowestNeighborFloor > adjoiningLowestNeighborFloor)
+					targetLowestNeighborFloor = adjoiningLowestNeighborFloor;
+			}
+
+			for (int i = 0; i < targetBlock.ExtraFloorSubdivisions.Count; i++)
             {
-                int index = vertical.GetExtraSubdivisionIndex();
-                //short[] lastEdges;
+				Subdivision subdivision = targetBlock.ExtraFloorSubdivisions[i];
+				bool isInVoid = subdivision.Edges.Max() + targetRoom.Position.Y <= targetLowestNeighborFloor;
 
-                //if (index == 0)
-                //    lastEdges = block.GetED();
-                //else
-                //    lastEdges = block.ExtraFloorSubdivisions.ElementAt(index - 1).Edges;
+                if (!isInVoid)
+                    yield return BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+			}
+		}
 
-                Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(index);
+		public bool IsFloorSubdivisionInVoid(BlockVertical vertical, int x, int z, out int lowestNeighborFloor) // TODO: Implement "IsFlattened" optimization - needs a lot of work
+		{
+			Room sourceRoom = this,
+				adjoiningRoom = null,
+				targetRoom = sourceRoom;
 
-                if (subdivision == null)
-                    return true;
+			Block sourceBlock = Blocks[x, z],
+				adjoiningBlock = null,
+				targetBlock = sourceBlock;
 
-                int lowest = GetLowestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+			VectorInt2 adjoiningBlockPos = default;
 
-                bool isInVoid = subdivision.Edges.Max() <= lowest;
-                //bool isFlattened = subdivision.Edges.SequenceEqual(lastEdges);
+			if (sourceBlock.WallPortal != null)
+			{
+				RoomBlockPair pair = GetBlockTryThroughPortal(x, z);
 
+				if (pair.Room != this)
+				{
+					adjoiningRoom = pair.Room;
+					adjoiningBlock = pair.Block;
+					adjoiningBlockPos = pair.Pos;
+				}
+			}
+
+			int sourceLowestNeighborFloor = sourceRoom.GetLowestNeighborFloor(x, z) + sourceRoom.Position.Y,
+				targetLowestNeighborFloor = sourceLowestNeighborFloor;
+
+			if (adjoiningRoom != null)
+			{
+				targetRoom = adjoiningRoom;
+				targetBlock = adjoiningBlock;
+
+				int adjoiningLowestNeighborFloor = adjoiningRoom.GetLowestNeighborFloor(adjoiningBlockPos.X, adjoiningBlockPos.Y) + adjoiningRoom.Position.Y;
+
+				if (sourceLowestNeighborFloor > adjoiningLowestNeighborFloor)
+					targetLowestNeighborFloor = adjoiningLowestNeighborFloor;
+			}
+
+			lowestNeighborFloor = targetLowestNeighborFloor - targetRoom.Position.Y;
+
+			if (vertical is BlockVertical.Floor)
+			{
+				bool isInVoid = targetBlock.Floor.Max + targetRoom.Position.Y <= targetLowestNeighborFloor;
                 return isInVoid;
-            }
-            else if (vertical.IsExtraCeilingSubdivision())
+			}
+            else
             {
-                int index = vertical.GetExtraSubdivisionIndex();
-                //short[] lastEdges;
+				Subdivision subdivision = targetBlock.ExtraFloorSubdivisions.ElementAtOrDefault(BlockVerticalExtensions.GetExtraSubdivisionIndex(vertical));
 
-                //if (index == 0)
-                //	lastEdges = block.GetRF();
-                //else
-                //	lastEdges = block.ExtraCeilingSubdivisions.ElementAt(index - 1).Edges;
-
-                Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(index);
-
-				if (subdivision == null)
+				if (subdivision is null)
 					return true;
 
-				int highest = GetHighestCorner(new RectangleInt2(x, z, x, z).Inflate(1), true);
+				bool isInVoid = subdivision.Edges.Max() + targetRoom.Position.Y <= targetLowestNeighborFloor;
+				return isInVoid;
+			}
+		}
 
-                bool isInVoid = subdivision.Edges.Min() >= highest;
-                //bool isFlattened = subdivision.Edges.SequenceEqual(lastEdges);
+		public IEnumerable<BlockVertical> GetValidCeilingSubdivisionsForBlock(int x, int z) // TODO: Implement "IsFlattened" optimization - needs a lot of work
+		{
+			Room sourceRoom = this,
+				adjoiningRoom = null,
+				targetRoom = sourceRoom;
 
-                return isInVoid;
-            }
+			Block sourceBlock = Blocks[x, z],
+                adjoiningBlock = null,
+                targetBlock = sourceBlock;
 
-            throw new InvalidOperationException();
-        }
+            VectorInt2 adjoiningBlockPos = default;
 
-        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+			if (sourceBlock.WallPortal != null)
+			{
+				RoomBlockPair pair = GetBlockTryThroughPortal(x, z);
+
+				if (pair.Room != this)
+                {
+					adjoiningRoom = pair.Room;
+                    adjoiningBlock = pair.Block;
+                    adjoiningBlockPos = pair.Pos;
+				}
+			}
+
+            int sourceHighestNeighborCeiling = sourceRoom.GetHighestNeighborCeiling(x, z) + sourceRoom.Position.Y,
+                targetHighestNeighborCeiling = sourceHighestNeighborCeiling;
+
+			if (adjoiningRoom != null)
+			{
+				targetRoom = adjoiningRoom;
+				targetBlock = adjoiningBlock;
+
+				int adjoiningHighestNeighborCeiling = adjoiningRoom.GetHighestNeighborCeiling(adjoiningBlockPos.X, adjoiningBlockPos.Y) + adjoiningRoom.Position.Y;
+
+				if (sourceHighestNeighborCeiling < adjoiningHighestNeighborCeiling)
+					targetHighestNeighborCeiling = adjoiningHighestNeighborCeiling;
+			}
+
+			for (int i = 0; i < targetBlock.ExtraCeilingSubdivisions.Count; i++)
+			{
+				Subdivision subdivision = targetBlock.ExtraCeilingSubdivisions[i];		
+				bool isInVoid = subdivision.Edges.Min() + targetRoom.Position.Y >= targetHighestNeighborCeiling;
+
+				if (!isInVoid)
+					yield return BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+			}
+		}
+
+		public bool IsCeilingSubdivisionInVoid(BlockVertical vertical, int x, int z, out int highestNeighborCeiling) // TODO: Implement "IsFlattened" optimization - needs a lot of work
+        {
+            Room sourceRoom = this,
+                adjoiningRoom = null,
+				targetRoom = sourceRoom;
+
+            Block sourceBlock = Blocks[x, z],
+				adjoiningBlock = null,
+				targetBlock = sourceBlock;
+
+			VectorInt2 adjoiningBlockPos = default;
+
+            if (sourceBlock.WallPortal != null)
+            {
+				RoomBlockPair pair = GetBlockTryThroughPortal(x, z);
+
+				if (pair.Room != this)
+				{
+					adjoiningRoom = pair.Room;
+					adjoiningBlock = pair.Block;
+					adjoiningBlockPos = pair.Pos;
+				}
+			}
+
+			int sourceHighestNeighborCeiling = sourceRoom.GetHighestNeighborCeiling(x, z) + sourceRoom.Position.Y,
+				targetHighestNeighborCeiling = sourceHighestNeighborCeiling;
+
+			if (adjoiningRoom != null)
+			{
+				targetRoom = adjoiningRoom;
+				targetBlock = adjoiningBlock;
+
+				int adjoiningHighestNeighborCeiling = adjoiningRoom.GetHighestNeighborCeiling(adjoiningBlockPos.X, adjoiningBlockPos.Y) + adjoiningRoom.Position.Y;
+
+				if (sourceHighestNeighborCeiling < adjoiningHighestNeighborCeiling)
+					targetHighestNeighborCeiling = adjoiningHighestNeighborCeiling;
+			}
+
+			highestNeighborCeiling = targetHighestNeighborCeiling - targetRoom.Position.Y;
+
+			if (vertical is BlockVertical.Ceiling)
+			{
+				bool isInVoid = targetBlock.Ceiling.Min + targetRoom.Position.Y >= targetHighestNeighborCeiling;
+				return isInVoid;
+			}
+			else
+			{
+				Subdivision subdivision = targetBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(BlockVerticalExtensions.GetExtraSubdivisionIndex(vertical));
+
+				if (subdivision is null)
+					return true;
+
+				bool isInVoid = subdivision.Edges.Min() + targetRoom.Position.Y >= targetHighestNeighborCeiling;
+				return isInVoid;
+			}
+		}
+
+		bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 }

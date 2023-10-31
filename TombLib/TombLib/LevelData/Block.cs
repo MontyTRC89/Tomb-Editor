@@ -815,9 +815,6 @@ namespace TombLib.LevelData
 
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
-            if (newValue is short.MinValue or short.MaxValue)
-                return;
-
             switch (vertical)
             {
                 case BlockVertical.Floor:
@@ -858,7 +855,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment)
+        public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment, Room referenceRoom = null, int? referenceX = null, int? referenceZ = null)
         {
             if (increment == 0)
                 return;
@@ -868,26 +865,46 @@ namespace TombLib.LevelData
             {
                 // Create the new subdivision if applicable
 
+                if (referenceRoom == null || !referenceX.HasValue || !referenceZ.HasValue)
+                    return;
+
                 if (vertical.IsExtraFloorSubdivision())
                 {
-                    if (increment > 0)
-                        return;
+					if (ExtraFloorSubdivisions.Count == 0)
+                    {
+                        if (referenceRoom.IsFloorSubdivisionInVoid(BlockVertical.Floor, referenceX.Value, referenceZ.Value, out int lowestNeightborFloor))
+                            return;
 
-                    if (ExtraFloorSubdivisions.Count == 0)
-                        ExtraFloorSubdivisions.Add(new Subdivision(Floor.Min));
-                    else
-                        ExtraFloorSubdivisions.Add(new Subdivision(ExtraFloorSubdivisions.Last().Edges.Min()));
-                    
-                }
+						ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
+					}
+					else
+                    {
+						BlockVertical lastVerical = BlockVerticalExtensions.GetExtraFloorSubdivision(ExtraFloorSubdivisions.Count - 1);
+
+						if (referenceRoom.IsFloorSubdivisionInVoid(lastVerical, referenceX.Value, referenceZ.Value, out int lowestNeightborFloor))
+							return;
+
+						ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
+					}
+				}
                 else if (vertical.IsExtraCeilingSubdivision())
                 {
-                    if (increment < 0)
-                        return;
+					if (ExtraCeilingSubdivisions.Count == 0)
+					{
+						if (referenceRoom.IsCeilingSubdivisionInVoid(BlockVertical.Ceiling, referenceX.Value, referenceZ.Value, out int highestNeighborCeiling))
+							return;
 
-                    if (ExtraCeilingSubdivisions.Count == 0)
-                        ExtraCeilingSubdivisions.Add(new Subdivision(Ceiling.Max));
-                    else
-                        ExtraCeilingSubdivisions.Add(new Subdivision(ExtraCeilingSubdivisions.Last().Edges.Max()));
+						ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
+					}
+					else
+					{
+						BlockVertical lastVerical = BlockVerticalExtensions.GetExtraCeilingSubdivision(ExtraCeilingSubdivisions.Count - 1);
+
+						if (referenceRoom.IsCeilingSubdivisionInVoid(lastVerical, referenceX.Value, referenceZ.Value, out int highestNeighborCeiling))
+							return;
+
+						ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
+					}
                 }
             }
             
@@ -914,7 +931,7 @@ namespace TombLib.LevelData
                 return false;
         }
 
-        public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false)
+        public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false, Room referenceRoom = null, int? referenceX = null, int? referenceZ = null)
         {
             var split = vertical.IsOnFloor() ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
             if (diagonalStep)
@@ -922,16 +939,16 @@ namespace TombLib.LevelData
                 switch (split)
                 {
                     case DiagonalSplit.XpZn:
-                        ChangeHeight(vertical, BlockEdge.XnZp, increment);
+                        ChangeHeight(vertical, BlockEdge.XnZp, increment, referenceRoom, referenceX, referenceZ);
                         break;
                     case DiagonalSplit.XnZn:
-                        ChangeHeight(vertical, BlockEdge.XpZp, increment);
+                        ChangeHeight(vertical, BlockEdge.XpZp, increment, referenceRoom, referenceX, referenceZ);
                         break;
                     case DiagonalSplit.XnZp:
-                        ChangeHeight(vertical, BlockEdge.XpZn, increment);
+                        ChangeHeight(vertical, BlockEdge.XpZn, increment, referenceRoom, referenceX, referenceZ);
                         break;
                     case DiagonalSplit.XpZp:
-                        ChangeHeight(vertical, BlockEdge.XnZn, increment);
+                        ChangeHeight(vertical, BlockEdge.XnZn, increment, referenceRoom, referenceX, referenceZ);
                         break;
                 }
             }
@@ -944,7 +961,7 @@ namespace TombLib.LevelData
                         edge == BlockEdge.XpZn && split == DiagonalSplit.XnZp ||
                         edge == BlockEdge.XpZp && split == DiagonalSplit.XnZn)
                         continue;
-                    ChangeHeight(vertical, edge, increment);
+                    ChangeHeight(vertical, edge, increment, referenceRoom, referenceX, referenceZ);
                 }
             }
         }
