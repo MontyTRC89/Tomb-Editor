@@ -494,10 +494,10 @@ namespace TombLib.LevelData
         private void AddVerticalFaces(Room room, int x, int z, FaceDirection direction, bool floor, bool ceiling, bool middle)
         {
             int xA, xB, zA, zB, yA, yB;
-            int qA, qB, wA, wB, fA, fB, cA, cB;
+            int qaA, qaB, wsA, wsB, floorA, floorB, ceilingA, ceilingB;
 
-            Block b = room.Blocks[x, z];
-            Block ob;
+            Block block = room.Blocks[x, z];
+            Block neighborBlock = null;
             TextureArea face;
 
             BlockFace qaFace, wsFace, middleFace;
@@ -511,34 +511,34 @@ namespace TombLib.LevelData
                     xB = x;
                     zA = z + 1;
                     zB = z + 1;
-                    ob = room.Blocks[x, z + 1];
-                    qA = b.Floor.XpZp;
-                    qB = b.Floor.XnZp;
+                    neighborBlock = room.Blocks[x, z + 1];
+                    qaA = block.Floor.XpZp;
+                    qaB = block.Floor.XnZp;
 
-                    for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                         floorSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 
-                    for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                         ceilingSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 
-                    wA = b.Ceiling.XpZp;
-                    wB = b.Ceiling.XnZp;
-                    fA = ob.Floor.XpZn;
-                    fB = ob.Floor.XnZn;
-                    cA = ob.Ceiling.XpZn;
-                    cB = ob.Ceiling.XnZn;
+                    wsA = block.Ceiling.XpZp;
+                    wsB = block.Ceiling.XnZp;
+                    floorA = neighborBlock.Floor.XpZn;
+                    floorB = neighborBlock.Floor.XnZn;
+                    ceilingA = neighborBlock.Ceiling.XpZn;
+                    ceilingB = neighborBlock.Ceiling.XnZn;
                     qaFace = BlockFace.Wall_PositiveZ_QA;
                     middleFace = BlockFace.Wall_PositiveZ_Middle;
                     wsFace = BlockFace.Wall_PositiveZ_WS;
 
-                    if (b.WallPortal != null)
+                    if (block.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
-                        var portal = b.WallPortal;
+                        var portal = block.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (room.Alternated && room.AlternateBaseRoom != null)
                         {
@@ -575,10 +575,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                             qBportal = qAportal;
 
-                        qA = room.Position.Y + qaNearA;
-                        qB = room.Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - room.Position.Y;
-                        qB = Math.Max(qB, qBportal) - room.Position.Y;
+                        qaA = room.Position.Y + qaNearA;
+                        qaB = room.Position.Y + qaNearB;
+                        qaA = Math.Max(qaA, qAportal) - room.Position.Y;
+                        qaB = Math.Max(qaB, qBportal) - room.Position.Y;
 
                         int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZp;
                         int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZp;
@@ -587,10 +587,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
                             wBportal = wAportal;
 
-                        wA = room.Position.Y + wsNearA;
-                        wB = room.Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - room.Position.Y;
-                        wB = Math.Min(wB, wBportal) - room.Position.Y;
+                        wsA = room.Position.Y + wsNearA;
+                        wsB = room.Position.Y + wsNearB;
+                        wsA = Math.Min(wsA, wAportal) - room.Position.Y;
+                        wsB = Math.Min(wsB, wBportal) - room.Position.Y;
 
                         (int, int) newSubdivision;
 
@@ -617,52 +617,52 @@ namespace TombLib.LevelData
 						}        
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        qA = b.Floor.XnZp;
-                        qB = b.Floor.XnZp;
+                        qaA = block.Floor.XnZp;
+                        qaB = block.Floor.XnZp;
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        qA = b.Floor.XpZp;
-                        qB = b.Floor.XpZp;
+                        qaA = block.Floor.XpZp;
+                        qaB = block.Floor.XpZp;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        fA = ob.Floor.XpZn;
-                        fB = ob.Floor.XpZn;
+                        floorA = neighborBlock.Floor.XpZn;
+                        floorB = neighborBlock.Floor.XpZn;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        fA = ob.Floor.XnZn;
-                        fB = ob.Floor.XnZn;
+                        floorA = neighborBlock.Floor.XnZn;
+                        floorB = neighborBlock.Floor.XnZn;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        wA = b.Ceiling.XnZp;
-                        wB = b.Ceiling.XnZp;
+                        wsA = block.Ceiling.XnZp;
+                        wsB = block.Ceiling.XnZp;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        wA = b.Ceiling.XpZp;
-                        wB = b.Ceiling.XpZp;
+                        wsA = block.Ceiling.XpZp;
+                        wsB = block.Ceiling.XpZp;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        cA = ob.Ceiling.XpZn;
-                        cB = ob.Ceiling.XpZn;
+                        ceilingA = neighborBlock.Ceiling.XpZn;
+                        ceilingB = neighborBlock.Ceiling.XpZn;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        cA = ob.Ceiling.XnZn;
-                        cB = ob.Ceiling.XnZn;
+                        ceilingA = neighborBlock.Ceiling.XnZn;
+                        ceilingB = neighborBlock.Ceiling.XnZn;
                     }
 
                     break;
@@ -672,34 +672,34 @@ namespace TombLib.LevelData
                     xB = x + 1;
                     zA = z;
                     zB = z;
-                    ob = room.Blocks[x, z - 1];
-                    qA = b.Floor.XnZn;
-                    qB = b.Floor.XpZn;
+                    neighborBlock = room.Blocks[x, z - 1];
+                    qaA = block.Floor.XnZn;
+                    qaB = block.Floor.XpZn;
 
-                    for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                         floorSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 
-                    for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                         ceilingSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 
-                    wA = b.Ceiling.XnZn;
-                    wB = b.Ceiling.XpZn;
-                    fA = ob.Floor.XnZp;
-                    fB = ob.Floor.XpZp;
-                    cA = ob.Ceiling.XnZp;
-                    cB = ob.Ceiling.XpZp;
+                    wsA = block.Ceiling.XnZn;
+                    wsB = block.Ceiling.XpZn;
+                    floorA = neighborBlock.Floor.XnZp;
+                    floorB = neighborBlock.Floor.XpZp;
+                    ceilingA = neighborBlock.Ceiling.XnZp;
+                    ceilingB = neighborBlock.Ceiling.XpZp;
                     qaFace = BlockFace.Wall_NegativeZ_QA;
                     middleFace = BlockFace.Wall_NegativeZ_Middle;
                     wsFace = BlockFace.Wall_NegativeZ_WS;
 
-                    if (b.WallPortal != null)
+                    if (block.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
-                        var portal = b.WallPortal;
+                        var portal = block.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (room.Alternated && room.AlternateBaseRoom != null)
                         {
@@ -736,10 +736,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                             qBportal = qAportal;
 
-                        qA = room.Position.Y + qaNearA;
-                        qB = room.Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - room.Position.Y;
-                        qB = Math.Max(qB, qBportal) - room.Position.Y;
+                        qaA = room.Position.Y + qaNearA;
+                        qaB = room.Position.Y + qaNearB;
+                        qaA = Math.Max(qaA, qAportal) - room.Position.Y;
+                        qaB = Math.Max(qaB, qBportal) - room.Position.Y;
 
                         int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZn;
                         int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZn;
@@ -748,10 +748,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                             wBportal = wAportal;
 
-                        wA = room.Position.Y + wsNearA;
-                        wB = room.Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - room.Position.Y;
-                        wB = Math.Min(wB, wBportal) - room.Position.Y;
+                        wsA = room.Position.Y + wsNearA;
+                        wsB = room.Position.Y + wsNearB;
+                        wsA = Math.Min(wsA, wAportal) - room.Position.Y;
+                        wsB = Math.Min(wsB, wBportal) - room.Position.Y;
 
                         (int, int) newSubdivision;
 
@@ -778,52 +778,52 @@ namespace TombLib.LevelData
 						}
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        qA = b.Floor.XnZn;
-                        qB = b.Floor.XnZn;
+                        qaA = block.Floor.XnZn;
+                        qaB = block.Floor.XnZn;
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        qA = b.Floor.XpZn;
-                        qB = b.Floor.XpZn;
+                        qaA = block.Floor.XpZn;
+                        qaB = block.Floor.XpZn;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        fA = ob.Floor.XnZp;
-                        fB = ob.Floor.XnZp;
+                        floorA = neighborBlock.Floor.XnZp;
+                        floorB = neighborBlock.Floor.XnZp;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        fA = ob.Floor.XpZp;
-                        fB = ob.Floor.XpZp;
+                        floorA = neighborBlock.Floor.XpZp;
+                        floorB = neighborBlock.Floor.XpZp;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        wA = b.Ceiling.XnZn;
-                        wB = b.Ceiling.XnZn;
+                        wsA = block.Ceiling.XnZn;
+                        wsB = block.Ceiling.XnZn;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        wA = b.Ceiling.XpZn;
-                        wB = b.Ceiling.XpZn;
+                        wsA = block.Ceiling.XpZn;
+                        wsB = block.Ceiling.XpZn;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        cA = ob.Ceiling.XnZp;
-                        cB = ob.Ceiling.XnZp;
+                        ceilingA = neighborBlock.Ceiling.XnZp;
+                        ceilingB = neighborBlock.Ceiling.XnZp;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        cA = ob.Ceiling.XpZp;
-                        cB = ob.Ceiling.XpZp;
+                        ceilingA = neighborBlock.Ceiling.XpZp;
+                        ceilingB = neighborBlock.Ceiling.XpZp;
                     }
 
                     break;
@@ -833,34 +833,34 @@ namespace TombLib.LevelData
                     xB = x + 1;
                     zA = z;
                     zB = z + 1;
-                    ob = room.Blocks[x + 1, z];
-                    qA = b.Floor.XpZn;
-                    qB = b.Floor.XpZp;
+                    neighborBlock = room.Blocks[x + 1, z];
+                    qaA = block.Floor.XpZn;
+                    qaB = block.Floor.XpZp;
                     
-                    for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                         floorSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 
-                    for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                         ceilingSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 
-                    wA = b.Ceiling.XpZn;
-                    wB = b.Ceiling.XpZp;
-                    fA = ob.Floor.XnZn;
-                    fB = ob.Floor.XnZp;
-                    cA = ob.Ceiling.XnZn;
-                    cB = ob.Ceiling.XnZp;
+                    wsA = block.Ceiling.XpZn;
+                    wsB = block.Ceiling.XpZp;
+                    floorA = neighborBlock.Floor.XnZn;
+                    floorB = neighborBlock.Floor.XnZp;
+                    ceilingA = neighborBlock.Ceiling.XnZn;
+                    ceilingB = neighborBlock.Ceiling.XnZp;
                     qaFace = BlockFace.Wall_PositiveX_QA;
                     middleFace = BlockFace.Wall_PositiveX_Middle;
                     wsFace = BlockFace.Wall_PositiveX_WS;
 
-                    if (b.WallPortal != null)
+                    if (block.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
-                        var portal = b.WallPortal;
+                        var portal = block.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (room.Alternated && room.AlternateBaseRoom != null)
                         {
@@ -897,10 +897,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                             qBportal = qAportal;
 
-                        qA = room.Position.Y + qaNearA;
-                        qB = room.Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - room.Position.Y;
-                        qB = Math.Max(qB, qBportal) - room.Position.Y;
+                        qaA = room.Position.Y + qaNearA;
+                        qaB = room.Position.Y + qaNearB;
+                        qaA = Math.Max(qaA, qAportal) - room.Position.Y;
+                        qaB = Math.Max(qaB, qBportal) - room.Position.Y;
 
                         int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZn;
                         int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZp;
@@ -909,10 +909,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                             wBportal = wAportal;
 
-                        wA = room.Position.Y + wsNearA;
-                        wB = room.Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - room.Position.Y;
-                        wB = Math.Min(wB, wBportal) - room.Position.Y;
+                        wsA = room.Position.Y + wsNearA;
+                        wsB = room.Position.Y + wsNearB;
+                        wsA = Math.Min(wsA, wAportal) - room.Position.Y;
+                        wsB = Math.Min(wsB, wBportal) - room.Position.Y;
 
                         (int, int) newSubdivision;
 
@@ -939,83 +939,83 @@ namespace TombLib.LevelData
 						}	
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        qA = b.Floor.XpZp;
-                        qB = b.Floor.XpZp;
+                        qaA = block.Floor.XpZp;
+                        qaB = block.Floor.XpZp;
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        qA = b.Floor.XpZn;
-                        qB = b.Floor.XpZn;
+                        qaA = block.Floor.XpZn;
+                        qaB = block.Floor.XpZn;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        fA = ob.Floor.XnZp;
-                        fB = ob.Floor.XnZp;
+                        floorA = neighborBlock.Floor.XnZp;
+                        floorB = neighborBlock.Floor.XnZp;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        fA = ob.Floor.XnZn;
-                        fB = ob.Floor.XnZn;
+                        floorA = neighborBlock.Floor.XnZn;
+                        floorB = neighborBlock.Floor.XnZn;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        wA = b.Ceiling.XpZp;
-                        wB = b.Ceiling.XpZp;
+                        wsA = block.Ceiling.XpZp;
+                        wsB = block.Ceiling.XpZp;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        wA = b.Ceiling.XpZn;
-                        wB = b.Ceiling.XpZn;
+                        wsA = block.Ceiling.XpZn;
+                        wsB = block.Ceiling.XpZn;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        cA = ob.Ceiling.XnZp;
-                        cB = ob.Ceiling.XnZp;
+                        ceilingA = neighborBlock.Ceiling.XnZp;
+                        ceilingB = neighborBlock.Ceiling.XnZp;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        cA = ob.Ceiling.XnZn;
-                        cB = ob.Ceiling.XnZn;
+                        ceilingA = neighborBlock.Ceiling.XnZn;
+                        ceilingB = neighborBlock.Ceiling.XnZn;
                     }
 
                     break;
 
                 case FaceDirection.DiagonalFloor:
-                    switch (b.Floor.DiagonalSplit)
+                    switch (block.Floor.DiagonalSplit)
                     {
                         case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
                             zB = z;
-                            qA = b.Floor.XpZp;
-                            qB = b.Floor.XnZn;
+                            qaA = block.Floor.XpZp;
+                            qaB = block.Floor.XnZn;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 
-                            wA = b.Ceiling.XpZp;
-                            wB = b.Ceiling.XnZn;
-                            fA = b.Floor.XnZp;
-                            fB = b.Floor.XnZp;
-                            cA = b.IsAnyWall ? b.Ceiling.XnZp : b.Ceiling.XpZp;
-                            cB = b.IsAnyWall ? b.Ceiling.XnZp : b.Ceiling.XnZn;
+                            wsA = block.Ceiling.XpZp;
+                            wsB = block.Ceiling.XnZn;
+                            floorA = block.Floor.XnZp;
+                            floorB = block.Floor.XnZp;
+                            ceilingA = block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XpZp;
+                            ceilingB = block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XnZn;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1025,25 +1025,25 @@ namespace TombLib.LevelData
                             xB = x;
                             zA = z;
                             zB = z + 1;
-                            qA = b.Floor.XpZn;
-                            qB = b.Floor.XnZp;
+                            qaA = block.Floor.XpZn;
+                            qaB = block.Floor.XnZp;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 
-                            wA = b.Ceiling.XpZn;
-                            wB = b.Ceiling.XnZp;
-                            fA = b.Floor.XpZp;
-                            fB = b.Floor.XpZp;
-                            cA = b.IsAnyWall ? b.Ceiling.XpZp : b.Ceiling.XpZn;
-                            cB = b.IsAnyWall ? b.Ceiling.XpZp : b.Ceiling.XnZp;
+                            wsA = block.Ceiling.XpZn;
+                            wsB = block.Ceiling.XnZp;
+                            floorA = block.Floor.XpZp;
+                            floorB = block.Floor.XpZp;
+                            ceilingA = block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XpZn;
+                            ceilingB = block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XnZp;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1053,25 +1053,25 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z;
                             zB = z + 1;
-                            qA = b.Floor.XnZn;
-                            qB = b.Floor.XpZp;
+                            qaA = block.Floor.XnZn;
+                            qaB = block.Floor.XpZp;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 
-                            wA = b.Ceiling.XnZn;
-                            wB = b.Ceiling.XpZp;
-                            fA = b.Floor.XpZn;
-                            fB = b.Floor.XpZn;
-                            cA = b.IsAnyWall ? b.Ceiling.XpZn : b.Ceiling.XnZn;
-                            cB = b.IsAnyWall ? b.Ceiling.XpZn : b.Ceiling.XpZp;
+                            wsA = block.Ceiling.XnZn;
+                            wsB = block.Ceiling.XpZp;
+                            floorA = block.Floor.XpZn;
+                            floorB = block.Floor.XpZn;
+                            ceilingA = block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XnZn;
+                            ceilingB = block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XpZp;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1081,25 +1081,25 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z + 1;
                             zB = z;
-                            qA = b.Floor.XnZp;
-                            qB = b.Floor.XpZn;
+                            qaA = block.Floor.XnZp;
+                            qaB = block.Floor.XpZn;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 
-                            wA = b.Ceiling.XnZp;
-                            wB = b.Ceiling.XpZn;
-                            fA = b.Floor.XnZn;
-                            fB = b.Floor.XnZn;
-                            cA = b.IsAnyWall ? b.Ceiling.XnZn : b.Ceiling.XnZp;
-                            cB = b.IsAnyWall ? b.Ceiling.XnZn : b.Ceiling.XpZn;
+                            wsA = block.Ceiling.XnZp;
+                            wsB = block.Ceiling.XpZn;
+                            floorA = block.Floor.XnZn;
+                            floorB = block.Floor.XnZn;
+                            ceilingA = block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XnZp;
+                            ceilingB = block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XpZn;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1109,32 +1109,32 @@ namespace TombLib.LevelData
                     break;
 
                 case FaceDirection.DiagonalCeiling:
-                    switch (b.Ceiling.DiagonalSplit)
+                    switch (block.Ceiling.DiagonalSplit)
                     {
                         case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
                             zB = z;
-                            qA = b.Floor.XpZp;
-                            qB = b.Floor.XnZn;
+                            qaA = block.Floor.XpZp;
+                            qaB = block.Floor.XnZn;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 
-                            wA = b.Ceiling.XpZp;
-                            wB = b.Ceiling.XnZn;
-                            fA = b.IsAnyWall ? b.Floor.XnZp : b.Floor.XpZp;
-                            fB = b.IsAnyWall ? b.Floor.XnZp : b.Floor.XnZn;
-                            cA = b.Ceiling.XnZp;
-                            cB = b.Ceiling.XnZp;
+                            wsA = block.Ceiling.XpZp;
+                            wsB = block.Ceiling.XnZn;
+                            floorA = block.IsAnyWall ? block.Floor.XnZp : block.Floor.XpZp;
+                            floorB = block.IsAnyWall ? block.Floor.XnZp : block.Floor.XnZn;
+                            ceilingA = block.Ceiling.XnZp;
+                            ceilingB = block.Ceiling.XnZp;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1144,25 +1144,25 @@ namespace TombLib.LevelData
                             xB = x;
                             zA = z;
                             zB = z + 1;
-                            qA = b.Floor.XpZn;
-                            qB = b.Floor.XnZp;
+                            qaA = block.Floor.XpZn;
+                            qaB = block.Floor.XnZp;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 
-                            wA = b.Ceiling.XpZn;
-                            wB = b.Ceiling.XnZp;
-                            fA = b.IsAnyWall ? b.Floor.XpZp : b.Floor.XpZn;
-                            fB = b.IsAnyWall ? b.Floor.XpZp : b.Floor.XnZp;
-                            cA = b.Ceiling.XpZp;
-                            cB = b.Ceiling.XpZp;
+                            wsA = block.Ceiling.XpZn;
+                            wsB = block.Ceiling.XnZp;
+                            floorA = block.IsAnyWall ? block.Floor.XpZp : block.Floor.XpZn;
+                            floorB = block.IsAnyWall ? block.Floor.XpZp : block.Floor.XnZp;
+                            ceilingA = block.Ceiling.XpZp;
+                            ceilingB = block.Ceiling.XpZp;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1172,25 +1172,25 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z;
                             zB = z + 1;
-                            qA = b.Floor.XnZn;
-                            qB = b.Floor.XpZp;
+                            qaA = block.Floor.XnZn;
+                            qaB = block.Floor.XpZp;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 
-                            wA = b.Ceiling.XnZn;
-                            wB = b.Ceiling.XpZp;
-                            fA = b.IsAnyWall ? b.Floor.XpZn : b.Floor.XnZn;
-                            fB = b.IsAnyWall ? b.Floor.XpZn : b.Floor.XpZp;
-                            cA = b.Ceiling.XpZn;
-                            cB = b.Ceiling.XpZn;
+                            wsA = block.Ceiling.XnZn;
+                            wsB = block.Ceiling.XpZp;
+                            floorA = block.IsAnyWall ? block.Floor.XpZn : block.Floor.XnZn;
+                            floorB = block.IsAnyWall ? block.Floor.XpZn : block.Floor.XpZp;
+                            ceilingA = block.Ceiling.XpZn;
+                            ceilingB = block.Ceiling.XpZn;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1200,25 +1200,25 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z + 1;
                             zB = z;
-                            qA = b.Floor.XnZp;
-                            qB = b.Floor.XpZn;
+                            qaA = block.Floor.XnZp;
+                            qaB = block.Floor.XpZn;
                             
-                            for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                                 floorSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 
-                            for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                            for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                                 ceilingSubdivisions.Add((
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
-                                    b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
+                                    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 
-                            wA = b.Ceiling.XnZp;
-                            wB = b.Ceiling.XpZn;
-                            fA = b.IsAnyWall ? b.Floor.XnZn : b.Floor.XnZp;
-                            fB = b.IsAnyWall ? b.Floor.XnZn : b.Floor.XpZn;
-                            cA = b.Ceiling.XnZn;
-                            cB = b.Ceiling.XnZn;
+                            wsA = block.Ceiling.XnZp;
+                            wsB = block.Ceiling.XpZn;
+                            floorA = block.IsAnyWall ? block.Floor.XnZn : block.Floor.XnZp;
+                            floorB = block.IsAnyWall ? block.Floor.XnZn : block.Floor.XpZn;
+                            ceilingA = block.Ceiling.XnZn;
+                            ceilingB = block.Ceiling.XnZn;
                             qaFace = BlockFace.Wall_Diagonal_QA;
                             middleFace = BlockFace.Wall_Diagonal_Middle;
                             wsFace = BlockFace.Wall_Diagonal_WS;
@@ -1232,34 +1232,34 @@ namespace TombLib.LevelData
                     xB = x;
                     zA = z + 1;
                     zB = z;
-                    ob = room.Blocks[x - 1, z];
-                    qA = b.Floor.XnZp;
-                    qB = b.Floor.XnZn;
+                    neighborBlock = room.Blocks[x - 1, z];
+                    qaA = block.Floor.XnZp;
+                    qaB = block.Floor.XnZn;
                     
-                    for (int i = 0; i < b.ExtraFloorSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
                         floorSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 
-                    for (int i = 0; i < b.ExtraCeilingSubdivisions.Count; i++)
+                    for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
                         ceilingSubdivisions.Add((
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
-                            b.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
+                            block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 
-                    wA = b.Ceiling.XnZp;
-                    wB = b.Ceiling.XnZn;
-                    fA = ob.Floor.XpZp;
-                    fB = ob.Floor.XpZn;
-                    cA = ob.Ceiling.XpZp;
-                    cB = ob.Ceiling.XpZn;
+                    wsA = block.Ceiling.XnZp;
+                    wsB = block.Ceiling.XnZn;
+                    floorA = neighborBlock.Floor.XpZp;
+                    floorB = neighborBlock.Floor.XpZn;
+                    ceilingA = neighborBlock.Ceiling.XpZp;
+                    ceilingB = neighborBlock.Ceiling.XpZn;
                     qaFace = BlockFace.Wall_NegativeX_QA;
                     middleFace = BlockFace.Wall_NegativeX_Middle;
                     wsFace = BlockFace.Wall_NegativeX_WS;
 
-                    if (b.WallPortal != null)
+                    if (block.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
-                        var portal = b.WallPortal;
+                        var portal = block.WallPortal;
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (room.Alternated && room.AlternateBaseRoom != null)
                         {
@@ -1296,10 +1296,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                             qBportal = qAportal;
 
-                        qA = room.Position.Y + qaNearA;
-                        qB = room.Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - room.Position.Y;
-                        qB = Math.Max(qB, qBportal) - room.Position.Y;
+                        qaA = room.Position.Y + qaNearA;
+                        qaB = room.Position.Y + qaNearB;
+                        qaA = Math.Max(qaA, qAportal) - room.Position.Y;
+                        qaB = Math.Max(qaB, qBportal) - room.Position.Y;
 
                         int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZp;
                         int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZn;
@@ -1308,10 +1308,10 @@ namespace TombLib.LevelData
                         if (adjoiningBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
                             wBportal = wAportal;
 
-                        wA = room.Position.Y + wsNearA;
-                        wB = room.Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - room.Position.Y;
-                        wB = Math.Min(wB, wBportal) - room.Position.Y;
+                        wsA = room.Position.Y + wsNearA;
+                        wsB = room.Position.Y + wsNearB;
+                        wsA = Math.Min(wsA, wAportal) - room.Position.Y;
+                        wsB = Math.Min(wsB, wBportal) - room.Position.Y;
 
                         (int, int) newSubdivision;
 
@@ -1338,78 +1338,78 @@ namespace TombLib.LevelData
 						}
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        qA = b.Floor.XnZp;
-                        qB = b.Floor.XnZp;
+                        qaA = block.Floor.XnZp;
+                        qaB = block.Floor.XnZp;
                     }
 
-                    if (b.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        qA = b.Floor.XnZn;
-                        qB = b.Floor.XnZn;
+                        qaA = block.Floor.XnZn;
+                        qaB = block.Floor.XnZn;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        fA = ob.Floor.XpZp;
-                        fB = ob.Floor.XpZp;
+                        floorA = neighborBlock.Floor.XpZp;
+                        floorB = neighborBlock.Floor.XpZp;
                     }
 
-                    if (ob.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (neighborBlock.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        fA = ob.Floor.XpZn;
-                        fB = ob.Floor.XpZn;
+                        floorA = neighborBlock.Floor.XpZn;
+                        floorB = neighborBlock.Floor.XpZn;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        wA = b.Ceiling.XnZp;
-                        wB = b.Ceiling.XnZp;
+                        wsA = block.Ceiling.XnZp;
+                        wsB = block.Ceiling.XnZp;
                     }
 
-                    if (b.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
+                    if (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        wA = b.Ceiling.XnZn;
-                        wB = b.Ceiling.XnZn;
+                        wsA = block.Ceiling.XnZn;
+                        wsB = block.Ceiling.XnZn;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        cA = ob.Ceiling.XpZp;
-                        cB = ob.Ceiling.XpZp;
+                        ceilingA = neighborBlock.Ceiling.XpZp;
+                        ceilingB = neighborBlock.Ceiling.XpZp;
                     }
 
-                    if (ob.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
+                    if (neighborBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        cA = ob.Ceiling.XpZn;
-                        cB = ob.Ceiling.XpZn;
+                        ceilingA = neighborBlock.Ceiling.XpZn;
+                        ceilingB = neighborBlock.Ceiling.XpZn;
                     }
 
                     break;
             }
 
-			if (!(qA == fA && qB == fB) && floor)
-            {
+			if (floor && ((qaA >= floorA && qaB > floorB) || (qaA > floorA && qaB >= floorB))) // If both points (A and B) are just above floor (one corner may be touching floor to create a triangle)
+			{                                                                                  // If both points are below or equal floor, then the entire floor wall shall not be rendered.
 				// Render QA face
 
-				if (qA > cA || qB > cB) // If at least one point (A or B) is in the void above ceiling
+				if (block.IsAnyWall && (qaA > ceilingA || qaB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
 				{
 					// Snap points to ceiling
-					qA = cA;
-					qB = cB;
+					qaA = ceilingA;
+					qaB = ceilingB;
 				}
 
 				// Start with the floor as a baseline
-				yA = fA;
-                yB = fB;
+				yA = floorA;
+                yB = floorB;
 
                 if (floorSubdivisions.Count > 0) // If a floor subdivision exists
                 {
                     int subdivA = floorSubdivisions[0].A,
 					    subdivB = floorSubdivisions[0].B;
 
-					if (subdivA >= fA && subdivB >= fB) // If next subdivision is NOT in void (below floor)
+					if (subdivA >= floorA && subdivB >= floorB) // If next subdivision is NOT in void (below floor)
 					{
                         // Make the next subdivision the baseline
                         yA = subdivA;
@@ -1417,66 +1417,66 @@ namespace TombLib.LevelData
 					}
 				}
 
-				if ((yA <= cA && yB < cB) || (yA < cA && yB <= cB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
-				{                                                   // If baseline is above ceiling, then QA face shall not be rendered.
-					face = b.GetFaceTexture(qaFace);
+				if ((yA <= ceilingA && yB < ceilingB) || (yA < ceilingA && yB <= ceilingB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
+				{                                                                           // If baseline is above ceiling, then QA face shall not be rendered.
+					face = block.GetFaceTexture(qaFace);
 
-                    if (qA > yA && qB > yB)
+                    if (qaA > yA && qaB > yB)
                         AddQuad(x, z, qaFace,
-                            new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, qaA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, qaB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                    else if (qA == yA && qB > yB)
+                    else if (qaA == yA && qaB > yB)
                         AddTriangle(x, z, qaFace,
                             new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, qaB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
-                    else if (qA > yA && qB == yB)
+                    else if (qaA > yA && qaB == yB)
                         AddTriangle(x, z, qaFace,
-                            new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, qaA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                }
+				}
 
                 // Render subdivision faces
 				for (int i = 0; i < floorSubdivisions.Count; i++)
 				{
 					(int subdivA, int subdivB) = floorSubdivisions[i];
 
-					if (subdivA > cA || subdivB > cB) // If at least one point (A or B) is in the void above ceiling
+					if (block.IsAnyWall && (subdivA > ceilingA || subdivB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
                     {
                         // Snap points to ceiling
-                        subdivA = cA;
-						subdivB = cB;
+                        subdivA = ceilingA;
+						subdivB = ceilingB;
                     }
 
-                    if (subdivA < fA || subdivB < fB) // If at least one point (A or B) is in the void below floor
+                    if (subdivA < floorA || subdivB < floorB) // If at least one point (A or B) is in the void below floor
                         break; // Stop the loop, since the rest of the subdivisions will be in the void too
 
 					// Floor as a baseline
-					yA = fA;
-					yB = fB;
+					yA = floorA;
+					yB = floorB;
 
 					if (i + 1 < floorSubdivisions.Count) // If next subdivision exists
 					{
                         int nextSubdivA = floorSubdivisions[i + 1].A,
 						    nextSubdivB = floorSubdivisions[i + 1].B;
 
-						if (nextSubdivA >= fA && nextSubdivB >= fB) // If subdivision is not in void (is above or matching floor height)
+						if (nextSubdivA >= floorA && nextSubdivB >= floorB) // If subdivision is not in void (is above or matching floor height)
 						{
 							yA = nextSubdivA;
 							yB = nextSubdivB;
 						}
 					}
 
-					if ((yA <= cA && yB < cB) || (yA < cA && yB <= cB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)
-					{                                                   // If baseline is above ceiling, then the subdivision face shall not be rendered.
+					if ((yA <= ceilingA && yB < ceilingB) || (yA < ceilingA && yB <= ceilingB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)
+					{                                                                           // If baseline is above ceiling, then the subdivision face shall not be rendered.
 						BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), i);
-						face = b.GetFaceTexture(currentFace);
+						face = block.GetFaceTexture(currentFace);
 
 						if (subdivA > yA && subdivB > yB)
 							AddQuad(x, z, currentFace,
@@ -1501,27 +1501,27 @@ namespace TombLib.LevelData
 				}
 			}
 
-			if (!(wA == cA && wB == cB) && ceiling)
-            {
+			if (ceiling && ((wsA <= ceilingA && wsB < ceilingB) || (wsA < ceilingA && wsB <= ceilingB))) // If both points (A and B) are just under ceiling (one corner may be touching ceiling to create a triangle)
+			{                                                                                            // If both points are above or equal ceiling, then the entire ceiling wall shall not be rendered.
 				// Render WS face
 
-				if (wA < fA || wB < fB) // If at least one point (A or B) is in the void below floor
+				if (block.IsAnyWall && (wsA < floorA || wsB < floorB)) // If at least one point (A or B) is in the void below floor
 				{
 					// Snap points to floor
-					wA = fA;
-					wB = fB;
+					wsA = floorA;
+					wsB = floorB;
 				}
 
 				// Start with the ceiling as a baseline
-				yA = cA;
-                yB = cB;
+				yA = ceilingA;
+                yB = ceilingB;
 
 				if (ceilingSubdivisions.Count > 0) // If a ceiling subdivision exists
                 {
 					int subdivA = ceilingSubdivisions[0].A,
 					    subdivB = ceilingSubdivisions[0].B;
 
-					if (subdivA <= cA && subdivB <= cB) // If next subdivision is NOT in void (above ceiling)
+					if (subdivA <= ceilingA && subdivB <= ceilingB) // If next subdivision is NOT in void (above ceiling)
                     {
 						// Make the next subdivision the baseline
 						yA = subdivA;
@@ -1529,28 +1529,28 @@ namespace TombLib.LevelData
 					}
 				}
 
-				if ((yA >= fA && yB > fB) || (yA > fA && yB >= fB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
-				{                                                   // If baseline is below floor, then WS face shall not be rendered.
-					face = b.GetFaceTexture(wsFace);
+				if ((yA >= floorA && yB > floorB) || (yA > floorA && yB >= floorB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
+				{                                                                   // If baseline is below floor, then WS face shall not be rendered.
+					face = block.GetFaceTexture(wsFace);
 
-					if (wA < yA && wB < yB)
+					if (wsA < yA && wsB < yB)
 						AddQuad(x, z, wsFace,
 							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
 							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, wsB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xA * Level.BlockSizeUnit, wsA * Level.HeightUnit, zA * Level.BlockSizeUnit),
 							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-					else if (wA < yA && wB == yB)
+					else if (wsA < yA && wsB == yB)
 						AddTriangle(x, z, wsFace,
 							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
 							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							new Vector3(xA * Level.BlockSizeUnit, wsA * Level.HeightUnit, zA * Level.BlockSizeUnit),
 							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-					else if (wA == yA && wB < yB)
+					else if (wsA == yA && wsB < yB)
 						AddTriangle(x, z, wsFace,
 							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
 							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, wsB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
 				}
 
@@ -1559,36 +1559,36 @@ namespace TombLib.LevelData
 				{
 					(int subdivA, int subdivB) = ceilingSubdivisions[i];
 
-					if (subdivA < fA || subdivB < fB) // If at least one point (A or B) is in the void below floor
+					if (block.IsAnyWall && (subdivA < floorA || subdivB < floorB)) // If at least one point (A or B) is in the void below floor
 					{
 						// Snap points to floor
-						subdivA = fA;
-						subdivB = fB;
+						subdivA = floorA;
+						subdivB = floorB;
 					}
 
-					if (subdivA > cA || subdivB > cB) // If at least one point (A or B) is in the void above ceiling
+					if (subdivA > ceilingA || subdivB > ceilingB) // If at least one point (A or B) is in the void above ceiling
 						break; // Stop the loop, since the rest of the subdivisions will be in the void too
 
                     // Ceiling as a baseline
-					yA = cA;
-					yB = cB;
+					yA = ceilingA;
+					yB = ceilingB;
 
 					if (i + 1 < ceilingSubdivisions.Count) // If next subdivision exists
 					{
 						int nextSubdivA = ceilingSubdivisions[i + 1].A,
 						    nextSubdivB = ceilingSubdivisions[i + 1].B;
 
-                        if (nextSubdivA <= cA && nextSubdivB <= cB) // If subdivision is not in void (is below or matching ceiling height)
+                        if (nextSubdivA <= ceilingA && nextSubdivB <= ceilingB) // If subdivision is not in void (is below or matching ceiling height)
                         {
 							yA = nextSubdivA;
 							yB = nextSubdivB;
 						}
 					}
 
-					if ((yA >= fA && yB > fB) || (yA > fA && yB >= fB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
-                    {                                                   // If baseline is below floor, then the subdivision face shall not be rendered.
+					if ((yA >= floorA && yB > floorB) || (yA > floorA && yB >= floorB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
+                    {                                                                   // If baseline is below floor, then the subdivision face shall not be rendered.
 						BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), i);
-						face = b.GetFaceTexture(currentFace);
+						face = block.GetFaceTexture(currentFace);
 
 						if (subdivA < yA && subdivB < yB)
 							AddQuad(x, z, currentFace,
@@ -1616,12 +1616,24 @@ namespace TombLib.LevelData
             if (!middle)
                 return;
 
-            face = b.GetFaceTexture(middleFace);
+            face = block.GetFaceTexture(middleFace);
 
-            yA = wA >= cA ? cA : wA;
-            yB = wB >= cB ? cB : wB;
-            int yD = qA <= fA ? fA : qA;
-            int yC = qB <= fB ? fB : qB;
+            if (qaA < floorA || qaB < floorB)
+            {
+                qaA = floorA;
+				qaB = floorB;
+            }
+
+            if (wsA > ceilingA || wsB > ceilingB)
+            {
+				wsA = ceilingA;
+                wsB = ceilingB;
+            }
+
+            yA = wsA >= ceilingA ? ceilingA : wsA;
+            yB = wsB >= ceilingB ? ceilingB : wsB;
+            int yD = qaA <= floorA ? floorA : qaA;
+            int yC = qaB <= floorB ? floorB : qaB;
 
             // Middle
             if (yA != yD && yB != yC)
