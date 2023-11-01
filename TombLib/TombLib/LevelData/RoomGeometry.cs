@@ -1389,216 +1389,227 @@ namespace TombLib.LevelData
                     break;
             }
 
-            // Always check these
-            if (qA >= cA && qB >= cB)
+			if (!(qA == fA && qB == fB) && floor)
             {
-                qA = cA;
-                qB = cB;
-            }
+				// Render QA face
 
-            if (wA <= fA && wB <= fB)
-            {
-                wA = fA;
-                wB = fB;
-            }
+				if (qA > cA || qB > cB) // If at least one point (A or B) is in the void above ceiling
+				{
+					// Snap points to ceiling
+					qA = cA;
+					qB = cB;
+				}
 
-            // Following checks are only for wall's faces
-            if (b.IsAnyWall)
-            {
-                if (qA > fA && qB < fB || qA < fA && qB > fB)
-                {
-                    qA = fA;
-                    qB = fB;
-                }
-
-                if (qA > cA && qB < cB || qA < cA && qB > cB)
-                {
-                    qA = cA;
-                    qB = cB;
-                }
-
-                if (wA > cA && wB < cB || wA < cA && wB > cB)
-                {
-                    wA = cA;
-                    wB = cB;
-                }
-
-                if (wA > fA && wB < fB || wA < fA && wB > fB)
-                {
-                    wA = fA;
-                    wB = fB;
-                }
-            }
-
-            if (!(qA == fA && qB == fB) && floor)
-            {
-                // Check for subdivision
-                yA = fA;
+				// Start with the floor as a baseline
+				yA = fA;
                 yB = fB;
 
-                if (floorSubdivisions.Count > 0)
+                if (floorSubdivisions.Count > 0) // If a floor subdivision exists
                 {
-					int subdivA = floorSubdivisions[0].A,
-						subdivB = floorSubdivisions[0].B;
+                    int subdivA = floorSubdivisions[0].A,
+					    subdivB = floorSubdivisions[0].B;
 
-					if (subdivA >= yA && subdivB >= yB && qA >= subdivA && qB >= subdivB && !(subdivA == yA && subdivB == yB))
+					if (subdivA >= fA && subdivB >= fB) // If next subdivision is NOT in void (below floor)
 					{
-						yA = subdivA;
+                        // Make the next subdivision the baseline
+                        yA = subdivA;
 						yB = subdivB;
 					}
 				}
 
-                // QA and ED
-                face = b.GetFaceTexture(qaFace);
+				if ((yA <= cA && yB < cB) || (yA < cA && yB <= cB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
+				{                                                   // If baseline is above ceiling, then QA face shall not be rendered.
+					face = b.GetFaceTexture(qaFace);
 
-                // QA
-                if (qA > yA && qB > yB)
-                    AddQuad(x, z, qaFace,
-                        new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                else if (qA == yA && qB > yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
-                else if (qA > yA && qB == yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                    if (qA > yA && qB > yB)
+                        AddQuad(x, z, qaFace,
+                            new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+                    else if (qA == yA && qB > yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, qB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+                    else if (qA > yA && qB == yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * Level.BlockSizeUnit, qA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+                            new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+                            face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                }
 
+                // Render subdivision faces
 				for (int i = 0; i < floorSubdivisions.Count; i++)
 				{
-					(int floor3A, int floor3B) = floorSubdivisions[i];
+					(int subdivA, int subdivB) = floorSubdivisions[i];
 
+					if (subdivA > cA || subdivB > cB) // If at least one point (A or B) is in the void above ceiling
+                    {
+                        // Snap points to ceiling
+                        subdivA = cA;
+						subdivB = cB;
+                    }
+
+                    if (subdivA < fA || subdivB < fB) // If at least one point (A or B) is in the void below floor
+                        break; // Stop the loop, since the rest of the subdivisions will be in the void too
+
+					// Floor as a baseline
 					yA = fA;
 					yB = fB;
 
-					if (i + 1 < floorSubdivisions.Count)
+					if (i + 1 < floorSubdivisions.Count) // If next subdivision exists
 					{
-						int subdivA = floorSubdivisions[i + 1].A,
-							subdivB = floorSubdivisions[i + 1].B;
+                        int nextSubdivA = floorSubdivisions[i + 1].A,
+						    nextSubdivB = floorSubdivisions[i + 1].B;
 
-						if (subdivA >= yA && subdivB >= yB && qA >= subdivA && qB >= subdivB && !(subdivA == yA && subdivB == yB))
+						if (nextSubdivA >= fA && nextSubdivB >= fB) // If subdivision is not in void (is above or matching floor height)
 						{
-							yA = subdivA;
-							yB = subdivB;
+							yA = nextSubdivA;
+							yB = nextSubdivB;
 						}
 					}
 
-					BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), i);
-					face = b.GetFaceTexture(currentFace);
+					if ((yA <= cA && yB < cB) || (yA < cA && yB <= cB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)
+					{                                                   // If baseline is above ceiling, then the subdivision face shall not be rendered.
+						BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), i);
+						face = b.GetFaceTexture(currentFace);
 
-					if (floor3A > yA && floor3B > yB)
-						AddQuad(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-					else if (floor3A > yA && floor3B == yB)
-						AddTriangle(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, floor3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-					else if (floor3A == yA && floor3B > yB)
-						AddTriangle(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, floor3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						if (subdivA > yA && subdivB > yB)
+							AddQuad(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (subdivA > yA && subdivB == yB)
+							AddTriangle(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						else if (subdivA == yA && subdivB > yB)
+							AddTriangle(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					}	
 				}
 			}
 
-            if (!(wA == cA && wB == cB) && ceiling)
+			if (!(wA == cA && wB == cB) && ceiling)
             {
-                // Check for subdivision
-                yA = cA;
+				// Render WS face
+
+				if (wA < fA || wB < fB) // If at least one point (A or B) is in the void below floor
+				{
+					// Snap points to floor
+					wA = fA;
+					wB = fB;
+				}
+
+				// Start with the ceiling as a baseline
+				yA = cA;
                 yB = cB;
 
-				if (ceilingSubdivisions.Count > 0)
-				{
+				if (ceilingSubdivisions.Count > 0) // If a ceiling subdivision exists
+                {
 					int subdivA = ceilingSubdivisions[0].A,
-						subdivB = ceilingSubdivisions[0].B;
+					    subdivB = ceilingSubdivisions[0].B;
 
-					if (subdivA <= yA && subdivB <= yB && wA <= subdivA && wB <= subdivB && !(subdivA == yA && subdivB == yB))
-					{
+					if (subdivA <= cA && subdivB <= cB) // If next subdivision is NOT in void (above ceiling)
+                    {
+						// Make the next subdivision the baseline
 						yA = subdivA;
 						yB = subdivB;
 					}
 				}
 
-				// WS and RF
-				face = b.GetFaceTexture(wsFace);
+				if ((yA >= fA && yB > fB) || (yA > fA && yB >= fB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
+				{                                                   // If baseline is below floor, then WS face shall not be rendered.
+					face = b.GetFaceTexture(wsFace);
 
-                // WS
-                if (wA < yA && wB < yB)
-                    AddQuad(x, z, wsFace,
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                else if (wA < yA && wB == yB)
-                    AddTriangle(x, z, wsFace,
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                else if (wA == yA && wB < yB)
-                    AddTriangle(x, z, wsFace,
-                        new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                        face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					if (wA < yA && wB < yB)
+						AddQuad(x, z, wsFace,
+							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+					else if (wA < yA && wB == yB)
+						AddTriangle(x, z, wsFace,
+							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xA * Level.BlockSizeUnit, wA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+					else if (wA == yA && wB < yB)
+						AddTriangle(x, z, wsFace,
+							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							new Vector3(xB * Level.BlockSizeUnit, wB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+				}
 
+                // Render subdivision faces
 				for (int i = 0; i < ceilingSubdivisions.Count; i++)
 				{
-					(int ceiling3A, int ceiling3B) = ceilingSubdivisions[i];
+					(int subdivA, int subdivB) = ceilingSubdivisions[i];
 
+					if (subdivA < fA || subdivB < fB) // If at least one point (A or B) is in the void below floor
+					{
+						// Snap points to floor
+						subdivA = fA;
+						subdivB = fB;
+					}
+
+					if (subdivA > cA || subdivB > cB) // If at least one point (A or B) is in the void above ceiling
+						break; // Stop the loop, since the rest of the subdivisions will be in the void too
+
+                    // Ceiling as a baseline
 					yA = cA;
 					yB = cB;
 
-					if (i + 1 < ceilingSubdivisions.Count)
+					if (i + 1 < ceilingSubdivisions.Count) // If next subdivision exists
 					{
-						int subdivA = ceilingSubdivisions[i + 1].A,
-							subdivB = ceilingSubdivisions[i + 1].B;
+						int nextSubdivA = ceilingSubdivisions[i + 1].A,
+						    nextSubdivB = ceilingSubdivisions[i + 1].B;
 
-						if (subdivA <= yA && subdivB <= yB && wA <= subdivA && wB <= subdivB && !(subdivA == yA && subdivB == yB))
-						{
-							yA = subdivA;
-							yB = subdivB;
+                        if (nextSubdivA <= cA && nextSubdivB <= cB) // If subdivision is not in void (is below or matching ceiling height)
+                        {
+							yA = nextSubdivA;
+							yB = nextSubdivB;
 						}
 					}
 
-					BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), i);
-					face = b.GetFaceTexture(currentFace);
+					if ((yA >= fA && yB > fB) || (yA > fA && yB >= fB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
+                    {                                                   // If baseline is below floor, then the subdivision face shall not be rendered.
+						BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), i);
+						face = b.GetFaceTexture(currentFace);
 
-					if (ceiling3A < yA && ceiling3B < yB)
-						AddQuad(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-					else if (ceiling3A < yA && ceiling3B == yB)
-						AddTriangle(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xA * Level.BlockSizeUnit, ceiling3A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-					else if (ceiling3A == yA && ceiling3B < yB)
-						AddTriangle(x, z, currentFace,
-							new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							new Vector3(xB * Level.BlockSizeUnit, ceiling3B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						if (subdivA < yA && subdivB < yB)
+							AddQuad(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (subdivA < yA && subdivB == yB)
+							AddTriangle(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						else if (subdivA == yA && subdivB < yB)
+							AddTriangle(x, z, currentFace,
+								new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					}
 				}
 			}
 

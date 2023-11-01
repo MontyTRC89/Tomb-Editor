@@ -713,6 +713,8 @@ namespace TombLib.LevelData.IO
                 // Read room
                 Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector3.One);
                 long roomIndex = long.MinValue;
+                bool usesClassicFloor = false;
+                bool usesClassicCeiling = false;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     cancelToken.ThrowIfCancellationRequested();
@@ -760,6 +762,8 @@ namespace TombLib.LevelData.IO
                                     }
                                     else if (id4 == Prj2Chunks.SectorFloorClassic)
                                     {
+                                        usesClassicFloor = true;
+
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
@@ -771,6 +775,8 @@ namespace TombLib.LevelData.IO
                                     }
                                     else if (id4 == Prj2Chunks.SectorCeilingClassic)
                                     {
+										usesClassicCeiling = true;
+
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                             block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
@@ -1004,6 +1010,47 @@ namespace TombLib.LevelData.IO
                         return false;
                     return true;
                 });
+
+                if (usesClassicFloor || usesClassicCeiling)
+                {
+                    for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
+                        for (int z = room.LocalArea.Y0; z <= room.LocalArea.Y1; z++)
+                        {
+                            Block block = room.Blocks[x, z];
+
+                            if (usesClassicFloor && room.IsFloorSubdivisionInCeilingVoid(BlockVertical.FloorSubdivision2, x, z))
+                            {
+                                TextureArea
+                                    qaPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
+                                    qaNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
+                                    qaNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
+                                    qaPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_QA),
+                                    qaDiagonal = block.GetFaceTexture(BlockFace.Wall_Diagonal_QA);
+
+                                block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
+                                block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
+                                block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
+                                block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
+                                block.SetFaceTexture(BlockFace.Wall_Diagonal_FloorSubdivision2, qaDiagonal);
+                            }
+
+                            if (usesClassicCeiling && room.IsCeilingSubdivisionInFloorVoid(BlockVertical.CeilingSubdivision2, x, z))
+                            {
+								TextureArea
+									wsPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
+									wsNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
+									wsNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
+									wsPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_WS),
+									wsDiagonal = block.GetFaceTexture(BlockFace.Wall_Diagonal_WS);
+
+								block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
+								block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
+								block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
+								block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
+								block.SetFaceTexture(BlockFace.Wall_Diagonal_CeilingSubdivision2, wsDiagonal);
+							}
+                        }
+				}
 
                 // Add room
                 if (roomIndex > 0 && roomIndex < level.Rooms.Length && level.Rooms[roomIndex] == null)
