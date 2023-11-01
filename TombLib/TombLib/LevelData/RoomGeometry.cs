@@ -1404,20 +1404,25 @@ namespace TombLib.LevelData
 				yA = floorA;
                 yB = floorB;
 
+                bool validHeight = true;
+
                 if (floorSubdivisions.Count > 0) // If a floor subdivision exists
                 {
-                    int subdivA = floorSubdivisions[0].A,
-					    subdivB = floorSubdivisions[0].B;
+                    int nextSubdivA = floorSubdivisions[0].A,
+					    nextSubdivB = floorSubdivisions[0].B;
 
-					if (subdivA >= floorA && subdivB >= floorB) // If next subdivision is NOT in void (below floor)
+                    if (qaA == nextSubdivA && qaB == nextSubdivA)
+						validHeight = false; // 0 height subdivision, skip it
+
+					if (nextSubdivA >= floorA && nextSubdivB >= floorB) // If next subdivision is NOT in void (below floor)
 					{
                         // Make the next subdivision the baseline
-                        yA = subdivA;
-						yB = subdivB;
+                        yA = nextSubdivA;
+						yB = nextSubdivB;
 					}
 				}
 
-				if ((yA <= ceilingA && yB < ceilingB) || (yA < ceilingA && yB <= ceilingB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
+				if (validHeight && ((yA <= ceilingA && yB < ceilingB) || (yA < ceilingA && yB <= ceilingB))) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
 				{                                                                           // If baseline is above ceiling, then QA face shall not be rendered.
 					face = block.GetFaceTexture(qaFace);
 
@@ -1465,6 +1470,9 @@ namespace TombLib.LevelData
 					{
                         int nextSubdivA = floorSubdivisions[i + 1].A,
 						    nextSubdivB = floorSubdivisions[i + 1].B;
+
+                        if (subdivA == nextSubdivA && subdivB == nextSubdivB)
+                            continue; // 0 height subdivision, skip it
 
 						if (nextSubdivA >= floorA && nextSubdivB >= floorB) // If subdivision is not in void (is above or matching floor height)
 						{
@@ -1516,20 +1524,25 @@ namespace TombLib.LevelData
 				yA = ceilingA;
                 yB = ceilingB;
 
+				bool validHeight = true;
+
 				if (ceilingSubdivisions.Count > 0) // If a ceiling subdivision exists
                 {
-					int subdivA = ceilingSubdivisions[0].A,
-					    subdivB = ceilingSubdivisions[0].B;
+					int nextSubdivA = ceilingSubdivisions[0].A,
+					    nextSubdivB = ceilingSubdivisions[0].B;
 
-					if (subdivA <= ceilingA && subdivB <= ceilingB) // If next subdivision is NOT in void (above ceiling)
+                    if (wsA == nextSubdivA && wsB == nextSubdivA)
+                        validHeight = false; // 0 height subdivision, skip it
+
+					if (nextSubdivA <= ceilingA && nextSubdivB <= ceilingB) // If next subdivision is NOT in void (above ceiling)
                     {
 						// Make the next subdivision the baseline
-						yA = subdivA;
-						yB = subdivB;
+						yA = nextSubdivA;
+						yB = nextSubdivB;
 					}
 				}
 
-				if ((yA >= floorA && yB > floorB) || (yA > floorA && yB >= floorB)) // If baseline is just above floor (one corner may be touching floor to create a triangle)
+				if (validHeight && ((yA >= floorA && yB > floorB) || (yA > floorA && yB >= floorB))) // If baseline is just above floor (one corner may be touching floor to create a triangle)
 				{                                                                   // If baseline is below floor, then WS face shall not be rendered.
 					face = block.GetFaceTexture(wsFace);
 
@@ -1577,6 +1590,9 @@ namespace TombLib.LevelData
 					{
 						int nextSubdivA = ceilingSubdivisions[i + 1].A,
 						    nextSubdivB = ceilingSubdivisions[i + 1].B;
+
+                        if (subdivA == nextSubdivA && subdivB == nextSubdivB)
+							continue; // 0 height subdivision, skip it
 
                         if (nextSubdivA <= ceilingA && nextSubdivB <= ceilingB) // If subdivision is not in void (is below or matching ceiling height)
                         {
