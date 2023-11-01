@@ -1389,8 +1389,11 @@ namespace TombLib.LevelData
                     break;
             }
 
-			if (floor && ((qaA >= floorA && qaB > floorB) || (qaA > floorA && qaB >= floorB))) // If both points (A and B) are just above floor (one corner may be touching floor to create a triangle)
-			{                                                                                  // If both points are below or equal floor, then the entire floor wall shall not be rendered.
+            bool isValid = (qaA >= floorA && qaB > floorB) || (qaA > floorA && qaB >= floorB) || // If both points (A and B) are just above floor (one corner may be touching floor to create a triangle)
+                (block.Type == BlockType.Floor && (qaA > floorA || qaB > floorB));
+
+			if (floor && isValid) 
+			{
 				// Render QA face
 
 				if (block.IsAnyWall && (qaA > ceilingA || qaB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
@@ -1423,7 +1426,7 @@ namespace TombLib.LevelData
 				}
 
 				if (validHeight && ((yA <= ceilingA && yB < ceilingB) || (yA < ceilingA && yB <= ceilingB))) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
-				{                                                                           // If baseline is above ceiling, then QA face shall not be rendered.
+				{                                                                                            // If baseline is above ceiling, then QA face shall not be rendered.
 					face = block.GetFaceTexture(qaFace);
 
                     if (qaA > yA && qaB > yB)
@@ -1445,6 +1448,30 @@ namespace TombLib.LevelData
                             new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xA * Level.BlockSizeUnit, yA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                    else if (block.Type == BlockType.Floor)
+                    {
+                        int lowest = Math.Min(Math.Min(qaA, qaB), Math.Min(yA, yB));
+
+						if (qaA > lowest && qaB > lowest)
+							AddQuad(x, z, qaFace,
+							    new Vector3(xA * Level.BlockSizeUnit, qaA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							    new Vector3(xB * Level.BlockSizeUnit, qaB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							    new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+							    new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+							    face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (qaA == lowest && qaB > lowest)
+							AddTriangle(x, z, qaFace,
+								new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, qaB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						else if (qaA > lowest && qaB == lowest)
+							AddTriangle(x, z, qaFace,
+								new Vector3(xA * Level.BlockSizeUnit, qaA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+					}
 				}
 
                 // Render subdivision faces
@@ -1505,12 +1532,39 @@ namespace TombLib.LevelData
 								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						else if (block.Type == BlockType.Floor)
+						{
+							int lowest = Math.Min(Math.Min(subdivA, subdivB), Math.Min(yA, yB));
+
+							if (subdivA > lowest && subdivB > lowest)
+								AddQuad(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+							else if (subdivA == lowest && subdivB > lowest)
+								AddTriangle(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+							else if (subdivA > lowest && subdivB == lowest)
+								AddTriangle(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, lowest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xA * Level.BlockSizeUnit, lowest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						}
 					}	
 				}
 			}
 
-			if (ceiling && ((wsA <= ceilingA && wsB < ceilingB) || (wsA < ceilingA && wsB <= ceilingB))) // If both points (A and B) are just under ceiling (one corner may be touching ceiling to create a triangle)
-			{                                                                                            // If both points are above or equal ceiling, then the entire ceiling wall shall not be rendered.
+			isValid = (wsA <= ceilingA && wsB < ceilingB) || (wsA < ceilingA && wsB <= ceilingB) || // If both points (A and B) are just under ceiling (one corner may be touching ceiling to create a triangle)
+				(block.Type == BlockType.Floor && (wsA < ceilingA || wsB < ceilingB));
+
+			if (ceiling && isValid) 
+			{
 				// Render WS face
 
 				if (block.IsAnyWall && (wsA < floorA || wsB < floorB)) // If at least one point (A or B) is in the void below floor
@@ -1543,7 +1597,7 @@ namespace TombLib.LevelData
 				}
 
 				if (validHeight && ((yA >= floorA && yB > floorB) || (yA > floorA && yB >= floorB))) // If baseline is just above floor (one corner may be touching floor to create a triangle)
-				{                                                                   // If baseline is below floor, then WS face shall not be rendered.
+				{                                                                                    // If baseline is below floor, then WS face shall not be rendered.
 					face = block.GetFaceTexture(wsFace);
 
 					if (wsA < yA && wsB < yB)
@@ -1565,6 +1619,30 @@ namespace TombLib.LevelData
 							new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 							new Vector3(xB * Level.BlockSizeUnit, wsB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 							face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					else if (block.Type == BlockType.Floor)
+					{
+						int highest = Math.Max(Math.Max(wsA, wsB), Math.Max(yA, yB));
+
+						if (wsA < highest && wsB < highest)
+							AddQuad(x, z, wsFace,
+								new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, wsB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, wsA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+						else if (wsA < highest && wsB == highest)
+							AddTriangle(x, z, wsFace,
+								new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xA * Level.BlockSizeUnit, wsA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+						else if (wsA == highest && wsB < highest)
+							AddTriangle(x, z, wsFace,
+								new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								new Vector3(xB * Level.BlockSizeUnit, wsB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+					}
 				}
 
                 // Render subdivision faces
@@ -1625,6 +1703,30 @@ namespace TombLib.LevelData
 								new Vector3(xB * Level.BlockSizeUnit, yB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 								new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
 								face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						else if (block.Type == BlockType.Floor)
+						{
+							int highest = Math.Max(Math.Max(subdivA, subdivB), Math.Max(yA, yB));
+
+							if (subdivA < highest && subdivB < highest)
+								AddQuad(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									face, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+							else if (subdivA < highest && subdivB == highest)
+								AddTriangle(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xA * Level.BlockSizeUnit, subdivA * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									face, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+							else if (subdivA == highest && subdivB < highest)
+								AddTriangle(x, z, currentFace,
+									new Vector3(xA * Level.BlockSizeUnit, highest * Level.HeightUnit, zA * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, highest * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									new Vector3(xB * Level.BlockSizeUnit, subdivB * Level.HeightUnit, zB * Level.BlockSizeUnit),
+									face, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+						}
 					}
 				}
 			}
