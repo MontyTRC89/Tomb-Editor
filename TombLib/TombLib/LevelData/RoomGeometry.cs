@@ -1396,11 +1396,24 @@ namespace TombLib.LevelData
 			{
 				// Render QA face
 
-				if (block.IsAnyWall && (qaA > ceilingA || qaB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
+				if (qaA > ceilingA || qaB > ceilingB) // If at least one point (A or B) is in the void above ceiling
 				{
-					// Snap points to ceiling
-					qaA = ceilingA;
-					qaB = ceilingB;
+                    if (block.IsAnyWall)
+                    {
+						// Snap points to ceiling
+						qaA = ceilingA;
+						qaB = ceilingB;
+					}
+					else if (qaA > ceilingA && qaB < ceilingB)
+					{
+						qaA = Math.Max(qaA, ceilingA);
+						qaB = Math.Min(qaB, ceilingB);
+					}
+					else if (qaA < ceilingA && qaB > ceilingB)
+					{
+						qaA = Math.Min(qaA, ceilingA);
+						qaB = Math.Max(qaB, ceilingB);
+					}
 				}
 
 				// Start with the floor as a baseline
@@ -1479,12 +1492,25 @@ namespace TombLib.LevelData
 				{
 					(int subdivA, int subdivB) = floorSubdivisions[i];
 
-					if (block.IsAnyWall && (subdivA > ceilingA || subdivB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
+					if (subdivA > ceilingA || subdivB > ceilingB) // If at least one point (A or B) is in the void above ceiling
                     {
-                        // Snap points to ceiling
-                        subdivA = ceilingA;
-						subdivB = ceilingB;
-                    }
+						if (block.IsAnyWall)
+						{
+							// Snap points to ceiling
+							subdivA = ceilingA;
+							subdivB = ceilingB;
+						}
+						else if (subdivA > ceilingA && subdivB < ceilingB)
+						{
+							subdivA = Math.Max(qaA, ceilingA);
+							subdivB = Math.Min(qaB, ceilingB);
+						}
+                        else if (subdivA < ceilingA && subdivB > ceilingB)
+                        {
+                            subdivA = Math.Min(qaA, ceilingA);
+                            subdivB = Math.Max(qaB, ceilingB);
+                        }
+					}
 
                     if (subdivA < floorA || subdivB < floorB) // If at least one point (A or B) is in the void below floor
                         break; // Stop the loop, since the rest of the subdivisions will be in the void too
@@ -1567,11 +1593,24 @@ namespace TombLib.LevelData
 			{
 				// Render WS face
 
-				if (block.IsAnyWall && (wsA < floorA || wsB < floorB)) // If at least one point (A or B) is in the void below floor
+				if (wsA < floorA || wsB < floorB) // If at least one point (A or B) is in the void below floor
 				{
-					// Snap points to floor
-					wsA = floorA;
-					wsB = floorB;
+					if (block.IsAnyWall)
+					{
+						// Snap points to floor
+						wsA = floorA;
+						wsB = floorB;
+					}
+					else if (wsA > floorA && wsB < floorB)
+					{
+						wsA = Math.Max(wsA, floorA);
+						wsB = Math.Min(wsB, floorB);
+					}
+					else if (wsA < floorA && wsB > floorB)
+					{
+						wsA = Math.Min(wsA, floorA);
+						wsB = Math.Max(wsB, floorB);
+					}
 				}
 
 				// Start with the ceiling as a baseline
@@ -1650,11 +1689,24 @@ namespace TombLib.LevelData
 				{
 					(int subdivA, int subdivB) = ceilingSubdivisions[i];
 
-					if (block.IsAnyWall && (subdivA < floorA || subdivB < floorB)) // If at least one point (A or B) is in the void below floor
+					if (subdivA < floorA || subdivB < floorB) // If at least one point (A or B) is in the void below floor
 					{
-						// Snap points to floor
-						subdivA = floorA;
-						subdivB = floorB;
+						if (block.IsAnyWall)
+						{
+							// Snap points to floor
+							subdivA = floorA;
+							subdivB = floorB;
+						}
+						else if (wsA > floorA && wsB < floorB)
+						{
+							subdivA = Math.Max(wsA, floorA);
+							subdivB = Math.Min(wsB, floorB);
+						}
+						else if (wsA < floorA && wsB > floorB)
+						{
+							subdivA = Math.Min(wsA, floorA);
+							subdivB = Math.Max(wsB, floorB);
+						}
 					}
 
 					if (subdivA > ceilingA || subdivB > ceilingB) // If at least one point (A or B) is in the void above ceiling

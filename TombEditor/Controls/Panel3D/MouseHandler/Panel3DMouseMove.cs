@@ -118,27 +118,31 @@ namespace TombEditor.Controls.Panel3D
                     else if (_editor.SelectedSectors.Valid)
                     {
                         BlockVertical subdivisionToEdit;
-                        
+
                         if (_toolHandler.ReferencePicking.BelongsToFloor)
                         {
                             if (_currentNumberKey is Keys.D2 or Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
                             {
                                 int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
-								subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
-							}   
-							else
-								subdivisionToEdit = BlockVertical.Floor;
-						}
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
+                            }
+                            else if (ModifierKeys.HasFlag(Keys.Control))
+                                subdivisionToEdit = BlockVertical.FloorSubdivision2;
+                            else
+                                subdivisionToEdit = BlockVertical.Floor;
+                        }
                         else
                         {
-							if (_currentNumberKey is Keys.D2 or Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
-							{
-								int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
-								subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
-							}
-							else
-								subdivisionToEdit = BlockVertical.Ceiling;
-						}
+                            if (_currentNumberKey is Keys.D2 or Keys.D3 or Keys.D2 or Keys.D3 or Keys.D4 or Keys.D5 or Keys.D6 or Keys.D7 or Keys.D8 or Keys.D9)
+                            {
+                                int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
+                            }
+                            else if (ModifierKeys.HasFlag(Keys.Control))
+                                subdivisionToEdit = BlockVertical.CeilingSubdivision2;
+                            else
+                                subdivisionToEdit = BlockVertical.Ceiling;
+                        }
 
                         switch (_editor.Tool.Tool)
                         {
@@ -226,12 +230,12 @@ namespace TombEditor.Controls.Panel3D
 
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Count; i++)
                                                 {
-													BlockVertical vertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
-													_editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
-														Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
-														Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
-												}			
-											}
+                                                    BlockVertical vertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
+                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
+                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
+                                                }			
+                                            }
                                             else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                             {
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
@@ -239,10 +243,10 @@ namespace TombEditor.Controls.Panel3D
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Count; i++)
                                                 {
                                                     BlockVertical vertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
-													_editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
-													    Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
-													    Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
-												}
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
+                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
+                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
+                                                }
                                             }
                                         }
                                         EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));

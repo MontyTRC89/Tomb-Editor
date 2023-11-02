@@ -462,7 +462,7 @@ namespace TombEditor
                 GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -1, false, false);
             });
 
-			AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
+            AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
                 GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -4, false, false);
             });
@@ -2214,7 +2214,7 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -8, 0), new Vector3(), true);
             });
 
-			_commands = _commands.OrderBy(o => o.Type).ToList();
+            _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
 }
