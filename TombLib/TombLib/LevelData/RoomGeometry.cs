@@ -1398,7 +1398,7 @@ namespace TombLib.LevelData
 
 				if (qaA > ceilingA || qaB > ceilingB) // If at least one point (A or B) is in the void above ceiling
 				{
-                    if (block.IsAnyWall)
+                    if (block.IsAnyWall || (qaA >= ceilingA && qaB > ceilingB) || (qaA > ceilingA && qaB >= ceilingB))
                     {
 						// Snap points to ceiling
 						qaA = ceilingA;
@@ -1494,7 +1494,7 @@ namespace TombLib.LevelData
 
 					if (subdivA > ceilingA || subdivB > ceilingB) // If at least one point (A or B) is in the void above ceiling
                     {
-						if (block.IsAnyWall)
+						if (block.IsAnyWall || (subdivA >= ceilingA && subdivB > ceilingB) || (subdivA > ceilingA && subdivB >= ceilingB))
 						{
 							// Snap points to ceiling
 							subdivA = ceilingA;
@@ -1595,7 +1595,7 @@ namespace TombLib.LevelData
 
 				if (wsA < floorA || wsB < floorB) // If at least one point (A or B) is in the void below floor
 				{
-					if (block.IsAnyWall)
+					if (block.IsAnyWall || (wsA <= floorA && wsB < floorB) || (wsA < floorA && wsB <= floorB))
 					{
 						// Snap points to floor
 						wsA = floorA;
@@ -1691,7 +1691,7 @@ namespace TombLib.LevelData
 
 					if (subdivA < floorA || subdivB < floorB) // If at least one point (A or B) is in the void below floor
 					{
-						if (block.IsAnyWall)
+						if (block.IsAnyWall || (subdivA <= floorA && subdivB < floorB) || (subdivA < floorA && subdivB <= floorB))
 						{
 							// Snap points to floor
 							subdivA = floorA;
