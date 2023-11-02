@@ -460,13 +460,15 @@ namespace TombLib.LevelData.IO
                                             if (texture.Texture == null)
                                                 continue;
 
-                                            if (face.IsSubdivision())
-                                            {
-												BlockVertical faceVertical = face.GetVertical();
-
-                                                if (!validFloorSubdivisions.Any(s => s.Vertical == faceVertical) && !validCeilingSubdivisions.Any(s => s.Vertical == faceVertical))
-                                                    continue;
-                                            }
+                                            // OPTIMIZATION: Don't save textures of subdivisions which don't exist or aren't valid
+                                            //if (face.IsSubdivision())
+                                            //{
+											//	BlockVertical faceVertical = face.GetVertical();
+                                            //
+                                            //    if (!validFloorSubdivisions.Any(s => s.Vertical == faceVertical) && !validCeilingSubdivisions.Any(s => s.Vertical == faceVertical))
+                                            //        continue;
+                                            //}
+                                            // COMMENT: This code has been commented out because some people might complain that their textures are missing after reloading the project.
 
 											if (texture.Texture is LevelTexture t)
 											{
