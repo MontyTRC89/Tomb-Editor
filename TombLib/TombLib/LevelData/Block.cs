@@ -742,9 +742,9 @@ namespace TombLib.LevelData
             Flags = replacement.Flags;
             ForceFloorSolid = replacement.ForceFloorSolid;
 
-            foreach (BlockFace face in replacement.GetFaceTextures().Keys)
+			foreach (BlockFace face in replacement.GetFaceTextures().Keys.Union(_faceTextures.Keys))
             {
-                var texture = replacement.GetFaceTexture(face);
+				var texture = replacement.GetFaceTexture(face);
                 if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
                     SetFaceTexture(face, texture);
             }
@@ -766,6 +766,12 @@ namespace TombLib.LevelData
 
             Floor = replacement.Floor;
             Ceiling = replacement.Ceiling;
+
+            ExtraFloorSubdivisions.Clear();
+			ExtraFloorSubdivisions.AddRange(replacement.ExtraFloorSubdivisions);
+
+            ExtraCeilingSubdivisions.Clear();
+            ExtraCeilingSubdivisions.AddRange(replacement.ExtraCeilingSubdivisions);
         }
 
         public short GetHeight(BlockVertical vertical, BlockEdge edge)
