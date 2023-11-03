@@ -26,7 +26,7 @@ TEN Base WAD:
  * Removal of PUZZLE_ITEM1 (Jeep keys) as no longer required in TombEngine.
  * Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
 
-TEN TRCatalog Updates:
+TEN TRCatalog updates:
  * Add SPRINT_SLIDE (191) state ID.
  * Add ID_CROSSHAIR and ID_SWINGING_BLADE object IDs.
  * Update TR1 Natla remapping.
