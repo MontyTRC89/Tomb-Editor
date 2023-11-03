@@ -1456,17 +1456,17 @@ namespace TombLib.LevelData
                         // Allow slight overlapping of BlockType.Floor faces to allow more complex geometry
                         else if (subdivA > ceilingA && subdivB < ceilingB)
                         {
-                            subdivA = Math.Max(subdivA, ceilingA);
-                            subdivB = Math.Min(subdivB, ceilingB);
+                            subdivA = Math.Max(qaA, ceilingA);
+                            subdivB = Math.Min(qaB, ceilingB);
                         }
                         else if (subdivA < ceilingA && subdivB > ceilingB)
                         {
-                            subdivA = Math.Min(subdivA, ceilingA);
-                            subdivB = Math.Max(subdivB, ceilingB);
+                            subdivA = Math.Min(qaA, ceilingA);
+                            subdivB = Math.Max(qaB, ceilingB);
                         }
                     }
 
-                    if (subdivA < floorA || subdivB < floorB) // If at least one point (A or B) is in the void below floor
+                    if (face.IsSubdivision() && (subdivA < floorA || subdivB < floorB)) // If at least one point (A or B) is in the void below floor
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will be in the void too
 
                     // Start with the floor as a baseline
@@ -1579,17 +1579,17 @@ namespace TombLib.LevelData
                         // Allow slight overlapping of BlockType.Floor faces to allow more complex geometry
                         else if (subdivA > floorA && subdivB < floorB)
                         {
-                            subdivA = Math.Max(subdivA, floorA);
-                            subdivB = Math.Min(subdivB, floorB);
+                            subdivA = Math.Max(wsA, floorA);
+                            subdivB = Math.Min(wsB, floorB);
                         }
                         else if (subdivA < floorA && subdivB > floorB)
                         {
-                            subdivA = Math.Min(subdivA, floorA);
-                            subdivB = Math.Max(subdivB, floorB);
+                            subdivA = Math.Min(wsA, floorA);
+                            subdivB = Math.Max(wsB, floorB);
                         }
                     }
 
-                    if (subdivA > ceilingA || subdivB > ceilingB) // If at least one point (A or B) is in the void above ceiling
+                    if (face.IsSubdivision() && (subdivA > ceilingA || subdivB > ceilingB)) // If at least one point (A or B) is in the void above ceiling
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will be in the void too
 
                     // Ceiling as a baseline
