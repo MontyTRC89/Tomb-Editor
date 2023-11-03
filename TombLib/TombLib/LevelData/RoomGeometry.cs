@@ -1417,7 +1417,7 @@ namespace TombLib.LevelData
                             new Vector3(xB * Level.BlockSizeUnit, y.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xA * Level.BlockSizeUnit, y.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
                             texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                    else if (block.Type == BlockType.Floor)
+                    else if (block.Type == BlockType.Floor && subdiv.A != y.A && subdiv.B != y.B)
                     {
                         int lowest = Math.Min(Math.Min(subdiv.A, subdiv.B), Math.Min(y.A, y.B));
 
@@ -1489,7 +1489,7 @@ namespace TombLib.LevelData
                     }
 
                     if ((y.A <= ceilingA && y.B < ceilingB) || (y.A < ceilingA && y.B <= ceilingB)) // If baseline is just below ceiling (one corner may be touching ceiling to create a triangle)                                                 
-                        TryRenderFloorWallFace(face, (subdivA, subdivB), y);                                    // If baseline is above ceiling, then QA face shall not be rendered.
+                        TryRenderFloorWallFace(face, (subdivA, subdivB), y);                        // If baseline is above ceiling, then QA face shall not be rendered.
 
                     return GeometryRenderResult.Continue;
                 }
@@ -1540,7 +1540,7 @@ namespace TombLib.LevelData
                             new Vector3(xB * Level.BlockSizeUnit, y.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             new Vector3(xB * Level.BlockSizeUnit, subdiv.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
                             texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
-                    else if (block.Type == BlockType.Floor)
+                    else if (block.Type == BlockType.Floor && subdiv.A != y.A && subdiv.B != y.B)
                     {
                         int highest = Math.Max(Math.Max(subdiv.A, subdiv.B), Math.Max(y.A, y.B));
 
