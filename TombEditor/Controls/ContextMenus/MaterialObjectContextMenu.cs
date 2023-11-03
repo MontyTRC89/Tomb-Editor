@@ -126,7 +126,7 @@ namespace TombEditor.Controls.ContextMenus
 
                 Items.Add(new ToolStripMenuItem("Copy position to clipboard", null, (o, e) =>
                 {
-                    Clipboard.SetText((targetObject as PositionAndScriptBasedObjectInstance).WorldPosition.ToString().Trim(new char[] {'<', '>'});
+                    Clipboard.SetText((targetObject as PositionAndScriptBasedObjectInstance).WorldPosition.ToString().Trim(new char[] {'<', '>'}));
                 }));
             }
 
