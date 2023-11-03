@@ -7,7 +7,7 @@ Tomb Editor:
  * Add a node to draw sprites
  * Add nodes to load, save, delete and check existence of savegames
  * Modifying nodes for timer management. Please note: For existing projects check all nodes "Create timer..."
- * Auto-fill position when doing drag-n-drop of an object over nodes.
+ * Auto-fill position and color when doing drag-n-drop of an object over nodes.
  * Show selection size instead of local area.
  * Show real position in object tooltip.
  * Fix exception when trying to assign footstep sound if no material was selected.

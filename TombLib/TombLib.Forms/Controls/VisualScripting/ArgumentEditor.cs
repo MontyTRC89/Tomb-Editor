@@ -513,7 +513,7 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        private void control_DragEnter(object sender, DragEventArgs e)
+        private void luaNameControl_DragEnter(object sender, DragEventArgs e)
         {
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
                 e.Effect = DragDropEffects.Copy;
@@ -547,6 +547,21 @@ namespace TombLib.Controls.VisualScripting
             nudVector3X.Value = (decimal)item.WorldPosition.X;
             nudVector3Y.Value = (decimal)item.WorldPosition.Y;
             nudVector3Z.Value = (decimal)item.WorldPosition.Z;
+        }
+
+        private void panelColor_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void panelColor_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as IColorable;
+            panelColor.BackColor = (item.Color * 0.5f).ToWinFormsColor();
         }
 
         private void butMultiline_Click(object sender, EventArgs e)
