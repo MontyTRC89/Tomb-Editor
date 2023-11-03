@@ -23,7 +23,7 @@ TEN Base WAD:
  * Update names for ID_LARA_EXTRA_ANIMS.
  * Add YETI_DEATH to LARA_EXTRA_ANIMS.
  * Removal of ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
- * Removal of PUZZLE_ITEM1 (Jeep keys) as no longer required in TombEngine.
+ * Removal of PUZZLE_ITEM1 (Jeep keys) as they are not used anymore.
  * Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
 
 TEN TRCatalog updates:
