@@ -513,7 +513,7 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        private void cbList_DragEnter(object sender, DragEventArgs e)
+        private void control_DragEnter(object sender, DragEventArgs e)
         {
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
                 e.Effect = DragDropEffects.Copy;
@@ -532,7 +532,21 @@ namespace TombLib.Controls.VisualScripting
             var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
             if (index != -1)
                 cbList.SelectedIndex = index;
-            return;
+        }
+
+        private void vector3Control_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            nudVector3X.Value = (decimal)item.WorldPosition.X;
+            nudVector3Y.Value = (decimal)item.WorldPosition.Y;
+            nudVector3Z.Value = (decimal)item.WorldPosition.Z;
         }
 
         private void butMultiline_Click(object sender, EventArgs e)

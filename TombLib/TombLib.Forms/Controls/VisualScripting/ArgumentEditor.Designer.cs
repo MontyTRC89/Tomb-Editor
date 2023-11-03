@@ -194,6 +194,8 @@
             this.nudVector3Z.Size = new System.Drawing.Size(142, 20);
             this.nudVector3Z.TabIndex = 2;
             this.nudVector3Z.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3Z.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3Z.DragEnter += new System.Windows.Forms.DragEventHandler(this.control_DragEnter);
             // 
             // nudVector3Y
             // 
@@ -221,6 +223,8 @@
             this.nudVector3Y.Size = new System.Drawing.Size(139, 20);
             this.nudVector3Y.TabIndex = 1;
             this.nudVector3Y.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3Y.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3Y.DragEnter += new System.Windows.Forms.DragEventHandler(this.control_DragEnter);
             // 
             // nudVector3X
             // 
@@ -248,6 +252,8 @@
             this.nudVector3X.Size = new System.Drawing.Size(141, 20);
             this.nudVector3X.TabIndex = 0;
             this.nudVector3X.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3X.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3X.DragEnter += new System.Windows.Forms.DragEventHandler(this.control_DragEnter);
             // 
             // tabString
             // 
@@ -335,7 +341,7 @@
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
             this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
-            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.cbList_DragEnter);
+            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.control_DragEnter);
 			// 
 			// panelAction
 			// 
