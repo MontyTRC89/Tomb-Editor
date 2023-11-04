@@ -338,7 +338,7 @@ namespace TombLib.LevelData
         public static bool IsCeiling(this BlockFace face)
             => face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2;
 
-        public static bool IsSubdivision(this BlockFace face)
+        public static bool IsExtraSubdivision(this BlockFace face)
             => face.ToString().Contains("Subdivision");
 
         public static bool IsFloorSubdivision(this BlockFace face)

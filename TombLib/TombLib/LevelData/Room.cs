@@ -6,7 +6,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
-using static SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.LevelData
 {
