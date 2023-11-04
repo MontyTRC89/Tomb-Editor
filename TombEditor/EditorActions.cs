@@ -3463,11 +3463,12 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.Floor || (includeWalls && room.Blocks[x, z].Type != BlockType.Floor))
                     {
-
                         if (ceiling)
                             room.Blocks[x, z].Ceiling.SetHeight(height.Value);
                         else
                             room.Blocks[x, z].Floor.SetHeight(height.Value);
+
+                        room.Blocks[x, z].FixHeights();
                     }
                 }
 
