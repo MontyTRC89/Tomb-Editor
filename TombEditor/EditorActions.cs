@@ -2059,35 +2059,35 @@ namespace TombEditor
                             continue;
 
                         if (pickedFace.IsFloorWall() && pickedFace.IsNegativeX())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
                         else if (pickedFace is BlockFace.Wall_NegativeX_Middle)
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
                         else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeX())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
                         else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveX())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
                         else if (pickedFace is BlockFace.Wall_PositiveX_Middle)
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
                         else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveX())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
                         else if (pickedFace.IsFloorWall() && pickedFace.IsNegativeZ())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
                         else if (pickedFace is BlockFace.Wall_NegativeZ_Middle)
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
                         else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeZ())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
                         else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveZ())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
                         else if (pickedFace is BlockFace.Wall_PositiveZ_Middle)
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
                         else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveZ())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
                         else if (pickedFace.IsFloorWall() && pickedFace.IsDiagonal())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
                         else if (pickedFace is BlockFace.Wall_Diagonal_Middle)
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
                         else if (pickedFace.IsCeilingWall() && pickedFace.IsDiagonal())
-							TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
+                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
                     }
             }
             else
@@ -3133,9 +3133,9 @@ namespace TombEditor
                             continue; // We can only do it if there is information available
 
                         block.ExtraFloorSubdivisions.Clear();
-						block.ExtraCeilingSubdivisions.Clear();
+                        block.ExtraCeilingSubdivisions.Clear();
 
-						for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         {
                             // Skip opposite diagonal step corner
                             switch (block.Floor.DiagonalSplit)
@@ -3566,7 +3566,7 @@ namespace TombEditor
                         Block newBlock = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos).Clone();
 
                         // Preserve outer wall textures
-                        foreach (BlockFace face in oldBlock.GetFaceTextures().Keys)
+                        foreach (BlockFace face in oldBlock.GetFaceTextures().Keys.Union(newBlock.GetFaceTextures().Keys))
                         {
                             var direction = face.GetDirection();
                             if (direction == Direction.NegativeX || direction == Direction.PositiveX || direction == Direction.NegativeZ || direction == Direction.PositiveZ)
@@ -3574,7 +3574,7 @@ namespace TombEditor
                         }
 
                         // Transform positions
-                        foreach (BlockVertical vertical in oldBlock.GetVerticals())
+                        foreach (BlockVertical vertical in oldBlock.GetVerticals().Union(newBlock.GetVerticals()))
                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                 newBlock.ChangeHeight(vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
 
@@ -3600,7 +3600,6 @@ namespace TombEditor
                         for (BlockFace face = 0; face < BlockFace.Count; ++face)
                         {
                             var direction = face.GetDirection();
-
                             switch (direction)
                             {
                                 case Direction.NegativeX:
@@ -3623,7 +3622,7 @@ namespace TombEditor
 
                         if (thisBlockNegativeX.IsAnyWall)
                         {
-                            foreach (BlockVertical vertical in thisBlockNegativeX.GetVerticals())
+                            foreach (BlockVertical vertical in otherBlockNegativeX.GetVerticals())
                             {
                                 thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZn, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);
                                 thisBlockNegativeX.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeX.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
@@ -3632,7 +3631,7 @@ namespace TombEditor
 
                         if (thisBlockPositiveX.IsAnyWall)
                         {
-                            foreach (BlockVertical vertical in thisBlockPositiveX.GetVerticals())
+                            foreach (BlockVertical vertical in otherBlockPositiveX.GetVerticals())
                             {
                                 thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
                                 thisBlockPositiveX.SetHeight(vertical, BlockEdge.XnZp, otherBlockPositiveX.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
@@ -3641,16 +3640,16 @@ namespace TombEditor
 
                         if (thisBlockNegativeZ.IsAnyWall)
                         {
-							foreach (BlockVertical vertical in thisBlockNegativeZ.GetVerticals())
+                            foreach (BlockVertical vertical in otherBlockNegativeZ.GetVerticals())
                             {
-								thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XnZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
-								thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
-							}	
+                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XnZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XnZp) + heightDifference);
+                                thisBlockNegativeZ.SetHeight(vertical, BlockEdge.XpZp, otherBlockNegativeZ.GetHeight(vertical, BlockEdge.XpZp) + heightDifference);
+                            }	
                         }
 
                         if (thisBlockPositiveZ.IsAnyWall)
                         {
-                            foreach (BlockVertical vertical in thisBlockPositiveZ.GetVerticals())
+                            foreach (BlockVertical vertical in otherBlockPositiveZ.GetVerticals())
                             {
                                 thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XnZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XnZn) + heightDifference);
                                 thisBlockPositiveZ.SetHeight(vertical, BlockEdge.XpZn, otherBlockPositiveZ.GetHeight(vertical, BlockEdge.XpZn) + heightDifference);
@@ -5701,5 +5700,5 @@ namespace TombEditor
 
 			}
 		}
-	}
+    }
 }

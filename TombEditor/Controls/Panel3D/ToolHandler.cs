@@ -138,9 +138,9 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Floor.GetHeight(edge);
 
-								for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
-									_actionGrid[x, z].Heights[i + 1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge);
-							}
+                                for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
+                                    _actionGrid[x, z].Heights[i + 1, (int)edge] = ReferenceRoom.Blocks[x, z].GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge);
+                            }
                             else
                             {
                                 _actionGrid[x, z].Heights[0, (int)edge] = ReferenceRoom.Blocks[x, z].Ceiling.GetHeight(edge);
@@ -226,7 +226,7 @@ namespace TombEditor.Controls.Panel3D
                 // for these cases if diagonal step was raised above limit and swapped.
                 // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
 
-                if (ReferencePicking.Face is BlockFace.Wall_Diagonal_FloorSubdivision2 or BlockFace.Wall_Diagonal_QA)
+                if (ReferencePicking.Face is BlockFace.Wall_Diagonal_QA || ReferencePicking.Face.IsSpecificFloorSubdivision(Direction.Diagonal))
                 {
                     switch (ReferenceBlock.Floor.DiagonalSplit)
                     {
@@ -240,7 +240,7 @@ namespace TombEditor.Controls.Panel3D
                             break;
                     }
                 }
-                else if (ReferencePicking.Face is BlockFace.Wall_Diagonal_WS or BlockFace.Wall_Diagonal_CeilingSubdivision2)
+                else if (ReferencePicking.Face is BlockFace.Wall_Diagonal_WS || ReferencePicking.Face.IsSpecificCeilingSubdivision(Direction.Diagonal))
                 {
                     switch (ReferenceBlock.Ceiling.DiagonalSplit)
                     {
@@ -395,14 +395,14 @@ namespace TombEditor.Controls.Panel3D
                                 ReferenceRoom.Blocks[x, z].Floor.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
 
                                 for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraFloorSubdivisions.Count; i++)
-                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);
+                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), edge, _actionGrid[x, z].Heights[i + 1, (int)edge]);
                             }
                             else
                             {
                                 ReferenceRoom.Blocks[x, z].Ceiling.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
 
                                 for (int i = 0; i < ReferenceRoom.Blocks[x, z].ExtraCeilingSubdivisions.Count; i++)
-                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge, _actionGrid[x, z].Heights[i + 2, (int)edge]);
+                                    ReferenceRoom.Blocks[x, z].SetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), edge, _actionGrid[x, z].Heights[i + 1, (int)edge]);
                             }
                         }
                     }
