@@ -1478,7 +1478,7 @@ namespace TombLib.LevelData
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
                     // If the face is a diagonal wall's floor part (below the flat, walkable triangle) and either subdivision point is above the lowest flat triangle point
-                    if (isDiagonalWallFloorPart && (yStartA > yQaA || yStartB > yQaB))
+                    if ((block.IsAnyPortal || isDiagonalWallFloorPart) && (yStartA > yQaA || yStartB > yQaB))
                     {
                         // Snap points to the heights of the flat, walkable triangle
                         yStartA = yQaA;
@@ -1599,7 +1599,7 @@ namespace TombLib.LevelData
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
                     // If the face is a diagonal wall's ceiling part (above the flat ceiling triangle) and either subdivision point is below the highest flat triangle point
-                    if (isDiagonalWallCeilingPart && (yStartA < yWsA || yStartB < yWsB))
+                    if ((block.IsAnyPortal || isDiagonalWallCeilingPart) && (yStartA < yWsA || yStartB < yWsB))
                     {
                         // Snap points to the heights of the flat ceiling triangle
                         yStartA = yWsA;
