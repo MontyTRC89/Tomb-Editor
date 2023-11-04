@@ -290,7 +290,7 @@ namespace TombLib.LevelData
 
             if (Enum.TryParse(directionName, out Direction direction))
                 return direction;
-            else if (directionName.Contains("Diagonal"))
+            else if (directionName is not null && directionName.Contains("Diagonal"))
                 return Direction.Diagonal;
             else
                 return Direction.None;
