@@ -705,6 +705,9 @@ namespace TombLib.LevelData.IO
 
             progressReporter?.ReportInfo("Loading rooms");
 
+            bool usesClassicFloor = false;
+            bool usesClassicCeiling = false;
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id != Prj2Chunks.Room)
@@ -713,8 +716,6 @@ namespace TombLib.LevelData.IO
                 // Read room
                 Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector3.One);
                 long roomIndex = long.MinValue;
-                bool usesClassicFloor = false;
-                bool usesClassicCeiling = false;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     cancelToken.ThrowIfCancellationRequested();
@@ -1011,47 +1012,6 @@ namespace TombLib.LevelData.IO
                     return true;
                 });
 
-                if (usesClassicFloor || usesClassicCeiling)
-                {
-                    for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
-                        for (int z = room.LocalArea.Y0; z <= room.LocalArea.Y1; z++)
-                        {
-                            Block block = room.Blocks[x, z];
-
-                            if (usesClassicFloor && room.IsFloorSubdivisionInCeilingVoid(BlockVertical.FloorSubdivision2, x, z))
-                            {
-                                TextureArea
-                                    qaPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
-                                    qaNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
-                                    qaNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
-                                    qaPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_QA),
-                                    qaDiagonal = block.GetFaceTexture(BlockFace.Wall_Diagonal_QA);
-
-                                block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
-                                block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
-                                block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
-                                block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
-                                block.SetFaceTexture(BlockFace.Wall_Diagonal_FloorSubdivision2, qaDiagonal);
-                            }
-
-                            if (usesClassicCeiling && room.IsCeilingSubdivisionInFloorVoid(BlockVertical.CeilingSubdivision2, x, z))
-                            {
-								TextureArea
-									wsPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
-									wsNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
-									wsNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
-									wsPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_WS),
-									wsDiagonal = block.GetFaceTexture(BlockFace.Wall_Diagonal_WS);
-
-								block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
-								block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
-								block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
-								block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
-								block.SetFaceTexture(BlockFace.Wall_Diagonal_CeilingSubdivision2, wsDiagonal);
-							}
-                        }
-				}
-
                 // Add room
                 if (roomIndex > 0 && roomIndex < level.Rooms.Length && level.Rooms[roomIndex] == null)
                     level.Rooms[roomIndex] = room;
@@ -1097,6 +1057,27 @@ namespace TombLib.LevelData.IO
                 }
             }
 
+            if (usesClassicFloor || usesClassicCeiling)
+            {
+                progressReporter?.ReportInfo("(Legacy floor / ceiling chunks) Re-adjusting faces where needed");
+
+                foreach (Room room in newRooms.Values)
+                    for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
+                        for (int z = room.LocalArea.Y0; z <= room.LocalArea.Y1; z++)
+                        {
+                            if (usesClassicFloor)
+                            {
+                                SwapFloor2FacesWhereApplicable(room, x, z);
+                                SwapDiagonalFloor2FacesWhereApplicable(room, x, z);
+                            }
+
+                            if (usesClassicCeiling)
+                            {
+                                SwapCeiling2FacesWhereApplicable(room, x, z);
+                                SwapDiagonalCeiling2FacesWhereApplicable(room, x, z);
+                            }
+                        }
+            }
 
             // Now build the real geometry and update geometry buffers
             ParallelOptions parallelOptions = new ParallelOptions()
@@ -1846,6 +1827,222 @@ namespace TombLib.LevelData.IO
         {
             if (!this_.ContainsKey(key))
                 this_.Add(key, value);
+        }
+
+        private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
+        {
+            Block block = room.Blocks[x, z];
+            Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+
+            if (subdivision is null)
+                return;
+
+            TextureArea
+                qaPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
+                qaNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
+                qaNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
+                qaPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_QA);
+
+            RoomBlockPair
+                xn = room.GetBlockTryThroughPortal(x - 1, z),
+                xp = room.GetBlockTryThroughPortal(x + 1, z),
+                zn = room.GetBlockTryThroughPortal(x, z - 1),
+                zp = room.GetBlockTryThroughPortal(x, z + 1);
+
+            if (xn.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XnZp)
+                    block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
+            }
+
+            if (xp.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XpZp)
+                    block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
+            }
+
+            if (zn.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZn)
+                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
+            }
+
+            if (zp.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZp)
+                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
+            }
+        }
+
+        private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
+        {
+            Block block = room.Blocks[x, z];
+            Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
+
+            if (subdivision is null)
+                return;
+
+            TextureArea
+                wsPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
+                wsNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
+                wsNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
+                wsPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_WS);
+
+            RoomBlockPair
+                xn = room.GetBlockTryThroughPortal(x - 1, z),
+                xp = room.GetBlockTryThroughPortal(x + 1, z),
+                zn = room.GetBlockTryThroughPortal(x, z - 1),
+                zp = room.GetBlockTryThroughPortal(x, z + 1);
+
+            if (xn.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XnZp)
+                    block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
+            }
+
+            if (xp.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XpZp)
+                    block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
+            }
+
+            if (zn.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZn)
+                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
+            }
+
+            if (zp.Block != null)
+            {
+                if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZp)
+                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
+            }
+        }
+
+        private static void SwapDiagonalFloor2FacesWhereApplicable(Room room, int x, int z)
+        {
+            Block localBlock = room.Blocks[x, z],
+                probingBlock = localBlock;
+
+            if (localBlock.WallPortal != null)
+            {
+                RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
+
+                if (pair.Room != room && pair.Block != null)
+                    probingBlock = pair.Block;
+            }
+
+            if (probingBlock.Floor.DiagonalSplit == DiagonalSplit.None)
+                return;
+
+            Subdivision subdivision = localBlock.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+
+            if (subdivision is null)
+                return;
+
+            TextureArea
+                qaPositiveZ = localBlock.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
+                qaNegativeZ = localBlock.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
+                qaNegativeX = localBlock.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
+                qaPositiveX = localBlock.GetFaceTexture(BlockFace.Wall_PositiveX_QA);
+
+            switch (probingBlock.Floor.DiagonalSplit)
+            {
+                case DiagonalSplit.XnZp:
+                    if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XpZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XpZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
+                    break;
+
+                case DiagonalSplit.XpZn:
+                    if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XnZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XnZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
+                    break;
+
+                case DiagonalSplit.XpZp:
+                    if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XnZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XnZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
+                    break;
+
+                case DiagonalSplit.XnZn:
+                    if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XpZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XpZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
+                    break;
+            }
+        }
+
+        private static void SwapDiagonalCeiling2FacesWhereApplicable(Room room, int x, int z)
+        {
+            Block localBlock = room.Blocks[x, z],
+                probingBlock = localBlock;
+
+            if (localBlock.WallPortal != null)
+            {
+                RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
+
+                if (pair.Room != room && pair.Block != null)
+                    probingBlock = pair.Block;
+            }
+
+            if (probingBlock.Ceiling.DiagonalSplit == DiagonalSplit.None)
+                return;
+
+            Subdivision subdivision = localBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
+
+            if (subdivision is null)
+                return;
+
+            TextureArea
+                wsPositiveZ = localBlock.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
+                wsNegativeZ = localBlock.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
+                wsNegativeX = localBlock.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
+                wsPositiveX = localBlock.GetFaceTexture(BlockFace.Wall_PositiveX_WS);
+
+            switch (probingBlock.Ceiling.DiagonalSplit)
+            {
+                case DiagonalSplit.XnZp:
+                    if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XpZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XpZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
+                    break;
+
+                case DiagonalSplit.XpZn:
+                    if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XnZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XnZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
+                    break;
+
+                case DiagonalSplit.XpZp:
+                    if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XnZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XnZn)
+                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
+                    break;
+
+                case DiagonalSplit.XnZn:
+                    if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XpZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
+
+                    if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XpZp)
+                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
+                    break;
+            }
         }
     }
 }

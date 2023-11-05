@@ -132,7 +132,7 @@ namespace TombLib.LevelData
             else if (vertical.IsExtraCeilingSubdivision())
                 return int.Parse(vertical.ToString()["CeilingSubdivision".Length..]) - 2;
             else
-                return 0;
+                return -1;
         }
     }
 
@@ -821,6 +821,9 @@ namespace TombLib.LevelData
 
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
+            if (newValue is short.MinValue or short.MaxValue)
+                return;
+
             switch (vertical)
             {
                 case BlockVertical.Floor:
