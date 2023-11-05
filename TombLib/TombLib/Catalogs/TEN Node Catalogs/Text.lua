@@ -6,8 +6,8 @@
 -- !Arguments "Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
 -- !Arguments "Boolean, 20, Shadow, {true}" "Color, 16, Text color", "Numerical, 14, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 
-LevelFuncs.Engine.Node.DrawText = function(text, x, y, center, shadow, color, scale)
-	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, center, shadow, color)
+LevelFuncs.Engine.Node.DrawText = function(text, x, y, alignment, shadow, color, scale)
+	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, alignment, shadow, color)
 	TEN.Strings.ShowString(str, 1 / 30)
 end
 
@@ -20,8 +20,8 @@ end
 -- !Arguments "Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
 -- !Arguments "Boolean, 20, Shadow, {true}" "Color, 16, Text color", "Numerical, 14, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 
-LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, center, shadow, color, scale)
-	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, center, shadow, color)
+LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, alignment, shadow, color, scale)
+	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, alignment, shadow, color)
 	TEN.Strings.ShowString(str, time)
 end
 
@@ -33,11 +33,11 @@ end
 -- !Arguments "Boolean, 20, Shadow, {true}"
 -- !Arguments "Color, 16, Text color", "Numerical, 14, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 
-LevelFuncs.Engine.Node.DrawSubtitle = function(x, y, center, shadow, color, scale)
+LevelFuncs.Engine.Node.DrawSubtitle = function(x, y, alignment, shadow, color, scale)
 	local text = TEN.Sound.GetCurrentSubtitle()
 
 	if (text ~= nil) then
-		local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, center, shadow, color)
+		local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, alignment, shadow, color)
 		TEN.Strings.ShowString(str, 1 / 30)
 	end
 end

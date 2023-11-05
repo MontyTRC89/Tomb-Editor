@@ -32,10 +32,11 @@ LevelFuncs.Engine.Node.ModifyValue = function(operand, reference, operator)
 end
 
 -- Helper function for easy generation of a display string with all parameters set.
-LevelFuncs.Engine.Node.GenerateString = function(text, x, y, scale, center, shadow, color)
+LevelFuncs.Engine.Node.GenerateString = function(text, x, y, scale, alignment, shadow, color)
 	local options = {}
 	if (shadow == true) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
-	if (center == true) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
+	if (alignment == 1) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
+	if (alignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT)  end
 	local rX, rY = TEN.Util.PercentToScreen(x, y)
 	return TEN.Strings.DisplayString(text, TEN.Vec2(rX, rY), scale, color, false, options)
 end
