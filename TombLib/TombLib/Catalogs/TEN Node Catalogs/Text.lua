@@ -3,7 +3,7 @@
 -- !Description "Draws simple label on a screen for one frame."
 -- !Arguments "NewLine, String, Text"
 -- !Arguments "NewLine, Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
--- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 16, Text color", "Numerical, 14, (100), [ 0 | 9 | 2 | 0.1 ], Scale"
+-- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 16, Text color", "Numerical, 14, (1), [ 0 | 9 | 2 | 0.1 ], Scale"
 
 LevelFuncs.Engine.Node.DrawText = function(text, x, y, center, shadow, color, scale)
 	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, center, shadow, color)
@@ -16,7 +16,7 @@ end
 -- !Arguments "Numerical, 20, [ 0 | 180 | 2 | 0.25 | 1 ], Time span in seconds"
 -- !Arguments "NewLine, String, Text"
 -- !Arguments "NewLine, Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
--- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 16, Text color", "Numerical, 14, (100), [ 0 | 9 | 2 | 0.1 ], Scale"
+-- !Arguments "Boolean, 20, Centered" "Boolean, 20, Shadow" "Color, 16, Text color", "Numerical, 14, (1), [ 0 | 9 | 2 | 0.1 ], Scale"
 
 LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, center, shadow, color, scale)
 	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, center, shadow, color)
@@ -28,7 +28,7 @@ end
 -- !Description "If voice track is active and subtitle file with the same name as voice track exists in same folder, try to display a subtitle."
 -- !Arguments "NewLine, Numerical, 15, X position, (50), [ 0 | 100 ]" "Numerical, 15, Y position, (80), [ 0 | 100 ]"
 -- !Arguments "Boolean, 20, Centered, (true)" "Boolean, 20, Shadow, (true)"
--- !Arguments "Color, 16, Text color", "Numerical, 14, (100), [ 0 | 9 | 2 | 0.1 ], Scale"
+-- !Arguments "Color, 16, Text color", "Numerical, 14, (1), [ 0 | 9 | 2 | 0.1 ], Scale"
 
 LevelFuncs.Engine.Node.DrawSubtitle = function(x, y, center, shadow, color, scale)
 	local text = TEN.Sound.GetCurrentSubtitle()
