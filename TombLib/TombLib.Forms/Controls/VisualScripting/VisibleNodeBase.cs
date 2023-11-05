@@ -108,12 +108,7 @@ namespace TombLib.Controls.VisualScripting
                 Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
             else if (funcSetup.Arguments.Count > Node.Arguments.Count)
                 for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                {
-                    if (!string.IsNullOrEmpty(funcSetup.Arguments[i].DefaultValue))
-                        Node.Arguments.Add(funcSetup.Arguments[i].DefaultValue);
-                    else
-                        Node.Arguments.Add(string.Empty);
-                }
+                    Node.Arguments.Add(funcSetup.Arguments[i].DefaultValue);
         }
 
         public void SpawnFunctionList(List<NodeFunction> functions)
