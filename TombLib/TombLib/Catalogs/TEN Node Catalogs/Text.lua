@@ -18,7 +18,7 @@ end
 -- !Arguments "NewLine, 70, String, Text" "Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
 -- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
 -- !Arguments "Enumeration, 40, [Flat | Shadow | Blinking | Shadow + Blinking], Effects"
--- !Arguments "Color, 20, Text color", "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
+-- !Arguments "Color, 20, Text color" "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 
 LevelFuncs.Engine.Node.DrawTextForTimespan = function(time, text, x, y, alignment, shadow, color, scale)
 	local str = LevelFuncs.Engine.Node.GenerateString(text, x, y, scale, alignment, shadow, color)
@@ -31,7 +31,7 @@ end
 -- !Arguments "Numerical, 15, X position, {50}, [ 0 | 100 ]" "Numerical, 15, Y position, {80}, [ 0 | 100 ]"
 -- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
 -- !Arguments "Enumeration, 40, [Flat | Shadow | Blinking | Shadow + Blinking], Effects"
--- !Arguments "Color, 20, Text color", "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
+-- !Arguments "Color, 20, Text color" "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 
 LevelFuncs.Engine.Node.DrawSubtitle = function(x, y, alignment, shadow, color, scale)
 	local text = TEN.Sound.GetCurrentSubtitle()
