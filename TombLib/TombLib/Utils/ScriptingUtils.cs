@@ -44,8 +44,8 @@ namespace TombLib.Utils
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
         private const string _enumSplitterEnd = "]";
-        private const string _defaultValueStart = "(";
-        private const string _defaultValueEnd = ")";
+        private const string _defaultValueStart = "{";
+        private const string _defaultValueEnd = "}";
         private const char _tabChar = '\t';
 
         private const string _nodeIgnoreId = _metadataPrefix + "ignore";
