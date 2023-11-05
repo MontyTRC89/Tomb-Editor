@@ -1464,15 +1464,16 @@ namespace TombLib.LevelData
                 GeometryRenderResult TryRenderFloorWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
                     bool isEitherStartPointAboveCeiling = yStartA > yCeilingA || yStartB > yCeilingB; // If either start point A or B is in the void above ceiling
+					bool areBothStartPointsAboveCeiling = yStartA >= yCeilingA && yStartB >= yCeilingB;
 
-                    if (isEitherStartPointAboveCeiling && block.IsAnyWall && !isDiagonalWallFloorPart)
+					if ((isEitherStartPointAboveCeiling && block.IsAnyWall && !isDiagonalWallFloorPart) || areBothStartPointsAboveCeiling)
                     {
                         // Snap points to ceiling
                         yStartA = yCeilingA;
                         yStartB = yCeilingB;
                     }
 
-                    bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
+					bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
 
                     if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart)
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
@@ -1585,8 +1586,9 @@ namespace TombLib.LevelData
                 GeometryRenderResult TryRenderCeilingWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
                     bool isEitherStartPointBelowFloor = yStartA < yFloorA || yStartB < yFloorB; // If either start point A or B is in the void below floor
+                    bool areBothStartPointsBelowFloor = yStartA <= yFloorA && yStartB <= yFloorB;
 
-                    if (isEitherStartPointBelowFloor && block.IsAnyWall && !isDiagonalWallCeilingPart)
+                    if ((isEitherStartPointBelowFloor && block.IsAnyWall && !isDiagonalWallCeilingPart) || areBothStartPointsBelowFloor)
                     {
                         // Snap points to floor
                         yStartA = yFloorA;

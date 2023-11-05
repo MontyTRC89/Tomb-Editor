@@ -1065,6 +1065,11 @@ namespace TombLib.LevelData.IO
                     for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
                         for (int z = room.LocalArea.Y0; z <= room.LocalArea.Y1; z++)
                         {
+                            Block block = room.Blocks[x, z];
+
+							if (block.Type == BlockType.Floor && block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.Floor.DiagonalSplit == DiagonalSplit.None)
+                                continue;
+
                             if (usesClassicFloor)
                             {
                                 SwapFloor2FacesWhereApplicable(room, x, z);
