@@ -42,9 +42,7 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
    - **(DEFAULT)** - default value for this argument, contained in brackets. For Numerical value type, it can be
      provided as is, e.g. `(100)`. For String value type, default string must be quoted, e.g. `("Default string")`.
-     For value types such as Vector3 or Color, standard TEN Lua scripting convention must be used, e.g.
-     `TEN.Vec3(100,100,100)` or `TEN.Color(128,128,128)`. It is not recommended to set default values for other 
-     value types, such as object or slot lists, as they may change depending on a level state.
+     Other value types are not currently supported.
 
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
