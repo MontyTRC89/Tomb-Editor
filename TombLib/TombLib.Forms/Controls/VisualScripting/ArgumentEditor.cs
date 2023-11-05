@@ -307,8 +307,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Boolean:
                     {
                         bool result;
-                        if (!(bool.TryParse(source, out result)))
+                        if (float.TryParse(source, out float parsedInt))
+                            result = parsedInt == 0.0f ? false : true;
+                        else if (!bool.TryParse(source, out result))
                             result = false;
+
                         cbBool.Checked = result;
 
                         BoxBoolValue();
@@ -317,8 +320,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Numerical:
                     {
                         float result;
-                        if (!(float.TryParse(source, out result)))
+                        if (bool.TryParse(source, out bool parsedBool))
+                            result = parsedBool ? 1.0f : 0.0f;
+                        else if (!(float.TryParse(source, out result)))
                             result = 0.0f;
+
                         try   { nudNumerical.Value = (decimal)Math.Round(result, nudNumerical.DecimalPlaces); }
                         catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
@@ -386,13 +392,29 @@ namespace TombLib.Controls.VisualScripting
                     }
                 default: // Lists
                     {
-                        var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
-                        if (index != null)
-                            cbList.SelectedItem = index;
-                        else if (cbList.Items.Count > 0)
-                            cbList.SelectedIndex = 0;
+                        float potentialIndex;
+                        if (bool.TryParse(source, out bool potentialValue))
+                            potentialIndex = potentialValue ? 1 : 0;
+                        else if (!float.TryParse(source, out potentialIndex))
+                            potentialIndex = -1;
+
+                        if (potentialIndex < 0 || potentialIndex >= cbList.Items.Count)
+                        {
+                            var item = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
+                            if (item != null)
+                                cbList.SelectedItem = item;
+                            else if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = 0;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
                         else
-                            cbList.SelectedIndex = -1;
+                        {
+                            if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = (int)potentialIndex;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
 
                         BoxListValue();
                         break;
