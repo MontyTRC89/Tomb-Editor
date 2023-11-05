@@ -22,16 +22,16 @@ TEN Base WAD:
  * Integrated new pushable animations.
  * Update names for ID_LARA_EXTRA_ANIMS.
  * Add YETI_DEATH to LARA_EXTRA_ANIMS.
- * Removal of ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
- * Removal of PUZZLE_ITEM1 (Jeep keys) as they are not used anymore.
- * Inclusion of example pushable block (ID_PUSHABLE_OBJECT_CLIMBABLE).
+ * Remove ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
+ * Remove PUZZLE_ITEM1 (Jeep keys) as they are not used anymore.
+ * Add example pushable block object (ID_PUSHABLE_OBJECT_CLIMBABLE).
 
 TEN TRCatalog updates:
  * Add SPRINT_SLIDE (191) state ID.
  * Add ID_CROSSHAIR and ID_SWINGING_BLADE object IDs.
  * Update TR1 Natla remapping.
  * Update TR1-TR3 pushable remappings.
- * Removal of redundant object IDs that aren't used.
+ * Remove of redundant object IDs that aren't used.
  * Amended Lara extra animation names.
  * Move Lara animation 442 to LARA_EXTRA_ANIMS.
  * Add Yeti and Big Scorpion Death animations to LARA_EXTRA_ANIMS.
