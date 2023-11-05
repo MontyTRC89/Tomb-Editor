@@ -40,7 +40,7 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minu
     end
 end
 
--- !Name "Create Timer with event set"
+-- !Name "Create timer with event"
 -- !Conditional "False"
 -- !Description "After a specified number of seconds, an Event set is activated"
 -- !Section "Timer"
@@ -266,7 +266,7 @@ LevelFuncs.Engine.Node.IfTimerExpired = function(name)
     end
 end
 
--- !Name "If remaining Time is..."
+-- !Name "If remaining time is..."
 -- !Conditional "True"
 -- !Description "Check if the remaining time is equal to, greater to, less to..."
 -- !Section "Timer"

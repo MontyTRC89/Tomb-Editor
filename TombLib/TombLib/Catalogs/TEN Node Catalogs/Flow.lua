@@ -115,7 +115,7 @@ LevelFuncs.Engine.Node.LoadGame = function(slot)
 	TEN.Flow.LoadGame(slot)
 end
 
--- !Name "Delete Save slot"
+-- !Name "Delete savegame"
 -- !Conditional "False"
 -- !Description "Delete a specific save slot"
 -- !Section "Game flow"
@@ -124,7 +124,7 @@ LevelFuncs.Engine.Node.DeleteSaveGame = function(slot)
 	TEN.Flow.DeleteSaveGame(slot)
 end
 
--- !Name "If SaveGame exists..."
+-- !Name "If savegame exists..."
 -- !Conditional "True"
 -- !Description "Check if SaveGame exists in a specific slot"
 -- !Section "Game flow"
