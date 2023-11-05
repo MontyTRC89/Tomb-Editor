@@ -44,6 +44,8 @@ namespace TombLib.Utils
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
         private const string _enumSplitterEnd = "]";
+        private const string _defaultValueStart = "(";
+        private const string _defaultValueEnd = ")";
         private const char _tabChar = '\t';
 
         private const string _nodeIgnoreId = _metadataPrefix + "ignore";
@@ -121,6 +123,7 @@ namespace TombLib.Utils
                                 {
                                     Type = ArgumentType.Numerical,
                                     CustomEnumeration = new List<string>(),
+                                    DefaultValue = string.Empty,
                                     Description = string.Empty,
                                     NewLine = false,
                                     Width = 100.0f
@@ -137,6 +140,8 @@ namespace TombLib.Utils
                                         argLayout.Width = width;
                                     else if (p.StartsWith(_enumSplitterStart) && p.EndsWith(_enumSplitterEnd))
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
+                                    else if (p.StartsWith(_defaultValueStart) && p.EndsWith(_defaultValueEnd))
+                                        argLayout.DefaultValue = p.Substring(1, p.Length - 2).Trim();
                                     else
                                         try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
                                         catch { argLayout.Description = p; }

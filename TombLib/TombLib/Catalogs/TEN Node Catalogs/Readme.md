@@ -40,6 +40,12 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
     Volumes, Rooms, SoundEffects, WadSlots, Enumeration, CompareOperator** - keywords which specify argument type
     and its appearance in UI.
 
+   - **(DEFAULT)** - default value for this argument, contained in brackets. For Numerical value type, it can be
+     provided as is, e.g. `(100)`. For String value type, default string must be quoted, e.g. `("Default string")`.
+     For value types such as Vector3 or Color, standard TEN Lua scripting convention must be used, e.g.
+     `TEN.Vec3(100,100,100)` or `TEN.Color(128,128,128)`. It is not recommended to set default values for other 
+     value types, such as object or slot lists, as they may change depending on a level state.
+
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
       - For Numerical and Vector3 value types, first and second ENUMDESC values determine min/max UI range of

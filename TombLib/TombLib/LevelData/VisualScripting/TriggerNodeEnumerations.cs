@@ -56,6 +56,7 @@ namespace TombLib.LevelData.VisualScripting
     {
         public ArgumentType Type;
         public List<string> CustomEnumeration;
+        public string DefaultValue;
         public string Description;
         public bool NewLine;
         public float Width;

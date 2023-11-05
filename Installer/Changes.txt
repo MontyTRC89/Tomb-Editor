@@ -4,6 +4,7 @@ Version 1.6.9
 Tomb Editor:
  * Allow to immediately cancel level building and project opening.
  * Add context menu to copy current object position to clipboard.
+ * Add optional default value for node parameters.
  * Add a node to call events from other event sets.
  * Add a node to draw sprites.
  * Add nodes to load, save, delete and check existence of savegames.
