@@ -170,6 +170,12 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
+                case ArgumentType.SpriteSlots:
+                    foreach (var item in editor.CachedSpriteSlots.Where(s => layout.CustomEnumeration.Count == 0 ||
+                                                                             layout.CustomEnumeration.Any(e => s
+                                                                              .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
+                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + LuaSyntax.Splitter + item));
+                    break;
                 case ArgumentType.WadSlots:
                     foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                           layout.CustomEnumeration.Any(e => s
