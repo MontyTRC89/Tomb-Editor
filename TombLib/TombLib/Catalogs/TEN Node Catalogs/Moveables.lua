@@ -51,6 +51,19 @@ LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationI
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
+-- !Name "If animation of a moveable is complete..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's current animation has reached end frame."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableAnimationComplete = function(moveableName)
+	local frameNumber = TEN.Objects.GetMoveableByName(moveableName):GetFrame()
+	local endFrameNumber = TEN.Objects.GetMoveableByName(moveableName):GetEndFrame()
+
+	return (frameNumber >= endFrameNumber)
+end
+
 -- !Name "If frame number of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's frame number is currently within specified range."

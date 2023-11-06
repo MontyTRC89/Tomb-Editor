@@ -14,6 +14,7 @@
 -- !Arguments "Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
+
 LevelFuncs.Engine.Node.DisplaySprite = function(objectID, spriteID, color, posX, posY, rot, scaleX, scaleY, priority,
                                                 alignMode, scaleMode, blendMode)
     local pos = TEN.Vec2(posX, posY)
@@ -39,6 +40,7 @@ end
 -- !Arguments "Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
+
 LevelFuncs.Engine.Node.DisplaySpriteAtMousePosition = function(objectID, spriteID, color, rot, scaleX, scaleY, priority,
                                                 alignMode, scaleMode, blendMode)
     local pos = TEN.Input.GetCursorDisplayPosition()

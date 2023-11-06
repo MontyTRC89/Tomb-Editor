@@ -18,6 +18,15 @@ LevelFuncs.Engine.Node.KeyIsHeld = function(keyCode)
 	return TEN.Input.KeyIsHeld(keyCode)
 end
 
+-- !Name "If controls are locked..."
+-- !Section "Controls"
+-- !Description "Checks if player controls are locked.\nActive flyby with disabled controls also meets this condition."
+-- !Conditional "True"
+
+LevelFuncs.Engine.Node.ControlsAreLocked = function()
+	return TEN.Objects.Lara:GetControlLock()
+end
+
 -- !Name "Push a key"
 -- !Section "Controls"
 -- !Description "Emulates push of a specified key. If called continuously, registers as a hold event, otherwise as a hit."
@@ -34,4 +43,13 @@ end
 
 LevelFuncs.Engine.Node.BlockKey = function(keyCode)
 	return TEN.Input.KeyClear(keyCode)
+end
+
+-- !Name "Lock all controls"
+-- !Section "Controls"
+-- !Description "Locks all player controls. However, it is still possible to read them via scripting and nodes."
+-- !Arguments "Boolean, 15, Locked"
+
+LevelFuncs.Engine.Node.LockControls = function(lockState)
+	TEN.Objects.Lara:SetControlLock(lockState)
 end
