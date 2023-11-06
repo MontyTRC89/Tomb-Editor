@@ -6,7 +6,7 @@ Tomb Editor:
  * Add context menu to copy current object position to clipboard.
  * Add optional default value for node parameters.
  * Add a node to call events from other event sets.
- * Add a node to draw sprites.
+ * Add nodes to draw sprites.
  * Add nodes to load, save, delete and check existence of savegames.
  * Modifying nodes for timer management. (Note: for existing projects, review all nodes "Create timer...")
  * Auto-fill position and color when doing drag-n-drop of an object over corresponding node controls.
