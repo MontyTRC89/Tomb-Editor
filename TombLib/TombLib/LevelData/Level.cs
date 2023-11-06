@@ -352,8 +352,8 @@ namespace TombLib.LevelData
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Block sector in room.Blocks)
-					foreach (BlockFace face in sector.GetFaceTextures().Keys)
-					{
+                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                    {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
                         if (currentTexture != null && askIfTextureToRemove(currentTexture))

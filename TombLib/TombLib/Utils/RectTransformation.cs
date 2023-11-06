@@ -25,28 +25,28 @@ namespace TombLib.Utils
             }
         }
 
-		public void TransformValueQuad(Dictionary<BlockFace, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
-		{
-			if (MirrorX)
-				faceTextures.TrySwap(rotation0, rotation2);
+        public void TransformValueQuad(Dictionary<BlockFace, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
+        {
+            if (MirrorX)
+                faceTextures.TrySwap(rotation0, rotation2);
 
-			for (int i = 0; i < QuadrantRotation; ++i)
-			{
-				TextureArea? temp = null;
+            for (int i = 0; i < QuadrantRotation; ++i)
+            {
+                TextureArea? temp = null;
 
-				if (faceTextures.ContainsKey(rotation0))
-					temp = faceTextures[rotation0];
+                if (faceTextures.ContainsKey(rotation0))
+                    temp = faceTextures[rotation0];
 
-				faceTextures.TrySwap(rotation0, rotation3);
-				faceTextures.TrySwap(rotation3, rotation2);
-				faceTextures.TrySwap(rotation2, rotation1);
+                faceTextures.TrySwap(rotation0, rotation3);
+                faceTextures.TrySwap(rotation3, rotation2);
+                faceTextures.TrySwap(rotation2, rotation1);
 
-				if (temp.HasValue)
-					faceTextures[rotation1] = temp.Value;
-			}
-		}
+                if (temp.HasValue)
+                    faceTextures[rotation1] = temp.Value;
+            }
+        }
 
-		public void TransformValueDiagonalQuad<T>(ref T rotation0, ref T rotation1, ref T rotation2, ref T rotation3)
+        public void TransformValueDiagonalQuad<T>(ref T rotation0, ref T rotation1, ref T rotation2, ref T rotation3)
         {
             if (MirrorX)
             {

@@ -177,8 +177,8 @@ namespace TombLib.GeometryIO
                     {
                         var block = room.GetBlock(new VectorInt2(x, z));
 
-                            foreach (BlockFace face in block.GetFaceTextures().Keys)
-                            {
+                        foreach (BlockFace face in block.GetFaceTextures().Keys)
+                        {
                             var faceTexture = block.GetFaceTexture(face);
 
                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)

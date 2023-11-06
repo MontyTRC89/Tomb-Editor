@@ -345,8 +345,8 @@ namespace TombLib.LevelData.Compilers
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-							foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
-							{
+                            foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
+                            {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
 

@@ -1,5 +1,4 @@
-﻿using Assimp;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -425,37 +424,37 @@ namespace TombLib.LevelData.IO
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
-										}
+                                        }
                                         using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
-										}
+                                        }
 
                                         var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
                                         var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
 
-										using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions, LEB128.MaximumSize1Byte))
-										{
-											LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
+                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions, LEB128.MaximumSize1Byte))
+                                        {
+                                            LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
 
-											foreach (var subdivisionVertical in validFloorSubdivisions.Where(s => !s.TextureOnly))
+                                            foreach (var subdivisionVertical in validFloorSubdivisions.Where(s => !s.TextureOnly))
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
-										}
-										using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
-										{
-											LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
+                                        }
+                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
+                                        {
+                                            LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
 
-											foreach (var subdivisionVertical in validCeilingSubdivisions.Where(s => !s.TextureOnly))
+                                            foreach (var subdivisionVertical in validCeilingSubdivisions.Where(s => !s.TextureOnly))
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
-										}
-										foreach (BlockFace face in b.GetFaceTextures().Keys)
-										{
-											TextureArea texture = b.GetFaceTexture(face);
+                                        }
+                                        foreach (BlockFace face in b.GetFaceTextures().Keys)
+                                        {
+                                            TextureArea texture = b.GetFaceTexture(face);
 
                                             if (texture.Texture == null)
                                                 continue;
@@ -463,39 +462,39 @@ namespace TombLib.LevelData.IO
                                             // OPTIMIZATION: Don't save textures of subdivisions which don't exist or aren't valid
                                             //if (face.IsSubdivision())
                                             //{
-											//	BlockVertical faceVertical = face.GetVertical();
+                                            //	BlockVertical faceVertical = face.GetVertical();
                                             //
                                             //    if (!validFloorSubdivisions.Any(s => s.Vertical == faceVertical) && !validCeilingSubdivisions.Any(s => s.Vertical == faceVertical))
                                             //        continue;
                                             //}
                                             // COMMENT: This code has been commented out because some people might complain that their textures are missing after reloading the project.
 
-											if (texture.Texture is LevelTexture t)
-											{
-												if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
-													using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
-													{
-														int textureIndex = levelSettingIds.LevelTextures[t];
+                                            if (texture.Texture is LevelTexture t)
+                                            {
+                                                if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
+                                                    using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
+                                                    {
+                                                        int textureIndex = levelSettingIds.LevelTextures[t];
 
-														LEB128.Write(chunkIO.Raw, (long)face);
-														chunkIO.Raw.Write(texture.TexCoord0);
-														chunkIO.Raw.Write(texture.TexCoord1);
-														chunkIO.Raw.Write(texture.TexCoord2);
-														chunkIO.Raw.Write(texture.TexCoord3);
-														chunkIO.Raw.Write(texture.ParentArea.Start);
-														chunkIO.Raw.Write(texture.ParentArea.End);
-														LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
-														LEB128.Write(chunkIO.Raw, textureIndex);
-													}
-												else
-													logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
-											}
-											else if (texture.Texture == TextureInvisible.Instance)
-												chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
-											else
-												throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
-										}
-										chunkIO.WriteChunkEnd();
+                                                        LEB128.Write(chunkIO.Raw, (long)face);
+                                                        chunkIO.Raw.Write(texture.TexCoord0);
+                                                        chunkIO.Raw.Write(texture.TexCoord1);
+                                                        chunkIO.Raw.Write(texture.TexCoord2);
+                                                        chunkIO.Raw.Write(texture.TexCoord3);
+                                                        chunkIO.Raw.Write(texture.ParentArea.Start);
+                                                        chunkIO.Raw.Write(texture.ParentArea.End);
+                                                        LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
+                                                        LEB128.Write(chunkIO.Raw, textureIndex);
+                                                    }
+                                                else
+                                                    logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
+                                            }
+                                            else if (texture.Texture == TextureInvisible.Instance)
+                                                chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
+                                            else
+                                                throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
+                                        }
+                                        chunkIO.WriteChunkEnd();
                                     }
                             chunkIO.WriteChunkEnd();
                         }
