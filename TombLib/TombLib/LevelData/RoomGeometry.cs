@@ -593,9 +593,9 @@ namespace TombLib.LevelData
 
                         var wsNearA = nearBlock.Ceiling.XpZn;
                         var wsNearB = nearBlock.Ceiling.XnZn;
-                        if (nearBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZn)
+                        if (nearBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZp)
                             wsNearA = wsNearB;
-                        if (nearBlock.Ceiling.DiagonalSplit == DiagonalSplit.XpZn)
+                        if (nearBlock.Ceiling.DiagonalSplit == DiagonalSplit.XnZp)
                             wsNearB = wsNearA;
 
                         // Now get the facing block on the adjoining room and calculate the correct heights
