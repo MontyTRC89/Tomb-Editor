@@ -1464,21 +1464,24 @@ namespace TombLib.LevelData
                 GeometryRenderResult TryRenderFloorWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
                     bool isEitherStartPointAboveCeiling = yStartA > yCeilingA || yStartB > yCeilingB; // If either start point A or B is in the void above ceiling
-					bool areBothStartPointsAboveCeiling = yStartA >= yCeilingA && yStartB >= yCeilingB;
+                    bool areBothStartPointsAboveCeiling = yStartA >= yCeilingA && yStartB >= yCeilingB; // Are both start points A and B in the void above ceiling
 
-					if ((isEitherStartPointAboveCeiling && block.IsAnyWall && !isDiagonalWallFloorPart) || areBothStartPointsAboveCeiling)
+                    // Walls can't have overdraw, so if either point is in void, then snap it to ceiling
+                    // Diagonal walls are an exception, since, even though they are walls, they have a flat floor bit, so we can allow overdraw
+                    if ((isEitherStartPointAboveCeiling && block.IsAnyWall && !isDiagonalWallFloorPart) || areBothStartPointsAboveCeiling)
                     {
                         // Snap points to ceiling
                         yStartA = yCeilingA;
                         yStartB = yCeilingB;
                     }
 
-					bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
+                    bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
 
-                    if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart)
+                    if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart) // Part of overdraw prevention
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
-                    // If the face is a diagonal wall's floor part (below the flat, walkable triangle) and either subdivision point is above the lowest flat triangle point
+                    // If the face is a portal or a diagonal wall's floor part (below the flat, walkable triangle)
+                    // and either subdivision point is above the lowest flat triangle point
                     if ((block.IsAnyPortal || isDiagonalWallFloorPart) && (yStartA > yQaA || yStartB > yQaB))
                     {
                         // Snap points to the heights of the flat, walkable triangle
@@ -1586,8 +1589,10 @@ namespace TombLib.LevelData
                 GeometryRenderResult TryRenderCeilingWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
                     bool isEitherStartPointBelowFloor = yStartA < yFloorA || yStartB < yFloorB; // If either start point A or B is in the void below floor
-                    bool areBothStartPointsBelowFloor = yStartA <= yFloorA && yStartB <= yFloorB;
+                    bool areBothStartPointsBelowFloor = yStartA <= yFloorA && yStartB <= yFloorB; // Are both start points A and B in the void below floor
 
+                    // Walls can't have overdraw, so if either point is in void, then snap it to floor
+                    // Diagonal walls are an exception, since, even though they are walls, they have a flat ceiling bit, so we can allow overdraw
                     if ((isEitherStartPointBelowFloor && block.IsAnyWall && !isDiagonalWallCeilingPart) || areBothStartPointsBelowFloor)
                     {
                         // Snap points to floor
@@ -1597,10 +1602,11 @@ namespace TombLib.LevelData
 
                     bool isFaceInCeilingVoid = yStartA > yCeilingA || yStartB > yCeilingB || (yStartA == yCeilingA && yStartB == yCeilingB);
 
-                    if (isFaceInCeilingVoid && block.IsAnyWall && !isDiagonalWallCeilingPart)
+                    if (isFaceInCeilingVoid && block.IsAnyWall && !isDiagonalWallCeilingPart) // Part of overdraw prevention
                         return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
-                    // If the face is a diagonal wall's ceiling part (above the flat ceiling triangle) and either subdivision point is below the highest flat triangle point
+                    // If the face is a portal or a diagonal wall's ceiling part (above the flat ceiling triangle)
+                    // and either subdivision point is below the highest flat triangle point
                     if ((block.IsAnyPortal || isDiagonalWallCeilingPart) && (yStartA < yWsA || yStartB < yWsB))
                     {
                         // Snap points to the heights of the flat ceiling triangle
