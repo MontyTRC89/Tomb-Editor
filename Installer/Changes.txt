@@ -10,6 +10,8 @@ Tomb Editor:
  * Add nodes to draw sprites.
  * Add nodes to load, save, delete and check existence of savegames.
  * Add nodes to lock controls and to check if controls are locked.
+ * Add a node to run an event after certain seconds.
+ * Add a node to run an event only in certain contexts.
  * Modifying nodes for timer management. (Note: for existing projects, review all nodes "Create timer...")
  * Auto-fill position and color when doing drag-n-drop of an object over corresponding node controls.
  * Show selection size instead of local area.
