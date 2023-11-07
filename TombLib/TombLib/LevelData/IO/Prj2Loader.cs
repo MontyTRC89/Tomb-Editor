@@ -1834,64 +1834,52 @@ namespace TombLib.LevelData.IO
                 this_.Add(key, value);
         }
 
-        private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
+		/// <summary>
+		/// This method swaps vertical floor faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
+		/// </summary>
+		private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
         {
             Block block = room.Blocks[x, z];
-            Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+            Subdivision subdivision = block.ExtraFloorSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
 
-            if (subdivision is null)
-                return;
-
-            TextureArea
-                qaPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
-                qaNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
-                qaNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
-                qaPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_QA);
-
-            RoomBlockPair
-                xn = room.GetBlockTryThroughPortal(x - 1, z),
-                xp = room.GetBlockTryThroughPortal(x + 1, z),
-                zn = room.GetBlockTryThroughPortal(x, z - 1),
-                zp = room.GetBlockTryThroughPortal(x, z + 1);
+			RoomBlockPair
+				xn = room.GetBlockTryThroughPortal(x - 1, z),
+				xp = room.GetBlockTryThroughPortal(x + 1, z),
+				zn = room.GetBlockTryThroughPortal(x, z - 1),
+				zp = room.GetBlockTryThroughPortal(x, z + 1);
 
             if (xn.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XnZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
+                    block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_QA));
             }
 
             if (xp.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
+                    block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_QA));
             }
 
             if (zn.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZn)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
+                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA));
             }
 
             if (zp.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
+                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA));
             }
         }
 
-        private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
+		/// <summary>
+		/// This method swaps vertical ceiling faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
+		/// </summary>
+		private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
         {
             Block block = room.Blocks[x, z];
-            Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
-
-            if (subdivision is null)
-                return;
-
-            TextureArea
-                wsPositiveZ = block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
-                wsNegativeZ = block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
-                wsNegativeX = block.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
-                wsPositiveX = block.GetFaceTexture(BlockFace.Wall_PositiveX_WS);
+            Subdivision subdivision = block.ExtraCeilingSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
 
             RoomBlockPair
                 xn = room.GetBlockTryThroughPortal(x - 1, z),
@@ -1902,25 +1890,25 @@ namespace TombLib.LevelData.IO
             if (xn.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XnZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
+                    block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_WS));
             }
 
             if (xp.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
+                    block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_WS));
             }
 
             if (zn.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZn)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
+                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS));
             }
 
             if (zp.Block != null)
             {
                 if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
+                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS));
             }
         }
 

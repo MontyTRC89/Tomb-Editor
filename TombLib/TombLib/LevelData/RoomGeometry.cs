@@ -1463,6 +1463,11 @@ namespace TombLib.LevelData
 
                 GeometryRenderResult TryRenderFloorWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
+                    bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
+
+                    if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart) // Part of overdraw prevention
+                        return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
+
                     bool isEitherStartPointAboveCeiling = yStartA > yCeilingA || yStartB > yCeilingB; // If either start point A or B is in the void above ceiling
                     bool areBothStartPointsAboveCeiling = yStartA >= yCeilingA && yStartB >= yCeilingB; // Are both start points A and B in the void above ceiling
 
@@ -1474,11 +1479,6 @@ namespace TombLib.LevelData
                         yStartA = yCeilingA;
                         yStartB = yCeilingB;
                     }
-
-                    bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
-
-                    if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart) // Part of overdraw prevention
-                        return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
                     // If the face is a portal or a diagonal wall's floor part (below the flat, walkable triangle)
                     // and either subdivision point is above the lowest flat triangle point
@@ -1588,6 +1588,11 @@ namespace TombLib.LevelData
 
                 GeometryRenderResult TryRenderCeilingWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
+                    bool isFaceInCeilingVoid = yStartA > yCeilingA || yStartB > yCeilingB || (yStartA == yCeilingA && yStartB == yCeilingB);
+
+                    if (isFaceInCeilingVoid && block.IsAnyWall && !isDiagonalWallCeilingPart) // Part of overdraw prevention
+                        return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
+
                     bool isEitherStartPointBelowFloor = yStartA < yFloorA || yStartB < yFloorB; // If either start point A or B is in the void below floor
                     bool areBothStartPointsBelowFloor = yStartA <= yFloorA && yStartB <= yFloorB; // Are both start points A and B in the void below floor
 
@@ -1599,11 +1604,6 @@ namespace TombLib.LevelData
                         yStartA = yFloorA;
                         yStartB = yFloorB;
                     }
-
-                    bool isFaceInCeilingVoid = yStartA > yCeilingA || yStartB > yCeilingB || (yStartA == yCeilingA && yStartB == yCeilingB);
-
-                    if (isFaceInCeilingVoid && block.IsAnyWall && !isDiagonalWallCeilingPart) // Part of overdraw prevention
-                        return GeometryRenderResult.Stop; // Stop the loop, since the rest of the subdivisions will also be in the void
 
                     // If the face is a portal or a diagonal wall's ceiling part (above the flat ceiling triangle)
                     // and either subdivision point is below the highest flat triangle point
