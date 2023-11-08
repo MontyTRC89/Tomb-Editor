@@ -573,7 +573,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             nudVector3X.Value = (decimal)item.WorldPosition.X;
-            nudVector3Y.Value = (decimal)item.WorldPosition.Y;
+            nudVector3Y.Value = (decimal)-item.WorldPosition.Y;
             nudVector3Z.Value = (decimal)item.WorldPosition.Z;
         }
 
