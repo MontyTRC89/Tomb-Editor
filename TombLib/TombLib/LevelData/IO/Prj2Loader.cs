@@ -1059,7 +1059,7 @@ namespace TombLib.LevelData.IO
 
             if (usesClassicFloor || usesClassicCeiling)
             {
-                progressReporter?.ReportInfo("(Legacy floor / ceiling chunks) Re-adjusting faces where needed");
+                progressReporter?.ReportInfo("Re-adjusting face textures where needed (Legacy floor / ceiling chunks)");
 
                 foreach (Room room in newRooms.Values)
                     for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
@@ -1834,19 +1834,19 @@ namespace TombLib.LevelData.IO
                 this_.Add(key, value);
         }
 
-		/// <summary>
-		/// This method swaps vertical floor faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
-		/// </summary>
-		private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
+        /// <summary>
+        /// This method swaps vertical floor faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
+        /// </summary>
+        private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
         {
             Block block = room.Blocks[x, z];
             Subdivision subdivision = block.ExtraFloorSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
 
-			RoomBlockPair
-				xn = room.GetBlockTryThroughPortal(x - 1, z),
-				xp = room.GetBlockTryThroughPortal(x + 1, z),
-				zn = room.GetBlockTryThroughPortal(x, z - 1),
-				zp = room.GetBlockTryThroughPortal(x, z + 1);
+            RoomBlockPair
+                xn = room.GetBlockTryThroughPortal(x - 1, z),
+                xp = room.GetBlockTryThroughPortal(x + 1, z),
+                zn = room.GetBlockTryThroughPortal(x, z - 1),
+                zp = room.GetBlockTryThroughPortal(x, z + 1);
 
             if (xn.Block != null)
             {
@@ -1873,10 +1873,10 @@ namespace TombLib.LevelData.IO
             }
         }
 
-		/// <summary>
-		/// This method swaps vertical ceiling faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
-		/// </summary>
-		private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
+        /// <summary>
+        /// This method swaps vertical ceiling faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
+        /// </summary>
+        private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
         {
             Block block = room.Blocks[x, z];
             Subdivision subdivision = block.ExtraCeilingSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s

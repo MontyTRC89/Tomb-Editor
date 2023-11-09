@@ -342,24 +342,11 @@ namespace TombLib.LevelData
         public static bool IsCeiling(this BlockFace face)
             => face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2;
 
-        public static bool IsExtraSubdivision(this BlockFace face)
-            => face.ToString().Contains("Subdivision");
-
         public static bool IsExtraFloorSubdivision(this BlockFace face)
             => face.ToString().Contains("FloorSubdivision");
 
         public static bool IsExtraCeilingSubdivision(this BlockFace face)
             => face.ToString().Contains("CeilingSubdivision");
-
-        public static int GetExtraSubdivisionIndex(this BlockFace face)
-        {
-            if (face.IsExtraFloorSubdivision())
-                return int.Parse(face.ToString().Split('_').Last()["FloorSubdivision".Length..]) - 2;
-            else if (face.IsExtraCeilingSubdivision())
-                return int.Parse(face.ToString().Split('_').Last()["CeilingSubdivision".Length..]) - 2;
-            else
-                return -1;
-        }
 
         public static bool IsSpecificFloorSubdivision(this BlockFace face, Direction direction)
             => face.ToString().Contains($"{direction}_FloorSubdivision");
@@ -755,21 +742,6 @@ namespace TombLib.LevelData
                     SetFaceTexture(face, texture);
             }
 
-            for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
-            {
-                for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
-                {
-                    BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
-                    SetHeight(subdivisionVertical, edge, replacement.GetHeight(subdivisionVertical, edge));
-                }
-
-                for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
-                {
-                    BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
-                    SetHeight(subdivisionVertical, edge, replacement.GetHeight(subdivisionVertical, edge));
-                }
-            }
-
             Floor = replacement.Floor;
             Ceiling = replacement.Ceiling;
 
@@ -792,32 +764,22 @@ namespace TombLib.LevelData
 
             if (vertical.IsExtraFloorSubdivision())
             {
-                var index = vertical.GetExtraSubdivisionIndex();
-                var subdivision = ExtraFloorSubdivisions.ElementAtOrDefault(index);
+                int index = vertical.GetExtraSubdivisionIndex();
+                Subdivision subdivision = ExtraFloorSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                {
-                    if (index == 0)
-                        return short.MinValue;
-                    else
-                        return ExtraFloorSubdivisions.ElementAtOrDefault(index - 1)?.Edges[(int)edge] ?? short.MinValue;
-                }
+                    return short.MinValue;
 
                 return subdivision.Edges[(int)edge];
             }
             
             if (vertical.IsExtraCeilingSubdivision())
             {
-                var index = vertical.GetExtraSubdivisionIndex();
-                var subdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(index);
+                int index = vertical.GetExtraSubdivisionIndex();
+                Subdivision subdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                {
-                    if (index == 0)
-                        return short.MaxValue;
-                    else
-                        return ExtraCeilingSubdivisions.ElementAtOrDefault(index - 1)?.Edges[(int)edge] ?? short.MaxValue;
-                }
+                    return short.MaxValue;
 
                 return subdivision.Edges[(int)edge];
             }
@@ -870,6 +832,7 @@ namespace TombLib.LevelData
             }
         }
 
+        // TODO: Find a way to not have to pass Room as a parameter
         public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment, Room referenceRoom = null, int? referenceX = null, int? referenceZ = null)
         {
             if (increment == 0)
