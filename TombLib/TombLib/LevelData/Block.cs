@@ -832,63 +832,6 @@ namespace TombLib.LevelData
             }
         }
 
-        // TODO: Find a way to not have to pass Room as a parameter
-        public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment, Room referenceRoom = null, int? referenceX = null, int? referenceZ = null)
-        {
-            if (increment == 0)
-                return;
-
-            // Check if subdivision doesn't exist and is a valid next subdivision
-            if (vertical.IsExtraSubdivision() && !SubdivisionExists(vertical) && IsValidNextSubdivision(vertical))
-            {
-                // Create the new subdivision if applicable
-
-                if (referenceRoom == null || !referenceX.HasValue || !referenceZ.HasValue)
-                    return;
-
-                if (vertical.IsExtraFloorSubdivision())
-                {
-                    if (ExtraFloorSubdivisions.Count == 0)
-                    {
-                        if (referenceRoom.IsFloorSubdivisionInVoid(BlockVertical.Floor, referenceX.Value, referenceZ.Value, out int lowestNeightborFloor))
-                            return;
-
-                        ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
-                    }
-                    else
-                    {
-                        BlockVertical lastVerical = BlockVerticalExtensions.GetExtraFloorSubdivision(ExtraFloorSubdivisions.Count - 1);
-
-                        if (referenceRoom.IsFloorSubdivisionInVoid(lastVerical, referenceX.Value, referenceZ.Value, out int lowestNeightborFloor))
-                            return;
-
-                        ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
-                    }
-                }
-                else if (vertical.IsExtraCeilingSubdivision())
-                {
-                    if (ExtraCeilingSubdivisions.Count == 0)
-                    {
-                        if (referenceRoom.IsCeilingSubdivisionInVoid(BlockVertical.Ceiling, referenceX.Value, referenceZ.Value, out int highestNeighborCeiling))
-                            return;
-
-                        ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
-                    }
-                    else
-                    {
-                        BlockVertical lastVerical = BlockVerticalExtensions.GetExtraCeilingSubdivision(ExtraCeilingSubdivisions.Count - 1);
-
-                        if (referenceRoom.IsCeilingSubdivisionInVoid(lastVerical, referenceX.Value, referenceZ.Value, out int highestNeighborCeiling))
-                            return;
-
-                        ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
-                    }
-                }
-            }
-            
-            SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
-        }
-
         public bool IsValidNextSubdivision(BlockVertical vertical)
         {
             if (vertical.IsExtraFloorSubdivision())
@@ -907,70 +850,6 @@ namespace TombLib.LevelData
                 return ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex()) != null;
             else
                 return false;
-        }
-
-        public void Raise(BlockVertical vertical, int increment, bool diagonalStep = false, Room referenceRoom = null, int? referenceX = null, int? referenceZ = null)
-        {
-            var split = vertical.IsOnFloor() ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
-            if (diagonalStep)
-            {
-                switch (split)
-                {
-                    case DiagonalSplit.XpZn:
-                        ChangeHeight(vertical, BlockEdge.XnZp, increment, referenceRoom, referenceX, referenceZ);
-                        break;
-                    case DiagonalSplit.XnZn:
-                        ChangeHeight(vertical, BlockEdge.XpZp, increment, referenceRoom, referenceX, referenceZ);
-                        break;
-                    case DiagonalSplit.XnZp:
-                        ChangeHeight(vertical, BlockEdge.XpZn, increment, referenceRoom, referenceX, referenceZ);
-                        break;
-                    case DiagonalSplit.XpZp:
-                        ChangeHeight(vertical, BlockEdge.XnZn, increment, referenceRoom, referenceX, referenceZ);
-                        break;
-                }
-            }
-            else
-            {
-                for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
-                {
-                    if (edge == BlockEdge.XnZp && split == DiagonalSplit.XpZn ||
-                        edge == BlockEdge.XnZn && split == DiagonalSplit.XpZp ||
-                        edge == BlockEdge.XpZn && split == DiagonalSplit.XnZp ||
-                        edge == BlockEdge.XpZp && split == DiagonalSplit.XnZn)
-                        continue;
-                    ChangeHeight(vertical, edge, increment, referenceRoom, referenceX, referenceZ);
-                }
-            }
-        }
-
-        public void RaiseStepWise(BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false)
-        {
-            var split = vertical.IsOnFloor() ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
-
-            if (split != DiagonalSplit.None)
-            {
-                var stepIsLimited = increment != 0 && increment > 0 == (vertical.IsOnCeiling() ^ diagonalStep);
-
-                if (split == DiagonalSplit.XpZn && GetHeight(vertical, BlockEdge.XnZp) == GetHeight(vertical, BlockEdge.XpZp) && stepIsLimited ||
-                    split == DiagonalSplit.XnZn && GetHeight(vertical, BlockEdge.XpZp) == GetHeight(vertical, BlockEdge.XpZn) && stepIsLimited ||
-                    split == DiagonalSplit.XnZp && GetHeight(vertical, BlockEdge.XpZn) == GetHeight(vertical, BlockEdge.XnZn) && stepIsLimited ||
-                    split == DiagonalSplit.XpZp && GetHeight(vertical, BlockEdge.XnZn) == GetHeight(vertical, BlockEdge.XnZp) && stepIsLimited)
-                {
-                    if (IsAnyWall && autoSwitch)
-                        Raise(vertical, increment, !diagonalStep);
-                    else
-                    {
-                        if (autoSwitch)
-                        {
-                            Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
-                            Raise(vertical, increment, !diagonalStep);
-                        }
-                        return;
-                    }
-                }
-            }
-            Raise(vertical, increment, diagonalStep);
         }
 
         private static DiagonalSplit TransformDiagonalSplit(DiagonalSplit split, RectTransformation transformation)
