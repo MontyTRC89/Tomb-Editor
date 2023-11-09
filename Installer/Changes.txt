@@ -36,7 +36,7 @@ TEN TRCatalog updates:
  * Remove of redundant object IDs that aren't used.
  * Amended Lara extra animation names.
  * Move Lara animation 442 to LARA_EXTRA_ANIMS.
- * Add Yeti and Big Scorpion Death animations to LARA_EXTRA_ANIMS.
+ * Add TR2 Yeti and TR4 Big Scorpion Death animations to LARA_EXTRA_ANIMS.
 
 Version 1.6.8
 =============
