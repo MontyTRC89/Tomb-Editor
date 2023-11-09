@@ -541,7 +541,7 @@ namespace TombLib.LevelData
             {
                 if (vertical.IsOnFloor() && Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
                 {
-                    Blocks[x, z].ChangeHeight(vertical, BlockEdge.XnZn, increment);
+                    Blocks[x, z].ChangeHeight(vertical, BlockEdge.XnZn, increment, this, x, z);
                     Blocks[x, z].FixHeights(vertical);
                 }
             }
@@ -550,7 +550,7 @@ namespace TombLib.LevelData
                 var adjacentLeftBlock = GetBlockTry(x - 1, z);
                 if (adjacentLeftBlock != null && (vertical.IsOnFloor() && adjacentLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentLeftBlock.ChangeHeight(vertical, BlockEdge.XpZn, increment);
+                    adjacentLeftBlock.ChangeHeight(vertical, BlockEdge.XpZn, increment, this, x, z);
                     adjacentLeftBlock.FixHeights(vertical);
                 }
             }
@@ -559,7 +559,7 @@ namespace TombLib.LevelData
                 var adjacentBottomBlock = GetBlockTry(x, z - 1);
                 if (adjacentBottomBlock != null && (vertical.IsOnFloor() && adjacentBottomBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentBottomBlock.ChangeHeight(vertical, BlockEdge.XnZp, increment);
+                    adjacentBottomBlock.ChangeHeight(vertical, BlockEdge.XnZp, increment, this, x, z);
                     adjacentBottomBlock.FixHeights(vertical);
                 }
             }
@@ -568,7 +568,7 @@ namespace TombLib.LevelData
                 var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
                 if (adjacentBottomLeftBlock != null && (vertical.IsOnFloor() && adjacentBottomLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentBottomLeftBlock.ChangeHeight(vertical, BlockEdge.XpZp, increment);
+                    adjacentBottomLeftBlock.ChangeHeight(vertical, BlockEdge.XpZp, increment, this, x, z);
                     adjacentBottomLeftBlock.FixHeights(vertical);
                 }
             }

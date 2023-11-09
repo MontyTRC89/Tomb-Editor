@@ -141,7 +141,7 @@ namespace TombEditor
                         break;
                 }
 
-                Action<Block, BlockEdge> smoothEdit = (Block block, BlockEdge edge) =>
+                Action<Block, BlockEdge, int, int> smoothEdit = (Block block, BlockEdge edge, int referenceX, int referenceZ) =>
                 {
                     if (block == null) return;
 
@@ -152,7 +152,7 @@ namespace TombEditor
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
                             block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
-                            block.ChangeHeight(vertical, edge, increment);
+                            block.ChangeHeight(vertical, edge, increment, room, referenceX, referenceZ);
                             block.FixHeights(vertical);
                         }
                     }
@@ -183,26 +183,28 @@ namespace TombEditor
                 }
 
                 // Smoothly change sectors on the corners
-                for (int i = 0; i < 4; i++)
-                    if (corners[i]) smoothEdit(cornerBlocks[i].Block, (BlockEdge)i);
+                if (corners[0]) smoothEdit(cornerBlocks[0].Block, BlockEdge.XnZp, area.X1 + 1, area.Y0 - 1);
+                if (corners[1]) smoothEdit(cornerBlocks[1].Block, BlockEdge.XpZp, area.X0 - 1, area.Y0 - 1);
+                if (corners[2]) smoothEdit(cornerBlocks[2].Block, BlockEdge.XpZn, area.X0 - 1, area.Y1 + 1);
+                if (corners[3]) smoothEdit(cornerBlocks[3].Block, BlockEdge.XnZn, area.X1 + 1, area.Y1 + 1);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
                 {
-                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp);
-                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XnZp, x, area.Y0 - 1);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y0 - 1).Block, BlockEdge.XpZp, x, area.Y0 - 1);
                     
-                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn);
-                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XnZn, x, area.Y1 + 1);
+                    smoothEdit(room.GetBlockTryThroughPortal(x, area.Y1 + 1).Block, BlockEdge.XpZn, x, area.Y1 + 1);
                 }
 
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZp);
-                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZp, area.X0 - 1, z);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X0 - 1, z).Block, BlockEdge.XpZn, area.X0 - 1, z);
 
-                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp);
-                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZp, area.X1 + 1, z);
+                    smoothEdit(room.GetBlockTryThroughPortal(area.X1 + 1, z).Block, BlockEdge.XnZn, area.X1 + 1, z);
                 }
 
                 arrow = ArrowType.EntireFace;
@@ -269,7 +271,7 @@ namespace TombEditor
 
                                 for (int i = 0; i < 2; i++)
                                     if (currentSplit != splits[i])
-                                        block.ChangeHeight(vertical, corners[i], increment);
+                                        block.ChangeHeight(vertical, corners[i], increment, room, x, z);
                             }
                             else
                             {
@@ -285,7 +287,7 @@ namespace TombEditor
                                     else
                                         continue;
                                 }
-                                block.ChangeHeight(vertical, corners[0], increment);
+                                block.ChangeHeight(vertical, corners[0], increment, room, x, z);
                             }
                         }
                         block.FixHeights(vertical);
@@ -435,10 +437,12 @@ namespace TombEditor
                                    (lookupBlocks[6].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[1] +
                                    (lookupBlocks[7].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[2]) / validBlockCntXnZn;
 
-            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)));
-            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)));
-            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)));
-            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)));
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)), room, x, z);
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)), room, x, z);
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)), room, x, z);
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)), room, x, z);
+
+            currBlock.Block.FixHeights(vertical);
 
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
@@ -488,7 +492,7 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.Blocks[w, h].Raise(vertical, (int)currentHeight, false);
+                        room.Blocks[w, h].Raise(vertical, (int)currentHeight, false, room, x, z);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
@@ -3073,7 +3077,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(vertical, edge,
-                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]));
+                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]), room, x, z);
 
             SmartBuildGeometry(room, area);
         }
@@ -3087,7 +3091,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(vertical, edge,
-                            (int)Math.Round((float)rng.NextDouble() * strengthDirection));
+                            (int)Math.Round((float)rng.NextDouble() * strengthDirection), room, x, z);
 
             SmartBuildGeometry(room, area);
         }

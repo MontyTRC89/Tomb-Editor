@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -227,26 +228,18 @@ namespace TombEditor.Controls.Panel3D
                                             if (belongsToFloor && _toolHandler.ReferencePicking.BelongsToFloor)
                                             {
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceBlock.Floor.Min);
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Clear();
 
-                                                for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Count; i++)
-                                                {
-                                                    BlockVertical vertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
-                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
-                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
-                                                }			
+                                                for (int i = 0; i < _toolHandler.ReferenceBlock.ExtraFloorSubdivisions.Count; i++)
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraFloorSubdivisions[i].Edges.Min()));		
                                             }
                                             else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                             {
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Clear();
 
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Count; i++)
-                                                {
-                                                    BlockVertical vertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(vertical, edge, Math.Min(
-                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZp)),
-                                                        Math.Min(_toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(vertical, BlockEdge.XnZn))));
-                                                }
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraCeilingSubdivisions[i].Edges.Min()));
                                             }
                                         }
                                         EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));
