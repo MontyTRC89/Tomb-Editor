@@ -13,6 +13,7 @@ Tomb Editor:
  * Auto-fill position and color when doing drag-n-drop of an object over corresponding node controls.
  * Show selection size instead of local area.
  * Show real position in object tooltip.
+ * Fix fog bulb intensity when converting project to a TEN project.
  * Fix exception when trying to assign footstep sound if no material was selected.
 
 TombIDE:
