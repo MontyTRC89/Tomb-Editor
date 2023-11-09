@@ -440,34 +440,24 @@ namespace TombLib.LevelData.IO
                                         {
                                             LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
 
-                                            foreach (var subdivisionVertical in validFloorSubdivisions.Where(s => !s.TextureOnly))
+                                            foreach (BlockVertical subdivisionVertical in validFloorSubdivisions)
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
                                         using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
                                         {
                                             LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
 
-                                            foreach (var subdivisionVertical in validCeilingSubdivisions.Where(s => !s.TextureOnly))
+                                            foreach (BlockVertical subdivisionVertical in validCeilingSubdivisions)
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical.Vertical, edge));
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
-                                        foreach (BlockFace face in b.GetFaceTextures().Keys)
+                                        foreach (BlockFace face in b.RenderedFaces)
                                         {
                                             TextureArea texture = b.GetFaceTexture(face);
 
                                             if (texture.Texture == null)
                                                 continue;
-
-                                            // OPTIMIZATION: Don't save textures of subdivisions which don't exist or aren't valid
-                                            //if (face.IsSubdivision())
-                                            //{
-                                            //	BlockVertical faceVertical = face.GetVertical();
-                                            //
-                                            //    if (!validFloorSubdivisions.Any(s => s.Vertical == faceVertical) && !validCeilingSubdivisions.Any(s => s.Vertical == faceVertical))
-                                            //        continue;
-                                            //}
-                                            // COMMENT: This code has been commented out because some people might complain that their textures are missing after reloading the project.
 
                                             if (texture.Texture is LevelTexture t)
                                             {

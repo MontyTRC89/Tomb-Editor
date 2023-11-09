@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -53,6 +54,8 @@ namespace TombLib.LevelData
             {
                 for (int z = zMin; z <= zMax; z++)
                 {
+                    Blocks[x, z].RenderedFaces.Clear();
+
                     // If x, z is one of the four corner then nothing has to be done
                     if (x == 0 && z == 0 || x == 0 && z == room.NumZSectors - 1 ||
                         x == room.NumXSectors - 1 && z == room.NumZSectors - 1 || x == room.NumXSectors - 1 && z == 0)
@@ -385,65 +388,105 @@ namespace TombLib.LevelData
                 {
                     case DiagonalSplit.XpZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
+                        {
                             AddTriangle(x, z, face1,
                                 new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
+                            room.Blocks[x, z].RenderedFaces.Add(face1);
+                        }
+                        
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
+                        {
                             AddTriangle(x, z, face2,
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+
+                            room.Blocks[x, z].RenderedFaces.Add(face2);
+                        }
+                            
                         break;
+
                     case DiagonalSplit.XnZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
+                        {
                             AddTriangle(x, z, face1,
                                 new Vector3(x * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
 
+                            room.Blocks[x, z].RenderedFaces.Add(face1);
+                        }
+
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
+                        {
                             AddTriangle(x, z, face2,
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+
+                            room.Blocks[x, z].RenderedFaces.Add(face2);
+                        }
+
                         break;
+
                     case DiagonalSplit.XnZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
+                        {
                             AddTriangle(x, z, face2,
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
 
+                            room.Blocks[x, z].RenderedFaces.Add(face2);
+                        }
+
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
+                        {
                             AddTriangle(x, z, face1,
                                 new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
+                            room.Blocks[x, z].RenderedFaces.Add(face1);
+                        }
+
                         break;
+
                     case DiagonalSplit.XpZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
+                        {
                             AddTriangle(x, z, face2,
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
 
+                            room.Blocks[x, z].RenderedFaces.Add(face2);
+                        }
+                            
+
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
+                        {
                             AddTriangle(x, z, face1,
                                 new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+
+                            room.Blocks[x, z].RenderedFaces.Add(face1);
+                        }
+                            
                         break;
+
                     default:
                         throw new NotSupportedException("Unknown FloorDiagonalSplit");
                 }
@@ -456,38 +499,56 @@ namespace TombLib.LevelData
                     new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                     new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                     room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+
+                room.Blocks[x, z].RenderedFaces.Add(face1);
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
+                {
                     AddTriangle(x, z, face2,
                         new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
 
+                    room.Blocks[x, z].RenderedFaces.Add(face2);
+                }
+
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
+                {
                     AddTriangle(x, z, face1,
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+
+                    room.Blocks[x, z].RenderedFaces.Add(face1);
+                } 
             }
             else
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
+                {
                     AddTriangle(x, z, face1,
                         new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
 
+                    room.Blocks[x, z].RenderedFaces.Add(face1);
+                }
+
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
+                {
                     AddTriangle(x, z, face2,
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+
+                    room.Blocks[x, z].RenderedFaces.Add(face2);
+                }
             }
         }
 
@@ -1498,7 +1559,7 @@ namespace TombLib.LevelData
                             yNextSubdivB = floorSubdivisions[extraSubdivisionIndex + 1].B;
 
                         if (isDiagonalWallFloorPart && (yNextSubdivA > yQaA || yNextSubdivB > yQaB))
-                            return GeometryRenderResult.Continue; // Skip it, since it's above the flat, walkable triangle
+                            return GeometryRenderResult.Skip; // Skip it, since it's above the flat, walkable triangle
 
                         if (yNextSubdivA >= yFloorA && yNextSubdivB >= yFloorB) // If next subdivision is NOT in void below floor
                         {
@@ -1509,7 +1570,7 @@ namespace TombLib.LevelData
                     }
 
                     if (yStartA <= yEndA && yStartB <= yEndB)
-                        return GeometryRenderResult.Continue; // 0 or negative height subdivision, don't render it
+                        return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
                     bool success = TryRenderFace(face, (yStartA, yStartB), (yEndA, yEndB));
 
@@ -1521,20 +1582,23 @@ namespace TombLib.LevelData
                         bool isValidOverdraw = isQA && (block.Type == BlockType.Floor || isDiagonalWallFloorPart);
 
                         if (!isValidOverdraw)
-                            return GeometryRenderResult.Continue;
+                            return GeometryRenderResult.Skip;
 
                         // Find lowest point between subdivision and baseline, then try and create an overdraw face out of it
                         int lowest = Math.Min(Math.Min(yStartA, yStartB), Math.Min(yEndA, yEndB));
-                        TryRenderFace(face, (yStartA, yStartB), (lowest, lowest));
+                        success = TryRenderFace(face, (yStartA, yStartB), (lowest, lowest));
                     }
 
-                    return GeometryRenderResult.Continue;
+                    return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
                 }
 
                 // Render QA face
                 GeometryRenderResult renderResult = TryRenderFloorWallGeometry(qaFace, ref yQaA, ref yQaB);
 
-                if (renderResult == GeometryRenderResult.Continue)
+                if (renderResult == GeometryRenderResult.Success)
+                    block.RenderedFaces.Add(qaFace);
+
+                if (renderResult != GeometryRenderResult.Stop)
                 {
                     // Render subdivision faces
                     for (int i = 0; i < floorSubdivisions.Count; i++)
@@ -1543,8 +1607,10 @@ namespace TombLib.LevelData
                         BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), i);
                         renderResult = TryRenderFloorWallGeometry(currentFace, ref a, ref b, i);
 
-                        if (renderResult == GeometryRenderResult.Stop)
-                            break;
+                        if (renderResult == GeometryRenderResult.Success)
+                            block.RenderedFaces.Add(currentFace);
+                        else if(renderResult == GeometryRenderResult.Stop)
+                            break; 
                     }
                 }
             }
@@ -1623,7 +1689,7 @@ namespace TombLib.LevelData
                             yNextSubdivB = ceilingSubdivisions[extraSubdivisionIndex + 1].B;
 
                         if (isDiagonalWallCeilingPart && (yNextSubdivA < yWsA || yNextSubdivB < yWsB))
-                            return GeometryRenderResult.Continue; // Skip it, since it's below the flat ceiling triangle
+                            return GeometryRenderResult.Skip; // Skip it, since it's below the flat ceiling triangle
 
                         if (yNextSubdivA <= yCeilingA && yNextSubdivB <= yCeilingB) // If next subdivision is NOT in void above ceiling
                         {
@@ -1634,7 +1700,7 @@ namespace TombLib.LevelData
                     }
 
                     if (yStartA >= yEndA && yStartB >= yEndB)
-                        return GeometryRenderResult.Continue; // 0 or negative height subdivision, don't render it
+                        return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
                     bool success = TryRenderFace(face, (yStartA, yStartB), (yEndA, yEndB));
 
@@ -1646,20 +1712,23 @@ namespace TombLib.LevelData
                         bool isValidOverdraw = isWS && (block.Type == BlockType.Floor || isDiagonalWallCeilingPart);
 
                         if (!isValidOverdraw)
-                            return GeometryRenderResult.Continue;
+                            return GeometryRenderResult.Skip;
 
                         // Find highest point between subdivision and baseline, then try and create an overdraw face out of it
                         int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-                        TryRenderFace(face, (yStartA, yStartB), (highest, highest));
+                        success = TryRenderFace(face, (yStartA, yStartB), (highest, highest));
                     }
 
-                    return GeometryRenderResult.Continue;
+                    return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
                 }
 
                 // Render WS face
                 GeometryRenderResult renderResult = TryRenderCeilingWallGeometry(wsFace, ref yWsA, ref yWsB);
 
-                if (renderResult == GeometryRenderResult.Continue)
+                if (renderResult == GeometryRenderResult.Success)
+                    block.RenderedFaces.Add(wsFace);
+
+                if (renderResult != GeometryRenderResult.Stop)
                 {
                     // Render subdivision faces
                     for (int i = 0; i < ceilingSubdivisions.Count; i++)
@@ -1668,7 +1737,9 @@ namespace TombLib.LevelData
                         BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), i);
                         renderResult = TryRenderCeilingWallGeometry(currentFace, ref a, ref b, i);
 
-                        if (renderResult == GeometryRenderResult.Stop)
+                        if (renderResult == GeometryRenderResult.Success)
+                            block.RenderedFaces.Add(currentFace);
+                        else if (renderResult == GeometryRenderResult.Stop)
                             break;
                     }
                 }
@@ -1704,20 +1775,22 @@ namespace TombLib.LevelData
                     new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
                     new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     faceTexture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-
             else if (yEndA != yD && yEndB == yC)
                 AddTriangle(x, z, middleFace,
                     new Vector3(xA * Level.BlockSizeUnit, yEndA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     new Vector3(xB * Level.BlockSizeUnit, yEndB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                     new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     faceTexture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-
             else if (yEndA == yD && yEndB != yC)
                 AddTriangle(x, z, middleFace,
                     new Vector3(xA * Level.BlockSizeUnit, yEndA * Level.HeightUnit, zA * Level.BlockSizeUnit),
                     new Vector3(xB * Level.BlockSizeUnit, yEndB * Level.HeightUnit, zB * Level.BlockSizeUnit),
                     new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
                     faceTexture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+            else
+                return;
+
+            block.RenderedFaces.Add(middleFace);
         }
 
         private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
@@ -2366,7 +2439,8 @@ namespace TombLib.LevelData
 
     public enum GeometryRenderResult
     {
-        Continue,
+        Success,
+        Skip,
         Stop
     }
 }
