@@ -129,7 +129,7 @@ namespace TombLib.Utils
                                     Width = 100.0f
                                 };
 
-                                var parameters = s.Split(',').Select(st => st.Trim());
+                                var parameters = s.SplitParenthesis().Select(st => st.Trim());
                                 foreach (var p in parameters)
                                 {
                                     float width = 100.0f;

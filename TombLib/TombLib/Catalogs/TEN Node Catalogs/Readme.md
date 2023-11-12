@@ -42,7 +42,7 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
    - **{DEFAULT}** - default value for this argument, contained in brackets. For Numerical value type, it can be
      provided as is, e.g. `{100}`. For String value type, default string must be quoted, e.g. `{"Default string"}`.
-     Other value types are not currently supported.
+     Complex value types, such as Color or Vector3, should use TEN Lua API notation, e.g. `TEN.Color(255,255,255)`.
 
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
@@ -93,6 +93,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
      combination may be used to start a new line.
    - **Color** - RGB color value, appears as color picker in UI.
    - **LuaScript** - Existing lua function list from level script file.
+   - **EventSets** - Existing event sets currently present in level.
    - **Moveables** - A list of moveables in level which have lua names assigned.
    - **Statics** - A list of statics in level which have lua names assigned.
    - **Cameras** - Same as above, but cameras.
