@@ -391,6 +391,8 @@ namespace TombEditor.Forms
 
             _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
             triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
+
+            grpActivators.Enabled = cbEvents.SelectedIndex <= (int)VolumeEventType.OnLeave;
         }
 
 		private void tbName_Validated(object sender, EventArgs e)
