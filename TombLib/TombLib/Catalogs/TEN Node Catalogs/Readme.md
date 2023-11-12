@@ -93,6 +93,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
      combination may be used to start a new line.
    - **Color** - RGB color value, appears as color picker in UI.
    - **LuaScript** - Existing lua function list from level script file.
+   - **EventSets** - Existing event sets currently present in level.
    - **Moveables** - A list of moveables in level which have lua names assigned.
    - **Statics** - A list of statics in level which have lua names assigned.
    - **Cameras** - Same as above, but cameras.
