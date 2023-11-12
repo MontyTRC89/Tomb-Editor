@@ -31,7 +31,6 @@ namespace TombEditor.Forms
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
-            PopulateEventTypeList();
 
             _genericMode = instance == null;
 
@@ -54,6 +53,7 @@ namespace TombEditor.Forms
             SetupUI();
 
             // Populate and select event set list
+            PopulateEventTypeList();
             PopulateEventSetList();
             FindAndSelectEventSet();
         }
