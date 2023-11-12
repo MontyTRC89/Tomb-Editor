@@ -159,7 +159,7 @@ namespace TombLib.LevelData
         {
             var set = (VolumeEventSet)MemberwiseClone();
 
-            set.Events.Clear();
+            set.Events = new Dictionary<VolumeEventType, VolumeEvent>();
             foreach (var evt in Events)
                 set.Events.Add(evt.Key, evt.Value.Clone());
 
