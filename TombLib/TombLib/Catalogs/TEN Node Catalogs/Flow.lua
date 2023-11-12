@@ -51,7 +51,7 @@ end
 -- !Section "Game flow"
 -- !Description "Runs an event from another event set."
 -- !Arguments "NewLine, 70, EventSets, Target event set"
--- !Arguments "Enumeration, 30, [ On enter | On inside | On leave ], Event to run"
+-- !Arguments "EventList, 30, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
@@ -61,6 +61,36 @@ LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
 	end
 
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
+end
+
+-- !Name "Enable event"
+-- !Section "Game flow"
+-- !Description "Enables an event for specified event set."
+-- !Arguments "NewLine, 70, EventSets, Target event set"
+-- !Arguments "EventList, 30, Event to enable"
+
+LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.EnableEvent(setName, eventType)
+end
+
+-- !Name "Disable event"
+-- !Section "Game flow"
+-- !Description "Disables an event for specified event set."
+-- !Arguments "NewLine, 70, EventSets, Target event set"
+-- !Arguments "EventList, 30, Event to disable"
+
+LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.DisableEvent(setName, eventType)
 end
 
 -- !Name "Run script function"

@@ -167,7 +167,11 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.CompareOperator:
-                    foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
+                    foreach (var item in Enum.GetValues(typeof(ConditionType)))
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.EventList:
+                    foreach (var item in Enum.GetValues(typeof(VolumeEventType)))
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.SpriteSlots:
