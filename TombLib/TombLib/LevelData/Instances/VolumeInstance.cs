@@ -40,6 +40,20 @@ namespace TombLib.LevelData
         PhysicalObjects = 32 // Future-proofness for Bullet
     }
 
+    // Possible event types.
+
+    public enum VolumeEventType
+    {
+        OnEnter,
+        OnInside,
+        OnLeave,
+        OnLoop,
+        OnLoad,
+        OnSave,
+        OnStart,
+        OnEnd
+    }
+
     public class VolumeEvent : ICloneable, IEquatable<VolumeEvent>
     {
         private const int _noCallCounter = -1;
@@ -86,7 +100,7 @@ namespace TombLib.LevelData
 
         public string GenerateFunctionName(List<VolumeEventSet> eventSets)
         {
-            var belongedSet = eventSets.FirstOrDefault(s => s.OnInside == this || s.OnLeave == this || s.OnEnter == this);
+            var belongedSet = eventSets.FirstOrDefault(s => s.Events.Values.Any(e => e == this));
             if (belongedSet == null)
                 return "UNKNOWN";
 
@@ -94,14 +108,7 @@ namespace TombLib.LevelData
                               eventSets.IndexOf(belongedSet).ToString().PadLeft(4, '0') + "_" +
                               Regex.Replace(belongedSet.Name, "[^A-Za-z0-9]", string.Empty);
 
-            if (this == belongedSet.OnInside)
-                return trimmedName + "_OnInside";
-            else if (this == belongedSet.OnLeave)
-                return trimmedName + "_OnLeave";
-            else if (this == belongedSet.OnEnter)
-                return trimmedName + "_OnEnter";
-
-            return "UNKNOWN";
+            return trimmedName + "_" + belongedSet.Events.First(e => e.Value == this).Key.ToString();
         }
 
         public void Write(BinaryWriterEx writer, List<VolumeEventSet> eventSets)
@@ -127,24 +134,20 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
-        public int LastUsedEventIndex = 0;
+        public VolumeEventType LastUsedEvent = VolumeEventType.OnEnter;
         public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.
         // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
 
-        public VolumeEvent OnEnter;
-        public VolumeEvent OnLeave;
-        public VolumeEvent OnInside;
-
-        public List<VolumeEvent> Events => new List<VolumeEvent>() { OnEnter, OnInside, OnLeave };
+        public Dictionary<VolumeEventType, VolumeEvent> Events = new Dictionary<VolumeEventType, VolumeEvent>();
 
         public VolumeEventSet()
         {
             Activators = VolumeActivators.Player;
-            OnEnter = new VolumeEvent();
-            OnInside = new VolumeEvent();
-            OnLeave = new VolumeEvent();
+
+            foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
+                Events.Add(eventType, new VolumeEvent());
         }
 
         object ICloneable.Clone()
@@ -156,9 +159,9 @@ namespace TombLib.LevelData
         {
             var set = (VolumeEventSet)MemberwiseClone();
 
-            set.OnEnter = OnEnter.Clone();
-            set.OnInside = OnInside.Clone();
-            set.OnLeave = OnLeave.Clone();
+            set.Events.Clear();
+            foreach (var evt in Events)
+                set.Events.Add(evt.Key, evt.Value.Clone());
 
             return set;
         }
@@ -178,9 +181,12 @@ namespace TombLib.LevelData
                 result = result.Substring(0, result.Length - 2) + " \n";
             }
 
-            result += (string.IsNullOrEmpty(OnEnter?.Function  ?? string.Empty) ? string.Empty : "OnEnter: "  + OnEnter.Function  + "\n") +
-                      (string.IsNullOrEmpty(OnInside?.Function ?? string.Empty) ? string.Empty : "OnInside: " + OnInside.Function + "\n") +
-                      (string.IsNullOrEmpty(OnLeave?.Function  ?? string.Empty) ? string.Empty : "OnLeave: "  + OnLeave.Function);
+
+            foreach (var evt in Events)
+            {
+                if (!string.IsNullOrEmpty(evt.Value.Function))
+                    result += evt.Key.ToString() + ":" + evt.Value.Function + "\n";
+            }
 
             return result;
         }
@@ -190,19 +196,28 @@ namespace TombLib.LevelData
             writer.Write(Name);
             writer.Write((int)Activators);
 
-            OnEnter.Write(writer, eventSets);
-            OnInside.Write(writer, eventSets);
-            OnLeave.Write(writer, eventSets);
+            foreach (var evt in Events)
+                evt.Value.Write(writer, eventSets);
         }
 
         public bool Equals(VolumeEventSet other)
         {
+            bool setsAreEqual = true;
+
+            foreach (var evt in Events)
+            {
+                if (!other.Events.ContainsKey(evt.Key) ||
+                    !evt.Value.Equals(other.Events[evt.Key]))
+                {
+                    setsAreEqual = false;
+                    break;
+                }
+            }    
+
             return
                 Name == other.Name &&
                 Activators == other.Activators &&
-                OnEnter.Equals(other.OnEnter) &&
-                OnInside.Equals(other.OnInside) &&
-                OnLeave.Equals(other.OnLeave);
+                setsAreEqual;
         }
     }
 

@@ -93,6 +93,11 @@ namespace TombLib.LevelData.IO
         /********/public static readonly ChunkId EventSetOnEnter = ChunkId.FromString("TeEventSetOnEnter");
         /********/public static readonly ChunkId EventSetOnLeave = ChunkId.FromString("TeEventSetOnLeave");
         /********/public static readonly ChunkId EventSetOnInside = ChunkId.FromString("TeEventSetOnInside");
+        /********/public static readonly ChunkId EventSetOnLoop = ChunkId.FromString("TeEventSetOnLoop");
+        /********/public static readonly ChunkId EventSetOnLoad = ChunkId.FromString("TeEventSetOnLoad"); 
+        /********/public static readonly ChunkId EventSetOnSave = ChunkId.FromString("TeEventSetOnSave"); 
+        /********/public static readonly ChunkId EventSetOnStart = ChunkId.FromString("TeEventSetOnStart");
+        /********/public static readonly ChunkId EventSetOnEnd = ChunkId.FromString("TeEventSetOnEnd"); 
         /**********/public static readonly ChunkId EventMode = ChunkId.FromString("TeEventMode");
         /**********/public static readonly ChunkId EventFunction = ChunkId.FromString("TeEventFunction");
         /**********/public static readonly ChunkId EventArgument = ChunkId.FromString("TeEventArgument");

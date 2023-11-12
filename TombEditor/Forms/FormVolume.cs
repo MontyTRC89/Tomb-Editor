@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
@@ -26,10 +25,13 @@ namespace TombEditor.Forms
         private List<TriggerNode> _clipboard;
 
         private readonly PopUpInfo _popup = new PopUpInfo();
+        private readonly List<NodeFunction> _nodeFuncs;
+        private readonly List<string> _scriptFuncs;
 
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
+            PopulateEventTypeList();
 
             _genericMode = instance == null;
 
@@ -44,11 +46,9 @@ namespace TombEditor.Forms
             BackupEventSets();
 
             // Populate function lists
-            var nodeFuncs = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
-            var scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
-            tmEnter.Initialize(_editor, nodeFuncs, scriptFuncs);
-            tmInside.Initialize(_editor, nodeFuncs, scriptFuncs);
-            tmLeave.Initialize(_editor, nodeFuncs, scriptFuncs);
+            _nodeFuncs = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
+            _scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
+            triggerManager.Initialize(_editor, _nodeFuncs, _scriptFuncs);
 
             // Determine editing mode
             SetupUI();
@@ -86,7 +86,7 @@ namespace TombEditor.Forms
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
-                PopUpInfo.Show(_popup, msg.ForceInMainWindow ? null : FindForm(), tcEvents, msg.Message, msg.Type);
+                PopUpInfo.Show(_popup, msg.ForceInMainWindow ? null : FindForm(), triggerManager, msg.Message, msg.Type);
             }
 
             if (obj is Editor.LevelChangedEvent)
@@ -108,7 +108,7 @@ namespace TombEditor.Forms
             {
                 butSearch.Location = butUnassignEventSet.Location;
                 butUnassignEventSet.Visible = false;
-                Text = "Edit volumes";
+                Text = "Edit event sets";
             }
             else
             {
@@ -147,6 +147,12 @@ namespace TombEditor.Forms
             }
         }
 
+        private void PopulateEventTypeList()
+        {
+            foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
+                cbEvents.Items.Add(eventType.ToString().SplitCamelcase());
+        }
+
         private void PopulateEventSetList()
         {
             lstEvents.Items.Clear();
@@ -179,14 +185,12 @@ namespace TombEditor.Forms
 
 		private void ReplaceEventSetNames(string oldName, string newName)
 		{
-			var funcList = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
-
 			foreach (var set in _editor.Level.Settings.EventSets)
 				foreach (var evt in set.Events)
-					foreach (var node in TriggerNode.LinearizeNodes(evt.Nodes))
+					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
 					{
-						var func = funcList.FirstOrDefault(f => f.Signature == node.Function && 
-														   f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
+						var func = _nodeFuncs.FirstOrDefault(f => f.Signature == node.Function && 
+												             f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
 						if (func == null)
 							continue;
 
@@ -205,17 +209,12 @@ namespace TombEditor.Forms
 
         private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
         {
+            if (triggerManager.Event == newEventSet.Events[newEventSet.LastUsedEvent])
+                return;
+
             _instance.EventSet = newEventSet;
 
             UpdateUI();
-
-            if (_instance.EventSet == null)
-                return;
-
-            if (_instance.EventSet.OnEnter  == tmEnter.Event  &&
-                _instance.EventSet.OnInside == tmInside.Event &&
-                _instance.EventSet.OnLeave  == tmLeave.Event)
-                return;
 
             _lockUI = true;
 
@@ -226,13 +225,8 @@ namespace TombEditor.Forms
             cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
 
             // A hack to prevent respawn for non-visible event tabs
-            tmEnter.Event = tmInside.Event = tmLeave.Event = null;
-            tcEvents.SelectedIndex = _instance.EventSet.LastUsedEventIndex;
-            tcEvents.Invalidate();
-
-            tmEnter.Event = _instance.EventSet.OnEnter;
-            tmInside.Event = _instance.EventSet.OnInside;
-            tmLeave.Event = _instance.EventSet.OnLeave;
+            cbEvents.SelectedIndex = (int)_instance.EventSet.LastUsedEvent;
+            triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
 
             tbName.Text = _instance.EventSet.Name;
 
@@ -256,7 +250,8 @@ namespace TombEditor.Forms
         {
             tbName.Enabled =
             grpActivators.Enabled =
-            tcEvents.Enabled =
+            triggerManager.Enabled =
+            cbEvents.Enabled =
             butUnassignEventSet.Enabled = _instance.EventSet != null;
 
             butCloneEventSet.Enabled =
@@ -297,12 +292,11 @@ namespace TombEditor.Forms
             var newSet = new VolumeEventSet()
             {
                 Name = "New event set " + lstEvents.Items.Count,
-                LastUsedEventIndex = _editor.Configuration.NodeEditor_DefaultEventToEdit
+                LastUsedEvent = (VolumeEventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
             };
 
-            newSet.OnEnter.Mode  =
-            newSet.OnInside.Mode =
-            newSet.OnLeave.Mode  = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
+            foreach (var evt in newSet.Events)
+                evt.Value.Mode = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
 
             _editor.Level.Settings.EventSets.Add(newSet);
             _instance.EventSet = newSet;
@@ -362,29 +356,10 @@ namespace TombEditor.Forms
             if (WinFormsUtils.CurrentControlSupportsInput(this, keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
-            // HACK: Because WinForms has no proper way of translating keyboard events to nested
-            // controls, we need to introduce this helper function to translate pressed key info
-            // to currently active trigger manager.
-
-            TriggerManager manager = null;
-
-            switch (tcEvents.SelectedIndex)
-            {
-                case 0:
-                    manager = tmEnter;
-                    break;
-                case 1:
-                    manager = tmInside;
-                    break;
-                case 2:
-                    manager = tmLeave;
-                    break;
-            }
-
             switch (keyData)
             {
                 case (Keys.Control | Keys.C):
-                    var copiedNodes = manager.CopyNodes(false);
+                    var copiedNodes = triggerManager.CopyNodes(false);
                     if (copiedNodes.Count > 0)
                     {
                         _clipboard = copiedNodes;
@@ -393,15 +368,15 @@ namespace TombEditor.Forms
                     break;
 
                 case (Keys.Control | Keys.X):
-                    _clipboard = manager.CopyNodes(true);
+                    _clipboard = triggerManager.CopyNodes(true);
                     break;
 
                 case (Keys.Control | Keys.V):
-                    manager.PasteNodes(_clipboard);
+                    triggerManager.PasteNodes(_clipboard);
                     break;
 
                 default:
-                    manager.ProcessKey(keyData);
+                    triggerManager.ProcessKey(keyData);
                     break;
 
             }
@@ -409,9 +384,13 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void tcEvents_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbEvents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _instance.EventSet.LastUsedEventIndex = tcEvents.SelectedIndex;
+            if (_instance.EventSet == null)
+                return;
+
+            _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
+            triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
         }
 
 		private void tbName_Validated(object sender, EventArgs e)

@@ -343,12 +343,12 @@ namespace TombLib.NG
                         return null;
 
                 case NgParameterKind.EventTypes:
-                    return new List<TriggerParameterUshort>()
                     {
-                        new TriggerParameterUshort(0, "On enter"),
-                        new TriggerParameterUshort(1, "On inside"),
-                        new TriggerParameterUshort(2, "On leave"),
-                    };
+                        var result = new List<TriggerParameterUshort>();
+                        foreach (VolumeEventType type in Enum.GetValues(typeof(VolumeEventType)))
+                            result.Add(new TriggerParameterUshort((ushort)type, type.ToString().SplitCamelcase()));
+                        return result;
+                    }
 
                 default:
                     throw new ArgumentException("Unknown NgListKind \"" + Kind + "\"");

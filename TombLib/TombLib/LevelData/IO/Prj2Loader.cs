@@ -503,7 +503,7 @@ namespace TombLib.LevelData.IO
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
-                                eventSet.LastUsedEventIndex = chunkIO.ReadChunkInt(chunkSize3);
+                                eventSet.LastUsedEvent = (VolumeEventType)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)
                                 eventSet.Activators = (VolumeActivators)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetOnEnter  ||
@@ -532,11 +532,21 @@ namespace TombLib.LevelData.IO
                                 });
 
                                 if (id3 == Prj2Chunks.EventSetOnEnter)
-                                    eventSet.OnEnter = evt;
+                                    eventSet.Events[VolumeEventType.OnEnter] = evt;
                                 else if (id3 == Prj2Chunks.EventSetOnInside)
-                                    eventSet.OnInside = evt;
+                                    eventSet.Events[VolumeEventType.OnInside] = evt;
                                 else if (id3 == Prj2Chunks.EventSetOnLeave)
-                                    eventSet.OnLeave = evt;
+                                    eventSet.Events[VolumeEventType.OnLeave] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnStart)
+                                    eventSet.Events[VolumeEventType.OnStart] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnEnd)
+                                    eventSet.Events[VolumeEventType.OnEnd] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnLoad)
+                                    eventSet.Events[VolumeEventType.OnLoad] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnSave)
+                                    eventSet.Events[VolumeEventType.OnSave] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnLoop)
+                                    eventSet.Events[VolumeEventType.OnLoop] = evt;
                             }
                             else
                                 return false;
