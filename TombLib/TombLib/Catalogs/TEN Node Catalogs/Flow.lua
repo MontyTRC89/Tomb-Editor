@@ -50,8 +50,8 @@ end
 -- !Name "Run event from another event set"
 -- !Section "Game flow"
 -- !Description "Runs an event from another event set."
--- !Arguments "NewLine, 70, EventSets, Target event set"
--- !Arguments "EventList, 30, Event to run"
+-- !Arguments "NewLine, 65, EventSets, Target event set"
+-- !Arguments "EventList, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
@@ -66,8 +66,8 @@ end
 -- !Name "Enable event"
 -- !Section "Game flow"
 -- !Description "Enables an event for specified event set."
--- !Arguments "NewLine, 70, EventSets, Target event set"
--- !Arguments "EventList, 30, Event to enable"
+-- !Arguments "NewLine, 65, EventSets, Target event set"
+-- !Arguments "EventList, 35, Event to enable"
 
 LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
 	if (setName == '' or setName == nil) then
@@ -81,8 +81,8 @@ end
 -- !Name "Disable event"
 -- !Section "Game flow"
 -- !Description "Disables an event for specified event set."
--- !Arguments "NewLine, 70, EventSets, Target event set"
--- !Arguments "EventList, 30, Event to disable"
+-- !Arguments "NewLine, 65, EventSets, Target event set"
+-- !Arguments "EventList, 35, Event to disable"
 
 LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
 	if (setName == '' or setName == nil) then

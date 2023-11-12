@@ -25,7 +25,6 @@ namespace TombEditor.Forms
         private List<TriggerNode> _clipboard;
 
         private readonly PopUpInfo _popup = new PopUpInfo();
-        private readonly List<NodeFunction> _nodeFuncs;
         private readonly List<string> _scriptFuncs;
 
         public FormVolume(VolumeInstance instance)
@@ -45,9 +44,8 @@ namespace TombEditor.Forms
             BackupEventSets();
 
             // Populate function lists
-            _nodeFuncs = ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath);
             _scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
-            triggerManager.Initialize(_editor, _nodeFuncs, _scriptFuncs);
+            triggerManager.Initialize(_editor, ScriptingUtils.NodeFunctions, _scriptFuncs);
 
             // Determine editing mode
             SetupUI();
@@ -189,7 +187,7 @@ namespace TombEditor.Forms
 				foreach (var evt in set.Events)
 					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
 					{
-						var func = _nodeFuncs.FirstOrDefault(f => f.Signature == node.Function && 
+						var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function && 
 												             f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
 						if (func == null)
 							continue;

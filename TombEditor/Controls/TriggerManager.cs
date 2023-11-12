@@ -277,8 +277,7 @@ namespace TombEditor.Controls
                 return;
             }
 
-            nodeEditor.NodeFunctions.AddRange(
-                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
+            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.NodeFunctions);
         }
 
         private void FindAndSelectFunction()
