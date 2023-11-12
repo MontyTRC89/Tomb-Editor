@@ -574,6 +574,14 @@ namespace TombLib.LevelData.IO
                                 }
                             }
 
+                            if (instance is LightInstance)
+                            {
+                                var light = instance as LightInstance;
+
+                                if (light.Type == LightType.FogBulb)
+                                    light.Intensity /= 5.0f;
+                            }
+
                             if (instance is IHasLuaName)
                                 (instance as IHasLuaName).AllocateNewLuaName();
                         }

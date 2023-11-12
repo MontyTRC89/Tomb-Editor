@@ -13,9 +13,9 @@ LevelFuncs.Engine.Node.CompareValue = function(operand, reference, operator)
 
 	if (operator == 0 and operand == reference) then result = true end
 	if (operator == 1 and operand ~= reference) then result = true end
-	if (operator == 2 and operand < reference) then result = true end
+	if (operator == 2 and operand <  reference) then result = true end
 	if (operator == 3 and operand <= reference) then result = true end
-	if (operator == 4 and operand > reference) then result = true end
+	if (operator == 4 and operand >  reference) then result = true end
 	if (operator == 5 and operand >= reference) then result = true end
 	return result
 end
@@ -116,15 +116,15 @@ end
 LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode = function(index)
 	local displaySpriteAlignMode =
 	{
-		[0] = TEN.DisplaySpriteEnum.AlignMode.CENTER,
-		[1] = TEN.DisplaySpriteEnum.AlignMode.CENTER_TOP,
-		[2] = TEN.DisplaySpriteEnum.AlignMode.CENTER_BOTTOM,
-		[3] = TEN.DisplaySpriteEnum.AlignMode.CENTER_LEFT,
-		[4] = TEN.DisplaySpriteEnum.AlignMode.CENTER_RIGHT,
-		[5] = TEN.DisplaySpriteEnum.AlignMode.TOP_LEFT,
-		[6] = TEN.DisplaySpriteEnum.AlignMode.TOP_RIGHT,
-		[7] = TEN.DisplaySpriteEnum.AlignMode.BOTTOM_LEFT,
-		[8] = TEN.DisplaySpriteEnum.AlignMode.BOTTOM_RIGHT
+		[0] = TEN.View.AlignMode.CENTER,
+		[1] = TEN.View.AlignMode.CENTER_TOP,
+		[2] = TEN.View.AlignMode.CENTER_BOTTOM,
+		[3] = TEN.View.AlignMode.CENTER_LEFT,
+		[4] = TEN.View.AlignMode.CENTER_RIGHT,
+		[5] = TEN.View.AlignMode.TOP_LEFT,
+		[6] = TEN.View.AlignMode.TOP_RIGHT,
+		[7] = TEN.View.AlignMode.BOTTOM_LEFT,
+		[8] = TEN.View.AlignMode.BOTTOM_RIGHT
 	}
 	return displaySpriteAlignMode
 end
@@ -132,9 +132,9 @@ end
 LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
 	local displaySpriteScaleMode =
 	{
-		[0] = TEN.DisplaySpriteEnum.ScaleMode.FIT,
-		[1] = TEN.DisplaySpriteEnum.ScaleMode.FILL,
-		[2] = TEN.DisplaySpriteEnum.ScaleMode.STRETCH
+		[0] = TEN.View.ScaleMode.FIT,
+		[1] = TEN.View.ScaleMode.FILL,
+		[2] = TEN.View.ScaleMode.STRETCH
 	}
 	return displaySpriteScaleMode
 end

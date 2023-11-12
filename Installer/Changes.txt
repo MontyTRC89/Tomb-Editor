@@ -9,11 +9,11 @@ Tomb Editor:
  * Add a node to check if animation of a moveable has reached end frame.
  * Add nodes to draw sprites.
  * Add nodes to load, save, delete and check existence of savegames.
- * Add nodes to lock controls and to check if controls are locked.
  * Modifying nodes for timer management. (Note: for existing projects, review all nodes "Create timer...")
  * Auto-fill position and color when doing drag-n-drop of an object over corresponding node controls.
  * Show selection size instead of local area.
  * Show real position in object tooltip.
+ * Fix fog bulb intensity when converting project to a TEN project.
  * Fix exception when trying to assign footstep sound if no material was selected.
 
 TombIDE:
@@ -37,7 +37,7 @@ TEN TRCatalog updates:
  * Remove of redundant object IDs that aren't used.
  * Amended Lara extra animation names.
  * Move Lara animation 442 to LARA_EXTRA_ANIMS.
- * Add Yeti and Big Scorpion Death animations to LARA_EXTRA_ANIMS.
+ * Add TR2 Yeti and TR4 Big Scorpion Death animations to LARA_EXTRA_ANIMS.
 
 Version 1.6.8
 =============
