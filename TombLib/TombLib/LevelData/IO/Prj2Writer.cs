@@ -317,14 +317,14 @@ namespace TombLib.LevelData.IO
 
                                 switch (evt.Key)
                                 {
-                                    case VolumeEventType.OnEnter:  cid = Prj2Chunks.EventSetOnEnter;  break;
-                                    case VolumeEventType.OnLeave:  cid = Prj2Chunks.EventSetOnLeave;  break;
-                                    case VolumeEventType.OnInside: cid = Prj2Chunks.EventSetOnInside; break;
-                                    case VolumeEventType.OnLoop:   cid = Prj2Chunks.EventSetOnLoop;   break;
-                                    case VolumeEventType.OnLoad:   cid = Prj2Chunks.EventSetOnLoad;   break;
-                                    case VolumeEventType.OnSave:   cid = Prj2Chunks.EventSetOnSave;   break;
-                                    case VolumeEventType.OnEnd:    cid = Prj2Chunks.EventSetOnEnd;    break;
-                                    case VolumeEventType.OnStart:  cid = Prj2Chunks.EventSetOnStart;  break;
+                                    case VolumeEventType.OnVolumeEnter:  cid = Prj2Chunks.EventSetOnEnter;  break;
+                                    case VolumeEventType.OnVolumeLeave:  cid = Prj2Chunks.EventSetOnLeave;  break;
+                                    case VolumeEventType.OnVolumeInside: cid = Prj2Chunks.EventSetOnInside; break;
+                                    case VolumeEventType.OnLoop:         cid = Prj2Chunks.EventSetOnLoop;   break;
+                                    case VolumeEventType.OnLoadGame:     cid = Prj2Chunks.EventSetOnLoad;   break;
+                                    case VolumeEventType.OnSaveGame:     cid = Prj2Chunks.EventSetOnSave;   break;
+                                    case VolumeEventType.OnLevelEnd:     cid = Prj2Chunks.EventSetOnEnd;    break;
+                                    case VolumeEventType.OnLevelStart:   cid = Prj2Chunks.EventSetOnStart;  break;
                                 }
 
                                 using (var chunkEvent = chunkIO.WriteChunk(cid))

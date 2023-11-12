@@ -44,14 +44,14 @@ namespace TombLib.LevelData
 
     public enum VolumeEventType
     {
-        OnEnter,
-        OnInside,
-        OnLeave,
+        OnVolumeEnter,
+        OnVolumeInside,
+        OnVolumeLeave,
         OnLoop,
-        OnLoad,
-        OnSave,
-        OnStart,
-        OnEnd
+        OnLoadGame,
+        OnSaveGame,
+        OnLevelStart,
+        OnLevelEnd
     }
 
     public class VolumeEvent : ICloneable, IEquatable<VolumeEvent>
@@ -134,7 +134,7 @@ namespace TombLib.LevelData
     public class VolumeEventSet : ICloneable, IEquatable<VolumeEventSet>
     {
         public string Name = string.Empty;
-        public VolumeEventType LastUsedEvent = VolumeEventType.OnEnter;
+        public VolumeEventType LastUsedEvent = VolumeEventType.OnVolumeEnter;
         public VolumeActivators Activators;
 
         // Every volume's events can be reduced to these three.
