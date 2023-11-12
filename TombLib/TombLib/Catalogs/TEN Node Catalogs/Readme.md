@@ -42,7 +42,7 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
    - **{DEFAULT}** - default value for this argument, contained in brackets. For Numerical value type, it can be
      provided as is, e.g. `{100}`. For String value type, default string must be quoted, e.g. `{"Default string"}`.
-     Other value types are not currently supported.
+     Complex value types, such as Color or Vector3, should use TEN Lua API notation, e.g. `TEN.Color(255,255,255)`.
 
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
