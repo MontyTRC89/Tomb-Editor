@@ -309,6 +309,7 @@ namespace TombLib.LevelData
             return VolumeShape.Undefined;
         }
 
+        public bool Enabled { get; set; }
         public VolumeEventSet EventSet { get; set; }
 
         public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)

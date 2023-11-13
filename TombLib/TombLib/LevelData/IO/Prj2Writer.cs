@@ -757,13 +757,14 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
                     else if (o is VolumeInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume3, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume4, LEB128.MaximumSize2Byte))
                         {
                             var instance = (VolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
 
                             var shape = instance.Shape();
                             chunkIO.Raw.Write((byte)shape);
+                            chunkIO.Raw.Write(instance.Enabled);
 
                             switch (shape)
                             {

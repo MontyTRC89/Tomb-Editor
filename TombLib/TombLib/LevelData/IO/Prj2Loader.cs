@@ -1647,9 +1647,14 @@ namespace TombLib.LevelData.IO
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest ||
                          id3 == Prj2Chunks.ObjectTriggerVolume1 ||
                          id3 == Prj2Chunks.ObjectTriggerVolume2 ||
-                         id3 == Prj2Chunks.ObjectTriggerVolume3)
+                         id3 == Prj2Chunks.ObjectTriggerVolume3 ||
+                         id3 == Prj2Chunks.ObjectTriggerVolume4)
                 {
                     var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
+
+                    bool enabled = true;
+                    if (id3 == Prj2Chunks.ObjectTriggerVolume4)
+                        enabled = chunkIO.Raw.ReadBoolean();
 
                     VolumeInstance instance;
 
@@ -1680,6 +1685,7 @@ namespace TombLib.LevelData.IO
                             return false;
                     }
 
+                    instance.Enabled = enabled;
                     instance.Position = chunkIO.Raw.ReadVector3();
 
                     if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
