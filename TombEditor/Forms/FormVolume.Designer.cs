@@ -341,6 +341,8 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer.Location = new System.Drawing.Point(1, 1);
             this.splitContainer.Name = "splitContainer";
+            this.splitContainer.Panel1MinSize = 175;
+            this.splitContainer.Panel2MinSize = 512;
             // 
             // splitContainer.Panel1
             // 
