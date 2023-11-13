@@ -253,7 +253,7 @@ namespace TombEditor.Forms
             this.triggerManager.Location = new System.Drawing.Point(1, 1);
             this.triggerManager.Name = "triggerManager";
             this.triggerManager.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.triggerManager.Size = new System.Drawing.Size(495, 346);
+            this.triggerManager.Size = new System.Drawing.Size(504, 313);
             this.triggerManager.TabIndex = 0;
             // 
             // grpActivators
@@ -266,9 +266,9 @@ namespace TombEditor.Forms
             this.grpActivators.Controls.Add(this.cbActivatorOtherMoveables);
             this.grpActivators.Controls.Add(this.cbActivatorStatics);
             this.grpActivators.Controls.Add(this.cbActivatorFlyBy);
-            this.grpActivators.Location = new System.Drawing.Point(16, 388);
+            this.grpActivators.Location = new System.Drawing.Point(7, 349);
             this.grpActivators.Name = "grpActivators";
-            this.grpActivators.Size = new System.Drawing.Size(497, 31);
+            this.grpActivators.Size = new System.Drawing.Size(505, 31);
             this.grpActivators.TabIndex = 24;
             this.grpActivators.TabStop = false;
             // 
@@ -286,7 +286,7 @@ namespace TombEditor.Forms
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 8);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 10);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(87, 13);
             this.darkLabel1.TabIndex = 27;
@@ -296,7 +296,7 @@ namespace TombEditor.Forms
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(94, 5);
+            this.tbName.Location = new System.Drawing.Point(94, 7);
             this.tbName.Name = "tbName";
             this.tbName.SelectOnClick = true;
             this.tbName.Size = new System.Drawing.Size(208, 22);
@@ -308,7 +308,7 @@ namespace TombEditor.Forms
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(310, 9);
+            this.darkLabel2.Location = new System.Drawing.Point(310, 11);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(38, 13);
             this.darkLabel2.TabIndex = 29;
@@ -318,9 +318,9 @@ namespace TombEditor.Forms
             // 
             this.cbEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbEvents.FormattingEnabled = true;
-            this.cbEvents.Location = new System.Drawing.Point(354, 5);
+            this.cbEvents.Location = new System.Drawing.Point(354, 7);
             this.cbEvents.Name = "cbEvents";
-            this.cbEvents.Size = new System.Drawing.Size(151, 23);
+            this.cbEvents.Size = new System.Drawing.Size(157, 23);
             this.cbEvents.TabIndex = 30;
             this.cbEvents.SelectedIndexChanged += new System.EventHandler(this.cbEvents_SelectedIndexChanged);
             // 
@@ -333,7 +333,7 @@ namespace TombEditor.Forms
             this.darkSectionPanel2.Location = new System.Drawing.Point(6, 32);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(497, 348);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(506, 315);
             this.darkSectionPanel2.TabIndex = 31;
             // 
             // splitContainer1
