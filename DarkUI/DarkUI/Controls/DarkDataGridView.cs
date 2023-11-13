@@ -426,6 +426,8 @@ namespace DarkUI.Controls
                  row.Selected = true;*/
 
             DragPosition = -1;
+
+            base.OnDragDrop(e);
         }
 
         private void BasePaint(object sender, PaintEventArgs e)

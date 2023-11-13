@@ -1,6 +1,8 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +15,13 @@ namespace TombEditor.Forms
 {
     public partial class FormVolume : DarkForm
     {
+        private enum SortMode
+        {
+            None,
+			Ascending,
+            Descending
+		}
+
         private VolumeInstance _instance;
         private readonly Editor _editor;
 
@@ -30,6 +39,7 @@ namespace TombEditor.Forms
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
+            dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event name" });
 
             _genericMode = instance == null;
 
@@ -54,6 +64,47 @@ namespace TombEditor.Forms
             PopulateEventTypeList();
             PopulateEventSetList();
             FindAndSelectEventSet();
+        }
+
+        private SortMode _nextSortMode = SortMode.Ascending;
+
+        private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            switch (_nextSortMode)
+            {
+                case SortMode.Ascending:
+                    dgvEvents.AllowUserToDragDropRows = false;
+
+                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Ascending);
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▲";
+                    _nextSortMode = SortMode.Descending;
+                    break;
+
+                case SortMode.Descending:
+                    dgvEvents.AllowUserToDragDropRows = false;
+
+                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Descending);
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▲', ' ');
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▼";
+                    _nextSortMode = SortMode.None;
+                    break;
+
+                default:
+                    dgvEvents.AllowUserToDragDropRows = true;
+
+                    object selectedEventCache = dgvEvents.SelectedRows.Count > 0 ? dgvEvents.SelectedRows[0].Tag : null;
+                    PopulateEventSetList();
+                    dgvEvents.ClearSelection();
+
+                    if (selectedEventCache != null)
+                        foreach (DataGridViewRow row in dgvEvents.Rows)
+                            if (row.Tag == selectedEventCache)
+                                row.Selected = true;
+
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▼', ' ');
+                    _nextSortMode = SortMode.Ascending;
+                    break;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -153,32 +204,36 @@ namespace TombEditor.Forms
 
         private void PopulateEventSetList()
         {
-            lstEvents.Items.Clear();
+            dgvEvents.Rows.Clear();
 
-            foreach (var evtSet in _editor.Level.Settings.EventSets)
-                lstEvents.Items.Add(new DarkUI.Controls.DarkListItem(evtSet.Name) { Tag = evtSet });
+            foreach (VolumeEventSet evtSet in _editor.Level.Settings.EventSets)
+            {
+                var row = new DataGridViewRow { Tag = evtSet };
+                row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
+                dgvEvents.Rows.Add(row);
+            }
         }
 
         private void FindAndSelectEventSet()
         {
             if (_instance.EventSet == null)
             {
-                if (_genericMode && lstEvents.Items.Count > 0)
-                    lstEvents.SelectItem(0);
+                if (_genericMode && dgvEvents.Rows.Count > 0)
+                    dgvEvents.Rows[0].Selected = true;
                 else
-                    lstEvents.ClearSelection();
+                    dgvEvents.ClearSelection();
                 return;
             }
 
-            for (int i = 0; i < lstEvents.Items.Count; i++)
-                if (lstEvents.Items[i].Tag == _instance.EventSet)
+            for (int i = 0; i < dgvEvents.Rows.Count; i++)
+                if (dgvEvents.Rows[i].Tag == _instance.EventSet)
                 {
-                    lstEvents.ClearSelection();
-                    lstEvents.SelectItem(i);
+                    dgvEvents.ClearSelection();
+                    dgvEvents.Rows[i].Selected = true;
                     return;
                 }
 
-            lstEvents.ClearSelection();
+            dgvEvents.ClearSelection();
         }
 
 		private void ReplaceEventSetNames(string oldName, string newName)
@@ -253,9 +308,9 @@ namespace TombEditor.Forms
             butUnassignEventSet.Enabled = _instance.EventSet != null;
 
             butCloneEventSet.Enabled =
-            butDeleteEventSet.Enabled = lstEvents.SelectedItem != null;
+            butDeleteEventSet.Enabled = dgvEvents.SelectedRows.Count > 0;
 
-            butSearch.Enabled = lstEvents.Items.Count > 0;
+            butSearch.Enabled = dgvEvents.Rows.Count > 0;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -273,14 +328,14 @@ namespace TombEditor.Forms
             _editor.EventSetsChange();
         }
 
-        private void lstEvents_SelectedIndicesChanged(object sender, EventArgs e)
+        private void dgvEvents_SelectedIndicesChanged(object sender, EventArgs e)
         {
             UpdateUI();
 
-            if (lstEvents.SelectedItem == null)
+            if (dgvEvents.SelectedRows.Count == 0)
                 return;
 
-            var newEventSet = lstEvents.SelectedItem.Tag as VolumeEventSet;
+            var newEventSet = dgvEvents.SelectedRows[0].Tag as VolumeEventSet;
 
             LoadEventSetIntoUI(newEventSet);
         }
@@ -289,7 +344,7 @@ namespace TombEditor.Forms
         {
             var newSet = new VolumeEventSet()
             {
-                Name = "New event set " + lstEvents.Items.Count,
+                Name = "New event set " + dgvEvents.Rows.Count,
                 LastUsedEvent = (VolumeEventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
             };
 
@@ -330,7 +385,7 @@ namespace TombEditor.Forms
         private void butUnassignEventSet_Click(object sender, EventArgs e)
         {
             _instance.EventSet = null;
-            lstEvents.ClearSelection();
+            dgvEvents.ClearSelection();
         }
 
         private void cbActivators_CheckedChanged(object sender, EventArgs e)
@@ -340,7 +395,7 @@ namespace TombEditor.Forms
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(lstEvents) { ShowAboveControl = true };
+            var searchPopUp = new PopUpSearch(dgvEvents) { ShowAboveControl = true };
             searchPopUp.Show(this);
         }
 
@@ -402,8 +457,21 @@ namespace TombEditor.Forms
 				return;
 
 			ReplaceEventSetNames(_instance.EventSet.Name, tbName.Text);
-			_instance.EventSet.Name = lstEvents.SelectedItem.Text = tbName.Text;
+			dgvEvents.SelectedCells[0].Value = _instance.EventSet.Name = tbName.Text;
 			_editor.EventSetsChange();
 		}
+
+        private void dgvEvents_DragDrop(object sender, EventArgs e)
+        {
+            _editor.Level.Settings.EventSets.Clear();
+
+            foreach (DataGridViewRow row in dgvEvents.Rows)
+            {
+                if (row.Tag is not VolumeEventSet evtSet)
+                    continue;
+
+                _editor.Level.Settings.EventSets.Add(evtSet);
+            }
+        }
 	}
 }

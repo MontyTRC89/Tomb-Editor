@@ -27,7 +27,7 @@ namespace TombEditor.Forms
             this.cbActivatorStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbActivatorFlyBy = new DarkUI.Controls.DarkCheckBox();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.lstEvents = new DarkUI.Controls.DarkListView();
+            this.dgvEvents = new DarkUI.Controls.DarkDataGridView();
             this.darkPanel1 = new DarkUI.Controls.DarkPanel();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.butUnassignEventSet = new DarkUI.Controls.DarkButton();
@@ -132,7 +132,7 @@ namespace TombEditor.Forms
             // 
             this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.darkSectionPanel1.Controls.Add(this.lstEvents);
+            this.darkSectionPanel1.Controls.Add(this.dgvEvents);
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
             this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
@@ -140,16 +140,27 @@ namespace TombEditor.Forms
             this.darkSectionPanel1.Size = new System.Drawing.Size(204, 378);
             this.darkSectionPanel1.TabIndex = 22;
             // 
-            // lstEvents
+            // dgvEvents
             // 
-            this.lstEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstEvents.Location = new System.Drawing.Point(5, 55);
-            this.lstEvents.Name = "lstEvents";
-            this.lstEvents.Size = new System.Drawing.Size(194, 318);
-            this.lstEvents.TabIndex = 0;
-            this.lstEvents.SelectedIndicesChanged += new System.EventHandler(this.lstEvents_SelectedIndicesChanged);
+            this.dgvEvents.AllowUserToAddRows = false;
+            this.dgvEvents.AllowUserToDeleteRows = false;
+            this.dgvEvents.AllowUserToPasteCells = false;
+            this.dgvEvents.AllowUserToResizeColumns = false;
+            this.dgvEvents.MultiSelect = false;
+            this.dgvEvents.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.dgvEvents.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEvents.ColumnHeadersHeight = 4;
+            this.dgvEvents.EditMode = DataGridViewEditMode.EditProgrammatically;
+            this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            this.dgvEvents.Location = new System.Drawing.Point(5, 55);
+            this.dgvEvents.Name = "dgvEvents";
+            this.dgvEvents.ReadOnly = true;
+            this.dgvEvents.RowHeadersWidth = 41;
+            this.dgvEvents.Size = new System.Drawing.Size(194, 318);
+            this.dgvEvents.TabIndex = 0;
+            this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
+            this.dgvEvents.SelectionChanged += dgvEvents_SelectedIndicesChanged;
+            this.dgvEvents.DragDrop += dgvEvents_DragDrop;
             // 
             // darkPanel1
             // 
@@ -357,7 +368,7 @@ namespace TombEditor.Forms
         private DarkUI.Controls.DarkCheckBox cbActivatorStatics;
         private DarkUI.Controls.DarkCheckBox cbActivatorFlyBy;
         private DarkSectionPanel darkSectionPanel1;
-        private DarkListView lstEvents;
+        private DarkDataGridView dgvEvents;
         private TabPage tabPage_OnInside;
         private TabPage tabPage_OnLeave;
         private Controls.TriggerManager triggerManager;
