@@ -38,6 +38,7 @@ namespace TombEditor.Forms
             this.grpActivators = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbEnableVolume = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
@@ -153,16 +154,17 @@ namespace TombEditor.Forms
             this.dgvEvents.AllowUserToDeleteRows = false;
             this.dgvEvents.AllowUserToPasteCells = false;
             this.dgvEvents.AllowUserToResizeColumns = false;
-            this.dgvEvents.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvEvents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEvents.ColumnHeadersHeight = 4;
             this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvEvents.Location = new System.Drawing.Point(4, 32);
             this.dgvEvents.MultiSelect = false;
             this.dgvEvents.Name = "dgvEvents";
             this.dgvEvents.ReadOnly = true;
+            this.dgvEvents.RowHeadersWidth = 41;
             this.dgvEvents.Size = new System.Drawing.Size(199, 341);
             this.dgvEvents.TabIndex = 0;
             this.dgvEvents.UseAlternativeDragDropMethod = true;
@@ -280,6 +282,17 @@ namespace TombEditor.Forms
             this.darkLabel6.TabIndex = 26;
             this.darkLabel6.Text = "Activators:";
             // 
+            // cbEnableVolume
+            // 
+            this.cbEnableVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbEnableVolume.Location = new System.Drawing.Point(8, 395);
+            this.cbEnableVolume.Name = "cbEnableVolume";
+            this.cbEnableVolume.Size = new System.Drawing.Size(93, 17);
+            this.cbEnableVolume.TabIndex = 33;
+            this.cbEnableVolume.Text = "Enable volume";
+            this.toolTip.SetToolTip(this.cbEnableVolume, "Indicates if selected volume is enabled by default");
+            this.cbEnableVolume.CheckedChanged += new System.EventHandler(this.cbEnableVolume_CheckedChanged);
+            // 
             // darkLabel1
             // 
             this.darkLabel1.AutoSize = true;
@@ -341,12 +354,11 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer.Location = new System.Drawing.Point(1, 1);
             this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Panel1MinSize = 175;
-            this.splitContainer.Panel2MinSize = 512;
             // 
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.darkSectionPanel1);
+            this.splitContainer.Panel1MinSize = 175;
             // 
             // splitContainer.Panel2
             // 
@@ -356,6 +368,7 @@ namespace TombEditor.Forms
             this.splitContainer.Panel2.Controls.Add(this.cbEvents);
             this.splitContainer.Panel2.Controls.Add(this.tbName);
             this.splitContainer.Panel2.Controls.Add(this.darkLabel2);
+            this.splitContainer.Panel2MinSize = 512;
             this.splitContainer.Size = new System.Drawing.Size(732, 387);
             this.splitContainer.SplitterDistance = 211;
             this.splitContainer.TabIndex = 32;
@@ -366,6 +379,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 421);
+            this.Controls.Add(this.cbEnableVolume);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
@@ -421,5 +435,6 @@ namespace TombEditor.Forms
         private DarkComboBox cbEvents;
         private DarkSectionPanel darkSectionPanel2;
         private SplitContainer splitContainer;
+        private DarkCheckBox cbEnableVolume;
     }
 }

@@ -1668,7 +1668,8 @@ namespace TombLib.LevelData.IO
                                 bv.RotationY = chunkIO.Raw.ReadSingle();
                                 bv.RotationX = chunkIO.Raw.ReadSingle();
 
-                                if (id3 == Prj2Chunks.ObjectTriggerVolume3)
+                                if (id3 == Prj2Chunks.ObjectTriggerVolume3 ||
+                                    id3 == Prj2Chunks.ObjectTriggerVolume4)
                                     bv.Roll = chunkIO.Raw.ReadSingle();
                                 else
                                     bv.Roll = 0.0f;
@@ -1707,7 +1708,8 @@ namespace TombLib.LevelData.IO
                             instance.EventSet = null;
 
                         if (id3 == Prj2Chunks.ObjectTriggerVolume2 ||
-                            id3 == Prj2Chunks.ObjectTriggerVolume3)
+                            id3 == Prj2Chunks.ObjectTriggerVolume3 ||
+                            id3 == Prj2Chunks.ObjectTriggerVolume4)
                             instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                         else
                             instance.LuaName = string.Empty;

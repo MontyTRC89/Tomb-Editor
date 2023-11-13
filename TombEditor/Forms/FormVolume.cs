@@ -29,6 +29,7 @@ namespace TombEditor.Forms
 
         private List<VolumeEventSet> _backupEventSetList;
         private Dictionary<VolumeInstance, int> _backupVolumes;
+        private bool _backupVolumeState;
 
         private List<TriggerNode> _clipboard;
 
@@ -49,8 +50,8 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
-            // Backup event set list
-            BackupEventSets();
+            // Backup event set list and volume state
+            BackupState();
 
             // Populate function lists
             _scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
@@ -167,13 +168,14 @@ namespace TombEditor.Forms
             if (_genericMode)
             {
                 butSearch.Location = butUnassignEventSet.Location;
-                butUnassignEventSet.Visible = false;
+                butUnassignEventSet.Visible = cbEnableVolume.Visible = false;
                 Text = "Edit event sets";
             }
             else
             {
                 butSearch.Location = new Point(butUnassignEventSet.Location.X - butSearch.Width - 6, butSearch.Location.Y);
-                butUnassignEventSet.Visible = true;
+                butUnassignEventSet.Visible = cbEnableVolume.Visible = true;
+                cbEnableVolume.Checked = _instance.Enabled;
                 Text = "Edit volume: " + _instance.ToShortString();
             }
         }
@@ -216,8 +218,10 @@ namespace TombEditor.Forms
             }
         }
 
-        private void BackupEventSets()
+        private void BackupState()
         {
+            _backupVolumeState = _instance.Enabled;
+
             _backupVolumes = new Dictionary<VolumeInstance, int>();
             foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
                 _backupVolumes.Add(vol, _editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
@@ -227,7 +231,7 @@ namespace TombEditor.Forms
                 _backupEventSetList.Add(evt.Clone());
         }
 
-        private void RestoreEventSets()
+        private void RestoreState()
         {
             _editor.Level.Settings.EventSets = _backupEventSetList;
 
@@ -243,6 +247,8 @@ namespace TombEditor.Forms
                 if (index >= 0)
                     vol.EventSet = _backupEventSetList[index];
             }
+
+            _instance.Enabled = _backupVolumeState;
         }
 
         private void PopulateEventTypeList()
@@ -379,7 +385,7 @@ namespace TombEditor.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
-            RestoreEventSets();
+            RestoreState();
             _editor.EventSetsChange();
         }
 
@@ -538,6 +544,12 @@ namespace TombEditor.Forms
         {
             if (Visible)
                 _editor.Configuration.Window_FormVolume_SplitterDistance = splitContainer.SplitterDistance;
+        }
+
+        private void cbEnableVolume_CheckedChanged(object sender, EventArgs e)
+        {
+            _instance.Enabled = cbEnableVolume.Checked;
+            _editor.ObjectChange(_instance, ObjectChangeType.Change);
         }
     }
 }
