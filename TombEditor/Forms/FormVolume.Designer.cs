@@ -137,7 +137,7 @@ namespace TombEditor.Forms
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
             this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.Text = "";
+            this.darkSectionPanel1.SectionHeader = null;
             this.darkSectionPanel1.Size = new System.Drawing.Size(204, 378);
             this.darkSectionPanel1.TabIndex = 22;
             // 
@@ -154,12 +154,12 @@ namespace TombEditor.Forms
             this.dgvEvents.ColumnHeadersHeight = 4;
             this.dgvEvents.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.dgvEvents.Location = new System.Drawing.Point(5, 5);
+            this.dgvEvents.Location = new System.Drawing.Point(4, 32);
             this.dgvEvents.MultiSelect = false;
             this.dgvEvents.Name = "dgvEvents";
             this.dgvEvents.ReadOnly = true;
             this.dgvEvents.RowHeadersWidth = 41;
-            this.dgvEvents.Size = new System.Drawing.Size(194, 339);
+            this.dgvEvents.Size = new System.Drawing.Size(196, 342);
             this.dgvEvents.TabIndex = 0;
             this.dgvEvents.UseAlternativeDragDropMethod = true;
             // 
@@ -170,10 +170,10 @@ namespace TombEditor.Forms
             this.darkPanel1.Controls.Add(this.butDeleteEventSet);
             this.darkPanel1.Controls.Add(this.butCloneEventSet);
             this.darkPanel1.Controls.Add(this.butNewEventSet);
-            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.darkPanel1.Location = new System.Drawing.Point(1, 347);
+            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkPanel1.Location = new System.Drawing.Point(0, 0);
             this.darkPanel1.Name = "darkPanel1";
-            this.darkPanel1.Size = new System.Drawing.Size(202, 30);
+            this.darkPanel1.Size = new System.Drawing.Size(204, 30);
             this.darkPanel1.TabIndex = 1;
             // 
             // butSearch
@@ -181,7 +181,7 @@ namespace TombEditor.Forms
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Checked = false;
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(146, 3);
+            this.butSearch.Location = new System.Drawing.Point(148, 3);
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(23, 23);
             this.butSearch.TabIndex = 26;
@@ -193,7 +193,7 @@ namespace TombEditor.Forms
             this.butUnassignEventSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butUnassignEventSet.Checked = false;
             this.butUnassignEventSet.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butUnassignEventSet.Location = new System.Drawing.Point(175, 3);
+            this.butUnassignEventSet.Location = new System.Drawing.Point(177, 3);
             this.butUnassignEventSet.Name = "butUnassignEventSet";
             this.butUnassignEventSet.Size = new System.Drawing.Size(23, 23);
             this.butUnassignEventSet.TabIndex = 25;
@@ -241,10 +241,10 @@ namespace TombEditor.Forms
             // 
             this.triggerManager.Dock = System.Windows.Forms.DockStyle.Fill;
             this.triggerManager.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.triggerManager.Location = new System.Drawing.Point(1, 1);
+            this.triggerManager.Location = new System.Drawing.Point(0, 0);
             this.triggerManager.Name = "triggerManager";
             this.triggerManager.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.triggerManager.Size = new System.Drawing.Size(510, 311);
+            this.triggerManager.Size = new System.Drawing.Size(512, 313);
             this.triggerManager.TabIndex = 0;
             // 
             // grpActivators
@@ -323,7 +323,7 @@ namespace TombEditor.Forms
             this.darkSectionPanel2.Controls.Add(this.triggerManager);
             this.darkSectionPanel2.Location = new System.Drawing.Point(215, 34);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
-            this.darkSectionPanel2.Text = null;
+            this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(512, 313);
             this.darkSectionPanel2.TabIndex = 31;
             // 
