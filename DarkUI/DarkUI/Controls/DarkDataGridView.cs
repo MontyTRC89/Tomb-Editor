@@ -89,6 +89,7 @@ namespace DarkUI.Controls
             _base.MouseWheel += BaseMouseWheel;
             _base.KeyDown += BaseKeyDown;
             _base.MouseMove += BaseMouseMove;
+            _base.CellMouseMove += BaseCellMouseMove;
             _base.CellMouseDown += BaseCellMouseDown;
             _base.CellMouseEnter += BaseCellMouseEnter;
             _base.DragEnter += BaseDragEnter;
@@ -135,7 +136,21 @@ namespace DarkUI.Controls
             Controls.Add(_hScrollBar);
         }
 
-		protected override void OnVisibleChanged(EventArgs e)
+        private const int DRAG_THRESHOLD = 5;
+        private Point _mouseDownPos;
+
+        private void BaseCellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (UseAlternativeDragDropMethod && AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
+                e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
+            {
+                if (Math.Abs(_mouseDownPos.X - e.X) > DRAG_THRESHOLD ||
+                    Math.Abs(_mouseDownPos.Y - e.Y) > DRAG_THRESHOLD)
+					DoDragDrop(new DragDropMetaData(), DragDropEffects.Move);
+			}
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
 		{
 			base.OnVisibleChanged(e);
 
@@ -160,6 +175,11 @@ namespace DarkUI.Controls
             if (DisableSelection)
                 _base.ClearSelection();
         }
+
+        [Browsable(true)]
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool UseAlternativeDragDropMethod { get; set; }
 
         [Browsable(true)]
         [Category("Behavior")]
@@ -211,6 +231,8 @@ namespace DarkUI.Controls
 
         private void BaseCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
+            _mouseDownPos = e.Location;
+
             if (e.RowIndex == -1 || e.Button != MouseButtons.Left) return;
 
             var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -331,7 +353,7 @@ namespace DarkUI.Controls
 
         private void BaseMouseMove(object sender, MouseEventArgs e)
         {
-            if (AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
+            if (!UseAlternativeDragDropMethod && AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
                 e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
             {
                 var info = HitTest(e.Location);

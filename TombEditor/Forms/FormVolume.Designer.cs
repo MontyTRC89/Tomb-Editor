@@ -147,6 +147,7 @@ namespace TombEditor.Forms
             this.dgvEvents.AllowUserToPasteCells = false;
             this.dgvEvents.AllowUserToResizeColumns = false;
             this.dgvEvents.MultiSelect = false;
+            this.dgvEvents.UseAlternativeDragDropMethod = true;
             this.dgvEvents.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.dgvEvents.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvEvents.ColumnHeadersHeight = 4;
