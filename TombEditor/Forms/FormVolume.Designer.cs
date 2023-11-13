@@ -161,6 +161,9 @@ namespace TombEditor.Forms
             this.dgvEvents.RowHeadersWidth = 41;
             this.dgvEvents.Size = new System.Drawing.Size(196, 342);
             this.dgvEvents.TabIndex = 0;
+            this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
+            this.dgvEvents.SelectionChanged += dgvEvents_SelectedIndicesChanged;
+            this.dgvEvents.DragDrop += dgvEvents_DragDrop;
             this.dgvEvents.UseAlternativeDragDropMethod = true;
             // 
             // darkPanel1

@@ -40,7 +40,7 @@ namespace DarkUI.Controls
             {
                 BackColor = isHeader ? HeaderColor : (isOdd ? OddRowColor : EvenRowColor),
                 ForeColor = ForegroundColor,
-                SelectionBackColor = isFocused ? FocusedRowColor : NonFocusedRowColor,
+                SelectionBackColor = isHeader ? HeaderColor : (isFocused ? FocusedRowColor : NonFocusedRowColor),
                 SelectionForeColor = ForegroundColor
             };
         }
