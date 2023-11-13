@@ -29,7 +29,7 @@ namespace TombEditor.Forms
 
         private List<VolumeEventSet> _backupEventSetList;
         private Dictionary<VolumeInstance, int> _backupVolumes;
-        private bool _backupVolumeState;
+        private bool[] _backupVolumeState = new bool[2];
 
         private List<TriggerNode> _clipboard;
 
@@ -145,6 +145,15 @@ namespace TombEditor.Forms
             SetupUI();
         }
 
+        public void UpdateVolume()
+        {
+            // Don't update dummy or yet not placed volumes.
+            if (_instance == null || _instance.Room == null)
+                return;
+
+            _editor.ObjectChange(_instance, ObjectChangeType.Change);
+        }
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.MessageEvent)
@@ -171,14 +180,15 @@ namespace TombEditor.Forms
             if (_genericMode)
             {
                 butSearch.Location = butUnassignEventSet.Location;
-                butUnassignEventSet.Visible = cbEnableVolume.Visible = false;
+                butUnassignEventSet.Visible = cbEnableVolume.Visible = cbAdjacentRooms.Visible = false;
                 Text = "Edit event sets";
             }
             else
             {
                 butSearch.Location = new Point(butUnassignEventSet.Location.X - butSearch.Width - 6, butSearch.Location.Y);
-                butUnassignEventSet.Visible = cbEnableVolume.Visible = true;
+                butUnassignEventSet.Visible = cbEnableVolume.Visible = cbAdjacentRooms.Visible = true;
                 cbEnableVolume.Checked = _instance.Enabled;
+                cbAdjacentRooms.Checked = _instance.DetectInAdjacentRooms;
                 Text = "Edit volume: " + _instance.ToShortString();
             }
         }
@@ -223,7 +233,8 @@ namespace TombEditor.Forms
 
         private void BackupState()
         {
-            _backupVolumeState = _instance.Enabled;
+            _backupVolumeState[0] = _instance.Enabled;
+            _backupVolumeState[1] = _instance.DetectInAdjacentRooms;
 
             _backupVolumes = new Dictionary<VolumeInstance, int>();
             foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
@@ -251,7 +262,8 @@ namespace TombEditor.Forms
                     vol.EventSet = _backupEventSetList[index];
             }
 
-            _instance.Enabled = _backupVolumeState;
+            _instance.Enabled = _backupVolumeState[0];
+            _instance.DetectInAdjacentRooms = _backupVolumeState[1];
         }
 
         private void PopulateEventTypeList()
@@ -459,6 +471,7 @@ namespace TombEditor.Forms
         {
             _instance.EventSet = null;
             dgvEvents.ClearSelection();
+            UpdateUI();
         }
 
         private void cbActivators_CheckedChanged(object sender, EventArgs e)
@@ -558,10 +571,13 @@ namespace TombEditor.Forms
         private void cbEnableVolume_CheckedChanged(object sender, EventArgs e)
         {
             _instance.Enabled = cbEnableVolume.Checked;
+            UpdateVolume();
+        }
 
-            // Don't update dummy or yet not placed volumes.
-            if (_instance.Room != null)
-                _editor.ObjectChange(_instance, ObjectChangeType.Change);
+        private void cbAdjacentRooms_CheckedChanged(object sender, EventArgs e)
+        {
+            _instance.DetectInAdjacentRooms = cbAdjacentRooms.Checked;
+            UpdateVolume();
         }
     }
 }
