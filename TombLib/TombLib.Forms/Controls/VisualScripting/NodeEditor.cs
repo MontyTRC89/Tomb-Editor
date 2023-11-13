@@ -813,7 +813,7 @@ namespace TombLib.Controls.VisualScripting
             if (_functionList != null)
                 _functionList.FormClosed -= MakeNodeByContext;
 
-            _functionList = new FormFunctionList(PointToScreen(location), this, NodeFunctions);
+            _functionList = new FormFunctionList(Cursor.Position, this, NodeFunctions);
             _functionList.FormClosed += MakeNodeByContext;
             _functionList.Show();
         }
