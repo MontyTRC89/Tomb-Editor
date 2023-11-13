@@ -49,9 +49,6 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
 
-            // Resize splitter
-            splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
-
             // Backup event set list
             BackupEventSets();
 
@@ -65,7 +62,19 @@ namespace TombEditor.Forms
             // Populate and select event set list
             PopulateEventTypeList();
             PopulateEventSetList();
+
+            _stopSelectionChangedEvent = true;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
             FindAndSelectEventSet();
+
+            // Resize splitter
+            splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
+
+            _stopSelectionChangedEvent = false;
         }
 
         private SortMode _nextSortMode = SortMode.Ascending;
@@ -242,8 +251,12 @@ namespace TombEditor.Forms
                 cbEvents.Items.Add(eventType.ToString().SplitCamelcase());
         }
 
+        private bool _stopSelectionChangedEvent = false;
+
         private void PopulateEventSetList()
         {
+            _stopSelectionChangedEvent = true;
+
             dgvEvents.Rows.Clear();
 
             foreach (VolumeEventSet evtSet in _editor.Level.Settings.EventSets)
@@ -252,6 +265,8 @@ namespace TombEditor.Forms
                 row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
                 dgvEvents.Rows.Add(row);
             }
+
+            _stopSelectionChangedEvent = false;
         }
 
         private void FindAndSelectEventSet()
@@ -370,6 +385,9 @@ namespace TombEditor.Forms
 
         private void dgvEvents_SelectedIndicesChanged(object sender, EventArgs e)
         {
+            if (_stopSelectionChangedEvent)
+                return;
+
             UpdateUI();
 
             if (dgvEvents.SelectedRows.Count == 0)

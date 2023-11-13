@@ -153,18 +153,16 @@ namespace TombEditor.Forms
             this.dgvEvents.AllowUserToDeleteRows = false;
             this.dgvEvents.AllowUserToPasteCells = false;
             this.dgvEvents.AllowUserToResizeColumns = false;
+            this.dgvEvents.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvEvents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvEvents.ColumnHeadersHeight = 4;
-            this.dgvEvents.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvEvents.Location = new System.Drawing.Point(4, 32);
             this.dgvEvents.MultiSelect = false;
             this.dgvEvents.Name = "dgvEvents";
             this.dgvEvents.ReadOnly = true;
-            this.dgvEvents.RowHeadersWidth = 41;
             this.dgvEvents.Size = new System.Drawing.Size(199, 341);
             this.dgvEvents.TabIndex = 0;
             this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
