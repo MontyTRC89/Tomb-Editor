@@ -165,10 +165,10 @@ namespace TombEditor.Forms
             this.dgvEvents.ReadOnly = true;
             this.dgvEvents.Size = new System.Drawing.Size(199, 341);
             this.dgvEvents.TabIndex = 0;
-            this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
-            this.dgvEvents.SelectionChanged += dgvEvents_SelectedIndicesChanged;
-            this.dgvEvents.DragDrop += dgvEvents_DragDrop;
             this.dgvEvents.UseAlternativeDragDropMethod = true;
+            this.dgvEvents.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEvents_ColumnHeaderMouseClick);
+            this.dgvEvents.SelectionChanged += new System.EventHandler(this.dgvEvents_SelectedIndicesChanged);
+            this.dgvEvents.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvEvents_DragDrop);
             // 
             // darkPanel1
             // 

@@ -521,7 +521,7 @@ namespace TombEditor.Forms
 			_editor.EventSetsChange();
 		}
 
-        private void dgvEvents_DragDrop(object sender, EventArgs e)
+        private void dgvEvents_DragDrop(object sender, DragEventArgs e)
         {
             _editor.Level.Settings.EventSets.Clear();
 
