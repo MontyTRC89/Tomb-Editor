@@ -73,6 +73,7 @@ namespace TombEditor.Forms
 
             _stopSelectionChangedEvent = false;
             FindAndSelectEventSet();
+            UpdateUI();
 
             // Resize splitter
             splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
@@ -323,9 +324,6 @@ namespace TombEditor.Forms
 
         private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
         {
-            if (triggerManager.Event == newEventSet.Events[newEventSet.LastUsedEvent])
-                return;
-
             _instance.EventSet = newEventSet;
 
             UpdateUI();
@@ -444,6 +442,15 @@ namespace TombEditor.Forms
             _instance.EventSet = null;
 
             PopulateEventSetList();
+            dgvEvents.ClearSelection();
+
+            if (dgvEvents.Rows.Count > 0)
+            {
+                DataGridViewRow lastRow = dgvEvents.Rows[^1];
+                lastRow.Selected = true;
+            }
+            else
+                UpdateUI();
         }
 
         private void butUnassignEventSet_Click(object sender, EventArgs e)
