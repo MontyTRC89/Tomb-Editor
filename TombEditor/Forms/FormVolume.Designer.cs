@@ -39,6 +39,7 @@ namespace TombEditor.Forms
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbEnableVolume = new DarkUI.Controls.DarkCheckBox();
+            this.cbAdjacentRooms = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
@@ -285,13 +286,24 @@ namespace TombEditor.Forms
             // cbEnableVolume
             // 
             this.cbEnableVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbEnableVolume.Location = new System.Drawing.Point(8, 395);
+            this.cbEnableVolume.Location = new System.Drawing.Point(9, 391);
             this.cbEnableVolume.Name = "cbEnableVolume";
             this.cbEnableVolume.Size = new System.Drawing.Size(93, 17);
             this.cbEnableVolume.TabIndex = 33;
             this.cbEnableVolume.Text = "Enable volume";
             this.toolTip.SetToolTip(this.cbEnableVolume, "Indicates if selected volume is enabled by default");
             this.cbEnableVolume.CheckedChanged += new System.EventHandler(this.cbEnableVolume_CheckedChanged);
+            // 
+            // cbAdjacentRooms
+            // 
+            this.cbAdjacentRooms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbAdjacentRooms.Location = new System.Drawing.Point(119, 391);
+            this.cbAdjacentRooms.Name = "cbAdjacentRooms";
+            this.cbAdjacentRooms.Size = new System.Drawing.Size(185, 17);
+            this.cbAdjacentRooms.TabIndex = 34;
+            this.cbAdjacentRooms.Text = "Detect in adjacent rooms";
+            this.toolTip.SetToolTip(this.cbAdjacentRooms, "Detects volume interaction if activator resides in adjacent rooms");
+            this.cbAdjacentRooms.CheckedChanged += new System.EventHandler(this.cbAdjacentRooms_CheckedChanged);
             // 
             // darkLabel1
             // 
@@ -379,6 +391,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 421);
+            this.Controls.Add(this.cbAdjacentRooms);
             this.Controls.Add(this.cbEnableVolume);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.butCancel);
@@ -436,5 +449,6 @@ namespace TombEditor.Forms
         private DarkSectionPanel darkSectionPanel2;
         private SplitContainer splitContainer;
         private DarkCheckBox cbEnableVolume;
+        private DarkCheckBox cbAdjacentRooms;
     }
 }
