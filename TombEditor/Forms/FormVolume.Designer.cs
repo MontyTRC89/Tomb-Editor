@@ -43,11 +43,16 @@ namespace TombEditor.Forms
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.cbEvents = new DarkUI.Controls.DarkComboBox();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.darkSectionPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).BeginInit();
             this.darkPanel1.SuspendLayout();
             this.grpActivators.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // butCancel
@@ -135,10 +140,10 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Left)));
             this.darkSectionPanel1.Controls.Add(this.dgvEvents);
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(204, 378);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(204, 377);
             this.darkSectionPanel1.TabIndex = 22;
             // 
             // dgvEvents
@@ -159,7 +164,7 @@ namespace TombEditor.Forms
             this.dgvEvents.Name = "dgvEvents";
             this.dgvEvents.ReadOnly = true;
             this.dgvEvents.RowHeadersWidth = 41;
-            this.dgvEvents.Size = new System.Drawing.Size(196, 342);
+            this.dgvEvents.Size = new System.Drawing.Size(196, 341);
             this.dgvEvents.TabIndex = 0;
             this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
             this.dgvEvents.SelectionChanged += dgvEvents_SelectedIndicesChanged;
@@ -247,7 +252,7 @@ namespace TombEditor.Forms
             this.triggerManager.Location = new System.Drawing.Point(1, 1);
             this.triggerManager.Name = "triggerManager";
             this.triggerManager.Padding = new System.Windows.Forms.Padding(2, 2, 2, 1);
-            this.triggerManager.Size = new System.Drawing.Size(510, 311);
+            this.triggerManager.Size = new System.Drawing.Size(495, 346);
             this.triggerManager.TabIndex = 0;
             // 
             // grpActivators
@@ -260,9 +265,9 @@ namespace TombEditor.Forms
             this.grpActivators.Controls.Add(this.cbActivatorOtherMoveables);
             this.grpActivators.Controls.Add(this.cbActivatorStatics);
             this.grpActivators.Controls.Add(this.cbActivatorFlyBy);
-            this.grpActivators.Location = new System.Drawing.Point(216, 353);
+            this.grpActivators.Location = new System.Drawing.Point(16, 388);
             this.grpActivators.Name = "grpActivators";
-            this.grpActivators.Size = new System.Drawing.Size(512, 31);
+            this.grpActivators.Size = new System.Drawing.Size(497, 31);
             this.grpActivators.TabIndex = 24;
             this.grpActivators.TabStop = false;
             // 
@@ -280,7 +285,7 @@ namespace TombEditor.Forms
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(212, 10);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 8);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(87, 13);
             this.darkLabel1.TabIndex = 27;
@@ -290,10 +295,10 @@ namespace TombEditor.Forms
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(303, 7);
+            this.tbName.Location = new System.Drawing.Point(94, 5);
             this.tbName.Name = "tbName";
             this.tbName.SelectOnClick = true;
-            this.tbName.Size = new System.Drawing.Size(223, 22);
+            this.tbName.Size = new System.Drawing.Size(208, 22);
             this.tbName.TabIndex = 28;
             this.tbName.Validated += new System.EventHandler(this.tbName_Validated);
             // 
@@ -302,7 +307,7 @@ namespace TombEditor.Forms
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(532, 11);
+            this.darkLabel2.Location = new System.Drawing.Point(310, 9);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(38, 13);
             this.darkLabel2.TabIndex = 29;
@@ -312,7 +317,7 @@ namespace TombEditor.Forms
             // 
             this.cbEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbEvents.FormattingEnabled = true;
-            this.cbEvents.Location = new System.Drawing.Point(576, 7);
+            this.cbEvents.Location = new System.Drawing.Point(354, 5);
             this.cbEvents.Name = "cbEvents";
             this.cbEvents.Size = new System.Drawing.Size(151, 23);
             this.cbEvents.TabIndex = 30;
@@ -324,24 +329,42 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkSectionPanel2.Controls.Add(this.triggerManager);
-            this.darkSectionPanel2.Location = new System.Drawing.Point(215, 34);
+            this.darkSectionPanel2.Location = new System.Drawing.Point(6, 32);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(512, 313);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(497, 348);
             this.darkSectionPanel2.TabIndex = 31;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(1, 1);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.darkSectionPanel1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.darkLabel1);
+            this.splitContainer1.Panel2.Controls.Add(this.darkSectionPanel2);
+            this.splitContainer1.Panel2.Controls.Add(this.grpActivators);
+            this.splitContainer1.Panel2.Controls.Add(this.cbEvents);
+            this.splitContainer1.Panel2.Controls.Add(this.tbName);
+            this.splitContainer1.Panel2.Controls.Add(this.darkLabel2);
+            this.splitContainer1.Size = new System.Drawing.Size(732, 387);
+            this.splitContainer1.SplitterDistance = 211;
+            this.splitContainer1.TabIndex = 32;
             // 
             // FormVolume
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 421);
-            this.Controls.Add(this.darkSectionPanel2);
-            this.Controls.Add(this.cbEvents);
-            this.Controls.Add(this.darkLabel2);
-            this.Controls.Add(this.tbName);
-            this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.grpActivators);
-            this.Controls.Add(this.darkSectionPanel1);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.KeyPreview = true;
@@ -359,8 +382,12 @@ namespace TombEditor.Forms
             this.grpActivators.ResumeLayout(false);
             this.grpActivators.PerformLayout();
             this.darkSectionPanel2.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -391,5 +418,6 @@ namespace TombEditor.Forms
         private DarkLabel darkLabel2;
         private DarkComboBox cbEvents;
         private DarkSectionPanel darkSectionPanel2;
+        private SplitContainer splitContainer1;
     }
 }
