@@ -18,9 +18,9 @@ namespace TombEditor.Forms
         private enum SortMode
         {
             None,
-			Ascending,
+            Ascending,
             Descending
-		}
+        }
 
         private VolumeInstance _instance;
         private readonly Editor _editor;
@@ -39,7 +39,7 @@ namespace TombEditor.Forms
         public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
-            dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event name" });
+            dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
             _genericMode = instance == null;
 

@@ -44,6 +44,7 @@ namespace TombEditor.Forms
             this.cbEvents = new DarkUI.Controls.DarkComboBox();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.darkSectionPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).BeginInit();
             this.darkPanel1.SuspendLayout();
             this.grpActivators.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -136,7 +137,7 @@ namespace TombEditor.Forms
             this.darkSectionPanel1.Controls.Add(this.darkPanel1);
             this.darkSectionPanel1.Location = new System.Drawing.Point(6, 6);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = "Event sets";
+            this.darkSectionPanel1.Text = "";
             this.darkSectionPanel1.Size = new System.Drawing.Size(204, 378);
             this.darkSectionPanel1.TabIndex = 22;
             // 
@@ -146,22 +147,21 @@ namespace TombEditor.Forms
             this.dgvEvents.AllowUserToDeleteRows = false;
             this.dgvEvents.AllowUserToPasteCells = false;
             this.dgvEvents.AllowUserToResizeColumns = false;
-            this.dgvEvents.MultiSelect = false;
-            this.dgvEvents.UseAlternativeDragDropMethod = true;
-            this.dgvEvents.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.dgvEvents.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvEvents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvEvents.ColumnHeadersHeight = 4;
-            this.dgvEvents.EditMode = DataGridViewEditMode.EditProgrammatically;
-            this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            this.dgvEvents.Location = new System.Drawing.Point(5, 55);
+            this.dgvEvents.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvEvents.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.dgvEvents.Location = new System.Drawing.Point(5, 5);
+            this.dgvEvents.MultiSelect = false;
             this.dgvEvents.Name = "dgvEvents";
             this.dgvEvents.ReadOnly = true;
             this.dgvEvents.RowHeadersWidth = 41;
-            this.dgvEvents.Size = new System.Drawing.Size(194, 318);
+            this.dgvEvents.Size = new System.Drawing.Size(194, 339);
             this.dgvEvents.TabIndex = 0;
-            this.dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
-            this.dgvEvents.SelectionChanged += dgvEvents_SelectedIndicesChanged;
-            this.dgvEvents.DragDrop += dgvEvents_DragDrop;
+            this.dgvEvents.UseAlternativeDragDropMethod = true;
             // 
             // darkPanel1
             // 
@@ -170,8 +170,8 @@ namespace TombEditor.Forms
             this.darkPanel1.Controls.Add(this.butDeleteEventSet);
             this.darkPanel1.Controls.Add(this.butCloneEventSet);
             this.darkPanel1.Controls.Add(this.butNewEventSet);
-            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkPanel1.Location = new System.Drawing.Point(1, 25);
+            this.darkPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.darkPanel1.Location = new System.Drawing.Point(1, 347);
             this.darkPanel1.Name = "darkPanel1";
             this.darkPanel1.Size = new System.Drawing.Size(202, 30);
             this.darkPanel1.TabIndex = 1;
@@ -257,9 +257,9 @@ namespace TombEditor.Forms
             this.grpActivators.Controls.Add(this.cbActivatorOtherMoveables);
             this.grpActivators.Controls.Add(this.cbActivatorStatics);
             this.grpActivators.Controls.Add(this.cbActivatorFlyBy);
-            this.grpActivators.Location = new System.Drawing.Point(215, 353);
+            this.grpActivators.Location = new System.Drawing.Point(216, 353);
             this.grpActivators.Name = "grpActivators";
-            this.grpActivators.Size = new System.Drawing.Size(513, 31);
+            this.grpActivators.Size = new System.Drawing.Size(512, 31);
             this.grpActivators.TabIndex = 24;
             this.grpActivators.TabStop = false;
             // 
@@ -323,7 +323,7 @@ namespace TombEditor.Forms
             this.darkSectionPanel2.Controls.Add(this.triggerManager);
             this.darkSectionPanel2.Location = new System.Drawing.Point(215, 34);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
-            this.darkSectionPanel2.SectionHeader = null;
+            this.darkSectionPanel2.Text = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(512, 313);
             this.darkSectionPanel2.TabIndex = 31;
             // 
@@ -351,6 +351,7 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit trigger volume";
             this.darkSectionPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).EndInit();
             this.darkPanel1.ResumeLayout(false);
             this.grpActivators.ResumeLayout(false);
             this.grpActivators.PerformLayout();
