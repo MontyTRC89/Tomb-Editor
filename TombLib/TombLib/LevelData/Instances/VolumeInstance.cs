@@ -310,6 +310,8 @@ namespace TombLib.LevelData
         }
 
         public bool Enabled { get; set; } = true;
+        public bool DetectInAdjacentRooms { get; set; } = false;
+
         public VolumeEventSet EventSet { get; set; }
 
         public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)

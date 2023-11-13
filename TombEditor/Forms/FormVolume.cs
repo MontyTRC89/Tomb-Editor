@@ -549,7 +549,10 @@ namespace TombEditor.Forms
         private void cbEnableVolume_CheckedChanged(object sender, EventArgs e)
         {
             _instance.Enabled = cbEnableVolume.Checked;
-            _editor.ObjectChange(_instance, ObjectChangeType.Change);
+
+            // Don't update dummy or yet not placed volumes.
+            if (_instance.Room != null)
+                _editor.ObjectChange(_instance, ObjectChangeType.Change);
         }
     }
 }

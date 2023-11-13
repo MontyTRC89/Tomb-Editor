@@ -764,7 +764,6 @@ namespace TombLib.LevelData.IO
 
                             var shape = instance.Shape();
                             chunkIO.Raw.Write((byte)shape);
-                            chunkIO.Raw.Write(instance.Enabled);
 
                             switch (shape)
                             {
@@ -782,6 +781,9 @@ namespace TombLib.LevelData.IO
                                     break;
                             }
                             chunkIO.Raw.Write(instance.Position);
+
+                            chunkIO.Raw.Write(instance.Enabled);
+                            chunkIO.Raw.Write(instance.DetectInAdjacentRooms);
 
                             int eventSetID = -1;
                             if (instance.EventSet != null)
