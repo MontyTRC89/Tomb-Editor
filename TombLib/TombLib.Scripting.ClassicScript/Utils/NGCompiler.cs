@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
@@ -49,8 +50,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			if (newIncludeMethod)
 				MergeIncludes();
 
-			AdjustFormatting();
-
 			var process = new ProcessStartInfo
 			{
 				FileName = DefaultPaths.NGCExecutable,
@@ -88,6 +87,11 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
 				{
 					string fileContent = File.ReadAllText(file);
+
+					while (fileContent.Contains(" ="))
+						fileContent = fileContent.Replace(" =", "=");
+
+					fileContent = BasicCleaner.TrimEndingWhitespace(fileContent);
 					File.WriteAllText(newPath, fileContent, Encoding.GetEncoding(1252));
 				}
 				else
@@ -110,18 +114,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
 
 			_visitedFiles.Clear();
-		}
-
-		private static void AdjustFormatting()
-		{
-			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
-
-			string fileContent = File.ReadAllText(vgeScriptFilePath);
-
-			while (fileContent.Contains(" ="))
-				fileContent = fileContent.Replace(" =", "=");
-
-			File.WriteAllText(vgeScriptFilePath, fileContent);
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines)
