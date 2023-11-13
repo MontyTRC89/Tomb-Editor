@@ -1,6 +1,5 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -49,6 +48,9 @@ namespace TombEditor.Forms
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
+
+            // Resize splitter
+            splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
 
             // Backup event set list
             BackupEventSets();
@@ -513,5 +515,11 @@ namespace TombEditor.Forms
                 _editor.Level.Settings.EventSets.Add(evtSet);
             }
         }
-	}
+
+        private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (Visible)
+                _editor.Configuration.Window_FormVolume_SplitterDistance = splitContainer.SplitterDistance;
+        }
+    }
 }

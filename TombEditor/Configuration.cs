@@ -253,6 +253,7 @@ namespace TombEditor
         public Point Window_FormVolume_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormVolume_Size { get; set; } = new Size(750, 460);
         public bool Window_FormVolume_Maximized { get; set; } = false;
+        public int Window_FormVolume_SplitterDistance { get; set; } = 250;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 

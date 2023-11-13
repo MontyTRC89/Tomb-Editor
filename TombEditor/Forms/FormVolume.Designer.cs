@@ -359,6 +359,7 @@ namespace TombEditor.Forms
             this.splitContainer.Size = new System.Drawing.Size(732, 387);
             this.splitContainer.SplitterDistance = 211;
             this.splitContainer.TabIndex = 32;
+            this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
             // 
             // FormVolume
             // 
