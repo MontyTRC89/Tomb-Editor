@@ -69,12 +69,12 @@ namespace TombEditor.Forms
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+
+            _stopSelectionChangedEvent = false;
             FindAndSelectEventSet();
 
             // Resize splitter
             splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
-
-            _stopSelectionChangedEvent = false;
         }
 
         private SortMode _nextSortMode = SortMode.Ascending;
