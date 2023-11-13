@@ -73,7 +73,9 @@ namespace TombEditor.Forms
 
             _stopSelectionChangedEvent = false;
             FindAndSelectEventSet();
-            UpdateUI();
+
+            if (_instance.EventSet == null)
+                UpdateUI();
 
             // Resize splitter
             splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
