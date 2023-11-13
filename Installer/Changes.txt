@@ -1,3 +1,11 @@
+Version 1.6.10
+==============
+
+Tomb Editor:
+ * Allow to move and sort event sets.
+ * Add new types of events to a script / node editor.
+ * Support default values for Vector3 and Color value types in nodes.
+
 Version 1.6.9
 =============
 

@@ -167,6 +167,44 @@ namespace TombEditor.Forms
             }
         }
 
+        private void SetEventTooltip()
+        {
+            switch ((VolumeEventType)cbEvents.SelectedIndex)
+            {
+                case VolumeEventType.OnVolumeEnter:
+                    toolTip.SetToolTip(cbEvents, "Occurs when something enters assigned volume. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnVolumeInside:
+                    toolTip.SetToolTip(cbEvents, "Occurs when something resides inside assigned volume. \nThis event performs continuously.");
+                    break;
+
+                case VolumeEventType.OnVolumeLeave:
+                    toolTip.SetToolTip(cbEvents, "Occurs when something leaves assigned volume. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnLevelEnd:
+                    toolTip.SetToolTip(cbEvents, "Occurs when level was finished. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnLevelStart:
+                    toolTip.SetToolTip(cbEvents, "Occurs when new level starts. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnLoadGame:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game was just loaded from savegame. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnSaveGame:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game was just saved. \nThis event performs once.");
+                    break;
+
+                case VolumeEventType.OnLoop:
+                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
+                    break;
+            }
+        }
+
         private void BackupEventSets()
         {
             _backupVolumes = new Dictionary<VolumeInstance, int>();
@@ -441,6 +479,8 @@ namespace TombEditor.Forms
         {
             if (_instance.EventSet == null)
                 return;
+
+            SetEventTooltip();
 
             _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
             triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
