@@ -290,7 +290,7 @@ namespace TombEditor.Forms
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(303, 6);
+            this.tbName.Location = new System.Drawing.Point(303, 7);
             this.tbName.Name = "tbName";
             this.tbName.SelectOnClick = true;
             this.tbName.Size = new System.Drawing.Size(223, 22);
@@ -312,7 +312,7 @@ namespace TombEditor.Forms
             // 
             this.cbEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbEvents.FormattingEnabled = true;
-            this.cbEvents.Location = new System.Drawing.Point(576, 6);
+            this.cbEvents.Location = new System.Drawing.Point(576, 7);
             this.cbEvents.Name = "cbEvents";
             this.cbEvents.Size = new System.Drawing.Size(151, 23);
             this.cbEvents.TabIndex = 30;
