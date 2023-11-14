@@ -63,7 +63,8 @@ namespace TombEditor.Forms
             // Populate and select event set list
             PopulateEventSetList();
 
-            _stopSelectionChangedEvent = true;
+            // Don't select first event set if window is opened in generic mode
+            _stopSelectionChangedEvent = !_genericMode;
         }
 
         protected override void OnShown(EventArgs e)
@@ -73,7 +74,7 @@ namespace TombEditor.Forms
             _stopSelectionChangedEvent = false;
             FindAndSelectEventSet();
 
-            if (_instance.EventSet == null)
+            if (!_genericMode && _instance.EventSet == null)
                 UpdateUI();
 
             // Resize splitter
