@@ -61,7 +61,6 @@ namespace TombEditor.Forms
             SetupUI();
 
             // Populate and select event set list
-            PopulateEventTypeList();
             PopulateEventSetList();
 
             _stopSelectionChangedEvent = true;
@@ -141,8 +140,8 @@ namespace TombEditor.Forms
             _genericMode = instance == null;
             _instance = _genericMode ? new BoxVolumeInstance() { EventSet = _instance?.EventSet ?? null } : instance;
 
-            FindAndSelectEventSet();
             SetupUI();
+            FindAndSelectEventSet();
         }
 
         public void UpdateVolume()
@@ -177,6 +176,8 @@ namespace TombEditor.Forms
 
         private void SetupUI()
         {
+            PopulateEventTypeList();
+
             if (_genericMode)
             {
                 butSearch.Location = butUnassignEventSet.Location;
@@ -268,8 +269,15 @@ namespace TombEditor.Forms
 
         private void PopulateEventTypeList()
         {
+            cbEvents.Items.Clear();
+
             foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
+            {
+                if (!_genericMode && eventType > VolumeEventType.OnVolumeLeave)
+                    break;
+                
                 cbEvents.Items.Add(eventType.ToString().SplitCamelcase());
+            }
         }
 
         private bool _stopSelectionChangedEvent = false;
@@ -350,9 +358,10 @@ namespace TombEditor.Forms
             cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
             cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
 
-            // A hack to prevent respawn for non-visible event tabs
-            cbEvents.SelectedIndex = (int)_instance.EventSet.LastUsedEvent;
-            triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
+            int selectedEvent = Math.Min((int)_instance.EventSet.LastUsedEvent, (int)cbEvents.Items.Count - 1);
+
+            cbEvents.SelectedIndex = selectedEvent;
+            triggerManager.Event = _instance.EventSet.Events[(VolumeEventType)selectedEvent];
 
             tbName.Text = _instance.EventSet.Name;
 
@@ -529,11 +538,13 @@ namespace TombEditor.Forms
                 return;
 
             SetEventTooltip();
-
-            _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
-            triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
-
             grpActivators.Enabled = cbEvents.SelectedIndex <= (int)VolumeEventType.OnVolumeLeave;
+
+            if (!_lockUI)
+            {
+                _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
+                triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
+            }
         }
 
 		private void tbName_Validated(object sender, EventArgs e)
