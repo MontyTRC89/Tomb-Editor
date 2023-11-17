@@ -51,7 +51,10 @@ namespace TombLib.LevelData
         OnLoadGame,
         OnSaveGame,
         OnLevelStart,
-        OnLevelEnd
+        OnLevelEnd,
+        OnBeforeLoadGame,
+        OnExitToTitle,
+        OnLaraDeath
     }
 
     public class VolumeEvent : ICloneable, IEquatable<VolumeEvent>
