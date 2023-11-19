@@ -892,12 +892,25 @@ namespace TombEditor
                     existingWindow.Focus();
             });
 
-            AddCommand("EditEventSets", "Edit event sets...", CommandType.Edit, delegate (CommandArgs args)
+            AddCommand("EditEventSets", "Edit global events...", CommandType.Edit, delegate (CommandArgs args)
             {
                 var existingWindow = Application.OpenForms[nameof(FormVolume)];
                 if (existingWindow == null)
                 {
                     var propForm = new FormVolume(null);
+                    propForm.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
+            });
+
+            AddCommand("EditVolumes", "Edit volumes...", CommandType.Edit, delegate (CommandArgs args)
+            {
+
+                var existingWindow = Application.OpenForms[nameof(FormVolume)];
+                if (existingWindow == null)
+                {
+                    var propForm = new FormVolume(null, true);
                     propForm.Show(args.Window);
                 }
                 else

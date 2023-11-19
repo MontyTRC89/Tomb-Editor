@@ -26,6 +26,7 @@ namespace TombEditor.Forms
 
         private bool _lockUI = false;
         private bool _genericMode = false;
+        private bool _genericVolume = false;
 
         private List<VolumeEventSet> _backupEventSetList;
         private Dictionary<VolumeInstance, int> _backupVolumes;
@@ -36,16 +37,17 @@ namespace TombEditor.Forms
         private readonly PopUpInfo _popup = new PopUpInfo();
         private readonly List<string> _scriptFuncs;
 
-        public FormVolume(VolumeInstance instance)
+        public FormVolume(VolumeInstance instance, bool genericVolume = false)
         {
+            _genericVolume = genericVolume;
             InitializeComponent();
             dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
             _genericMode = instance == null;
 
-            _instance = _genericMode ? new BoxVolumeInstance() : instance;
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+            _instance = _genericMode ? new BoxVolumeInstance() : instance;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -183,7 +185,7 @@ namespace TombEditor.Forms
             {
                 butSearch.Location = butUnassignEventSet.Location;
                 butUnassignEventSet.Visible = cbEnableVolume.Visible = cbAdjacentRooms.Visible = false;
-                Text = "Edit event sets";
+                Text = "Edit Global events";
             }
             else
             {
@@ -193,6 +195,8 @@ namespace TombEditor.Forms
                 cbAdjacentRooms.Checked = _instance.DetectInAdjacentRooms;
                 Text = "Edit volume: " + _instance.ToShortString();
             }
+            if (_genericVolume)
+                Text = "Edit volumes";
         }
 
         private void SetEventTooltip()
@@ -283,9 +287,9 @@ namespace TombEditor.Forms
 
             foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
             {
-                if (!_genericMode && eventType > VolumeEventType.OnVolumeLeave)
+                if ((!_genericMode || _genericVolume) && eventType > VolumeEventType.OnVolumeLeave)
                     break;
-                
+
                 cbEvents.Items.Add(eventType.ToString().SplitCamelcase());
             }
         }
@@ -300,9 +304,19 @@ namespace TombEditor.Forms
 
             foreach (VolumeEventSet evtSet in _editor.Level.Settings.EventSets)
             {
-                var row = new DataGridViewRow { Tag = evtSet };
-                row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
-                dgvEvents.Rows.Add(row);
+                bool check = false;
+                if (_genericMode && !_genericVolume && evtSet.global == true)
+                    check = true;
+
+                if ((!_genericMode || _genericVolume) && evtSet.global == false)
+                    check = true;
+
+                if (check) 
+                {
+                    var row = new DataGridViewRow { Tag = evtSet };
+                    row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
+                    dgvEvents.Rows.Add(row);
+                }
             }
 
             _stopSelectionChangedEvent = false;
@@ -330,29 +344,29 @@ namespace TombEditor.Forms
             dgvEvents.ClearSelection();
         }
 
-		private void ReplaceEventSetNames(string oldName, string newName)
-		{
-			foreach (var set in _editor.Level.Settings.EventSets)
-				foreach (var evt in set.Events)
-					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
-					{
-						var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function && 
-												             f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
-						if (func == null)
-							continue;
+        private void ReplaceEventSetNames(string oldName, string newName)
+        {
+            foreach (var set in _editor.Level.Settings.EventSets)
+                foreach (var evt in set.Events)
+                    foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
+                    {
+                        var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function &&
+                                                             f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
+                        if (func == null)
+                            continue;
 
-						for (int i = 0; i < func.Arguments.Count; i++)
-						{
-							if (func.Arguments[i].Type == ArgumentType.EventSets &&
-								node.Arguments.Count > i &&
-								TextExtensions.Unquote(node.Arguments[i]) == oldName)
-							{
-								node.Arguments[i] = TextExtensions.Quote(newName);
-							}
-						}
+                        for (int i = 0; i < func.Arguments.Count; i++)
+                        {
+                            if (func.Arguments[i].Type == ArgumentType.EventSets &&
+                                node.Arguments.Count > i &&
+                                TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                            {
+                                node.Arguments[i] = TextExtensions.Quote(newName);
+                            }
+                        }
 
-					}
-		}
+                    }
+        }
 
         private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
         {
@@ -445,6 +459,9 @@ namespace TombEditor.Forms
 
             foreach (var evt in newSet.Events)
                 evt.Value.Mode = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
+
+            if (_genericMode && !_genericVolume)
+                newSet.global = true;
 
             _editor.Level.Settings.EventSets.Add(newSet);
             _instance.EventSet = newSet;
@@ -555,24 +572,31 @@ namespace TombEditor.Forms
                 _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
                 triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
             }
+            if (_genericMode && !_genericVolume)
+                if (cbEvents.SelectedIndex < 3)
+                    cbEvents.SelectedIndex = 3;
         }
 
-		private void tbName_Validated(object sender, EventArgs e)
-		{
-			if (_instance.EventSet == null || _lockUI)
-				return;
+        private void tbName_Validated(object sender, EventArgs e)
+        {
+            if (_instance.EventSet == null || _lockUI)
+                return;
 
-			if (_instance.EventSet.Name == tbName.Text)
-				return;
+            if (_instance.EventSet.Name == tbName.Text)
+                return;
 
-			ReplaceEventSetNames(_instance.EventSet.Name, tbName.Text);
-			dgvEvents.SelectedCells[0].Value = _instance.EventSet.Name = tbName.Text;
-			_editor.EventSetsChange();
-		}
+            ReplaceEventSetNames(_instance.EventSet.Name, tbName.Text);
+            dgvEvents.SelectedCells[0].Value = _instance.EventSet.Name = tbName.Text;
+            _editor.EventSetsChange();
+        }
 
         private void dgvEvents_DragDrop(object sender, DragEventArgs e)
         {
-            _editor.Level.Settings.EventSets.Clear();
+            if (_genericMode && !_genericVolume)
+                _editor.Level.Settings.EventSets.RemoveAll(item => item.global);
+            
+            if (!_genericMode || _genericVolume)
+                _editor.Level.Settings.EventSets.RemoveAll(item => !item.global);
 
             foreach (DataGridViewRow row in dgvEvents.Rows)
             {
