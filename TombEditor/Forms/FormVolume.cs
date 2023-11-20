@@ -39,11 +39,11 @@ namespace TombEditor.Forms
 
         public FormVolume(VolumeInstance instance, bool genericVolume = false)
         {
-            _genericVolume = genericVolume;
             InitializeComponent();
             dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
             _genericMode = instance == null;
+            _genericVolume = genericVolume;
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
