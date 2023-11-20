@@ -234,12 +234,15 @@ namespace TombEditor.Forms
                 case VolumeEventType.OnLoop:
                     toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
                     break;
+
                 case VolumeEventType.OnBeforeLoadGame:
                     toolTip.SetToolTip(cbEvents, "Occurs before the game is loaded from a savegame. \nThis event performs continuously.");
                     break;
+
                 case VolumeEventType.OnExitToTitle:
                     toolTip.SetToolTip(cbEvents, "Occurs when exiting to title. \nThis event performs continuously.");
                     break;
+
                 case VolumeEventType.OnLaraDeath:
                     toolTip.SetToolTip(cbEvents, "Occurs when the level finishes upon Lara's death. \nThis event performs continuously.");
                     break;
