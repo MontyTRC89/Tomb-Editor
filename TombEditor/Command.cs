@@ -906,7 +906,6 @@ namespace TombEditor
 
             AddCommand("EditVolumes", "Edit volumes...", CommandType.Edit, delegate (CommandArgs args)
             {
-
                 var existingWindow = Application.OpenForms[nameof(FormVolume)];
                 if (existingWindow == null)
                 {
