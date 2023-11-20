@@ -302,21 +302,19 @@ namespace TombEditor.Forms
 
             dgvEvents.Rows.Clear();
 
-            foreach (VolumeEventSet evtSet in _editor.Level.Settings.EventSets)
+            List<VolumeEventSet> filteredList = new();
+
+            if (_genericMode && !_genericVolume)
+                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => evtSet.global).ToList();
+
+            if (!_genericMode || _genericVolume)
+                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => !evtSet.global).ToList();
+
+            foreach (VolumeEventSet evtSet in filteredList)
             {
-                bool check = false;
-                if (_genericMode && !_genericVolume && evtSet.global == true)
-                    check = true;
-
-                if ((!_genericMode || _genericVolume) && evtSet.global == false)
-                    check = true;
-
-                if (check) 
-                {
-                    var row = new DataGridViewRow { Tag = evtSet };
-                    row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
-                    dgvEvents.Rows.Add(row);
-                }
+                var row = new DataGridViewRow { Tag = evtSet };
+                row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
+                dgvEvents.Rows.Add(row);
             }
 
             _stopSelectionChangedEvent = false;
