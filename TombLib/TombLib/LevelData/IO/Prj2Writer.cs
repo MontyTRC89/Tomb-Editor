@@ -310,7 +310,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
                             chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, (int)set.LastUsedEvent);
                             chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)set.Activators);
-                            chunkIO.WriteChunkBool(Prj2Chunks.EventSetGlobal, set.global);
+                            chunkIO.WriteChunkBool(Prj2Chunks.EventSetIsGlobal, set.isGlobal);
 
                             foreach (var evt in set.Events)
                             {

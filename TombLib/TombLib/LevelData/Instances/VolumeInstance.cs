@@ -139,7 +139,7 @@ namespace TombLib.LevelData
         public string Name = string.Empty;
         public VolumeEventType LastUsedEvent = VolumeEventType.OnVolumeEnter;
         public VolumeActivators Activators;
-        public bool global = false;
+        public bool isGlobal = false;
 
         // Every volume's events can be reduced to these three.
         // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.

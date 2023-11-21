@@ -308,10 +308,10 @@ namespace TombEditor.Forms
             List<VolumeEventSet> filteredList = new();
 
             if (_genericMode && !_genericVolume)
-                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => evtSet.global).ToList();
+                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => evtSet.isGlobal).ToList();
 
             if (!_genericMode || _genericVolume)
-                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => !evtSet.global).ToList();
+                filteredList = _editor.Level.Settings.EventSets.Where(evtSet => !evtSet.isGlobal).ToList();
 
             foreach (VolumeEventSet evtSet in filteredList)
             {
@@ -462,7 +462,7 @@ namespace TombEditor.Forms
                 evt.Value.Mode = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
 
             if (_genericMode && !_genericVolume)
-                newSet.global = true;
+                newSet.isGlobal = true;
 
             _editor.Level.Settings.EventSets.Add(newSet);
             _instance.EventSet = newSet;
@@ -594,10 +594,10 @@ namespace TombEditor.Forms
         private void dgvEvents_DragDrop(object sender, DragEventArgs e)
         {
             if (_genericMode && !_genericVolume)
-                _editor.Level.Settings.EventSets.RemoveAll(item => item.global);
+                _editor.Level.Settings.EventSets.RemoveAll(item => item.isGlobal);
             
             if (!_genericMode || _genericVolume)
-                _editor.Level.Settings.EventSets.RemoveAll(item => !item.global);
+                _editor.Level.Settings.EventSets.RemoveAll(item => !item.isGlobal);
 
             foreach (DataGridViewRow row in dgvEvents.Rows)
             {
