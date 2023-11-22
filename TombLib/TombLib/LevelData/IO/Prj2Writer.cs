@@ -328,7 +328,7 @@ namespace TombLib.LevelData.IO
                                     case VolumeEventType.OnLevelStart:   cid = Prj2Chunks.EventSetOnStart;  break;
                                     case VolumeEventType.OnBeforeLoadGame: cid = Prj2Chunks.EventSetOnBeforeLoad; break;
                                     case VolumeEventType.OnExitToTitle: cid = Prj2Chunks.EventSetOnExitToTitle; break;
-                                    case VolumeEventType.OnPlayerDeath: cid = Prj2Chunks.EventSetOnPlayerDeath; break;
+                                    case VolumeEventType.OnLaraDeath: cid = Prj2Chunks.EventSetOnLaraDeath; break;
                                 }
 
                                 using (var chunkEvent = chunkIO.WriteChunk(cid))

@@ -243,8 +243,8 @@ namespace TombEditor.Forms
                     toolTip.SetToolTip(cbEvents, "Occurs when exiting to title. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnPlayerDeath:
-                    toolTip.SetToolTip(cbEvents, "Occurs when the level finishes upon Player's death. \nThis event performs once.");
+                case VolumeEventType.OnLaraDeath:
+                    toolTip.SetToolTip(cbEvents, "Occurs when the level finishes upon Lara's death. \nThis event performs once.");
                     break;
             }
         }
@@ -290,9 +290,6 @@ namespace TombEditor.Forms
 
             foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
             {
-                if ((_genericMode && !_genericVolume) && eventType < VolumeEventType.OnLoop)
-                    continue;
-
                 if ((!_genericMode || _genericVolume) && eventType > VolumeEventType.OnVolumeLeave)
                     break;
 
@@ -389,12 +386,7 @@ namespace TombEditor.Forms
             int selectedEvent = Math.Min((int)_instance.EventSet.LastUsedEvent, (int)cbEvents.Items.Count - 1);
 
             cbEvents.SelectedIndex = selectedEvent;
-
-            if (_genericMode && !_genericVolume)
-                triggerManager.Event = _instance.EventSet.Events[(VolumeEventType)selectedEvent + 3];
-
-            if (!_genericMode || _genericVolume)
-                triggerManager.Event = _instance.EventSet.Events[(VolumeEventType)selectedEvent];
+            triggerManager.Event = _instance.EventSet.Events[(VolumeEventType)selectedEvent];
 
             tbName.Text = _instance.EventSet.Name;
 
@@ -581,9 +573,9 @@ namespace TombEditor.Forms
                 _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
                 triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
             }
-            //if (_genericMode && !_genericVolume)
-            //    if (cbEvents.SelectedIndex < 3)
-            //        cbEvents.SelectedIndex = 3;
+            if (_genericMode && !_genericVolume)
+                if (cbEvents.SelectedIndex < 3)
+                    cbEvents.SelectedIndex = 3;
         }
 
         private void tbName_Validated(object sender, EventArgs e)
