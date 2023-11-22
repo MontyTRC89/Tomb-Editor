@@ -195,7 +195,101 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
-        private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        private void DrawAttractorPaths(Effect effect)
+        {
+            foreach (Attractor attractor in _editor.SelectedRoom.Attractors)
+            {
+				var solidVertices = new List<SolidVertex>();
+				float th = 32.0f;
+
+				for (int i = 0; i < attractor.Points.Count - 1; i++)
+				{
+					Vector3 point = attractor.Points[i] * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit) + new Vector3(0, -1, 0);
+					Vector3 nextPoint = attractor.Points[i + 1] * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit) + new Vector3(0, -1, 0);
+
+					Vector3 v1p2 = point;
+					Vector3 v2p2 = nextPoint;
+
+                    bool isNegativeX = point.X - nextPoint.X == 0.0f && point.Z - nextPoint.Z > 0.0f;
+                    bool isPositiveX = point.X - nextPoint.X == 0.0f && point.Z - nextPoint.Z < 0.0f;
+                    bool isNegativeZ = point.X - nextPoint.X < 0.0f && point.Z - nextPoint.Z == 0.0f;
+                    bool isPositiveZ = point.X - nextPoint.X > 0.0f && point.Z - nextPoint.Z == 0.0f;
+
+                    bool isDiagonalXpZp = point.X - nextPoint.X < 0.0f && point.Z - nextPoint.Z > 0.0f;
+                    bool isDiagonalXpZn = point.X - nextPoint.X > 0.0f && point.Z - nextPoint.Z > 0.0f;
+                    bool isDiagonalXnZp = point.X - nextPoint.X < 0.0f && point.Z - nextPoint.Z < 0.0f;
+                    bool isDiagonalXnZn = point.X - nextPoint.X > 0.0f && point.Z - nextPoint.Z < 0.0f;
+
+                    if (isNegativeX)
+                    {
+						v1p2.X -= th;
+                        v2p2.X -= th;
+                    }
+
+                    if (isPositiveX)
+                    {
+						v1p2.X += th;
+						v2p2.X += th;
+					}
+
+                    if (isNegativeZ)
+                    {
+						v1p2.Z -= th;
+						v2p2.Z -= th;
+					}
+
+					if (isPositiveZ)
+                    {
+						v1p2.Z += th;
+						v2p2.Z += th;
+					}
+
+					if (isDiagonalXpZp)
+                    {
+						v2p2.X -= th;
+						v1p2.Z -= th;
+					}
+
+					if (isDiagonalXpZn)
+                    {
+						v1p2.X -= th;
+						v2p2.Z += th;
+					}
+
+					if (isDiagonalXnZp)
+                    {
+						v1p2.X += th;
+                        v2p2.Z -= th;
+					}
+
+					if (isDiagonalXnZn)
+                    {
+						v2p2.X += th;
+                        v1p2.Z += th;
+					}
+
+					solidVertices.Add(new SolidVertex(point));
+					solidVertices.Add(new SolidVertex(v1p2));
+					solidVertices.Add(new SolidVertex(nextPoint));
+
+					solidVertices.Add(new SolidVertex(v1p2));
+					solidVertices.Add(new SolidVertex(nextPoint));
+					solidVertices.Add(new SolidVertex(v2p2));
+				}
+
+				using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, solidVertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+				_legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+				_legacyDevice.SetVertexBuffer(buffer);
+				_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+				effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+				effect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 0));
+				effect.CurrentTechnique.Passes[0].Apply();
+				_legacyDevice.Draw(PrimitiveType.TriangleStrip, buffer.ElementCount);
+			}
+		}
+
+		private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
             _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
@@ -1687,7 +1781,9 @@ namespace TombEditor.Controls.Panel3D
                 DrawLights(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw flyby path
                 DrawFlybyPath(effect);
-            }
+                // Draw attractor paths
+                DrawAttractorPaths(effect);
+			}
 
             // Draw ghost block cubes
             if (ShowGhostBlocks)

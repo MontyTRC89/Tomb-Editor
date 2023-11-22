@@ -150,7 +150,7 @@ namespace TombLib.LevelData
             if (targetBlock == null || neighbourBlock == null)
                 return null;
 
-            (int targetA, int targetB) = (targetBlock.Floor.XnZp, targetBlock.Floor.XpZp);
+            (int targetA, int targetB) = (targetBlock.Floor.XpZp, targetBlock.Floor.XnZp);
             (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XpZn);
 
             if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Target block is a diagonal wall and the floor piece is on the PositiveZ side
