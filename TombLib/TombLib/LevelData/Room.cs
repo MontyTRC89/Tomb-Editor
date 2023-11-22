@@ -9,12 +9,27 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
+    public enum AttractorType
+    {
+        Edge,
+        VerticalPole,
+        HorizontalPole,
+        SwingPole,
+        ZipLine,
+        Tightrope,
+        Pinnacle
+    }
+
     public class Attractor
     {
+        public AttractorType Type { get; set; } = AttractorType.Edge;
         public List<Vector3> Points { get; set; } = new();
 
-        public Vector3 FirstPoint => Points.Count > 0 ? Points[0] : Vector3.Zero;
-        public Vector3 LastPoint => Points.Count > 0 ? Points[^1] : Vector3.Zero;
+        public Vector3 StartPoint => Points.Count > 0 ? Points[0] : Vector3.Zero;
+        public Vector3 EndPoint => Points.Count > 0 ? Points[^1] : Vector3.Zero;
+
+        public Attractor(params Vector3[] points)
+            => Points.AddRange(points);
     }
 
     public enum RoomType : byte
@@ -124,7 +139,7 @@ namespace TombLib.LevelData
             if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor { Points = new List<Vector3>() { new(x, targetA, z), new(x + 1, targetB, z) } };
+            return new Attractor(new(x, targetA, z), new(x + 1, targetB, z));
         }
 
         private Attractor TryGeneratePositiveZAttractorForBlock(int x, int z)
@@ -165,7 +180,7 @@ namespace TombLib.LevelData
             if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor { Points = new List<Vector3>() { new(x + 1, targetA, z + 1), new(x, targetB, z + 1) } };
+            return new Attractor(new(x + 1, targetA, z + 1), new(x, targetB, z + 1));
         }
 
         private Attractor TryGenerateNegativeXAttractorForBlock(int x, int z)
@@ -206,7 +221,7 @@ namespace TombLib.LevelData
             if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor { Points = new List<Vector3>() { new(x, targetA, z + 1), new(x, targetB, z) } };
+            return new Attractor(new(x, targetA, z + 1), new(x, targetB, z));
         }
 
         private Attractor TryGeneratePositiveXAttractorForBlock(int x, int z)
@@ -247,7 +262,7 @@ namespace TombLib.LevelData
             if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor { Points = new List<Vector3>() { new(x + 1, targetA, z), new(x + 1, targetB, z + 1) } };
+            return new Attractor(new(x + 1, targetA, z), new(x + 1, targetB, z + 1));
         }
 
         private Attractor TryGenerateDiagonalXnZpAttractorForBlock(int x, int z)
@@ -262,7 +277,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XpZn && targetB <= block.Floor.XpZn)
                 return null;
 
-            return new Attractor() { Points = new List<Vector3>() { new(x, targetA, z), new(x + 1, targetB, z + 1) } };
+            return new Attractor(new(x, targetA, z), new(x + 1, targetB, z + 1));
         }
 
         private Attractor TryGenerateDiagonalXpZpAttractorForBlock(int x, int z)
@@ -277,7 +292,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XnZn && targetB <= block.Floor.XnZn)
                 return null;
 
-            return new Attractor() { Points = new List<Vector3>() { new(x, targetA, z + 1), new(x + 1, targetB, z) } };
+            return new Attractor(new(x, targetA, z + 1), new(x + 1, targetB, z));
         }
 
         private Attractor TryGenerateDiagonalXpZnAttractorForBlock(int x, int z)
@@ -292,7 +307,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XnZp && targetB <= block.Floor.XnZp)
                 return null;
 
-            return new Attractor() { Points = new List<Vector3>() { new(x + 1, targetA, z + 1), new(x, targetB, z) } };
+            return new Attractor(new(x + 1, targetA, z + 1), new(x, targetB, z));
         }
 
         private Attractor TryGenerateDiagonalXnZnAttractorForBlock(int x, int z)
@@ -307,7 +322,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XpZp && targetB <= block.Floor.XpZp)
                 return null;
 
-            return new Attractor() { Points = new List<Vector3>() { new(x + 1, targetA, z), new(x, targetB, z + 1) } };
+            return new Attractor(new(x + 1, targetA, z), new(x, targetB, z + 1));
         }
 
         /// <summary>
@@ -317,7 +332,7 @@ namespace TombLib.LevelData
         {
             Attractor prev = attractors.FirstOrDefault(a => attractors.Any(b =>
             {
-                if (a.LastPoint != b.FirstPoint) // Not a match
+                if (a.EndPoint != b.StartPoint) // Not a match
                     return false;
 
                 if (a.Points.Except(b.Points).Count() == 0) // Exact same items in sequence
@@ -331,11 +346,11 @@ namespace TombLib.LevelData
             while (prev != null)
             {
                 Attractor next = attractors
-                    .Where(a => prev.LastPoint == a.FirstPoint)
+                    .Where(a => prev.EndPoint == a.StartPoint)
                     .OrderBy(a =>
                     {
-                        var pointA = new Vector2(prev.Points[^2].X - prev.LastPoint.X, prev.Points[^2].Z - prev.LastPoint.Z);
-                        var pointB = new Vector2(a.Points[1].X - a.FirstPoint.X, a.Points[1].Z - a.FirstPoint.Z);
+                        var pointA = new Vector2(prev.Points[^2].X - prev.EndPoint.X, prev.Points[^2].Z - prev.EndPoint.Z);
+                        var pointB = new Vector2(a.Points[1].X - a.StartPoint.X, a.Points[1].Z - a.StartPoint.Z);
                         double angle = (Math.Atan2(pointB.Y, pointB.X) - Math.Atan2(pointA.Y, pointA.X)) * 180 / Math.PI;
 
                         if (angle < 0)
@@ -345,13 +360,13 @@ namespace TombLib.LevelData
                     })
                     .First();
 
-                var result = new Attractor() { Points = prev.Points.Concat(next.Points.Skip(1)).ToList() };
+                var result = new Attractor(prev.Points.Concat(next.Points.Skip(1)).ToArray());
 
                 attractors.Remove(prev);
                 attractors.Remove(next);
                 attractors.Add(result);
 
-                if (result.FirstPoint == result.LastPoint)
+                if (result.StartPoint == result.EndPoint)
                     closedLoops.Add(result);
 
                 prev = attractors.FirstOrDefault(a => attractors.Any(b =>
@@ -359,7 +374,7 @@ namespace TombLib.LevelData
                     if (closedLoops.Contains(a) || closedLoops.Contains(b))
                         return false;
 
-                    if (a.LastPoint != b.FirstPoint) // Not a match
+                    if (a.EndPoint != b.StartPoint) // Not a match
                         return false;
 
                     if (a.Points.Except(b.Points).Count() == 0) // Exact same items in sequence
