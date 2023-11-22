@@ -9,6 +9,14 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
+    public class Attractor
+    {
+        public List<Vector3> Points { get; set; } = new();
+
+        public Vector3 FirstPoint => Points.Count > 0 ? Points[0] : Vector3.Zero;
+        public Vector3 LastPoint => Points.Count > 0 ? Points[^1] : Vector3.Zero;
+    }
+
     public enum RoomType : byte
     {
         Normal, Rain, Snow, Water, Quicksand
@@ -76,6 +84,366 @@ namespace TombLib.LevelData
 
     public class Room : ITriggerParameter
     {
+        public List<Attractor> Attractors { get; set; } = new();
+
+        private Attractor TryGenerateNegativeZAttractorForBlock(int x, int z)
+        {
+            Block targetBlock = GetBlockTry(x, z),
+                neighbourBlock = GetBlockTry(x, z - 1);
+
+            if (targetBlock == null || neighbourBlock == null)
+                return null;
+
+            (int targetA, int targetB) = (targetBlock.Floor.XnZn, targetBlock.Floor.XpZn);
+            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XnZp, neighbourBlock.Floor.XpZp);
+
+            if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XpZp) // Target block is a diagonal wall and the floor piece is on the NegativeZ side
+                targetA = targetB = Math.Min(targetBlock.Floor.XnZn, targetBlock.Floor.XpZn); // Use the lower of the two floor heights
+
+            if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Neighbour block is a diagonal wall and the floor piece is on the PositiveZ side
+                neighbourA = neighbourB = Math.Min(neighbourBlock.Floor.XnZp, neighbourBlock.Floor.XpZp); // Use the lower of the two floor heights
+
+            if (targetBlock.Type != BlockType.Floor) // Target block is not floor
+            {
+                if (targetBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Target block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Target block is a diagonal wall, but the floor piece is not on the NegativeZ side
+                    return null;
+            }
+
+            if (neighbourBlock.Type != BlockType.Floor)
+            {
+                if (neighbourBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Neighbour block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XpZp) // Neighbour block is a diagonal wall, but the floor piece is not on the PositiveZ side
+                    return null;
+            }
+
+            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+                return null;
+
+            return new Attractor { Points = new List<Vector3>() { new(x, targetA, z), new(x + 1, targetB, z) } };
+        }
+
+        private Attractor TryGeneratePositiveZAttractorForBlock(int x, int z)
+        {
+            Block targetBlock = GetBlockTry(x, z),
+                neighbourBlock = GetBlockTry(x, z + 1);
+
+            if (targetBlock == null || neighbourBlock == null)
+                return null;
+
+            (int targetA, int targetB) = (targetBlock.Floor.XnZp, targetBlock.Floor.XpZp);
+            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XpZn);
+
+            if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Target block is a diagonal wall and the floor piece is on the PositiveZ side
+                targetA = targetB = Math.Min(targetBlock.Floor.XnZp, targetBlock.Floor.XpZp); // Use the lower of the two floor heights
+
+            if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XpZp) // Neighbour block is a diagonal wall and the floor piece is on the NegativeZ side
+                neighbourA = neighbourB = Math.Min(neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XpZn); // Use the lower of the two floor heights
+
+            if (targetBlock.Type != BlockType.Floor) // Target block is not floor
+            {
+                if (targetBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Target block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XpZp) // Target block is a diagonal wall, but the floor piece is not on the PositiveZ side
+                    return null;
+            }
+
+            if (neighbourBlock.Type != BlockType.Floor)
+            {
+                if (neighbourBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Neighbour block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Neighbour block is a diagonal wall, but the floor piece is not on the NegativeZ side
+                    return null;
+            }
+
+            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+                return null;
+
+            return new Attractor { Points = new List<Vector3>() { new(x + 1, targetA, z + 1), new(x, targetB, z + 1) } };
+        }
+
+        private Attractor TryGenerateNegativeXAttractorForBlock(int x, int z)
+        {
+            Block targetBlock = GetBlockTry(x, z),
+                neighbourBlock = GetBlockTry(x - 1, z);
+
+            if (targetBlock == null || neighbourBlock == null)
+                return null;
+
+            (int targetA, int targetB) = (targetBlock.Floor.XnZp, targetBlock.Floor.XnZn);
+            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XpZp, neighbourBlock.Floor.XpZn);
+
+            if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XpZn) // Target block is a diagonal wall and the floor piece is on the PositiveX side
+                targetA = targetB = Math.Min(targetBlock.Floor.XnZp, targetBlock.Floor.XnZn); // Use the lower of the two floor heights
+
+            if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XnZn) // Neighbour block is a diagonal wall and the floor piece is on the NegativeX side
+                neighbourA = neighbourB = Math.Min(neighbourBlock.Floor.XpZp, neighbourBlock.Floor.XpZn); // Use the lower of the two floor heights
+
+            if (targetBlock.Type != BlockType.Floor) // Target block is not floor
+            {
+                if (targetBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Target block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XnZn) // Target block is a diagonal wall, but the floor piece is not on the PositiveX side
+                    return null;
+            }
+
+            if (neighbourBlock.Type != BlockType.Floor)
+            {
+                if (neighbourBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Neighbour block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XpZn) // Neighbour block is a diagonal wall, but the floor piece is not on the NegativeX side
+                    return null;
+            }
+
+            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+                return null;
+
+            return new Attractor { Points = new List<Vector3>() { new(x, targetA, z + 1), new(x, targetB, z) } };
+        }
+
+        private Attractor TryGeneratePositiveXAttractorForBlock(int x, int z)
+        {
+            Block targetBlock = GetBlockTry(x, z),
+                neighbourBlock = GetBlockTry(x + 1, z);
+
+            if (targetBlock == null || neighbourBlock == null)
+                return null;
+
+            (int targetA, int targetB) = (targetBlock.Floor.XpZn, targetBlock.Floor.XpZp);
+            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XnZp);
+
+            if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XnZp) // Target block is a diagonal wall and the floor piece is on the NegativeX side
+                targetA = targetB = Math.Min(targetBlock.Floor.XpZn, targetBlock.Floor.XpZp); // Use the lower of the two floor heights
+
+            if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XpZp) // Neighbour block is a diagonal wall and the floor piece is on the PositiveX side
+                neighbourA = neighbourB = Math.Min(neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XnZp); // Use the lower of the two floor heights
+
+            if (targetBlock.Type != BlockType.Floor) // Target block is not floor
+            {
+                if (targetBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Target block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XpZp) // Target block is a diagonal wall, but the floor piece is not on the NegativeX side
+                    return null;
+            }
+
+            if (neighbourBlock.Type != BlockType.Floor)
+            {
+                if (neighbourBlock.Floor.DiagonalSplit == DiagonalSplit.None) // Neighbour block is not a diagonal wall (which has a floor piece)
+                    return null;
+
+                if (neighbourBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XnZp) // Neighbour block is a diagonal wall, but the floor piece is not on the PositiveX side
+                    return null;
+            }
+
+            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+                return null;
+
+            return new Attractor { Points = new List<Vector3>() { new(x + 1, targetA, z), new(x + 1, targetB, z + 1) } };
+        }
+
+        private Attractor TryGenerateDiagonalXnZpAttractorForBlock(int x, int z)
+        {
+            Block block = GetBlockTry(x, z);
+
+            if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XnZp)
+                return null;
+
+            (int targetA, int targetB) = (block.Floor.XnZn, block.Floor.XpZp);
+
+            if (targetA <= block.Floor.XpZn && targetB <= block.Floor.XpZn)
+                return null;
+
+            return new Attractor() { Points = new List<Vector3>() { new(x, targetA, z), new(x + 1, targetB, z + 1) } };
+        }
+
+        private Attractor TryGenerateDiagonalXpZpAttractorForBlock(int x, int z)
+        {
+            Block block = GetBlockTry(x, z);
+
+            if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XpZp)
+                return null;
+
+            (int targetA, int targetB) = (block.Floor.XnZp, block.Floor.XpZn);
+
+            if (targetA <= block.Floor.XnZn && targetB <= block.Floor.XnZn)
+                return null;
+
+            return new Attractor() { Points = new List<Vector3>() { new(x, targetA, z + 1), new(x + 1, targetB, z) } };
+        }
+
+        private Attractor TryGenerateDiagonalXpZnAttractorForBlock(int x, int z)
+        {
+            Block block = GetBlockTry(x, z);
+
+            if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XpZn)
+                return null;
+
+            (int targetA, int targetB) = (block.Floor.XpZp, block.Floor.XnZn);
+
+            if (targetA <= block.Floor.XnZp && targetB <= block.Floor.XnZp)
+                return null;
+
+            return new Attractor() { Points = new List<Vector3>() { new(x + 1, targetA, z + 1), new(x, targetB, z) } };
+        }
+
+        private Attractor TryGenerateDiagonalXnZnAttractorForBlock(int x, int z)
+        {
+            Block block = GetBlockTry(x, z);
+
+            if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XnZn)
+                return null;
+
+            (int targetA, int targetB) = (block.Floor.XpZn, block.Floor.XnZp);
+
+            if (targetA <= block.Floor.XpZp && targetB <= block.Floor.XpZp)
+                return null;
+
+            return new Attractor() { Points = new List<Vector3>() { new(x + 1, targetA, z), new(x, targetB, z + 1) } };
+        }
+
+        /// <summary>
+        /// Merges attractors where the last point of one attractor is the same as the first point of another attractor.
+        /// </summary>
+        private void MergeAttractorsWherePossible(List<Attractor> attractors)
+        {
+            Attractor prev = attractors.FirstOrDefault(a => attractors.Any(b =>
+            {
+                if (a.LastPoint != b.FirstPoint) // Not a match
+                    return false;
+
+                if (a.Points.Except(b.Points).Count() == 0) // Exact same items in sequence
+                    return false;
+
+                return true;
+            }));
+
+            var closedLoops = new HashSet<Attractor>();
+
+            while (prev != null)
+            {
+                Attractor next = attractors
+                    .Where(a => prev.LastPoint == a.FirstPoint)
+                    .OrderBy(a =>
+                    {
+                        var pointA = new Vector2(prev.Points[^2].X - prev.LastPoint.X, prev.Points[^2].Z - prev.LastPoint.Z);
+                        var pointB = new Vector2(a.Points[1].X - a.FirstPoint.X, a.Points[1].Z - a.FirstPoint.Z);
+                        double angle = (Math.Atan2(pointB.Y, pointB.X) - Math.Atan2(pointA.Y, pointA.X)) * 180 / Math.PI;
+
+                        if (angle < 0)
+                            angle += 360;
+
+                        return angle;
+                    })
+                    .First();
+
+                var result = new Attractor() { Points = prev.Points.Concat(next.Points.Skip(1)).ToList() };
+
+                attractors.Remove(prev);
+                attractors.Remove(next);
+                attractors.Add(result);
+
+                if (result.FirstPoint == result.LastPoint)
+                    closedLoops.Add(result);
+
+                prev = attractors.FirstOrDefault(a => attractors.Any(b =>
+                {
+                    if (closedLoops.Contains(a) || closedLoops.Contains(b))
+                        return false;
+
+                    if (a.LastPoint != b.FirstPoint) // Not a match
+                        return false;
+
+                    if (a.Points.Except(b.Points).Count() == 0) // Exact same items in sequence
+                        return false;
+
+                    return true;
+                }));
+            }
+        }
+
+        private void MergePointsWherePossible(List<Attractor> attractors)
+        {
+            foreach (Attractor attractor in attractors)
+            {
+                Vector3 lastDifference = attractor.Points[0] - attractor.Points[1];
+
+                for (int i = 1; i < attractor.Points.Count - 1; i++)
+                {
+                    Vector3 difference = attractor.Points[i] - attractor.Points[i + 1];
+
+                    if (difference == lastDifference)
+                    {
+                        attractor.Points.RemoveAt(i);
+                        i--;
+                    }
+
+                    lastDifference = difference;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates attractors for the room.
+        /// </summary>
+        public void GenerateAttractors()
+        {
+            void AddIfNotNull(Attractor attractor)
+            {
+                if (attractor is not null)
+                    Attractors.Add(attractor);
+            }
+
+            Attractors.Clear();
+
+            for (int z = 0; z < NumZSectors; ++z)
+                for (int x = 0; x < NumXSectors; ++x)
+                    switch (Blocks[x, z].Floor.DiagonalSplit)
+                    {
+                        case DiagonalSplit.XnZp:
+                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
+                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateDiagonalXnZpAttractorForBlock(x, z));
+                            break;
+
+                        case DiagonalSplit.XpZp:
+                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateDiagonalXpZpAttractorForBlock(x, z));
+                            break;
+
+                        case DiagonalSplit.XpZn:
+                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateDiagonalXpZnAttractorForBlock(x, z));
+                            break;
+
+                        case DiagonalSplit.XnZn:
+                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateDiagonalXnZnAttractorForBlock(x, z));
+                            break;
+
+                        default:
+                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
+                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
+                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
+                            break;
+                    }
+
+            MergeAttractorsWherePossible(Attractors);
+            MergePointsWherePossible(Attractors);
+        }
+
         public delegate void RemovedFromRoomDelegate(Room instance);
         public event RemovedFromRoomDelegate DeletedEvent;
 

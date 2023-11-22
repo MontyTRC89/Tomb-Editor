@@ -313,6 +313,8 @@ namespace TombLib.LevelData
 
             // Lighting
             Relight(room);
+
+            room.GenerateAttractors();
         }
 
         private enum FaceDirection
