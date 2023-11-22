@@ -204,8 +204,8 @@ namespace TombEditor.Controls.Panel3D
 
 				for (int i = 0; i < attractor.Points.Count - 1; i++)
 				{
-					Vector3 point = attractor.Points[i] * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit) + new Vector3(0, -1, 0);
-					Vector3 nextPoint = attractor.Points[i + 1] * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit) + new Vector3(0, -1, 0);
+					Vector3 point = ((attractor.Points[i] + _editor.SelectedRoom.Position) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit)) + new Vector3(0, -1, 0);
+					Vector3 nextPoint = ((attractor.Points[i + 1] + _editor.SelectedRoom.Position) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit)) + new Vector3(0, -1, 0);
 
 					Vector3 v1p2 = point;
 					Vector3 v2p2 = nextPoint;

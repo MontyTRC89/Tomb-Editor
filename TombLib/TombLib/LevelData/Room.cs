@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
 
@@ -103,8 +104,10 @@ namespace TombLib.LevelData
 
         private Attractor TryGenerateNegativeZAttractorForBlock(int x, int z)
         {
+            RoomBlockPair neighbourBlockPair = GetBlockTryThroughPortal(x, z - 1);
+
             Block targetBlock = GetBlockTry(x, z),
-                neighbourBlock = GetBlockTry(x, z - 1);
+                neighbourBlock = neighbourBlockPair.Block;
 
             if (targetBlock == null || neighbourBlock == null)
                 return null;
@@ -136,7 +139,27 @@ namespace TombLib.LevelData
                     return null;
             }
 
-            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+            if (targetBlock.FloorPortal != null)
+            {
+                RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+
+                if (floorPortalInfo.VisualType is RoomConnectionType.FullPortal or RoomConnectionType.TriangularPortalXnZn or RoomConnectionType.TriangularPortalXpZn)
+                    return null;
+
+                RoomConnectionInfo neighbourFloorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z - 1));
+
+                if (neighbourFloorPortalInfo.VisualType is not RoomConnectionType.FullPortal and not RoomConnectionType.TriangularPortalXnZp and not RoomConnectionType.TriangularPortalXpZp)
+                {
+                    if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y)
+                        return null;
+                }
+            }
+            else if (targetBlock.FloorPortal == null && neighbourBlock.FloorPortal != null)
+            {
+                if (targetA + Position.Y < neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y < neighbourB + neighbourBlockPair.Room.Position.Y)
+                    return null;
+            }
+            else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
             return new Attractor(new(x, targetA, z), new(x + 1, targetB, z));
@@ -144,14 +167,16 @@ namespace TombLib.LevelData
 
         private Attractor TryGeneratePositiveZAttractorForBlock(int x, int z)
         {
+            RoomBlockPair neighbourBlockPair = GetBlockTryThroughPortal(x, z + 1);
+
             Block targetBlock = GetBlockTry(x, z),
-                neighbourBlock = GetBlockTry(x, z + 1);
+                neighbourBlock = neighbourBlockPair.Block;
 
             if (targetBlock == null || neighbourBlock == null)
                 return null;
 
             (int targetA, int targetB) = (targetBlock.Floor.XpZp, targetBlock.Floor.XnZp);
-            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XnZn, neighbourBlock.Floor.XpZn);
+            (int neighbourA, int neighbourB) = (neighbourBlock.Floor.XpZn, neighbourBlock.Floor.XnZn);
 
             if (targetBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn) // Target block is a diagonal wall and the floor piece is on the PositiveZ side
                 targetA = targetB = Math.Min(targetBlock.Floor.XnZp, targetBlock.Floor.XpZp); // Use the lower of the two floor heights
@@ -177,7 +202,27 @@ namespace TombLib.LevelData
                     return null;
             }
 
-            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+            if (targetBlock.FloorPortal != null)
+            {
+                RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+
+                if (floorPortalInfo.VisualType is RoomConnectionType.FullPortal or RoomConnectionType.TriangularPortalXnZp or RoomConnectionType.TriangularPortalXpZp)
+                    return null;
+
+                RoomConnectionInfo neighbourFloorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z + 1));
+
+                if (neighbourFloorPortalInfo.VisualType is not RoomConnectionType.FullPortal and not RoomConnectionType.TriangularPortalXnZn and not RoomConnectionType.TriangularPortalXpZn)
+                {
+                    if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y)
+                        return null;
+                }
+            }
+            else if (targetBlock.FloorPortal == null && neighbourBlock.FloorPortal != null)
+            {
+                if (targetA + Position.Y < neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y < neighbourB + neighbourBlockPair.Room.Position.Y)
+                    return null;
+            }
+            else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
             return new Attractor(new(x + 1, targetA, z + 1), new(x, targetB, z + 1));
@@ -185,8 +230,10 @@ namespace TombLib.LevelData
 
         private Attractor TryGenerateNegativeXAttractorForBlock(int x, int z)
         {
+            RoomBlockPair neighbourBlockPair = GetBlockTryThroughPortal(x - 1, z);
+
             Block targetBlock = GetBlockTry(x, z),
-                neighbourBlock = GetBlockTry(x - 1, z);
+                neighbourBlock = neighbourBlockPair.Block;
 
             if (targetBlock == null || neighbourBlock == null)
                 return null;
@@ -218,7 +265,27 @@ namespace TombLib.LevelData
                     return null;
             }
 
-            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+            if (targetBlock.FloorPortal != null)
+            {
+                RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+
+                if (floorPortalInfo.VisualType is RoomConnectionType.FullPortal or RoomConnectionType.TriangularPortalXnZn or RoomConnectionType.TriangularPortalXnZp)
+                    return null;
+
+                RoomConnectionInfo neighbourFloorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x - 1, z));
+
+                if (neighbourFloorPortalInfo.VisualType is not RoomConnectionType.FullPortal and not RoomConnectionType.TriangularPortalXpZn and not RoomConnectionType.TriangularPortalXpZp)
+                {
+                    if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y)
+                        return null;
+                }
+            }
+            else if (targetBlock.FloorPortal == null && neighbourBlock.FloorPortal != null)
+            {
+                if (targetA + Position.Y < neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y < neighbourB + neighbourBlockPair.Room.Position.Y)
+                    return null;
+            }
+            else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
             return new Attractor(new(x, targetA, z + 1), new(x, targetB, z));
@@ -226,8 +293,10 @@ namespace TombLib.LevelData
 
         private Attractor TryGeneratePositiveXAttractorForBlock(int x, int z)
         {
+            RoomBlockPair neighbourBlockPair = GetBlockTryThroughPortal(x + 1, z);
+
             Block targetBlock = GetBlockTry(x, z),
-                neighbourBlock = GetBlockTry(x + 1, z);
+                neighbourBlock = neighbourBlockPair.Block;
 
             if (targetBlock == null || neighbourBlock == null)
                 return null;
@@ -259,7 +328,27 @@ namespace TombLib.LevelData
                     return null;
             }
 
-            if (targetA <= neighbourA && targetB <= neighbourB) // If target block is not higher than the neighbour block
+            if (targetBlock.FloorPortal != null)
+            {
+                RoomConnectionInfo targetFloorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+                
+                if (targetFloorPortalInfo.VisualType is RoomConnectionType.FullPortal or RoomConnectionType.TriangularPortalXpZn or RoomConnectionType.TriangularPortalXpZp)
+                    return null;
+
+                RoomConnectionInfo neighbourFloorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x + 1, z));
+
+                if (neighbourFloorPortalInfo.VisualType is not RoomConnectionType.FullPortal and not RoomConnectionType.TriangularPortalXnZn and not RoomConnectionType.TriangularPortalXnZp)
+                {
+                    if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y)
+                        return null;
+                }
+            }
+            else if (targetBlock.FloorPortal == null && neighbourBlock.FloorPortal != null)
+            {
+                if (targetA + Position.Y < neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y < neighbourB + neighbourBlockPair.Room.Position.Y)
+                    return null;
+            }
+            else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
             return new Attractor(new(x + 1, targetA, z), new(x + 1, targetB, z + 1));
@@ -270,7 +359,19 @@ namespace TombLib.LevelData
             Block block = GetBlockTry(x, z);
 
             if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XnZp)
-                return null;
+            {
+                if (block?.FloorPortal != null)
+                {
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+
+                    if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXpZn)
+                        return null;
+
+                    return new Attractor(new(x, block.Floor.XnZn, z), new(x + 1, block.Floor.XpZp, z + 1));
+                }
+                else
+                    return null;
+            }   
 
             (int targetA, int targetB) = (block.Floor.XnZn, block.Floor.XpZp);
 
@@ -285,7 +386,19 @@ namespace TombLib.LevelData
             Block block = GetBlockTry(x, z);
 
             if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XpZp)
-                return null;
+            {
+                if (block?.FloorPortal != null)
+                {
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+
+                    if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXnZn)
+                        return null;
+
+                    return new Attractor(new(x, block.Floor.XnZp, z + 1), new(x + 1, block.Floor.XpZn, z));
+                }
+                else
+                    return null;
+            }
 
             (int targetA, int targetB) = (block.Floor.XnZp, block.Floor.XpZn);
 
@@ -300,8 +413,20 @@ namespace TombLib.LevelData
             Block block = GetBlockTry(x, z);
 
             if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XpZn)
-                return null;
+            {
+                if (block?.FloorPortal != null)
+                {
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
 
+                    if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXnZp)
+                        return null;
+                    
+                    return new Attractor(new(x + 1, block.Floor.XpZp, z + 1), new(x, block.Floor.XnZn, z));
+                }
+                else
+                    return null;
+            }
+            
             (int targetA, int targetB) = (block.Floor.XpZp, block.Floor.XnZn);
 
             if (targetA <= block.Floor.XnZp && targetB <= block.Floor.XnZp)
@@ -315,8 +440,20 @@ namespace TombLib.LevelData
             Block block = GetBlockTry(x, z);
 
             if (block == null || block.Type != BlockType.Floor || block.Floor.DiagonalSplit != DiagonalSplit.XnZn)
-                return null;
+            {
+                if (block?.FloorPortal != null)
+                {
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
 
+                    if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXpZp)
+                        return null;
+                    
+                    return new Attractor(new(x + 1, block.Floor.XpZn, z), new(x, block.Floor.XnZp, z + 1));
+                }
+                else
+                    return null;
+            }
+            
             (int targetA, int targetB) = (block.Floor.XpZn, block.Floor.XnZp);
 
             if (targetA <= block.Floor.XpZp && targetB <= block.Floor.XpZp)
@@ -421,39 +558,16 @@ namespace TombLib.LevelData
 
             for (int z = 0; z < NumZSectors; ++z)
                 for (int x = 0; x < NumXSectors; ++x)
-                    switch (Blocks[x, z].Floor.DiagonalSplit)
-                    {
-                        case DiagonalSplit.XnZp:
-                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
-                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateDiagonalXnZpAttractorForBlock(x, z));
-                            break;
-
-                        case DiagonalSplit.XpZp:
-                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateDiagonalXpZpAttractorForBlock(x, z));
-                            break;
-
-                        case DiagonalSplit.XpZn:
-                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateDiagonalXpZnAttractorForBlock(x, z));
-                            break;
-
-                        case DiagonalSplit.XnZn:
-                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateDiagonalXnZnAttractorForBlock(x, z));
-                            break;
-
-                        default:
-                            AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
-                            AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
-                            AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
-                            break;
-                    }
+                {
+                    AddIfNotNull(TryGenerateNegativeZAttractorForBlock(x, z));
+                    AddIfNotNull(TryGenerateNegativeXAttractorForBlock(x, z));
+                    AddIfNotNull(TryGeneratePositiveZAttractorForBlock(x, z));
+                    AddIfNotNull(TryGeneratePositiveXAttractorForBlock(x, z));
+                    AddIfNotNull(TryGenerateDiagonalXnZpAttractorForBlock(x, z));
+                    AddIfNotNull(TryGenerateDiagonalXpZpAttractorForBlock(x, z));
+                    AddIfNotNull(TryGenerateDiagonalXpZnAttractorForBlock(x, z));
+                    AddIfNotNull(TryGenerateDiagonalXnZnAttractorForBlock(x, z));
+                }
 
             MergeAttractorsWherePossible(Attractors);
             MergePointsWherePossible(Attractors);
