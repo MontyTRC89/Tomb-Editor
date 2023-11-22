@@ -243,8 +243,8 @@ namespace TombEditor.Forms
                     toolTip.SetToolTip(cbEvents, "Occurs when exiting to title. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnLaraDeath:
-                    toolTip.SetToolTip(cbEvents, "Occurs when the level finishes upon Lara's death. \nThis event performs once.");
+                case VolumeEventType.OnPlayerDeath:
+                    toolTip.SetToolTip(cbEvents, "Occurs when the level finishes upon Player's death. \nThis event performs once.");
                     break;
             }
         }

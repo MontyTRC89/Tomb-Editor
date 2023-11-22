@@ -518,7 +518,7 @@ namespace TombLib.LevelData.IO
                                      id3 == Prj2Chunks.EventSetOnLoop   ||
                                      id3 == Prj2Chunks.EventSetOnBeforeLoad ||
                                      id3 == Prj2Chunks.EventSetOnExitToTitle ||
-                                     id3 == Prj2Chunks.EventSetOnLaraDeath)
+                                     id3 == Prj2Chunks.EventSetOnPlayerDeath)
                             {
                                 var evt = new VolumeEvent();
 
@@ -561,8 +561,8 @@ namespace TombLib.LevelData.IO
                                     eventSet.Events[VolumeEventType.OnBeforeLoadGame] = evt;
                                 else if (id3 == Prj2Chunks.EventSetOnExitToTitle)
                                     eventSet.Events[VolumeEventType.OnExitToTitle] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnLaraDeath)
-                                    eventSet.Events[VolumeEventType.OnLaraDeath] = evt;
+                                else if (id3 == Prj2Chunks.EventSetOnPlayerDeath)
+                                    eventSet.Events[VolumeEventType.OnPlayerDeath] = evt;
                             }
                             else
                                 return false;
