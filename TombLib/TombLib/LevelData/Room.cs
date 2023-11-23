@@ -11,13 +11,7 @@ namespace TombLib.LevelData
 {
     public enum AttractorType
     {
-        Edge,
-        VerticalPole,
-        HorizontalPole,
-        SwingPole,
-        ZipLine,
-        Tightrope,
-        Pinnacle
+        Edge
     }
 
     public class Attractor
@@ -31,7 +25,13 @@ namespace TombLib.LevelData
         public Vector4 DebugColor { get; set; }
 #endif
 
-        public Attractor(params Vector3[] points)
+        public Attractor(AttractorType type, List<Vector3> points)
+        {
+            Type = type;
+            Points = new List<Vector3>(points);
+        }
+
+        public Attractor(AttractorType type, params Vector3[] points)
         {
 #if DEBUG
             DebugColor = new Vector4(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
@@ -169,7 +169,7 @@ namespace TombLib.LevelData
             else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor(new(x, targetA, z), new(x + 1, targetB, z));
+            return new Attractor(AttractorType.Edge, new(x, targetA, z), new(x + 1, targetB, z));
         }
 
         private Attractor TryGeneratePositiveZAttractorForBlock(int x, int z)
@@ -232,7 +232,7 @@ namespace TombLib.LevelData
             else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor(new(x + 1, targetA, z + 1), new(x, targetB, z + 1));
+            return new Attractor(AttractorType.Edge, new(x + 1, targetA, z + 1), new(x, targetB, z + 1));
         }
 
         private Attractor TryGenerateNegativeXAttractorForBlock(int x, int z)
@@ -295,7 +295,7 @@ namespace TombLib.LevelData
             else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor(new(x, targetA, z + 1), new(x, targetB, z));
+            return new Attractor(AttractorType.Edge, new(x, targetA, z + 1), new(x, targetB, z));
         }
 
         private Attractor TryGeneratePositiveXAttractorForBlock(int x, int z)
@@ -358,7 +358,7 @@ namespace TombLib.LevelData
             else if (targetA + Position.Y <= neighbourA + neighbourBlockPair.Room.Position.Y && targetB + Position.Y <= neighbourB + neighbourBlockPair.Room.Position.Y) // If target block is not higher than the neighbour block
                 return null;
 
-            return new Attractor(new(x + 1, targetA, z), new(x + 1, targetB, z + 1));
+            return new Attractor(AttractorType.Edge, new(x + 1, targetA, z), new(x + 1, targetB, z + 1));
         }
 
         private Attractor TryGenerateDiagonalXnZpAttractorForBlock(int x, int z)
@@ -374,7 +374,7 @@ namespace TombLib.LevelData
                     if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXpZn)
                         return null;
 
-                    return new Attractor(new(x, block.Floor.XnZn, z), new(x + 1, block.Floor.XpZp, z + 1));
+                    return new Attractor(AttractorType.Edge, new(x, block.Floor.XnZn, z), new(x + 1, block.Floor.XpZp, z + 1));
                 }
                 else
                     return null;
@@ -385,7 +385,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XpZn && targetB <= block.Floor.XpZn)
                 return null;
 
-            return new Attractor(new(x, targetA, z), new(x + 1, targetB, z + 1));
+            return new Attractor(AttractorType.Edge, new(x, targetA, z), new(x + 1, targetB, z + 1));
         }
 
         private Attractor TryGenerateDiagonalXpZpAttractorForBlock(int x, int z)
@@ -401,7 +401,7 @@ namespace TombLib.LevelData
                     if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXnZn)
                         return null;
 
-                    return new Attractor(new(x, block.Floor.XnZp, z + 1), new(x + 1, block.Floor.XpZn, z));
+                    return new Attractor(AttractorType.Edge, new(x, block.Floor.XnZp, z + 1), new(x + 1, block.Floor.XpZn, z));
                 }
                 else
                     return null;
@@ -412,7 +412,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XnZn && targetB <= block.Floor.XnZn)
                 return null;
 
-            return new Attractor(new(x, targetA, z + 1), new(x + 1, targetB, z));
+            return new Attractor(AttractorType.Edge, new(x, targetA, z + 1), new(x + 1, targetB, z));
         }
 
         private Attractor TryGenerateDiagonalXpZnAttractorForBlock(int x, int z)
@@ -428,7 +428,7 @@ namespace TombLib.LevelData
                     if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXnZp)
                         return null;
                     
-                    return new Attractor(new(x + 1, block.Floor.XpZp, z + 1), new(x, block.Floor.XnZn, z));
+                    return new Attractor(AttractorType.Edge, new(x + 1, block.Floor.XpZp, z + 1), new(x, block.Floor.XnZn, z));
                 }
                 else
                     return null;
@@ -439,7 +439,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XnZp && targetB <= block.Floor.XnZp)
                 return null;
 
-            return new Attractor(new(x + 1, targetA, z + 1), new(x, targetB, z));
+            return new Attractor(AttractorType.Edge, new(x + 1, targetA, z + 1), new(x, targetB, z));
         }
 
         private Attractor TryGenerateDiagonalXnZnAttractorForBlock(int x, int z)
@@ -455,7 +455,7 @@ namespace TombLib.LevelData
                     if (floorPortalInfo.VisualType is not RoomConnectionType.TriangularPortalXpZp)
                         return null;
                     
-                    return new Attractor(new(x + 1, block.Floor.XpZn, z), new(x, block.Floor.XnZp, z + 1));
+                    return new Attractor(AttractorType.Edge, new(x + 1, block.Floor.XpZn, z), new(x, block.Floor.XnZp, z + 1));
                 }
                 else
                     return null;
@@ -466,7 +466,7 @@ namespace TombLib.LevelData
             if (targetA <= block.Floor.XpZp && targetB <= block.Floor.XpZp)
                 return null;
 
-            return new Attractor(new(x + 1, targetA, z), new(x, targetB, z + 1));
+            return new Attractor(AttractorType.Edge, new(x + 1, targetA, z), new(x, targetB, z + 1));
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace TombLib.LevelData
                     })
                     .First();
 
-                var result = new Attractor(prev.Points.Concat(next.Points.Skip(1)).ToArray());
+                var result = new Attractor(AttractorType.Edge, prev.Points.Concat(next.Points.Skip(1)).ToArray());
 
                 attractors.Remove(prev);
                 attractors.Remove(next);
