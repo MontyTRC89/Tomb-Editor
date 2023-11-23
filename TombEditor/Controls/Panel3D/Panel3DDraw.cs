@@ -281,13 +281,18 @@ namespace TombEditor.Controls.Panel3D
 
 				_legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
 				_legacyDevice.SetVertexBuffer(buffer);
-				_legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
-				effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-				effect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 0));
-				effect.CurrentTechnique.Passes[0].Apply();
-				_legacyDevice.Draw(PrimitiveType.TriangleStrip, buffer.ElementCount);
-			}
-		}
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+
+#if DEBUG
+                effect.Parameters["Color"].SetValue(attractor.DebugColor);
+#else
+                effect.Parameters["Color"].SetValue(new Vector4(1f, 1f, 0f, 0f));
+#endif
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.TriangleStrip, buffer.ElementCount);
+            }
+        }
 
 		private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {

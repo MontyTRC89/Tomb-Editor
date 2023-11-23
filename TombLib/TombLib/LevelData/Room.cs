@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
 
@@ -28,9 +27,17 @@ namespace TombLib.LevelData
 
         public Vector3 StartPoint => Points.Count > 0 ? Points[0] : Vector3.Zero;
         public Vector3 EndPoint => Points.Count > 0 ? Points[^1] : Vector3.Zero;
+#if DEBUG
+        public Vector4 DebugColor { get; set; }
+#endif
 
         public Attractor(params Vector3[] points)
-            => Points.AddRange(points);
+        {
+#if DEBUG
+            DebugColor = new Vector4(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+#endif
+            Points.AddRange(points);
+        }
     }
 
     public enum RoomType : byte
@@ -488,6 +495,21 @@ namespace TombLib.LevelData
                     {
                         var pointA = new Vector2(prev.Points[^2].X - prev.EndPoint.X, prev.Points[^2].Z - prev.EndPoint.Z);
                         var pointB = new Vector2(a.Points[1].X - a.StartPoint.X, a.Points[1].Z - a.StartPoint.Z);
+                        double angle = (Math.Atan2(pointB.Y, pointB.X) - Math.Atan2(pointA.Y, pointA.X)) * 180 / Math.PI;
+
+                        if (angle < 0)
+                            angle += 360;
+
+                        return angle;
+                    })
+                    .First();
+
+                prev = attractors // True previous attractor
+                    .Where(a => next.StartPoint == a.EndPoint && !closedLoops.Contains(a))
+                    .OrderBy(a =>
+                    {
+                        var pointA = new Vector2(a.Points[^2].X - a.EndPoint.X, a.Points[^2].Z - a.EndPoint.Z);
+                        var pointB = new Vector2(next.Points[1].X - next.StartPoint.X, next.Points[1].Z - next.StartPoint.Z);
                         double angle = (Math.Atan2(pointB.Y, pointB.X) - Math.Atan2(pointA.Y, pointA.X)) * 180 / Math.PI;
 
                         if (angle < 0)
