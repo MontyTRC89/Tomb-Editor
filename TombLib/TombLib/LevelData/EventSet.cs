@@ -223,6 +223,8 @@ namespace TombLib.LevelData
 
         public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
+            writer.Write(Events.Count);
+
             foreach (var evt in Events)
             {
                 writer.Write((int)evt.Key);
