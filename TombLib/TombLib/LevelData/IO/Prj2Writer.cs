@@ -452,7 +452,7 @@ namespace TombLib.LevelData.IO
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
-                                        foreach (BlockFace face in b.RenderedFaces)
+                                        foreach (BlockFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
                                         {
                                             TextureArea texture = b.GetFaceTexture(face);
 

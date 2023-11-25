@@ -624,8 +624,6 @@ namespace TombLib.LevelData
         public BlockSurface Floor;
         public BlockSurface Ceiling;
 
-        public HashSet<BlockFace> RenderedFaces { get; } = new HashSet<BlockFace>();
-
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
         public PortalInstance FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public PortalInstance WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
