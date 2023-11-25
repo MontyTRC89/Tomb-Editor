@@ -124,12 +124,12 @@ namespace TombLib.LevelData.IO
                 _settings = settings;
                 ImportedGeometries = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer(_settings));
                 LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
-                EventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
+                VolumeEventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
             public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
-            public Dictionary<VolumeEventSet, int> EventSets { get; private set; }
+            public Dictionary<VolumeEventSet, int> VolumeEventSets { get; private set; }
         }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
@@ -299,55 +299,50 @@ namespace TombLib.LevelData.IO
                         }
                     chunkIO.WriteChunkEnd();
                 }
-                using (var chunkEventSets = chunkIO.WriteChunk(Prj2Chunks.EventSets, long.MaxValue))
+
+                foreach (bool global in new[] { true, false })
                 {
-                    int index = 0;
-                    foreach (var set in settings.EventSets)
+                    using (var chunkEventSets = chunkIO.WriteChunk(global ? Prj2Chunks.GlobalEventSets : Prj2Chunks.VolumeEventSets, long.MaxValue))
                     {
-                        using (var chunkEventSet = chunkIO.WriteChunk(Prj2Chunks.EventSet))
+                        int index = 0;
+                        foreach (var set in (global ? settings.GlobalEventSets : settings.VolumeEventSets))
                         {
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
-                            chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, (int)set.LastUsedEvent);
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)set.Activators);
-
-                            foreach (var evt in set.Events)
+                            using (var chunkEventSet = chunkIO.WriteChunk(Prj2Chunks.EventSet))
                             {
-                                ChunkId cid = ChunkId.Empty;
+                                chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
+                                chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
+                                chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, (int)set.LastUsedEvent);
 
-                                switch (evt.Key)
+                                if (!global)
+                                    chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)(set as VolumeEventSet).Activators);
+
+                                foreach (var evt in set.Events)
                                 {
-                                    case VolumeEventType.OnVolumeEnter:  cid = Prj2Chunks.EventSetOnEnter;  break;
-                                    case VolumeEventType.OnVolumeLeave:  cid = Prj2Chunks.EventSetOnLeave;  break;
-                                    case VolumeEventType.OnVolumeInside: cid = Prj2Chunks.EventSetOnInside; break;
-                                    case VolumeEventType.OnLoop:         cid = Prj2Chunks.EventSetOnLoop;   break;
-                                    case VolumeEventType.OnLoadGame:     cid = Prj2Chunks.EventSetOnLoad;   break;
-                                    case VolumeEventType.OnSaveGame:     cid = Prj2Chunks.EventSetOnSave;   break;
-                                    case VolumeEventType.OnLevelEnd:     cid = Prj2Chunks.EventSetOnEnd;    break;
-                                    case VolumeEventType.OnLevelStart:   cid = Prj2Chunks.EventSetOnStart;  break;
+                                    using (var chunkEvent = chunkIO.WriteChunk(Prj2Chunks.Event))
+                                    {
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventType, (int)evt.Key);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventMode, (int)evt.Value.Mode);
+                                        chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Value.Function ?? string.Empty);
+                                        chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Value.Argument ?? string.Empty);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.Value.CallCounter);
+                                        chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.Value.NodePosition);
+                                        evt.Value.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
+
+                                        chunkIO.WriteChunkEnd();
+                                    }
                                 }
 
-                                using (var chunkEvent = chunkIO.WriteChunk(cid))
-                                {
-                                    chunkIO.WriteChunkInt(Prj2Chunks.EventMode, (int)evt.Value.Mode);
-                                    chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Value.Function ?? string.Empty);
-                                    chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Value.Argument ?? string.Empty);
-                                    chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.Value.CallCounter);
-                                    chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.Value.NodePosition);
-                                    evt.Value.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
-
-                                    chunkIO.WriteChunkEnd();
-                                }
+                                chunkIO.WriteChunkEnd();
                             }
 
-                            chunkIO.WriteChunkEnd();
+                            if (!global)
+                                levelSettingIds.VolumeEventSets.TryAdd((set as VolumeEventSet), index++);
                         }
 
-                        levelSettingIds.EventSets.TryAdd(set, index++);
+                        chunkIO.WriteChunkEnd();
                     }
-
-                    chunkIO.WriteChunkEnd();
                 }
+                
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach (var entry in settings.AutoStaticMeshMerges)
@@ -787,7 +782,7 @@ namespace TombLib.LevelData.IO
 
                             int eventSetID = -1;
                             if (instance.EventSet != null)
-                                levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
+                                levelSettingIds.VolumeEventSets.TryGetValue(instance.EventSet as VolumeEventSet, out eventSetID);
                             chunkIO.Raw.Write(eventSetID);
 
                             chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);

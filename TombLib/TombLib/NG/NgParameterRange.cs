@@ -337,15 +337,15 @@ namespace TombLib.NG
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
 
                 case NgParameterKind.EventSets:
-                    if (level.Settings.EventSets.Count > 0)
-                        return level.Settings.EventSets.Select(e => new TriggerParameterString(e.Name));
+                    if (level.Settings.AllEventSets.Count > 0)
+                        return level.Settings.AllEventSets.Select(e => new TriggerParameterString(e.Name));
                     else
                         return null;
 
                 case NgParameterKind.EventTypes:
                     {
                         var result = new List<TriggerParameterUshort>();
-                        foreach (VolumeEventType type in Enum.GetValues(typeof(VolumeEventType)))
+                        foreach (EventType type in Enum.GetValues(typeof(EventType)))
                             result.Add(new TriggerParameterUshort((ushort)type, type.ToString().SplitCamelcase()));
                         return result;
                     }

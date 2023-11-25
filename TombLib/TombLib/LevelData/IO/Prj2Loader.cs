@@ -145,7 +145,7 @@ namespace TombLib.LevelData.IO
         {
             public Dictionary<long, ImportedGeometry> ImportedGeometries { get; set; } = new Dictionary<long, ImportedGeometry>();
             public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
-            public Dictionary<long, VolumeEventSet> EventSets { get; set; } = new Dictionary<long, VolumeEventSet>();
+            public Dictionary<long, EventSet> VolumeEventSets { get; set; } = new Dictionary<long, EventSet>();
         }
 
         private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, ref LevelSettings settingsOuter, Settings loadingSettings, IProgressReporter progressReporter = null)
@@ -163,7 +163,7 @@ namespace TombLib.LevelData.IO
             var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
-            var eventSetsToLoad = new Dictionary<VolumeEventSet, string>(new ReferenceEqualityComparer<VolumeEventSet>());
+            var eventSetsToLoad = new Dictionary<EventSet, string>(new ReferenceEqualityComparer<EventSet>());
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -480,20 +480,26 @@ namespace TombLib.LevelData.IO
                     levelSettingsIds.ImportedGeometries = importedGeometries;
                     importedGeometriesToLoad = toLoad;
                 }
-                else if (id == Prj2Chunks.EventSets)
+                else if (id == Prj2Chunks.EventSets ||
+                         id == Prj2Chunks.GlobalEventSets ||
+                         id == Prj2Chunks.VolumeEventSets)
                 {
-                    progressReporter?.ReportInfo("Reading event sets...");
+                    var reportString = "Reading ";
+                    if (id == Prj2Chunks.GlobalEventSets)
+                        reportString += "global";
+                    else if (id == Prj2Chunks.VolumeEventSets)
+                        reportString += "volume";
 
-                    //var eventSetsToLoad = new Dictionary<VolumeEventSet, string>(new ReferenceEqualityComparer<VolumeEventSet>());
+                    progressReporter?.ReportInfo(reportString + " event sets...");
 
-                    var eventSets = new Dictionary<long, VolumeEventSet>();
+                    var eventSets = new Dictionary<long, EventSet>();
 
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 != Prj2Chunks.EventSet)
                             return false;
 
-                        var eventSet = new VolumeEventSet();
+                        EventSet eventSet = (id == Prj2Chunks.GlobalEventSets) ? new GlobalEventSet() : new VolumeEventSet();
                         long eventSetIndex = long.MinValue;
 
                         chunkIO.ReadChunks((id3, chunkSize3) =>
@@ -503,24 +509,26 @@ namespace TombLib.LevelData.IO
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
-                                eventSet.LastUsedEvent = (VolumeEventType)chunkIO.ReadChunkInt(chunkSize3);
+                                eventSet.LastUsedEvent = (EventType)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)
-                                eventSet.Activators = (VolumeActivators)chunkIO.ReadChunkInt(chunkSize3);
+                            {
+                                var activators = (VolumeActivators)chunkIO.ReadChunkInt(chunkSize3);
+
+                                if (eventSet is VolumeEventSet)
+                                    (eventSet as VolumeEventSet).Activators = activators;
+                            }
                             else if (id3 == Prj2Chunks.EventSetOnEnter  ||
                                      id3 == Prj2Chunks.EventSetOnInside ||
                                      id3 == Prj2Chunks.EventSetOnLeave  ||
-                                     id3 == Prj2Chunks.EventSetOnEnd    ||
-                                     id3 == Prj2Chunks.EventSetOnStart  ||
-                                     id3 == Prj2Chunks.EventSetOnLoad   ||
-                                     id3 == Prj2Chunks.EventSetOnSave   ||
-                                     id3 == Prj2Chunks.EventSetOnLoop)
+                                     id3 == Prj2Chunks.Event)
                             {
-                                var evt = new VolumeEvent();
+                                var evt = new Event();
+                                var evtType = EventType.OnVolumeEnter;
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
                                     if (id4 == Prj2Chunks.EventMode)
-                                        evt.Mode = (VolumeEventMode)chunkIO.ReadChunkInt(chunkSize4);
+                                        evt.Mode = (EventSetMode)chunkIO.ReadChunkInt(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventFunction)
                                         evt.Function = chunkIO.ReadChunkString(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventArgument)
@@ -531,27 +539,21 @@ namespace TombLib.LevelData.IO
                                         evt.NodePosition = chunkIO.ReadChunkVector2(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventNodeNext)
                                         evt.Nodes.Add(LoadNode(chunkIO));
+                                    else if (id4 == Prj2Chunks.EventType)
+                                        evtType = (EventType)chunkIO.ReadChunkInt(chunkSize4);
                                     else
                                         return false;
                                     return true;
                                 });
 
                                 if (id3 == Prj2Chunks.EventSetOnEnter)
-                                    eventSet.Events[VolumeEventType.OnVolumeEnter] = evt;
+                                    eventSet.Events[EventType.OnVolumeEnter] = evt;
                                 else if (id3 == Prj2Chunks.EventSetOnInside)
-                                    eventSet.Events[VolumeEventType.OnVolumeInside] = evt;
+                                    eventSet.Events[EventType.OnVolumeInside] = evt;
                                 else if (id3 == Prj2Chunks.EventSetOnLeave)
-                                    eventSet.Events[VolumeEventType.OnVolumeLeave] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnStart)
-                                    eventSet.Events[VolumeEventType.OnLevelStart] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnEnd)
-                                    eventSet.Events[VolumeEventType.OnLevelEnd] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnLoad)
-                                    eventSet.Events[VolumeEventType.OnLoadGame] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnSave)
-                                    eventSet.Events[VolumeEventType.OnSaveGame] = evt;
-                                else if (id3 == Prj2Chunks.EventSetOnLoop)
-                                    eventSet.Events[VolumeEventType.OnLoop] = evt;
+                                    eventSet.Events[EventType.OnVolumeLeave] = evt;
+                                else
+                                    eventSet.Events[evtType] = evt;
                             }
                             else
                                 return false;
@@ -562,8 +564,16 @@ namespace TombLib.LevelData.IO
                         return true;
                     });
 
-                    settings.EventSets = eventSets.Values.ToList();
-                    levelSettingsIds.EventSets = eventSets;
+                    if (id == Prj2Chunks.GlobalEventSets)
+                    {
+                        settings.GlobalEventSets = eventSets.Values.ToList();
+                    }
+                    else
+                    {
+                        settings.VolumeEventSets = eventSets.Values.ToList();
+                        levelSettingsIds.VolumeEventSets = eventSets;
+                    }
+
                 }
                 else if (id == Prj2Chunks.AnimatedTextureSets)
                 {
@@ -1704,7 +1714,7 @@ namespace TombLib.LevelData.IO
                     {
                         int eventIndex = chunkIO.Raw.ReadInt32();
                         if (eventIndex != -1)
-                            instance.EventSet = levelSettingsIds.EventSets.TryGetOrDefault(eventIndex);
+                            instance.EventSet = levelSettingsIds.VolumeEventSets.TryGetOrDefault(eventIndex);
                         else
                             instance.EventSet = null;
 

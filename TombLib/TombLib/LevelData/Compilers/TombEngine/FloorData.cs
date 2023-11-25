@@ -309,13 +309,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
 
                             string setName = (trigger.Target as TriggerParameterString).Value;
-                            if (!_level.Settings.EventSets.Any(s => s.Name == setName))
+                            if (!_level.Settings.AllEventSets.Any(s => s.Name == setName))
                             {
                                 _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing event set '" + setName + "'.");
                                 continue;
                             }
 
-                            trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
+                            trigger2 = (ushort)((_level.Settings.AllEventSets.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
                             result.Add(trigger2);
 
                             trigger2 = GetTriggerParameter(trigger.Timer, trigger, _fdTimerMask);

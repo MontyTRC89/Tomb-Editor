@@ -25,9 +25,14 @@ namespace TombEditor.Forms
         private readonly Editor _editor;
 
         private bool _lockUI = false;
+        private bool _lockSelectionChange = false;
+
         private bool _genericMode = false;
 
-        private List<VolumeEventSet> _backupEventSetList;
+        private List<EventSet> _usedList;
+        private bool _globalMode => _usedList == _editor.Level.Settings.GlobalEventSets;
+
+        private List<EventSet> _backupEventSetList;
         private Dictionary<VolumeInstance, int> _backupVolumes;
         private bool[] _backupVolumeState = new bool[2];
 
@@ -36,14 +41,15 @@ namespace TombEditor.Forms
         private readonly PopUpInfo _popup = new PopUpInfo();
         private readonly List<string> _scriptFuncs;
 
-        public FormVolume(VolumeInstance instance)
+        public FormVolume(List<EventSet> usedList, VolumeInstance instance = null)
         {
             InitializeComponent();
             dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
             _genericMode = instance == null;
+            _usedList = usedList;
 
-            _instance = _genericMode ? new BoxVolumeInstance() : instance;
+            _instance = (_genericMode || _globalMode) ? new BoxVolumeInstance() : instance;
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
@@ -64,14 +70,14 @@ namespace TombEditor.Forms
             PopulateEventSetList();
 
             // Don't select first event set if window is opened in generic mode
-            _stopSelectionChangedEvent = !_genericMode;
+            _lockSelectionChange = !_genericMode;
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            _stopSelectionChangedEvent = false;
+            _lockSelectionChange = false;
             FindAndSelectEventSet();
 
             if (!_genericMode && _instance.EventSet == null)
@@ -197,37 +203,37 @@ namespace TombEditor.Forms
 
         private void SetEventTooltip()
         {
-            switch ((VolumeEventType)cbEvents.SelectedIndex)
+            switch (cbEvents.SelectedItem)
             {
-                case VolumeEventType.OnVolumeEnter:
+                case EventType.OnVolumeEnter:
                     toolTip.SetToolTip(cbEvents, "Occurs when something enters assigned volume. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnVolumeInside:
+                case EventType.OnVolumeInside:
                     toolTip.SetToolTip(cbEvents, "Occurs when something resides inside assigned volume. \nThis event performs continuously.");
                     break;
 
-                case VolumeEventType.OnVolumeLeave:
+                case EventType.OnVolumeLeave:
                     toolTip.SetToolTip(cbEvents, "Occurs when something leaves assigned volume. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnLevelEnd:
+                case EventType.OnLevelEnd:
                     toolTip.SetToolTip(cbEvents, "Occurs when level was finished. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnLevelStart:
+                case EventType.OnLevelStart:
                     toolTip.SetToolTip(cbEvents, "Occurs when new level starts. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnLoadGame:
+                case EventType.OnLoadGame:
                     toolTip.SetToolTip(cbEvents, "Occurs when game was just loaded from savegame. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnSaveGame:
+                case EventType.OnSaveGame:
                     toolTip.SetToolTip(cbEvents, "Occurs when game was just saved. \nThis event performs once.");
                     break;
 
-                case VolumeEventType.OnLoop:
+                case EventType.OnLoop:
                     toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
                     break;
             }
@@ -235,68 +241,73 @@ namespace TombEditor.Forms
 
         private void BackupState()
         {
-            _backupVolumeState[0] = _instance.Enabled;
-            _backupVolumeState[1] = _instance.DetectInAdjacentRooms;
+            if (!_globalMode)
+            {
+                _backupVolumeState[0] = _instance.Enabled;
+                _backupVolumeState[1] = _instance.DetectInAdjacentRooms;
 
-            _backupVolumes = new Dictionary<VolumeInstance, int>();
-            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
-                _backupVolumes.Add(vol, _editor.Level.Settings.EventSets.IndexOf(vol.EventSet));
+                _backupVolumes = new Dictionary<VolumeInstance, int>();
+                foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+                    _backupVolumes.Add(vol, _editor.Level.Settings.VolumeEventSets.IndexOf(vol.EventSet));
+            }
 
-            _backupEventSetList = new List<VolumeEventSet>();
-            foreach (var evt in _editor.Level.Settings.EventSets)
+            _backupEventSetList = new List<EventSet>();
+            foreach (var evt in _usedList)
                 _backupEventSetList.Add(evt.Clone());
         }
 
         private void RestoreState()
         {
-            _editor.Level.Settings.EventSets = _backupEventSetList;
-
-            var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
-
-            foreach (var vol in volumes)
+            if (!_globalMode)
             {
-                if (!_backupVolumes.ContainsKey(vol))
-                    continue;
+                _editor.Level.Settings.VolumeEventSets = _backupEventSetList;
 
-                int index = -1;
-                var entry = _backupVolumes.TryGetValue(vol, out index);
-                if (index >= 0)
-                    vol.EventSet = _backupEventSetList[index];
+                var volumes = _editor.Level.GetAllObjects().OfType<VolumeInstance>().ToList();
+
+                foreach (var vol in volumes)
+                {
+                    if (!_backupVolumes.ContainsKey(vol))
+                        continue;
+
+                    int index = -1;
+                    var entry = _backupVolumes.TryGetValue(vol, out index);
+                    if (index >= 0)
+                        vol.EventSet = _backupEventSetList[index];
+                }
+
+                _instance.Enabled = _backupVolumeState[0];
+                _instance.DetectInAdjacentRooms = _backupVolumeState[1];
             }
-
-            _instance.Enabled = _backupVolumeState[0];
-            _instance.DetectInAdjacentRooms = _backupVolumeState[1];
+            else
+            {
+                _editor.Level.Settings.GlobalEventSets = _backupEventSetList;
+            }
         }
 
         private void PopulateEventTypeList()
         {
             cbEvents.Items.Clear();
 
-            foreach (VolumeEventType eventType in Enum.GetValues(typeof(VolumeEventType)))
+            foreach (EventType eventType in (_globalMode ? Event.GlobalEventTypes : Event.VolumeEventTypes))
             {
-                if (!_genericMode && eventType > VolumeEventType.OnVolumeLeave)
-                    break;
-                
-                cbEvents.Items.Add(eventType.ToString().SplitCamelcase());
+                cbEvents.Items.Add(eventType);
             }
         }
 
-        private bool _stopSelectionChangedEvent = false;
-
         private void PopulateEventSetList()
         {
-            _stopSelectionChangedEvent = true;
+            _lockSelectionChange = true;
 
             dgvEvents.Rows.Clear();
 
-            foreach (VolumeEventSet evtSet in _editor.Level.Settings.EventSets)
+            foreach (var evtSet in _globalMode ? _editor.Level.Settings.GlobalEventSets : _editor.Level.Settings.VolumeEventSets)
             {
                 var row = new DataGridViewRow { Tag = evtSet };
                 row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
                 dgvEvents.Rows.Add(row);
             }
 
-            _stopSelectionChangedEvent = false;
+            _lockSelectionChange = false;
         }
 
         private void FindAndSelectEventSet()
@@ -323,7 +334,7 @@ namespace TombEditor.Forms
 
 		private void ReplaceEventSetNames(string oldName, string newName)
 		{
-			foreach (var set in _editor.Level.Settings.EventSets)
+			foreach (var set in _usedList)
 				foreach (var evt in set.Events)
 					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
 					{
@@ -345,7 +356,7 @@ namespace TombEditor.Forms
 					}
 		}
 
-        private void LoadEventSetIntoUI(VolumeEventSet newEventSet)
+        private void LoadEventSetIntoUI(EventSet newEventSet)
         {
             _instance.EventSet = newEventSet;
 
@@ -353,16 +364,19 @@ namespace TombEditor.Forms
 
             _lockUI = true;
 
-            cbActivatorLara.Checked = (_instance.EventSet.Activators & VolumeActivators.Player) != 0;
-            cbActivatorNPC.Checked = (_instance.EventSet.Activators & VolumeActivators.NPCs) != 0;
-            cbActivatorOtherMoveables.Checked = (_instance.EventSet.Activators & VolumeActivators.OtherMoveables) != 0;
-            cbActivatorStatics.Checked = (_instance.EventSet.Activators & VolumeActivators.Statics) != 0;
-            cbActivatorFlyBy.Checked = (_instance.EventSet.Activators & VolumeActivators.Flybys) != 0;
+            if (!_globalMode)
+            {
+                var evtSet = newEventSet as VolumeEventSet;
 
-            int selectedEvent = Math.Min((int)_instance.EventSet.LastUsedEvent, (int)cbEvents.Items.Count - 1);
+                cbActivatorLara.Checked = (evtSet.Activators & VolumeActivators.Player) != 0;
+                cbActivatorNPC.Checked = (evtSet.Activators & VolumeActivators.NPCs) != 0;
+                cbActivatorOtherMoveables.Checked = (evtSet.Activators & VolumeActivators.OtherMoveables) != 0;
+                cbActivatorStatics.Checked = (evtSet.Activators & VolumeActivators.Statics) != 0;
+                cbActivatorFlyBy.Checked = (evtSet.Activators & VolumeActivators.Flybys) != 0;
+            }
 
-            cbEvents.SelectedIndex = selectedEvent;
-            triggerManager.Event = _instance.EventSet.Events[(VolumeEventType)selectedEvent];
+            cbEvents.SelectedItem = _instance.EventSet.LastUsedEvent;
+            triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
 
             tbName.Text = _instance.EventSet.Name;
 
@@ -371,10 +385,10 @@ namespace TombEditor.Forms
 
         private void ModifyActivators()
         {
-            if (_instance.EventSet == null || _lockUI)
+            if (_instance.EventSet == null || _lockUI || _globalMode)
                 return;
 
-            _instance.EventSet.Activators = 0 |
+            (_instance.EventSet as VolumeEventSet).Activators = 0 |
                                             (cbActivatorLara.Checked ? VolumeActivators.Player : 0) |
                                             (cbActivatorNPC.Checked ? VolumeActivators.NPCs : 0) |
                                             (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
@@ -385,10 +399,11 @@ namespace TombEditor.Forms
         private void UpdateUI()
         {
             tbName.Enabled =
-            grpActivators.Enabled =
             triggerManager.Enabled =
             cbEvents.Enabled =
             butUnassignEventSet.Enabled = _instance.EventSet != null;
+
+            grpActivators.Enabled = _instance.EventSet != null && !_globalMode;
 
             butCloneEventSet.Enabled =
             butDeleteEventSet.Enabled = dgvEvents.SelectedRows.Count > 0;
@@ -413,7 +428,7 @@ namespace TombEditor.Forms
 
         private void dgvEvents_SelectedIndicesChanged(object sender, EventArgs e)
         {
-            if (_stopSelectionChangedEvent)
+            if (_lockSelectionChange)
                 return;
 
             UpdateUI();
@@ -421,23 +436,34 @@ namespace TombEditor.Forms
             if (dgvEvents.SelectedRows.Count == 0)
                 return;
 
-            var newEventSet = dgvEvents.SelectedRows[0].Tag as VolumeEventSet;
+            var newEventSet = dgvEvents.SelectedRows[0].Tag as EventSet;
 
             LoadEventSetIntoUI(newEventSet);
         }
 
         private void butNewEventSet_Click(object sender, EventArgs e)
         {
-            var newSet = new VolumeEventSet()
+            var name = "New " + (_globalMode ? "global" : "volume") + " event set " + dgvEvents.Rows.Count;
+
+            EventSet newSet;
+
+            if (_globalMode)
             {
-                Name = "New event set " + dgvEvents.Rows.Count,
-                LastUsedEvent = (VolumeEventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
-            };
+                newSet = new GlobalEventSet() { Name = name };
+            }
+            else
+            {
+                newSet = new VolumeEventSet()
+                {
+                    Name = name,
+                    LastUsedEvent = (EventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
+                };
+            }
 
             foreach (var evt in newSet.Events)
-                evt.Value.Mode = (VolumeEventMode)_editor.Configuration.NodeEditor_DefaultEventMode;
+                evt.Value.Mode = (EventSetMode)_editor.Configuration.NodeEditor_DefaultEventMode;
 
-            _editor.Level.Settings.EventSets.Add(newSet);
+            _usedList.Add(newSet);
             _instance.EventSet = newSet;
 
             PopulateEventSetList();
@@ -453,7 +479,7 @@ namespace TombEditor.Forms
 
             var clonedSet = _instance.EventSet.Clone();
             clonedSet.Name = _instance.EventSet.Name + " (copy)";
-            _editor.Level.Settings.EventSets.Add(clonedSet);
+            _usedList.Add(clonedSet);
             _instance.EventSet = clonedSet;
 
             PopulateEventSetList();
@@ -539,16 +565,21 @@ namespace TombEditor.Forms
                 return;
 
             SetEventTooltip();
-            grpActivators.Enabled = cbEvents.SelectedIndex <= (int)VolumeEventType.OnVolumeLeave;
 
             if (!_lockUI)
             {
-                _instance.EventSet.LastUsedEvent = (VolumeEventType)cbEvents.SelectedIndex;
+                _instance.EventSet.LastUsedEvent = (EventType)cbEvents.SelectedItem;
                 triggerManager.Event = _instance.EventSet.Events[_instance.EventSet.LastUsedEvent];
             }
         }
 
-		private void tbName_Validated(object sender, EventArgs e)
+        private void cbEvents_Format(object sender, ListControlConvertEventArgs e)
+        {
+            if (e.ListItem != null && e.ListItem is EventType)
+                e.Value = e.ListItem.ToString().SplitCamelcase();
+        }
+
+        private void tbName_Validated(object sender, EventArgs e)
 		{
 			if (_instance.EventSet == null || _lockUI)
 				return;
@@ -563,14 +594,14 @@ namespace TombEditor.Forms
 
         private void dgvEvents_DragDrop(object sender, DragEventArgs e)
         {
-            _editor.Level.Settings.EventSets.Clear();
+            _usedList.Clear();
 
             foreach (DataGridViewRow row in dgvEvents.Rows)
             {
                 if (row.Tag is not VolumeEventSet evtSet)
                     continue;
 
-                _editor.Level.Settings.EventSets.Add(evtSet);
+                _usedList.Add(evtSet);
             }
         }
 

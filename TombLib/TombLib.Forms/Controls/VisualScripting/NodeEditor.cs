@@ -240,7 +240,7 @@ namespace TombLib.Controls.VisualScripting
             _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
             _cachedSoundInfos   = level.Settings.GlobalSoundMap;
             _cachedRooms        = level.ExistingRooms;
-            _cachedEventSets = level.Settings.EventSets.Select(s => s.Name).ToList();
+            _cachedEventSets = level.Settings.AllEventSets.Select(s => s.Name).ToList();
 
             if (scriptFunctions != null)
                 _cachedLuaFunctions = scriptFunctions;

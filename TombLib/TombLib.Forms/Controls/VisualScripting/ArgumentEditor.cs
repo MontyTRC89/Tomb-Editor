@@ -171,7 +171,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.EventList:
-                    foreach (var item in Enum.GetValues(typeof(VolumeEventType)))
+                    foreach (var item in Enum.GetValues(typeof(EventType)))
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.SpriteSlots:

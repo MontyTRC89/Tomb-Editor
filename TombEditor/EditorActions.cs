@@ -751,7 +751,7 @@ namespace TombEditor
             var existingWindow = Application.OpenForms[nameof(FormVolume)];
             if (existingWindow == null)
             {
-                var propForm = new FormVolume(box);
+                var propForm = new FormVolume(_editor.Level.Settings.VolumeEventSets, box);
                 propForm.Show(owner);
             }
             else
@@ -1116,7 +1116,7 @@ namespace TombEditor
                 var existingWindow = Application.OpenForms[nameof(FormVolume)];
                 if (existingWindow == null)
                 {
-                    var propForm = new FormVolume((VolumeInstance)instance);
+                    var propForm = new FormVolume(_editor.Level.Settings.VolumeEventSets, (VolumeInstance)instance);
                     propForm.Show(owner);
                 }
                 else
@@ -1280,16 +1280,23 @@ namespace TombEditor
             }
         }
 
-        public static void DeleteEventSet(VolumeEventSet eventSet)
+        public static void DeleteEventSet(EventSet eventSet)
         {
-            _editor.Level.Settings.EventSets.Remove(eventSet);
-
-            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+            if (_editor.Level.Settings.GlobalEventSets.Contains(eventSet))
             {
-                if (vol.EventSet == eventSet)
+                _editor.Level.Settings.GlobalEventSets.Remove(eventSet);
+            }
+            else if (_editor.Level.Settings.VolumeEventSets.Contains(eventSet))
+            {
+                _editor.Level.Settings.GlobalEventSets.Remove(eventSet);
+
+                foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
                 {
-                    vol.EventSet = null;
-                    _editor.ObjectChange(vol, ObjectChangeType.Change);
+                    if (vol.EventSet == eventSet)
+                    {
+                        vol.EventSet = null;
+                        _editor.ObjectChange(vol, ObjectChangeType.Change);
+                    }
                 }
             }
         }

@@ -346,6 +346,7 @@ namespace TombEditor.Forms
             this.cbEvents.Size = new System.Drawing.Size(162, 23);
             this.cbEvents.TabIndex = 30;
             this.cbEvents.SelectedIndexChanged += new System.EventHandler(this.cbEvents_SelectedIndexChanged);
+            this.cbEvents.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.cbEvents_Format);
             // 
             // darkSectionPanel2
             // 
@@ -430,8 +431,6 @@ namespace TombEditor.Forms
         private DarkUI.Controls.DarkCheckBox cbActivatorFlyBy;
         private DarkSectionPanel darkSectionPanel1;
         private DarkDataGridView dgvEvents;
-        private TabPage tabPage_OnInside;
-        private TabPage tabPage_OnLeave;
         private Controls.TriggerManager triggerManager;
         private DarkPanel darkPanel1;
         private DarkButton butDeleteEventSet;
