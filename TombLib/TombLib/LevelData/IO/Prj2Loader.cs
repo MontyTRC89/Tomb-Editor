@@ -1067,9 +1067,6 @@ namespace TombLib.LevelData.IO
                         {
                             Block block = room.Blocks[x, z];
 
-                            if (block.Type == BlockType.Floor && block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.Floor.DiagonalSplit == DiagonalSplit.None)
-                                continue;
-
                             if (usesClassicFloor)
                             {
                                 SwapFloor2FacesWhereApplicable(room, x, z);
@@ -1850,25 +1847,25 @@ namespace TombLib.LevelData.IO
 
             if (xn.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XnZp)
+                if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XpZp)
                     block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_QA));
             }
 
             if (xp.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XpZp)
+                if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XnZp)
                     block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_QA));
             }
 
             if (zn.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZn)
+                if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZp)
                     block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA));
             }
 
             if (zp.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZp)
+                if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZn)
                     block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA));
             }
         }
@@ -1889,25 +1886,25 @@ namespace TombLib.LevelData.IO
 
             if (xn.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XnZp)
+                if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XpZp)
                     block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_WS));
             }
 
             if (xp.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XpZp)
+                if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XnZp)
                     block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_WS));
             }
 
             if (zn.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZn)
+                if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZp)
                     block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS));
             }
 
             if (zp.Block != null)
             {
-                if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZp)
+                if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZn)
                     block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS));
             }
         }
