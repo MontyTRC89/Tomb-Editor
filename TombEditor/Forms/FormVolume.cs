@@ -46,12 +46,13 @@ namespace TombEditor.Forms
             InitializeComponent();
             dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
+
             _genericMode = instance == null;
             _usedList = usedList;
 
             _instance = (_genericMode || _globalMode) ? new BoxVolumeInstance() : instance;
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);

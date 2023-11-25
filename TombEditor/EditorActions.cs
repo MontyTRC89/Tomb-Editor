@@ -1288,7 +1288,7 @@ namespace TombEditor
             }
             else if (_editor.Level.Settings.VolumeEventSets.Contains(eventSet))
             {
-                _editor.Level.Settings.GlobalEventSets.Remove(eventSet);
+                _editor.Level.Settings.VolumeEventSets.Remove(eventSet);
 
                 foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
                 {

@@ -893,7 +893,7 @@ namespace TombLib.LevelData
         {
             get
             {
-                return VolumeEventSets.Concat(GlobalEventSets).ToList();
+                return GlobalEventSets.Concat(VolumeEventSets).ToList();
             }
         }
     }

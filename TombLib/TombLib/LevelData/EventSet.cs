@@ -41,6 +41,8 @@ namespace TombLib.LevelData
         public Vector2 NodePosition = new Vector2(float.MaxValue);
         public List<TriggerNode> Nodes { get; set; } = new List<TriggerNode>();
 
+        public bool Empty => (Mode == EventSetMode.NodeEditor && Nodes.Count == 0) || (Mode == EventSetMode.LevelScript && string.IsNullOrEmpty(Function));
+
         public int CallCounter { get; set; } = 0; // How many times event can be called
 
         public static List<EventType> GlobalEventTypes => Enum.GetValues(typeof(EventType)).Cast<EventType>().Where(t => t > EventType.OnVolumeLeave).ToList();
@@ -223,9 +225,11 @@ namespace TombLib.LevelData
 
         public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
-            writer.Write(Events.Count);
+            var nonEmptyEvents = Events.Where(e => !e.Value.Empty).ToList();
 
-            foreach (var evt in Events)
+            writer.Write(nonEmptyEvents.Count);
+
+            foreach (var evt in nonEmptyEvents)
             {
                 writer.Write((int)evt.Key);
                 evt.Value.Write(writer, eventSets);
