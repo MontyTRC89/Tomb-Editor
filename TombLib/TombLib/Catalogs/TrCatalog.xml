@@ -1539,7 +1539,7 @@
 			<moveable id="61" name="MP with gun" essential="false" t5m="MP_WITH_GUN" />
 			<moveable id="62" name="Prisoner" essential="false" t5m="CIVVY" />
 			<moveable id="63" name="MP with sighted gun and night sight" essential="false" t5m="SAS_CAIRO" /> 
-			<moveable id="64" name="Gun turret" essential="false" t5m="GUN_TURRET"/>
+			<moveable id="64" name="Gun turret" essential="false" t5m="TWIN_AUTO_GUN"/>
 			<moveable id="65" name="Dam guard" essential="false" t5m="MP_WITH_STICK" /> 
 			<moveable id="66" name="Tripwire" essential="false" />
 			<moveable id="67" name="Electrified wire" essential="false" t5m="ELECTRIC_FENCE" /> 
@@ -6269,7 +6269,7 @@
 			<moveable id="292" name="BOSS_EXPLOSION_RING" />
 			<moveable id="293" name="CLAW_MUTANT" />
 			<moveable id="294" name="WASP_MUTANT" />
-			<moveable id="295" name="GUN_TURRET" />
+			<moveable id="295" name="TWIN_AUTO_GUN" />
 			<moveable id="296" name="SKATEBOARD" />
 			<moveable id="297" name="SKATEBOARD_KID" />
 			<moveable id="320" name="SPRINGBOARD" />
