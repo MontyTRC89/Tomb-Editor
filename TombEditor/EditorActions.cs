@@ -746,19 +746,8 @@ namespace TombEditor
                 Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit)
             };
 
-
             // Display form
-            var existingWindow = Application.OpenForms[nameof(FormVolume)];
-            if (existingWindow == null)
-            {
-                var propForm = new FormVolume(_editor.Level.Settings.VolumeEventSets, box);
-                propForm.Show(owner);
-            }
-            else
-            {
-                existingWindow.Focus();
-                (existingWindow as FormVolume).ChangeVolume(box);
-            }
+            EditEventSets(owner, false, box);
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
@@ -1113,17 +1102,7 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.IsTombEngine, "Trigger volume"))
                     return;
 
-                var existingWindow = Application.OpenForms[nameof(FormVolume)];
-                if (existingWindow == null)
-                {
-                    var propForm = new FormVolume(_editor.Level.Settings.VolumeEventSets, (VolumeInstance)instance);
-                    propForm.Show(owner);
-                }
-                else
-                {
-                    existingWindow.Focus();
-                    (existingWindow as FormVolume).ChangeVolume((VolumeInstance)instance);
-                }
+                EditEventSets(owner, false, (VolumeInstance)instance);
             }
             else if (instance is MemoInstance)
             {
@@ -1280,8 +1259,30 @@ namespace TombEditor
             }
         }
 
+        public static void EditEventSets(IWin32Window owner, bool global, VolumeInstance targetVolume = null)
+        {
+            var existingWindow = Application.OpenForms[nameof(FormVolume)];
+
+            if (existingWindow != null && (existingWindow as FormVolume).GlobalMode != global)
+            {
+                existingWindow.Close();
+                existingWindow = null;
+            }
+
+            if (existingWindow == null)
+            {
+                var propForm = new FormVolume(global, targetVolume);
+                propForm.Show(owner);
+            }
+            else
+                existingWindow.Focus();
+        }
+
         public static void DeleteEventSet(EventSet eventSet)
         {
+            if (eventSet == null)
+                return;
+
             if (_editor.Level.Settings.GlobalEventSets.Contains(eventSet))
             {
                 _editor.Level.Settings.GlobalEventSets.Remove(eventSet);
