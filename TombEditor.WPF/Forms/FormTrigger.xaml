@@ -21,7 +21,6 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition />
         </sg:SpacedGrid.RowDefinitions>
         <sg:SpacedGrid.ColumnDefinitions>
             <ColumnDefinition Width="70"/>
@@ -63,7 +62,7 @@
             <CheckBox DockPanel.Dock="Left" Margin="4,0,0,0" Uid="bit5" Content="Bit 5"/>
 
             <!-- NG Script-->
-            <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
+            <Button DockPanel.Dock="Right" Margin="2,0,0,0" Style="{DynamicResource ButtonWithIconOnly}">
                 <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_animcommand-16.png" />
             </Button>
             <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
@@ -89,7 +88,7 @@
         </DockPanel>
 
         <!-- OK - Cancel -->
-        <DockPanel  Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+        <DockPanel  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" HorizontalAlignment="Right">
             <Button DockPanel.Dock="Right"  Width="90" Content="Cancel"/>
             <Button DockPanel.Dock="Right" Margin="0,0,4,0" Width="90" Content="OK"/>
         </DockPanel>
