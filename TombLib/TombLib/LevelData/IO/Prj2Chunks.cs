@@ -115,8 +115,8 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId RoomSectors = ChunkId.FromString("TeSecs");
         /**********/public static readonly ChunkId Sector = ChunkId.FromString("TeS");
         /**************/public static readonly ChunkId SectorProperties = new ChunkId(new byte[] { 0 }); // These chunks occur very often, this minimizes their size impact
-        /**************/public static readonly ChunkId SectorFloorClassic = new ChunkId(new byte[] { 1 }); // DEPRECATED
-        /**************/public static readonly ChunkId SectorCeilingClassic = new ChunkId(new byte[] { 2 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorFloor = new ChunkId(new byte[] { 1 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorCeiling = new ChunkId(new byte[] { 2 }); // DEPRECATED
         /**************/public static readonly ChunkId SectorFloorOnly = new ChunkId(new byte[] { 3 });
         /**************/public static readonly ChunkId SectorCeilingOnly = new ChunkId(new byte[] { 4 });
         /**************/public static readonly ChunkId SectorFloorSubdivisions = new ChunkId(new byte[] { 5 });

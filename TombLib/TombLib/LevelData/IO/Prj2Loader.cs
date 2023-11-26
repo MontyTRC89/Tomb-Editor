@@ -705,8 +705,8 @@ namespace TombLib.LevelData.IO
 
             progressReporter?.ReportInfo("Loading rooms");
 
-            bool usesClassicFloor = false;
-            bool usesClassicCeiling = false;
+            bool usesLegacyFloor = false;
+            bool usesLegacyCeiling = false;
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -761,9 +761,9 @@ namespace TombLib.LevelData.IO
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorClassic)
+                                    else if (id4 == Prj2Chunks.SectorFloor)
                                     {
-                                        usesClassicFloor = true;
+                                        usesLegacyFloor = true;
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
@@ -774,9 +774,9 @@ namespace TombLib.LevelData.IO
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingClassic)
+                                    else if (id4 == Prj2Chunks.SectorCeiling)
                                     {
-                                        usesClassicCeiling = true;
+                                        usesLegacyCeiling = true;
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
@@ -1057,7 +1057,7 @@ namespace TombLib.LevelData.IO
                 }
             }
 
-            if (usesClassicFloor || usesClassicCeiling)
+            if (usesLegacyFloor || usesLegacyCeiling)
             {
                 progressReporter?.ReportInfo("Re-adjusting face textures where needed (Legacy floor / ceiling chunks)");
 
@@ -1067,13 +1067,13 @@ namespace TombLib.LevelData.IO
                         {
                             Block block = room.Blocks[x, z];
 
-                            if (usesClassicFloor)
+                            if (usesLegacyFloor)
                             {
                                 SwapFloor2FacesWhereApplicable(room, x, z);
                                 SwapDiagonalFloor2FacesWhereApplicable(room, x, z);
                             }
 
-                            if (usesClassicCeiling)
+                            if (usesLegacyCeiling)
                             {
                                 SwapCeiling2FacesWhereApplicable(room, x, z);
                                 SwapDiagonalCeiling2FacesWhereApplicable(room, x, z);
