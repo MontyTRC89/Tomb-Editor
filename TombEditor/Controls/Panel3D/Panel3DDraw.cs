@@ -620,6 +620,8 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
 
+                color = instance.Enabled ? normalColor : disabledNormalColor;
+
                 // Switch colours
                 if (i == selectedIndex && selectedIndex >= 0)
                 {
@@ -633,7 +635,6 @@ namespace TombEditor.Controls.Panel3D
                 }
                 else if (lastIndex == selectedIndex || lastIndex == -1)
                 {
-                    color = instance.Enabled ? normalColor : disabledNormalColor;
                     _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
                 }
                 lastIndex = i;
