@@ -68,6 +68,7 @@ namespace TombEditor.Forms
 
                         _lockSelectionChange = true;
                         dgvEvents.ClearSelection();
+                        ClearEventSetFromUI();
                         _lockSelectionChange = false;
                     }
 
@@ -129,6 +130,10 @@ namespace TombEditor.Forms
 
             // Populate and select event set list
             PopulateEventSetList();
+
+            // Select event set, if volume exists
+            if (!GenericMode)
+                SelectedSet = instance.EventSet;
         }
 
         protected override void OnShown(EventArgs e)
@@ -394,6 +399,26 @@ namespace TombEditor.Forms
 					}
 		}
 
+        private void ClearEventSetFromUI()
+        {
+            UpdateUI();
+
+            _lockUI = true;
+
+            cbActivatorLara.Checked =
+            cbActivatorNPC.Checked =
+            cbActivatorOtherMoveables.Checked =
+            cbActivatorStatics.Checked =
+            cbActivatorFlyBy.Checked = false;
+
+            cbEvents.SelectedItem = null;
+            triggerManager.Event = null;
+
+            tbName.Text = string.Empty;
+
+            _lockUI = false;
+        }
+
         private void LoadEventSetIntoUI(EventSet newEventSet)
         {
             if (!GenericMode)
@@ -520,6 +545,7 @@ namespace TombEditor.Forms
         private void butDeleteEventSet_Click(object sender, EventArgs e)
         {
             EditorActions.DeleteEventSet(SelectedSet);
+            SelectedSet = null;
 
             if (!GenericMode)
                 _instance.EventSet = null;
