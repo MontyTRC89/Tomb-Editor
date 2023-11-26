@@ -75,7 +75,7 @@
             <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
                 <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
             </Button>
-            <TextBox DockPanel.Dock="Right" Width="90" Margin="2,0,2,0" Style="{DynamicResource FlatDarkTextBox}"></TextBox>
+            <TextBox DockPanel.Dock="Right" Width="90" Margin="2,0,2,0" Style="{DynamicResource FlatDarkTextBox}"/>
             <Label Content="Script" HorizontalAlignment="Right" Margin="4,0,4,0"/>
 
         </DockPanel>
