@@ -43,6 +43,8 @@ namespace TombEditor.Forms
         public bool GlobalMode => _usedList == _editor.Level.Settings.GlobalEventSets;
         public bool GenericMode => GlobalMode || _instance == null;
 
+        private string Mode => GlobalMode ? "global" : "volume";
+
         public EventSet SelectedSet
         {
             get 
@@ -255,7 +257,7 @@ namespace TombEditor.Forms
             {
                 butSearch.Location = butUnassignEventSet.Location;
                 butUnassignEventSet.Visible = cbEnableVolume.Visible = cbAdjacentRooms.Visible = false;
-                Text = "Edit " + (GlobalMode ? "global" : "volume") + " event sets";
+                Text = "Edit " + Mode + " event sets";
             }
             else
             {
@@ -506,7 +508,7 @@ namespace TombEditor.Forms
 
         private void butNewEventSet_Click(object sender, EventArgs e)
         {
-            var name = "New " + (GlobalMode ? "global" : "volume") + " event set " + (dgvEvents.Rows.Count + 1).ToString();
+            var name = "New " + Mode + " event set " + (dgvEvents.Rows.Count + 1).ToString();
 
             EventSet newSet;
 
