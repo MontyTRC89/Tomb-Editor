@@ -207,7 +207,11 @@ namespace TombEditor.Forms
         public void ChangeVolume(VolumeInstance instance)
         {
             if (GlobalMode)
+            {
+                if (instance != null)
+                    _popup.ShowInfo(triggerManager, "To edit volumes in realtime, please close this window");
                 return;
+            }
 
             _instance = instance;
 
