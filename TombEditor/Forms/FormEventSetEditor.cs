@@ -139,6 +139,10 @@ namespace TombEditor.Forms
             // Select event set, if volume exists
             if (!GenericMode)
                 SelectedSet = instance.EventSet;
+
+            // Gray out UI by default, if event set list is empty
+            if (_usedList.Count == 0)
+                UpdateUI();
         }
 
         protected override void OnShown(EventArgs e)
