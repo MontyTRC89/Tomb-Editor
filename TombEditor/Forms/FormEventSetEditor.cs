@@ -12,7 +12,7 @@ using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
-    public partial class FormVolume : DarkForm
+    public partial class FormEventSetEditor : DarkForm
     {
         private enum SortMode
         {
@@ -97,7 +97,7 @@ namespace TombEditor.Forms
         }
         private EventSet _selectedSet;
 
-        public FormVolume(bool global, VolumeInstance instance = null)
+        public FormEventSetEditor(bool global, VolumeInstance instance = null)
         {
             InitializeComponent();
             dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
@@ -133,7 +133,7 @@ namespace TombEditor.Forms
             base.OnShown(e);
 
             // Resize splitter
-            splitContainer.SplitterDistance = _editor.Configuration.Window_FormVolume_SplitterDistance;
+            splitContainer.SplitterDistance = _editor.Configuration.Window_FormEventSetEditor_SplitterDistance;
         }
 
         private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -640,7 +640,7 @@ namespace TombEditor.Forms
         private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
         {
             if (Visible)
-                _editor.Configuration.Window_FormVolume_SplitterDistance = splitContainer.SplitterDistance;
+                _editor.Configuration.Window_FormEventSetEditor_SplitterDistance = splitContainer.SplitterDistance;
         }
 
         private void cbEnableVolume_CheckedChanged(object sender, EventArgs e)

@@ -3,7 +3,7 @@ using DarkUI.Controls;
 
 namespace TombEditor.Forms
 {
-    partial class FormVolume
+    partial class FormEventSetEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -387,7 +387,7 @@ namespace TombEditor.Forms
             this.splitContainer.TabIndex = 32;
             this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
             // 
-            // FormVolume
+            // FormEventSetEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -400,12 +400,11 @@ namespace TombEditor.Forms
             this.KeyPreview = true;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(750, 460);
-            this.Name = "FormVolume";
+            this.Name = "FormEventSetEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Edit trigger volume";
             this.darkSectionPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).EndInit();
             this.darkPanel1.ResumeLayout(false);

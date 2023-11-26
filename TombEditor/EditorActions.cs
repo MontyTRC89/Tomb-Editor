@@ -1261,9 +1261,9 @@ namespace TombEditor
 
         public static void EditEventSets(IWin32Window owner, bool global, VolumeInstance targetVolume = null)
         {
-            var existingWindow = Application.OpenForms[nameof(FormVolume)];
+            var existingWindow = Application.OpenForms[nameof(FormEventSetEditor)];
 
-            if (existingWindow != null && (existingWindow as FormVolume).GlobalMode != global)
+            if (existingWindow != null && (existingWindow as FormEventSetEditor).GlobalMode != global)
             {
                 existingWindow.Close();
                 existingWindow = null;
@@ -1271,7 +1271,7 @@ namespace TombEditor
 
             if (existingWindow == null)
             {
-                var propForm = new FormVolume(global, targetVolume);
+                var propForm = new FormEventSetEditor(global, targetVolume);
                 propForm.Show(owner);
             }
             else
