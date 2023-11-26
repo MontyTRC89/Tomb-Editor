@@ -743,11 +743,9 @@ namespace TombEditor
             var box = new BoxVolumeInstance()
             {
                 Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.BlockSizeUnit,
-                Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit)
+                Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit),
+                EventSet = _editor.Level.Settings.VolumeEventSets.Count > 0 ? _editor.Level.Settings.VolumeEventSets[0] : null
             };
-
-            // Display form
-            EditEventSets(owner, false, box);
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
@@ -755,6 +753,9 @@ namespace TombEditor
             box.Position += new Vector3(0, Level.HalfBlockSizeUnit, 0); // Lift it up a bit
             _editor.UndoManager.PushObjectCreated(box);
             AllocateScriptIds(box);
+
+            // Display form
+            EditEventSets(owner, false, box);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
