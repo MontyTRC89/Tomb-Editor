@@ -6,6 +6,8 @@ Tomb Editor:
  * Add global events to a node editor and to legacy trigger editor.
  * Allow to move and sort event sets.
  * Support default values for Vector3 and Color value types in nodes.
+ * Fix incorrect coordinates in tooltip for light objects.
+ * Fix alignment option not working for display sprite node.
 
 Version 1.6.9
 =============
