@@ -2067,36 +2067,25 @@ namespace TombEditor
                         if (room.CoordinateInvalid(x, z) || (workArea != SectorSelection.None && !workArea.Area.Contains(new VectorInt2(x, z))))
                             continue;
 
-                        if (pickedFace.IsFloorWall() && pickedFace.IsNegativeX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_NegativeX_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_PositiveX_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsNegativeZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_NegativeZ_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_PositiveZ_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsDiagonal())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
-                        else if (pickedFace is BlockFace.Wall_Diagonal_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsDiagonal())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
+                        Direction direction = pickedFace.GetDirection();
+                        BlockFaceType faceType = pickedFace.GetFaceType();
+
+                        switch (direction)
+                        {
+                            case Direction.PositiveZ:
+                            case Direction.NegativeZ:
+                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                break;
+
+                            case Direction.PositiveX:
+                            case Direction.NegativeX:
+                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                break;
+
+                            case Direction.Diagonal:
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, faceType, texture);
+                                break;
+                        }
                     }
             }
             else

@@ -289,7 +289,7 @@ namespace TombLib.LevelData
                 throw new ArgumentException();
         }
 
-        public static BlockFaceType GetBlockFaceType(this BlockFace face)
+        public static BlockFaceType GetFaceType(this BlockFace face)
         {
             if (face <= BlockFace.Wall_Diagonal_FloorSubdivision2 || face.IsExtraFloorSubdivision())
                 return BlockFaceType.Floor;
