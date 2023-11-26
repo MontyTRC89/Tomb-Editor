@@ -3,73 +3,77 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TombEditor.WPF.Forms" 
         xmlns:darkUI="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF" 
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
         Title="Legacy trigger editor" Height="auto" Width="711">
-    <sg:SpacedGrid RowSpacing="4" ColumnSpacing="4">
-        <Grid>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="75" />
-                <ColumnDefinition/>
-                <ColumnDefinition Width="70" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-            </Grid.RowDefinitions>
-            <DockPanel></DockPanel>
+    <sg:SpacedGrid RowSpacing="4" ColumnSpacing="4" Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="560"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
 
-            <!-- Trigger Type -->
-            <Label Grid.Column="0" Grid.Row="0">Trigger Type:</Label>
-            <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="0" Margin="4,0,4,0"/>
+        <!-- Trigger Type -->
+        <Label>Trigger Type:</Label>
+        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="0"/>
 
-            <!-- What -->
-            <Label Grid.Column="0" Grid.Row="1">What:</Label>
-            <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="1" Margin="4,0,4,0"/>
-            <Button Margin="4,0,4,0" Grid.Column="2" Grid.Row="1">Locate</Button>
+        <!-- What -->
+        <Label Grid.Column="0" Grid.Row="1">What:</Label>
+        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="1"/>
 
-            <!-- Param -->
-            <Label Margin="4" Grid.Column="0" Grid.Row="2">(#) Param:</Label>
-            <xceed:IntegerUpDown Grid.Column="1" Grid.Row="2" Margin="4,0,4,0" Visibility="Visible"/>
-            <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="2" Margin="4,0,4,0" Visibility="Hidden"/>
+        <!-- Param -->
+        <Label Grid.Column="0" Grid.Row="2">(#) Param:</Label>
 
-            <!-- Time -->
-            <Label Margin="4" Grid.Column="0" Grid.Row="3">(&amp;) Time:</Label>
-            <xceed:IntegerUpDown Grid.Column="1" Grid.Row="3" Margin="4,0,4,0" Visibility="Visible"/>
-            <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="3" Margin="4,0,4,0" Visibility="Hidden"/>
+        <xceed:IntegerUpDown Grid.Column="1" Grid.Row="2"  Visibility="Visible"/>
+        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="2" Visibility="Hidden"/>
+        <Label Grid.Column="1" Grid.Row="2" Visibility="Hidden">Wrong parameter:</Label>
 
-            <!-- Extra -->
-            <Label Margin="4" Grid.Column="0" Grid.Row="4">(E) Extra:</Label>
-            <xceed:IntegerUpDown Grid.Column="1" Grid.Row="4" Margin="4,0,4,0" Visibility="Visible"/>
-            <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="4" Margin="4,0,4,0" Visibility="Hidden"/>
+        <Button Grid.Column="2" Grid.Row="2" Width="60">Locate</Button>
 
-            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="5">
-                <CheckBox Margin="4,0,4,0" Uid="bit1">Bit 1</CheckBox>
-                <CheckBox Margin="4,0,4,0" Uid="bit2">Bit 2</CheckBox>
-                <CheckBox Margin="4,0,4,0" Uid="bit3">Bit 3</CheckBox>
-                <CheckBox Margin="4,0,4,0" Uid="bit4">Bit 4</CheckBox>
-                <CheckBox Margin="4,0,4,0" Uid="bit5">Bit 5</CheckBox>
-            </StackPanel>
-            <CheckBox  Grid.Column="1" Grid.Row="6" Margin="4,0,4,0" Uid="bit5">One Shot</CheckBox>
-            <DockPanel Margin="4,0,4,0"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3">
-                <CheckBox FlowDirection="RightToLeft" >Raw mode (show numeric values)</CheckBox>
-            </DockPanel>
-            <DockPanel  Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3">
-                <Button DockPanel.Dock="Right" Margin="4,0,4,0" Width="90">Cancel</Button>
-                <Button DockPanel.Dock="Right" Margin="520,0,4,0" Width="90">OK</Button>
-            </DockPanel>
-        </Grid>
+        <!-- Time -->
+        <Label Grid.Column="0" Grid.Row="3">(&amp;) Time:</Label>
+        <xceed:IntegerUpDown Grid.Column="1" Grid.Row="3" Visibility="Visible"/>
+        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="3" Visibility="Hidden"/>
+
+        <!-- Extra -->
+        <Label Grid.Column="0" Grid.Row="4">(E) Extra:</Label>
+        <xceed:IntegerUpDown Grid.Column="1" Grid.Row="4" Visibility="Visible"/>
+        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="4" Visibility="Hidden"/>
+
+        <!-- Bits -->
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="5">
+            <CheckBox Uid="bit1">Bit 1</CheckBox>
+            <CheckBox Margin="4,0,4,0" Uid="bit2">Bit 2</CheckBox>
+            <CheckBox Margin="4,0,4,0" Uid="bit3">Bit 3</CheckBox>
+            <CheckBox Margin="4,0,4,0" Uid="bit4">Bit 4</CheckBox>
+            <CheckBox Margin="4,0,0,0" Uid="bit5">Bit 5</CheckBox>
+        </StackPanel>
+
+        <!-- OneShot -->
+        <CheckBox  Grid.Column="1" Grid.Row="6" Uid="OneShot">One Shot</CheckBox>
+
+        <!-- Raw mode -->
+        <CheckBox Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" FlowDirection="RightToLeft" >Raw mode (show numeric values)</CheckBox>
+
+        <!-- OK - Cancel -->
+        <DockPanel  Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+            <Button DockPanel.Dock="Right"  Width="90">Cancel</Button>
+            <Button DockPanel.Dock="Right" Margin="0,0,4,0" Width="90">OK</Button>
+        </DockPanel>
     </sg:SpacedGrid>
 </Window>
