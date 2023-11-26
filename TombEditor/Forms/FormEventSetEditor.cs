@@ -122,6 +122,9 @@ namespace TombEditor.Forms
             _scriptFuncs = ScriptingUtils.GetAllFunctionNames(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.TenLuaScriptFile));
             triggerManager.Initialize(_editor, ScriptingUtils.NodeFunctions, _scriptFuncs);
 
+            // Populate event type list (needs to be done only once and before all other UI updates)
+            PopulateEventTypeList();
+
             // Determine editing mode
             SetupUI();
 
@@ -244,8 +247,6 @@ namespace TombEditor.Forms
 
         private void SetupUI()
         {
-            PopulateEventTypeList();
-
             if (GenericMode)
             {
                 butSearch.Location = butUnassignEventSet.Location;
