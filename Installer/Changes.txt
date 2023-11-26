@@ -1,9 +1,10 @@
-Version 1.6.10
-==============
+Version 1.7
+===========
 
 Tomb Editor:
+ * Add global event editor.
+ * Add global events to a node editor and to legacy trigger editor.
  * Allow to move and sort event sets.
- * Add new types of events to a script / node editor.
  * Support default values for Vector3 and Color value types in nodes.
 
 Version 1.6.9
