@@ -309,10 +309,16 @@ namespace TombLib.Controls.VisualScripting
             if (SelectedNode == null || node == null || node.Previous != null)
                 return;
 
-            if (elseIfPossible && SelectedNode is TriggerNodeCondition && (SelectedNode as TriggerNodeCondition)?.Else == null)
+            if (SelectedNode is TriggerNodeCondition && 
+                ((elseIfPossible || (SelectedNode as TriggerNodeCondition)?.Next != null) && 
+                 (SelectedNode as TriggerNodeCondition)?.Else == null))
+            {
                 (SelectedNode as TriggerNodeCondition).Else = node;
+            }
             else if (SelectedNode.Next == null)
+            {
                 SelectedNode.Next = node;
+            }
             else
                 return;
 
