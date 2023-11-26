@@ -63,6 +63,9 @@ namespace TombEditor.Forms
                         dgvEvents.Rows[0].Selected = true;
                     else
                     {
+                        // HACK: Lock selection change to prevent DDGV from automatically selecting first row
+                        // after clearing previous selection.
+
                         _lockSelectionChange = true;
                         dgvEvents.ClearSelection();
                         _lockSelectionChange = false;
