@@ -664,7 +664,6 @@ namespace TombEditor.Forms
 
 			ReplaceEventSetNames(SelectedSet.Name, tbName.Text);
 			dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
-			_editor.EventSetsChange();
 		}
 
         private void dgvEvents_DragDrop(object sender, DragEventArgs e)
