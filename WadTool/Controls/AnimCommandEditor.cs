@@ -96,18 +96,34 @@ namespace WadTool
                         commandControls.SelectedTab = tabPlaySound;
 
                         tbPlaySoundFrame.Value = cmd.Parameter1;
-                        nudSoundId.Value = cmd.Parameter2 & 0x3FFF;
+                        nudSoundId.Value = cmd.Parameter2 & 0xFFF;
 
-                        switch (cmd.Parameter2 & 0xC000)
+                        // Check sound conditions stored in last 4 bits.
+                        switch (cmd.Parameter2 & 0xF000)
                         {
                             default:
+                            case 0:
                                 comboPlaySoundConditions.SelectedIndex = 0;
                                 break;
-                            case 0x4000:
+
+                            // On dry land.
+                            case (1 << 14):
                                 comboPlaySoundConditions.SelectedIndex = 1;
                                 break;
-                            case 0x8000:
+
+                            // On wet land.
+                            case (1 << 15):
                                 comboPlaySoundConditions.SelectedIndex = 2;
+                                break;
+
+                            // In quicksand (TEN).
+                            case (1 << 12):
+                                comboPlaySoundConditions.SelectedIndex = 3;
+                                break;
+
+                            // Underwater (TEN).
+                            case (1 << 13):
+                                comboPlaySoundConditions.SelectedIndex = 4;
                                 break;
                         }
                         break;
@@ -255,8 +271,13 @@ namespace WadTool
         {
             if (_command == null || _command.Type != WadAnimCommandType.PlaySound)
                 return;
-            _command.Parameter2 &= unchecked((short)~0xC000);
-            _command.Parameter2 |= (short)(comboPlaySoundConditions.SelectedIndex << 14);
+
+            // Due to arrangemet of TEN-exclusive sound condition flags, must determine special shift value.
+            _command.Parameter2 &= unchecked((short)~0xF000);
+            _command.Parameter2 |= (comboPlaySoundConditions.SelectedIndex <= 2) ?
+                (short)(comboPlaySoundConditions.SelectedIndex << 14) :
+                (short)((comboPlaySoundConditions.SelectedIndex - 2) << 12);
+
             InvokeChanged();
         }
 
@@ -290,7 +311,7 @@ namespace WadTool
 
         private void nudSoundId_ValueChanged(object sender, EventArgs e)
         {
-            _command.Parameter2 &= unchecked((short)~0x3FFF);
+            _command.Parameter2 &= unchecked((short)~0xFFF);
             _command.Parameter2 |= (short)nudSoundId.Value;
 
             if (nudSoundId.Value < comboSound.Items.Count - 1)

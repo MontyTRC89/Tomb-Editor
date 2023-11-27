@@ -26,14 +26,28 @@ namespace TombLib.Wad
                     return "Kill entity";
                 case WadAnimCommandType.SetPosition:
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
+
                 case WadAnimCommandType.PlaySound:
-                    int soundId = Parameter2 & 0x3FFF;
-                    if ((Parameter2 & 0x8000) != 0)
-                        return "Play Sound ID = " + soundId + " (water) on Frame = " + Parameter1;
-                    else if ((Parameter2 & 0x4000) != 0)
-                        return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
-                    else
-                        return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
+                    int soundId = Parameter2 & 0xFFF;
+                    switch (Parameter2 & 0xF000)
+                    {
+                        default:
+                        case 0:
+                            return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
+
+                        case (1 << 14):
+                            return "Play Sound ID = " + soundId + " (dry land) on Frame = " + Parameter1;
+
+                        case (1 << 15):
+                            return "Play Sound ID = " + soundId + " (wet land) on Frame = " + Parameter1;
+
+                        case (1 << 12):
+                            return "Play Sound ID = " + soundId + " (quicksand) on Frame = " + Parameter1;
+
+                        case (1 << 13):
+                            return "Play Sound ID = " + soundId + " (underwater) on Frame = " + Parameter1;
+                    }
+
                 case WadAnimCommandType.FlipEffect:
                     int flipeffectId = Parameter2 & 0x3FFF;
                     if ((Parameter2 & 0x8000) != 0)

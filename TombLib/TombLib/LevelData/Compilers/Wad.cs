@@ -432,7 +432,7 @@ namespace TombLib.LevelData.Compilers
                                 _animCommands.Add(0x05);
 
                                 _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2)));
+                                _animCommands.Add(unchecked((short)(command.Parameter2 & 0xCFFF))); // Clear TEN-exclusive sound condition flags.
 
                                 break;
 

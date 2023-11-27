@@ -547,8 +547,10 @@
             this.comboPlaySoundConditions.FormattingEnabled = true;
             this.comboPlaySoundConditions.Items.AddRange(new object[] {
             "Always",
-            "Only when dry",
-            "Only in the water"});
+            "On dry land",
+            "On wet land",
+            "In quicksand",
+            "Underwater"});
             this.comboPlaySoundConditions.Location = new System.Drawing.Point(88, 24);
             this.comboPlaySoundConditions.Name = "comboPlaySoundConditions";
             this.comboPlaySoundConditions.Size = new System.Drawing.Size(268, 23);
