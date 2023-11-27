@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
@@ -193,6 +194,267 @@ namespace TombEditor.Controls.Panel3D
                 effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.TriangleStripWithAdjacency, _flybyPathVertexBuffer.ElementCount);
             }
+        }
+
+        private void DrawSubdivisionHighlights(Effect effect)
+        {
+            if (_currentNumberKey is Keys.None)
+                return;
+
+            int subdivisionIndex = (int)_currentNumberKey - (int)Keys.D0 - 2;
+            Room currentRoom = _editor.SelectedRoom;
+
+            var vertices = new List<SolidVertex>();
+
+            const int
+                XZ_OFFSET = 2,
+                Y_OFFSET = 12;
+
+            void HandlePositiveZ(int x, int z, BlockSurface surface)
+            {
+                Vector3
+                    p1 = new(x + 1, surface.XpZp, z + 1),
+                    p2 = new(x, surface.XnZp, z + 1);
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+            }
+
+            void HandlePositiveX(int x, int z, BlockSurface surface)
+            {
+                Vector3
+                    p1 = new(x + 1, surface.XpZn, z),
+                    p2 = new(x + 1, surface.XpZp, z + 1);
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));   
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+            }
+
+            void HandleNegativeZ(int x, int z, BlockSurface surface)
+            {
+                Vector3
+                    p1 = new(x, surface.XnZn, z),
+                    p2 = new(x + 1, surface.XpZn, z);
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+            }
+
+            void HandleNegativeX(int x, int z, BlockSurface surface)
+            {
+                Vector3
+                    p1 = new(x, surface.XnZp, z + 1),
+                    p2 = new(x, surface.XnZn, z);
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+            }
+
+            void HandleDiagonal(int x, int z, BlockSurface surface)
+            {
+                Vector3 p1, p2;
+
+                switch (surface.DiagonalSplit)
+                {
+                    case DiagonalSplit.XnZp:
+                        p1 = new(x, surface.XnZn, z);
+                        p2 = new(x + 1, surface.XpZp, z + 1);
+
+                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
+                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+
+                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
+
+                        break;
+                    case DiagonalSplit.XpZp:
+                        p1 = new(x, surface.XnZp, z + 1);
+                        p2 = new(x + 1, surface.XpZn, z);
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
+                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
+                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+
+                        break;
+                    case DiagonalSplit.XnZn:
+                        p1 = new(x + 1, surface.XpZn, z);
+                        p2 = new(x, surface.XnZp, z + 1);
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                        break;
+                    case DiagonalSplit.XpZn:
+                        p1 = new(x + 1, surface.XpZp, z + 1);
+                        p2 = new(x, surface.XnZn, z);
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+
+                        break;
+                }
+            }
+
+            for (int x = _editor.SelectedSectors.Area.X0; x <= _editor.SelectedSectors.Area.X1; x++)
+                for (int z = _editor.SelectedSectors.Area.Y0; z <= _editor.SelectedSectors.Area.Y1; z++)
+                {
+                    Block block = currentRoom.Blocks[x, z];
+
+                    if (subdivisionIndex is < 0 or > 7) // QA or WS
+                    {
+                        // PositiveZ Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_QA)))
+                            HandlePositiveZ(x, z, block.Floor);
+                        // PositiveZ Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_WS)))
+                            HandlePositiveZ(x, z, block.Ceiling);
+
+                        // PositiveX Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_QA)))
+                            HandlePositiveX(x, z, block.Floor);
+                        // PositiveX Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_WS)))
+                            HandlePositiveX(x, z, block.Ceiling);
+
+                        // NegativeZ Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_QA)))
+                            HandleNegativeZ(x, z, block.Floor);
+                        // NegativeZ Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_WS)))
+                            HandleNegativeZ(x, z, block.Ceiling);
+
+                        // NegativeX Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_QA)))
+                            HandleNegativeX(x, z, block.Floor);
+                        // NegativeX Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_WS)))
+                            HandleNegativeX(x, z, block.Ceiling);
+
+                        // Diagonal Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_QA)))
+                            HandleDiagonal(x, z, block.Floor);
+                        // Diagonal Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_WS)))
+                            HandleDiagonal(x, z, block.Ceiling);
+                    }
+                    else // Actual subdivisions
+                    {
+                        // Floor subdivision
+                        if (subdivisionIndex < block.ExtraFloorSubdivisions.Count)
+                        {
+                            var floorSurface = new BlockSurface
+                            {
+                                XnZp = block.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
+                                XpZp = block.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
+                                XpZn = block.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
+                                XnZn = block.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                DiagonalSplit = block.Floor.DiagonalSplit
+                            };
+
+                            // PositiveZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
+                                HandlePositiveZ(x, z, floorSurface);
+
+                            // PositiveX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
+                                HandlePositiveX(x, z, floorSurface);
+
+                            // NegativeZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
+                                HandleNegativeZ(x, z, floorSurface);
+
+                            // NegativeX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
+                                HandleNegativeX(x, z, floorSurface);
+
+                            // Diagonal
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
+                                HandleDiagonal(x, z, floorSurface);
+                        }
+                        
+                        // Ceiling subdivision
+                        if (subdivisionIndex < block.ExtraCeilingSubdivisions.Count)
+                        {
+                            var ceilingSurface = new BlockSurface
+                            {
+                                XnZp = block.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
+                                XpZp = block.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
+                                XpZn = block.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
+                                XnZn = block.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                DiagonalSplit = block.Ceiling.DiagonalSplit
+                            };
+
+                            // PositiveZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
+                                HandlePositiveZ(x, z, ceilingSurface);
+
+                            // PositiveX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
+                                HandlePositiveX(x, z, ceilingSurface);
+
+                            // NegativeZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
+                                HandleNegativeZ(x, z, ceilingSurface);
+
+                            // NegativeX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
+                                HandleNegativeX(x, z, ceilingSurface);
+
+                            // Diagonal
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
+                                HandleDiagonal(x, z, ceilingSurface);
+                        }
+                    }
+                }
+
+            if (vertices.Count == 0)
+                return;
+
+            using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+            _legacyDevice.SetVertexBuffer(buffer);
+            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+            effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+            effect.Parameters["Color"].SetValue(Vector4.One);
+            effect.CurrentTechnique.Passes[0].Apply();
+            _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
         }
 
         private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
@@ -1687,6 +1949,8 @@ namespace TombEditor.Controls.Panel3D
                 DrawLights(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw flyby path
                 DrawFlybyPath(effect);
+                // Draw subdivision highlight
+                DrawSubdivisionHighlights(effect);
             }
 
             // Draw ghost block cubes

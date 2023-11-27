@@ -362,8 +362,11 @@ namespace TombEditor.Controls.Panel3D
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
 
-            if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
+            if (_currentNumberKey == Keys.None && e.KeyCode is >= Keys.D0 and <= Keys.D9)
+            {
                 _currentNumberKey = e.KeyCode;
+                Invalidate(false);
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -374,7 +377,11 @@ namespace TombEditor.Controls.Panel3D
             if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
 
-            _currentNumberKey = Keys.None;
+            if (_currentNumberKey != Keys.None)
+            {
+                _currentNumberKey = Keys.None;
+                Invalidate(false);
+            }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

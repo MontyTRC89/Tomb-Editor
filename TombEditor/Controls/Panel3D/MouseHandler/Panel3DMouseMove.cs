@@ -124,7 +124,7 @@ namespace TombEditor.Controls.Panel3D
                         {
                             if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
                             {
-                                int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
+                                int index = (int)_currentNumberKey - (int)Keys.D0;
                                 subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
                             }
                             else if (ModifierKeys.HasFlag(Keys.Control))
@@ -136,7 +136,7 @@ namespace TombEditor.Controls.Panel3D
                         {
                             if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
                             {
-                                int index = int.Parse(_currentNumberKey.ToString().TrimStart('D'));
+                                int index = (int)_currentNumberKey - (int)Keys.D0;
                                 subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
                             }
                             else if (ModifierKeys.HasFlag(Keys.Control))
