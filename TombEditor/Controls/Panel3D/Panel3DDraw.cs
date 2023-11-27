@@ -198,7 +198,7 @@ namespace TombEditor.Controls.Panel3D
 
         private void DrawSubdivisionHighlights(Effect effect)
         {
-            if (_currentNumberKey is Keys.None)
+            if (_currentNumberKey is Keys.None || _editor.SelectedSectors == SectorSelection.None)
                 return;
 
             int subdivisionIndex = (int)_currentNumberKey - (int)Keys.D0 - 2;
