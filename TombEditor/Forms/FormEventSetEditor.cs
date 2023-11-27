@@ -662,6 +662,20 @@ namespace TombEditor.Forms
 			if (SelectedSet.Name == tbName.Text)
 				return;
 
+            if (string.IsNullOrEmpty(tbName.Text))
+            {
+                _popup.ShowWarning(triggerManager, "Event set name can't be empty");
+                tbName.Text = SelectedSet.Name;
+                return;
+            }
+
+            if (_usedList.Any(s => s.Name == tbName.Text))
+            {
+                _popup.ShowWarning(triggerManager, "An event set with same name already exists");
+                tbName.Text = SelectedSet.Name;
+                return;
+            }
+
 			ReplaceEventSetNames(SelectedSet.Name, tbName.Text);
 			dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
 		}
