@@ -888,13 +888,5 @@ namespace TombLib.LevelData
                 return GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this, paths));
             }
         }
-
-        public List<EventSet> AllEventSets
-        {
-            get
-            {
-                return GlobalEventSets.Concat(VolumeEventSets).ToList();
-            }
-        }
     }
 }

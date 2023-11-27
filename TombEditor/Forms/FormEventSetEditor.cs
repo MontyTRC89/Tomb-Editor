@@ -391,23 +391,26 @@ namespace TombEditor.Forms
 			foreach (var set in _usedList)
 				foreach (var evt in set.Events)
 					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
-					{
-						var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function && 
-												             f.Arguments.Any(a => a.Type == ArgumentType.EventSets));
-						if (func == null)
-							continue;
+                        foreach (bool global in new[] { false, true })
+                        {
+                            var type = global ? ArgumentType.GlobalEventSets : ArgumentType.VolumeEventSets;
 
-						for (int i = 0; i < func.Arguments.Count; i++)
-						{
-							if (func.Arguments[i].Type == ArgumentType.EventSets &&
-								node.Arguments.Count > i &&
-								TextExtensions.Unquote(node.Arguments[i]) == oldName)
-							{
-								node.Arguments[i] = TextExtensions.Quote(newName);
-							}
-						}
+						    var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function && 
+												                                        f.Arguments.Any(a => a.Type == type));
+						    if (func == null)
+							    continue;
 
-					}
+						    for (int i = 0; i < func.Arguments.Count; i++)
+						    {
+							    if (func.Arguments[i].Type == type &&
+								    node.Arguments.Count > i &&
+								    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+							    {
+								    node.Arguments[i] = TextExtensions.Quote(newName);
+							    }
+						    }
+
+					    }
 		}
 
         private void ClearEventSetFromUI()

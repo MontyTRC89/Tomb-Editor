@@ -36,20 +36,22 @@ namespace TombLib.LevelData.VisualScripting
         Vector3,
         String,
         Color,
-        LuaScript,      // Listable
-        EventSets,      // Listable
-        EventList,      // Listable
-        Moveables,      // Listable
-        Statics,        // Listable
-        Cameras,        // Listable
-        Sinks,          // Listable
-        FlybyCameras,   // Listable
-        Volumes,        // Listable
-        Rooms,          // Listable
-        SoundEffects,   // Listable
-        SoundTracks,    // Listable
-        SpriteSlots,    // Listable
-        WadSlots,       // Listable
+        LuaScript,       // Listable
+        VolumeEventSets, // Listable
+        GlobalEventSets, // Listable
+        VolumeEvents,    // Listable
+        GlobalEvents,    // Listable
+        Moveables,       // Listable
+        Statics,         // Listable
+        Cameras,         // Listable
+        Sinks,           // Listable
+        FlybyCameras,    // Listable
+        Volumes,         // Listable
+        Rooms,           // Listable
+        SoundEffects,    // Listable
+        SoundTracks,     // Listable
+        SpriteSlots,     // Listable
+        WadSlots,        // Listable
         Enumeration,
         CompareOperator
     }

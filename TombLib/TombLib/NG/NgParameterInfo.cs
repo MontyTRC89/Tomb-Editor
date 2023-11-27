@@ -79,7 +79,8 @@ namespace TombLib.NG
 
                 if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
                 {
-                    yield return TriggerTargetType.EventSet;
+                    yield return TriggerTargetType.VolumeEvent;
+                    yield return TriggerTargetType.GlobalEvent;
                 }
             }
         }
@@ -141,10 +142,16 @@ namespace TombLib.NG
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.TimerFieldTrigger;
 
-                        case TriggerTargetType.EventSet:
+                        case TriggerTargetType.VolumeEvent:
                             if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
-                                return new NgParameterRange(NgParameterKind.EventSets);
+                                return new NgParameterRange(NgParameterKind.VolumeEventSets);
                            else
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
+
+                        case TriggerTargetType.GlobalEvent:
+                            if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
+                                return new NgParameterRange(NgParameterKind.GlobalEventSets);
+                            else
                                 return new NgParameterRange(NgParameterKind.AnyNumber);
 
                         default:
@@ -175,8 +182,11 @@ namespace TombLib.NG
                         case TriggerTargetType.TimerfieldNg:
                             return new NgParameterRange(NgParameterKind.Empty);
 
-                        case TriggerTargetType.EventSet:
-                            return new NgParameterRange(NgParameterKind.EventTypes);
+                        case TriggerTargetType.VolumeEvent:
+                            return new NgParameterRange(NgParameterKind.VolumeEventTypes);
+
+                        case TriggerTargetType.GlobalEvent:
+                            return new NgParameterRange(NgParameterKind.GlobalEventTypes);
 
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);

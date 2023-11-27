@@ -216,7 +216,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 // Write event sets
-                writer.Write((uint)_level.Settings.AllEventSets.Count);
+                writer.Write((uint)(_level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count));
                 
                 writer.Write((uint)_level.Settings.GlobalEventSets.Count);
                 foreach (GlobalEventSet set in _level.Settings.GlobalEventSets)

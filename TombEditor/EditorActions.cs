@@ -649,7 +649,7 @@ namespace TombEditor
             }
             else if (firstObject is VolumeInstance && _editor.Level.IsTombEngine)
             {
-                trigger.TargetType = TriggerTargetType.EventSet;
+                trigger.TargetType = TriggerTargetType.VolumeEvent;
                 trigger.Target = new TriggerParameterString((firstObject as VolumeInstance).EventSet.Name);
             }
             else if (firstObject is StaticInstance && _editor.Level.IsNG)

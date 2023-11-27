@@ -79,8 +79,12 @@ namespace TombLib.Controls.VisualScripting
         private List<string> _cachedLuaFunctions = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IReadOnlyList<string> CachedEventSets { get { return _cachedEventSets; } }
-        private List<string> _cachedEventSets = new List<string>();
+        public IReadOnlyList<string> CachedVolumeEventSets { get { return _cachedVolumeEventSets; } }
+        private List<string> _cachedVolumeEventSets = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedGlobalEventSets { get { return _cachedGlobalEventSets; } }
+        private List<string> _cachedGlobalEventSets = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<MoveableInstance> CachedMoveables { get { return _cachedMoveables; } }
@@ -228,19 +232,20 @@ namespace TombLib.Controls.VisualScripting
         {
             var allObjects = level.GetAllObjects();
 
-            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
-                                    !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
-            _cachedStatics      = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedCameras      = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedSinks        = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
-            _cachedSpriteSlots  = level.Settings.WadGetAllSpriteSequences().Select(m => TrCatalog.GetSpriteSequenceName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
-            _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
-            _cachedSoundInfos   = level.Settings.GlobalSoundMap;
-            _cachedRooms        = level.ExistingRooms;
-            _cachedEventSets = level.Settings.AllEventSets.Select(s => s.Name).ToList();
+            _cachedMoveables        = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
+                                        !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
+            _cachedStatics          = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedCameras          = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedSinks            = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedFlybys           = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedVolumes          = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedWadSlots         = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSpriteSlots      = level.Settings.WadGetAllSpriteSequences().Select(m => TrCatalog.GetSpriteSequenceName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundTracks      = level.Settings.GetListOfSoundtracks();
+            _cachedSoundInfos       = level.Settings.GlobalSoundMap;
+            _cachedRooms            = level.ExistingRooms;
+            _cachedVolumeEventSets  = level.Settings.VolumeEventSets.Select(s => s.Name).ToList();
+            _cachedGlobalEventSets  = level.Settings.GlobalEventSets.Select(s => s.Name).ToList();
 
             if (scriptFunctions != null)
                 _cachedLuaFunctions = scriptFunctions;
