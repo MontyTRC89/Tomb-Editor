@@ -5071,7 +5071,7 @@
 			<moveable id="94" name="Little rat" t5m="RATS_EMITTER" />
 			<moveable id="95" name="Spider" t5m="SPIDER" />
 			<moveable id="96" name="Spider generator" t5m="SPIDERS_EMITTER" />
-			<moveable id="97" name="Auto guns" t5m="AUTOGUN" />
+			<moveable id="97" name="Auto guns" t5m="AUTO_GUN" />
 			<moveable id="98" name="Electricity wires" t5m="ELECTRICAL_CABLES" />
 			<moveable id="99" name="Dart" t5m="DARTS" />
 			<moveable id="100" name="Dart emitter" t5m="DART_EMITTER" />
@@ -6260,7 +6260,7 @@
 			<moveable id="283" name="IMP" />
 			<moveable id="284" name="IMP_ROCK" />
 			<moveable id="285" name="GUNSHIP" />
-			<moveable id="286" name="AUTOGUN" />
+			<moveable id="286" name="AUTO_GUN" />
 			<moveable id="287" name="ROMAN_GOD1" />
 			<moveable id="288" name="ROMAN_GOD2" />
 			<moveable id="289" name="LAGOON_WITCH" />
@@ -6271,6 +6271,7 @@
 			<moveable id="294" name="WASP_MUTANT" />
 			<moveable id="295" name="TWIN_AUTO_GUN" />
 			<moveable id="296" name="SKATEBOARD" />
+			<moveable id="297" name="SKATEBOARD_KID" />
 			<moveable id="297" name="SKATEBOARD_KID" />
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
