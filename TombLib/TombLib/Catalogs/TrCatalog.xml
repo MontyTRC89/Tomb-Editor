@@ -987,7 +987,7 @@
 			<moveable id="257" name="Door bell" essential="false" />
 			<moveable id="258" name="Alarm bell" essential="false"  />
 			<moveable id="259" name="Helicopter" essential="false"  />
-			<moveable id="260" name="The butler" essential="false" />
+			<moveable id="260" name="The butler" essential="false" t5m="WINSTON" />
 			<moveable id="262" name="Lara cutscene placement" t5m="LARA_START_POS" />
 			<moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" t5m="ANIMATING1" />
 			<moveable id="264" name="Dragon explosion emitter" />
@@ -1757,8 +1757,8 @@
 			<moveable id="355" name="Skybox" hidden="true" t5m="HORIZON" />
 			<moveable id="357" name="Unknown id #357" />
 			<moveable id="358" name="Unknown id #358" />
-			<moveable id="360" name="The butler" essential="false" />
-			<moveable id="361" name="The butler in military outfit and target" essential="false" />
+			<moveable id="360" name="The butler" essential="false" t5m="WINSTON" />
+			<moveable id="361" name="The butler in military outfit and target" essential="false" t5m="ARMY_WINSTON" />
 			<moveable id="365" name="Earthquake" essential="false" t5m="EARTHQUAKE" />
 			<moveable id="366" name="Yellow shell casing" hidden="true" />
 			<moveable id="367" name="Red shell casing" hidden="true" />
@@ -6272,7 +6272,8 @@
 			<moveable id="295" name="TWIN_AUTO_GUN" />
 			<moveable id="296" name="SKATEBOARD" />
 			<moveable id="297" name="SKATEBOARD_KID" />
-			<moveable id="297" name="SKATEBOARD_KID" />
+			<moveable id="298" name="WINSTON" />
+			<moveable id="299" name="ARMY_WINSTON" />
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
 			<moveable id="322" name="DISK_SHOOTER" />
