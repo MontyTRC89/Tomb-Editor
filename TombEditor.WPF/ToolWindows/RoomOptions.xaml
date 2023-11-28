@@ -70,8 +70,7 @@
 					<ComboBox
 						x:Name="comboFlipMap"
 						Grid.Row="1"
-						Grid.Column="1"
-                        Width="58">
+						Grid.Column="1">
 						<ComboBoxItem>None</ComboBoxItem>
 						<ComboBoxItem>0</ComboBoxItem>
 						<ComboBoxItem>1</ComboBoxItem>
