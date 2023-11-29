@@ -27,7 +27,7 @@ namespace TombEditor.Forms
         private readonly Editor _editor;
 
         private bool _lockUI = false;
-        private bool _lockSelectionChange = false;
+        private bool _lockSelectionChange = true;
 
         private List<EventSet> _usedList;
 
@@ -65,13 +65,8 @@ namespace TombEditor.Forms
                         dgvEvents.Rows[0].Selected = true;
                     else
                     {
-                        // HACK: Lock selection change to prevent DDGV from automatically selecting first row
-                        // after clearing previous selection.
-
-                        _lockSelectionChange = true;
-                        dgvEvents.ClearSelection();
+                        ClearSelection();
                         ClearEventSetFromUI();
-                        _lockSelectionChange = false;
                     }
 
                     return;
@@ -81,9 +76,7 @@ namespace TombEditor.Forms
                 {
                     if (dgvEvents.Rows[i].Tag == _selectedSet)
                     {
-                        _lockSelectionChange = true;
-
-                        dgvEvents.ClearSelection();
+                        ClearSelection();
                         dgvEvents.Rows[i].Selected = true;
 
                         if (!GenericMode)
@@ -91,14 +84,12 @@ namespace TombEditor.Forms
 
                         LoadEventSetIntoUI(_selectedSet);
 
-                        _lockSelectionChange = false;
-
                         return;
                     }
                 }
 
                 _selectedSet = null;
-                dgvEvents.ClearSelection();
+                ClearSelection();
             }
         }
         private EventSet _selectedSet;
@@ -130,19 +121,15 @@ namespace TombEditor.Forms
             // Determine editing mode
             SetupUI();
 
-            // Don't select first event set if window is opened in generic mode
-            _lockSelectionChange = !GenericMode;
-
             // Populate and select event set list
             PopulateEventSetList();
-
-            // Select event set, if volume exists
-            if (!GenericMode)
-                SelectedSet = instance.EventSet;
 
             // Gray out UI by default, if event set list is empty
             if (_usedList.Count == 0)
                 UpdateUI();
+
+            // Don't select first event set if window is opened in generic mode
+            _lockSelectionChange = !GenericMode;
         }
 
         protected override void OnShown(EventArgs e)
@@ -151,6 +138,12 @@ namespace TombEditor.Forms
 
             // Resize splitter
             splitContainer.SplitterDistance = _editor.Configuration.Window_FormEventSetEditor_SplitterDistance;
+
+            // Select event set, if volume exists. Must be in OnShown event because of DDGV bug which reselects
+            // first row after DDGV is drawn for the first time.
+
+            if (!GenericMode)
+                SelectedSet = _instance.EventSet;
         }
 
         private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -179,7 +172,7 @@ namespace TombEditor.Forms
 
                     object selectedEventCache = dgvEvents.SelectedRows.Count > 0 ? dgvEvents.SelectedRows[0].Tag : null;
                     PopulateEventSetList();
-                    dgvEvents.ClearSelection();
+                    ClearSelection();
 
                     if (selectedEventCache != null)
                         foreach (DataGridViewRow row in dgvEvents.Rows)
@@ -223,6 +216,16 @@ namespace TombEditor.Forms
 
             SetupUI();
             SelectedSet = (_instance?.EventSet ?? _selectedSet);
+        }
+
+        public void ClearSelection()
+        {
+            // HACK: Lock selection change to prevent DDGV from automatically selecting first row
+            // after clearing previous selection.
+
+            _lockSelectionChange = true;
+            dgvEvents.ClearSelection();
+            _lockSelectionChange = false;
         }
 
         public void UpdateVolume()
@@ -565,7 +568,7 @@ namespace TombEditor.Forms
                 _instance.EventSet = null;
 
             PopulateEventSetList();
-            dgvEvents.ClearSelection();
+            ClearSelection();
 
             if (dgvEvents.Rows.Count > 0)
             {
@@ -582,7 +585,7 @@ namespace TombEditor.Forms
                 return;
 
             _instance.EventSet = null;
-            dgvEvents.ClearSelection();
+            ClearSelection();
         }
 
         private void cbActivators_CheckedChanged(object sender, EventArgs e)
