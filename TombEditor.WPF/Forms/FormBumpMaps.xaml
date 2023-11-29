@@ -9,8 +9,8 @@
         xmlns:WPF="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF" x:Class="TombEditor.WPF.Forms.FormBumpMaps"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="FormBumpMaps" Height="601" Width="440">
-    <sg:SpacedGrid RowSpacing="2" ColumnSpacing="2" Margin="4">
+        Title="Bumpmaps" Height="601" Width="440">
+    <sg:SpacedGrid RowSpacing="4" ColumnSpacing="4" Margin="4">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>

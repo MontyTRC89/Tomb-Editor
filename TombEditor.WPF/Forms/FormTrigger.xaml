@@ -8,8 +8,7 @@
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         xmlns:WPF="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF" x:Class="TombEditor.WPF.Forms.FormTrigger"
         mc:Ignorable="d"
-        Style="{DynamicResource CustomWindowStyle}"
-        Title="Legacy trigger editor" Height="auto" Width="711">
+        Style="{DynamicResource CustomWindowStyle}" Height="auto" Width="711">
 
     <sg:SpacedGrid RowSpacing="2" ColumnSpacing="2" Margin="4">
         <sg:SpacedGrid.RowDefinitions>
