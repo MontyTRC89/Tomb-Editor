@@ -18,14 +18,10 @@
             <RowDefinition Height="Auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <darkUI:SearchableComboBox/>
-        <sg:SpacedGrid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <CheckBox Uid="customFile" Content="Use custom file:" />
-            <Label Grid.Column="1" Content="path to custom file" Foreground="#6d6d6d"/>
-        </sg:SpacedGrid>
+        <DockPanel Grid.Row="2">
+            <CheckBox Uid="customFile" Content="Use custom file:" Margin="0,0,4,0" />
+            <Label Content="path to custom file" Foreground="#6d6d6d"/>
+        </DockPanel>
         <sg:SpacedGrid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

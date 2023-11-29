@@ -11,7 +11,7 @@
         Style="{DynamicResource CustomWindowStyle}"
         Title="Legacy trigger editor" Height="auto" Width="711">
 
-    <sg:SpacedGrid RowSpacing="4" ColumnSpacing="4" Margin="4">
+    <sg:SpacedGrid RowSpacing="2" ColumnSpacing="2" Margin="4">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition />
