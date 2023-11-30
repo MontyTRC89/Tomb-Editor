@@ -334,10 +334,9 @@ namespace TombLib.LevelData.IO
 
                                 chunkIO.WriteChunkEnd();
                             }
-
-                            index++;
+                            
                             if (!global)
-                                levelSettingIds.VolumeEventSets.TryAdd((set as VolumeEventSet), index);
+                                levelSettingIds.VolumeEventSets.TryAdd((set as VolumeEventSet), index++);
                         }
 
                         chunkIO.WriteChunkEnd();
@@ -781,10 +780,10 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Enabled);
                             chunkIO.Raw.Write(instance.DetectInAdjacentRooms);
 
-                            int eventSetID = -1;
+                            int eventSetIndex = -1;
                             if (instance.EventSet != null)
-                                levelSettingIds.VolumeEventSets.TryGetValue(instance.EventSet as VolumeEventSet, out eventSetID);
-                            chunkIO.Raw.Write(eventSetID);
+                                levelSettingIds.VolumeEventSets.TryGetValue(instance.EventSet as VolumeEventSet, out eventSetIndex);
+                            chunkIO.Raw.Write(eventSetIndex);
 
                             chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                         }
