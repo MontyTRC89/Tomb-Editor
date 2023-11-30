@@ -334,9 +334,11 @@ namespace TombLib.LevelData.IO
 
                                 chunkIO.WriteChunkEnd();
                             }
-                            
+
                             if (!global)
                                 levelSettingIds.VolumeEventSets.TryAdd((set as VolumeEventSet), index++);
+                            else
+                                index++;
                         }
 
                         chunkIO.WriteChunkEnd();
