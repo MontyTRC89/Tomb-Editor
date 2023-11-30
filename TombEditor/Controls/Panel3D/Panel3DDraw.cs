@@ -207,126 +207,90 @@ namespace TombEditor.Controls.Panel3D
             var vertices = new List<SolidVertex>();
 
             const int
-                XZ_OFFSET = 2,
-                Y_OFFSET = 12;
+                XZ_OFFSET = 8,
+                HEIGHT = 24;
 
-            void HandlePositiveZ(int x, int z, BlockSurface surface)
+            void DrawRibbon(Vector3 p1, Vector3 p2, int height, int xOffset, int yOffset, int zOffset)
             {
-                Vector3
-                    p1 = new(x + 1, surface.XpZp, z + 1),
-                    p2 = new(x, surface.XnZp, z + 1);
+                float halfHeight = height / 2.0f;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
             }
 
-            void HandlePositiveX(int x, int z, BlockSurface surface)
+            void HandlePositiveZ(int x, int z, BlockSurface surface, int yOffset = 0)
             {
                 Vector3
-                    p1 = new(x + 1, surface.XpZn, z),
-                    p2 = new(x + 1, surface.XpZp, z + 1);
+                    p1 = new Vector3(x + 1, surface.XpZp, z + 1) + currentRoom.Position,
+                    p2 = new Vector3(x, surface.XnZp, z + 1) + currentRoom.Position;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));   
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
+                DrawRibbon(p1, p2, HEIGHT, 0, yOffset, XZ_OFFSET);
             }
 
-            void HandleNegativeZ(int x, int z, BlockSurface surface)
+            void HandlePositiveX(int x, int z, BlockSurface surface, int yOffset = 0)
             {
                 Vector3
-                    p1 = new(x, surface.XnZn, z),
-                    p2 = new(x + 1, surface.XpZn, z);
+                    p1 = new Vector3(x + 1, surface.XpZn, z) + currentRoom.Position,
+                    p2 = new Vector3(x + 1, surface.XpZp, z + 1) + currentRoom.Position;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, yOffset, 0);
             }
 
-            void HandleNegativeX(int x, int z, BlockSurface surface)
+            void HandleNegativeZ(int x, int z, BlockSurface surface, int yOffset = 0)
             {
                 Vector3
-                    p1 = new(x, surface.XnZp, z + 1),
-                    p2 = new(x, surface.XnZn, z);
+                    p1 = new Vector3(x, surface.XnZn, z) + currentRoom.Position,
+                    p2 = new Vector3(x + 1, surface.XpZn, z) + currentRoom.Position;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
+                DrawRibbon(p1, p2, HEIGHT, 0, yOffset, -XZ_OFFSET);
             }
 
-            void HandleDiagonal(int x, int z, BlockSurface surface)
+            void HandleNegativeX(int x, int z, BlockSurface surface, int yOffset = 0)
+            {
+                Vector3
+                    p1 = new Vector3(x, surface.XnZp, z + 1) + currentRoom.Position,
+                    p2 = new Vector3(x, surface.XnZn, z) + currentRoom.Position;
+
+                DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, yOffset, 0);
+            }
+
+            void HandleDiagonal(int x, int z, BlockSurface surface, int yOffset = 0)
             {
                 Vector3 p1, p2;
 
                 switch (surface.DiagonalSplit)
                 {
                     case DiagonalSplit.XnZp:
-                        p1 = new(x, surface.XnZn, z);
-                        p2 = new(x + 1, surface.XpZp, z + 1);
+                        p1 = new Vector3(x, surface.XnZn, z) + currentRoom.Position;
+                        p2 = new Vector3(x + 1, surface.XpZp, z + 1) + currentRoom.Position;
 
-                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
-                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-
-                        vertices.Add(new SolidVertex(new Vector3(p1.X * Level.BlockSizeUnit, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, p2.Z * Level.BlockSizeUnit)));
-
+                        DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, yOffset, -XZ_OFFSET);
                         break;
+
                     case DiagonalSplit.XpZp:
-                        p1 = new(x, surface.XnZp, z + 1);
-                        p2 = new(x + 1, surface.XpZn, z);
+                        p1 = new Vector3(x, surface.XnZp, z + 1) + currentRoom.Position;
+                        p2 = new Vector3(x + 1, surface.XpZn, z) + currentRoom.Position;
 
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
-                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
-
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, p1.Z * Level.BlockSizeUnit)));
-                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3(p2.X * Level.BlockSizeUnit, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) - XZ_OFFSET)));
-
+                        DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, yOffset, -XZ_OFFSET);
                         break;
+
                     case DiagonalSplit.XnZn:
-                        p1 = new(x + 1, surface.XpZn, z);
-                        p2 = new(x, surface.XnZp, z + 1);
+                        p1 = new Vector3(x + 1, surface.XpZn, z) + currentRoom.Position;
+                        p2 = new Vector3(x, surface.XnZp, z + 1) + currentRoom.Position;
 
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-
+                        DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, yOffset, XZ_OFFSET);
                         break;
+
                     case DiagonalSplit.XpZn:
-                        p1 = new(x + 1, surface.XpZp, z + 1);
-                        p2 = new(x, surface.XnZn, z);
+                        p1 = new Vector3(x + 1, surface.XpZp, z + 1) + currentRoom.Position;
+                        p2 = new Vector3(x, surface.XnZn, z) + currentRoom.Position;
 
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) + Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-
-                        vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) - XZ_OFFSET, (p1.Y * Level.HeightUnit) - Y_OFFSET, (p1.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) + Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-                        vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) - XZ_OFFSET, (p2.Y * Level.HeightUnit) - Y_OFFSET, (p2.Z * Level.BlockSizeUnit) + XZ_OFFSET)));
-
+                        DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, yOffset, XZ_OFFSET);
                         break;
                 }
             }
