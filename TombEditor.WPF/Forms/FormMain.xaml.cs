@@ -339,10 +339,16 @@ public partial class FormMain : Window
 
 				if (!File.Exists(fileName)) // Skip nonexistent levels
 					continue;
-
-				var item = new MenuItem() { Name = fileName, Header = fileName };
-				item.Click += (s, e) => EditorActions.OpenLevel(NativeWindow, ((MenuItem)s).Header.ToString());
-				openRecentToolStripMenuItem.Items.Add(item);
+				try
+				{
+					var item = new MenuItem() { Name = fileName, Header = fileName };
+					item.Click += (s, e) => EditorActions.OpenLevel(NativeWindow, ((MenuItem)s).Header.ToString());
+					openRecentToolStripMenuItem.Items.Add(item);
+				}
+				catch 
+				{
+				
+				};
 			}
 
 		// Add "Clear recent files" option
