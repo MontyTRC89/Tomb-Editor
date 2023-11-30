@@ -1712,9 +1712,9 @@ namespace TombLib.LevelData.IO
                     }
                     else
                     {
-                        int eventIndex = chunkIO.Raw.ReadInt32();
-                        if (eventIndex != -1)
-                            instance.EventSet = levelSettingsIds.VolumeEventSets.TryGetOrDefault(eventIndex);
+                        int eventSetIndex = chunkIO.Raw.ReadInt32();
+                        if (eventSetIndex != -1)
+                            instance.EventSet = levelSettingsIds.VolumeEventSets.TryGetOrDefault(eventSetIndex);
                         else
                             instance.EventSet = null;
 
