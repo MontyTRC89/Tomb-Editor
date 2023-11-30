@@ -63,22 +63,6 @@ LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
 end
 
--- !Name "Run 'Global event set' from another event set"
--- !Section "Game flow"
--- !Description "Runs an 'global event set' from another event set."
--- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
--- !Arguments "GlobalEvents, 35, Event to run"
--- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-
-LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activator)
-	if (setName == '' or setName == nil) then
-		print("There is no specified event set in level!")
-		return
-	end
-
-	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
-end
-
 -- !Name "Enable Volume event set"
 -- !Section "Game flow"
 -- !Description "Enables an 'volume event set' for specified event set."
@@ -94,6 +78,38 @@ LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
 	TEN.Logic.EnableEvent(setName, eventType)
 end
 
+-- !Name "Disable Volume event set"
+-- !Section "Game flow"
+-- !Description "Disables an 'volume event set' for specified event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to disable"
+
+LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Disable " .. setName .. " type: " .. eventType)
+
+	TEN.Logic.DisableEvent(setName, eventType)
+end
+
+-- !Name "Run 'Global event set' from another event set"
+-- !Section "Game flow"
+-- !Description "Runs an 'global event set' from another event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to run"
+-- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
+
+LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activator)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.HandleEvent(setName, eventType + 3, TEN.Objects.GetMoveableByName(activator))
+end
+
 -- !Name "Enable Global event set"
 -- !Section "Game flow"
 -- !Description "Enables an 'global event set' for specified event set."
@@ -105,8 +121,8 @@ LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
 		print("There is no specified event set in level!")
 		return
 	end
-
-	TEN.Logic.EnableEvent(setName, eventType)
+	print("Enable " .. setName .. " type: " .. eventType + 3)
+	TEN.Logic.EnableEvent(setName, eventType + 3)
 end
 
 -- !Name "Disable Global event set"
@@ -120,25 +136,11 @@ LevelFuncs.Engine.Node.DisableGlobalEvent = function(setName, eventType)
 		print("There is no specified event set in level!")
 		return
 	end
+	print("Disable " .. setName .. " type: " .. eventType + 3)
 
-	TEN.Logic.DisableEvent(setName, eventType)
+	TEN.Logic.DisableEvent(setName, eventType + 3)
 end
 
-
--- !Name "Disable Volume event set"
--- !Section "Game flow"
--- !Description "Disables an 'volume event set' for specified event set."
--- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
--- !Arguments "VolumeEvents, 35, Event to disable"
-
-LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
-	if (setName == '' or setName == nil) then
-		print("There is no specified event set in level!")
-		return
-	end
-
-	TEN.Logic.DisableEvent(setName, eventType)
-end
 -- !Name "Run script function"
 -- !Section "Game flow"
 -- !Description "Runs specified Lua function from level script file."
