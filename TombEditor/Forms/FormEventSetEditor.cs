@@ -689,7 +689,7 @@ namespace TombEditor.Forms
 
             foreach (DataGridViewRow row in dgvEvents.Rows)
             {
-                if (row.Tag is not VolumeEventSet evtSet)
+                if (row.Tag is not EventSet evtSet)
                     continue;
 
                 _usedList.Add(evtSet);
