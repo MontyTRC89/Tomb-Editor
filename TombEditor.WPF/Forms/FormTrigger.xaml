@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:darkUI="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF" 
+        xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         x:Class="TombEditor.WPF.Forms.FormTrigger"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}" Height="auto" Width="711">
 
-    <sg:SpacedGrid RowSpacing="2" ColumnSpacing="2" Margin="4">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition />
@@ -29,28 +30,28 @@
 
         <!-- Trigger Type -->
         <Label Content="Trigger Type:"/>
-        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="0"/>
+        <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="0"/>
 
         <!-- What -->
         <Label Grid.Column="0" Grid.Row="1" Content="What:"/>
-        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="1"/>
+        <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="1"/>
 
         <!-- Param -->
         <Label Grid.Column="0" Grid.Row="2" Content="(#) Param:"/>
         <xceed:IntegerUpDown Grid.Column="1" Grid.Row="2"  Visibility="Visible"/>
-        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="2" Visibility="Hidden"/>
+        <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="2" Visibility="Hidden"/>
         <Label Grid.Column="1" Grid.Row="2" Visibility="Hidden" Content="Wrong parameter:"/>
         <Button Grid.Column="2" Grid.Row="2" Width="60" Content="Locate"/>
 
         <!-- Time -->
         <Label Grid.Column="0" Grid.Row="3" Content="(&amp;) Time:"/>
         <xceed:IntegerUpDown Grid.Column="1" Grid.Row="3" Visibility="Visible"/>
-        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="3" Visibility="Hidden"/>
+        <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="3" Visibility="Hidden"/>
 
         <!-- Extra -->
         <Label Grid.Column="0" Grid.Row="4" Content="(E) Extra:"/>
         <xceed:IntegerUpDown Grid.Column="1" Grid.Row="4" Visibility="Visible"/>
-        <darkUI:SearchableComboBox Grid.Column="1" Grid.Row="4" Visibility="Hidden"/>
+        <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="4" Visibility="Hidden"/>
 
         <DockPanel Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3">
             <!--Bits-->
