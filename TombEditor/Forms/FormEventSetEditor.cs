@@ -146,6 +146,14 @@ namespace TombEditor.Forms
                 SelectedSet = _instance.EventSet;
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            // HACK: When trigger manager is invisible, control cleanup happens much faster.
+            triggerManager.Visible = false;
+        }
+
         private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             switch (_nextSortMode)
