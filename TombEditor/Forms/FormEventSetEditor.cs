@@ -146,6 +146,14 @@ namespace TombEditor.Forms
                 SelectedSet = _instance.EventSet;
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            // HACK: When trigger manager is invisible, control cleanup happens much faster.
+            triggerManager.Visible = false;
+        }
+
         private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             switch (_nextSortMode)
@@ -689,7 +697,7 @@ namespace TombEditor.Forms
 
             foreach (DataGridViewRow row in dgvEvents.Rows)
             {
-                if (row.Tag is not VolumeEventSet evtSet)
+                if (row.Tag is not EventSet evtSet)
                     continue;
 
                 _usedList.Add(evtSet);

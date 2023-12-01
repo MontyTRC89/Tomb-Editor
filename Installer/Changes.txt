@@ -2,6 +2,7 @@ Version 1.7
 ===========
 
 Tomb Editor:
+ * Add options to disable volumes and activate them in adjacent rooms.
  * Add global event editor.
  * Add global events to a node editor and to legacy trigger editor.
  * Allow to move and sort event sets.
