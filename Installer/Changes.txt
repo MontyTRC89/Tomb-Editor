@@ -11,6 +11,9 @@ Tomb Editor:
  * Fix incorrect coordinates in tooltip for light objects.
  * Fix alignment option not working for display sprite node.
 
+TombIDE:
+ * Fix issue where autocomplete popup wouldn't open after the first completion.
+
 Version 1.6.9
 =============
 
