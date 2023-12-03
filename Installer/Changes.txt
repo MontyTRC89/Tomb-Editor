@@ -4,7 +4,7 @@ Version 1.7
 Tomb Editor:
  * Fix incorrect coordinates in tooltip for light objects.
  * Fix alignment option not working for display sprite node.
- * Fix Object textures get corrupted when too many object textures are displayed at once.
+ * Fix displaying of meshes with more than 65535 vertices
 
 TombIDE:
  * Fix issue where autocomplete popup wouldn't open after the first completion.
