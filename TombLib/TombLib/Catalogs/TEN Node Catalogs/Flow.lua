@@ -107,7 +107,7 @@ LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activato
 		return
 	end
 
-	TEN.Logic.HandleEvent(setName, eventType + 3, TEN.Objects.GetMoveableByName(activator))
+	TEN.Logic.HandleEvent(setName, eventType + Logic.EventType.LOOP, TEN.Objects.GetMoveableByName(activator))
 end
 
 -- !Name "Enable Global event set"
@@ -121,8 +121,8 @@ LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
 		print("There is no specified event set in level!")
 		return
 	end
-	print("Enable " .. setName .. " type: " .. eventType + 3)
-	TEN.Logic.EnableEvent(setName, eventType + 3)
+	print("Enable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
+	TEN.Logic.EnableEvent(setName, eventType + Logic.EventType.LOOP)
 end
 
 -- !Name "Disable Global event set"
@@ -136,9 +136,9 @@ LevelFuncs.Engine.Node.DisableGlobalEvent = function(setName, eventType)
 		print("There is no specified event set in level!")
 		return
 	end
-	print("Disable " .. setName .. " type: " .. eventType + 3)
+	print("Disable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
 
-	TEN.Logic.DisableEvent(setName, eventType + 3)
+	TEN.Logic.DisableEvent(setName, eventType + Logic.EventType.LOOP)
 end
 
 -- !Name "Run script function"
