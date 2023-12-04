@@ -8575,6 +8575,30 @@
 			<anim item="297" id="11" name="SKATE_SHOOT" />
 			<anim item="297" id="12" name="SKATE" />
 			<anim item="297" id="13" name="DEATH" />
+
+			<!-- WINSTON -->			
+			<anim item="298" id="0" name="WALK_FORWARD" />
+			<anim item="298" id="1" name="WALK_FORWARD_TO_IDLE" />
+			<anim item="298" id="2" name="IDLE" />
+			<anim item="298" id="3" name="IDLE_TO_WALK_FORWARD" />
+			<anim item="298" id="4" name="IDLE_TO_GUARD_MID" />
+			<anim item="298" id="5" name="GUARD_MID" />
+			<anim item="298" id="6" name="RECOIL_MID" />
+			<anim item="298" id="7" name="RECOIL_MID_TO_IDLE" />
+			<anim item="298" id="8" name="GUARD_MID_TO_LOW" />
+			<anim item="298" id="9" name="GUARD_LOW" />
+			<anim item="298" id="10" name="RECOIL_LOW" />
+			<anim item="298" id="11" name="GUARD_LOW_TO_MID" />
+			<anim item="298" id="12" name="GUARD_MID_TO_HIGH" />
+			<anim item="298" id="13" name="GUARD_HIGH" />
+			<anim item="298" id="14" name="RECOIL_HIGH1" />
+			<anim item="298" id="15" name="GUARD_HIGH_TO_MID" />
+			<anim item="298" id="16" name="DEFEAT_START" />
+			<anim item="298" id="17" name="DEFEAT_CONT" />
+			<anim item="298" id="18" name="DEFEAT_TO_IDLE" />
+			<anim item="298" id="19" name="BRUSH_OFF" />
+			<anim item="298" id="20" name="DEFEAT_END" />
+			
 		
 		</animations>
 		<states>
@@ -8744,7 +8768,21 @@
 			<state item="297" id="3" name="SKATE_ACCELERATE" />
 			<state item="297" id="4" name="SKATE_SHOOT" />
 			<state item="297" id="5" name="DEATH" />
-		   			
+			
+			<!-- WINSTON -->
+			<state item="298" id="1" name="IDLE" />
+			<state item="298" id="2" name="WALK_FORWARD" />
+			<state item="298" id="3" name="GUARD_1" />
+			<state item="298" id="4" name="GUARD_2" />
+			<state item="298" id="5" name="GUARD_3" />
+			<state item="298" id="6" name="RECOIL_1" />
+			<state item="298" id="7" name="RECOIL_2" />
+			<state item="298" id="8" name="RECOIL_3" />
+			<state item="298" id="9" name="DEFEAT_CONTINUE" />
+			<state item="298" id="10" name="DEFEAT_START" />
+			<state item="298" id="11" name="DEFEAT_RECOVER" />
+			<state item="298" id="12" name="BRUSH_OFF" />
+			<state item="298" id="13" name="DEFEAT_END" />
 		</states>
 	</game>
 </xml>
