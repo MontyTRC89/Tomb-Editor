@@ -1758,7 +1758,7 @@
 			<moveable id="357" name="Unknown id #357" />
 			<moveable id="358" name="Unknown id #358" />
 			<moveable id="360" name="The butler" essential="false" t5m="WINSTON" />
-			<moveable id="361" name="The butler in military outfit and target" essential="false" t5m="ARMY_WINSTON" />
+			<moveable id="361" name="The butler in military outfit and target" essential="false" t5m="MESHSWAP_WINSTON_ARMY_OUTFIT" />
 			<moveable id="365" name="Earthquake" essential="false" t5m="EARTHQUAKE" />
 			<moveable id="366" name="Yellow shell casing" hidden="true" />
 			<moveable id="367" name="Red shell casing" hidden="true" />
@@ -6273,7 +6273,6 @@
 			<moveable id="296" name="SKATEBOARD" />
 			<moveable id="297" name="SKATEBOARD_KID" />
 			<moveable id="298" name="WINSTON" />
-			<moveable id="299" name="ARMY_WINSTON" />
 			<moveable id="320" name="SPRINGBOARD" />
 			<moveable id="321" name="ROLLING_SPINDLE" />
 			<moveable id="322" name="DISK_SHOOTER" />
@@ -6858,6 +6857,7 @@
 			<moveable id="1117" name="MESHSWAP_ROMAN_GOD2" />
 			<moveable id="1118" name="MESHSWAP_MONKEY_MEDIPACK" />
 			<moveable id="1119" name="MESHSWAP_MONKEY_KEY" />
+			<moveable id="1120" name="MESHSWAP_WINSTON_ARMY_OUTFIT" />
 			
 			<moveable id="1200" name="ANIMATING1" />
 			<moveable id="1201" name="ANIMATING2" />
