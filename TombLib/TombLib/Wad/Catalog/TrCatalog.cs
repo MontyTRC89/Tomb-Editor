@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using TombLib.LevelData;
@@ -455,10 +456,38 @@ namespace TombLib.Wad.Catalog
             }
         }
 
-        public static void LoadCatalog(string fileName)
+        private static XmlDocument CombineCatalogs(string rootFolder)
         {
-            XmlDocument document = new XmlDocument();
-            document.Load(fileName);
+			XmlDocument combinedCatalog = new XmlDocument();
+            combinedCatalog.AppendChild(combinedCatalog.CreateXmlDeclaration("1.0", "UTF-8",null));
+            combinedCatalog.AppendChild(combinedCatalog.CreateElement("trcatalog"));
+			foreach (var gameString in TRVersion.NativeVersions.Select(v => v.Native().ToString()))
+			{
+				var gameCatalogFolder = Path.Combine(rootFolder, gameString);
+				if (!Directory.Exists(gameCatalogFolder))
+					throw new InvalidDataException($"The folder {gameCatalogFolder} does not exist for the Game {gameString}");
+                var newGameNode = combinedCatalog.CreateElement("game");
+				newGameNode.SetAttribute("id", gameString);
+				var gameCatalogFragments = Directory.EnumerateFiles(gameCatalogFolder, "*.xml");
+				foreach (var catalog in gameCatalogFragments)
+				{
+					XmlDocument catalogFragment = new XmlDocument();
+					catalogFragment.Load(catalog);
+					foreach (XmlNode nodeToImport in catalogFragment.DocumentElement.SelectNodes("/*"))
+					{
+						var importedNode = combinedCatalog.ImportNode(nodeToImport, true);
+						newGameNode.AppendChild(importedNode);
+
+					}
+				}
+				combinedCatalog.DocumentElement.AppendChild(newGameNode);
+			}
+			return combinedCatalog;
+		}
+
+        public static void LoadCatalog(string rootFolder)
+        {
+            XmlDocument document = CombineCatalogs(rootFolder);
 
             XmlNodeList gamesNodes = document.DocumentElement.SelectNodes("/game");
             foreach (XmlNode gameNode in document.DocumentElement.ChildNodes)
