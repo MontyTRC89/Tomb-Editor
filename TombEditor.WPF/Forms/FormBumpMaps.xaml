@@ -19,10 +19,10 @@
         </sg:SpacedGrid.RowDefinitions>
         <darkCtrl:SearchableComboBox/>
         <WindowsFormsHost x:Name="ViewportHost" Grid.Row="1" />
-        <DockPanel Grid.Row="2">
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <CheckBox Uid="customFile" Content="Use custom file:" Margin="0,0,4,0"/>
             <Label Content="path to custom file" Opacity="0.4"/>
-        </DockPanel>
+        </StackPanel>
         <sg:SpacedGrid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

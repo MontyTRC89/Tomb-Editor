@@ -54,7 +54,7 @@
 				<sg:SpacedGrid Grid.Row="2" RowSpacing="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
-						<ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="58" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
@@ -67,11 +67,7 @@
 					<ComboBox x:Name="comboRoomType" Grid.Row="1" />
 
 					<Label Grid.Column="1" Content="Flipmap" />
-					<ComboBox
-						x:Name="comboFlipMap"
-						Grid.Row="1"
-						Grid.Column="1"
-                        Width="58">
+					<ComboBox x:Name="comboFlipMap" Grid.Row="1" Grid.Column="1">
 						<ComboBoxItem>None</ComboBoxItem>
 						<ComboBoxItem>0</ComboBoxItem>
 						<ComboBoxItem>1</ComboBoxItem>
