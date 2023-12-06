@@ -73,7 +73,7 @@ namespace SoundTool
 
                 if (!Directory.Exists(Path.Combine(Application.StartupPath, "Catalogs")))
                 {
-                    MessageBox.Show("TrCatalog.xml is missing.\nMake sure you have TrCatalog.xml in /Catalogs/ subfolder.");
+                    MessageBox.Show("One of the Catalogs is missing.\nMake sure you have the Catalog files in /Catalogs/ subfolder.");
                     Environment.Exit(1);
                 }
                 TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs"));

@@ -117,61 +117,61 @@
     <None Update="Catalogs\NgCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\animations.xml">
+    <None Update="Catalogs\TombEngine\Animations.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\limits.xml">
+    <None Update="Catalogs\TombEngine\Limits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\moveables.xml">
+    <None Update="Catalogs\TombEngine\Moveables.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\sounds.xml">
+    <None Update="Catalogs\TombEngine\Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\sprite_sequences.xml">
+    <None Update="Catalogs\TombEngine\SpriteSequences.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\states.xml">
+    <None Update="Catalogs\TombEngine\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TombEngine\statics.xml">
+    <None Update="Catalogs\TombEngine\Statics.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\animations.xml">
+    <None Update="Catalogs\TR1\Animations.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\limits.xml">
+    <None Update="Catalogs\TR1\Limits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\moveables.xml">
+    <None Update="Catalogs\TR1\Moveables.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\sounds.xml">
+    <None Update="Catalogs\TR1\Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\sprite_sequences.xml">
+    <None Update="Catalogs\TR1\SpriteSequences.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR1\states.xml">
+    <None Update="Catalogs\TR1\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\animations.xml">
+    <None Update="Catalogs\TR2\Animations.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\limits.xml">
+    <None Update="Catalogs\TR2\Limits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\moveables.xml">
+    <None Update="Catalogs\TR2\Moveables.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\sounds.xml">
+    <None Update="Catalogs\TR2\Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\sprite_sequences.xml">
+    <None Update="Catalogs\TR2\SpriteSequences.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR2\states.xml">
+    <None Update="Catalogs\TR2\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TR3\animations.xml">
@@ -192,43 +192,43 @@
     <None Update="Catalogs\TR3\states.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\animations.xml">
+    <None Update="Catalogs\TR4\Animations.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\limits.xml">
+    <None Update="Catalogs\TR4\Limits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\moveables.xml">
+    <None Update="Catalogs\TR4\Moveables.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\sounds.xml">
+    <None Update="Catalogs\TR4\Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\sprite_sequences.xml">
+    <None Update="Catalogs\TR4\SpriteSequences.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\states.xml">
+    <None Update="Catalogs\TR4\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR4\statics.xml">
+    <None Update="Catalogs\TR4\Statics.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\animations.xml">
+    <None Update="Catalogs\TR5\Animations.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\limits.xml">
+    <None Update="Catalogs\TR5\Limits.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\moveables.xml">
+    <None Update="Catalogs\TR5\Moveables.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\sounds.xml">
+    <None Update="Catalogs\TR5\Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\sprite_sequences.xml">
+    <None Update="Catalogs\TR5\SpriteSequences.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TR5\states.xml">
+    <None Update="Catalogs\TR5\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TrCatalog.xml">
