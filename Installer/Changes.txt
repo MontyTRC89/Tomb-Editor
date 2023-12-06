@@ -1,16 +1,54 @@
+Version 1.7
+===========
+
+Tomb Editor:
+ * Fix incorrect coordinates in tooltip for light objects.
+ * Fix alignment option not working for display sprite node.
+ * Fix displaying of meshes with more than 65535 vertices
+
+TombIDE:
+ * Fix issue where autocomplete popup wouldn't open after the first completion.
+
 Version 1.6.9
 =============
 
 Tomb Editor:
  * Allow to immediately cancel level building and project opening.
+ * Add context menu to copy current object position to clipboard.
+ * Add optional default value for node parameters.
  * Add a node to call events from other event sets.
+ * Add a node to check if animation of a moveable has reached end frame.
+ * Add nodes to draw sprites.
+ * Add nodes to load, save, delete and check existence of savegames.
+ * Modifying nodes for timer management. (Note: for existing projects, review all nodes "Create timer...")
+ * Auto-fill position and color when doing drag-n-drop of an object over corresponding node controls.
  * Show selection size instead of local area.
+ * Show real position in object tooltip.
+ * Fix fog bulb intensity when converting project to a TEN project.
  * Fix exception when trying to assign footstep sound if no material was selected.
 
 TombIDE:
  * Update NG_Center.
  * Change the way TRNG script compiling is done.
  * Fix library registration not working when launching NG_Center for the first time.
+ 
+TEN Base WAD:
+ * Integrated new pushable animations.
+ * Update names for ID_LARA_EXTRA_ANIMS.
+ * Add YETI_DEATH to LARA_EXTRA_ANIMS.
+ * Remove ANIMATING2 as that was the old minecart switch, which now has its own dedicated switch (ID_MINECART_SWITCH).
+ * Remove PUZZLE_ITEM1 (Jeep keys) as they are not used anymore.
+ * Add example pushable block object (ID_PUSHABLE_OBJECT_CLIMBABLE).
+
+TEN TRCatalog updates:
+ * Add SPRINT_SLIDE (191) state ID.
+ * Add ID_CROSSHAIR and ID_SWINGING_BLADE object IDs.
+ * Update TR1 Natla remapping.
+ * Update TR1-TR3 pushable remappings.
+ * Remove of redundant object IDs that aren't used.
+ * Amended Lara extra animation names.
+ * Move Lara animation 442 to LARA_EXTRA_ANIMS.
+ * Add TR2 Yeti and TR4 Big Scorpion Death animations to LARA_EXTRA_ANIMS.
 
 Version 1.6.8
 =============

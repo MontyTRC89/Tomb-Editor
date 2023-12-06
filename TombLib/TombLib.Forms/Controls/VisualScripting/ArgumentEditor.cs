@@ -170,6 +170,12 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
+                case ArgumentType.SpriteSlots:
+                    foreach (var item in editor.CachedSpriteSlots.Where(s => layout.CustomEnumeration.Count == 0 ||
+                                                                             layout.CustomEnumeration.Any(e => s
+                                                                              .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
+                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + LuaSyntax.Splitter + item));
+                    break;
                 case ArgumentType.WadSlots:
                     foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                           layout.CustomEnumeration.Any(e => s
@@ -307,8 +313,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Boolean:
                     {
                         bool result;
-                        if (!(bool.TryParse(source, out result)))
+                        if (float.TryParse(source, out float parsedInt))
+                            result = parsedInt == 0.0f ? false : true;
+                        else if (!bool.TryParse(source, out result))
                             result = false;
+
                         cbBool.Checked = result;
 
                         BoxBoolValue();
@@ -317,8 +326,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Numerical:
                     {
                         float result;
-                        if (!(float.TryParse(source, out result)))
+                        if (bool.TryParse(source, out bool parsedBool))
+                            result = parsedBool ? 1.0f : 0.0f;
+                        else if (!(float.TryParse(source, out result)))
                             result = 0.0f;
+
                         try   { nudNumerical.Value = (decimal)Math.Round(result, nudNumerical.DecimalPlaces); }
                         catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
@@ -386,13 +398,29 @@ namespace TombLib.Controls.VisualScripting
                     }
                 default: // Lists
                     {
-                        var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
-                        if (index != null)
-                            cbList.SelectedItem = index;
-                        else if (cbList.Items.Count > 0)
-                            cbList.SelectedIndex = 0;
+                        float potentialIndex;
+                        if (bool.TryParse(source, out bool potentialValue))
+                            potentialIndex = potentialValue ? 1 : 0;
+                        else if (!float.TryParse(source, out potentialIndex))
+                            potentialIndex = -1;
+
+                        if (potentialIndex < 0 || potentialIndex >= cbList.Items.Count)
+                        {
+                            var item = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
+                            if (item != null)
+                                cbList.SelectedItem = item;
+                            else if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = 0;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
                         else
-                            cbList.SelectedIndex = -1;
+                        {
+                            if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = (int)potentialIndex;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
 
                         BoxListValue();
                         break;
@@ -513,7 +541,7 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        private void cbList_DragEnter(object sender, DragEventArgs e)
+        private void luaNameControl_DragEnter(object sender, DragEventArgs e)
         {
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
                 e.Effect = DragDropEffects.Copy;
@@ -532,7 +560,36 @@ namespace TombLib.Controls.VisualScripting
             var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
             if (index != -1)
                 cbList.SelectedIndex = index;
-            return;
+        }
+
+        private void vector3Control_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            nudVector3X.Value = (decimal)item.WorldPosition.X;
+            nudVector3Y.Value = (decimal)-item.WorldPosition.Y;
+            nudVector3Z.Value = (decimal)item.WorldPosition.Z;
+        }
+
+        private void panelColor_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void panelColor_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as IColorable;
+            panelColor.BackColor = (item.Color * 0.5f).ToWinFormsColor();
         }
 
         private void butMultiline_Click(object sender, EventArgs e)

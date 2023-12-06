@@ -73,6 +73,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Sprites.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Timers.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

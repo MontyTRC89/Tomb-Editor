@@ -399,7 +399,7 @@ namespace TombIDE.ScriptingStudio
 				CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
 
 				if (!success)
-					DarkMessageBox.Show(this, "Script compilation yielded and error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DarkMessageBox.Show(this, "Script compilation yielded an error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
 				{

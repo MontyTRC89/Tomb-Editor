@@ -47,6 +47,7 @@ namespace TombLib.LevelData.VisualScripting
         Rooms,          // Listable
         SoundEffects,   // Listable
         SoundTracks,    // Listable
+        SpriteSlots,    // Listable
         WadSlots,       // Listable
         Enumeration,
         CompareOperator
@@ -56,6 +57,7 @@ namespace TombLib.LevelData.VisualScripting
     {
         public ArgumentType Type;
         public List<string> CustomEnumeration;
+        public string DefaultValue;
         public string Description;
         public bool NewLine;
         public float Width;

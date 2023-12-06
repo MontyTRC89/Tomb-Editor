@@ -16,7 +16,6 @@ end
 -- !Arguments "Enumeration, [ Water | Quicksand | Skybox | Wind | Cold | Damage | No lensflare ], 30, Flag type"
 
 LevelFuncs.Engine.Node.TestRoomFlag = function(roomName, flag)
-
 	local flagIndex = LevelFuncs.Engine.Node.GetRoomFlag(flag)
 	return TEN.Objects.GetRoomByName(roomName):GetFlag(flagIndex)
 end
@@ -29,7 +28,6 @@ end
 -- !Arguments "Enumeration, [ None | Small | Medium | Large | Pipe ], 25, Reverb type"
 
 LevelFuncs.Engine.Node.TestRoomReverbType = function(roomName, reverbType)
-
 	return (TEN.Objects.GetRoomByName(roomName):GetReverbType() == reverbType)
 end
 
@@ -41,7 +39,6 @@ end
 -- !Arguments "String, Tag to search"
 
 LevelFuncs.Engine.Node.TestRoomTag = function(roomName, tag)
-
 	return TEN.Objects.GetRoomByName(roomName):IsTagPresent(tag)
 end
 
@@ -53,7 +50,6 @@ end
 -- !Arguments "Boolean, 5"
 
 LevelFuncs.Engine.Node.SetRoomFlag = function(roomName, flag, value)
-	
 	local flagIndex = LevelFuncs.Engine.Node.GetRoomFlag(flag)
 	TEN.Objects.GetRoomByName(roomName):SetFlag(flagIndex, value)
 end
@@ -66,13 +62,12 @@ end
 -- !Arguments "Boolean, 5"
 
 LevelFuncs.Engine.Node.SetRoomFlagByTag = function(tag, flag, value)
-
 	local flagIndex = LevelFuncs.Engine.Node.GetRoomFlag(flag)
-    local list = TEN.Objects.GetRoomsByTag(tag)
+	local list = TEN.Objects.GetRoomsByTag(tag)
 
-    for k, room in pairs(list) do
-        room:SetFlag(flagIndex, value)
-    end
+	for k, room in pairs(list) do
+		room:SetFlag(flagIndex, value)
+	end
 end
 
 -- !Name "Set reverb type for a room"
@@ -92,12 +87,11 @@ end
 -- !Arguments "Enumeration, [ None | Small | Medium | Large | Pipe ], 25, Reverb type"
 
 LevelFuncs.Engine.Node.SetRoomReverbTypeByTag = function(tag, reverbType)
+	local list = TEN.Objects.GetRoomsByTag(tag)
 
-    local list = TEN.Objects.GetRoomsByTag(tag)
-
-    for k, room in pairs(list) do
-        room:SetReverbType(reverbType)
-    end
+	for k, room in pairs(list) do
+		room:SetReverbType(reverbType)
+	end
 end
 
 -- !Name "Toggle flipmap"
@@ -106,5 +100,5 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 16 | 0 ]"
 
 LevelFuncs.Engine.Node.ToggleFlipMap = function(flipmapNumber)
-	TEN.Misc.FlipMap(flipmapNumber)
+	TEN.Flow.FlipMap(flipmapNumber)
 end

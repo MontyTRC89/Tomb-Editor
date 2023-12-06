@@ -169,17 +169,20 @@ end
 -- !Description "Checks if Lara is currently mounting a vehicle and which vehicle it is."
 
 LevelFuncs.Engine.Node.TestLaraVehicleAndType = function(type)
-	local vehicleName = (type == 0) and ObjID.SNOWMOBILE
-		or (type == 1) and ObjID.QUAD
-		or (type == 2) and ObjID.SPEEDBOAT
-		or (type == 3) and ObjID.KAYAK
-		or (type == 4) and ObjID.UPV
-		or (type == 5) and ObjID.MINECART
-		or (type == 6) and ObjID.JEEP
-		or (type == 7) and ObjID.MOTORBIKE
-		or (type == 8) and ObjID.RUBBER_BOAT
+	local vehicleName =
+	{
+		[0] = ObjID.SNOWMOBILE,
+		[1] = ObjID.QUAD,
+		[2] = ObjID.SPEEDBOAT,
+		[3] = ObjID.KAYAK,
+		[4] = ObjID.UPV,
+		[5] = ObjID.MINECART,
+		[6] = ObjID.JEEP,
+		[7] = ObjID.MOTORBIKE,
+		[8] = ObjID.RUBBER_BOAT,
+	}
 	if TEN.Objects.Lara:GetVehicle() ~= nil then
-		return TEN.Objects.Lara:GetVehicle():GetObjectID() == vehicleName
+		return TEN.Objects.Lara:GetVehicle():GetObjectID() == vehicleName[type]
 	else
 		return false
 	end
