@@ -118,6 +118,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (System.Windows.Application.Current == null)
 				new System.Windows.Application();
 
+			System.Windows.Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
+
 			System.Windows.Application.Current.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
 			{
 				Source = new Uri("pack://application:,,,/TombIDE.ScriptingStudio;component/WPFStyles/DarkColors.xaml")
