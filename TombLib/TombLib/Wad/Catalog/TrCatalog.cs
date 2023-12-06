@@ -464,8 +464,8 @@ namespace TombLib.Wad.Catalog
 			foreach (var gameString in TRVersion.NativeVersions.Select(v => v.Native().ToString()))
 			{
 				var gameCatalogFolder = Path.Combine(rootFolder, gameString);
-				if (!Directory.Exists(gameCatalogFolder))
-					throw new InvalidDataException($"The folder {gameCatalogFolder} does not exist for the Game {gameString}");
+                if (!Directory.Exists(gameCatalogFolder))
+                    continue;
                 var newGameNode = combinedCatalog.CreateElement("game");
 				newGameNode.SetAttribute("id", gameString);
 				var gameCatalogFragments = Directory.EnumerateFiles(gameCatalogFolder, "*.xml");
