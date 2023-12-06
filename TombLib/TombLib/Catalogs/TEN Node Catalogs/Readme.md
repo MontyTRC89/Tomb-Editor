@@ -40,6 +40,10 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
     Volumes, Rooms, SoundEffects, WadSlots, Enumeration, CompareOperator** - keywords which specify argument type
     and its appearance in UI.
 
+   - **{DEFAULT}** - default value for this argument, contained in brackets. For Numerical value type, it can be
+     provided as is, e.g. `{100}`. For String value type, default string must be quoted, e.g. `{"Default string"}`.
+     Complex value types, such as Color or Vector3, should use TEN Lua API notation, e.g. `TEN.Color(255,255,255)`.
+
    - **[ENUMDESC1 | ENUMDESC2 | ENUMDESC...]** - custom enumeration descriptors for this argument, as follows:
   
       - For Numerical and Vector3 value types, first and second ENUMDESC values determine min/max UI range of
@@ -89,6 +93,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
      combination may be used to start a new line.
    - **Color** - RGB color value, appears as color picker in UI.
    - **LuaScript** - Existing lua function list from level script file.
+   - **EventSets** - Existing event sets currently present in level.
    - **Moveables** - A list of moveables in level which have lua names assigned.
    - **Statics** - A list of statics in level which have lua names assigned.
    - **Cameras** - Same as above, but cameras.
@@ -99,6 +104,7 @@ ENUMDESC parameters should NOT be quoted, or else parsing will fail miserably.
    - **SoundEffects** - A list of sound effects. Internally converted to numerical effect slot ID.
    - **WadSlots** - A list of object slots which exist in all loaded wads. Internally accessed by numerical ID and/or 
      `Objects.ObjID.` lua enumeration which is identical to TE/TEN object slot enumeration.
+   - **SpriteSlots** - Similar to previous type, but for sprite sequence slots.
    - **Enumeration** - Custom enumeration determined by **ENUMDESC** descriptors. Internally these descriptors are 
      converted to numerical index.
    - **CompareOperator** - Comparison operator enumeration, ranging from equal to various less-or-equal and more-or-equal

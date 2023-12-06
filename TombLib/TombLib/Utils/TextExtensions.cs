@@ -35,6 +35,11 @@ namespace TombLib.Utils
                 return true;
         }
 
+        public static string[] SplitParenthesis(this string source)
+        {
+            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value).ToArray();
+        }
+
         public static string SplitCamelcase(this string source)
         {
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");

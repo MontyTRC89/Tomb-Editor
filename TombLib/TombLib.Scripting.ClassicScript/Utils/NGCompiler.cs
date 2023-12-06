@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
@@ -49,8 +50,6 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			if (newIncludeMethod)
 				MergeIncludes();
 
-			AdjustFormatting();
-
 			var process = new ProcessStartInfo
 			{
 				FileName = DefaultPaths.NGCExecutable,
@@ -80,9 +79,24 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, vgeScriptPath));
 
 			// Copy all the files into the VGE /Script/ directory
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+			foreach (string file in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
 				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
-				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
+			{
+				string newPath = file.Replace(projectScriptPath, vgeScriptPath);
+
+				if (file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+				{
+					string fileContent = File.ReadAllText(file);
+
+					while (fileContent.Contains(" ="))
+						fileContent = fileContent.Replace(" =", "=");
+
+					fileContent = BasicCleaner.TrimEndingWhitespace(fileContent);
+					File.WriteAllText(newPath, fileContent, Encoding.GetEncoding(1252));
+				}
+				else
+					File.Copy(file, newPath);
+			}
 		}
 
 		private static void MergeIncludes()
@@ -97,21 +111,9 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			lines = ReplaceIncludesWithFileContents(lines);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
-			File.WriteAllText(vgeScriptFilePath, newFileContent);
+			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
 
 			_visitedFiles.Clear();
-		}
-
-		private static void AdjustFormatting()
-		{
-			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
-
-			string fileContent = File.ReadAllText(vgeScriptFilePath);
-
-			while (fileContent.Contains(" ="))
-				fileContent = fileContent.Replace(" =", "=");
-
-			File.WriteAllText(vgeScriptFilePath, fileContent);
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines)

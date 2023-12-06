@@ -190,10 +190,13 @@
             0,
             0,
             -2147483648});
+            this.nudVector3Z.AllowDrop = true;
             this.nudVector3Z.Name = "nudVector3Z";
             this.nudVector3Z.Size = new System.Drawing.Size(142, 20);
             this.nudVector3Z.TabIndex = 2;
             this.nudVector3Z.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3Z.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3Z.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
             // 
             // nudVector3Y
             // 
@@ -217,10 +220,13 @@
             0,
             0,
             -2147483648});
+            this.nudVector3Y.AllowDrop = true;
             this.nudVector3Y.Name = "nudVector3Y";
             this.nudVector3Y.Size = new System.Drawing.Size(139, 20);
             this.nudVector3Y.TabIndex = 1;
             this.nudVector3Y.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3Y.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3Y.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
             // 
             // nudVector3X
             // 
@@ -244,10 +250,13 @@
             0,
             0,
             -2147483648});
+            this.nudVector3X.AllowDrop = true;
             this.nudVector3X.Name = "nudVector3X";
             this.nudVector3X.Size = new System.Drawing.Size(141, 20);
             this.nudVector3X.TabIndex = 0;
             this.nudVector3X.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
+            this.nudVector3X.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
+            this.nudVector3X.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
             // 
             // tabString
             // 
@@ -303,6 +312,7 @@
             // 
             // panelColor
             // 
+            this.panelColor.AllowDrop = true;
             this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelColor.Location = new System.Drawing.Point(0, 0);
@@ -311,6 +321,8 @@
             this.panelColor.TabIndex = 0;
             this.panelColor.BackColorChanged += new System.EventHandler(this.panelColor_BackColorChanged);
             this.panelColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelColor_MouseClick);
+            this.panelColor.DragDrop += new System.Windows.Forms.DragEventHandler(this.panelColor_DragDrop);
+            this.panelColor.DragEnter += new System.Windows.Forms.DragEventHandler(this.panelColor_DragEnter);
             // 
             // tabList
             // 
@@ -335,7 +347,7 @@
             this.cbList.TabIndex = 0;
             this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
             this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
-            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.cbList_DragEnter);
+            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
 			// 
 			// panelAction
 			// 

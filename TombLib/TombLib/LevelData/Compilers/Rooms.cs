@@ -574,7 +574,13 @@ namespace TombLib.LevelData.Compilers
                             ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                             ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
-                            var texture = poly.Texture;
+							// Avoid degenerate triangles
+							if (new ushort[] { index0, index1, index2, index3 }.Distinct().Count() < 3)
+							{
+								continue;
+							}
+
+							var texture = poly.Texture;
                             texture.ClampToBounds();
 
                             var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
@@ -722,8 +728,14 @@ namespace TombLib.LevelData.Compilers
                                 ushort index1 = (ushort)(indexList[baseIndex + currentVertexIndex + 1]);
                                 ushort index2 = (ushort)(indexList[baseIndex + currentVertexIndex + 2]);
 
-                                // TODO Move texture area into the mesh
-                                TextureArea texture = new TextureArea();
+								// Avoid degenerate triangles
+								if (new ushort[] { index0, index1, index2 }.Distinct().Count() < 3)
+								{
+									continue;
+								}
+
+								// TODO Move texture area into the mesh
+								TextureArea texture = new TextureArea();
                                 texture.DoubleSided = submesh.Key.DoubleSided;
                                 texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
                                 texture.Texture = submesh.Value.Material.Texture;
