@@ -71,12 +71,12 @@ namespace SoundTool
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
 
-                if (!Directory.Exists(Path.Combine(Application.StartupPath, "Catalogs")))
+                if (!Directory.Exists(DefaultPaths.EngineCatalogsDirectory))
                 {
-                    MessageBox.Show("One of the Catalogs is missing.\nMake sure you have the Catalog files in /Catalogs/ subfolder.");
+                    MessageBox.Show("Directory " + DefaultPaths.EngineCatalogsDirectory + " is missing. Make sure that Tomb Editor is installed correctly.");
                     Environment.Exit(1);
                 }
-                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs", "Engines"));
+                TrCatalog.LoadCatalog(DefaultPaths.EngineCatalogsDirectory);
 
                 using (FormMain form = new FormMain(configuration, startFile, refLevel))
                 {

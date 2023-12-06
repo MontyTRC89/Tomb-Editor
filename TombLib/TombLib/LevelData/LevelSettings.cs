@@ -620,27 +620,27 @@ namespace TombLib.LevelData
             switch (GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr1.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr1.xml");
                     break;
 
                 case TRVersion.Game.TR2:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr2.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr2.xml");
                     break;
 
                 case TRVersion.Game.TR3:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr3.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr3.xml");
                     break;
 
                 case TRVersion.Game.TR4:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr4.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr4.xml");
                     break;
 
                 case TRVersion.Game.TR5:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr5.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr5.xml");
                     break;
 
                 case TRVersion.Game.TombEngine:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Sound Catalogs\\TEN_ALL_SOUNDS.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "TEN Sound Catalogs", "TEN_ALL_SOUNDS.xml");
                     break;
             }
 
