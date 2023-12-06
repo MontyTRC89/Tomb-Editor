@@ -32,7 +32,10 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Content="Camera mode:"/>
-            <darkCtrl:SearchableComboBox Grid.Column="1"/>
+            <darkCtrl:SearchableComboBox Grid.Column="1">
+                <ComboBoxItem>Default</ComboBoxItem>
+                <ComboBoxItem>Locked</ComboBoxItem>
+            </darkCtrl:SearchableComboBox>
         </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="2" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
