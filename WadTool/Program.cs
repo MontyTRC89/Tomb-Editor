@@ -48,12 +48,12 @@ namespace WadTool
                 configuration.SaveTry();
 
                 // Run
-                if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml"))
+                if (!Directory.Exists(Path.Combine(Application.StartupPath,"Catalogs")))
                 {
-                    MessageBox.Show("TrCatalog.xml is missing.\nMake sure you have TrCatalog.xml in /Catalogs/ subfolder.");
+                    MessageBox.Show("Catalog files are missing.\nMake sure you have the Catalog files in /Catalogs/ subfolder.");
                     Environment.Exit(1);
                 }
-                TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
+                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs"));
 
                 Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<states>
+    <!-- LARA -->
+    <state item="0" id="119" name="TIGHTROPE_IDLE" />
+    <state item="0" id="120" name="TIGHTROPE_ROLL" />
+    <state item="0" id="121" name="TIGHTROPE_FORWARD" />
+    <state item="0" id="122" name="TIGHTROPE_BALANCING_LEFT" />
+    <state item="0" id="123" name="TIGHTROPE_BALANCING_RIGHT" />
+    <state item="0" id="124" name="TIGHTROPE_ENTER" />
+    <state item="0" id="125" name="TIGHTROPE_EXIT" />
+    <state item="0" id="126" name="DOVESWITCH" />
+    <state item="0" id="127" name="TIGHTROPE_RESTORE_BALANCE" />
+    <state item="0" id="128" name="BARS_SWING" />
+    <state item="0" id="129" name="BARS_JUMP" />
+    <state item="0" id="130" name="UNKNOWN2" />
+    <state item="0" id="131" name="RADIO_LISTENING" />
+    <state item="0" id="132" name="RADIO_OFF" />
+    <state item="0" id="133" name="UNKNOWN3" />
+    <state item="0" id="134" name="UNKNOWN4" />
+    <state item="0" id="135" name="UNKNOWN5" />
+    <state item="0" id="136" name="UNKNOWN6" />
+    <state item="0" id="137" name="PICKUP_FROM_CHEST" />
+
+    <!-- HUSKIE -->
+    <state item="130" id="0" name="EMPTY" />
+    <state item="130" id="1" name="STOP" />
+    <state item="130" id="2" name="WALK" />
+    <state item="130" id="3" name="RUN" />
+    <state item="130" id="4" name="JUMP" />
+    <state item="130" id="5" name="STALK" />
+    <state item="130" id="6" name="RUN_ATTACK" />
+    <state item="130" id="7" name="HOWL" />
+    <state item="130" id="8" name="SLEEP" />
+    <state item="130" id="9" name="CROUCH" />
+    <state item="130" id="10" name="TURN" />
+    <state item="130" id="11" name="DEATH" />
+    <state item="130" id="12" name="CROUCH_ATTACK" />
+</states>
