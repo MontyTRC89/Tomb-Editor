@@ -88,7 +88,7 @@ namespace TombEditor
                     // Load catalogs
                     try
                     {
-                        TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath , "Catalogs"));
+                        TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath , "Catalogs", "Engines"));
                         NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
                     }
                     catch (Exception ex)

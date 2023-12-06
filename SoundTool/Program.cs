@@ -76,7 +76,7 @@ namespace SoundTool
                     MessageBox.Show("One of the Catalogs is missing.\nMake sure you have the Catalog files in /Catalogs/ subfolder.");
                     Environment.Exit(1);
                 }
-                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs"));
+                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs", "Engines"));
 
                 using (FormMain form = new FormMain(configuration, startFile, refLevel))
                 {
