@@ -53,7 +53,7 @@ namespace WadTool
                     MessageBox.Show("Catalog files are missing.\nMake sure you have the Catalog files in /Catalogs/ subfolder.");
                     Environment.Exit(1);
                 }
-                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs","Engines"));
+                TrCatalog.LoadCatalog(Path.Combine(Application.StartupPath, "Catalogs", "Engines"));
 
                 Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
