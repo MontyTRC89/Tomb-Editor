@@ -29,7 +29,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <darkCtrl:SearchableComboBox/>
+            <darkCtrl:SearchableComboBox>
+                <ComboBoxItem>None</ComboBoxItem>
+                <ComboBoxItem>Level1</ComboBoxItem>
+                <ComboBoxItem>Level2</ComboBoxItem>
+                <ComboBoxItem>Level3</ComboBoxItem>
+            </darkCtrl:SearchableComboBox>
             <Button Grid.Column="1" Width="113" Content="Assign bumpmap"/>
             <Button Grid.Column="2" Width="80" Content="OK" IsDefault="True" />
         </sg:SpacedGrid>
