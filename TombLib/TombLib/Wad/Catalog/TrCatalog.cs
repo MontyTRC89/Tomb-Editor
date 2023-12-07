@@ -495,24 +495,9 @@ namespace TombLib.Wad.Catalog
                 if (gameNode.Name != "game")
                     continue;
 
-                string stringVersion = gameNode.Attributes["id"].Value;
-                TRVersion.Game version;
-                if (stringVersion == "TR1")
-                    version = TRVersion.Game.TR1;
-                else if (stringVersion == "TR2")
-                    version = TRVersion.Game.TR2;
-                else if (stringVersion == "TR3")
-                    version = TRVersion.Game.TR3;
-                else if (stringVersion == "TR4")
-                    version = TRVersion.Game.TR4;
-                else if (stringVersion == "TR5")
-                    version = TRVersion.Game.TR5;
-                else if (stringVersion == "TombEngine")
-                    version = TRVersion.Game.TombEngine;
-                else
-                    continue;
-
-                Game game = new Game(version);
+                var stringVersion = gameNode.Attributes["id"].Value;
+                var version = Enum.GetValues(typeof(TRVersion.Game)).Cast<TRVersion.Game>().First(s => stringVersion == s.ToString());
+                var game = new Game(version);
 
                 // Parse limits
                 XmlNode limits = gameNode.SelectSingleNode("limits");
