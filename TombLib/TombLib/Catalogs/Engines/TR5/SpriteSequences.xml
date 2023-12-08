@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprite_sequences>
-    <sprite_sequence id="455" name="Sky graphics" t5m="SKY_GRAPHICS" />
-    <sprite_sequence id="458" name="Default sprites" t5m="DEFAULT_SPRITES" />
-    <sprite_sequence id="459" name="Misc sprites" t5m="MISC_SPRITES" />
+    <sprite_sequence id="455" name="Sky graphics" TEN="SKY_GRAPHICS" />
+    <sprite_sequence id="458" name="Default sprites" TEN="DEFAULT_SPRITES" />
+    <sprite_sequence id="459" name="Misc sprites" TEN="MISC_SPRITES" />
 </sprite_sequences>
