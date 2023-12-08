@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<states>
+    <state item="0" id="56" name="LADDER_IDLE" />
+    <state item="0" id="57" name="LADDER_UP" />
+    <state item="0" id="58" name="LADDER_LEFT" />
+    <state item="0" id="59" name="LADDER_STOP" />
+    <state item="0" id="60" name="LADDER_RIGHT" />
+    <state item="0" id="61" name="LADDER_DOWN" />
+    <state item="0" id="62" name="TEST_1" />
+    <state item="0" id="63" name="TEST_2" />
+    <state item="0" id="64" name="TEST_3" />
+    <state item="0" id="65" name="WADE_FORWARD" />
+    <state item="0" id="66" name="UNDERWATER_ROLL" />
+    <state item="0" id="67" name="FLARE_PICKUP" />
+    <state item="0" id="68" name="SWANDIVE_ROLL" />
+    <state item="0" id="69" name="KICK" />
+    <state item="0" id="70" name="ZIPLINE_RIDE" />
+</states>
