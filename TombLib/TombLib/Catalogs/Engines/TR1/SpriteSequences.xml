@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprite_sequences>
+    <sprite_sequence id="84" name="Pistols" />
+    <sprite_sequence id="85" name="Shotgun" />
+    <sprite_sequence id="86" name="Magnums" />
+    <sprite_sequence id="87" name="Uzis" />
+    <sprite_sequence id="88" name="Pistol ammo(?)" />
+    <sprite_sequence id="89" name="Shotgun ammo" />
+    <sprite_sequence id="90" name="Magnum ammo" />
+    <sprite_sequence id="91" name="Uzi ammo" />
+    <sprite_sequence id="93" name="Small medipack" />
+    <sprite_sequence id="94" name="Large medipack" />
+    <sprite_sequence id="110" name="Puzzle 1" />
+    <sprite_sequence id="111" name="Puzzle 2" />
+    <sprite_sequence id="112" name="Puzzle 3" />
+    <sprite_sequence id="113" name="Puzzle 4" />
+    <sprite_sequence id="126" name="Pickup 1" />
+    <sprite_sequence id="129" name="Key 1" />
+    <sprite_sequence id="130" name="Key 2" />
+    <sprite_sequence id="131" name="Key 3" />
+    <sprite_sequence id="132" name="Key 4" />
+    <sprite_sequence id="143" name="Scion Piece" />
+    <sprite_sequence id="144" name="Scion Piece" />
+    <sprite_sequence id="151" name="Flare(?) / Explosion " zoom="-1.71" />
+    <sprite_sequence id="153" name="Splash " zoom="-1.71" />
+    <sprite_sequence id="155" name="Bubbles" />
+    <sprite_sequence id="156" name="Bubbles" />
+    <sprite_sequence id="158" name="Blood splatter" />
+    <sprite_sequence id="160" name="Flying disk " zoom="-1.71" />
+    <sprite_sequence id="164" name="Bullet hit" />
+    <sprite_sequence id="165" name="Sparkle" />
+    <sprite_sequence id="176" name="Splatter" />
+    <sprite_sequence id="178" name="Fire" />
+    <sprite_sequence id="190" name="Standard symbols " zoom="1.3712" />
+    <sprite_sequence id="191" name="Plant 1" />
+    <sprite_sequence id="192" name="Plant 2" />
+    <sprite_sequence id="193" name="Plant 3" />
+    <sprite_sequence id="194" name="Plant 4" />
+    <sprite_sequence id="195" name="Plant 5" />
+    <sprite_sequence id="200" name="Bag 1" />
+    <sprite_sequence id="204" name="Bag 2" />
+    <sprite_sequence id="212" name="Rock 1" />
+    <sprite_sequence id="213" name="Rock 2" />
+    <sprite_sequence id="214" name="Rock 3" />
+    <sprite_sequence id="215" name="Bag 3" />
+    <sprite_sequence id="216" name="Pottery 1" />
+    <sprite_sequence id="217" name="Pottery 2" />
+    <sprite_sequence id="231" name="Painted pot" />
+    <sprite_sequence id="233" name="Inca mummy" />
+    <sprite_sequence id="236" name="Pottery 3" />
+    <sprite_sequence id="237" name="Pottery 4" />
+    <sprite_sequence id="238" name="Pottery 5" />
+    <sprite_sequence id="239" name="Pottery 6" />
+</sprite_sequences>
