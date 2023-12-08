@@ -13,9 +13,9 @@ LevelFuncs.Engine.Node.CompareValue = function(operand, reference, operator)
 
 	if (operator == 0 and operand == reference) then result = true end
 	if (operator == 1 and operand ~= reference) then result = true end
-	if (operator == 2 and operand <  reference) then result = true end
+	if (operator == 2 and operand < reference) then result = true end
 	if (operator == 3 and operand <= reference) then result = true end
-	if (operator == 4 and operand >  reference) then result = true end
+	if (operator == 4 and operand > reference) then result = true end
 	if (operator == 5 and operand >= reference) then result = true end
 	return result
 end
@@ -35,9 +35,9 @@ end
 LevelFuncs.Engine.Node.GenerateString = function(text, x, y, scale, alignment, effects, color)
 	local options = {}
 	if (effects == 1 or effects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
-	if (effects == 2 or effects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.BLINK)  end
+	if (effects == 2 or effects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.BLINK) end
 	if (alignment == 1) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
-	if (alignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT)  end
+	if (alignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT) end
 	local rX, rY = TEN.Util.PercentToScreen(x, y)
 	return TEN.Strings.DisplayString(text, TEN.Vec2(rX, rY), scale, color, false, options)
 end
@@ -126,7 +126,7 @@ LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode = function(index)
 		[7] = TEN.View.AlignMode.BOTTOM_LEFT,
 		[8] = TEN.View.AlignMode.BOTTOM_RIGHT
 	}
-	return displaySpriteAlignMode
+	return displaySpriteAlignMode[index]
 end
 
 LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
@@ -136,5 +136,5 @@ LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
 		[1] = TEN.View.ScaleMode.FILL,
 		[2] = TEN.View.ScaleMode.STRETCH
 	}
-	return displaySpriteScaleMode
+	return displaySpriteScaleMode[index]
 end
