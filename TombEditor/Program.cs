@@ -78,11 +78,8 @@ namespace TombEditor
                     Application.AddMessageFilter(new ControlScrollFilter());
                     SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
-                    if (!Directory.Exists(DefaultPaths.EngineCatalogsDirectory))
-                    {
-                        MessageBox.Show("Directory " + DefaultPaths.EngineCatalogsDirectory + " is missing. Make sure that Tomb Editor is installed correctly.");
+                    if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                         Environment.Exit(1);
-                    }
 
                     // Load catalogs
                     try
@@ -93,7 +90,7 @@ namespace TombEditor
                     catch (Exception ex)
                     {
                         log.HandleException(ex);
-                        MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
+                        MessageBox.Show("An error occured while loading one of the catalog files.\nFiles may be missing or corrupted. Check the log file for details.");
                         Environment.Exit(1);
                     }
 
