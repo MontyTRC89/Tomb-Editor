@@ -1311,7 +1311,7 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct t5m_bounding_volume
+    public struct ten_bounding_volume
     {
         public ushort VolumeType;
         public int X;
