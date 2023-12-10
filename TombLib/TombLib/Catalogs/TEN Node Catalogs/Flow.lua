@@ -47,11 +47,11 @@ LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
 end
 
--- !Name "Run event from another event set"
+-- !Name "Run volume event"
 -- !Section "Game flow"
--- !Description "Runs an event from another event set."
--- !Arguments "NewLine, 65, EventSets, Target event set"
--- !Arguments "EventList, 35, Event to run"
+-- !Description "Runs a volume event from another event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
@@ -63,11 +63,11 @@ LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
 end
 
--- !Name "Enable event"
+-- !Name "Enable volume event"
 -- !Section "Game flow"
--- !Description "Enables an event for specified event set."
--- !Arguments "NewLine, 65, EventSets, Target event set"
--- !Arguments "EventList, 35, Event to enable"
+-- !Description "Enables an event in a specified volume event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to enable"
 
 LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
 	if (setName == '' or setName == nil) then
@@ -78,19 +78,67 @@ LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
 	TEN.Logic.EnableEvent(setName, eventType)
 end
 
--- !Name "Disable event"
+-- !Name "Disable volume event"
 -- !Section "Game flow"
--- !Description "Disables an event for specified event set."
--- !Arguments "NewLine, 65, EventSets, Target event set"
--- !Arguments "EventList, 35, Event to disable"
+-- !Description "Disables an event in a specified volume event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to disable"
 
 LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
 	if (setName == '' or setName == nil) then
 		print("There is no specified event set in level!")
 		return
 	end
+	print("Disable " .. setName .. " type: " .. eventType)
 
 	TEN.Logic.DisableEvent(setName, eventType)
+end
+
+-- !Name "Run global event"
+-- !Section "Game flow"
+-- !Description "Runs a global event from another event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to run"
+-- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
+
+LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activator)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.HandleEvent(setName, eventType + Logic.EventType.LOOP, TEN.Objects.GetMoveableByName(activator))
+end
+
+-- !Name "Enable global event"
+-- !Section "Game flow"
+-- !Description "Enables an event in a specified global event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to enable"
+
+LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Enable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
+	TEN.Logic.EnableEvent(setName, eventType + Logic.EventType.LOOP)
+end
+
+-- !Name "Disable global event"
+-- !Section "Game flow"
+-- !Description "Disables an event in a specified global event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to disable"
+
+LevelFuncs.Engine.Node.DisableGlobalEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Disable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
+
+	TEN.Logic.DisableEvent(setName, eventType + Logic.EventType.LOOP)
 end
 
 -- !Name "Run script function"
