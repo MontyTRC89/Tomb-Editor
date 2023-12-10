@@ -48,8 +48,8 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
--- !Arguments "NewLine, 70, VolumeEventSets, The event set to be called when the time is up"
--- !Arguments "VolumeEvents, 30, Event to run"
+-- !Arguments "NewLine, 66, VolumeEventSets, The event set to be called when the time is up"
+-- !Arguments "VolumeEvents, 34, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 LevelFuncs.Engine.Node.CreateTimerWithVEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
                                                            eventType, activator)
