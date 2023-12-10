@@ -284,7 +284,7 @@ namespace TombEditor.Forms
                     toolTip.SetToolTip(cbEvents, "Occurs when something leaves assigned volume. \nThis event performs once.");
                     break;
 
-                case EventType.OnLevelComplete:
+                case EventType.OnLevelEnd:
                     toolTip.SetToolTip(cbEvents, "Occurs when level was finished. \nThis event performs once.");
                     break;
 
@@ -302,18 +302,6 @@ namespace TombEditor.Forms
 
                 case EventType.OnLoop:
                     toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
-                    break;
-
-                case EventType.OnBeforeLoadGame:
-                    toolTip.SetToolTip(cbEvents, "Occurs before the game is loaded from a savegame. \nThis event is executed only once.");
-                    break;
-
-                case EventType.OnExitToTitle:
-                    toolTip.SetToolTip(cbEvents, "Occurs on exit to title. \nThis event performs once.");
-                    break;
-
-                case EventType.OnPlayerDead:
-                    toolTip.SetToolTip(cbEvents, "Occurs on exit to title (player death). \nThis event performs once.");
                     break;
             }
         }

@@ -28,10 +28,7 @@ namespace TombLib.LevelData
         OnLoadGame,
         OnSaveGame,
         OnLevelStart,
-        OnLevelComplete,
-        OnBeforeLoadGame,
-        OnExitToTitle,
-        OnPlayerDead,
+        OnLevelEnd
     }
 
     public class Event : ICloneable, IEquatable<Event>

@@ -40,7 +40,7 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minu
     end
 end
 
--- !Name "Create timer with event"
+-- !Name "Create timer with volume event set"
 -- !Conditional "False"
 -- !Description "After a specified number of seconds, an Event set is activated"
 -- !Section "Timer"
@@ -51,8 +51,32 @@ end
 -- !Arguments "NewLine, 70, VolumeEventSets, The event set to be called when the time is up"
 -- !Arguments "VolumeEvents, 30, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
-                                                          eventType, activator)
+LevelFuncs.Engine.Node.CreateTimerWithVEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
+                                                           eventType, activator)
+    if name ~= '' then
+        LevelVars[name] = Timer.Create(name, time, loop,
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.Engine.Node.RunEventSet,
+            setName, eventType, activator)
+        LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
+        TEN.Util.PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
+    else
+        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Create timer with global event set"
+-- !Conditional "False"
+-- !Description "After a specified number of seconds, an Event set is activated"
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
+-- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
+-- !Arguments "Boolean , 13, Loop"
+-- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
+-- !Arguments "NewLine, 70, GlobalEventSets, The event set to be called when the time is up"
+-- !Arguments "GlobalEvents, 30, Event to run"
+-- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
+LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
+                                                           eventType, activator)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
             { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.Engine.Node.RunEventSet,
