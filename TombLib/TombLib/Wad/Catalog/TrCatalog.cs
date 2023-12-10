@@ -538,7 +538,7 @@ namespace TombLib.Wad.Catalog
                         bool isFreeRotation = bool.Parse(moveableNode.Attributes["freeRot"]?.Value ?? "false");
                         bool hidden = bool.Parse(moveableNode.Attributes["hidden"]?.Value ?? "false");
                         bool essential = bool.Parse(moveableNode.Attributes["essential"]?.Value ?? "true");
-                        string tombEngineSlot = moveableNode.Attributes["t5m"]?.Value ?? string.Empty;
+                        string tombEngineSlot = moveableNode.Attributes["ten"]?.Value ?? string.Empty;
 
                         game.Moveables.Add(id, new Item
                         {
@@ -582,7 +582,7 @@ namespace TombLib.Wad.Catalog
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
                         string description = soundNode.Attributes["description"]?.Value ?? "";
-                        int tombEngineSoundId = int.Parse(soundNode.Attributes["t5m"]?.Value ?? "-1");
+                        int tombEngineSoundId = int.Parse(soundNode.Attributes["ten"]?.Value ?? "-1");
                         bool fixedByDefault = bool.Parse(soundNode.Attributes["hardcoded"]?.Value ?? "false");
                         game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault, Description = description, TombEngineSlot = tombEngineSoundId });
                     }
@@ -597,7 +597,7 @@ namespace TombLib.Wad.Catalog
                         if (spriteSequenceNode.Name != "sprite_sequence")
                             continue;
 
-                        string tombEngineSlot = spriteSequenceNode.Attributes["t5m"]?.Value ?? string.Empty;
+                        string tombEngineSlot = spriteSequenceNode.Attributes["ten"]?.Value ?? string.Empty;
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         string[] names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
                         game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlot = tombEngineSlot });
