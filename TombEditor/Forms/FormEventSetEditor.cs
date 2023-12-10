@@ -151,45 +151,6 @@ namespace TombEditor.Forms
             triggerManager.Visible = false;
         }
 
-        private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            switch (_nextSortMode)
-            {
-                case SortMode.Ascending:
-                    dgvEvents.AllowUserToDragDropRows = false;
-
-                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Ascending);
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▲";
-                    _nextSortMode = SortMode.Descending;
-                    break;
-
-                case SortMode.Descending:
-                    dgvEvents.AllowUserToDragDropRows = false;
-
-                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Descending);
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▲', ' ');
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▼";
-                    _nextSortMode = SortMode.None;
-                    break;
-
-                default:
-                    dgvEvents.AllowUserToDragDropRows = true;
-
-                    object selectedEventCache = dgvEvents.SelectedRows.Count > 0 ? dgvEvents.SelectedRows[0].Tag : null;
-                    PopulateEventSetList();
-                    ClearSelection();
-
-                    if (selectedEventCache != null)
-                        foreach (DataGridViewRow row in dgvEvents.Rows)
-                            if (row.Tag == selectedEventCache)
-                                row.Selected = true;
-
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▼', ' ');
-                    _nextSortMode = SortMode.Ascending;
-                    break;
-            }
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -206,40 +167,6 @@ namespace TombEditor.Forms
                 components.Dispose();
 
             base.Dispose(disposing);
-        }
-
-        public void ChangeVolume(VolumeInstance instance)
-        {
-            if (GlobalMode)
-            {
-                if (instance != null)
-                    _popup.ShowInfo(triggerManager, "To edit volumes in realtime, please close this window");
-                return;
-            }
-
-            _instance = instance;
-
-            SetupUI();
-            SelectedSet = (_instance?.EventSet ?? _selectedSet);
-        }
-
-        public void ClearSelection()
-        {
-            // HACK: Lock selection change to prevent DDGV from automatically selecting first row
-            // after clearing previous selection.
-
-            _lockSelectionChange = true;
-            dgvEvents.ClearSelection();
-            _lockSelectionChange = false;
-        }
-
-        public void UpdateVolume()
-        {
-            // Don't update dummy or yet not placed volumes.
-            if (_instance == null || _instance.Room == null)
-                return;
-
-            _editor.ObjectChange(_instance, ObjectChangeType.Change);
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -261,6 +188,40 @@ namespace TombEditor.Forms
                 PopulateEventSetList();
                 SelectedSet = (_instance?.EventSet ?? null);
             }
+        }
+
+        public void ChangeVolume(VolumeInstance instance)
+        {
+            if (GlobalMode)
+            {
+                if (instance != null)
+                    _popup.ShowInfo(triggerManager, "To edit volumes in realtime, please close this window");
+                return;
+            }
+
+            _instance = instance;
+
+            SetupUI();
+            SelectedSet = (_instance?.EventSet ?? _selectedSet);
+        }
+
+        public void UpdateVolume()
+        {
+            // Don't update dummy or yet not placed volumes.
+            if (_instance == null || _instance.Room == null)
+                return;
+
+            _editor.ObjectChange(_instance, ObjectChangeType.Change);
+        }
+
+        public void ClearSelection()
+        {
+            // HACK: Lock selection change to prevent DDGV from automatically selecting first row
+            // after clearing previous selection.
+
+            _lockSelectionChange = true;
+            dgvEvents.ClearSelection();
+            _lockSelectionChange = false;
         }
 
         private void SetupUI()
@@ -285,6 +246,26 @@ namespace TombEditor.Forms
                 panelActivators.Visible = false;
                 panelEditor.Height = panelActivators.Location.Y + panelActivators.Height - panelEditor.Location.Y;
             }
+        }
+
+        private void UpdateUI()
+        {
+            bool eventSetSelected = SelectedSet != null;
+
+            tbName.Enabled =
+            triggerManager.Enabled =
+            cbEvents.Enabled =
+            butUnassignEventSet.Enabled =
+            butCloneEventSet.Enabled =
+            butDeleteEventSet.Enabled = eventSetSelected;
+
+            cbActivatorLara.Enabled =
+            cbActivatorNPC.Enabled =
+            cbActivatorOtherMoveables.Enabled =
+            cbActivatorStatics.Enabled =
+            cbActivatorFlyBy.Enabled = eventSetSelected && !GlobalMode;
+
+            butSearch.Enabled = dgvEvents.Rows.Count > 0;
         }
 
         private void SetEventTooltip()
@@ -400,33 +381,6 @@ namespace TombEditor.Forms
             _lockSelectionChange = false;
         }
 
-		private void ReplaceEventSetNames(string oldName, string newName)
-		{
-			foreach (var set in _usedList)
-				foreach (var evt in set.Events)
-					foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
-                        foreach (bool global in new[] { false, true })
-                        {
-                            var type = global ? ArgumentType.GlobalEventSets : ArgumentType.VolumeEventSets;
-
-						    var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function && 
-												                                        f.Arguments.Any(a => a.Type == type));
-						    if (func == null)
-							    continue;
-
-						    for (int i = 0; i < func.Arguments.Count; i++)
-						    {
-							    if (func.Arguments[i].Type == type &&
-								    node.Arguments.Count > i &&
-								    TextExtensions.Unquote(node.Arguments[i]) == oldName)
-							    {
-								    node.Arguments[i] = TextExtensions.Quote(newName);
-							    }
-						    }
-
-					    }
-		}
-
         private void ClearEventSetFromUI()
         {
             UpdateUI();
@@ -488,26 +442,6 @@ namespace TombEditor.Forms
                                             (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
         }
 
-        private void UpdateUI()
-        {
-            bool eventSetSelected = SelectedSet != null;
-
-            tbName.Enabled =
-            triggerManager.Enabled =
-            cbEvents.Enabled =
-            butUnassignEventSet.Enabled =
-            butCloneEventSet.Enabled =
-            butDeleteEventSet.Enabled = eventSetSelected;
-
-            cbActivatorLara.Enabled =
-            cbActivatorNPC.Enabled =
-            cbActivatorOtherMoveables.Enabled =
-            cbActivatorStatics.Enabled =
-            cbActivatorFlyBy.Enabled = eventSetSelected && !GlobalMode;
-
-            butSearch.Enabled = dgvEvents.Rows.Count > 0;
-        }
-
         private void butOk_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
@@ -518,6 +452,45 @@ namespace TombEditor.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            switch (_nextSortMode)
+            {
+                case SortMode.Ascending:
+                    dgvEvents.AllowUserToDragDropRows = false;
+
+                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Ascending);
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▲";
+                    _nextSortMode = SortMode.Descending;
+                    break;
+
+                case SortMode.Descending:
+                    dgvEvents.AllowUserToDragDropRows = false;
+
+                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Descending);
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▲', ' ');
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▼";
+                    _nextSortMode = SortMode.None;
+                    break;
+
+                default:
+                    dgvEvents.AllowUserToDragDropRows = true;
+
+                    object selectedEventCache = dgvEvents.SelectedRows.Count > 0 ? dgvEvents.SelectedRows[0].Tag : null;
+                    PopulateEventSetList();
+                    ClearSelection();
+
+                    if (selectedEventCache != null)
+                        foreach (DataGridViewRow row in dgvEvents.Rows)
+                            if (row.Tag == selectedEventCache)
+                                row.Selected = true;
+
+                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▼', ' ');
+                    _nextSortMode = SortMode.Ascending;
+                    break;
+            }
         }
 
         private void dgvEvents_SelectedIndicesChanged(object sender, EventArgs e)
@@ -689,7 +662,7 @@ namespace TombEditor.Forms
                 return;
             }
 
-			ReplaceEventSetNames(SelectedSet.Name, tbName.Text);
+			EditorActions.ReplaceEventSetNames(_usedList, SelectedSet.Name, tbName.Text);
 			dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
 		}
 

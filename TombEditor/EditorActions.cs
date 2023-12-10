@@ -20,6 +20,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -1301,6 +1302,33 @@ namespace TombEditor
                     }
                 }
             }
+        }
+
+        public static void ReplaceEventSetNames(List<EventSet> list, string oldName, string newName)
+        {
+            foreach (var set in list)
+                foreach (var evt in set.Events)
+                    foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
+                        foreach (bool global in new[] { false, true })
+                        {
+                            var type = global ? ArgumentType.GlobalEventSets : ArgumentType.VolumeEventSets;
+
+                            var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function &&
+                                                                                        f.Arguments.Any(a => a.Type == type));
+                            if (func == null)
+                                continue;
+
+                            for (int i = 0; i < func.Arguments.Count; i++)
+                            {
+                                if (func.Arguments[i].Type == type &&
+                                    node.Arguments.Count > i &&
+                                    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                                {
+                                    node.Arguments[i] = TextExtensions.Quote(newName);
+                                }
+                            }
+
+                        }
         }
 
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
