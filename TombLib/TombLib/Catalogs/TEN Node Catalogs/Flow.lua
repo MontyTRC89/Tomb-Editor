@@ -49,7 +49,7 @@ end
 
 -- !Name "Run volume event from another event set"
 -- !Section "Game flow"
--- !Description "Runs an volume event from another event set."
+-- !Description "Runs a volume event from another event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
@@ -65,7 +65,7 @@ end
 
 -- !Name "Enable volume event"
 -- !Section "Game flow"
--- !Description "Enables an event in a specified volume event set."
+-- !Description "Enables a event in a specified volume event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to enable"
 
@@ -80,7 +80,7 @@ end
 
 -- !Name "Disable volume event"
 -- !Section "Game flow"
--- !Description "Disables an event in a specified volume event set."
+-- !Description "Disables a event in a specified volume event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to disable"
 
@@ -96,7 +96,7 @@ end
 
 -- !Name "Run global event from another event set"
 -- !Section "Game flow"
--- !Description "Runs an 'global event set' from another event set."
+-- !Description "Runs a global event from another event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
 -- !Arguments "GlobalEvents, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
@@ -112,7 +112,7 @@ end
 
 -- !Name "Enable global event"
 -- !Section "Game flow"
--- !Description "Enables an event in a specified global event set."
+-- !Description "Enables a event in a specified global event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
 -- !Arguments "GlobalEvents, 35, Event to enable"
 
@@ -127,7 +127,7 @@ end
 
 -- !Name "Disable global event"
 -- !Section "Game flow"
--- !Description "Disables an event in a specified global event set."
+-- !Description "Disables a event in a specified global event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
 -- !Arguments "GlobalEvents, 35, Event to disable"
 
