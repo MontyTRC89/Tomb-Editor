@@ -47,9 +47,9 @@ LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
 end
 
--- !Name "Run volume event set from another event set"
+-- !Name "Run volume event from another event set"
 -- !Section "Game flow"
--- !Description "Runs an 'volume event set' from another event set."
+-- !Description "Runs an volume event from another event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
@@ -63,9 +63,9 @@ LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
 end
 
--- !Name "Enable volume event set"
+-- !Name "Enable volume event"
 -- !Section "Game flow"
--- !Description "Enables an 'volume event set' for specified event set."
+-- !Description "Enables an event in a specified volume event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to enable"
 
@@ -78,9 +78,9 @@ LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
 	TEN.Logic.EnableEvent(setName, eventType)
 end
 
--- !Name "Disable volume event set"
+-- !Name "Disable volume event"
 -- !Section "Game flow"
--- !Description "Disables an 'volume event set' for specified event set."
+-- !Description "Disables an event in a specified volume event set."
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to disable"
 
@@ -94,7 +94,7 @@ LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
 	TEN.Logic.DisableEvent(setName, eventType)
 end
 
--- !Name "Run global event set from another event set"
+-- !Name "Run global event from another event set"
 -- !Section "Game flow"
 -- !Description "Runs an 'global event set' from another event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
@@ -110,9 +110,9 @@ LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activato
 	TEN.Logic.HandleEvent(setName, eventType + Logic.EventType.LOOP, TEN.Objects.GetMoveableByName(activator))
 end
 
--- !Name "Enable global event set"
+-- !Name "Enable global event"
 -- !Section "Game flow"
--- !Description "Enables an 'global event set' for specified event set."
+-- !Description "Enables an event in a specified global event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
 -- !Arguments "GlobalEvents, 35, Event to enable"
 
@@ -125,9 +125,9 @@ LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
 	TEN.Logic.EnableEvent(setName, eventType + Logic.EventType.LOOP)
 end
 
--- !Name "Disable global event set"
+-- !Name "Disable global event"
 -- !Section "Game flow"
--- !Description "Disables an 'global event set' for specified event set."
+-- !Description "Disables an event in a specified global event set."
 -- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
 -- !Arguments "GlobalEvents, 35, Event to disable"
 
