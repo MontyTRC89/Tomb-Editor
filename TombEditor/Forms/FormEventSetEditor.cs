@@ -282,6 +282,12 @@ namespace TombEditor.Forms
                 cbAdjacentRooms.Checked = _instance.DetectInAdjacentRooms;
                 Text = "Edit volume: " + _instance.ToShortString();
             }
+
+            if (GlobalMode)
+            {
+                grpActivators.Visible = false;
+                panelEditor.Height = grpActivators.Location.Y + grpActivators.Height - panelEditor.Location.Y;
+            }
         }
 
         private void SetEventTooltip()
