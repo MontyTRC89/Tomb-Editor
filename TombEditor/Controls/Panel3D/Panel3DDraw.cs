@@ -823,6 +823,8 @@ namespace TombEditor.Controls.Panel3D
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
             var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.55f);
             var selectColor = new Vector4(baseColor.To3(), 0.7f);
+            var disabledNormalColor = new Vector4(new Vector3(normalColor.To3().GetLuma()), 0.55f);
+            var disabledSelectColor = new Vector4(new Vector3(selectColor.To3().GetLuma()), 0.55f);
 
             var currentShape = VolumeShape.Box;
             int selectedIndex = -1;
@@ -844,10 +846,12 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
 
+                color = instance.Enabled ? normalColor : disabledNormalColor;
+
                 // Switch colours
                 if (i == selectedIndex && selectedIndex >= 0)
                 {
-                    color = selectColor;
+                    color = instance.Enabled ? selectColor : disabledSelectColor;
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe); // As wireframe if selected
 
                     // Add text message
@@ -857,7 +861,6 @@ namespace TombEditor.Controls.Panel3D
                 }
                 else if (lastIndex == selectedIndex || lastIndex == -1)
                 {
-                    color = normalColor;
                     _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
                 }
                 lastIndex = i;
@@ -881,9 +884,9 @@ namespace TombEditor.Controls.Panel3D
 
                     // Switch colours
                     if (_highlightedObjects.Contains(instance))
-                        color = selectColor;
+                        color = instance.Enabled ? selectColor : disabledSelectColor;
                     else
-                        color = normalColor;
+                        color = instance.Enabled ? normalColor : disabledNormalColor;
 
                     // Switch vertex buffers (only do it if shape is changed)
                     if (shape != currentShape)

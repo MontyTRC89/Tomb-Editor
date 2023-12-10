@@ -117,10 +117,19 @@ namespace TombEditor.Controls.ContextMenus
                 }));
 
                 if (targetObject.Room != _editor.SelectedRoom)
+                {
                     Items.Add(new ToolStripMenuItem("Move object to current room", null, (o, e) =>
                     {
                         EditorActions.MoveObjectToOtherRoom((PositionBasedObjectInstance)targetObject, _editor.SelectedRoom);
                     }));
+                }
+
+                Items.Add(new ToolStripMenuItem("Copy position to clipboard", null, (o, e) =>
+                {
+                    var pos = (targetObject as PositionAndScriptBasedObjectInstance).WorldPosition;
+                    pos.Y = -pos.Y;
+                    Clipboard.SetText(pos.ToString().Trim(new char[] {'<', '>'}));
+                }));
             }
 
             if (targetObject is PositionAndScriptBasedObjectInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)

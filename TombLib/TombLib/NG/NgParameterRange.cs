@@ -32,8 +32,10 @@ namespace TombLib.NG
         WadSlots, // WAD-SLOTS
         StaticsSlots, // STATIC_SLOTS
         LaraStartPosOcb, // LARA_POS_OCB
-        EventSets,
-        EventTypes
+        VolumeEventSets,
+        VolumeEventTypes,
+        GlobalEventSets,
+        GlobalEventTypes
     }
 
     public struct NgLinearParameter
@@ -202,7 +204,8 @@ namespace TombLib.NG
                     return parameter is FlybyCameraInstance;
                 case NgParameterKind.Rooms255:
                     return parameter is Room;
-                case NgParameterKind.EventSets:
+                case NgParameterKind.VolumeEventSets:
+                case NgParameterKind.GlobalEventSets:
                     return parameter is TriggerParameterString;
 
                 default:
@@ -336,19 +339,24 @@ namespace TombLib.NG
                         .OfType<MoveableInstance>().Where(obj => obj.WadObjectId.TypeId == 406) // Lara start pos
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
 
-                case NgParameterKind.EventSets:
-                    if (level.Settings.EventSets.Count > 0)
-                        return level.Settings.EventSets.Select(e => new TriggerParameterString(e.Name));
-                    else
-                        return null;
-
-                case NgParameterKind.EventTypes:
-                    return new List<TriggerParameterUshort>()
+                case NgParameterKind.VolumeEventSets:
+                case NgParameterKind.GlobalEventSets:
                     {
-                        new TriggerParameterUshort(0, "On enter"),
-                        new TriggerParameterUshort(1, "On inside"),
-                        new TriggerParameterUshort(2, "On leave"),
-                    };
+                        var usedList = Kind == NgParameterKind.GlobalEventSets ? level.Settings.GlobalEventSets : level.Settings.VolumeEventSets;
+                        if (usedList.Count > 0)
+                            return usedList.Select(e => new TriggerParameterString(e.Name));
+                        else
+                            return null;
+                    }
+
+                case NgParameterKind.VolumeEventTypes:
+                case NgParameterKind.GlobalEventTypes:
+                    {
+                        var result = new List<TriggerParameterUshort>();
+                        foreach (var type in Kind == NgParameterKind.VolumeEventTypes ? Event.VolumeEventTypes : Event.GlobalEventTypes)
+                            result.Add(new TriggerParameterUshort((ushort)type, type.ToString().SplitCamelcase()));
+                        return result;
+                    }
 
                 default:
                     throw new ArgumentException("Unknown NgListKind \"" + Kind + "\"");

@@ -27,7 +27,7 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.EnableVolume = function(volumeName)
-    TEN.Objects.GetVolumeByName(volumeName):Enable()
+	TEN.Objects.GetVolumeByName(volumeName):Enable()
 end
 
 -- !Name "Disable volume"
@@ -36,7 +36,7 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.DisableVolume = function(volumeName)
-    TEN.Objects.GetVolumeByName(volumeName):Disable()
+	TEN.Objects.GetVolumeByName(volumeName):Disable()
 end
 
 -- !Name "Clear volume activators"
@@ -45,7 +45,7 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.ClearVolumeActivators = function(volumeName)
-    TEN.Objects.GetVolumeByName(volumeName):ClearActivators()
+	TEN.Objects.GetVolumeByName(volumeName):ClearActivators()
 end
 
 -- !Name "Modify position of a volume"
@@ -56,7 +56,6 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.SetVolumePosition = function(operation, value, volumeName)
-
 	local vol = TEN.Objects.GetVolumeByName(volumeName)
 
 	if (operation == 0) then
@@ -80,7 +79,6 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.SetVolumeRotation = function(operation, x, y, z, volumeName)
-
 	local vol = TEN.Objects.GetVolumeByName(volumeName)
 	local rotation = vol:GetRotation();
 
@@ -105,7 +103,6 @@ end
 -- !Arguments "NewLine, Volumes"
 
 LevelFuncs.Engine.Node.SetVolumeScale = function(operation, value, volumeName)
-
 	local vol = TEN.Objects.GetVolumeByName(volumeName)
 
 	if (operation == 0) then

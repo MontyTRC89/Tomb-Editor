@@ -44,6 +44,8 @@ namespace TombLib.Utils
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
         private const string _enumSplitterEnd = "]";
+        private const string _defaultValueStart = "{";
+        private const string _defaultValueEnd = "}";
         private const char _tabChar = '\t';
 
         private const string _nodeIgnoreId = _metadataPrefix + "ignore";
@@ -54,10 +56,12 @@ namespace TombLib.Utils
         private const string _nodeDescriptionId = _metadataPrefix + "description";
         private const string _nodeLayoutNewLine = "newline";
 
-        public const string GameNodeScriptPath = "Scripts\\Engine\\NodeCatalogs\\";
-        public static string NodeScriptPath => Path.Combine(DefaultPaths.ProgramDirectory, "Catalogs\\TEN Node Catalogs\\");
+        public static string GameNodeScriptPath = Path.Combine("Scripts", "Engine", "NodeCatalogs");
+        public static string NodeScriptPath => Path.Combine(DefaultPaths.CatalogsDirectory, "TEN Node Catalogs");
 
-        public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
+        public static readonly List<NodeFunction> NodeFunctions = GetAllNodeFunctions(NodeScriptPath);
+
+        private static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
             var result = list == null ? new List<NodeFunction>() : list;
 
@@ -121,12 +125,13 @@ namespace TombLib.Utils
                                 {
                                     Type = ArgumentType.Numerical,
                                     CustomEnumeration = new List<string>(),
+                                    DefaultValue = string.Empty,
                                     Description = string.Empty,
                                     NewLine = false,
                                     Width = 100.0f
                                 };
 
-                                var parameters = s.Split(',').Select(st => st.Trim());
+                                var parameters = s.SplitParenthesis().Select(st => st.Trim());
                                 foreach (var p in parameters)
                                 {
                                     float width = 100.0f;
@@ -137,6 +142,8 @@ namespace TombLib.Utils
                                         argLayout.Width = width;
                                     else if (p.StartsWith(_enumSplitterStart) && p.EndsWith(_enumSplitterEnd))
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
+                                    else if (p.StartsWith(_defaultValueStart) && p.EndsWith(_defaultValueEnd))
+                                        argLayout.DefaultValue = p.Substring(1, p.Length - 2).Trim();
                                     else
                                         try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
                                         catch { argLayout.Description = p; }

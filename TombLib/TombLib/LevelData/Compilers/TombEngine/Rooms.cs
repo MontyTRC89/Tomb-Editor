@@ -502,7 +502,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     roomVertices.Add(trVertex);
                                 }
 
-                                int index0 = tempIndices[0];
+								// Avoid degenerate triangles
+								if (tempIndices.Distinct().Count() < 3)
+								{
+									continue;
+								}
+
+								int index0 = tempIndices[0];
                                 int index1 = tempIndices[1];
                                 int index2 = tempIndices[2];
                                 int index3 = tempIndices[3];
@@ -653,7 +659,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         currentMeshIndexCount++;
                                     }
 
-                                    int index0 = tempIndices[0];
+									// Avoid degenerate triangles
+									if (tempIndices.Distinct().Count() < 3)
+									{
+										continue;
+									}
+
+									int index0 = tempIndices[0];
                                     int index1 = tempIndices[1];
                                     int index2 = tempIndices[2];
 

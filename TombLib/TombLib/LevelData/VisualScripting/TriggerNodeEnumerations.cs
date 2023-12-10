@@ -36,18 +36,22 @@ namespace TombLib.LevelData.VisualScripting
         Vector3,
         String,
         Color,
-        LuaScript,      // Listable
-        EventSets,      // Listable
-        Moveables,      // Listable
-        Statics,        // Listable
-        Cameras,        // Listable
-        Sinks,          // Listable
-        FlybyCameras,   // Listable
-        Volumes,        // Listable
-        Rooms,          // Listable
-        SoundEffects,   // Listable
-        SoundTracks,    // Listable
-        WadSlots,       // Listable
+        LuaScript,       // Listable
+        VolumeEventSets, // Listable
+        GlobalEventSets, // Listable
+        VolumeEvents,    // Listable
+        GlobalEvents,    // Listable
+        Moveables,       // Listable
+        Statics,         // Listable
+        Cameras,         // Listable
+        Sinks,           // Listable
+        FlybyCameras,    // Listable
+        Volumes,         // Listable
+        Rooms,           // Listable
+        SoundEffects,    // Listable
+        SoundTracks,     // Listable
+        SpriteSlots,     // Listable
+        WadSlots,        // Listable
         Enumeration,
         CompareOperator
     }
@@ -56,6 +60,7 @@ namespace TombLib.LevelData.VisualScripting
     {
         public ArgumentType Type;
         public List<string> CustomEnumeration;
+        public string DefaultValue;
         public string Description;
         public bool NewLine;
         public float Width;

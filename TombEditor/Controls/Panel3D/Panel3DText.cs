@@ -55,7 +55,7 @@ namespace TombEditor.Controls.Panel3D
             // Get the distance between point and floor in units
             int height = (int)(instance.Position.Y - GetFloorHeight(room, instance.Position)) / (int)Level.HeightUnit;
 
-            string message = "Pos: [" + Math.Round(instance.Position.X) + ", " + Math.Round(instance.Position.Y) + ", " + Math.Round(instance.Position.Z) + "]";
+            string message = "Pos: [" + (int)instance.WorldPosition.X + ", " + -(int)instance.WorldPosition.Y + ", " + (int)instance.WorldPosition.Z + "]";
             message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "], " + height + " clicks";
 
             return message;

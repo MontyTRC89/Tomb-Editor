@@ -66,7 +66,7 @@ namespace TombLib.Graphics
             newVertex.Color = color;
 
             mesh.Vertices.Add(newVertex);
-            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+            submesh.Indices.Add(mesh.Vertices.Count - 1);
         }
 
         public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
