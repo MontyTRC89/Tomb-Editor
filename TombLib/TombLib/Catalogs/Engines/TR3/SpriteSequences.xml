@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprite_sequences>
+    <sprite_sequence id="125" name="Frame (for indicator bars) " zoom="1.714" />
+    <sprite_sequence id="294" name="Gray disk" />
+    <sprite_sequence id="296" name="water splash, water surface, fish, smoke, etc " zoom="-1.3712" />
+    <sprite_sequence id="297" name="Bubble" />
+    <sprite_sequence id="299" name="Flash (looks like distant light)" />
+    <sprite_sequence id="316" name="Flash (looks like distant light)" />
+    <sprite_sequence id="356" name="Standard symbols " zoom="1.3712" />
+    <sprite_sequence id="362" name="Assault-course numerals and punctuation " zoom="1.3712" />
+</sprite_sequences>
