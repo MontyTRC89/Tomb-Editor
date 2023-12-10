@@ -121,8 +121,12 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in editor.CachedLuaFunctions)
                         cbList.Items.Add(new ComboBoxItem(item, "LevelFuncs." + item));
                     break;
-                case ArgumentType.EventSets:
-                    foreach (var item in editor.CachedEventSets)
+                case ArgumentType.VolumeEventSets:
+                    foreach (var item in editor.CachedVolumeEventSets)
+                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
+                    break;
+                case ArgumentType.GlobalEventSets:
+                    foreach (var item in editor.CachedGlobalEventSets)
                         cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.Sinks:
@@ -167,7 +171,15 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.CompareOperator:
-                    foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
+                    foreach (var item in Enum.GetValues(typeof(ConditionType)))
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.VolumeEvents:
+                    foreach (var item in Event.VolumeEventTypes)
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.GlobalEvents:
+                    foreach (var item in Event.GlobalEventTypes)
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
                     break;
                 case ArgumentType.SpriteSlots:

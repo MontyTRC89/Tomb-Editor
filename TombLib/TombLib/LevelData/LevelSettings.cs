@@ -197,7 +197,8 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
-        public List<VolumeEventSet> EventSets { get; set; } = new List<VolumeEventSet>();
+        public List<EventSet> GlobalEventSets { get; set; } = new List<EventSet>();
+        public List<EventSet> VolumeEventSets { get; set; } = new List<EventSet>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
 
         // Light options
@@ -885,6 +886,14 @@ namespace TombLib.LevelData
             {
                 var paths = GetRecursiveListOfSoundPaths();
                 return GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this, paths));
+            }
+        }
+
+        public List<EventSet> AllEventSets
+        {
+            get
+            {
+                return GlobalEventSets.Concat(VolumeEventSets).ToList();
             }
         }
     }

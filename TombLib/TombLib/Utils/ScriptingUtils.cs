@@ -59,7 +59,9 @@ namespace TombLib.Utils
         public static string GameNodeScriptPath = Path.Combine("Scripts", "Engine", "NodeCatalogs");
         public static string NodeScriptPath => Path.Combine(DefaultPaths.CatalogsDirectory, "TEN Node Catalogs");
 
-        public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
+        public static readonly List<NodeFunction> NodeFunctions = GetAllNodeFunctions(NodeScriptPath);
+
+        private static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
             var result = list == null ? new List<NodeFunction>() : list;
 
