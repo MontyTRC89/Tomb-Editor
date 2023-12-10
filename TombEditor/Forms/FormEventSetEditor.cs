@@ -68,28 +68,25 @@ namespace TombEditor.Forms
                         ClearSelection();
                         ClearEventSetFromUI();
                     }
-
-                    return;
                 }
-
-                for (int i = 0; i < dgvEvents.Rows.Count; i++)
+                else
                 {
-                    if (dgvEvents.Rows[i].Tag == _selectedSet)
+                    for (int i = 0; i < dgvEvents.Rows.Count; i++)
                     {
-                        ClearSelection();
-                        dgvEvents.Rows[i].Selected = true;
+                        if (dgvEvents.Rows[i].Tag == _selectedSet)
+                        {
+                            ClearSelection();
+                            dgvEvents.Rows[i].Selected = true;
 
-                        if (!GenericMode)
-                            _instance.EventSet = _selectedSet;
-
-                        LoadEventSetIntoUI(_selectedSet);
-
-                        return;
+                            LoadEventSetIntoUI(_selectedSet);
+                            break;
+                        }
                     }
                 }
 
-                _selectedSet = null;
-                ClearSelection();
+
+                if (!GenericMode)
+                    _instance.EventSet = _selectedSet;
             }
         }
         private EventSet _selectedSet;
@@ -285,8 +282,8 @@ namespace TombEditor.Forms
 
             if (GlobalMode)
             {
-                grpActivators.Visible = false;
-                panelEditor.Height = grpActivators.Location.Y + grpActivators.Height - panelEditor.Location.Y;
+                panelActivators.Visible = false;
+                panelEditor.Height = panelActivators.Location.Y + panelActivators.Height - panelEditor.Location.Y;
             }
         }
 
@@ -502,7 +499,11 @@ namespace TombEditor.Forms
             butCloneEventSet.Enabled =
             butDeleteEventSet.Enabled = eventSetSelected;
 
-            grpActivators.Enabled = eventSetSelected && !GlobalMode;
+            cbActivatorLara.Enabled =
+            cbActivatorNPC.Enabled =
+            cbActivatorOtherMoveables.Enabled =
+            cbActivatorStatics.Enabled =
+            cbActivatorFlyBy.Enabled = eventSetSelected && !GlobalMode;
 
             butSearch.Enabled = dgvEvents.Rows.Count > 0;
         }
@@ -578,11 +579,7 @@ namespace TombEditor.Forms
             EditorActions.DeleteEventSet(SelectedSet);
             SelectedSet = null;
 
-            if (!GenericMode)
-                _instance.EventSet = null;
-
             PopulateEventSetList();
-            ClearSelection();
 
             if (dgvEvents.Rows.Count > 0)
             {
@@ -598,8 +595,7 @@ namespace TombEditor.Forms
             if (GenericMode)
                 return;
 
-            _instance.EventSet = null;
-            ClearSelection();
+            SelectedSet = null;
         }
 
         private void cbActivators_CheckedChanged(object sender, EventArgs e)

@@ -35,7 +35,6 @@ namespace TombEditor.Forms
             this.butCloneEventSet = new DarkUI.Controls.DarkButton();
             this.butNewEventSet = new DarkUI.Controls.DarkButton();
             this.triggerManager = new TombEditor.Controls.TriggerManager();
-            this.grpActivators = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbEnableVolume = new DarkUI.Controls.DarkCheckBox();
@@ -46,15 +45,16 @@ namespace TombEditor.Forms
             this.cbEvents = new DarkUI.Controls.DarkComboBox();
             this.panelEditor = new DarkUI.Controls.DarkSectionPanel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.panelActivators = new DarkUI.Controls.DarkSectionPanel();
             this.panelList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).BeginInit();
             this.darkPanel1.SuspendLayout();
-            this.grpActivators.SuspendLayout();
             this.panelEditor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.panelActivators.SuspendLayout();
             this.SuspendLayout();
             // 
             // butCancel
@@ -85,7 +85,7 @@ namespace TombEditor.Forms
             // cbActivatorLara
             // 
             this.cbActivatorLara.AutoSize = true;
-            this.cbActivatorLara.Location = new System.Drawing.Point(69, 8);
+            this.cbActivatorLara.Location = new System.Drawing.Point(68, 7);
             this.cbActivatorLara.Name = "cbActivatorLara";
             this.cbActivatorLara.Size = new System.Drawing.Size(47, 17);
             this.cbActivatorLara.TabIndex = 10;
@@ -96,7 +96,7 @@ namespace TombEditor.Forms
             // cbActivatorNPC
             // 
             this.cbActivatorNPC.AutoSize = true;
-            this.cbActivatorNPC.Location = new System.Drawing.Point(121, 8);
+            this.cbActivatorNPC.Location = new System.Drawing.Point(120, 7);
             this.cbActivatorNPC.Name = "cbActivatorNPC";
             this.cbActivatorNPC.Size = new System.Drawing.Size(47, 17);
             this.cbActivatorNPC.TabIndex = 11;
@@ -107,7 +107,7 @@ namespace TombEditor.Forms
             // cbActivatorOtherMoveables
             // 
             this.cbActivatorOtherMoveables.AutoSize = true;
-            this.cbActivatorOtherMoveables.Location = new System.Drawing.Point(173, 8);
+            this.cbActivatorOtherMoveables.Location = new System.Drawing.Point(172, 7);
             this.cbActivatorOtherMoveables.Name = "cbActivatorOtherMoveables";
             this.cbActivatorOtherMoveables.Size = new System.Drawing.Size(96, 17);
             this.cbActivatorOtherMoveables.TabIndex = 12;
@@ -118,7 +118,7 @@ namespace TombEditor.Forms
             // cbActivatorStatics
             // 
             this.cbActivatorStatics.AutoSize = true;
-            this.cbActivatorStatics.Location = new System.Drawing.Point(272, 8);
+            this.cbActivatorStatics.Location = new System.Drawing.Point(271, 7);
             this.cbActivatorStatics.Name = "cbActivatorStatics";
             this.cbActivatorStatics.Size = new System.Drawing.Size(59, 17);
             this.cbActivatorStatics.TabIndex = 13;
@@ -128,7 +128,7 @@ namespace TombEditor.Forms
             // 
             // cbActivatorFlyBy
             // 
-            this.cbActivatorFlyBy.Location = new System.Drawing.Point(337, 8);
+            this.cbActivatorFlyBy.Location = new System.Drawing.Point(336, 7);
             this.cbActivatorFlyBy.Name = "cbActivatorFlyBy";
             this.cbActivatorFlyBy.Size = new System.Drawing.Size(93, 17);
             this.cbActivatorFlyBy.TabIndex = 14;
@@ -257,27 +257,11 @@ namespace TombEditor.Forms
             this.triggerManager.Size = new System.Drawing.Size(509, 310);
             this.triggerManager.TabIndex = 0;
             // 
-            // grpActivators
-            // 
-            this.grpActivators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpActivators.Controls.Add(this.darkLabel6);
-            this.grpActivators.Controls.Add(this.cbActivatorLara);
-            this.grpActivators.Controls.Add(this.cbActivatorNPC);
-            this.grpActivators.Controls.Add(this.cbActivatorOtherMoveables);
-            this.grpActivators.Controls.Add(this.cbActivatorStatics);
-            this.grpActivators.Controls.Add(this.cbActivatorFlyBy);
-            this.grpActivators.Location = new System.Drawing.Point(1, 349);
-            this.grpActivators.Name = "grpActivators";
-            this.grpActivators.Size = new System.Drawing.Size(511, 31);
-            this.grpActivators.TabIndex = 24;
-            this.grpActivators.TabStop = false;
-            // 
             // darkLabel6
             // 
             this.darkLabel6.AutoSize = true;
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel6.Location = new System.Drawing.Point(6, 9);
+            this.darkLabel6.Location = new System.Drawing.Point(5, 8);
             this.darkLabel6.Name = "darkLabel6";
             this.darkLabel6.Size = new System.Drawing.Size(60, 13);
             this.darkLabel6.TabIndex = 26;
@@ -375,9 +359,9 @@ namespace TombEditor.Forms
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.Controls.Add(this.panelActivators);
             this.splitContainer.Panel2.Controls.Add(this.darkLabel1);
             this.splitContainer.Panel2.Controls.Add(this.panelEditor);
-            this.splitContainer.Panel2.Controls.Add(this.grpActivators);
             this.splitContainer.Panel2.Controls.Add(this.cbEvents);
             this.splitContainer.Panel2.Controls.Add(this.tbName);
             this.splitContainer.Panel2.Controls.Add(this.darkLabel2);
@@ -386,6 +370,22 @@ namespace TombEditor.Forms
             this.splitContainer.SplitterDistance = 211;
             this.splitContainer.TabIndex = 32;
             this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
+            // 
+            // panelActivators
+            // 
+            this.panelActivators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelActivators.Controls.Add(this.darkLabel6);
+            this.panelActivators.Controls.Add(this.cbActivatorNPC);
+            this.panelActivators.Controls.Add(this.cbActivatorLara);
+            this.panelActivators.Controls.Add(this.cbActivatorFlyBy);
+            this.panelActivators.Controls.Add(this.cbActivatorStatics);
+            this.panelActivators.Controls.Add(this.cbActivatorOtherMoveables);
+            this.panelActivators.Location = new System.Drawing.Point(1, 350);
+            this.panelActivators.Name = "panelActivators";
+            this.panelActivators.SectionHeader = null;
+            this.panelActivators.Size = new System.Drawing.Size(511, 30);
+            this.panelActivators.TabIndex = 35;
             // 
             // FormEventSetEditor
             // 
@@ -408,14 +408,14 @@ namespace TombEditor.Forms
             this.panelList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvents)).EndInit();
             this.darkPanel1.ResumeLayout(false);
-            this.grpActivators.ResumeLayout(false);
-            this.grpActivators.PerformLayout();
             this.panelEditor.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.panelActivators.ResumeLayout(false);
+            this.panelActivators.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -435,7 +435,6 @@ namespace TombEditor.Forms
         private DarkButton butDeleteEventSet;
         private DarkButton butCloneEventSet;
         private DarkButton butNewEventSet;
-        private DarkGroupBox grpActivators;
         private DarkLabel darkLabel6;
         private DarkButton butUnassignEventSet;
         private ToolTip toolTip;
@@ -448,5 +447,6 @@ namespace TombEditor.Forms
         private SplitContainer splitContainer;
         private DarkCheckBox cbEnableVolume;
         private DarkCheckBox cbAdjacentRooms;
+        private DarkSectionPanel panelActivators;
     }
 }
