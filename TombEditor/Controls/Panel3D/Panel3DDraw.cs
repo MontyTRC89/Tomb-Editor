@@ -412,7 +412,7 @@ namespace TombEditor.Controls.Panel3D
 
             using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             _legacyDevice.SetVertexBuffer(buffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
             effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
