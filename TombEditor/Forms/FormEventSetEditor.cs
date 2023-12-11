@@ -263,7 +263,8 @@ namespace TombEditor.Forms
             cbActivatorNPC.Enabled =
             cbActivatorOtherMoveables.Enabled =
             cbActivatorStatics.Enabled =
-            cbActivatorFlyBy.Enabled = eventSetSelected && !GlobalMode;
+            cbActivatorFlyBy.Enabled =
+            lblActivators.Enabled = eventSetSelected && !GlobalMode;
 
             butSearch.Enabled = dgvEvents.Rows.Count > 0;
         }

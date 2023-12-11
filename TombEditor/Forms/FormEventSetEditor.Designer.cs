@@ -35,7 +35,7 @@ namespace TombEditor.Forms
             this.butCloneEventSet = new DarkUI.Controls.DarkButton();
             this.butNewEventSet = new DarkUI.Controls.DarkButton();
             this.triggerManager = new TombEditor.Controls.TriggerManager();
-            this.darkLabel6 = new DarkUI.Controls.DarkLabel();
+            this.lblActivators = new DarkUI.Controls.DarkLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbEnableVolume = new DarkUI.Controls.DarkCheckBox();
             this.cbAdjacentRooms = new DarkUI.Controls.DarkCheckBox();
@@ -257,15 +257,15 @@ namespace TombEditor.Forms
             this.triggerManager.Size = new System.Drawing.Size(509, 310);
             this.triggerManager.TabIndex = 0;
             // 
-            // darkLabel6
+            // lblActivators
             // 
-            this.darkLabel6.AutoSize = true;
-            this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel6.Location = new System.Drawing.Point(5, 8);
-            this.darkLabel6.Name = "darkLabel6";
-            this.darkLabel6.Size = new System.Drawing.Size(60, 13);
-            this.darkLabel6.TabIndex = 26;
-            this.darkLabel6.Text = "Activators:";
+            this.lblActivators.AutoSize = true;
+            this.lblActivators.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblActivators.Location = new System.Drawing.Point(5, 8);
+            this.lblActivators.Name = "lblActivators";
+            this.lblActivators.Size = new System.Drawing.Size(60, 13);
+            this.lblActivators.TabIndex = 26;
+            this.lblActivators.Text = "Activators:";
             // 
             // cbEnableVolume
             // 
@@ -375,7 +375,7 @@ namespace TombEditor.Forms
             // 
             this.panelActivators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelActivators.Controls.Add(this.darkLabel6);
+            this.panelActivators.Controls.Add(this.lblActivators);
             this.panelActivators.Controls.Add(this.cbActivatorNPC);
             this.panelActivators.Controls.Add(this.cbActivatorLara);
             this.panelActivators.Controls.Add(this.cbActivatorFlyBy);
@@ -435,7 +435,7 @@ namespace TombEditor.Forms
         private DarkButton butDeleteEventSet;
         private DarkButton butCloneEventSet;
         private DarkButton butNewEventSet;
-        private DarkLabel darkLabel6;
+        private DarkLabel lblActivators;
         private DarkButton butUnassignEventSet;
         private ToolTip toolTip;
         private DarkLabel darkLabel1;
