@@ -449,42 +449,42 @@ namespace TombEditor
 
             AddCommand("RaiseED1Click", "Raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 1, false, false);
             });
 
             AddCommand("RaiseED4Click", "Raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 4, false, false);
             });
 
             AddCommand("LowerED1Click", "Lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -1, false, false);
             });
 
             AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -4, false, false);
             });
 
             AddCommand("RaiseRF1Click", "Raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 1, false, false);
             });
 
             AddCommand("RaiseRF4Click", "Raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 4, false, false);
             });
 
             AddCommand("LowerRF1Click", "Lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -1, false, false);
             });
 
             AddCommand("LowerRF4Click", "Lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -4, false, false);
             });
 
             AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
@@ -529,42 +529,42 @@ namespace TombEditor
 
             AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 1, true, false);
             });
 
             AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 4, true, false);
             });
 
             AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -1, true, false);
             });
 
             AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ed, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -4, true, false);
             });
 
             AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 1, true, false);
             });
 
             AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 4, true, false);
             });
 
             AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -1, true, false);
             });
 
             AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Rf, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -4, true, false);
             });
 
             AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)

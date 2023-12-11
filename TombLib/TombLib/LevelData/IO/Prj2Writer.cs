@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.VisualScripting;
@@ -408,33 +409,49 @@ namespace TombLib.LevelData.IO
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
-                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloor, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloorOnly, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
                                         }
-                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
                                         }
-                                        for (BlockFace face = 0; face < BlockFace.Count; face++)
+
+                                        var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
+                                        var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
+
+                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions, LEB128.MaximumSize1Byte))
                                         {
-                                            var texture = b.GetFaceTexture(face);
+                                            LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
+
+                                            foreach (BlockVertical subdivisionVertical in validFloorSubdivisions)
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                        }
+                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
+                                        {
+                                            LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
+
+                                            foreach (BlockVertical subdivisionVertical in validCeilingSubdivisions)
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                        }
+                                        foreach (BlockFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
+                                        {
+                                            TextureArea texture = b.GetFaceTexture(face);
+
                                             if (texture.Texture == null)
                                                 continue;
 
-                                            if (texture.Texture is LevelTexture)
+                                            if (texture.Texture is LevelTexture t)
                                             {
-                                                var t = (LevelTexture)texture.Texture;
                                                 if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
                                                     using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
                                                     {
@@ -451,7 +468,7 @@ namespace TombLib.LevelData.IO
                                                         LEB128.Write(chunkIO.Raw, textureIndex);
                                                     }
                                                 else
-                                                    logger.Warn("Room " + room.Name + " has a texture refering to a texture file " + t.Path + " which is missing from project.");
+                                                    logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
                                             }
                                             else if (texture.Texture == TextureInvisible.Instance)
                                                 chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
