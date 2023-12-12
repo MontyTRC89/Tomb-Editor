@@ -799,7 +799,7 @@ namespace TombLib.LevelData.IO
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeiling)
+                                    else if (id4 == Prj2Chunks.SectorCeiling) // DEPRECATED
                                     {
                                         usesLegacyCeiling = true;
 
@@ -812,7 +812,7 @@ namespace TombLib.LevelData.IO
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorOnly)
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly) // DEPRECATED
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
