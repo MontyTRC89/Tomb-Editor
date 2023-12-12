@@ -292,7 +292,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                            foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
@@ -369,7 +369,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);

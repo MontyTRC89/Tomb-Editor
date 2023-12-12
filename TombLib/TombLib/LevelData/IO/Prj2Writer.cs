@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.VisualScripting;
@@ -124,12 +125,12 @@ namespace TombLib.LevelData.IO
                 _settings = settings;
                 ImportedGeometries = new Dictionary<ImportedGeometry, int>(new ImportedGeometryComparer(_settings));
                 LevelTextures = new Dictionary<LevelTexture, int>(new ReferenceEqualityComparer<LevelTexture>());
-                EventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
+                VolumeEventSets = new Dictionary<VolumeEventSet, int>(new ReferenceEqualityComparer<VolumeEventSet>());
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
             public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
-            public Dictionary<VolumeEventSet, int> EventSets { get; private set; }
+            public Dictionary<VolumeEventSet, int> VolumeEventSets { get; private set; }
         }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
@@ -299,61 +300,52 @@ namespace TombLib.LevelData.IO
                         }
                     chunkIO.WriteChunkEnd();
                 }
-                using (var chunkEventSets = chunkIO.WriteChunk(Prj2Chunks.EventSets, long.MaxValue))
+
+                foreach (bool global in new[] { true, false })
                 {
-                    int index = 0;
-                    foreach (var set in settings.EventSets)
+                    using (var chunkEventSets = chunkIO.WriteChunk(global ? Prj2Chunks.GlobalEventSets : Prj2Chunks.VolumeEventSets, long.MaxValue))
                     {
-                        using (var chunkEventSet = chunkIO.WriteChunk(Prj2Chunks.EventSet))
+                        int index = 0;
+                        foreach (var set in (global ? settings.GlobalEventSets : settings.VolumeEventSets))
                         {
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
-                            chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, set.LastUsedEventIndex);
-                            chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)set.Activators);
-
-                            for (int i = 0; i < 3; i++)
+                            using (var chunkEventSet = chunkIO.WriteChunk(Prj2Chunks.EventSet))
                             {
-                                ChunkId cid = ChunkId.Empty;
-                                VolumeEvent evt = null;
+                                chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
+                                chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
+                                chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, (int)set.LastUsedEvent);
 
-                                switch (i)
+                                if (!global)
+                                    chunkIO.WriteChunkInt(Prj2Chunks.EventSetActivators, (int)(set as VolumeEventSet).Activators);
+
+                                foreach (var evt in set.Events)
                                 {
-                                    case 0:
-                                        cid = Prj2Chunks.EventSetOnEnter;
-                                        evt = set.OnEnter;
-                                        break;
+                                    using (var chunkEvent = chunkIO.WriteChunk(Prj2Chunks.Event))
+                                    {
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventType, (int)evt.Key);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventMode, (int)evt.Value.Mode);
+                                        chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Value.Function ?? string.Empty);
+                                        chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Value.Argument ?? string.Empty);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.Value.CallCounter);
+                                        chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.Value.NodePosition);
+                                        evt.Value.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
 
-                                    case 1:
-                                        cid = Prj2Chunks.EventSetOnInside;
-                                        evt = set.OnInside;
-                                        break;
-
-                                    case 2:
-                                        cid = Prj2Chunks.EventSetOnLeave;
-                                        evt = set.OnLeave;
-                                        break;
+                                        chunkIO.WriteChunkEnd();
+                                    }
                                 }
 
-                                using (var chunkEvent = chunkIO.WriteChunk(cid))
-                                {
-                                    chunkIO.WriteChunkInt(Prj2Chunks.EventMode, (int)evt.Mode);
-                                    chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Function ?? string.Empty);
-                                    chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Argument ?? string.Empty);
-                                    chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.CallCounter);
-                                    chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.NodePosition);
-                                    evt.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
-
-                                    chunkIO.WriteChunkEnd();
-                                }
+                                chunkIO.WriteChunkEnd();
                             }
-                            chunkIO.WriteChunkEnd();
+
+                            if (!global)
+                                levelSettingIds.VolumeEventSets.TryAdd((set as VolumeEventSet), index++);
+                            else
+                                index++;
                         }
 
-                        levelSettingIds.EventSets.TryAdd(set, index++);
+                        chunkIO.WriteChunkEnd();
                     }
-                        
-                    chunkIO.WriteChunkEnd();
                 }
+                
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach (var entry in settings.AutoStaticMeshMerges)
@@ -417,33 +409,49 @@ namespace TombLib.LevelData.IO
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
-                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloor, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloorOnly, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
                                         }
-                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
                                         }
-                                        for (BlockFace face = 0; face < BlockFace.Count; face++)
+
+                                        var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
+                                        var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
+
+                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions, LEB128.MaximumSize1Byte))
                                         {
-                                            var texture = b.GetFaceTexture(face);
+                                            LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
+
+                                            foreach (BlockVertical subdivisionVertical in validFloorSubdivisions)
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                        }
+                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
+                                        {
+                                            LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
+
+                                            foreach (BlockVertical subdivisionVertical in validCeilingSubdivisions)
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                        }
+                                        foreach (BlockFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
+                                        {
+                                            TextureArea texture = b.GetFaceTexture(face);
+
                                             if (texture.Texture == null)
                                                 continue;
 
-                                            if (texture.Texture is LevelTexture)
+                                            if (texture.Texture is LevelTexture t)
                                             {
-                                                var t = (LevelTexture)texture.Texture;
                                                 if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
                                                     using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
                                                     {
@@ -460,7 +468,7 @@ namespace TombLib.LevelData.IO
                                                         LEB128.Write(chunkIO.Raw, textureIndex);
                                                     }
                                                 else
-                                                    logger.Warn("Room " + room.Name + " has a texture refering to a texture file " + t.Path + " which is missing from project.");
+                                                    logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
                                             }
                                             else if (texture.Texture == TextureInvisible.Instance)
                                                 chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
@@ -763,7 +771,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
                     else if (o is VolumeInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume3, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolume4, LEB128.MaximumSize2Byte))
                         {
                             var instance = (VolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -788,10 +796,13 @@ namespace TombLib.LevelData.IO
                             }
                             chunkIO.Raw.Write(instance.Position);
 
-                            int eventSetID = -1;
+                            chunkIO.Raw.Write(instance.Enabled);
+                            chunkIO.Raw.Write(instance.DetectInAdjacentRooms);
+
+                            int eventSetIndex = -1;
                             if (instance.EventSet != null)
-                                levelSettingIds.EventSets.TryGetValue(instance.EventSet, out eventSetID);
-                            chunkIO.Raw.Write(eventSetID);
+                                levelSettingIds.VolumeEventSets.TryGetValue(instance.EventSet as VolumeEventSet, out eventSetIndex);
+                            chunkIO.Raw.Write(eventSetIndex);
 
                             chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                         }

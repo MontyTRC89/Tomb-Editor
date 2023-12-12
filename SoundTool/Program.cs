@@ -71,12 +71,10 @@ namespace SoundTool
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.AddMessageFilter(new ControlScrollFilter());
 
-                if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml"))
-                {
-                    MessageBox.Show("TrCatalog.xml is missing.\nMake sure you have TrCatalog.xml in /Catalogs/ subfolder.");
+                if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                     Environment.Exit(1);
-                }
-                TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
+
+                TrCatalog.LoadCatalog(DefaultPaths.EngineCatalogsDirectory);
 
                 using (FormMain form = new FormMain(configuration, startFile, refLevel))
                 {
