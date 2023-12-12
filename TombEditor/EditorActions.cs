@@ -20,6 +20,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
+using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -658,7 +659,7 @@ namespace TombEditor
             }
             else if (firstObject is VolumeInstance && _editor.Level.IsTombEngine)
             {
-                trigger.TargetType = TriggerTargetType.EventSet;
+                trigger.TargetType = TriggerTargetType.VolumeEvent;
                 trigger.Target = new TriggerParameterString((firstObject as VolumeInstance).EventSet.Name);
             }
             else if (firstObject is StaticInstance && _editor.Level.IsNG)
@@ -752,22 +753,9 @@ namespace TombEditor
             var box = new BoxVolumeInstance()
             {
                 Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.BlockSizeUnit,
-                Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit)
+                Level.BlockSizeUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.BlockSizeUnit),
+                EventSet = _editor.Level.Settings.VolumeEventSets.Count > 0 ? _editor.Level.Settings.VolumeEventSets[0] : null
             };
-
-
-            // Display form
-            var existingWindow = Application.OpenForms[nameof(FormVolume)];
-            if (existingWindow == null)
-            {
-                var propForm = new FormVolume(box);
-                propForm.Show(owner);
-            }
-            else
-            {
-                existingWindow.Focus();
-                (existingWindow as FormVolume).ChangeVolume(box);
-            }
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
@@ -775,6 +763,9 @@ namespace TombEditor
             box.Position += new Vector3(0, Level.HalfBlockSizeUnit, 0); // Lift it up a bit
             _editor.UndoManager.PushObjectCreated(box);
             AllocateScriptIds(box);
+
+            // Display form
+            EditEventSets(owner, false, box);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -1122,17 +1113,7 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.IsTombEngine, "Trigger volume"))
                     return;
 
-                var existingWindow = Application.OpenForms[nameof(FormVolume)];
-                if (existingWindow == null)
-                {
-                    var propForm = new FormVolume((VolumeInstance)instance);
-                    propForm.Show(owner);
-                }
-                else
-                {
-                    existingWindow.Focus();
-                    (existingWindow as FormVolume).ChangeVolume((VolumeInstance)instance);
-                }
+                EditEventSets(owner, false, (VolumeInstance)instance);
             }
             else if (instance is MemoInstance)
             {
@@ -1289,18 +1270,74 @@ namespace TombEditor
             }
         }
 
-        public static void DeleteEventSet(VolumeEventSet eventSet)
+        public static void EditEventSets(IWin32Window owner, bool global, VolumeInstance targetVolume = null)
         {
-            _editor.Level.Settings.EventSets.Remove(eventSet);
+            var existingWindow = Application.OpenForms[nameof(FormEventSetEditor)];
 
-            foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
+            if (existingWindow != null && (existingWindow as FormEventSetEditor).GlobalMode != global)
             {
-                if (vol.EventSet == eventSet)
+                existingWindow.Close();
+                existingWindow = null;
+            }
+
+            if (existingWindow == null)
+            {
+                var propForm = new FormEventSetEditor(global, targetVolume);
+                propForm.Show(owner);
+            }
+            else
+                existingWindow.Focus();
+        }
+
+        public static void DeleteEventSet(EventSet eventSet)
+        {
+            if (eventSet == null)
+                return;
+
+            if (_editor.Level.Settings.GlobalEventSets.Contains(eventSet))
+            {
+                _editor.Level.Settings.GlobalEventSets.Remove(eventSet);
+            }
+            else if (_editor.Level.Settings.VolumeEventSets.Contains(eventSet))
+            {
+                _editor.Level.Settings.VolumeEventSets.Remove(eventSet);
+
+                foreach (var vol in _editor.Level.GetAllObjects().OfType<VolumeInstance>())
                 {
-                    vol.EventSet = null;
-                    _editor.ObjectChange(vol, ObjectChangeType.Change);
+                    if (vol.EventSet == eventSet)
+                    {
+                        vol.EventSet = null;
+                        _editor.ObjectChange(vol, ObjectChangeType.Change);
+                    }
                 }
             }
+        }
+
+        public static void ReplaceEventSetNames(List<EventSet> list, string oldName, string newName)
+        {
+            foreach (var set in list)
+                foreach (var evt in set.Events)
+                    foreach (var node in TriggerNode.LinearizeNodes(evt.Value.Nodes))
+                        foreach (bool global in new[] { false, true })
+                        {
+                            var type = global ? ArgumentType.GlobalEventSets : ArgumentType.VolumeEventSets;
+
+                            var func = ScriptingUtils.NodeFunctions.FirstOrDefault(f => f.Signature == node.Function &&
+                                                                                        f.Arguments.Any(a => a.Type == type));
+                            if (func == null)
+                                continue;
+
+                            for (int i = 0; i < func.Arguments.Count; i++)
+                            {
+                                if (func.Arguments[i].Type == type &&
+                                    node.Arguments.Count > i &&
+                                    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                                {
+                                    node.Arguments[i] = TextExtensions.Quote(newName);
+                                }
+                            }
+
+                        }
         }
 
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
@@ -2067,36 +2104,25 @@ namespace TombEditor
                         if (room.CoordinateInvalid(x, z) || (workArea != SectorSelection.None && !workArea.Area.Contains(new VectorInt2(x, z))))
                             continue;
 
-                        if (pickedFace.IsFloorWall() && pickedFace.IsNegativeX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_NegativeX_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_PositiveX_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveX())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsNegativeZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_NegativeZ_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsNegativeZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsPositiveZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
-                        else if (pickedFace is BlockFace.Wall_PositiveZ_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsPositiveZ())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
-                        else if (pickedFace.IsFloorWall() && pickedFace.IsDiagonal())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
-                        else if (pickedFace is BlockFace.Wall_Diagonal_Middle)
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
-                        else if (pickedFace.IsCeilingWall() && pickedFace.IsDiagonal())
-                            TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
+                        Direction direction = pickedFace.GetDirection();
+                        BlockFaceType faceType = pickedFace.GetFaceType();
+
+                        switch (direction)
+                        {
+                            case Direction.PositiveZ:
+                            case Direction.NegativeZ:
+                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                break;
+
+                            case Direction.PositiveX:
+                            case Direction.NegativeX:
+                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                break;
+
+                            case Direction.Diagonal:
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, faceType, texture);
+                                break;
+                        }
                     }
             }
             else

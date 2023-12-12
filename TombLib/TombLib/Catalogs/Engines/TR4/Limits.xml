@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<limits>
+    <limit name="TexPages" value="32767" />
+    <limit name="TexInfos" value="32767" />
+    <limit name="SoundBitsPerSample" value="16" />
+    <limit name="SoundSampleRate" value="22050" />
+    <limit name="SoundSampleSize" value="256" />
+    <limit name="SoundSampleCount" value="256" />
+    <limit name="SoundMapSize" value="370" />
+    <limit name="ItemMaxCount" value="1024" />
+    <limit name="ItemSafeCount" value="256" />
+    <limit name="BoxLimit" value="2048" />
+    <limit name="BoxMinCount" value="1" />
+    <limit name="OverlapLimit" value="16384" />
+    <limit name="RoomVertexCount" value="65536" />
+    <limit name="RoomFaceCount" value="2800" />
+    <limit name="RoomLightCount" value="20" />
+    <limit name="RoomDimensions" value="32" />
+    <limit name="RoomMaxCount" value="1023" />
+    <limit name="RoomSafeCount" value="255" />
+    <limit name="FloorHeight" value="127" />
+    <limit name="WorldDimensions" value="100" />
+
+    <limit name="NG_SoundMapSize" value="2048" />
+</limits>

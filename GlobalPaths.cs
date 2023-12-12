@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 internal static class DefaultPaths
 {
@@ -10,6 +11,8 @@ internal static class DefaultPaths
 
 	#region Configs
 
+	public static string CatalogsDirectory => Path.Combine(ProgramDirectory, "Catalogs");
+	public static string EngineCatalogsDirectory => Path.Combine(CatalogsDirectory, "Engines");
 	public static string ConfigsDirectory => Path.Combine(ProgramDirectory, "Configs");
 	public static string TextEditorConfigsDirectory => Path.Combine(ConfigsDirectory, "TextEditors");
 	public static string ColorSchemesDirectory => Path.Combine(TextEditorConfigsDirectory, "ColorSchemes");
@@ -101,5 +104,20 @@ internal static class DefaultPaths
 	[DllImport("shell32.dll")]
 	private static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
 
-	#endregion Native methods
+    #endregion Native methods
+
+    #region Methods
+
+    public static bool CheckCatalog(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            MessageBox.Show("Directory " + path + " is missing. Make sure that Tomb Editor is installed correctly.");
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion Methods
 }

@@ -94,7 +94,7 @@ namespace TombEditor
                 if (obj is VolumeInstance)
                 {
                     var vol = obj as VolumeInstance;
-                    var existingEvent = editor.Level.Settings.EventSets.FirstOrDefault(e => e.Equals(vol.EventSet));
+                    var existingEvent = editor.Level.Settings.VolumeEventSets.FirstOrDefault(e => e.Equals(vol.EventSet));
                     if (existingEvent != null)
                         vol.EventSet = existingEvent;
                 }

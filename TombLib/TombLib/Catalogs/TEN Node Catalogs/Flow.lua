@@ -6,7 +6,7 @@
 -- !Arguments "Numerical, 15, [ 1 | 100 ], Percentage of event occurence"
 
 LevelFuncs.Engine.Node.TestPercentageChance = function(percentageRange)
-    return (math.random() * 100 <= percentageRange)
+	return (math.random() * 100 <= percentageRange)
 end
 
 -- !Name "End level"
@@ -16,7 +16,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 99 ], Next level number"
 
 LevelFuncs.Engine.Node.EndLevel = function(number)
-    Flow.EndLevel(number)
+	TEN.Flow.EndLevel(number)
 end
 
 -- !Name "Add secret"
@@ -25,7 +25,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 7 ], Level secret index"
 
 LevelFuncs.Engine.Node.AddSecret = function(number)
-    TEN.Flow.AddSecret(number)
+	TEN.Flow.AddSecret(number)
 end
 
 -- !Name "Set secret count"
@@ -34,7 +34,7 @@ end
 -- !Arguments "Numerical, 15, [0 | 99 ], New secret count"
 
 LevelFuncs.Engine.Node.SetSecretCount = function(number)
-    TEN.Flow.SetSecretCount(number)
+	TEN.Flow.SetSecretCount(number)
 end
 
 -- !Name "If game secret count is..."
@@ -44,24 +44,101 @@ end
 -- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 99 ], Secret count"
 
 LevelFuncs.Engine.Node.GetSecretCount = function(operator, number)
-    return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
+	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetSecretCount(), number, operator)
 end
 
--- !Name "Run event from another event set"
+-- !Name "Run volume event"
 -- !Section "Game flow"
--- !Description "Runs an event from another event set."
--- !Arguments "NewLine, 70, EventSets, Target event set"
--- !Arguments "Enumeration, 30, [ On enter | On inside | On leave ], Event to run"
+-- !Description "Runs a volume event from another event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
-
 	if (setName == '' or setName == nil) then
 		print("There is no specified event set in level!")
 		return
 	end
-	
+
 	TEN.Logic.HandleEvent(setName, eventType, TEN.Objects.GetMoveableByName(activator))
+end
+
+-- !Name "Enable volume event"
+-- !Section "Game flow"
+-- !Description "Enables an event in a specified volume event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to enable"
+
+LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.EnableEvent(setName, eventType)
+end
+
+-- !Name "Disable volume event"
+-- !Section "Game flow"
+-- !Description "Disables an event in a specified volume event set."
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
+-- !Arguments "VolumeEvents, 35, Event to disable"
+
+LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Disable " .. setName .. " type: " .. eventType)
+
+	TEN.Logic.DisableEvent(setName, eventType)
+end
+
+-- !Name "Run global event"
+-- !Section "Game flow"
+-- !Description "Runs a global event from another event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to run"
+-- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
+
+LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activator)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+
+	TEN.Logic.HandleEvent(setName, eventType + Logic.EventType.LOOP, TEN.Objects.GetMoveableByName(activator))
+end
+
+-- !Name "Enable global event"
+-- !Section "Game flow"
+-- !Description "Enables an event in a specified global event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to enable"
+
+LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Enable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
+	TEN.Logic.EnableEvent(setName, eventType + Logic.EventType.LOOP)
+end
+
+-- !Name "Disable global event"
+-- !Section "Game flow"
+-- !Description "Disables an event in a specified global event set."
+-- !Arguments "NewLine, 65, GlobalEventSets, Target event set"
+-- !Arguments "GlobalEvents, 35, Event to disable"
+
+LevelFuncs.Engine.Node.DisableGlobalEvent = function(setName, eventType)
+	if (setName == '' or setName == nil) then
+		print("There is no specified event set in level!")
+		return
+	end
+	print("Disable " .. setName .. " type: " .. eventType + Logic.EventType.LOOP)
+
+	TEN.Logic.DisableEvent(setName, eventType + Logic.EventType.LOOP)
 end
 
 -- !Name "Run script function"
@@ -71,13 +148,12 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunLuaScript = function(funcName, args)
-
 	if (funcName == nil) then
 		print("There is no specified function in level script!")
 		return
 	end
-	
-    funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
+
+	funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
 end
 
 -- !Name "If script function returns..."
@@ -90,12 +166,47 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunConditionalLuaScript = function(operator, result, funcName, args)
-
 	if (funcName == nil) then
 		print("There is no specified function in level script!")
 		return 0
 	end
-	
-    local params = LevelFuncs.Engine.Node.SplitString(args, ",")
-    return LevelFuncs.Engine.Node.CompareValue(funcName(table.unpack(params)), result, operator)
+
+	local params = LevelFuncs.Engine.Node.SplitString(args, ",")
+	return LevelFuncs.Engine.Node.CompareValue(funcName(table.unpack(params)), result, operator)
+end
+
+-- !Name "Save the game"
+-- !Conditional "False"
+-- !Description "Saves the current game in a specific slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.SaveGame = function(slot)
+	TEN.Flow.SaveGame(slot)
+end
+
+-- !Name "Load the game"
+-- !Conditional "False"
+-- !Description "Load the selected save slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.LoadGame = function(slot)
+	TEN.Flow.LoadGame(slot)
+end
+
+-- !Name "Delete savegame"
+-- !Conditional "False"
+-- !Description "Delete a specific save slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.DeleteSaveGame = function(slot)
+	TEN.Flow.DeleteSaveGame(slot)
+end
+
+-- !Name "If savegame exists..."
+-- !Conditional "True"
+-- !Description "Check if SaveGame exists in a specific slot"
+-- !Section "Game flow"
+-- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+LevelFuncs.Engine.Node.DoesSaveGameExist = function(slot)
+	return TEN.Flow.DoesSaveGameExist(slot)
 end

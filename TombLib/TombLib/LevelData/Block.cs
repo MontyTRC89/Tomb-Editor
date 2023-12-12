@@ -144,11 +144,11 @@ namespace TombLib.LevelData
         Wall_PositiveX_QA = 3, //
         Wall_Diagonal_QA = 4,  //
 
-        Wall_PositiveZ_FloorSubdivision2 = 5, 
+        Wall_PositiveZ_FloorSubdivision2 = 5,
         Wall_NegativeZ_FloorSubdivision2 = 6,
-        Wall_NegativeX_FloorSubdivision2 = 7, 
-        Wall_PositiveX_FloorSubdivision2 = 8, 
-        Wall_Diagonal_FloorSubdivision2 = 9,  
+        Wall_NegativeX_FloorSubdivision2 = 7,
+        Wall_PositiveX_FloorSubdivision2 = 8,
+        Wall_Diagonal_FloorSubdivision2 = 9,
 
         Wall_PositiveZ_Middle = 10,
         Wall_NegativeZ_Middle = 11,
@@ -166,7 +166,7 @@ namespace TombLib.LevelData
         Wall_NegativeZ_CeilingSubdivision2 = 21,
         Wall_NegativeX_CeilingSubdivision2 = 22,
         Wall_PositiveX_CeilingSubdivision2 = 23,
-        Wall_Diagonal_CeilingSubdivision2 = 24, 
+        Wall_Diagonal_CeilingSubdivision2 = 24,
 
         Floor = 25,
         Floor_Triangle2 = 26,
@@ -285,6 +285,18 @@ namespace TombLib.LevelData
 
             if (Enum.TryParse(verticalName, out BlockVertical vertical))
                 return vertical;
+            else
+                throw new ArgumentException();
+        }
+
+        public static BlockFaceType GetFaceType(this BlockFace face)
+        {
+            if (face <= BlockFace.Wall_Diagonal_FloorSubdivision2 || face.IsExtraFloorSubdivision())
+                return BlockFaceType.Floor;
+            else if (face is >= BlockFace.Wall_PositiveZ_WS and <= BlockFace.Wall_Diagonal_CeilingSubdivision2 || face.IsExtraCeilingSubdivision())
+                return BlockFaceType.Ceiling;
+            else if (face is >= BlockFace.Wall_PositiveZ_Middle and <= BlockFace.Wall_Diagonal_Middle)
+                return BlockFaceType.Wall;
             else
                 throw new ArgumentException();
         }
@@ -623,8 +635,6 @@ namespace TombLib.LevelData
 
         public BlockSurface Floor;
         public BlockSurface Ceiling;
-
-        public HashSet<BlockFace> RenderedFaces { get; } = new HashSet<BlockFace>();
 
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
         public PortalInstance FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
