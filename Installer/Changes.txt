@@ -2,8 +2,8 @@ Version 1.7
 ===========
 
 Tomb Editor:
- * NEW: Added more wall subdivisions (increased from 5 to 19 per wall), which can be accessed by using Drag Tool while holding any numerical key.
- * NEW: Side faces for slopes next to flat blocks, or 2 crossing slopes next to each other, will now be fully rendered and can be textured.
+ * Added more wall subdivisions (increased from 5 to 19 per wall), which can be accessed by using Drag Tool while holding any numerical key.
+ * Side faces for slopes next to flat blocks, or 2 crossing slopes next to each other, will now be fully rendered and can be textured.
  * Add options to disable volumes and activate them in adjacent rooms.
  * Add global event editor.
  * Add global events to a node editor and to legacy trigger editor.
