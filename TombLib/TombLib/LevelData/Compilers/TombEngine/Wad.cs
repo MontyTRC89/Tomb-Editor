@@ -186,22 +186,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var vertex = mesh.Vertices[i];
                 var normalHelpers = vertex.NormalHelpers;
 
-                var tangent = Vector3.Zero;
-                var binormal = Vector3.Zero;
-
-                for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var normalHelper = normalHelpers[j];
-                    tangent += normalHelper.Polygon.Tangent;
-                    binormal += normalHelper.Polygon.Binormal;
-                }
-
-                if (normalHelpers.Count > 0)
-                {
-                    tangent = Vector3.Normalize(tangent / (float)normalHelpers.Count);
-                    binormal = Vector3.Normalize(binormal / (float)normalHelpers.Count);
-                }
-
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {
                     var normalHelper = normalHelpers[j];
@@ -211,8 +195,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         int index = normalHelper.Polygon.Indices[k];
                         if (index == i)
                         {
-                            normalHelper.Polygon.Tangents[k] = tangent;
-                            normalHelper.Polygon.Binormals[k] = binormal;
+                            normalHelper.Polygon.Tangents[k] = normalHelper.Polygon.Tangent;
+                            normalHelper.Polygon.Binormals[k] = normalHelper.Polygon.Binormal;
                             break;
                         }
                     }

@@ -136,10 +136,11 @@ namespace TombEditor.Forms
 
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
 
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                editEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                addBoxVolumeToolStripMenuItem.Visible =
+                addSphereVolumeToolStripMenuItem.Visible =
+                generateObjectNamesToolStripMenuItem.Visible =
+                editEventSetsToolStripMenuItem.Visible =
+                editGlobalEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
             }
 
             // Clear autosave information

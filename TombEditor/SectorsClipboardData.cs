@@ -36,19 +36,26 @@ namespace TombEditor
                             var currZ = selection.Area.Y0 + z;
                             var b = editor.SelectedRoom.Blocks[currX, currZ];
 
-                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
-                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                    writer.Write((short)b.GetHeight(vertical, edge));
+                            BlockVertical[] verticals = b.GetVerticals().ToArray();
+                            writer.Write(verticals.Length);
 
-                            writer.Write((int)b.Type);
+                            foreach (BlockVertical vertical in verticals)
+                            {
+                                writer.Write((byte)vertical);
+
+                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                    writer.Write(b.GetHeight(vertical, edge));
+                            }
+
+                            writer.Write((byte)b.Type);
                             writer.Write(b.ForceFloorSolid);
                             writer.Write(b.Floor.SplitDirectionToggled);
                             writer.Write(b.Floor.SplitDirectionIsXEqualsZ);
-                            writer.Write((int)b.Floor.DiagonalSplit);
+                            writer.Write((byte)b.Floor.DiagonalSplit);
                             writer.Write(b.Ceiling.SplitDirectionToggled);
                             writer.Write(b.Ceiling.SplitDirectionIsXEqualsZ);
-                            writer.Write((int)b.Ceiling.DiagonalSplit);
-                            writer.Write((int)b.Flags);
+                            writer.Write((byte)b.Ceiling.DiagonalSplit);
+                            writer.Write((short)b.Flags);
                         }
                 }
 
@@ -72,19 +79,25 @@ namespace TombEditor
                         {
                             var b = sectors[x, z] = new Block(0, 12);
 
-                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                            int verticalsCount = reader.ReadInt32();
+
+                            for (int i = 0; i < verticalsCount; i++)
+                            {
+                                var vertical = (BlockVertical)reader.ReadByte();
+
                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                     b.SetHeight(vertical, edge, reader.ReadInt16());
+                            }
 
-                            b.Type = (BlockType)reader.ReadInt32();
+                            b.Type = (BlockType)reader.ReadByte();
                             b.ForceFloorSolid = reader.ReadBoolean();
                             b.Floor.SplitDirectionToggled = reader.ReadBoolean();
                             b.Floor.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
-                            b.Floor.DiagonalSplit = (DiagonalSplit)reader.ReadInt32();
+                            b.Floor.DiagonalSplit = (DiagonalSplit)reader.ReadByte();
                             b.Ceiling.SplitDirectionToggled = reader.ReadBoolean();
                             b.Ceiling.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
-                            b.Ceiling.DiagonalSplit = (DiagonalSplit)reader.ReadInt32();
-                            b.Flags = (BlockFlags)reader.ReadInt32();
+                            b.Ceiling.DiagonalSplit = (DiagonalSplit)reader.ReadByte();
+                            b.Flags = (BlockFlags)reader.ReadInt16();
 
                             sectors[x, z] = b;
                         }

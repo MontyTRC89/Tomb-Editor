@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<states>
+    <!-- LARA -->
+    <state item="0" id="90" name="ROPE_TURN_LEFT" />
+    <state item="0" id="91" name="ROPE_TURN_RIGHT" />
+    <state item="0" id="92" name="GIANT_BUTTON_PUSH" />
+    <state item="0" id="93" name="TRAPDOOR_FLOOR_OPEN" />
+    <state item="0" id="94" name="TRAPDOOR_CEILING_OPEN" />
+    <state item="0" id="95" name="ROUND_HANDLE" />
+    <state item="0" id="96" name="COGWHEEL" />
+    <state item="0" id="97" name="LEVERSWITCH_PUSH" />
+    <state item="0" id="98" name="HOLE" />
+    <state item="0" id="99" name="POLE_IDLE" />
+    <state item="0" id="100" name="POLE_UP" />
+    <state item="0" id="101" name="POLE_DOWN" />
+    <state item="0" id="102" name="POLE_TURN_LEFT" />
+    <state item="0" id="103" name="POLE_TURN_RIGHT" />
+    <state item="0" id="104" name="PULLEY" />
+    <state item="0" id="105" name="CROUCH_TURN_LEFT" />
+    <state item="0" id="106" name="CROUCH_TURN_RIGHT" />
+    <state item="0" id="107" name="SHIMMY_OUTER_LEFT" />
+    <state item="0" id="108" name="SHIMMY_OUTER_RIGHT" />
+    <state item="0" id="109" name="SHIMMY_INNER_LEFT" />
+    <state item="0" id="110" name="SHIMMY_INNER_RIGHT" />
+    <state item="0" id="111" name="ROPE_IDLE" />
+    <state item="0" id="112" name="ROPE_CLIMB_UP" />
+    <state item="0" id="113" name="ROPE_CLIMB_DOWN" />
+    <state item="0" id="114" name="ROPE_SWING" />
+    <state item="0" id="115" name="LADDER_TO_SHIMMY" />
+    <state item="0" id="116" name="POSITION_CORRECTOR" />
+    <state item="0" id="117" name="DOUBLEDOORS_PUSH" />
+    <state item="0" id="118" name="DOZY" />
+
+    <!-- GUIDE -->
+    <state item="37" id="0" name="EMPTY" />
+    <state item="37" id="1" name="STOP" />
+    <state item="37" id="2" name="WALK" />
+    <state item="37" id="3" name="RUN" />
+    <!-- <state item="37" id="4" name="" /> -->
+    <!-- <state item="37" id="5" name="" /> -->
+    <!-- <state item="37" id="6" name="" /> -->
+    <state item="37" id="7" name="CHECK_GROUND" />
+    <!-- <state item="37" id="8" name="" /> -->
+    <!-- <state item="37" id="9" name="" /> -->
+    <!-- <state item="37" id="10" name="" /> -->
+    <!-- <state item="37" id="11" name="" /> -->
+    <!-- <state item="37" id="12" name="" /> -->
+    <!-- <state item="37" id="13" name="" /> -->
+    <!-- <state item="37" id="14" name="" /> -->
+    <!-- <state item="37" id="15" name="" /> -->
+    <!-- <state item="37" id="16" name="" /> -->
+    <!-- <state item="37" id="17" name="" /> -->
+    <!-- <state item="37" id="18" name="" /> -->
+    <!-- <state item="37" id="19" name="" /> -->
+    <!-- <state item="37" id="20" name="" /> -->
+    <!-- <state item="37" id="21" name="" /> -->
+    <state item="37" id="22" name="TURN_LEFT" />
+    <!-- <state item="37" id="23" name="" /> -->
+    <!-- <state item="37" id="24" name="" /> -->
+    <!-- <state item="37" id="25" name="" /> -->
+    <!-- <state item="37" id="26" name="" /> -->
+    <!-- <state item="37" id="27" name="" /> -->
+    <!-- <state item="37" id="28" name="" /> -->
+    <!-- <state item="37" id="29" name="" /> -->
+    <!-- <state item="37" id="30" name="" /> -->
+    <state item="37" id="31" name="ATTACK_LOW" />
+    <!-- <state item="37" id="32" name="" /> -->
+    <!-- <state item="37" id="33" name="" /> -->
+    <!-- <state item="37" id="34" name="" /> -->
+    <state item="37" id="35" name="TURN_RIGHT" />
+    <state item="37" id="36" name="CROUCH" />
+    <state item="37" id="37" name="GRAB_TORCH" />
+    <state item="37" id="38" name="READ_INSCRIPTION_SHORT" />
+    <state item="37" id="39" name="READ_INSCRIPTION_SLOW_SCARY" />
+    <!-- <state item="37" id="40" name="" /> -->
+    <state item="37" id="41" name="CORRECT_POSITION_FRONT" />
+    <state item="37" id="42" name="CORRECT_POSITION_BACK" />
+    <state item="37" id="43" name="CROUCH_TORCH_ACTIVATE" />
+
+    <!-- VON_CROY -->
+    <state item="39" id="0" name="EMPTY" />
+    <state item="39" id="1" name="STOP" />
+    <state item="39" id="2" name="WALK" />
+    <state item="39" id="3" name="RUN" />
+    <state item="39" id="4" name="MONKEY_IDLE" />
+    <state item="39" id="5" name="MONKEY_FORWARD" />
+    <state item="39" id="6" name="TAKE_OR_PUT_BACK_KNIFE" />
+    <state item="39" id="7" name="CHECK_GROUND" />
+    <state item="39" id="8" name="TALK1" />
+    <state item="39" id="9" name="TALK2" />
+    <state item="39" id="10" name="TALK3" />
+    <!-- <state item="39" id="11" name="" /> -->
+    <state item="39" id="12" name="TELL_LARA_TO_STOP" />
+    <state item="39" id="13" name="TELL_LARA_TO_COME_DISTANT" />
+    <state item="39" id="14" name="TELL_LARA_TO_COME_CLOSE" />
+    <state item="39" id="15" name="JUMP_FORWARD_1_BLOCK" />
+    <state item="39" id="16" name="JUMP_FORWARD_2_BLOCKS" />
+    <state item="39" id="17" name="CLIMB_4_CLICKS" />
+    <state item="39" id="18" name="CLIMB_3_CLICKS" />
+    <state item="39" id="19" name="CLIMB_2_CLICKS" />
+    <state item="39" id="20" name="USE_WALL_SWITCH" />
+    <state item="39" id="21" name="ATTACK_HIGH" />
+    <state item="39" id="22" name="TURN_LEFT" />
+    <state item="39" id="23" name="JUMP_OFF_2_CLICKS" />
+    <state item="39" id="24" name="JUMP_OFF_3_CLICKS" />
+    <state item="39" id="25" name="JUMP_OFF_4_CLICKS" />
+    <state item="39" id="26" name="JUMP_OFF_8_CLICKS" />
+    <state item="39" id="27" name="HANGING" />
+    <!-- <state item="39" id="28" name="" /> -->
+    <!-- <state item="39" id="29" name="" /> -->
+    <!-- <state item="39" id="30" name="" /> -->
+    <state item="39" id="31" name="ATTACK_LOW" />
+    <!-- <state item="39" id="32" name="" /> -->
+    <state item="39" id="33" name="JUMP_3_BLOCKS_AND_CLIMB_ON" />
+    <state item="39" id="34" name="RUN_BACK" />
+    <state item="39" id="35" name="TURN_RIGHT" />
+    <state item="39" id="36" name="CORRECT_POSITION_FRONT" />
+    <state item="39" id="37" name="CORRECT_POSITION_BACK" />
+
+    <!-- BADDY_1 -->
+    <state item="41" id="0" name="STOP" />
+    <state item="41" id="1" name="WALK" />
+    <state item="41" id="2" name="RUN" />
+    <!-- <state item="41" id="3" name="" /> -->
+    <!-- <state item="41" id="4" name="" /> -->
+    <!-- <state item="41" id="5" name="" /> -->
+    <!-- <state item="41" id="6" name="" /> -->
+    <!-- <state item="41" id="7" name="" /> -->
+    <!-- <state item="41" id="8" name="" /> -->
+    <!-- <state item="41" id="9" name="" /> -->
+    <state item="41" id="10" name="DRAW_GUN" />
+    <state item="41" id="11" name="HOLSTER_GUN" />
+    <state item="41" id="12" name="DRAW_SWORD" />
+    <state item="41" id="13" name="HOLSTER_SWORD" />
+    <state item="41" id="14" name="FIRE" />
+    <state item="41" id="15" name="SWORD_HIT_FRONT" />
+    <state item="41" id="16" name="SWORD_HIT_RIGHT" />
+    <state item="41" id="17" name="SWORD_HIT_LEFT" />
+    <state item="41" id="18" name="MONKEY_GRAB" />
+    <state item="41" id="19" name="MONKEY_IDLE" />
+    <state item="41" id="20" name="MONKEY_FORWARD" />
+    <state item="41" id="21" name="MONKEY_PUSH_OFF" />
+    <state item="41" id="22" name="MONKEY_FALL_LAND" />
+    <state item="41" id="23" name="ROLL_LEFT" />
+    <state item="41" id="24" name="JUMP_RIGHT" />
+    <state item="41" id="25" name="STAND_TO_CROUCH" />
+    <state item="41" id="26" name="CROUCH" />
+    <state item="41" id="27" name="CROUCH_PICKUP" />
+    <state item="41" id="28" name="CROUCH_TO_STAND" />
+    <state item="41" id="29" name="WALK_SWORD_HIT_RIGHT" />
+    <!-- <state item="41" id="30" name="" /> -->
+    <state item="41" id="31" name="AIM" />
+    <state item="41" id="32" name="DEATH" />
+    <state item="41" id="33" name="JUMP_FORWARD_1_BLOCK" />
+    <state item="41" id="34" name="JUMP_FORWARD_FALL" />
+    <state item="41" id="35" name="MONKEY_TO_FREEFALL" />
+    <state item="41" id="36" name="FREEFALL" />
+    <state item="41" id="37" name="FREEFALL_LAND_DEATH" />
+    <state item="41" id="38" name="JUMP_FORWARD_2_BLOCKS" />
+    <state item="41" id="39" name="CLIMB_4_CLICKS" />
+    <state item="41" id="40" name="CLIMB_3_CLICKS" />
+    <state item="41" id="41" name="CLIMB_2_CLICKS" />
+    <state item="41" id="42" name="JUMP_OFF_4_CLICKS" />
+    <state item="41" id="43" name="JUMP_OFF_3_CLICKS" />
+    <state item="41" id="44" name="BLIND" />
+
+    <!-- BADDY_2 -->
+    <state item="43" id="0" name="STOP" />
+    <state item="43" id="1" name="WALK" />
+    <state item="43" id="2" name="RUN" />
+    <!-- <state item="43" id="3" name="" /> -->
+    <state item="43" id="4" name="DODGE_START" />
+    <!-- <state item="43" id="5" name="" /> -->
+    <!-- <state item="43" id="6" name="" /> -->
+    <!-- <state item="43" id="7" name="" /> -->
+    <state item="43" id="8" name="DODGE" />
+    <state item="43" id="9" name="DODGE_END" />
+    <state item="43" id="10" name="DRAW_GUN" />
+    <state item="43" id="11" name="HOLSTER_GUN" />
+    <state item="43" id="12" name="DRAW_SWORD" />
+    <state item="43" id="13" name="HOLSTER_SWORD" />
+    <state item="43" id="14" name="FIRE" />
+    <state item="43" id="15" name="SWORD_HIT_FRONT" />
+    <state item="43" id="16" name="SWORD_HIT_RIGHT" />
+    <state item="43" id="17" name="SWORD_HIT_LEFT" />
+    <state item="43" id="18" name="MONKEY_GRAB" />
+    <state item="43" id="19" name="MONKEY_IDLE" />
+    <state item="43" id="20" name="MONKEY_FORWARD" />
+    <state item="43" id="21" name="MONKEY_PUSH_OFF" />
+    <state item="43" id="22" name="MONKEY_FALL_LAND" />
+    <state item="43" id="23" name="ROLL_LEFT" />
+    <state item="43" id="24" name="JUMP_RIGHT" />
+    <state item="43" id="25" name="STAND_TO_CROUCH" />
+    <state item="43" id="26" name="CROUCH" />
+    <state item="43" id="27" name="CROUCH_PICKUP" />
+    <state item="43" id="28" name="CROUCH_TO_STAND" />
+    <state item="43" id="29" name="WALK_SWORD_HIT_RIGHT" />
+    <state item="43" id="30" name="SOMERSAULT" />
+    <state item="43" id="31" name="AIM" />
+    <state item="43" id="32" name="DEATH" />
+    <state item="43" id="33" name="JUMP_FORWARD_1_BLOCK" />
+    <state item="43" id="34" name="JUMP_FORWARD_FALL" />
+    <state item="43" id="35" name="MONKEY_TO_FREEFALL" />
+    <state item="43" id="36" name="FREEFALL" />
+    <state item="43" id="37" name="FREEFALL_LAND_DEATH" />
+    <state item="43" id="38" name="JUMP_FORWARD_2_BLOCKS" />
+    <state item="43" id="39" name="CLIMB_4_CLICKS" />
+    <state item="43" id="40" name="CLIMB_3_CLICKS" />
+    <state item="43" id="41" name="CLIMB_2_CLICKS" />
+    <state item="43" id="42" name="JUMP_OFF_4_CLICKS" />
+    <state item="43" id="43" name="JUMP_OFF_3_CLICKS" />
+    <state item="43" id="44" name="BLIND" />
+
+    <!-- MUMMY -->
+    <state item="47" id="0" name="ARMS_CROSSED" />
+    <state item="47" id="1" name="STOP" />
+    <state item="47" id="2" name="WALK" />
+    <state item="47" id="3" name="WALK_ARMS_UP" />
+    <state item="47" id="4" name="WALK_HIT" />
+    <state item="47" id="5" name="PUSHED_BACK" />
+    <state item="47" id="6" name="ARMS_UP_PUSHED_BACK" />
+    <state item="47" id="7" name="COLLAPSE" />
+    <state item="47" id="8" name="LYING_DOWN" />
+    <state item="47" id="9" name="GET_UP" />
+    <state item="47" id="10" name="HIT" />
+
+    <!-- CROCODILE -->
+    <state item="51" id="0" name="EMPTY" />
+    <state item="51" id="1" name="STOP" />
+    <state item="51" id="2" name="RUN" />
+    <state item="51" id="3" name="WALK" />
+    <state item="51" id="4" name="TURN_RIGHT" />
+    <state item="51" id="5" name="ATTACK" />
+    <!-- <state item="51" id="6" name="" /> -->
+    <state item="51" id="7" name="DEATH_LAND" />
+    <state item="51" id="8" name="SWIM" />
+    <state item="51" id="9" name="UNDERWATER_ATTACK" />
+    <state item="51" id="10" name="UNDERWATER_DEATH" />
+
+    <!-- HORSEMAN -->
+    <state item="53" id="0" name="EMPTY" />
+    <state item="53" id="1" name="ON_HORSE_RUN" />
+    <state item="53" id="2" name="ON_HORSE_WALK" />
+    <state item="53" id="3" name="ON_HORSE_STOP" />
+    <state item="53" id="4" name="ON_HORSE_REARING" />
+    <state item="53" id="5" name="GET_ON_HORSE" />
+    <state item="53" id="6" name="ONHORSE_ATTACK_RIGHT" />
+    <state item="53" id="7" name="ONHORSE_ATTACK_LEFT" />
+    <state item="53" id="8" name="FALL_OFF_HORSE_START" />
+    <state item="53" id="9" name="STOP" />
+    <state item="53" id="10" name="WALK" />
+    <state item="53" id="11" name="RUN" />
+    <state item="53" id="12" name="WALK_ATTACK1" />
+    <state item="53" id="13" name="WALK_ATTACK2" />
+    <state item="53" id="14" name="STOP_ATTACK1" />
+    <state item="53" id="15" name="DODGE" />
+    <state item="53" id="16" name="DEATH" />
+    <state item="53" id="17" name="ON_HORSE_SPRINT" />
+
+    <!-- HORSE -->
+    <state item="65" id="0" name="EMPTY" />
+    <state item="65" id="1" name="STOP" />
+    <state item="65" id="2" name="RUN" />
+    <state item="65" id="3" name="WALK" />
+    <state item="65" id="4" name="REARING" />
+    <state item="65" id="5" name="SPRINT" />
+
+    <!-- DOG -->
+    <state item="91" id="0" name="EMPTY" />
+    <state item="91" id="1" name="STOP" />
+    <state item="91" id="2" name="WALK" />
+    <state item="91" id="3" name="RUN" />
+    <state item="91" id="4" name="JUMP" />
+    <state item="91" id="5" name="STALK" />
+    <state item="91" id="6" name="RUN_ATTACK" />
+    <state item="91" id="7" name="HOWL" />
+    <state item="91" id="8" name="SLEEP" />
+    <state item="91" id="9" name="CROUCH" />
+    <state item="91" id="10" name="TURN" />
+    <state item="91" id="11" name="DEATH" />
+    <state item="91" id="12" name="CROUCH_ATTACK" />
+
+    <!-- SAS -->
+    <state item="95" id="0" name="EMPTY" />
+    <state item="95" id="1" name="STOP" />
+    <state item="95" id="2" name="WALK" />
+    <state item="95" id="3" name="RUN" />
+    <state item="95" id="4" name="WAIT" />
+    <state item="95" id="5" name="SIGHT_SHOOT" />
+    <state item="95" id="6" name="WALK_SHOOT" />
+    <state item="95" id="7" name="DEATH" />
+    <state item="95" id="8" name="SIGHT_AIM" />
+    <state item="95" id="9" name="WALK_AIM" />
+    <state item="95" id="10" name="HOLD_AIM" />
+    <state item="95" id="11" name="HOLD_SHOOT" />
+    <state item="95" id="12" name="KNEEL_AIM" />
+    <state item="95" id="13" name="KNEEL_SHOOT" />
+    <state item="95" id="14" name="KNEEL_STOP" />
+    <state item="95" id="15" name="HOLD_PREPARE_GRENADE" />
+    <state item="95" id="16" name="HOLD_SHOOT_GRENADE" />
+    <state item="95" id="17" name="BLIND" />
+</states>

@@ -301,26 +301,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             result.Add(trigger2);
                             break;
 
-                        case TriggerTargetType.EventSet:
-                            // Trigger for LUA script
+                        case TriggerTargetType.VolumeEvent:
+                        case TriggerTargetType.GlobalEvent:
                             if (!(trigger.Target is TriggerParameterString))
                             {
-                                throw new Exception("A LUA Script trigger must reference an event set name! ('" + trigger + "')");
+                                throw new Exception("An event trigger must reference an event set name! ('" + trigger + "')");
                             }
 
                             string setName = (trigger.Target as TriggerParameterString).Value;
-                            if (!_level.Settings.EventSets.Any(s => s.Name == setName))
                             {
-                                _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing event set '" + setName + "'.");
-                                continue;
+                                var usedList = trigger.TargetType == TriggerTargetType.GlobalEvent ? _level.Settings.GlobalEventSets : _level.Settings.VolumeEventSets;
+
+                                if (!usedList.Any(s => s.Name == setName))
+                                {
+                                    _progressReporter.ReportWarn("The trigger at (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " refers to the missing event set '" + setName + "'.");
+                                    continue;
+                                }
+
+                                trigger2 = (ushort)((usedList.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
+                                result.Add(trigger2);
+
+                                trigger2 = GetTriggerParameter(trigger.Timer, trigger, _fdTimerMask);
+                                trigger2 |= (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
+                                result.Add(trigger2);
                             }
-
-                            trigger2 = (ushort)((_level.Settings.EventSets.FindIndex(s => s.Name == setName)) & _fdFunctionMask | func);
-                            result.Add(trigger2);
-
-                            trigger2 = GetTriggerParameter(trigger.Timer, trigger, _fdTimerMask);
-                            trigger2 |= (ushort)(trigger.OneShot ? _fdOneShotBit : 0);
-                            result.Add(trigger2);
 
                             break;
 
