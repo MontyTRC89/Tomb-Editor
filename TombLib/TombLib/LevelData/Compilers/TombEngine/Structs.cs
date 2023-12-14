@@ -458,6 +458,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(OriginalRoom.Level.Settings.VolumeEventSets.IndexOf(volume.EventSet));
             }
 
+            // NOTE: Level format contains only dummy data for now. -- Sezz 2023.12.14
+            // Write attractors
+            writer.Write(0);
+            /*writer.Write(OriginalRoom.Attractors.Count);
+            foreach (var attractor in OriginalRoom.Attractors)
+            {
+                writer.Write((int)attractor.Type);
+                writer.Write(attractor.Points.Count);
+
+                // TODO: Store points as absolute positions natively.
+                foreach (var point in attractor.Points)
+                {
+                    var absPoint = ((point + OriginalRoom.Position) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit)) * new Vector3(1, -1, 1);
+                    writer.Write(absPoint);
+                }
+            }*/
+
             // Write final data
             writer.Write(AlternateRoom);
             writer.Write(Flags);
