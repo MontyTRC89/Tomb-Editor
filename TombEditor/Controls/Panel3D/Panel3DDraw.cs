@@ -310,7 +310,7 @@ namespace TombEditor.Controls.Panel3D
                         if (pair.Room != currentRoom && pair.Block is not null)
                         {
                             targetBlock = pair.Block;
-                            yOffset = Math.Min(currentRoom.Position.Y, pair.Room.Position.Y) - Math.Max(currentRoom.Position.Y, pair.Room.Position.Y);
+                            yOffset = pair.Room.Position.Y - currentRoom.Position.Y;
                         }
                     }
 
