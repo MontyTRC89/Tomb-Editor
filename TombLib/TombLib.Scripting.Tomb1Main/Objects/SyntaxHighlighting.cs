@@ -93,7 +93,7 @@ namespace TombLib.Scripting.Tomb1Main.Objects
 					}
 				});
 
-				ruleSet.Name = "Tomb1Main Rules";
+				ruleSet.Name = "T1M / TR1X Rules";
 				return ruleSet;
 			}
 		}
@@ -102,7 +102,7 @@ namespace TombLib.Scripting.Tomb1Main.Objects
 
 		#region Other
 
-		public string Name => "Tomb1Main Rules";
+		public string Name => "T1M / TR1X Rules";
 
 		public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
 		public IDictionary<string, string> Properties => throw new NotImplementedException();
