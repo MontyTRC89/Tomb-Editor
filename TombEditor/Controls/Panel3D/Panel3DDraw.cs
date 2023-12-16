@@ -225,6 +225,9 @@ namespace TombEditor.Controls.Panel3D
 
             void HandlePositiveZ(int x, int z, BlockSurface surface, int yOffset)
             {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XnZn)
+                    return;
+
                 Vector3
                     p1 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position,
                     p2 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position;
@@ -234,6 +237,9 @@ namespace TombEditor.Controls.Panel3D
 
             void HandlePositiveX(int x, int z, BlockSurface surface, int yOffset)
             {
+                if (surface.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XnZn)
+                    return;
+
                 Vector3
                     p1 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position,
                     p2 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position;
@@ -243,6 +249,9 @@ namespace TombEditor.Controls.Panel3D
 
             void HandleNegativeZ(int x, int z, BlockSurface surface, int yOffset)
             {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XnZp)
+                    return;
+
                 Vector3
                     p1 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position,
                     p2 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position;
@@ -252,6 +261,9 @@ namespace TombEditor.Controls.Panel3D
 
             void HandleNegativeX(int x, int z, BlockSurface surface, int yOffset)
             {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XpZp)
+                    return;
+
                 Vector3
                     p1 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position,
                     p2 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position;
