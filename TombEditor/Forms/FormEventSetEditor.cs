@@ -441,6 +441,7 @@ namespace TombEditor.Forms
                                             (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
                                             (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
                                             (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
+            UpdateVolume();
         }
 
         private void butOk_Click(object sender, EventArgs e)

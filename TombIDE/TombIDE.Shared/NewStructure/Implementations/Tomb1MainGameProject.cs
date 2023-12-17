@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
@@ -7,14 +8,28 @@ namespace TombIDE.Shared.NewStructure
 {
 	public class Tomb1MainGameProject : GameProjectBase
 	{
-		public const string MainScriptFileName = "Tomb1Main_gameflow.json5";
-		public const string LanguageFileName = MainScriptFileName; // Same file as main script file
+		public const string MainScriptFileNameFilter = "*_gameflow.json5";
+		public const string LanguageFileNameFilter = MainScriptFileNameFilter; // Same file as main script file
 
 		public override TRVersion.Game GameVersion => TRVersion.Game.TR1;
 
 		public override string DataFileExtension => ".phd";
-		public override string EngineExecutableFileName => "tomb1main.exe";
-		public override string MainScriptFilePath => Path.Combine(GetScriptRootDirectory(), MainScriptFileName);
+		public override string EngineExecutableFileName
+		{
+			get
+			{
+				string tomb1MainPath = Path.Combine(GetEngineRootDirectoryPath(), "Tomb1Main.exe");
+
+				if (File.Exists(tomb1MainPath))
+					return "Tomb1Main.exe";
+
+				return "TR1X.exe"; // Default
+			}
+		}
+
+		public override string MainScriptFilePath => Directory
+			.GetFiles(GetScriptRootDirectory(), MainScriptFileNameFilter, SearchOption.TopDirectoryOnly)
+			.FirstOrDefault();
 
 		public override bool SupportsCustomScriptPaths => false;
 		public override bool SupportsPlugins => false;
@@ -28,12 +43,12 @@ namespace TombIDE.Shared.NewStructure
 
 		public override string GetDefaultGameLanguageFilePath()
 		{
-			string defaultLanguageFilePath = Path.Combine(GetScriptRootDirectory(), LanguageFileName);
+			string defaultLanguageFilePath = MainScriptFilePath;
 
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath
 				: throw new FileNotFoundException("The default game language file could not be found.\n" +
-					$"Required file not found: {LanguageFileName}");
+					"Required file not found: ..._gameflow.json5");
 		}
 
 		public override bool IsValid(out string errorMessage)
@@ -43,7 +58,7 @@ namespace TombIDE.Shared.NewStructure
 
 			if (!File.Exists(MainScriptFilePath))
 			{
-				errorMessage = $"The project does not have a valid {MainScriptFileName} file.";
+				errorMessage = "The project does not have a valid gameflow file.";
 				return false;
 			}
 

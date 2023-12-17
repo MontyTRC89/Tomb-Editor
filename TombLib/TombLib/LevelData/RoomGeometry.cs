@@ -1514,11 +1514,10 @@ namespace TombLib.LevelData
                         yStartB = yCeilingB;
                     }
 
-                    // If the face is a portal or a diagonal wall's floor part (below the flat, walkable triangle)
-                    // and either subdivision point is above the lowest flat triangle point
-                    if ((block.IsAnyPortal || isDiagonalWallFloorPart) && (yStartA > yQaA || yStartB > yQaB))
+                    // If either subdivision point is above QA
+                    if (yStartA > yQaA || yStartB > yQaB)
                     {
-                        // Snap points to the heights of the flat, walkable triangle
+                        // Snap points to the heights of QA
                         yStartA = yQaA;
                         yStartB = yQaB;
                     }
@@ -1641,11 +1640,10 @@ namespace TombLib.LevelData
                         yStartB = yFloorB;
                     }
 
-                    // If the face is a portal or a diagonal wall's ceiling part (above the flat ceiling triangle)
-                    // and either subdivision point is below the highest flat triangle point
-                    if ((block.IsAnyPortal || isDiagonalWallCeilingPart) && (yStartA < yWsA || yStartB < yWsB))
+                    // If either subdivision point is below WS
+                    if (yStartA < yWsA || yStartB < yWsB)
                     {
-                        // Snap points to the heights of the flat ceiling triangle
+                        // Snap points to the heights of WS
                         yStartA = yWsA;
                         yStartB = yWsB;
                     }
