@@ -139,14 +139,3 @@ end
 LevelFuncs.Engine.Node.StopAudioTracks = function()
     TEN.Sound.StopAudioTracks()
 end
-
--- !Name "Set display colour mode"
--- !Section "Effects"
--- !Description "Set the colour mode for all graphics"
--- !Arguments "NewLine, Enumeration, 75, [ Normal | Sepia | Monochrome | Negative ]","Numerical, 25, [ 0 | 1 | 1 | 0.1 | 0.5 ],Effect strength"
-
-LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessEffectEnum, power) 
-
-    local postProcessEffect = LevelFuncs.Engine.Node.GetPostProcessEffectsMode(postProcessEffectEnum)
-    TEN.View.SetPostProcessColorEffect(postProcessEffect,power)
-end
