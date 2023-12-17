@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -40,8 +41,12 @@ namespace TombLib.LevelData
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
         public SortedList<SectorInfo, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorInfo, VertexRange>();
 
-        public RoomGeometry(Room room)
+        private readonly bool _legacy;
+
+        public RoomGeometry(Room room, bool legacy = false)
         {
+            _legacy = legacy;
+
             int xMin = 0;
             int zMin = 0;
             int xMax = room.NumXSectors - 1;
@@ -563,9 +568,11 @@ namespace TombLib.LevelData
                 yCeilingA, // Height of the A point of the ceiling in front of the face
                 yCeilingB; // Height of the B point of the ceiling in front of the face
 
+            int yC, // C point of middle part of the wall (bottom-right)
+                yD; // D point of middle part of the wall (bottom-left)
+
             Block block = room.Blocks[x, z];
             Block neighborBlock;
-            TextureArea faceTexture;
 
             BlockFace qaFace, wsFace, middleFace;
             var floorSubdivisions = new List<(int A, int B)>();
@@ -1456,6 +1463,137 @@ namespace TombLib.LevelData
                     break;
             }
 
+            var dto = new BlockFaceDTO()
+            {
+                Block = block,
+                BlockX = x,
+                BlockZ = z,
+                XA = xA,
+                XB = xB,
+                ZA = zA,
+                ZB = zB,
+            };
+
+            if (_legacy)
+            {
+                #region LEGACY GEOMETRY CODE
+
+                bool subdivide = false;
+
+                int yEdA = floorSubdivisions[0].A,
+                    yEdB = floorSubdivisions[0].B,
+                    yRfA = ceilingSubdivisions[0].A,
+                    yRfB = ceilingSubdivisions[0].B,
+                    yA, yB;
+
+                BlockFace
+                    edFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), 0),
+                    rfFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), 0);
+
+                // Always check these
+                if (yQaA >= yCeilingA && yQaB >= yCeilingB)
+                {
+                    yQaA = yCeilingA;
+                    yQaB = yCeilingB;
+                }
+
+                if (yWsA <= yFloorA && yWsB <= yFloorB)
+                {
+                    yWsA = yFloorA;
+                    yWsB = yFloorB;
+                }
+
+                // Following checks are only for wall's faces
+                if (block.IsAnyWall)
+                {
+                    if ((yQaA > yFloorA && yQaB < yFloorB) || (yQaA < yFloorA && yQaB > yFloorB))
+                    {
+                        yQaA = yFloorA;
+                        yQaB = yFloorB;
+                    }
+
+                    if ((yQaA > yCeilingA && yQaB < yCeilingB) || (yQaA < yCeilingA && yQaB > yCeilingB))
+                    {
+                        yQaA = yCeilingA;
+                        yQaB = yCeilingB;
+                    }
+
+                    if ((yWsA > yCeilingA && yWsB < yCeilingB) || (yWsA < yCeilingA && yWsB > yCeilingB))
+                    {
+                        yWsA = yCeilingA;
+                        yWsB = yCeilingB;
+                    }
+
+                    if ((yWsA > yFloorA && yWsB < yFloorB) || (yWsA < yFloorA && yWsB > yFloorB))
+                    {
+                        yWsA = yFloorA;
+                        yWsB = yFloorB;
+                    }
+                }
+
+                if (!(yQaA == yFloorA && yQaB == yFloorB) && hasFloorPart)
+                {
+                    // Check for subdivision
+                    yA = yFloorA;
+                    yB = yFloorB;
+
+                    if (yEdA >= yA && yEdB >= yB && yQaA >= yEdA && yQaB >= yEdB && !(yEdA == yA && yEdB == yB))
+                    {
+                        subdivide = true;
+                        yA = yEdA;
+                        yB = yEdB;
+                    }
+
+                    dto.Face = qaFace;
+                    TryRenderFloorWallFace(dto, (yQaA, yQaB), (yA, yB));
+
+                    if (subdivide)
+                    {
+                        dto.Face = edFace;
+                        TryRenderFloorWallFace(dto, (yEdA, yEdB), (yFloorA, yFloorB));
+                    }
+                }
+
+                subdivide = false;
+
+                if (!(yWsA == yCeilingA && yWsB == yCeilingB) && hasCeilingPart)
+                {
+                    // Check for subdivision
+                    yA = yCeilingA;
+                    yB = yCeilingB;
+
+                    if (yRfA <= yA && yRfB <= yB && yWsA <= yRfA && yWsB <= yRfB && !(yRfA == yA && yRfB == yB))
+                    {
+                        subdivide = true;
+                        yA = yRfA;
+                        yB = yRfB;
+                    }
+
+                    dto.Face = wsFace;
+                    TryRenderCeilingWallFace(dto, (yWsA, yWsB), (yA, yB));
+
+                    if (subdivide)
+                    {
+                        dto.Face = rfFace;
+                        TryRenderCeilingWallFace(dto, (yRfA, yRfB), (yCeilingA, yCeilingB));
+                    }
+                }
+
+                if (!hasMiddlePart)
+                    return;
+
+                yA = yWsA >= yCeilingA ? yCeilingA : yWsA;
+                yB = yWsB >= yCeilingB ? yCeilingB : yWsB;
+                yD = yQaA <= yFloorA ? yFloorA : yQaA;
+                yC = yQaB <= yFloorB ? yFloorB : yQaB;
+
+                dto.Face = middleFace;
+                TryRenderMiddleWallFace(dto, (yA, yB), (yC, yD));
+
+                #endregion LEGACY GEOMETRY CODE
+                return;
+            }
+
             if (hasFloorPart)
             {
                 bool isQaFullyAboveCeiling = yQaA >= yCeilingA && yQaB >= yCeilingB; // Technically should be classified as a wall if true
@@ -1466,37 +1604,10 @@ namespace TombLib.LevelData
                     (block.Floor.DiagonalSplit == DiagonalSplit.XpZp && direction is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
                     (block.Floor.DiagonalSplit == DiagonalSplit.XnZn && direction is FaceDirection.PositiveZ or FaceDirection.PositiveX);
 
-                bool TryRenderFace(BlockFace face, (int A, int B) yStart, (int A, int B) yEnd)
-                {
-                    TextureArea texture = block.GetFaceTexture(face);
-
-                    if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
-                        AddQuad(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                    else if (yStart.A == yEnd.A && yStart.B > yEnd.B) // Is triangle (type 1)
-                        AddTriangle(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
-                    else if (yStart.A > yEnd.A && yStart.B == yEnd.B)  // Is triangle (type 2)
-                        AddTriangle(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                    else
-                        return false; // Not rendered - failed to meet any of the conditions
-
-                    return true; // Rendered successfully
-                }
-
                 GeometryRenderResult TryRenderFloorWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
+                    dto.Face = face;
+
                     bool isFaceInFloorVoid = yStartA < yFloorA || yStartB < yFloorB || (yStartA == yFloorA && yStartB == yFloorB);
 
                     if (isFaceInFloorVoid && block.IsAnyWall && !isDiagonalWallFloorPart) // Part of overdraw prevention
@@ -1544,7 +1655,7 @@ namespace TombLib.LevelData
                     if (yStartA <= yEndA && yStartB <= yEndB)
                         return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
-                    bool success = TryRenderFace(face, (yStartA, yStartB), (yEndA, yEndB));
+                    bool success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (yEndA, yEndB));
 
                     if (!success)
                     {
@@ -1558,7 +1669,7 @@ namespace TombLib.LevelData
 
                         // Find lowest point between subdivision and baseline, then try and create an overdraw face out of it
                         int lowest = Math.Min(Math.Min(yStartA, yStartB), Math.Min(yEndA, yEndB));
-                        success = TryRenderFace(face, (yStartA, yStartB), (lowest, lowest));
+                        success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (lowest, lowest));
                     }
 
                     return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
@@ -1592,37 +1703,10 @@ namespace TombLib.LevelData
                     (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZp && direction is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
                     (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZn && direction is FaceDirection.PositiveZ or FaceDirection.PositiveX);
 
-                bool TryRenderFace(BlockFace face, (int A, int B) yStart, (int A, int B) yEnd)
-                {
-                    TextureArea texture = block.GetFaceTexture(face);
-
-                    if (yStart.A < yEnd.A && yStart.B < yEnd.B)
-                        AddQuad(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-                    else if (yStart.A < yEnd.A && yStart.B == yEnd.B)
-                        AddTriangle(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-                    else if (yStart.A == yEnd.A && yStart.B < yEnd.B)
-                        AddTriangle(x, z, face,
-                            new Vector3(xA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            new Vector3(xB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                            texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
-                    else
-                        return false; // Not rendered - failed to meet any of the conditions
-
-                    return true; // Rendered successfully
-                }
-
                 GeometryRenderResult TryRenderCeilingWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
+                    dto.Face = face;
+
                     bool isFaceInCeilingVoid = yStartA > yCeilingA || yStartB > yCeilingB || (yStartA == yCeilingA && yStartB == yCeilingB);
 
                     if (isFaceInCeilingVoid && block.IsAnyWall && !isDiagonalWallCeilingPart) // Part of overdraw prevention
@@ -1670,7 +1754,7 @@ namespace TombLib.LevelData
                     if (yStartA >= yEndA && yStartB >= yEndB)
                         return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
-                    bool success = TryRenderFace(face, (yStartA, yStartB), (yEndA, yEndB));
+                    bool success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (yEndA, yEndB));
 
                     if (!success)
                     {
@@ -1684,7 +1768,7 @@ namespace TombLib.LevelData
 
                         // Find highest point between subdivision and baseline, then try and create an overdraw face out of it
                         int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-                        success = TryRenderFace(face, (yStartA, yStartB), (highest, highest));
+                        success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (highest, highest));
                     }
 
                     return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
@@ -1711,8 +1795,6 @@ namespace TombLib.LevelData
             if (!hasMiddlePart)
                 return;
 
-            faceTexture = block.GetFaceTexture(middleFace);
-
             if (yQaA < yFloorA || yQaB < yFloorB)
             {
                 yQaA = yFloorA;
@@ -1727,31 +1809,116 @@ namespace TombLib.LevelData
 
             yEndA = yWsA >= yCeilingA ? yCeilingA : yWsA;
             yEndB = yWsB >= yCeilingB ? yCeilingB : yWsB;
-            int yD = yQaA <= yFloorA ? yFloorA : yQaA;
-            int yC = yQaB <= yFloorB ? yFloorB : yQaB;
+            yD = yQaA <= yFloorA ? yFloorA : yQaA;
+            yC = yQaB <= yFloorB ? yFloorB : yQaB;
 
-            // Middle
-            if (yEndA != yD && yEndB != yC)
-                AddQuad(x, z, middleFace,
-                    new Vector3(xA * Level.BlockSizeUnit, yEndA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                    new Vector3(xB * Level.BlockSizeUnit, yEndB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                    new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                    new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                    faceTexture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
-            else if (yEndA != yD && yEndB == yC)
-                AddTriangle(x, z, middleFace,
-                    new Vector3(xA * Level.BlockSizeUnit, yEndA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                    new Vector3(xB * Level.BlockSizeUnit, yEndB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                    new Vector3(xA * Level.BlockSizeUnit, yD * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                    faceTexture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
-            else if (yEndA == yD && yEndB != yC)
-                AddTriangle(x, z, middleFace,
-                    new Vector3(xA * Level.BlockSizeUnit, yEndA * Level.HeightUnit, zA * Level.BlockSizeUnit),
-                    new Vector3(xB * Level.BlockSizeUnit, yEndB * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                    new Vector3(xB * Level.BlockSizeUnit, yC * Level.HeightUnit, zB * Level.BlockSizeUnit),
-                    faceTexture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+            dto.Face = middleFace;
+            TryRenderMiddleWallFace(dto, (yD, yC), (yEndA, yEndB));
+        }
+
+        private struct BlockFaceDTO
+        {
+            public Block Block { get; set; }
+            public BlockFace Face { get; set; }
+
+            public int BlockX { get; set; }
+            public int BlockZ { get; set; }
+
+            public int XA { get; set; }
+            public int XB { get; set; }
+
+            public int ZA { get; set; }
+            public int ZB { get; set; }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryRenderFloorWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
+        {
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
+
+            if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
+                AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+            else if (yStart.A == yEnd.A && yStart.B > yEnd.B) // Is triangle (type 1)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+            else if (yStart.A > yEnd.A && yStart.B == yEnd.B)  // Is triangle (type 2)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
             else
-                return;
+                return false; // Not rendered - failed to meet any of the conditions
+
+            return true; // Rendered successfully
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryRenderCeilingWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
+        {
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
+
+            if (yStart.A < yEnd.A && yStart.B < yEnd.B)
+                AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+            else if (yStart.A < yEnd.A && yStart.B == yEnd.B)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+            else if (yStart.A == yEnd.A && yStart.B < yEnd.B)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+            else
+                return false; // Not rendered - failed to meet any of the conditions
+
+            return true; // Rendered successfully
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryRenderMiddleWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
+        {
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
+
+            if (yStart.A != yEnd.A && yStart.B != yEnd.B)
+                AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+            else if (yStart.A != yEnd.A && yStart.B == yEnd.B)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+            else if (yStart.A == yEnd.A && yStart.B != yEnd.B)
+                AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
+            else
+                return false; // Not rendered - failed to meet any of the conditions
+
+            return true; // Rendered successfully
         }
 
         private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,

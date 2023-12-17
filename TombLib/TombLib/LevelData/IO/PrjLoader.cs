@@ -1670,7 +1670,7 @@ namespace TombLib.LevelData.IO
                 // Build geometry
                 progressReporter?.ReportProgress(80, "Building geometry");
                 foreach (var room in level.ExistingRooms)
-                    room.BuildGeometry();
+                    room.BuildGeometry(true);
 
                 // Build faces
                 progressReporter?.ReportProgress(85, "Texturize faces");
