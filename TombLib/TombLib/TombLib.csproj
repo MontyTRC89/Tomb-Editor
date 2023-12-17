@@ -290,7 +290,6 @@
     <PackageReference Include="BCnEncoder.Net" Version="2.1.0" />
     <PackageReference Include="CH.SipHash.Core" Version="1.0.2" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
-    <PackageReference Include="MiniZ.NET.Core" Version="1.0.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="NAudio.Flac.Unknown" Version="1.0.2" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
