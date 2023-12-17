@@ -528,7 +528,7 @@ namespace TombLib.LevelData
             }
         }
 
-        private void AddVerticalFaces(Room room, int x, int z, FaceDirection direction, bool hasFloorPart, bool hasCeilingPart, bool hasMiddlePart)
+        private void AddVerticalFaces(Room room, int x, int z, FaceDirection faceDirection, bool hasFloorPart, bool hasCeilingPart, bool hasMiddlePart)
         {
             //                                                 *Walkable floor*
             //                            yQaA (Start of QA)  0################0  yQaB (Start of QA)
@@ -571,6 +571,8 @@ namespace TombLib.LevelData
             int yC, // C point of middle part of the wall (bottom-right)
                 yD; // D point of middle part of the wall (bottom-left)
 
+            Direction direction = FaceDirectionToDirection(faceDirection);
+
             Block block = room.Blocks[x, z];
             Block neighborBlock;
 
@@ -578,7 +580,7 @@ namespace TombLib.LevelData
             var floorSubdivisions = new List<(int A, int B)>();
             var ceilingSubdivisions = new List<(int A, int B)>();         
 
-            switch (direction)
+            switch (faceDirection)
             {
                 case FaceDirection.PositiveZ:
                     xA = x + 1;
@@ -1487,8 +1489,8 @@ namespace TombLib.LevelData
                     yA, yB;
 
                 BlockFace
-                    edFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), 0),
-                    rfFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), 0);
+                    edFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(direction, 0),
+                    rfFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(direction, 0);
 
                 // Always check these
                 if (yQaA >= yCeilingA && yQaB >= yCeilingB)
@@ -1599,10 +1601,10 @@ namespace TombLib.LevelData
                 bool isQaFullyAboveCeiling = yQaA >= yCeilingA && yQaB >= yCeilingB; // Technically should be classified as a wall if true
 
                 bool isDiagonalWallFloorPart = // The wall bit under the flat floor triangle of a diagonal wall
-                    (block.Floor.DiagonalSplit == DiagonalSplit.XnZp && direction is FaceDirection.NegativeZ or FaceDirection.PositiveX) ||
-                    (block.Floor.DiagonalSplit == DiagonalSplit.XpZn && direction is FaceDirection.NegativeX or FaceDirection.PositiveZ) ||
-                    (block.Floor.DiagonalSplit == DiagonalSplit.XpZp && direction is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
-                    (block.Floor.DiagonalSplit == DiagonalSplit.XnZn && direction is FaceDirection.PositiveZ or FaceDirection.PositiveX);
+                    (block.Floor.DiagonalSplit == DiagonalSplit.XnZp && faceDirection is FaceDirection.NegativeZ or FaceDirection.PositiveX) ||
+                    (block.Floor.DiagonalSplit == DiagonalSplit.XpZn && faceDirection is FaceDirection.NegativeX or FaceDirection.PositiveZ) ||
+                    (block.Floor.DiagonalSplit == DiagonalSplit.XpZp && faceDirection is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
+                    (block.Floor.DiagonalSplit == DiagonalSplit.XnZn && faceDirection is FaceDirection.PositiveZ or FaceDirection.PositiveX);
 
                 GeometryRenderResult TryRenderFloorWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
@@ -1684,7 +1686,7 @@ namespace TombLib.LevelData
                     for (int i = 0; i < floorSubdivisions.Count; i++)
                     {
                         (int a, int b) = floorSubdivisions[i];
-                        BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(FaceDirectionToDirection(direction), i);
+                        BlockFace currentFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(direction, i);
                         renderResult = TryRenderFloorWallGeometry(currentFace, ref a, ref b, i);
 
                         if (renderResult == GeometryRenderResult.Stop)
@@ -1698,10 +1700,10 @@ namespace TombLib.LevelData
                 bool isWsFullyAboveCeiling = yWsA <= yFloorA && yWsB <= yFloorB; // Technically should be classified as a wall if true
 
                 bool isDiagonalWallCeilingPart = // The wall bit over the flat ceiling triangle of a diagonal wall
-                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZp && direction is FaceDirection.NegativeZ or FaceDirection.PositiveX) ||
-                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZn && direction is FaceDirection.NegativeX or FaceDirection.PositiveZ) ||
-                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZp && direction is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
-                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZn && direction is FaceDirection.PositiveZ or FaceDirection.PositiveX);
+                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZp && faceDirection is FaceDirection.NegativeZ or FaceDirection.PositiveX) ||
+                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZn && faceDirection is FaceDirection.NegativeX or FaceDirection.PositiveZ) ||
+                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XpZp && faceDirection is FaceDirection.NegativeZ or FaceDirection.NegativeX) ||
+                    (block.Ceiling.DiagonalSplit == DiagonalSplit.XnZn && faceDirection is FaceDirection.PositiveZ or FaceDirection.PositiveX);
 
                 GeometryRenderResult TryRenderCeilingWallGeometry(BlockFace face, ref int yStartA, ref int yStartB, int extraSubdivisionIndex = -1)
                 {
@@ -1783,7 +1785,7 @@ namespace TombLib.LevelData
                     for (int i = 0; i < ceilingSubdivisions.Count; i++)
                     {
                         (int a, int b) = ceilingSubdivisions[i];
-                        BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(FaceDirectionToDirection(direction), i);
+                        BlockFace currentFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(direction, i);
                         renderResult = TryRenderCeilingWallGeometry(currentFace, ref a, ref b, i);
 
                         if (renderResult == GeometryRenderResult.Stop)
