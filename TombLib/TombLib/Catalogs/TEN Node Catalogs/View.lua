@@ -1,14 +1,14 @@
--- !Name "Set display colour mode"
+-- !Name "Set display color mode"
 -- !Section "View"
--- !Description "Set the colour mode for all graphics"
--- !Arguments "NewLine, Enumeration, 50, [ None | Monochrome | Negative | Exclusion ], Sets the base color operation"
--- !Arguments "Color, 25, Set colour of tint that overlays over the base color operation"
--- !Arguments "Numerical, 25, [ 0 | 1 | 1 | 0.1 | 0.5 ],Effect strength"
+-- !Description "Set the color mode for all graphics"
+-- !Arguments "NewLine, Enumeration, 50, [ None | Monochrome | Negative | Exclusion ], Sets the color mode"
+-- !Arguments "Color, 25, Set the tint color that overlays over the chosen color mode"
+-- !Arguments "Numerical, 25, [ 0 | 1 | 1 | 0.1 | 0.5 ], Color overlay strength"
 
-LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessEffectEnum, tintColor,power) 
+LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessModeEnum, tintColor, power) 
 
-    local postProcessEffect = LevelFuncs.Engine.Node.SetPostProcessMode(postProcessEffectEnum)
-    TEN.View.SetPostProcessMode(postProcessEffect)
+    local postProcessMode = LevelFuncs.Engine.Node.SetPostProcessMode(postProcessModeEnum)
+    TEN.View.SetPostProcessMode(postProcessMode)
     TEN.View.SetPostProcessStrength(power)
     TEN.View.SetPostProcessTint(tintColor)
 end

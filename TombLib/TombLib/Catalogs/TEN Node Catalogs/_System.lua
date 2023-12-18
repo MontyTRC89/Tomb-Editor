@@ -139,14 +139,14 @@ LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
 	return displaySpriteScaleMode[index]
 end
 
--- Helper function for post-process colour effects
+-- Helper function for post-process color mode
 LevelFuncs.Engine.Node.SetPostProcessMode = function(index)
-	local postProcessEffect =
+	local postProcessMode =
 	{
 		[0] = TEN.View.PostProcessMode.NONE,
 		[1] = TEN.View.PostProcessMode.MONOCHROME,
 		[2] = TEN.View.PostProcessMode.NEGATIVE,
 		[3] = TEN.View.PostProcessMode.EXCLUSION,
 	}
-	return postProcessEffect[index]
+	return postProcessMode[index]
 end
