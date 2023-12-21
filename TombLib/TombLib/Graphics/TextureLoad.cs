@@ -17,6 +17,12 @@ namespace TombLib.Graphics
             if (graphicsDevice == null)
                 return null;
 
+            if (image.Width > WadRenderer.TextureAtlasSize || image.Height > WadRenderer.TextureAtlasSize)
+            {
+                logger.Warn("Attempt to load texture more than " + WadRenderer.TextureAtlasSize + "px in size.");
+                return null;
+            }
+
             Texture2D result = null;
             image.GetIntPtr((IntPtr data) =>
                 {

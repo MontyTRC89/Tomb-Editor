@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Importers
@@ -71,6 +72,11 @@ namespace TombLib.GeometryIO.Importers
                     if (texture == null)
                     {
                         logger.Warn("Texture for material " + mat.Name + " is missing. Meshes referencing this material won't be imported.");
+                        continue;
+                    }
+                    else if (texture.Image.Width > WadRenderer.TextureAtlasSize || texture.Image.Height > WadRenderer.TextureAtlasSize)
+                    {
+                        logger.Warn("Texture for material " + mat.Name + " is too big (must be " + WadRenderer.TextureAtlasSize + "px maximum). Meshes referencing this material won't be imported.");
                         continue;
                     }
                     else
