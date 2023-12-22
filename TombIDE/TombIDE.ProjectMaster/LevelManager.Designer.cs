@@ -32,6 +32,7 @@
 			section_LevelList = new SectionLevelList();
 			section_LevelProperties = new SectionLevelProperties();
 			label_Title = new DarkUI.Controls.DarkLabel();
+			button_Update = new DarkUI.Controls.DarkButton();
 			levelFolderWatcher = new System.IO.FileSystemWatcher();
 			prj2FileWatcher = new System.IO.FileSystemWatcher();
 			tableLayout_Main.SuspendLayout();
@@ -46,8 +47,9 @@
 			// 
 			// tableLayout_Main
 			// 
-			tableLayout_Main.ColumnCount = 5;
+			tableLayout_Main.ColumnCount = 6;
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -58,6 +60,7 @@
 			tableLayout_Main.Controls.Add(panel_Icon, 0, 0);
 			tableLayout_Main.Controls.Add(splitContainer, 0, 1);
 			tableLayout_Main.Controls.Add(label_Title, 1, 0);
+			tableLayout_Main.Controls.Add(button_Update, 5, 0);
 			tableLayout_Main.Dock = System.Windows.Forms.DockStyle.Fill;
 			tableLayout_Main.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			tableLayout_Main.Location = new System.Drawing.Point(0, 0);
@@ -66,7 +69,6 @@
 			tableLayout_Main.RowCount = 2;
 			tableLayout_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
 			tableLayout_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			tableLayout_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayout_Main.Size = new System.Drawing.Size(1024, 640);
 			tableLayout_Main.TabIndex = 0;
 			// 
@@ -76,10 +78,10 @@
 			label_OutdatedState.Dock = System.Windows.Forms.DockStyle.Left;
 			label_OutdatedState.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
 			label_OutdatedState.ForeColor = System.Drawing.Color.FromArgb(255, 128, 128);
-			label_OutdatedState.Location = new System.Drawing.Point(385, 1);
-			label_OutdatedState.Margin = new System.Windows.Forms.Padding(1);
+			label_OutdatedState.Location = new System.Drawing.Point(384, 0);
+			label_OutdatedState.Margin = new System.Windows.Forms.Padding(0);
 			label_OutdatedState.Name = "label_OutdatedState";
-			label_OutdatedState.Size = new System.Drawing.Size(63, 78);
+			label_OutdatedState.Size = new System.Drawing.Size(63, 80);
 			label_OutdatedState.TabIndex = 8;
 			label_OutdatedState.Text = "(Outdated)";
 			label_OutdatedState.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -121,7 +123,7 @@
 			// 
 			// splitContainer
 			// 
-			tableLayout_Main.SetColumnSpan(splitContainer, 5);
+			tableLayout_Main.SetColumnSpan(splitContainer, 6);
 			splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			splitContainer.Location = new System.Drawing.Point(0, 80);
 			splitContainer.Margin = new System.Windows.Forms.Padding(0);
@@ -208,6 +210,20 @@
 			label_Title.Text = "Level Manager";
 			label_Title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// button_Update
+			// 
+			button_Update.Checked = false;
+			button_Update.Dock = System.Windows.Forms.DockStyle.Left;
+			button_Update.Image = Properties.Resources.actions_refresh_16;
+			button_Update.Location = new System.Drawing.Point(453, 25);
+			button_Update.Margin = new System.Windows.Forms.Padding(6, 25, 0, 25);
+			button_Update.Name = "button_Update";
+			button_Update.Size = new System.Drawing.Size(80, 30);
+			button_Update.TabIndex = 9;
+			button_Update.Text = "Update...";
+			button_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			button_Update.Click += button_Update_Click;
+			// 
 			// levelFolderWatcher
 			// 
 			levelFolderWatcher.EnableRaisingEvents = true;
@@ -259,5 +275,6 @@
 		private System.Windows.Forms.Panel panel_GameLabel;
 		private DarkUI.Controls.DarkLabel label_OutdatedState;
 		private DarkUI.Controls.DarkLabel label_EngineVersion;
+		private DarkUI.Controls.DarkButton button_Update;
 	}
 }

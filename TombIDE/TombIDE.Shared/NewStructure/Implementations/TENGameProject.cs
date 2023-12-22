@@ -93,6 +93,20 @@ namespace TombIDE.Shared.NewStructure
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");
 
+		public override Version GetCurrentEngineVersion()
+		{
+			try
+			{
+				string engineExecutablePath = GetEngineExecutableFilePath();
+				string versionInfo = FileVersionInfo.GetVersionInfo(engineExecutablePath).FileVersion;
+				return new Version(versionInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
 		public override Version GetLatestEngineVersion()
 		{
 			string tempFileName = Path.GetTempFileName();
@@ -108,7 +122,7 @@ namespace TombIDE.Shared.NewStructure
 					return null;
 
 				entry.ExtractToFile(tempFileName, true);
-				string productVersion = FileVersionInfo.GetVersionInfo(tempFileName).ProductVersion;
+				string productVersion = FileVersionInfo.GetVersionInfo(tempFileName).FileVersion;
 
 				return new Version(productVersion);
 			}
