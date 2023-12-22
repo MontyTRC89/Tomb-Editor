@@ -68,6 +68,8 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateVersionLabel()
 		{
+			button_Update.Visible = false;
+
 			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
 			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
 			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
@@ -97,8 +99,6 @@ namespace TombIDE.ProjectMaster
 							button_Update.Width = 300;
 						}
 					}
-					else
-						button_Update.Visible = false;
 
 					if (_ide.Project.GameVersion is TRVersion.Game.TR1)
 					{
@@ -112,15 +112,11 @@ namespace TombIDE.ProjectMaster
 							button_Update.Width = 300;
 						}
 					}
-					else
-						button_Update.Visible = false;
 				}
 				else
 				{
 					label_OutdatedState.Text = "(Latest)";
 					label_OutdatedState.ForeColor = Color.LightGreen;
-
-					button_Update.Visible = false;
 				}
 			}
 		}
@@ -199,6 +195,21 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTEN()
 		{
+			DialogResult result = MessageBox.Show(this,
+				"READ CAREFULLY:\n" +
+				"This update will replace the following directories and files:\n\n" +
+
+				"- Engine/Bin/\n" +
+				"- Engine/Shaders/\n" +
+				"- Engine/Scripts/Engine/\n" +
+				"- Engine/Scripts/SystemStrings.lua\n\n" +
+
+				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
+				"Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+			if (result is not DialogResult.Yes)
+				return;
+
 			try
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
@@ -228,13 +239,24 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTR1X()
 		{
+			DialogResult result = MessageBox.Show(this,
+				"READ CAREFULLY:\n" +
+				"This update will replace the following directories and files:\n\n" +
+
+				"- Engine/shaders/\n" +
+				"- Engine/TR1X.exe\n" +
+				"- Engine/TR1X_ConfigTool.exe\n\n" +
+
+				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
+				"Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+			if (result is not DialogResult.Yes)
+				return;
+
 			try
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
 				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
-
-				var data = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/data")).ToList();
-				ExtractEntries(data, _ide.Project, false);
 
 				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();
 				ExtractEntries(shaders, _ide.Project);
@@ -252,7 +274,7 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject, bool overwrite = true)
+		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
 		{
 			foreach (ZipArchiveEntry entry in entries)
 			{
@@ -264,13 +286,7 @@ namespace TombIDE.ProjectMaster
 						Directory.CreateDirectory(dirPath);
 				}
 				else
-				{
-					try
-					{
-						entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), overwrite);
-					}
-					catch { }
-				}
+					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
 			}
 		}
 	}
