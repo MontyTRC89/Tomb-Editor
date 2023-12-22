@@ -18,7 +18,14 @@ Tomb Editor:
  * Fix exception when attempting to load imported geometry with textures larger than 4096 pixels.
 
 TombIDE:
+ * Update Tomb1Main to TR1X 3.0.5
+ * Update FLEP
+ * Allow opening TEN projects in "-debug" mode with CTRL + Click on Game Icon on the Side Bar, or CTRL + F4.
+ * Add engine version display into Level Manager.
+ * Add engine up-to-date checks for TEN and TR1X.
+ * Add an "Exit" menu item into Scripting Studio.
  * Fix issue where autocomplete popup wouldn't open after the first completion.
+ * Fix a typo
 
 Version 1.6.9
 =============
