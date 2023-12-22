@@ -1,7 +1,8 @@
 ﻿using DarkUI.Forms;
+using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
@@ -52,6 +53,28 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
 			}
 
+			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
+			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
+			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
+
+			Version latestVersion = _ide.Project.GetLatestEngineVersion();
+
+			if (engineVersion is null || latestVersion is null)
+				label_OutdatedState.Visible = false;
+			else
+			{
+				if (engineVersion < latestVersion)
+				{
+					label_OutdatedState.Text = $"(Outdated, Latest version is: {latestVersion})";
+					label_OutdatedState.ForeColor = Color.LightPink;
+				}
+				else
+				{
+					label_OutdatedState.Text = "(Latest)";
+					label_OutdatedState.ForeColor = Color.LightGreen;
+				}
+			}
+
 			section_LevelList.Initialize(ide);
 			section_LevelProperties.Initialize(ide);
 
@@ -77,7 +100,7 @@ namespace TombIDE.ProjectMaster
 				_isPendingLevelListReload = true;
 		}
 
-		private void button_RebuildAll_Click(object sender, System.EventArgs e)
+		private void button_RebuildAll_Click(object sender, EventArgs e)
 		{
 			LevelProject[] levels = _ide.Project.GetAllValidLevelProjects();
 
