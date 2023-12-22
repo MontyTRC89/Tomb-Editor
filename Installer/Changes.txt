@@ -23,7 +23,7 @@ TombIDE:
  * Allow opening TEN projects in "-debug" mode with CTRL + Click on Game Icon on the Side Bar, or CTRL + F4.
  * Add engine version display into Level Manager.
  * Add engine up-to-date checks for TEN and TR1X.
- * Add "Update" button for TEN versions 1.0.9+.
+ * Add "Update" button for TEN versions 1.0.9+ and TR1X versions 3.0+.
  * Add an "Exit" menu item into Scripting Studio.
  * Fix issue where autocomplete popup wouldn't open after the first completion.
  * Fix a typo

@@ -89,7 +89,23 @@ namespace TombIDE.ProjectMaster
 					{
 						button_Update.Visible = true;
 
-						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build < 9)
+						// 1.0.9 is the first version that supports auto-updating
+						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build <= 8)
+						{
+							button_Update.Enabled = false;
+							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
+							button_Update.Width = 300;
+						}
+					}
+					else
+						button_Update.Visible = false;
+
+					if (_ide.Project.GameVersion is TRVersion.Game.TR1)
+					{
+						button_Update.Visible = true;
+
+						// 3.0 is the first version that supports auto-updating
+						if (engineVersion.Major <= 2)
 						{
 							button_Update.Enabled = false;
 							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
@@ -169,8 +185,16 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Update_Click(object sender, EventArgs e)
 		{
-			if (_ide.Project.GameVersion is TRVersion.Game.TombEngine)
-				UpdateTEN();
+			switch (_ide.Project.GameVersion)
+			{
+				case TRVersion.Game.TombEngine:
+					UpdateTEN();
+					break;
+
+				case TRVersion.Game.TR1:
+					UpdateTR1X();
+					break;
+			}
 		}
 
 		private void UpdateTEN()
@@ -202,7 +226,33 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
+		private void UpdateTR1X()
+		{
+			try
+			{
+				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
+				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
+
+				var data = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/data")).ToList();
+				ExtractEntries(data, _ide.Project, false);
+
+				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();
+				ExtractEntries(shaders, _ide.Project);
+
+				var executables = engineArchive.Entries.Where(entry => entry.FullName.EndsWith(".exe")).ToList();
+				ExtractEntries(executables, _ide.Project);
+
+				UpdateVersionLabel();
+
+				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the engine:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject, bool overwrite = true)
 		{
 			foreach (ZipArchiveEntry entry in entries)
 			{
@@ -214,7 +264,13 @@ namespace TombIDE.ProjectMaster
 						Directory.CreateDirectory(dirPath);
 				}
 				else
-					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
+				{
+					try
+					{
+						entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), overwrite);
+					}
+					catch { }
+				}
 			}
 		}
 	}
