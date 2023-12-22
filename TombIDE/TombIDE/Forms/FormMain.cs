@@ -10,6 +10,7 @@ using TombIDE.ProjectMaster;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
 using TombLib.LevelData;
 
@@ -124,6 +125,17 @@ namespace TombIDE
 			}
 		}
 
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+
+			if (e.KeyCode == Keys.F3)
+				SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
+
+			if (e.KeyCode == Keys.F4)
+				sideBar.LaunchGame();
+		}
+
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			if (!_ide.CanClose())
@@ -196,7 +208,7 @@ namespace TombIDE
 				{
 					_ide.Project.KnownLevelProjectFilePaths.Clear();
 					_ide.Project.LevelsDirectoryPath = lpce.NewPath;
-				}	
+				}
 
 				RestartApplication();
 			}

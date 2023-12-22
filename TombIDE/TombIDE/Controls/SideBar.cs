@@ -290,20 +290,6 @@ namespace TombIDE.Controls
 
 		#region Events
 
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			base.OnKeyDown(e);
-
-			if (ModifierKeys == Keys.None)
-			{
-				if (e.KeyCode == Keys.F3)
-					SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
-
-				if (e.KeyCode == Keys.F4)
-					LaunchGame();
-			}
-		}
-
 		private void panelButton_LevelManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.LevelManager);
 		private void panelButton_ScriptingStudio_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
 		private void panelButton_PluginManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.PluginManager);
@@ -339,7 +325,7 @@ namespace TombIDE.Controls
 
 		#region Methods
 
-		private void LaunchFLEP()
+		public void LaunchFLEP()
 		{
 			string engineRootDirectory = _ide.Project.GetEngineRootDirectoryPath();
 			string flepExePath = Path.Combine(engineRootDirectory, "flep.exe");
@@ -361,7 +347,7 @@ namespace TombIDE.Controls
 			catch { }
 		}
 
-		private void LaunchGame()
+		public void LaunchGame()
 		{
 			string engineRootDirectory = _ide.Project.GetEngineRootDirectoryPath();
 
@@ -386,16 +372,36 @@ namespace TombIDE.Controls
 				}
 			}
 
+			bool debugMode = ModifierKeys.HasFlag(Keys.Control) && _ide.Project.GameVersion is TRVersion.Game.TombEngine;
+
 			try
 			{
-				string launcherFilePath = _ide.Project.GetLauncherFilePath();
+				ProcessStartInfo startInfo;
+				string launcherFilePath;
 
-				var startInfo = new ProcessStartInfo
+				if (debugMode)
 				{
-					FileName = launcherFilePath,
-					WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
-					UseShellExecute = true
-				};
+					launcherFilePath = _ide.Project.GetEngineExecutableFilePath();
+
+					startInfo = new ProcessStartInfo
+					{
+						FileName = launcherFilePath,
+						WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
+						Arguments = "-debug",
+						UseShellExecute = true
+					};
+				}
+				else
+				{
+					launcherFilePath = _ide.Project.GetLauncherFilePath();
+
+					startInfo = new ProcessStartInfo
+					{
+						FileName = launcherFilePath,
+						WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
+						UseShellExecute = true
+					};
+				}
 
 				Process.Start(startInfo);
 			}
