@@ -89,7 +89,7 @@ namespace TombIDE.ProjectMaster
 					{
 						button_Update.Visible = true;
 
-						if (engineVersion.Minor <= 0 && engineVersion.Build < 9)
+						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build < 9)
 						{
 							button_Update.Enabled = false;
 							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
