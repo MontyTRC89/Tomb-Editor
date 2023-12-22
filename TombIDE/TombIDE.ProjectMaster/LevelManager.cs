@@ -196,7 +196,6 @@ namespace TombIDE.ProjectMaster
 		private void UpdateTEN()
 		{
 			DialogResult result = MessageBox.Show(this,
-				"READ CAREFULLY:\n" +
 				"This update will replace the following directories and files:\n\n" +
 
 				"- Engine/Bin/\n" +
@@ -205,7 +204,7 @@ namespace TombIDE.ProjectMaster
 				"- Engine/Scripts/SystemStrings.lua\n\n" +
 
 				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
-				"Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
 				return;
@@ -240,7 +239,6 @@ namespace TombIDE.ProjectMaster
 		private void UpdateTR1X()
 		{
 			DialogResult result = MessageBox.Show(this,
-				"READ CAREFULLY:\n" +
 				"This update will replace the following directories and files:\n\n" +
 
 				"- Engine/shaders/\n" +
@@ -248,7 +246,7 @@ namespace TombIDE.ProjectMaster
 				"- Engine/TR1X_ConfigTool.exe\n\n" +
 
 				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
-				"Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
 				return;
