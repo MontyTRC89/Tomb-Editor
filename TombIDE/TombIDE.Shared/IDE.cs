@@ -45,6 +45,9 @@ namespace TombIDE.Shared
 			public bool CanClose { get; set; } // Result
 		}
 
+		public class RequestProgramCloseEvent : IIDEEvent
+		{ }
+
 		/// <summary>
 		/// Asks the Scripting Studio if all files are saved and if the application can be safely closed.
 		/// </summary>
@@ -56,6 +59,9 @@ namespace TombIDE.Shared
 
 			return closingEvent.CanClose;
 		}
+
+		public void RequestProgramClose()
+			=> RaiseEvent(new RequestProgramCloseEvent());
 
 		#endregion ProgramClosing
 

@@ -175,6 +175,8 @@ namespace TombIDE
 		{
 			if (obj is IDE.ProjectScriptPathChangedEvent or IDE.ProjectLevelsPathChangedEvent)
 				OnProjectPathsChanged(obj);
+			else if (obj is IDE.RequestProgramCloseEvent)
+				Close();
 		}
 
 		#endregion IDE events

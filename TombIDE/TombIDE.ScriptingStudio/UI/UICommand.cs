@@ -11,6 +11,7 @@
 		SaveAs,
 		SaveAll,
 		Build,
+		Exit,
 
 		// Edit:
 

@@ -478,6 +478,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.SaveAs: EditorTabControl.SaveFileAs(); break;
 				case UICommand.SaveAll: EditorTabControl.SaveAll(); break;
 				case UICommand.Build: Build(); break;
+				case UICommand.Exit: IDE.Global.RequestProgramClose(); break;
 
 				// Edit
 				case UICommand.Undo: CurrentEditor?.Undo(); break;
