@@ -271,6 +271,6 @@ namespace TombIDE.Shared
 		public void Dispose()
 		{ }
 
-		public static IDE Global;
+		public static IDE Instance;
 	}
 }
