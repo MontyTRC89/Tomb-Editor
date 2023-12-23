@@ -129,11 +129,14 @@ namespace TombIDE
 		{
 			base.OnKeyDown(e);
 
-			if (e.KeyCode == Keys.F3)
-				SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
+			if (ModifierKeys == Keys.None)
+			{
+				if (e.KeyCode == Keys.F3)
+					SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
 
-			if (e.KeyCode == Keys.F4)
-				sideBar.LaunchGame();
+				if (e.KeyCode == Keys.F4)
+					sideBar.LaunchGame();
+			}
 		}
 
 		protected override void OnClosing(CancelEventArgs e)

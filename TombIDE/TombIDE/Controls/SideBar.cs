@@ -372,36 +372,17 @@ namespace TombIDE.Controls
 				}
 			}
 
-			bool debugMode = ModifierKeys.HasFlag(Keys.Control) && _ide.Project.GameVersion is TRVersion.Game.TombEngine;
-
 			try
 			{
-				ProcessStartInfo startInfo;
-				string launcherFilePath;
+				string launcherFilePath = _ide.Project.GetLauncherFilePath();
 
-				if (debugMode)
+				var startInfo = new ProcessStartInfo
 				{
-					launcherFilePath = _ide.Project.GetEngineExecutableFilePath();
-
-					startInfo = new ProcessStartInfo
-					{
-						FileName = launcherFilePath,
-						WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
-						Arguments = "-debug",
-						UseShellExecute = true
-					};
-				}
-				else
-				{
-					launcherFilePath = _ide.Project.GetLauncherFilePath();
-
-					startInfo = new ProcessStartInfo
-					{
-						FileName = launcherFilePath,
-						WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
-						UseShellExecute = true
-					};
-				}
+					FileName = launcherFilePath,
+					WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
+					Arguments = "-debug",
+					UseShellExecute = true
+				};
 
 				Process.Start(startInfo);
 			}
