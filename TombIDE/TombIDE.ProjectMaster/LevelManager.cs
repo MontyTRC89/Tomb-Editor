@@ -70,6 +70,13 @@ namespace TombIDE.ProjectMaster
 		{
 			button_Update.Visible = false;
 
+			if (_ide.Project.GameVersion is TRVersion.Game.TR4)
+			{
+				label_OutdatedState.Visible = false;
+				label_EngineVersion.Text = "Engine Version: TRLE";
+				return;
+			}
+
 			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
 			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
 			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
@@ -203,7 +210,10 @@ namespace TombIDE.ProjectMaster
 				"- Engine/Scripts/Engine/\n" +
 				"- Engine/Scripts/SystemStrings.lua\n\n" +
 
-				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
+				"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+
+				"Are you sure you want to continue?\n" +
+				"This action cannot be reverted.",
 				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
@@ -245,7 +255,10 @@ namespace TombIDE.ProjectMaster
 				"- Engine/TR1X.exe\n" +
 				"- Engine/TR1X_ConfigTool.exe\n\n" +
 
-				"If any of these directories / files are important to you, please select \"No\" and update the engine manually.",
+				"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+
+				"Are you sure you want to continue?\n" +
+				"This action cannot be reverted.",
 				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
