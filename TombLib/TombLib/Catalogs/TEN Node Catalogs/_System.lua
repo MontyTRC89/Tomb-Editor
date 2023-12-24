@@ -138,3 +138,18 @@ LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
 	}
 	return displaySpriteScaleMode[index]
 end
+
+LevelFuncs.Engine.Node.GetGameStatus = function(index)
+	local GameStatus =
+	{
+		[0] = Flow.GameStatus.LOAD_GAME,
+		[1] = Flow.GameStatus.EXIT_TO_TITLE,
+		[2] = Flow.GameStatus.LARA_DEAD,
+		[3] = Flow.GameStatus.LEVEL_COMPLETE,
+		[4] = Flow.GameStatus.NORMAL,
+		[5] = Flow.GameStatus.NEW_GAME,
+		[6] = Flow.GameStatus.SAVE_GAME,
+		[7] = Flow.GameStatus.EXIT_GAME,
+	}
+	return GameStatus[index]
+end

@@ -210,3 +210,12 @@ end
 LevelFuncs.Engine.Node.DoesSaveGameExist = function(slot)
 	return TEN.Flow.DoesSaveGameExist(slot)
 end
+
+-- !Name "If end level reason is..."
+-- !Conditional "True"
+-- !Description "Check end-of-level reason.\nTo be used only within the 'On Level End' event."
+-- !Section "Game flow"
+-- !Arguments "NewLine, Enumeration, [ Load game | Exit to title | Player death | Level Complete ], Reason"
+LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
+	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
+end
