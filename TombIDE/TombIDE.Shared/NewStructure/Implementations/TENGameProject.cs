@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
@@ -89,5 +92,49 @@ namespace TombIDE.Shared.NewStructure
 
 		public override void SetScriptRootDirectory(string newDirectoryPath)
 			=> throw new NotSupportedException("Current project type does not allow changing Script directories.");
+
+		public override Version GetCurrentEngineVersion()
+		{
+			try
+			{
+				string engineExecutablePath = GetEngineExecutableFilePath();
+				string versionInfo = FileVersionInfo.GetVersionInfo(engineExecutablePath).FileVersion;
+				return new Version(versionInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public override Version GetLatestEngineVersion()
+		{
+			string tempFileName = Path.GetTempFileName();
+
+			try
+			{
+				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
+
+				using ZipArchive archive = ZipFile.OpenRead(enginePresetPath);
+				ZipArchiveEntry entry = archive.Entries.FirstOrDefault(e => e.Name == "TombEngine.exe");
+
+				if (entry == null)
+					return null;
+
+				entry.ExtractToFile(tempFileName, true);
+				string productVersion = FileVersionInfo.GetVersionInfo(tempFileName).FileVersion;
+
+				return new Version(productVersion);
+			}
+			catch
+			{
+				return null;
+			}
+			finally
+			{
+				if (File.Exists(tempFileName))
+					File.Delete(tempFileName);
+			}
+		}
 	}
 }

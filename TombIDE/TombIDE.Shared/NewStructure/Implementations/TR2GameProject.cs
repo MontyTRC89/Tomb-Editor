@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
 
@@ -19,5 +21,19 @@ namespace TombIDE.Shared.NewStructure
 		public TR2GameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath)
 			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath)
 		{ }
+
+		public override Version GetCurrentEngineVersion()
+		{
+			try
+			{
+				string t2mDllFilePath = Path.Combine(GetEngineRootDirectoryPath(), "TR2Main.dll");
+				string versionInfo = FileVersionInfo.GetVersionInfo(t2mDllFilePath).ProductVersion;
+				return new Version(versionInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
 	}
 }

@@ -21,8 +21,8 @@ namespace TombIDE.ScriptingStudio.Forms
 		{
 			InitializeComponent();
 
-			checkBox_AlwaysTop.Checked = IDE.Global.IDEConfiguration.InfoBox_AlwaysOnTop;
-			checkBox_CloseTabs.Checked = IDE.Global.IDEConfiguration.InfoBox_CloseTabsOnClose;
+			checkBox_AlwaysTop.Checked = IDE.Instance.IDEConfiguration.InfoBox_AlwaysOnTop;
+			checkBox_CloseTabs.Checked = IDE.Instance.IDEConfiguration.InfoBox_CloseTabsOnClose;
 		}
 
 		public void Show(string flag, ReferenceType type)
@@ -44,7 +44,7 @@ namespace TombIDE.ScriptingStudio.Forms
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			if (IDE.Global.IDEConfiguration.InfoBox_CloseTabsOnClose)
+			if (IDE.Instance.IDEConfiguration.InfoBox_CloseTabsOnClose)
 				tabControl.TabPages.Clear();
 
 			Hide();
@@ -73,13 +73,13 @@ namespace TombIDE.ScriptingStudio.Forms
 
 		private void checkBox_AlwaysTop_CheckedChanged(object sender, EventArgs e)
 		{
-			IDE.Global.IDEConfiguration.InfoBox_AlwaysOnTop = checkBox_AlwaysTop.Checked;
+			IDE.Instance.IDEConfiguration.InfoBox_AlwaysOnTop = checkBox_AlwaysTop.Checked;
 
-			TopMost = IDE.Global.IDEConfiguration.InfoBox_AlwaysOnTop;
+			TopMost = IDE.Instance.IDEConfiguration.InfoBox_AlwaysOnTop;
 		}
 
 		private void checkBox_CloseTabs_CheckedChanged(object sender, EventArgs e) =>
-			IDE.Global.IDEConfiguration.InfoBox_CloseTabsOnClose = checkBox_CloseTabs.Checked;
+			IDE.Instance.IDEConfiguration.InfoBox_CloseTabsOnClose = checkBox_CloseTabs.Checked;
 
 		#endregion Events
 
@@ -136,7 +136,7 @@ namespace TombIDE.ScriptingStudio.Forms
 				DarkMessageBox.Show(this, message, "Information",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-				TopMost = IDE.Global.IDEConfiguration.InfoBox_AlwaysOnTop;
+				TopMost = IDE.Instance.IDEConfiguration.InfoBox_AlwaysOnTop;
 
 				newTabPage.Dispose();
 
