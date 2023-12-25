@@ -143,13 +143,12 @@ LevelFuncs.Engine.Node.GetGameStatus = function(index)
 	local GameStatus =
 	{
 		[0] = Flow.GameStatus.NORMAL,
-		[1] = Flow.GameStatus.SAVE_GAME,
-		[2] = Flow.GameStatus.NEW_GAME,
+		[1] = Flow.GameStatus.NEW_GAME,
+		[2] = Flow.GameStatus.LOAD_GAME,
 		[3] = Flow.GameStatus.EXIT_GAME,
-		[4] = Flow.GameStatus.LOAD_GAME,
-		[5] = Flow.GameStatus.EXIT_TO_TITLE,
-		[6] = Flow.GameStatus.LARA_DEAD,
-		[7] = Flow.GameStatus.LEVEL_COMPLETE,
+		[4] = Flow.GameStatus.EXIT_TO_TITLE,
+		[5] = Flow.GameStatus.LARA_DEAD,
+		[6] = Flow.GameStatus.LEVEL_COMPLETE
 	}
 	return GameStatus[index]
 end

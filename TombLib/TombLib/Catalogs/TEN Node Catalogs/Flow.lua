@@ -215,7 +215,7 @@ end
 -- !Conditional "True"
 -- !Description "Check if the game is in specific status.\nNormal and Save game states are controlled within the 'On Loop' event.\nNew game and Exit game states are controlled in the 'On Loop' event in the title level only.\nLoad game, Exit to title, Player death and Level Complete states are controlled in the 'On Level End' event."
 -- !Section "Game flow"
--- !Arguments "NewLine, Enumeration, [ Normal | Save game | New game | Exit game | Load game | Exit to title | Player death | Level Complete ], Reason"
+-- !Arguments "NewLine, Enumeration, [ Normal | New game | Load game | Exit game | Exit to title | Player death | Level Complete ], Reason"
 LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
 	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
 end
