@@ -2,7 +2,7 @@ Version 1.7
 ===========
 
 Tomb Editor:
- * Added more wall subdivisions, which can be accessed by using Drag Tool while holding any numerical key.
+ * Add more wall subdivisions, which can be accessed by using Drag Tool while holding any numerical key on a keyboard.
  * Side faces for slopes next to flat blocks, or 2 crossing slopes next to each other, will now be rendered and can be textured.
  * Add options to disable volumes and activate them in adjacent rooms.
  * Add global event editor.
@@ -20,13 +20,12 @@ Tomb Editor:
 TombIDE:
  * Update Tomb1Main to TR1X 3.0.5.
  * Update FLEP.
- * Launching games from Side Bar (F4) will always run them in "-debug" mode.
+ * Launch TEN in debug mode from a sidebar (F4).
  * Add engine version display into Level Manager.
  * Add engine up-to-date checks for TEN and TR1X.
  * Add "Update" button for TEN versions 1.0.9+ and TR1X versions 3.0+.
  * Add an "Exit" menu item into Scripting Studio.
  * Fix issue where autocomplete popup wouldn't open after the first completion.
- * Fix a typo
 
 Version 1.6.9
 =============
