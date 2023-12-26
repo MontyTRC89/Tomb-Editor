@@ -96,7 +96,7 @@ end
 -- !Section "View"
 -- !Description "Set the postprocessing mode for all graphics, excluding GUI"
 -- !Arguments "NewLine, Enumeration, 50, [ None | Monochrome | Negative | Exclusion ], Sets the color mode"
--- !Arguments "Color, 25, Set the tint color that overlays over the chosen color mode"
+-- !Arguments "Color, 25, { TEN.Color(128,128,128) }, Set the tint color that overlays over the chosen color mode"
 -- !Arguments "Numerical, 25, [ 0 | 1 | 2 | 0.05 | 0.1 ], Color overlay strength"
 
 LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessModeEnum, tintColor, power) 
