@@ -179,7 +179,7 @@ end
 -- !Conditional "False"
 -- !Description "Saves the current game in a specific slot"
 -- !Section "Game flow"
--- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+-- !Arguments "Numerical, 20, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.SaveGame = function(slot)
 	TEN.Flow.SaveGame(slot)
 end
@@ -188,7 +188,7 @@ end
 -- !Conditional "False"
 -- !Description "Load the selected save slot"
 -- !Section "Game flow"
--- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+-- !Arguments "Numerical, 20, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.LoadGame = function(slot)
 	TEN.Flow.LoadGame(slot)
 end
@@ -197,7 +197,7 @@ end
 -- !Conditional "False"
 -- !Description "Delete a specific save slot"
 -- !Section "Game flow"
--- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+-- !Arguments "Numerical, 20, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.DeleteSaveGame = function(slot)
 	TEN.Flow.DeleteSaveGame(slot)
 end
@@ -206,7 +206,16 @@ end
 -- !Conditional "True"
 -- !Description "Check if SaveGame exists in a specific slot"
 -- !Section "Game flow"
--- !Arguments "NewLine, Numerical, 100, [ 0 | 99 | 0 ], Save slots"
+-- !Arguments "Numerical, 20, [ 0 | 99 | 0 ], Save slots"
 LevelFuncs.Engine.Node.DoesSaveGameExist = function(slot)
 	return TEN.Flow.DoesSaveGameExist(slot)
+end
+
+-- !Name "If game status is..."
+-- !Conditional "True"
+-- !Description "Check if the game is in specific status.\nNormal game state is controlled in the 'On Loop' event.\nOther states are controlled in the 'On Level End' event."
+-- !Section "Game flow"
+-- !Arguments "NewLine, Enumeration, [ Normal | New game | Load game | Exit game | Exit to title | Player death | Level Complete ], Reason"
+LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
+	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
 end
