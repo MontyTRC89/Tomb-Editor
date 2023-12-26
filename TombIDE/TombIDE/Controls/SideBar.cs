@@ -372,6 +372,8 @@ namespace TombIDE.Controls
 				}
 			}
 
+			bool supportsDebug = _ide.Project.GameVersion is TRVersion.Game.TombEngine;
+
 			try
 			{
 				string launcherFilePath = _ide.Project.GetLauncherFilePath();
@@ -380,7 +382,7 @@ namespace TombIDE.Controls
 				{
 					FileName = launcherFilePath,
 					WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
-					Arguments = "-debug",
+					Arguments = supportsDebug ? "-debug" : string.Empty,
 					UseShellExecute = true
 				};
 

@@ -23,7 +23,7 @@ Tomb Editor:
 TombIDE:
  * Update Tomb1Main to TR1X 3.0.5.
  * Update FLEP.
- * Launch TEN in debug mode from a sidebar (F4).
+ * Launch TEN in -debug mode from the sidebar by default.
  * Add engine version display into Level Manager.
  * Add engine up-to-date checks for TEN and TR1X.
  * Add "Update" button for TEN versions 1.0.9+ and TR1X versions 3.0+.
