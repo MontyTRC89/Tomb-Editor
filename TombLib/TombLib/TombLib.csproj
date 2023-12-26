@@ -73,10 +73,16 @@
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Sound.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Sprites.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Timers.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\View.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Volumes.lua">
@@ -85,13 +91,10 @@
     <None Update="Catalogs\TEN Node Catalogs\_System.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TEN Node Catalogs\Controls.lua">
+    <None Update="Catalogs\TEN Node Catalogs\Input.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Creatures.lua">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Catalogs\TEN Node Catalogs\Effects.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Flow.lua">
