@@ -12,11 +12,12 @@ end
 -- !Name "End level"
 -- !Section "Game flow"
 -- !Description "Ends current level and loads next level according to number. If number is 0, loads next level."
--- !Description "If number is more than level count, loads title."
+-- !Description "If number is more than level count, loads title. Optionally, an OCB for target start position object may be provided."
 -- !Arguments "Numerical, 15, [ 0 | 99 ], Next level number"
+-- !Arguments "Numerical, 15, [ 0 | 99 ], Start position OCB index"
 
-LevelFuncs.Engine.Node.EndLevel = function(number)
-	TEN.Flow.EndLevel(number)
+LevelFuncs.Engine.Node.EndLevel = function(number, startPosIndex)
+	TEN.Flow.EndLevel(number, startPosIndex)
 end
 
 -- !Name "Add secret"
