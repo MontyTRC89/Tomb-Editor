@@ -551,18 +551,22 @@ namespace TombEditor.Forms
 
         private void butDeleteEventSet_Click(object sender, EventArgs e)
         {
-            EditorActions.DeleteEventSet(SelectedSet);
-            SelectedSet = null;
+            int index = dgvEvents.SelectedRows.Count == 0 ? 0 : dgvEvents.SelectedRows[0].Index;
+            if (index == dgvEvents.Rows.Count - 1)
+                index--;
 
+            EditorActions.DeleteEventSet(SelectedSet);
             PopulateEventSetList();
 
             if (dgvEvents.Rows.Count > 0)
             {
-                DataGridViewRow lastRow = dgvEvents.Rows[^1];
-                lastRow.Selected = true;
+                SelectedSet = dgvEvents.Rows[index].Tag as EventSet;
             }
             else
+            {
+                SelectedSet = null;
                 UpdateUI();
+            }
         }
 
         private void butUnassignEventSet_Click(object sender, EventArgs e)
