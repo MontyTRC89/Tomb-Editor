@@ -207,7 +207,8 @@ namespace TombEditor.Controls
         {
             butChangeNodeColor.Enabled =
             butRenameNode.Enabled =
-            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
+            butDeleteNode.Enabled = 
+            butLockNodes.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
 
