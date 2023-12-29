@@ -567,5 +567,11 @@ namespace TombEditor.Controls
             Clipboard.SetText(exportedNodes);
             _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
         }
+
+        private void butLockNodes_Click(object sender, EventArgs e)
+        {
+            foreach (var node in nodeEditor.SelectedNodes)
+                nodeEditor.LockNode(node, !node.Locked);
+        }
     }
 }

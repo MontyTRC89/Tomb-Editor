@@ -449,6 +449,19 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
+        public void LockNode(TriggerNode node, bool locked)
+        {
+            if (node == null)
+                return;
+
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
+
+            if (control == null)
+                return;
+
+            node.Locked = control.Locked = locked;
+        }
+
         public void ShowNode(TriggerNode node)
         {
             if (node == null)

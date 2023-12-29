@@ -7,6 +7,7 @@ Tomb Editor:
  * Add options to disable volumes and activate them in adjacent rooms.
  * Add global event editor.
  * Add global events to a node editor and to legacy trigger editor.
+ * Add ability to lock nodes.
  * Add node for end-of-level reason management.
  * Allow to move and sort event sets.
  * Support default values for Vector3 and Color value types in nodes.

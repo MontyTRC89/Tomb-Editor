@@ -7,11 +7,11 @@ using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Config;
 using DarkUI.Controls;
+using DarkUI.Extensions;
 using DarkUI.Icons;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -31,10 +31,21 @@ namespace TombLib.Controls.VisualScripting
         private bool _mouseDown = false;
         private int _lastSelectedIndex = -1;
 
+        private List<ArgumentEditor> _argControls = new List<ArgumentEditor>();
+
         public NodeEditor Editor => Parent as NodeEditor;
         public TriggerNode Node { get; protected set; }
 
-        private List<ArgumentEditor> _argControls = new List<ArgumentEditor>();
+        public bool Locked
+        {
+            get { return Node.Locked; }
+
+            set
+            {
+                Node.Locked = value;
+                RefreshLock();
+            }
+        }
 
         // This constructor overload is needed so that VS designer don't get crazy.
         public VisibleNodeBase() : this(new TriggerNodeAction()) { }
@@ -265,6 +276,7 @@ namespace TombLib.Controls.VisualScripting
             foreach (var sub in WinFormsUtils.AllSubControls(this))
                 sub.MouseDown += Ctrl_RightClick;
 
+            RefreshLock();
             ResumeLayout();
             Visible = true;
             Invalidate();
@@ -397,6 +409,14 @@ namespace TombLib.Controls.VisualScripting
 
             return true;
         }
+
+        private void RefreshLock()
+        {
+            foreach (Control control in Controls)
+                control.Enabled = !Node.Locked;
+
+            Invalidate();
+        }
         
         private int GetGrip(Point location)
         {
@@ -428,6 +448,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnDragOver(DragEventArgs e)
         {
+            if (Node.Locked)
+                return;
+
             base.OnDragOver(e);
 
             var obj = e.Data.GetData(e.Data.GetFormats()[0]) as TriggerNode;
@@ -450,6 +473,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnDragDrop(DragEventArgs e)
         {
+            if (Node.Locked)
+                return;
+
             base.OnDragDrop(e);
 
             if (_lastSnappedGrip == -1)
@@ -514,6 +540,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            if (Node.Locked)
+                return;
+
             base.OnMouseLeave(e);
 
             _currentGrip = _lastSnappedGrip = - 1;
@@ -541,6 +570,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (Node.Locked)
+                return;
+
             base.OnMouseMove(e);
 
             _currentGrip = GetGrip(e.Location);
@@ -565,6 +597,9 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (Node.Locked)
+                return;
+
             if (e.Button == MouseButtons.Left)
             {
                 bool ctrlPressed  = Control.ModifierKeys.HasFlag(Keys.Control);
@@ -606,6 +641,12 @@ namespace TombLib.Controls.VisualScripting
                 return;
             
             base.OnPaint(e);
+
+            if (Locked)
+            {
+                using (var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Colors.GreyHighlight.MultiplyAlpha(0.3f), BackColor))
+                    e.Graphics.FillRectangle(brush, ClientRectangle);
+            }
 
             foreach (var grip in _grips)
             {

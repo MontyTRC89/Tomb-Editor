@@ -1813,6 +1813,8 @@ namespace TombLib.LevelData.IO
                     node.ScreenPosition = chunkIO.ReadChunkVector2(chunkSize);
                 else if (id == Prj2Chunks.NodeColor)
                     node.Color = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.NodeLocked)
+                    node.Locked = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.NodeFunction)
                     node.Function = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.NodeArgument)
