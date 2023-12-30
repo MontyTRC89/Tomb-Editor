@@ -894,6 +894,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.NodeSize, node.Size);
                 chunkIO.WriteChunkVector2(Prj2Chunks.NodeScreenPosition, node.ScreenPosition);
                 chunkIO.WriteChunkVector3(Prj2Chunks.NodeColor, node.Color);
+                chunkIO.WriteChunkBool(Prj2Chunks.NodeLocked, node.Locked);
                 chunkIO.WriteChunkString(Prj2Chunks.NodeFunction, node.Function);
 
                 foreach (var arg in node.Arguments)

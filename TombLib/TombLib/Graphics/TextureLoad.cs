@@ -17,14 +17,11 @@ namespace TombLib.Graphics
             if (graphicsDevice == null)
                 return null;
 
-            if (image.Width > WadRenderer.TextureAtlasSize || image.Height > WadRenderer.TextureAtlasSize)
-            {
-                logger.Warn("Attempt to load texture more than " + WadRenderer.TextureAtlasSize + "px in size.");
-                return null;
-            }
-
             Texture2D result = null;
-            image.GetIntPtr((IntPtr data) =>
+
+            try
+            {
+                image.GetIntPtr((IntPtr data) =>
                 {
                     Texture2DDescription description;
                     description.ArraySize = 1;
@@ -38,10 +35,21 @@ namespace TombLib.Graphics
                     description.Usage = usage;
                     description.Width = image.Width;
 
-                        //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
-                        result = Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
-                                new[] { new SharpDX.DataBox(data, image.Width * ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
+                    //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
+                    result = Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
+                            new[] { new SharpDX.DataBox(data, image.Width * ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
                 });
+            }
+            catch (Exception ex)
+            {
+                var message = "Unable to load texture '" + Path.GetFileName(image.FileName) + "'.";
+                if (image.Width > WadRenderer.TextureAtlasSize || image.Height > WadRenderer.TextureAtlasSize)
+                    message += " Possible cause: texture too big? (" + image.Width + "x" + image.Height + ")";
+
+                logger.Warn(message);
+                return Load(graphicsDevice, ImageC.Red, usage);
+            }
+
             return result;
         }
 
