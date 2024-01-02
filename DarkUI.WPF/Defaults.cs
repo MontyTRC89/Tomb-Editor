@@ -41,12 +41,16 @@ namespace DarkUI.WPF
 		public static readonly double MediumThicknessWidth = 4 * ScaleFactor;
 		public static readonly double LargeThicknessWidth = 8 * ScaleFactor;
 		public static readonly double JumboThicknessWidth = 16 * ScaleFactor;
+		public static readonly double ExtraJumboThicknessWidth = 24 * ScaleFactor;
+		public static readonly double SuperThicknessWidth = 32 * ScaleFactor;
 
 		public static readonly Thickness BorderThickness = new(BorderThicknessWidth);
 		public static readonly Thickness TinyThickness = new(TinyThicknessWidth);
 		public static readonly Thickness MediumThickness = new(MediumThicknessWidth);
 		public static readonly Thickness LargeThickness = new(LargeThicknessWidth);
 		public static readonly Thickness JumboThickness = new(JumboThicknessWidth);
+		public static readonly Thickness ExtraJumboThickness = new(ExtraJumboThicknessWidth);
+		public static readonly Thickness SuperThickness = new(SuperThicknessWidth);
 
 		public static readonly Thickness InvertedBorderThickness = new(-BorderThicknessWidth);
 
