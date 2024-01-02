@@ -32,7 +32,10 @@ internal static class LegacyRepair
     private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
     {
         Block block = room.Blocks[x, z];
-        Subdivision subdivision = block.ExtraFloorSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
+        Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+
+        if (subdivision is null)
+            return;
 
         RoomBlockPair
             xn = room.GetBlockTryThroughPortal(x - 1, z),
@@ -71,7 +74,10 @@ internal static class LegacyRepair
     private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
     {
         Block block = room.Blocks[x, z];
-        Subdivision subdivision = block.ExtraCeilingSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
+        Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
+
+        if (subdivision is null)
+            return;
 
         RoomBlockPair
             xn = room.GetBlockTryThroughPortal(x - 1, z),
