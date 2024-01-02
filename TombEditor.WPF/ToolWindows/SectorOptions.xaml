@@ -26,7 +26,7 @@
 		</ResourceDictionary>
 	</UserControl.Resources>
 
-	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition Width="Auto" />

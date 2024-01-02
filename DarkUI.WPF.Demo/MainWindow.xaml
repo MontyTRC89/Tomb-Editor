@@ -34,7 +34,7 @@
 				<ScaleTransform x:Name="scaler" CenterX=".5" CenterY=".5" ScaleX="1" ScaleY="1" />
 			</ScrollViewer.LayoutTransform>
 
-			<Grid Margin="{x:Static darkUI:Defaults.JumboThickness}">
+			<Grid Margin="{x:Static darkUI:Defaults.LargeThickness}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -43,25 +43,25 @@
 				<StackPanel>
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Button">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
 						<StackPanel Orientation="Horizontal">
 							<Button Width="Auto" Click="Button_Click">
 								<Button.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</Button.Margin>
 								Normal
 							</Button>
 							<Button Width="Auto" Style="{DynamicResource ButtonWithIconAndText}">
 								<Button.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</Button.Margin>
 
 								<StackPanel Orientation="Horizontal">
@@ -71,7 +71,7 @@
 							</Button>
 							<Button Width="Auto" IsDefault="True">
 								<Button.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</Button.Margin>
 								Defaulted
 							</Button>
@@ -83,25 +83,25 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ToggleButton">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
 						<StackPanel Orientation="Horizontal">
 							<ToggleButton Width="Auto">
 								<ToggleButton.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</ToggleButton.Margin>
 								Normal
 							</ToggleButton>
 							<ToggleButton Width="Auto" Style="{DynamicResource ToggleButtonWithIconAndText}">
 								<ToggleButton.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</ToggleButton.Margin>
 
 								<StackPanel Orientation="Horizontal">
@@ -111,7 +111,7 @@
 							</ToggleButton>
 							<ToggleButton Width="Auto" IsChecked="True">
 								<ToggleButton.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</ToggleButton.Margin>
 								Checked
 							</ToggleButton>
@@ -122,31 +122,31 @@
 					</StackPanel>
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ColorPickerButton">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
 						<StackPanel Orientation="Horizontal">
 							<Label VerticalAlignment="Center">
 								<Label.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</Label.Margin>
 								Normal:
 							</Label>
 							<controls:ColorPickerButton Width="60">
 								<controls:ColorPickerButton.Margin>
-									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</controls:ColorPickerButton.Margin>
 							</controls:ColorPickerButton>
 
 							<Label VerticalAlignment="Center">
 								<Label.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.JumboThicknessWidth}" Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</Label.Margin>
 								Disabled:
 							</Label>
@@ -156,12 +156,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="CheckBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -177,19 +177,19 @@
 							</Grid.ColumnDefinitions>
 							<CheckBox>
 								<CheckBox.Margin>
-									<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</CheckBox.Margin>
 								Normal
 							</CheckBox>
 							<CheckBox Grid.Column="1" IsChecked="True">
 								<CheckBox.Margin>
-									<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</CheckBox.Margin>
 								Checked
 							</CheckBox>
 							<CheckBox Grid.Column="2" IsChecked="{x:Null}">
 								<CheckBox.Margin>
-									<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</CheckBox.Margin>
 								Intermediate
 							</CheckBox>
@@ -201,7 +201,7 @@
 								IsChecked="True"
 								IsEnabled="False">
 								<CheckBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</CheckBox.Margin>
 								Checked
 							</CheckBox>
@@ -211,7 +211,7 @@
 								IsChecked="{x:Null}"
 								IsEnabled="False">
 								<CheckBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</CheckBox.Margin>
 								Intermediate
 							</CheckBox>
@@ -222,12 +222,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="RadioButton">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -243,13 +243,13 @@
 
 							<RadioButton>
 								<RadioButton.Margin>
-									<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</RadioButton.Margin>
 								Normal
 							</RadioButton>
 							<RadioButton Grid.Column="1" IsChecked="True">
 								<RadioButton.Margin>
-									<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</RadioButton.Margin>
 								Checked
 							</RadioButton>
@@ -263,7 +263,7 @@
 								IsChecked="True"
 								IsEnabled="False">
 								<RadioButton.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
 								</RadioButton.Margin>
 								Checked
 							</RadioButton>
@@ -272,12 +272,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TextBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -291,13 +291,13 @@
 							<TextBox>Normal</TextBox>
 							<TextBox Grid.Column="1" IsEnabled="False">
 								<TextBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</TextBox.Margin>
 								Disabled
 							</TextBox>
 							<TextBox Grid.Column="2" Style="{DynamicResource FlatDarkTextBox}">
 								<TextBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</TextBox.Margin>
 								Flat
 							</TextBox>
@@ -306,12 +306,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ComboBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -360,7 +360,7 @@
 								IsEnabled="False"
 								SelectedIndex="0">
 								<ComboBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</ComboBox.Margin>
 
 								<ComboBoxItem>Disabled</ComboBoxItem>
@@ -370,12 +370,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="SearchableComboBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -424,7 +424,7 @@
 								IsEnabled="False"
 								SelectedIndex="0">
 								<controls:SearchableComboBox.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</controls:SearchableComboBox.Margin>
 
 								<ComboBoxItem>Disabled</ComboBoxItem>
@@ -434,12 +434,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="NumericUpDown">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -460,7 +460,7 @@
 								IsEnabled="False"
 								Value="2.50">
 								<xctk:DoubleUpDown.Margin>
-									<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 								</xctk:DoubleUpDown.Margin>
 							</xctk:DoubleUpDown>
 						</Grid>
@@ -468,12 +468,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="GroupBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -489,12 +489,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ListBox">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -514,12 +514,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TreeView">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -555,12 +555,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="DataGrid">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -572,12 +572,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="TabControl">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -613,12 +613,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Menu">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -727,12 +727,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ToolBar">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -813,12 +813,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="StatusBar">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -837,12 +837,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="ProgressBar">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 
@@ -851,12 +851,12 @@
 
 					<StackPanel>
 						<StackPanel.Margin>
-							<Thickness Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}" />
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 						</StackPanel.Margin>
 
 						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Slider">
 							<TextBlock.Margin>
-								<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 							</TextBlock.Margin>
 						</TextBlock>
 

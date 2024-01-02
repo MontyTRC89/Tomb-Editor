@@ -15,7 +15,7 @@
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.SmallThickness}" />
 
 		<!--  Template  -->
 		<Setter Property="Template">
@@ -144,10 +144,10 @@
 		<Setter Property="Padding">
 			<Setter.Value>
 				<Thickness
-					Bottom="{x:Static local:Defaults.MediumThicknessWidth}"
-					Left="{x:Static local:Defaults.LargeThicknessWidth}"
-					Right="{x:Static local:Defaults.LargeThicknessWidth}"
-					Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+					Bottom="{x:Static local:Defaults.SmallThicknessWidth}"
+					Left="{x:Static local:Defaults.MediumThicknessWidth}"
+					Right="{x:Static local:Defaults.MediumThicknessWidth}"
+					Top="{x:Static local:Defaults.SmallThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 

@@ -214,7 +214,7 @@
 				<Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="{x:Type TabItem}">
 					<Setter Property="Padding">
 						<Setter.Value>
-							<Thickness Left="{x:Static local:Defaults.LargeThicknessWidth}" Right="{x:Static local:Defaults.LargeThicknessWidth}" />
+							<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
 						</Setter.Value>
 					</Setter>
 				</Style>

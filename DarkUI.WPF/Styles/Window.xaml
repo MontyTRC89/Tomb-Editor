@@ -13,8 +13,8 @@
 			<Setter.Value>
 				<WindowChrome
 					CaptionHeight="{x:Static local:Defaults.TitleBar_ChromeHeight}"
-					GlassFrameThickness="{x:Static local:Defaults.LargeThickness}"
-					ResizeBorderThickness="{x:Static local:Defaults.MediumThickness}"
+					GlassFrameThickness="{x:Static local:Defaults.MediumThickness}"
+					ResizeBorderThickness="{x:Static local:Defaults.SmallThickness}"
 					UseAeroCaptionButtons="False" />
 			</Setter.Value>
 		</Setter>

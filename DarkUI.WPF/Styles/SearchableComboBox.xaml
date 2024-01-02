@@ -23,7 +23,7 @@
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.SmallThickness}" />
 
 		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
@@ -50,7 +50,7 @@
 							PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
 							<Border
 								Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
-								Padding="{x:Static local:Defaults.MediumThickness}"
+								Padding="{x:Static local:Defaults.SmallThickness}"
 								Background="{DynamicResource Brush_Background_Low}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
@@ -98,7 +98,7 @@
 										BorderBrush="{DynamicResource Brush_Border}"
 										BorderThickness="{x:Static local:Defaults.BorderThickness}">
 										<Border.Margin>
-											<Thickness Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+											<Thickness Top="{x:Static local:Defaults.SmallThicknessWidth}" />
 										</Border.Margin>
 
 										<Grid>

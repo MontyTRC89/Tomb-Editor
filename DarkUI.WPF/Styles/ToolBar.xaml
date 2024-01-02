@@ -55,7 +55,7 @@
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="BorderBrush" Value="Transparent" />
 
-		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.SmallThickness}" />
 
 		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
 		<Setter Property="Template">
@@ -265,7 +265,7 @@
 									VerticalAlignment="Center"
 									ContentSource="Header">
 									<ContentPresenter.Margin>
-										<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
+										<Thickness Left="{x:Static local:Defaults.SmallThicknessWidth}" Right="{x:Static local:Defaults.SmallThicknessWidth}" />
 									</ContentPresenter.Margin>
 								</ContentPresenter>
 								<ToolBarPanel
@@ -337,7 +337,7 @@
 							<Setter TargetName="header" Property="DockPanel.Dock" Value="Top" />
 							<Setter TargetName="header" Property="Margin">
 								<Setter.Value>
-									<Thickness Bottom="{x:Static local:Defaults.MediumThicknessWidth}" Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+									<Thickness Bottom="{x:Static local:Defaults.SmallThicknessWidth}" Top="{x:Static local:Defaults.SmallThicknessWidth}" />
 								</Setter.Value>
 							</Setter>
 

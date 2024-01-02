@@ -56,7 +56,7 @@
 							</Rectangle>
 						</Grid>
 						<TextBlock
-							Margin="{x:Static local:Defaults.MediumThickness}"
+							Margin="{x:Static local:Defaults.SmallThickness}"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
 							<TextBlock.Text>

@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}" Height="auto" Width="711">
 
-    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition />

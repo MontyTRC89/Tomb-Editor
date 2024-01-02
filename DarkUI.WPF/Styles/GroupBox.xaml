@@ -17,7 +17,7 @@
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.SmallThickness}" />
 
 		<!--  Template  -->
 		<Setter Property="Template">
@@ -56,7 +56,7 @@
 							Grid.RowSpan="2"
 							Grid.Column="1">
 							<Border.Padding>
-								<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
+								<Thickness Left="{x:Static local:Defaults.SmallThicknessWidth}" Right="{x:Static local:Defaults.SmallThicknessWidth}" />
 							</Border.Padding>
 
 							<ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />

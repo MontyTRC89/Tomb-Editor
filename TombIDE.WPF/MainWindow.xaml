@@ -14,8 +14,8 @@
 
 	<sg:SpacedGrid
 		Margin="{x:Static darkUI:Defaults.SuperThickness}"
-		ColumnSpacing="{x:Static darkUI:Defaults.ExtraJumboThicknessWidth}"
-		RowSpacing="{x:Static darkUI:Defaults.ExtraJumboThicknessWidth}">
+		ColumnSpacing="{x:Static darkUI:Defaults.ExtraLargeThicknessWidth}"
+		RowSpacing="{x:Static darkUI:Defaults.ExtraLargeThicknessWidth}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -134,7 +134,7 @@
 		<Border
 			Grid.Row="2"
 			Grid.ColumnSpan="2"
-			Padding="{x:Static darkUI:Defaults.JumboThickness}"
+			Padding="{x:Static darkUI:Defaults.LargeThickness}"
 			BorderBrush="{DynamicResource Brush_Border}"
 			BorderThickness="{x:Static darkUI:Defaults.BorderThickness}">
 			<Grid>
@@ -142,7 +142,7 @@
 				<Button
 					Width="140"
 					Height="Auto"
-					Padding="{x:Static darkUI:Defaults.LargeThickness}"
+					Padding="{x:Static darkUI:Defaults.MediumThickness}"
 					HorizontalAlignment="Right"
 					Content="Open selected project" />
 			</Grid>

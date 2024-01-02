@@ -16,7 +16,7 @@
 		<!--  Thicknesses  -->
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" />
+				<Thickness Left="{x:Static local:Defaults.SmallThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 

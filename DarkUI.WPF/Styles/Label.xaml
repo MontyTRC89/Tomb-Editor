@@ -22,7 +22,7 @@
 		TargetType="{x:Type Label}">
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
+				<Thickness Left="{x:Static local:Defaults.SmallThicknessWidth}" Right="{x:Static local:Defaults.SmallThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 	</Style>

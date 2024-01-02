@@ -77,7 +77,7 @@
 
 		<!--  Thicknesses  -->
 		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
-		<Setter Property="Padding" Value="{x:Static local:Defaults.MediumThickness}" />
+		<Setter Property="Padding" Value="{x:Static local:Defaults.SmallThickness}" />
 
 		<!--  ScrollViewer  -->
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
@@ -169,8 +169,8 @@
 			<Setter.Value>
 				<Thickness
 					Bottom="{x:Static local:Defaults.TinyThicknessWidth}"
-					Left="{x:Static local:Defaults.MediumThicknessWidth}"
-					Right="{x:Static local:Defaults.MediumThicknessWidth}"
+					Left="{x:Static local:Defaults.SmallThicknessWidth}"
+					Right="{x:Static local:Defaults.SmallThicknessWidth}"
 					Top="{x:Static local:Defaults.TinyThicknessWidth}" />
 			</Setter.Value>
 		</Setter>

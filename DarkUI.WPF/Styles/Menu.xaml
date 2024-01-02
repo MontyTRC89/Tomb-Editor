@@ -209,10 +209,10 @@
 				<ContentPresenter ContentSource="Header" RecognizesAccessKey="True">
 					<ContentPresenter.Margin>
 						<Thickness
-							Bottom="{x:Static local:Defaults.MediumThicknessWidth}"
-							Left="{x:Static local:Defaults.LargeThicknessWidth}"
-							Right="{x:Static local:Defaults.LargeThicknessWidth}"
-							Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+							Bottom="{x:Static local:Defaults.SmallThicknessWidth}"
+							Left="{x:Static local:Defaults.MediumThicknessWidth}"
+							Right="{x:Static local:Defaults.MediumThicknessWidth}"
+							Top="{x:Static local:Defaults.SmallThicknessWidth}" />
 					</ContentPresenter.Margin>
 				</ContentPresenter>
 				<Popup
@@ -281,10 +281,10 @@
 				<ContentPresenter ContentSource="Header" RecognizesAccessKey="True">
 					<ContentPresenter.Margin>
 						<Thickness
-							Bottom="{x:Static local:Defaults.MediumThicknessWidth}"
-							Left="{x:Static local:Defaults.LargeThicknessWidth}"
-							Right="{x:Static local:Defaults.LargeThicknessWidth}"
-							Top="{x:Static local:Defaults.MediumThicknessWidth}" />
+							Bottom="{x:Static local:Defaults.SmallThicknessWidth}"
+							Left="{x:Static local:Defaults.MediumThicknessWidth}"
+							Right="{x:Static local:Defaults.MediumThicknessWidth}"
+							Top="{x:Static local:Defaults.SmallThicknessWidth}" />
 					</ContentPresenter.Margin>
 				</ContentPresenter>
 			</Grid>
@@ -361,7 +361,7 @@
 					ContentSource="Header"
 					RecognizesAccessKey="True">
 					<ContentPresenter.Margin>
-						<Thickness Left="{x:Static local:Defaults.LargeThicknessWidth}" />
+						<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" />
 					</ContentPresenter.Margin>
 				</ContentPresenter>
 				<TextBlock
@@ -370,7 +370,7 @@
 					VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 					Text="{TemplateBinding InputGestureText}">
 					<TextBlock.Margin>
-						<Thickness Left="{x:Static local:Defaults.JumboThicknessWidth}" Right="{x:Static local:Defaults.JumboThicknessWidth}" />
+						<Thickness Left="{x:Static local:Defaults.LargeThicknessWidth}" Right="{x:Static local:Defaults.LargeThicknessWidth}" />
 					</TextBlock.Margin>
 				</TextBlock>
 			</Grid>
@@ -432,7 +432,7 @@
 					ContentSource="Header"
 					RecognizesAccessKey="True">
 					<ContentPresenter.Margin>
-						<Thickness Left="{x:Static local:Defaults.LargeThicknessWidth}" />
+						<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" />
 					</ContentPresenter.Margin>
 				</ContentPresenter>
 				<Path
