@@ -11,7 +11,8 @@ namespace TombLib.LevelData
 {
     public enum AttractorType
     {
-        Edge
+        Edge,
+        WallEdge
     }
 
     public class Attractor
