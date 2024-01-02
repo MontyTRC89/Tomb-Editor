@@ -24,16 +24,16 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public LuaStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
+		public LuaStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.Lua_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.Lua_DockPanelState;
 
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -51,8 +51,8 @@ namespace TombIDE.ScriptingStudio
 
 			if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -83,11 +83,11 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = true; // TEMP !!!
+					IDE.Instance.ScriptDefined = true; // TEMP !!!
 				}
 				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
 				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
+					IDE.Instance.StringDefined = IsLevelLanguageStringDefined(strpce.String);
 					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -190,7 +190,7 @@ namespace TombIDE.ScriptingStudio
 					"LevelFuncs.OnLoad = function() end\n" +
 					"LevelFuncs.OnSave = function() end\n" +
 					"LevelFuncs.OnStart = function() end\n" +
-					"LevelFuncs.OnControlPhase = function() end\n" +
+					"LevelFuncs.OnLoop = function() end\n" +
 					"LevelFuncs.OnEnd = function() end\n");
 			}
 			catch
@@ -245,7 +245,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)

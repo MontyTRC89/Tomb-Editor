@@ -1670,7 +1670,7 @@ namespace TombLib.LevelData.IO
                 // Build geometry
                 progressReporter?.ReportProgress(80, "Building geometry");
                 foreach (var room in level.ExistingRooms)
-                    room.BuildGeometry();
+                    room.BuildGeometry(true);
 
                 // Build faces
                 progressReporter?.ReportProgress(85, "Texturize faces");
@@ -1965,6 +1965,9 @@ namespace TombLib.LevelData.IO
                         }
                 }
             }
+
+            progressReporter?.ReportInfo("Re-adjusting face textures where needed (Legacy floor / ceiling chunks)");
+            LegacyRepair.SwapFacesWhereApplicable(level.ExistingRooms, true, true);
 
             if (adjustUV)
                 progressReporter?.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");

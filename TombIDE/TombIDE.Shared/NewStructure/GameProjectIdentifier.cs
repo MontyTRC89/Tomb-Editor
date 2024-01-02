@@ -13,7 +13,7 @@ namespace TombIDE.Shared.NewStructure
 
 		private static readonly string[] ValidEngineExecutableNames = new string[]
 		{
-			"Tomb1Main.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
+			"Tomb1Main.exe", "TR1X.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
 		};
 
 		private static readonly string[] PlatformSpecificDirectories = new string[] // TEN only
@@ -228,7 +228,7 @@ namespace TombIDE.Shared.NewStructure
 						throw new DirectoryNotFoundException("The game's \"cfg\" directory could not be found.");
 
 					if (!IsValidScriptDirectory(scriptsDirectory, TRVersion.Game.TR1))
-						throw new Exception($"The game's \"cfg\" directory does not contain a valid {Tomb1MainGameProject.MainScriptFileName} file.");
+						throw new Exception("The game's \"cfg\" directory does not contain a valid gameflow file.");
 
 					result = scriptsDirectory;
 					break;
@@ -321,6 +321,7 @@ namespace TombIDE.Shared.NewStructure
 			TRVersion.Game version = fileName.ToUpper() switch
 			{
 				"TOMB1MAIN" => TRVersion.Game.TR1,
+				"TR1X" => TRVersion.Game.TR1,
 				"TOMB2" => TRVersion.Game.TR2,
 				"TOMB3" => TRVersion.Game.TR3,
 				"TOMB4" => TRVersion.Game.TR4,
@@ -347,10 +348,8 @@ namespace TombIDE.Shared.NewStructure
 			switch (targetGameVersion)
 			{
 				case TRVersion.Game.TR1:
-					string[] json5Files = Directory.GetFiles(directoryPath, "*.json5", SearchOption.TopDirectoryOnly);
-
-					return Array.Exists(json5Files, file
-						=> Path.GetFileName(file).Equals(Tomb1MainGameProject.MainScriptFileName, StringComparison.OrdinalIgnoreCase));
+					string[] gameflowFiles = Directory.GetFiles(directoryPath, Tomb1MainGameProject.MainScriptFileNameFilter, SearchOption.TopDirectoryOnly);
+					return gameflowFiles.Length > 0;
 
 				case TRVersion.Game.TombEngine:
 					string[] luaFiles = Directory.GetFiles(directoryPath, "*.lua", SearchOption.TopDirectoryOnly);

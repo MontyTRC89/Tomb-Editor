@@ -49,7 +49,7 @@ namespace TombLib.LevelData
         {
             return "Sphere Volume" + GetScriptIDOrName(true) +
                    " (" + (Room?.ToString() ?? "NULL") + ")" + "\n" +
-                   EventSet?.GetDescription() ?? string.Empty;
+                   (EventSet as VolumeEventSet)?.GetDescription() ?? string.Empty;
         }
 
         public override string ShortName() => "Sphere volume" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
@@ -99,7 +99,7 @@ namespace TombLib.LevelData
         {
             return "Box Volume" + GetScriptIDOrName(true) +
                    " (" + (Room?.ToString() ?? "NULL") +")" + "\n" +
-                   EventSet?.GetDescription() ?? string.Empty;
+                   (EventSet as VolumeEventSet)?.GetDescription() ?? string.Empty;
         }
 
         public override string ShortName() => "Box volume" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";

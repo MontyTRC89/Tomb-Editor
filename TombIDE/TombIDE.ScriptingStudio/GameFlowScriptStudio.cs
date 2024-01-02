@@ -24,9 +24,9 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public GameFlowScriptStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
+		public GameFlowScriptStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.GFL_DockPanelState;
 
 			FileExplorer.Filter = "*.txt";
 			FileExplorer.CommentPrefix = "//";
@@ -35,7 +35,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR2);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR2);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -74,7 +74,7 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
+					IDE.Instance.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -88,8 +88,8 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.GFL_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.GFL_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)
@@ -163,25 +163,25 @@ namespace TombIDE.ScriptingStudio
 
 			try
 			{
-				string engineExecutable = IDE.Global.Project.GetEngineExecutableFilePath();
+				string engineExecutable = IDE.Instance.Project.GetEngineExecutableFilePath();
 				var fileVersionInfo = FileVersionInfo.GetVersionInfo(engineExecutable);
 				var productVersion = new Version(fileVersionInfo.ProductVersion ?? "0.0");
 
 				bool success;
 
-				if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
+				if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
 					&& productVersion >= new Version(2, 0, 0, 0))
 				{
 					success = ScriptCompiler.CompileTR3Version2Plus(
 						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
-						IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+						IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild);
 				}
 				else
 				{
 					success = ScriptCompiler.ClassicCompile(
 						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
-						IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
-						IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+						IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
+						IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild);
 				}
 
 				if (success)

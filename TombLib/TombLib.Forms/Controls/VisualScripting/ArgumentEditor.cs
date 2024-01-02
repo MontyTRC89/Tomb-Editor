@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData;
@@ -168,7 +169,7 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.SoundTracks:
                     foreach (var item in editor.CachedSoundTracks)
-                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
+                        cbList.Items.Add(new ComboBoxItem(Path.GetFileNameWithoutExtension(item), TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.CompareOperator:
                     foreach (var item in Enum.GetValues(typeof(ConditionType)))
@@ -542,7 +543,7 @@ namespace TombLib.Controls.VisualScripting
                     break;
 
                 case ArgumentType.SoundTracks:
-                    OnSoundtrackPlayed((cbList.SelectedItem.ToString()));
+                    OnSoundtrackPlayed(TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
                     break;
 
                 default:

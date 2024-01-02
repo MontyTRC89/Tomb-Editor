@@ -6,6 +6,8 @@
 		<Item LangKey="Save" Command="Save" Icon="Save_16" Keys="Save" />
 		<Item LangKey="SaveAs" Command="SaveAs" />
 		<Item LangKey="SaveAll" Command="SaveAll" Icon="SaveAll_16" Keys="SaveAll" />
+		<Separator />
+		<Item LangKey="Exit" Command="Exit" Icon="Exit_16" Keys="Exit" />
 	</Item>
 
 	<Item LangKey="Edit" Position="1">

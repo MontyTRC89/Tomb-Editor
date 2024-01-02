@@ -758,7 +758,7 @@
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
 			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "TR4 Script";
+			this.sectionPanel.SectionHeader = "TR4 / TRNG Script";
 			this.sectionPanel.Size = new System.Drawing.Size(720, 412);
 			this.sectionPanel.TabIndex = 0;
 			// 

@@ -1405,9 +1405,9 @@ namespace TombLib.LevelData
             }
         }
 
-        public void BuildGeometry()
+        public void BuildGeometry(bool legacy = false)
         {
-            RoomGeometry = new RoomGeometry(this);
+            RoomGeometry = new RoomGeometry(this, legacy);
         }
 
         public void RebuildLighting(bool highQualityLighting)

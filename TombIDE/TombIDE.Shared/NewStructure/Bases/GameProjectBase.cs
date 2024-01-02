@@ -297,5 +297,21 @@ namespace TombIDE.Shared.NewStructure
 				_ => throw new NotSupportedException("The specified .trproj file is for an unsupported game version.")
 			};
 		}
+
+		public virtual Version GetCurrentEngineVersion()
+		{
+			try
+			{
+				string engineExecutablePath = GetEngineExecutableFilePath();
+				string versionInfo = FileVersionInfo.GetVersionInfo(engineExecutablePath).ProductVersion;
+				return new Version(versionInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public virtual Version GetLatestEngineVersion() => null;
 	}
 }

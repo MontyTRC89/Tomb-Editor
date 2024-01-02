@@ -207,7 +207,8 @@ namespace TombEditor.Controls
         {
             butChangeNodeColor.Enabled =
             butRenameNode.Enabled =
-            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
+            butDeleteNode.Enabled = 
+            butLockNodes.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
 
@@ -566,6 +567,12 @@ namespace TombEditor.Controls
 
             Clipboard.SetText(exportedNodes);
             _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
+        }
+
+        private void butLockNodes_Click(object sender, EventArgs e)
+        {
+            foreach (var node in nodeEditor.SelectedNodes)
+                nodeEditor.LockNode(node, !node.Locked);
         }
     }
 }
