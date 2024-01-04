@@ -73,7 +73,11 @@
 											VerticalAlignment="Center"
 											FontSize="{x:Static local:Defaults.TitleBar_FontSize}"
 											Foreground="{TemplateBinding Foreground}"
-											Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}" />
+											Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}">
+											<TextBlock.Margin>
+												<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" />
+											</TextBlock.Margin>
+										</TextBlock>
 									</Grid>
 									<StackPanel
 										Grid.Column="0"

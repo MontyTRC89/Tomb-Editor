@@ -12,6 +12,7 @@
     <None Remove="Assets\add-48.png" />
     <None Remove="Assets\import-48.png" />
     <None Remove="Assets\open-48.png" />
+    <None Remove="Assets\TIDE.png" />
     <None Remove="Assets\TIDE_Logo.png" />
   </ItemGroup>
 
@@ -25,6 +26,7 @@
     <Resource Include="Assets\open-48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\TIDE.png" />
   </ItemGroup>
 
   <ItemGroup>
