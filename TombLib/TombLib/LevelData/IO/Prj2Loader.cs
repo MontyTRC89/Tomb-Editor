@@ -786,7 +786,7 @@ namespace TombLib.LevelData.IO
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloor)
+                                    else if (id4 == Prj2Chunks.SectorFloor) // DEPRECATED
                                     {
                                         usesLegacyFloor = true;
 
@@ -812,7 +812,7 @@ namespace TombLib.LevelData.IO
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorOnly) // DEPRECATED
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly)
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
