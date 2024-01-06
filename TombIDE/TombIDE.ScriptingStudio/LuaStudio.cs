@@ -184,9 +184,10 @@ namespace TombIDE.ScriptingStudio
 				}
 
 				string dataName = inputLines[0].Split('=')[0].Trim();
+				string filePath = Path.Combine(ScriptRootDirectoryPath, "Levels", dataName + ".lua");
 
-				File.WriteAllText(Path.Combine(ScriptRootDirectoryPath, dataName + ".lua"),
-					$"---- FILE: \\{dataName}.lua\n\n" +
+				File.WriteAllText(filePath,
+					$"-- FILE: Levels\\{dataName}.lua\n\n" +
 					"LevelFuncs.OnLoad = function() end\n" +
 					"LevelFuncs.OnSave = function() end\n" +
 					"LevelFuncs.OnStart = function() end\n" +
