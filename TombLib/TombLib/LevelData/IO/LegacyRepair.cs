@@ -31,8 +31,12 @@ internal static class LegacyRepair
     /// </summary>
     private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
     {
-        Block block = room.Blocks[x, z];
-        Subdivision subdivision = block.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+        Block block = room.GetBlockTry(x, z);
+
+        if (block is null)
+            return;
+
+        Subdivision subdivision = block.ExtraFloorSubdivisions.FirstOrDefault();
 
         if (subdivision is null)
             return;
@@ -43,25 +47,25 @@ internal static class LegacyRepair
             zn = room.GetBlockTryThroughPortal(x, z - 1),
             zp = room.GetBlockTryThroughPortal(x, z + 1);
 
-        if (xn.Block != null)
+        if (xn.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_QA));
         }
 
-        if (xp.Block != null)
+        if (xp.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XnZp)
                 block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_QA));
         }
 
-        if (zn.Block != null)
+        if (zn.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA));
         }
 
-        if (zp.Block != null)
+        if (zp.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZn)
                 block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA));
@@ -73,8 +77,12 @@ internal static class LegacyRepair
     /// </summary>
     private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
     {
-        Block block = room.Blocks[x, z];
-        Subdivision subdivision = block.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
+        Block block = room.GetBlockTry(x, z);
+
+        if (block is null)
+            return;
+
+        Subdivision subdivision = block.ExtraCeilingSubdivisions.FirstOrDefault();
 
         if (subdivision is null)
             return;
@@ -85,25 +93,25 @@ internal static class LegacyRepair
             zn = room.GetBlockTryThroughPortal(x, z - 1),
             zp = room.GetBlockTryThroughPortal(x, z + 1);
 
-        if (xn.Block != null)
+        if (xn.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_WS));
         }
 
-        if (xp.Block != null)
+        if (xp.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XnZp)
                 block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_WS));
         }
 
-        if (zn.Block != null)
+        if (zn.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS));
         }
 
-        if (zp.Block != null)
+        if (zp.Block is not null)
         {
             if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZn)
                 block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS));
@@ -112,21 +120,24 @@ internal static class LegacyRepair
 
     private static void SwapDiagonalFloor2FacesWhereApplicable(Room room, int x, int z)
     {
-        Block localBlock = room.Blocks[x, z],
+        Block localBlock = room.GetBlockTry(x, z),
             probingBlock = localBlock;
 
-        if (localBlock.WallPortal != null)
+        if (localBlock is null)
+            return;
+
+        if (localBlock.WallPortal is not null)
         {
             RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
 
-            if (pair.Room != room && pair.Block != null)
+            if (pair.Room != room && pair.Block is not null)
                 probingBlock = pair.Block;
         }
 
-        if (probingBlock.Floor.DiagonalSplit == DiagonalSplit.None)
+        if (probingBlock.Floor.DiagonalSplit is DiagonalSplit.None)
             return;
 
-        Subdivision subdivision = localBlock.ExtraFloorSubdivisions.ElementAtOrDefault(0);
+        Subdivision subdivision = localBlock.ExtraFloorSubdivisions.FirstOrDefault();
 
         if (subdivision is null)
             return;
@@ -175,21 +186,24 @@ internal static class LegacyRepair
 
     private static void SwapDiagonalCeiling2FacesWhereApplicable(Room room, int x, int z)
     {
-        Block localBlock = room.Blocks[x, z],
+        Block localBlock = room.GetBlockTry(x, z),
             probingBlock = localBlock;
 
-        if (localBlock.WallPortal != null)
+        if (localBlock is null)
+            return;
+
+        if (localBlock.WallPortal is not null)
         {
             RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
 
-            if (pair.Room != room && pair.Block != null)
+            if (pair.Room != room && pair.Block is not null)
                 probingBlock = pair.Block;
         }
 
-        if (probingBlock.Ceiling.DiagonalSplit == DiagonalSplit.None)
+        if (probingBlock.Ceiling.DiagonalSplit is DiagonalSplit.None)
             return;
 
-        Subdivision subdivision = localBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
+        Subdivision subdivision = localBlock.ExtraCeilingSubdivisions.FirstOrDefault();
 
         if (subdivision is null)
             return;

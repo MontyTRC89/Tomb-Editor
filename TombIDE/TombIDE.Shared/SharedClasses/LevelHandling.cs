@@ -90,7 +90,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"\n{dataFileName} = Level.new()",
 					"",
 					$"{dataFileName}.nameKey = \"{dataFileName}\"",
-					$"{dataFileName}.scriptFile = \"Scripts\\\\{dataFileName}.lua\"",
+					$"{dataFileName}.scriptFile = \"Scripts\\\\Levels\\\\{dataFileName}.lua\"",
 					$"{dataFileName}.ambientTrack = \"{ambientSoundID}\"",
 					$"{dataFileName}.horizon = " + (horizon ? "true" : "false"),
 					$"{dataFileName}.levelFile = \"Data\\\\{dataFileName}.ten\"",

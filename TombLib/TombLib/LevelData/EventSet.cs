@@ -9,15 +9,10 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-    // In future, we will allow not just to assign manually written Lua scripts from script file,
-    // but also automatically construct visual scripts from predefined Lua templates.
-
     public enum EventSetMode
     {
         LevelScript, NodeEditor
     }
-
-    // Possible event types.
     
     public enum EventType
     {

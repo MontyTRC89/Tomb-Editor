@@ -361,9 +361,7 @@ namespace TombEditor.Forms
         private void PopulateEventTypeList()
         {
             cbEvents.Items.Clear();
-
-            foreach (var eventType in (GlobalMode ? Event.GlobalEventTypes : Event.VolumeEventTypes))
-                cbEvents.Items.Add(eventType);
+            cbEvents.Items.AddRange((GlobalMode ? Event.GlobalEventTypes : Event.VolumeEventTypes).Cast<object>().ToArray());
         }
 
         private void PopulateEventSetList()
@@ -514,14 +512,18 @@ namespace TombEditor.Forms
 
             if (GlobalMode)
             {
-                newSet = new GlobalEventSet() { Name = name };
+                newSet = new GlobalEventSet() 
+                { 
+                    Name = name,
+                    LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit]
+                };
             }
             else
             {
                 newSet = new VolumeEventSet()
                 {
                     Name = name,
-                    LastUsedEvent = (EventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
+                    LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit]
                 };
             }
 
