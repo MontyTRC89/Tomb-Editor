@@ -698,18 +698,18 @@ namespace TombLib.LevelData.Compilers
             {
                 var surface = floor ? block.Floor : block.Ceiling;
 
-                HeightXnZn = surface.XnZn;
-                HeightXpZn = surface.XpZn;
-                HeightXnZp = surface.XnZp;
-                HeightXpZp = surface.XpZp;
+                HeightXnZn = surface.XnZn / 4;
+                HeightXpZn = surface.XpZn / 4;
+                HeightXnZp = surface.XnZp / 4;
+                HeightXpZp = surface.XpZp / 4;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 if (block.HasGhostBlock && block.GhostBlock.Valid)
                 {
-                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn : block.GhostBlock.Ceiling.XnZn;
-                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn : block.GhostBlock.Ceiling.XpZn;
-                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp : block.GhostBlock.Ceiling.XnZp;
-                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp : block.GhostBlock.Ceiling.XpZp;
+                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn / 4 : block.GhostBlock.Ceiling.XnZn / 4;
+                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn / 4 : block.GhostBlock.Ceiling.XpZn / 4;
+                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp / 4 : block.GhostBlock.Ceiling.XnZp / 4;
+                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp / 4 : block.GhostBlock.Ceiling.XpZp / 4;
                 }
 
                 switch (portalType)
@@ -754,18 +754,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = surface.XpZp - surface.XnZp;
+                        DiagonalStep = (surface.XpZp - surface.XnZp) / 4;
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = surface.XpZn - surface.XpZp;
+                        DiagonalStep = (surface.XpZn - surface.XpZp) / 4;
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = surface.XnZp - surface.XnZn;
+                        DiagonalStep = (surface.XnZp - surface.XnZn) / 4;
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -774,7 +774,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = surface.XnZn - surface.XpZn;
+                        DiagonalStep = (surface.XnZn - surface.XpZn) / 4;
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

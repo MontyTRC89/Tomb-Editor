@@ -77,7 +77,7 @@ namespace TombEditor
                     for (int x = 0; x < Width; x++)
                         for (int z = 0; z < Height; z++)
                         {
-                            var b = sectors[x, z] = new Block(0, 12);
+                            var b = sectors[x, z] = new Block(0, 48);
 
                             int verticalsCount = reader.ReadInt32();
 

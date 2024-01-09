@@ -18,6 +18,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Utils;
+using System.Windows.Input;
 
 namespace TombEditor
 {
@@ -99,7 +100,10 @@ namespace TombEditor
 
         private static void GenericDirectionalControlCommand(CommandArgs args, BlockVertical surface, short increment, bool smooth, bool oppositeDiagonal)
         {
-            if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+            if (!Keyboard.IsKeyToggled(Key.CapsLock))
+				increment *= 4;
+
+			if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
                 EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
             }

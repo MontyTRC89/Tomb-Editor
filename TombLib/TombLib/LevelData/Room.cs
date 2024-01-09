@@ -79,7 +79,7 @@ namespace TombLib.LevelData
         public delegate void RemovedFromRoomDelegate(Room instance);
         public event RemovedFromRoomDelegate DeletedEvent;
 
-        public const short DefaultHeight = 12;
+        public const short DefaultHeight = 48;
         public const short DefaultRoomDimensions = 20;
 
         public Level Level { get; set; }

@@ -750,7 +750,7 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomPosition)
-                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new Vector3(1, Level.LegacyFloorHeightMultiplier, 1));
                     else if (id2 == Prj2Chunks.RoomTags)
                     {
                         var tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ');
@@ -792,9 +792,9 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.LegacyFloorHeightMultiplier);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.LegacyFloorHeightMultiplier);
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -805,33 +805,52 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.LegacyFloorHeightMultiplier);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.LegacyFloorHeightMultiplier);
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorOnly)
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly || id4 == Prj2Chunks.SectorFloorOnly2)
                                     {
+                                        bool isLegacy = id4 == Prj2Chunks.SectorFloorOnly;
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                        {
+                                            short height = LEB128.ReadShort(chunkIO.Raw);
+
+                                            if (isLegacy)
+                                                height *= Level.LegacyFloorHeightMultiplier;
+
+                                            block.Floor.SetHeight(edge, height);
+                                        }
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingOnly)
+                                    else if (id4 == Prj2Chunks.SectorCeilingOnly || id4 == Prj2Chunks.SectorCeilingOnly2)
                                     {
+                                        bool isLegacy = id4 == Prj2Chunks.SectorCeilingOnly;
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                        {
+                                            short height = LEB128.ReadShort(chunkIO.Raw);
+
+                                            if (isLegacy)
+                                                height *= Level.LegacyFloorHeightMultiplier;
+
+                                            block.Ceiling.SetHeight(edge, height);
+                                        }
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions || id4 == Prj2Chunks.SectorFloorSubdivisions2)
                                     {
+                                        bool isLegacy = id4 == Prj2Chunks.SectorFloorSubdivisions;
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
                                         for (int i = 0; i < extraSubdivisionCount; i++)
@@ -840,11 +859,19 @@ namespace TombLib.LevelData.IO
                                             block.ExtraFloorSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            {
+                                                short height = LEB128.ReadShort(chunkIO.Raw);
+
+                                                if (isLegacy)
+                                                    height *= Level.LegacyFloorHeightMultiplier;
+
+                                                block.SetHeight(subdivisionVertical, edge, height);
+                                            }
                                         }
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions || id4 == Prj2Chunks.SectorCeilingSubdivisions2)
                                     {
+                                        bool isLegacy = id4 == Prj2Chunks.SectorCeilingSubdivisions;
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
                                         for (int i = 0; i < extraSubdivisionCount; i++)
@@ -853,7 +880,14 @@ namespace TombLib.LevelData.IO
                                             block.ExtraCeilingSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            {
+                                                short height = LEB128.ReadShort(chunkIO.Raw);
+
+                                                if (isLegacy)
+                                                    height *= Level.LegacyFloorHeightMultiplier;
+
+                                                block.SetHeight(subdivisionVertical, edge, height);
+                                            }
                                         }
                                     }
                                     else if (id4 == Prj2Chunks.TextureLevelTexture ||
