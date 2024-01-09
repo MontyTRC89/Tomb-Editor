@@ -3,7 +3,7 @@ LevelVars.TimerRemainingTime = {}
 
 -- !Name "Create timer"
 -- !Conditional "False"
--- !Description "Basic timer"
+-- !Description "Creates a simple countdown.\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -22,7 +22,7 @@ end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, the specified thing happens"
+-- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -42,7 +42,7 @@ end
 
 -- !Name "Create timer with volume event set"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, an Event set is activated"
+-- !Description "Creates a countdown that triggers a volume event set upon ending.\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -66,7 +66,7 @@ end
 
 -- !Name "Create timer with global event set"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, an Event set is activated"
+-- !Description "Creates a countdown that triggers a global event set upon ending.\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
