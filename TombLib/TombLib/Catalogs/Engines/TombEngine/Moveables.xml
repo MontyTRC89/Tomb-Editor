@@ -37,6 +37,8 @@
     <moveable id="35" name="LARA_CROWBAR_ANIM" use_body_from="12" />
     <moveable id="36" name="LARA_TORCH_ANIM" use_body_from="12" />
     <moveable id="37" name="HAIR" />
+	<moveable id="38" name="LARA_MAGNUMS_ANIM" />
+	<moveable id="39" name="LARA_HOLSTERS_MAGNUMS" />
     <moveable id="50" name="SNOWMOBILE_LARA_ANIMS" use_body_from="12" />
     <moveable id="51" name="SNOWMOBILE" />
     <moveable id="52" name="QUAD_LARA_ANIMS" use_body_from="12" />
@@ -717,6 +719,8 @@
     <moveable id="990" name="PC_LOAD_INV_ITEM" />
     <moveable id="991" name="PC_SAVE_INV_ITEM" />
     <moveable id="992" name="DIARY_OPEN" />
+	<moveable id="993" name="MAGNUMS_ITEM" />
+	<moveable id="994" name="MAGNUMS_AMMO_ITEM" />
     <moveable id="1000" name="INVENTORY_PASSPORT" />
     <moveable id="1001" name="INVENTORY_SUNGLASSES" />
     <moveable id="1002" name="INVENTORY_KEYS" />

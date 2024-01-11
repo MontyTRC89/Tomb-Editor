@@ -3,7 +3,7 @@
     <moveable id="0" name="Lara" ten="LARA" />
     <moveable id="1" name="Lara pistol animation" use_body_from="0" hidden="true" ten="PISTOLS_ANIM" />
     <moveable id="2" name="Lara shotgun animation" use_body_from="0" hidden="true" ten="SHOTGUN_ANIM" />
-    <moveable id="3" name="Lara magnum animation" use_body_from="0" hidden="true" />
+    <moveable id="3" name="Lara magnum animation" use_body_from="0" hidden="true" ten="LARA_MAGNUMS_ANIM"/>
     <moveable id="4" name="Lara Uzi animation" use_body_from="0" hidden="true" ten="UZI_ANIM" />
     <moveable id="5" name="Lara misc animations" use_body_from="0" hidden="true" ten="ANIMATING33" />
     <moveable id="6" name="Lara's evil twin mutant" essential="false" ten="DOPPELGANGER" />
@@ -88,11 +88,11 @@
     <moveable id="98" name="Flashlight" hidden="true" ten="ANIMATING84" />
     <moveable id="99" name="Pistol" id2="84" ten="PISTOL_ITEM" />
     <moveable id="100" name="Shotgun" id2="85" ten="SHOTGUN_ITEM" />
-    <moveable id="101" name="Magnum" id2="86" />
+    <moveable id="101" name="Magnum" id2="86" ten="MAGNUMS_ITEM" />
     <moveable id="102" name="Uzi" id2="87" ten="UZI_ITEM" />
     <moveable id="103" name="Pistol ammo" ten="PISTOL_AMMO_ITEM" />
     <moveable id="104" name="Shotgun ammo" id2="89" ten="SHOTGUN_AMMO_ITEM" />
-    <moveable id="105" name="Magnum ammo" id2="90" />
+    <moveable id="105" name="Magnum ammo" id2="90" ten="MAGNUMS_AMMO_ITEM" />
     <moveable id="106" name="Uzi ammo" id2="91" ten="UZI_AMMO_ITEM" />
     <moveable id="108" name="Small medipack" id2="93" ten="SMALLMEDI_ITEM" />
     <moveable id="109" name="Large medipack" id2="94" ten="BIGMEDI_ITEM" />
