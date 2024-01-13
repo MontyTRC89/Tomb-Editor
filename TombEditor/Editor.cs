@@ -1340,7 +1340,7 @@ namespace TombEditor
                     {
                         // Get all compatible projects
                         var directory = new DirectoryInfo(path);
-                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2")
+                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".backup.prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.backup.prj2")
                                                     .OrderBy(d => d.Name)
                                                     .Select(d => d.Name)
                                                     .ToList();
