@@ -3022,6 +3022,22 @@ namespace TombEditor
             var mainPortal = new PortalInstance(area, destinationDirection, destination);
             var portals = room.AddObject(_editor.Level, mainPortal).Cast<PortalInstance>();
 
+            if (destinationDirection >= PortalDirection.WallPositiveZ) // If portal is any wall
+            {
+                // Remove all subdivisions from affected walls to expose geometry of the other room
+                for (int z = area.Y0; z <= area.Y1; ++z)
+                    for (int x = area.X0; x <= area.X1; ++x)
+                    {
+                        Block block = room.GetBlockTry(x, z);
+
+                        if (block == null)
+                            continue;
+
+                        block.ExtraFloorSubdivisions.Clear();
+                        block.ExtraCeilingSubdivisions.Clear();
+                    }
+            }
+
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
             {
