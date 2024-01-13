@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using TombLib.Utils;
@@ -60,6 +61,16 @@ namespace TombIDE.Shared.NewStructure.Implementations
 			if (allPrj2Files.Length == 0)
 			{
 				errorMessage = "The level project directory does not contain any .prj2 files.";
+				return false;
+			}
+
+			string targetPrj2FilePath = TargetPrj2FileName is not null
+				? Path.Combine(DirectoryPath, TargetPrj2FileName)
+				: Path.Combine(DirectoryPath, GetMostRecentlyModifiedPrj2FileName());
+
+			if (!File.Exists(targetPrj2FilePath))
+			{
+				errorMessage = "The target .prj2 file does not exist.";
 				return false;
 			}
 

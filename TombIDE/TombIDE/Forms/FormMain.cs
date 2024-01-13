@@ -78,17 +78,12 @@ namespace TombIDE
 		{
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
 			{
-				levelManager.IsMainWindowFocued = true;
 				scriptingStudio.IsMainWindowFocued = true;
-
 				scriptingStudio.EditorTabControl.TryRunFileReloadQueue();
 			}
 
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
-			{
-				levelManager.IsMainWindowFocued = false;
 				scriptingStudio.IsMainWindowFocued = false;
-			}
 
 			if (IsDisposed)
 				NativeMethods.UnhookWinEvent(eventHook);
