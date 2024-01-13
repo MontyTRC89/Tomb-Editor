@@ -1590,7 +1590,7 @@ namespace TombLib.LevelData
                 yC = yQaB <= yFloorB ? yFloorB : yQaB;
 
                 dto.Face = middleFace;
-                TryRenderMiddleWallFace(dto, (yA, yB), (yC, yD));
+                TryRenderMiddleWallFace(dto, (yC, yD), (yA, yB));
 
                 #endregion LEGACY GEOMETRY CODE
                 return;
