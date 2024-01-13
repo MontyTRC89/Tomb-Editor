@@ -2093,5 +2093,26 @@ namespace TombLib.LevelData
         }
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+
+        public HashSet<Room> GetAdjoiningRoomsFromArea(RectangleInt2 area)
+        {
+            var adjoiningRooms = new HashSet<Room>();
+
+            for (int x = area.X0; x <= area.X1; x++)
+            {
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    Block block = GetBlockTry(x, z);
+
+                    if (block is null)
+                        continue;
+
+                    if (block.WallPortal is not null)
+                        adjoiningRooms.Add(block.WallPortal.AdjoiningRoom);
+                }
+            }
+
+            return adjoiningRooms;
+        }
     }
 }
