@@ -33,16 +33,12 @@
 			section_LevelProperties = new SectionLevelProperties();
 			label_Title = new DarkUI.Controls.DarkLabel();
 			button_Update = new DarkUI.Controls.DarkButton();
-			levelFolderWatcher = new System.IO.FileSystemWatcher();
-			prj2FileWatcher = new System.IO.FileSystemWatcher();
 			tableLayout_Main.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
 			splitContainer.Panel1.SuspendLayout();
 			splitContainer.Panel2.SuspendLayout();
 			splitContainer.SuspendLayout();
 			tableLayoutPanel_List.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)levelFolderWatcher).BeginInit();
-			((System.ComponentModel.ISupportInitialize)prj2FileWatcher).BeginInit();
 			SuspendLayout();
 			// 
 			// tableLayout_Main
@@ -224,21 +220,6 @@
 			button_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			button_Update.Click += button_Update_Click;
 			// 
-			// levelFolderWatcher
-			// 
-			levelFolderWatcher.EnableRaisingEvents = true;
-			levelFolderWatcher.NotifyFilter = System.IO.NotifyFilters.DirectoryName;
-			levelFolderWatcher.SynchronizingObject = this;
-			levelFolderWatcher.Deleted += levelFolderWatcher_Deleted;
-			// 
-			// prj2FileWatcher
-			// 
-			prj2FileWatcher.EnableRaisingEvents = true;
-			prj2FileWatcher.Filter = "*.prj2";
-			prj2FileWatcher.IncludeSubdirectories = true;
-			prj2FileWatcher.SynchronizingObject = this;
-			prj2FileWatcher.Deleted += prj2FileWatcher_Deleted;
-			// 
 			// LevelManager
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -255,8 +236,6 @@
 			((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
 			splitContainer.ResumeLayout(false);
 			tableLayoutPanel_List.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)levelFolderWatcher).EndInit();
-			((System.ComponentModel.ISupportInitialize)prj2FileWatcher).EndInit();
 			ResumeLayout(false);
 		}
 
@@ -265,8 +244,6 @@
 		private DarkUI.Controls.DarkLabel label_Title;
 		private SectionLevelList section_LevelList;
 		private SectionLevelProperties section_LevelProperties;
-		private System.IO.FileSystemWatcher levelFolderWatcher;
-		private System.IO.FileSystemWatcher prj2FileWatcher;
 		private System.Windows.Forms.SplitContainer splitContainer;
 		private System.Windows.Forms.TableLayoutPanel tableLayout_Main;
 		private System.Windows.Forms.Panel panel_Icon;
