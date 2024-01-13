@@ -80,7 +80,12 @@ namespace TombEditor
                 if (smooth)
                     _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom.AndAdjoiningRooms);
                 else
-                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+                {
+                    HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area);
+                    affectedRooms.Add(room);
+
+                    _editor.UndoManager.PushGeometryChanged(affectedRooms);
+                }
             }
 
             if (smooth)
