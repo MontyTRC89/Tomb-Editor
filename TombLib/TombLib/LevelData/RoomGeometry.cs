@@ -2159,7 +2159,7 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)(Level.HeightUnit * 4);
+                    int currentYclick = currentY / -(int)Level.FullClickHeight;
 
                     if (currentZblock > 0)
                     {
