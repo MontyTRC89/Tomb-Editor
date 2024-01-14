@@ -14,12 +14,13 @@ namespace TombLib.LevelData
 
         public const float BlockSizeUnit = 1024.0f;
         public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
+        public const float FullClickHeight = 256.0f;
         public const float HeightUnit = 64.0f;
 
-		/// <summary>
-		/// This multiplier is used to convert legacy floor heights to new heights, since 1 click is <c>64.0f</c> now, but used to be <c>256.0f</c>.
-		/// </summary>
-		public const int LegacyFloorHeightMultiplier = 4;
+        /// <summary>
+        /// This multiplier is used to convert legacy floor heights to new heights, since 1 click is <c>64.0f</c> now, but used to be <c>256.0f</c>.
+        /// </summary>
+        public const int FullClickUnitMultiplier = 4;
 
         public const short MaxNumberOfRooms = 1024;
 

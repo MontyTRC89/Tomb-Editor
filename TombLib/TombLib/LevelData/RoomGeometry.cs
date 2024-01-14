@@ -2054,14 +2054,14 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)(Level.HeightUnit * 4);
+                    int currentYclick = currentY / -(int)Level.FullClickHeight;
 
                     if (currentXblock > 0)
                     {
                         Block currentBlock = room.Blocks[currentXblock - 1, currentZblock];
 
-                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XnZn) / 8 > currentYclick ||
-                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XnZn) / 8 < currentYclick ||
+                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XnZn) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XnZn) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2078,11 +2078,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XpZp) / 8 > currentYclick ||
-                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XpZp) / 8 < currentYclick ||
+                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XpZp) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XpZp) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (nextBlock.Floor.XnZp + nextBlock.Floor.XnZn) / 8 > currentYclick ||
-                            (nextBlock.Ceiling.XnZp + nextBlock.Ceiling.XnZn) / 8 < currentYclick ||
+                            (nextBlock.Floor.XnZp + nextBlock.Floor.XnZn) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (nextBlock.Ceiling.XnZp + nextBlock.Ceiling.XnZn) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2165,8 +2165,8 @@ namespace TombLib.LevelData
                     {
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
 
-                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XnZn) / 8 > currentYclick ||
-                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XnZn) / 8 < currentYclick ||
+                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XnZn) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XnZn) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2183,11 +2183,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XpZp) / 8 > currentYclick ||
-                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XpZp) / 8 < currentYclick ||
+                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XpZp) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XpZp) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (nextBlock.Floor.XpZn + nextBlock.Floor.XnZn) / 8 > currentYclick ||
-                            (nextBlock.Ceiling.XpZn + nextBlock.Ceiling.XnZn) / 8 < currentYclick ||
+                            (nextBlock.Floor.XpZn + nextBlock.Floor.XnZn) / 2 / Level.FullClickUnitMultiplier > currentYclick ||
+                            (nextBlock.Ceiling.XpZn + nextBlock.Ceiling.XnZn) / 2 / Level.FullClickUnitMultiplier < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;

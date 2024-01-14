@@ -698,18 +698,18 @@ namespace TombLib.LevelData.Compilers
             {
                 var surface = floor ? block.Floor : block.Ceiling;
 
-                HeightXnZn = surface.XnZn / 4;
-                HeightXpZn = surface.XpZn / 4;
-                HeightXnZp = surface.XnZp / 4;
-                HeightXpZp = surface.XpZp / 4;
+                HeightXnZn = surface.XnZn / Level.FullClickUnitMultiplier;
+                HeightXpZn = surface.XpZn / Level.FullClickUnitMultiplier;
+                HeightXnZp = surface.XnZp / Level.FullClickUnitMultiplier;
+                HeightXpZp = surface.XpZp / Level.FullClickUnitMultiplier;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 if (block.HasGhostBlock && block.GhostBlock.Valid)
                 {
-                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn / 4 : block.GhostBlock.Ceiling.XnZn / 4;
-                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn / 4 : block.GhostBlock.Ceiling.XpZn / 4;
-                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp / 4 : block.GhostBlock.Ceiling.XnZp / 4;
-                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp / 4 : block.GhostBlock.Ceiling.XpZp / 4;
+                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn / Level.FullClickUnitMultiplier : block.GhostBlock.Ceiling.XnZn / Level.FullClickUnitMultiplier;
+                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn / Level.FullClickUnitMultiplier : block.GhostBlock.Ceiling.XpZn / Level.FullClickUnitMultiplier;
+                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp / Level.FullClickUnitMultiplier : block.GhostBlock.Ceiling.XnZp / Level.FullClickUnitMultiplier;
+                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp / Level.FullClickUnitMultiplier : block.GhostBlock.Ceiling.XpZp / Level.FullClickUnitMultiplier;
                 }
 
                 switch (portalType)
@@ -754,18 +754,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = (surface.XpZp - surface.XnZp) / 4;
+                        DiagonalStep = (surface.XpZp - surface.XnZp) / Level.FullClickUnitMultiplier;
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = (surface.XpZn - surface.XpZp) / 4;
+                        DiagonalStep = (surface.XpZn - surface.XpZp) / Level.FullClickUnitMultiplier;
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = (surface.XnZp - surface.XnZn) / 4;
+                        DiagonalStep = (surface.XnZp - surface.XnZn) / Level.FullClickUnitMultiplier;
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -774,7 +774,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = (surface.XnZn - surface.XpZn) / 4;
+                        DiagonalStep = (surface.XnZn - surface.XpZn) / Level.FullClickUnitMultiplier;
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
