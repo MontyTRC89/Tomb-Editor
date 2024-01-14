@@ -200,6 +200,9 @@ namespace TombIDE.ProjectMaster
 
 		private void ShowRenameLevelForm()
 		{
+			if (!IsValidLevel(_ide.SelectedLevel))
+				return;
+
 			using var form = new FormRenameLevel(_ide);
 			form.ShowDialog(this); // After the form is done, it will trigger IDE.SelectedLevelSettingsChangedEvent
 		}
@@ -207,6 +210,9 @@ namespace TombIDE.ProjectMaster
 		private void DeleteLevel()
 		{
 			var affectedLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
+
+			if (!IsValidLevel(affectedLevel))
+				return;
 
 			// We can't allow deleting directories of external levels, so we must handle them differently
 
@@ -244,6 +250,9 @@ namespace TombIDE.ProjectMaster
 
 		private void RefreshLevelList()
 		{
+			treeView.SelectedNodes.Clear();
+			CheckItemSelection();
+
 			string cachedNodeText = string.Empty;
 
 			if (treeView.SelectedNodes.Count > 0)
@@ -304,39 +313,15 @@ namespace TombIDE.ProjectMaster
 			// Set the SelectedLevel variable if a node is selected
 			// Triggers IDE.SelectedLevelChangedEvent
 			if (treeView.SelectedNodes.Count > 0)
-			{
-				var nodeLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
-
-				// Validation check
-				if (!nodeLevel.IsValid(out _))
-				{
-					treeView.SelectedNodes.Clear();
-					CheckItemSelection(); // Recursion
-
-					RefreshLevelList();
-					return;
-				}
-
-				_ide.SelectedLevel = nodeLevel;
-			}
+				_ide.SelectedLevel = (ILevelProject)treeView.SelectedNodes[0].Tag;
 			else
 				_ide.SelectedLevel = null;
 		}
 
 		private void OpenSelectedLevel()
 		{
-			if (_ide.SelectedLevel == null)
+			if (!IsValidLevel(_ide.SelectedLevel))
 				return;
-
-			// Validation check
-			if (!_ide.SelectedLevel.IsValid(out _))
-			{
-				treeView.SelectedNodes.Clear();
-				CheckItemSelection();
-
-				RefreshLevelList();
-				return;
-			}
 
 			string prj2Path;
 
@@ -405,6 +390,9 @@ namespace TombIDE.ProjectMaster
 
 		private void button_Rebuild_Click(object sender, EventArgs e)
 		{
+			if (!IsValidLevel(_ide.SelectedLevel))
+				return;
+
 			var batchList = new BatchCompileList();
 
 			string prj2Path;
@@ -428,6 +416,37 @@ namespace TombIDE.ProjectMaster
 			};
 
 			Process.Start(startInfo);
+		}
+
+		private bool IsValidLevel(ILevelProject level)
+		{
+			bool isValid;
+			string errorMessage;
+
+			if (level is null)
+			{
+				isValid = false;
+				errorMessage = "The selected level is null.";
+			}
+			else
+				isValid = level.IsValid(out errorMessage);
+
+			if (!isValid)
+			{
+				string message =
+					"The selected level is invalid.\n" +
+					$"Error message: {errorMessage}\n" +
+					"Would you like to refresh the level list?";
+
+				DialogResult result = DarkMessageBox.Show(this, message, "Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+				if (result is DialogResult.Yes)
+					RefreshLevelList();
+
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
