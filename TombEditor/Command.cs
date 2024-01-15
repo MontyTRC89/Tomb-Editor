@@ -100,15 +100,15 @@ namespace TombEditor
 
         private static void GenericDirectionalControlCommand(CommandArgs args, BlockVertical surface, short increment, bool smooth, bool oppositeDiagonal)
         {
-            if (!Keyboard.IsKeyToggled(Key.CapsLock))
-                increment *= Level.FullClickUnitMultiplier;
-
             if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
                 EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
             }
             else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == BlockVertical.Floor || surface == BlockVertical.Ceiling) && !oppositeDiagonal && !smooth)
             {
+                if (!Keyboard.IsKeyToggled(Key.CapsLock))
+                    increment *= Level.FullClickUnitMultiplier;
+
                 if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment * Level.HeightUnit, 0), new Vector3(), true);
                 else if (args.Editor.SelectedObject is GhostBlockInstance)

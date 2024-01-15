@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using TombEditor.Forms;
 using TombLib;
 using TombLib.Controls;
@@ -75,6 +76,9 @@ namespace TombEditor
 
         public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
+            if (!Keyboard.IsKeyToggled(Key.CapsLock))
+                increment *= Level.FullClickUnitMultiplier;
+
             if (!disableUndo)
             {
                 if (smooth)
