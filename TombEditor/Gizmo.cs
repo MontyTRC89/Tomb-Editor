@@ -130,7 +130,7 @@ namespace TombEditor
         protected override void GizmoMoveDelta(Vector3 delta)
         {
             if (_editor.SelectedObject is GhostBlockInstance)
-                ((GhostBlockInstance)_editor.SelectedObject).Move((int)(delta.Y / 256));
+                ((GhostBlockInstance)_editor.SelectedObject).Move((int)(delta.Y / 256), !Control.IsKeyLocked(Keys.CapsLock));
         }
 
         protected override Vector3 Position

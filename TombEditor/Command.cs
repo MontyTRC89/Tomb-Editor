@@ -18,7 +18,6 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Utils;
-using System.Windows.Input;
 
 namespace TombEditor
 {
@@ -102,18 +101,25 @@ namespace TombEditor
         {
             if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
-                EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
+                EditorActions.EditSectorGeometry(
+                    args.Editor.SelectedRoom,
+                    args.Editor.SelectedSectors.Area,
+                    args.Editor.SelectedSectors.Arrow,
+                    surface, increment, smooth, oppositeDiagonal,
+                    incrementInFullClicks: !Control.IsKeyLocked(Keys.CapsLock));
             }
             else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == BlockVertical.Floor || surface == BlockVertical.Ceiling) && !oppositeDiagonal && !smooth)
             {
-                if (!Keyboard.IsKeyToggled(Key.CapsLock))
-                    increment *= Level.FullClickUnitMultiplier;
-
                 if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
+                {
+                    if (!Control.IsKeyLocked(Keys.CapsLock))
+                        increment *= Level.FullClickUnitMultiplier;
+
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment * Level.HeightUnit, 0), new Vector3(), true);
+                }
                 else if (args.Editor.SelectedObject is GhostBlockInstance)
                 {
-                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment, surface == BlockVertical.Floor);
+                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment, !Control.IsKeyLocked(Keys.CapsLock), surface == BlockVertical.Floor);
                     args.Editor.RoomSectorPropertiesChange(args.Editor.SelectedRoom);
                 }
             }
@@ -1378,56 +1384,56 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SmoothRandomFloorDown", "Smooth random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SmoothRandomCeilingUp", "Smooth random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SmoothRandomCeilingDown", "Smooth random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SharpRandomFloorDown", "Sharp random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SharpRandomCeilingUp", "Sharp random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("SharpRandomCeilingDown", "Sharp random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling, !Control.IsKeyLocked(Keys.CapsLock));
             });
 
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)

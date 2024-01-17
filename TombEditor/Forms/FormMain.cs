@@ -201,12 +201,19 @@ namespace TombEditor.Forms
                 if (room == null)
                     statusStripSelectedRoom.Text = "Selected room: None";
                 else
+                {
+                    float
+                        posY = room.Position.Y / (float)Level.FullClickUnitMultiplier,
+                        lowestCorner = room.GetLowestCorner() / (float)Level.FullClickUnitMultiplier,
+                        highestCorner = room.GetHighestCorner() / (float)Level.FullClickUnitMultiplier;
+
                     statusStripSelectedRoom.Text = "Selected room: " +
                         "Name = " + room + " | " +
                         "Size = " + (room.NumXSectors - 2) + " x " + (room.NumZSectors - 2) + " | " +
-                        "Pos = (" + room.Position.X + ", " + room.Position.Y + ", " + room.Position.Z + ") | " +
-                        "Floor = " + (room.Position.Y + room.GetLowestCorner()) + " | " +
-                        "Ceiling = " + (room.Position.Y + room.GetHighestCorner());
+                        "Pos = (" + room.Position.X + ", " + posY + ", " + room.Position.Z + ") | " +
+                        "Floor = " + (posY + lowestCorner) + " | " +
+                        "Ceiling = " + (posY + highestCorner);
+                }
             }
 
             // Update selection information of the status strip
@@ -224,13 +231,15 @@ namespace TombEditor.Forms
                 }
                 else
                 {
-                    int minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area);
-                    int maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area);
+                    float
+                        posY = room.Position.Y / (float)Level.FullClickUnitMultiplier,
+                        minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickUnitMultiplier,
+                        maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickUnitMultiplier;
 
                     statusStripGlobalSelectionArea.Text = "Area = " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X0) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y0) + ") \u2192 " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X1) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y1) + ")" +
-                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : room.Position.Y + minHeight + ", " + (room.Position.Y + maxHeight)) + "]";
+                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : posY + minHeight + ", " + (posY + maxHeight)) + "]";
 
                     statusStripLocalSelectionArea.Text = "Size = " + (1 + Math.Abs(_editor.SelectedSectors.Size.X)) + 
                         " x " + (1 + Math.Abs(_editor.SelectedSectors.Size.Y));

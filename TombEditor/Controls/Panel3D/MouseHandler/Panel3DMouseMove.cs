@@ -154,7 +154,8 @@ namespace TombEditor.Controls.Panel3D
                                     subdivisionToEdit,
                                     (short)Math.Sign(dragValue.Value.Y),
                                     ModifierKeys.HasFlag(Keys.Alt),
-                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
+                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true,
+									incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
                                 break;
                             case EditorToolType.Terrain:
                                 _toolHandler.DiscardEditedGeometry();
@@ -165,7 +166,8 @@ namespace TombEditor.Controls.Panel3D
                                     _toolHandler.RandomHeightMap,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
-                                    ModifierKeys.HasFlag(Keys.Alt));
+                                    ModifierKeys.HasFlag(Keys.Alt),
+                                    !IsKeyLocked(Keys.CapsLock));
                                 break;
                             default:
                                 _toolHandler.DiscardEditedGeometry();
@@ -176,7 +178,8 @@ namespace TombEditor.Controls.Panel3D
                                     subdivisionToEdit,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
-                                    ModifierKeys.HasFlag(Keys.Alt));
+                                    ModifierKeys.HasFlag(Keys.Alt),
+									incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
                                 break;
                         }
                     }
@@ -249,7 +252,8 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
-                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, true);
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, true,
+											incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
                                         break;
 
                                     case EditorToolType.Drag:
@@ -266,7 +270,8 @@ namespace TombEditor.Controls.Panel3D
                                             belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                             (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
                                             _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
-                                            false, false, true, true);
+                                            false, false, true, true,
+											incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
                                         break;
                                 }
                                 return true;

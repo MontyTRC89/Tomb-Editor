@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using TombEditor.Forms;
 using TombLib;
 using TombLib.Controls;
@@ -74,11 +73,8 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false, bool incrementInFullClicks = true)
         {
-            if (!Keyboard.IsKeyToggled(Key.CapsLock))
-                increment *= Level.FullClickUnitMultiplier;
-
             if (!disableUndo)
             {
                 if (smooth)
@@ -157,7 +153,7 @@ namespace TombEditor
                            !pair.Block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
                             pair.Block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
-                            pair.Room.ChangeBlockHeight(pair.Pos.X, pair.Pos.Y, vertical, edge, increment);
+                            pair.Room.ChangeBlockHeight(pair.Pos.X, pair.Pos.Y, vertical, edge, increment, incrementInFullClicks);
                             pair.Block.FixHeights(vertical);
                         }
                     }
@@ -229,9 +225,9 @@ namespace TombEditor
                         if (arrow == ArrowType.EntireFace)
                         {
                             if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
-                                targetRoom.RaiseBlockStepWise(targetPos.X, targetPos.Y, vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                                targetRoom.RaiseBlockStepWise(targetPos.X, targetPos.Y, vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals, incrementInFullClicks);
                             else
-                                targetRoom.RaiseBlock(targetPos.X, targetPos.Y, vertical, increment, false);
+                                targetRoom.RaiseBlock(targetPos.X, targetPos.Y, vertical, increment, incrementInFullClicks);
                         }
                         else
                         {
@@ -279,7 +275,7 @@ namespace TombEditor
 
                                 for (int i = 0; i < 2; i++)
                                     if (currentSplit != splits[i])
-                                        targetRoom.ChangeBlockHeight(targetPos.X, targetPos.Y, vertical, corners[i], increment);
+                                        targetRoom.ChangeBlockHeight(targetPos.X, targetPos.Y, vertical, corners[i], increment, incrementInFullClicks);
                             }
                             else
                             {
@@ -295,7 +291,7 @@ namespace TombEditor
                                     else
                                         continue;
                                 }
-                                targetRoom.ChangeBlockHeight(targetPos.X, targetPos.Y, vertical, corners[0], increment);
+                                targetRoom.ChangeBlockHeight(targetPos.X, targetPos.Y, vertical, corners[0], increment, incrementInFullClicks);
                             }
                         }
                         targetBlock.FixHeights(vertical);
@@ -399,7 +395,7 @@ namespace TombEditor
             }
         }
 
-        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
+        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false, bool incrementInFullClicks = true)
         {
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
@@ -447,17 +443,17 @@ namespace TombEditor
                                    (lookupBlocks[6].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[1] +
                                    (lookupBlocks[7].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[2]) / validBlockCntXnZn;
 
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)));
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)), incrementInFullClicks);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)), incrementInFullClicks);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)), incrementInFullClicks);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)), incrementInFullClicks);
 
             currBlock.Block.FixHeights(vertical);
 
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, BlockVertical vertical, double heightScale, bool precise, bool stepped)
+        public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, BlockVertical vertical, double heightScale, bool precise, bool stepped, bool incrementInFullClicks = true)
         {
             if (precise)
                 heightScale /= 4;
@@ -502,16 +498,16 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.RaiseBlock(w, h, vertical, (int)currentHeight, false);
+                        room.RaiseBlock(w, h, vertical, (int)currentHeight, incrementInFullClicks);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
-                        room.ModifyHeightThroughPortal(w, h, vertical, (int)currentHeight, area);
+                        room.ModifyHeightThroughPortal(w, h, vertical, (int)currentHeight, area, incrementInFullClicks);
                 }
             SmartBuildGeometry(room, area);
         }
 
-        public static void ApplyHeightmap(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, float[,] heightmap, float heightScale, bool precise, bool raw)
+        public static void ApplyHeightmap(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, float[,] heightmap, float heightScale, bool precise, bool raw, bool incrementInFullClicks)
         {
             if (precise)
                 heightScale /= 4;
@@ -532,7 +528,7 @@ namespace TombEditor
 
                     int currX = x * (heightmap.GetLength(0) / (area.Width + 2));
                     int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
-                    room.ModifyHeightThroughPortal(w, h, vertical, (int)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area);
+                    room.ModifyHeightThroughPortal(w, h, vertical, (int)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area, incrementInFullClicks);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -3098,7 +3094,7 @@ namespace TombEditor
             _editor.RoomPropertiesChange(room);
         }
 
-        public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
+        public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical, bool incrementInFullClicks)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -3112,12 +3108,12 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.ChangeBlockHeight(area.X0 + x, area.Y0 + z, vertical, edge,
-                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]));
+                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]), incrementInFullClicks);
 
             SmartBuildGeometry(room, area);
         }
 
-        public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
+        public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical, bool incrementInFullClicks)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -3126,7 +3122,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.ChangeBlockHeight(area.X0 + x, area.Y0 + z, vertical, edge,
-                            (int)Math.Round((float)rng.NextDouble() * strengthDirection));
+                            (int)Math.Round((float)rng.NextDouble() * strengthDirection), incrementInFullClicks);
 
             SmartBuildGeometry(room, area);
         }
@@ -3618,7 +3614,7 @@ namespace TombEditor
                         // Transform positions
                         foreach (BlockVertical vertical in oldBlock.GetVerticals().Union(newBlock.GetVerticals()))
                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                sector.Value.ChangeBlockHeight(newBlockVec.X, newBlockVec.Y, vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
+                                sector.Value.ChangeBlockHeight(newBlockVec.X, newBlockVec.Y, vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y, false);
 
                         newRoomToHandle.SetBlock(sector.Key - newRoomToHandle.SectorPos, newBlock);
                     }

@@ -38,12 +38,25 @@ namespace TombLib.LevelData
 
         public string InfoMessage()
         {
-            return "floor: (" + Floor.XnZp + ", " + Floor.XpZp + ", " + Floor.XpZn + ", " + Floor.XnZn + ")\n" +
-                   "ceiling: (" + Ceiling.XnZp + ", " + Ceiling.XpZp + ", " + Ceiling.XpZn + ", " + Ceiling.XnZn + ")";
+            float
+                floorXnZp = Floor.XnZp / (float)Level.FullClickUnitMultiplier,
+                floorXpZp = Floor.XpZp / (float)Level.FullClickUnitMultiplier,
+                floorXpZn = Floor.XpZn / (float)Level.FullClickUnitMultiplier,
+                floorXnZn = Floor.XnZn / (float)Level.FullClickUnitMultiplier,
+                ceilingXnZp = Ceiling.XnZp / (float)Level.FullClickUnitMultiplier,
+                ceilingXpZp = Ceiling.XpZp / (float)Level.FullClickUnitMultiplier,
+                ceilingXpZn = Ceiling.XpZn / (float)Level.FullClickUnitMultiplier,
+                ceilingXnZn = Ceiling.XnZn / (float)Level.FullClickUnitMultiplier;
+
+            return "floor: (" + floorXnZp + ", " + floorXpZp + ", " + floorXpZn + ", " + floorXnZn + ")\n" +
+                   "ceiling: (" + ceilingXnZp + ", " + ceilingXpZp + ", " + ceilingXpZn + ", " + ceilingXnZn + ")";
         }
 
-        public void Move(int delta, bool? forceSurface = null)
+        public void Move(int delta, bool incrementInFullClicks, bool? forceSurface = null)
         {
+            if (incrementInFullClicks)
+				delta *= Level.FullClickUnitMultiplier;
+
             if (SelectedCorner.HasValue)
                 Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
             else

@@ -140,15 +140,15 @@ namespace TombLib.LevelData
 
                     if (!useFloor.HasValue)
                     {
-                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Floor, floor);
+                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Floor, floor, false);
 
                         for (int i = 0; i < oldBlock.ExtraFloorSubdivisions.Count; i++)
-                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
+                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor, false);
 
-                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Ceiling, ceiling);
+                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Ceiling, ceiling, false);
 
                         for (int i = 0; i < oldBlock.ExtraCeilingSubdivisions.Count; i++)
-                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling);
+                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling, false);
                     }
 
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
@@ -533,7 +533,7 @@ namespace TombLib.LevelData
         }
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new VectorInt2(x, z));
 
-        public void ModifyHeightThroughPortal(int x, int z, BlockVertical vertical, int increment, RectangleInt2 area)
+        public void ModifyHeightThroughPortal(int x, int z, BlockVertical vertical, int increment, RectangleInt2 area, bool incrementInFullClicks)
         {
             if (x <= 0 || z <= 0 || x >= NumXSectors || z >= NumZSectors)
                 return;
@@ -542,7 +542,7 @@ namespace TombLib.LevelData
             {
                 if (vertical.IsOnFloor() && Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
                 {
-                    ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, increment);
+                    ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, increment, incrementInFullClicks);
                     Blocks[x, z].FixHeights(vertical);
                 }
             }
@@ -551,7 +551,7 @@ namespace TombLib.LevelData
                 var adjacentLeftBlock = GetBlockTry(x - 1, z);
                 if (adjacentLeftBlock != null && (vertical.IsOnFloor() && adjacentLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    ChangeBlockHeight(x - 1, z, vertical, BlockEdge.XpZn, increment);
+                    ChangeBlockHeight(x - 1, z, vertical, BlockEdge.XpZn, increment, incrementInFullClicks);
                     adjacentLeftBlock.FixHeights(vertical);
                 }
             }
@@ -560,7 +560,7 @@ namespace TombLib.LevelData
                 var adjacentBottomBlock = GetBlockTry(x, z - 1);
                 if (adjacentBottomBlock != null && (vertical.IsOnFloor() && adjacentBottomBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    ChangeBlockHeight(x, z - 1, vertical, BlockEdge.XnZp, increment);
+                    ChangeBlockHeight(x, z - 1, vertical, BlockEdge.XnZp, increment, incrementInFullClicks);
                     adjacentBottomBlock.FixHeights(vertical);
                 }
             }
@@ -569,7 +569,7 @@ namespace TombLib.LevelData
                 var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
                 if (adjacentBottomLeftBlock != null && (vertical.IsOnFloor() && adjacentBottomLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    ChangeBlockHeight(x - 1, z - 1, vertical, BlockEdge.XpZp, increment);
+                    ChangeBlockHeight(x - 1, z - 1, vertical, BlockEdge.XpZp, increment, incrementInFullClicks);
                     adjacentBottomLeftBlock.FixHeights(vertical);
                 }
             }
@@ -1967,10 +1967,13 @@ namespace TombLib.LevelData
             }
         }
 
-        public void ChangeBlockHeight(int x, int z, BlockVertical vertical, BlockEdge edge, int increment)
+        public void ChangeBlockHeight(int x, int z, BlockVertical vertical, BlockEdge edge, int increment, bool incrementInFullClicks)
         {
             if (increment == 0)
                 return;
+
+            if (incrementInFullClicks)
+                increment *= Level.FullClickUnitMultiplier;
 
             Block block = Blocks[x, z];
 
@@ -2022,7 +2025,7 @@ namespace TombLib.LevelData
             block.SetHeight(vertical, edge, (short)(block.GetHeight(vertical, edge) + increment));
         }
 
-        public void RaiseBlock(int x, int z, BlockVertical vertical, int increment, bool diagonalStep = false)
+        public void RaiseBlock(int x, int z, BlockVertical vertical, int increment, bool incrementInFullClicks, bool diagonalStep = false)
         {
             Block block = Blocks[x, z];
             DiagonalSplit split = vertical.IsOnFloor() ? block.Floor.DiagonalSplit : block.Ceiling.DiagonalSplit;
@@ -2032,16 +2035,16 @@ namespace TombLib.LevelData
                 switch (split)
                 {
                     case DiagonalSplit.XpZn:
-                        ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, increment);
+                        ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, increment, incrementInFullClicks);
                         break;
                     case DiagonalSplit.XnZn:
-                        ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, increment);
+                        ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, increment, incrementInFullClicks);
                         break;
                     case DiagonalSplit.XnZp:
-                        ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, increment);
+                        ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, increment, incrementInFullClicks);
                         break;
                     case DiagonalSplit.XpZp:
-                        ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, increment);
+                        ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, increment, incrementInFullClicks);
                         break;
                 }
             }
@@ -2055,12 +2058,12 @@ namespace TombLib.LevelData
                         (edge == BlockEdge.XpZp && split == DiagonalSplit.XnZn))
                         continue;
 
-                    ChangeBlockHeight(x, z, vertical, edge, increment);
+                    ChangeBlockHeight(x, z, vertical, edge, increment, incrementInFullClicks);
                 }
             }
         }
 
-        public void RaiseBlockStepWise(int x, int z, BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false)
+        public void RaiseBlockStepWise(int x, int z, BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false, bool incrementInFullClicks = true)
         {
             Block block = Blocks[x, z];
             DiagonalSplit split = vertical.IsOnFloor() ? block.Floor.DiagonalSplit : block.Ceiling.DiagonalSplit;
@@ -2075,13 +2078,13 @@ namespace TombLib.LevelData
                     (split == DiagonalSplit.XpZp && block.GetHeight(vertical, BlockEdge.XnZn) == block.GetHeight(vertical, BlockEdge.XnZp) && stepIsLimited))
                 {
                     if (block.IsAnyWall && autoSwitch)
-                        RaiseBlock(x, z, vertical, increment, !diagonalStep);
+                        RaiseBlock(x, z, vertical, increment, incrementInFullClicks, !diagonalStep);
                     else
                     {
                         if (autoSwitch)
                         {
                             block.Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
-                            RaiseBlock(x, z, vertical, increment, !diagonalStep);
+                            RaiseBlock(x, z, vertical, increment, incrementInFullClicks, !diagonalStep);
                         }
 
                         return;
@@ -2089,7 +2092,7 @@ namespace TombLib.LevelData
                 }
             }
 
-            RaiseBlock(x, z, vertical, increment, diagonalStep);
+            RaiseBlock(x, z, vertical, increment, incrementInFullClicks, diagonalStep);
         }
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
