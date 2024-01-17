@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -1409,5 +1410,16 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
+
+        public bool IsPreciseGeometryMode
+        {
+            get
+            {
+                if (!Control.IsKeyLocked(Keys.CapsLock))
+                    return false;
+
+                return Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnablePreciseGeometryControlsForUnsupportedEngines;
+            }
+        }
     }
 }

@@ -98,7 +98,7 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 if (_editor.Tool.Tool == EditorToolType.Smooth)
                                     EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
-										incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
+										incrementInFullClicks: !_editor.IsPreciseGeometryMode);
                                 else if (_editor.Tool.Tool < EditorToolType.Flatten)
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                         new RectangleInt2(pos, pos),
@@ -107,7 +107,7 @@ namespace TombEditor.Controls.Panel3D
                                         (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
                                         _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
                                         false, false, true, true,
-										incrementInFullClicks: !IsKeyLocked(Keys.CapsLock));
+										incrementInFullClicks: !_editor.IsPreciseGeometryMode);
                             }
                         }
                         else if (_editor.Tool.Tool == EditorToolType.PortalDigger && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))

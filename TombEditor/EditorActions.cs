@@ -3162,6 +3162,12 @@ namespace TombEditor
                             int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
+
+                            if (!_editor.IsPreciseGeometryMode)
+                            {
+                                floorHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                                ceilingHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                            }
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3199,10 +3205,24 @@ namespace TombEditor
 
                             // TODO: Add support for more subdivisions
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
-                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f));
-                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling));
+                            short
+                                edHeight = (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor),
+                                qaHeight = (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f),
+                                wsHeight = (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f),
+                                rfHeight = (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling);
+
+                            if (!_editor.IsPreciseGeometryMode)
+                            {
+                                edHeight *= Level.FullClickUnitMultiplier;
+                                qaHeight *= Level.FullClickUnitMultiplier;
+                                wsHeight *= Level.FullClickUnitMultiplier;
+                                rfHeight *= Level.FullClickUnitMultiplier;
+                            }
+
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
+                            block.Floor.SetHeight(edge, qaHeight);
+                            block.Ceiling.SetHeight(edge, wsHeight);
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, rfHeight);
                         }
                     }
                 }
@@ -3233,6 +3253,12 @@ namespace TombEditor
                             int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
+
+                            if (!_editor.IsPreciseGeometryMode)
+                            {
+                                floorHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                                ceilingHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                            }
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3302,10 +3328,24 @@ namespace TombEditor
 
                             // TODO: Add support for subdivisions
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
-                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f));
-                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling));
+                            short
+                                edHeight = (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor),
+                                qaHeight = (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f),
+                                wsHeight = (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f),
+                                rfHeight = (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling);
+
+                            if (!_editor.IsPreciseGeometryMode)
+                            {
+                                edHeight *= Level.FullClickUnitMultiplier;
+                                qaHeight *= Level.FullClickUnitMultiplier;
+                                wsHeight *= Level.FullClickUnitMultiplier;
+                                rfHeight *= Level.FullClickUnitMultiplier;
+                            }
+
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
+                            block.Floor.SetHeight(edge, qaHeight);
+                            block.Ceiling.SetHeight(edge, wsHeight);
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, rfHeight);
                         }
                     }
                 }

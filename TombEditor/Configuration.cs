@@ -28,6 +28,7 @@ namespace TombEditor
         public bool Editor_GridNewRoom { get; set; } = false;
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
+        public bool Editor_EnablePreciseGeometryControlsForUnsupportedEngines { get; set; } = false;
 
         // Item preview options
 
