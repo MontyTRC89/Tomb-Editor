@@ -3136,8 +3136,13 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
                     int sum = 0;
+
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         sum += b.GetHeight(vertical, edge);
+
+                    if (!_editor.IsPreciseGeometryMode)
+                        sum /= Level.FullClickUnitMultiplier;
+
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         b.SetHeight(vertical, edge, sum / 4);
                 }
