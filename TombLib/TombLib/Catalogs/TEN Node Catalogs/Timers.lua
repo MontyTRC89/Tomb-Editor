@@ -295,7 +295,7 @@ end
 
 -- !Name "If remaining time is..."
 -- !Conditional "True"
--- !Description "Checks if the remaining time is equal to, greater to, less to..\nTo be used only in the `On Volume Inside` or `On Loop` events"
+-- !Description "Checks if the remaining time is equal to, greater than, less than..\nTo be used only in the `On Volume Inside` or `On Loop` events"
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
 -- !Arguments "CompareOperator, 30"
@@ -315,7 +315,7 @@ end
 
 -- !Name "If total time is..."
 -- !Conditional "True"
--- !Description "Checks if the Total Time is equal to, greater to, less to...\nTo be used only in the `On Volume Inside` or `On Loop` events"
+-- !Description "Checks if the Total Time is equal to, greater than, less than..\nTo be used only in the `On Volume Inside` or `On Loop` events"
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
 -- !Arguments "CompareOperator, 30"
