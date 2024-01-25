@@ -3140,10 +3140,10 @@ namespace TombEditor
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         sum += b.GetHeight(vertical, edge);
 
-                    sum = sum / increments * increments;
+                    sum /= increments;
 
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                        b.SetHeight(vertical, edge, sum / 4);
+                        b.SetHeight(vertical, edge, sum / 4 * increments);
                 }
             SmartBuildGeometry(room, area);
         }

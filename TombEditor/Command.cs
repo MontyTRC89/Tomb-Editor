@@ -1374,56 +1374,56 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
             });
 
             AddCommand("SmoothRandomFloorDown", "Smooth random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Floor);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
             });
 
             AddCommand("SmoothRandomCeilingUp", "Smooth random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
             });
 
             AddCommand("SmoothRandomCeilingDown", "Smooth random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Ceiling);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
             });
 
             AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor);
             });
 
             AddCommand("SharpRandomFloorDown", "Sharp random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Floor);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor);
             });
 
             AddCommand("SharpRandomCeilingUp", "Sharp random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
             });
 
             AddCommand("SharpRandomCeilingDown", "Sharp random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Ceiling);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
             });
 
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)
