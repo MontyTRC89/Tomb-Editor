@@ -281,7 +281,7 @@
     <sound id="298" name="DRAGON_FEET" ten="557" />
     <sound id="299" name="DRAGON_GROWL1" ten="558" />
     <sound id="300" name="DRAGON_GROWL2" ten="559" />
-    <sound id="301" name="DRAGON_FALL" ten="301" />
+    <sound id="301" name="DRAGON_FALL" ten="1145" />
     <sound id="302" name="DRAGON_BREATH" ten="561" />
     <sound id="303" name="DRAGON_GROWL3" ten="560" />
     <sound id="304" name="DRAGON_GRUNT" ten="562" />
