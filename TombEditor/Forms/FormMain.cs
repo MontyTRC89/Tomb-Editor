@@ -203,9 +203,9 @@ namespace TombEditor.Forms
                 else
                 {
                     float
-                        posY = room.Position.Y / (float)Level.FullClickUnitMultiplier,
-                        lowestCorner = room.GetLowestCorner() / (float)Level.FullClickUnitMultiplier,
-                        highestCorner = room.GetHighestCorner() / (float)Level.FullClickUnitMultiplier;
+                        posY = room.Position.Y / (float)Level.FullClickHeight,
+                        lowestCorner = room.GetLowestCorner() / (float)Level.FullClickHeight,
+                        highestCorner = room.GetHighestCorner() / (float)Level.FullClickHeight;
 
                     statusStripSelectedRoom.Text = "Selected room: " +
                         "Name = " + room + " | " +
@@ -232,9 +232,9 @@ namespace TombEditor.Forms
                 else
                 {
                     float
-                        posY = room.Position.Y / (float)Level.FullClickUnitMultiplier,
-                        minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickUnitMultiplier,
-                        maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickUnitMultiplier;
+                        posY = room.Position.Y / (float)Level.FullClickHeight,
+                        minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickHeight,
+                        maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickHeight;
 
                     statusStripGlobalSelectionArea.Text = "Area = " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X0) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y0) + ") \u2192 " +

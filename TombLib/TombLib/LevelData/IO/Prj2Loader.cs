@@ -750,7 +750,7 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomPosition)
-                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickUnitMultiplier, 1));
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickHeight, 1));
                     else if (id2 == Prj2Chunks.RoomTags)
                     {
                         var tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ');
@@ -792,9 +792,9 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickUnitMultiplier);
+                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickUnitMultiplier);
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -805,9 +805,9 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickUnitMultiplier);
+                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickUnitMultiplier);
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -822,7 +822,7 @@ namespace TombLib.LevelData.IO
                                             short height = LEB128.ReadShort(chunkIO.Raw);
 
                                             if (isLegacy)
-                                                height *= Level.FullClickUnitMultiplier;
+                                                height *= Level.FullClickHeight;
 
                                             block.Floor.SetHeight(edge, height);
                                         }
@@ -840,7 +840,7 @@ namespace TombLib.LevelData.IO
                                             short height = LEB128.ReadShort(chunkIO.Raw);
 
                                             if (isLegacy)
-                                                height *= Level.FullClickUnitMultiplier;
+                                                height *= Level.FullClickHeight;
 
                                             block.Ceiling.SetHeight(edge, height);
                                         }
@@ -863,7 +863,7 @@ namespace TombLib.LevelData.IO
                                                 short height = LEB128.ReadShort(chunkIO.Raw);
 
                                                 if (isLegacy)
-                                                    height *= Level.FullClickUnitMultiplier;
+                                                    height *= Level.FullClickHeight;
 
                                                 block.SetHeight(subdivisionVertical, edge, height);
                                             }
@@ -884,7 +884,7 @@ namespace TombLib.LevelData.IO
                                                 short height = LEB128.ReadShort(chunkIO.Raw);
 
                                                 if (isLegacy)
-                                                    height *= Level.FullClickUnitMultiplier;
+                                                    height *= Level.FullClickHeight;
 
                                                 block.SetHeight(subdivisionVertical, edge, height);
                                             }

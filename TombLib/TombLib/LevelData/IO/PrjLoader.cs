@@ -735,25 +735,25 @@ namespace TombLib.LevelData.IO
                                     break;
                             }
 
-                            block.Floor.XpZn = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier);
-                            block.Floor.XnZn = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier);
-                            block.Floor.XnZp = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier);
-                            block.Floor.XpZp = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier);
+                            block.Floor.XpZn = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight);
+                            block.Floor.XnZn = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight);
+                            block.Floor.XnZp = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight);
+                            block.Floor.XpZp = (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight);
 
-                            block.Ceiling.XpZp = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier);
-                            block.Ceiling.XnZp = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier);
-                            block.Ceiling.XnZn = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier);
-                            block.Ceiling.XpZn = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier);
+                            block.Ceiling.XpZp = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight);
+                            block.Ceiling.XnZp = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight);
+                            block.Ceiling.XnZn = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight);
+                            block.Ceiling.XpZn = (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight);
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickUnitMultiplier));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)((reader.ReadSByte() + blockYfloor) * Level.FullClickHeight));
 
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickUnitMultiplier));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)((reader.ReadSByte() + blockYceiling) * Level.FullClickHeight));
 
                             if ((blockFlags1 & 0x4000) != 0)
                                 block.Flags |= BlockFlags.Monkey;
@@ -1432,7 +1432,7 @@ namespace TombLib.LevelData.IO
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
                                 WadObjectId = new WadMoveableId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color
@@ -1445,7 +1445,7 @@ namespace TombLib.LevelData.IO
                             {
                                 ScriptId = currentObj.ScriptId,
                                 WadObjectId = new WadStaticId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
                                 Ocb = unchecked((short)currentObj.Ocb)

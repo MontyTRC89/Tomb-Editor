@@ -214,13 +214,13 @@ namespace TombEditor.Controls.Panel3D
             {
                 float halfHeight = height / 2.0f;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
             }
 
             void HandlePositiveZ(int x, int z, BlockSurface surface, int yOffset)

@@ -159,7 +159,7 @@ namespace TombLib.GeometryIO
                         offset = -room.GetLocalCenter();
                         int x = (int)-offset.X / (int)Level.BlockSizeUnit;
                         int z = (int)-offset.Z / (int)Level.BlockSizeUnit;
-                        offset.Y = -room.GetLowestCorner(new RectangleInt2(x, z, x, z)) * Level.HeightUnit;
+                        offset.Y = -room.GetLowestCorner(new RectangleInt2(x, z, x, z));
                     }
 
                     int index = level.Rooms.ReferenceIndexOf(room);

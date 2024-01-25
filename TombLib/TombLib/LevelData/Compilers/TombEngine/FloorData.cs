@@ -533,9 +533,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
-                                new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                                new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                                new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit)
+                                new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
+                                new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
+                                new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfBlockSizeUnit)
                             );
                     }
 
@@ -552,9 +552,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
-                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
-                            new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn - shape.DiagonalStep) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
-                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep) * Level.HeightUnit, Level.HalfBlockSizeUnit)
+                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit),
+                            new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn - shape.DiagonalStep, -Level.HalfBlockSizeUnit),
+                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep, Level.HalfBlockSizeUnit)
                         );
                     }
                 }
@@ -575,9 +575,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
-                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                            new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn - shape.DiagonalStep) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
-                            new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp - shape.DiagonalStep) * Level.HeightUnit, Level.HalfBlockSizeUnit)
+                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
+                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn - shape.DiagonalStep, -Level.HalfBlockSizeUnit),
+                            new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp - shape.DiagonalStep, Level.HalfBlockSizeUnit)
                         );
                     }
                     if (shape.SplitWallFirst)
@@ -593,9 +593,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
-                          new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit),
-                          new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                          new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit)
+                          new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfBlockSizeUnit),
+                          new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
+                          new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit)
                       );
                     }
                 }
@@ -609,9 +609,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 newCollision.Planes[0] = GetPlane(
-                        new Vector3(-Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXnZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                        new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZp) * Level.HeightUnit, Level.HalfBlockSizeUnit),
-                        new Vector3(Level.HalfBlockSizeUnit, (-reportRoom.Position.Y - shape.HeightXpZn) * Level.HeightUnit, -Level.HalfBlockSizeUnit)
+                        new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
+                        new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
+                        new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit)
                     );
                 newCollision.Planes[1] = newCollision.Planes[0];
             }

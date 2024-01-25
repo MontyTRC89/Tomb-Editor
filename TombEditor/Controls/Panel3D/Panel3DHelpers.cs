@@ -39,7 +39,7 @@ namespace TombEditor.Controls.Panel3D
             int zBlock = (int)Math.Max(0, Math.Min(room.NumZSectors - 1, Math.Floor(position.Z / Level.BlockSizeUnit)));
 
             // Get the base floor height
-            return room.Blocks[xBlock, zBlock].Floor.Min * Level.HeightUnit;
+            return room.Blocks[xBlock, zBlock].Floor.Min;
         }
 
         private Vector4 ConvertColor(Vector3 originalColor)

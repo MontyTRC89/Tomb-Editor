@@ -79,7 +79,7 @@ namespace TombLib.LevelData
         public delegate void RemovedFromRoomDelegate(Room instance);
         public event RemovedFromRoomDelegate DeletedEvent;
 
-        public const short DefaultHeight = 48;
+        public const short DefaultHeight = 12 * Level.FullClickHeight;
         public const short DefaultRoomDimensions = 20;
 
         public Level Level { get; set; }
@@ -361,8 +361,8 @@ namespace TombLib.LevelData
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
-        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit),
-                                                               new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit));
+        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z) * new Vector3(Level.BlockSizeUnit, 1, Level.BlockSizeUnit),
+                                                               new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(Level.BlockSizeUnit, 1, Level.BlockSizeUnit));
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
 
         public bool CoordinateInvalid(int x, int z) => x < 0 || z < 0 || x >= NumXSectors || z >= NumZSectors;
@@ -984,8 +984,8 @@ namespace TombLib.LevelData
 
         public VectorInt3 WorldPos
         {
-            get { return new VectorInt3(Position.X * (int)Level.BlockSizeUnit, Position.Y * (int)Level.HeightUnit, Position.Z * (int)Level.BlockSizeUnit); }
-            set { Position = new VectorInt3(value.X / (int)Level.BlockSizeUnit, value.Y / (int)Level.HeightUnit, value.Z / (int)Level.BlockSizeUnit); }
+            get { return new VectorInt3(Position.X * (int)Level.BlockSizeUnit, Position.Y, Position.Z * (int)Level.BlockSizeUnit); }
+            set { Position = new VectorInt3(value.X / (int)Level.BlockSizeUnit, value.Y, value.Z / (int)Level.BlockSizeUnit); }
         }
 
         public Vector3 GetLocalCenter()
@@ -994,7 +994,7 @@ namespace TombLib.LevelData
             float floorHeight = GetLowestCorner();
             return new Vector3(
                 NumXSectors * (0.5f * Level.BlockSizeUnit),
-                (floorHeight + ceilingHeight) * (0.5f * Level.HeightUnit),
+                (floorHeight + ceilingHeight) * 0.5f,
                 NumZSectors * (0.5f * Level.BlockSizeUnit));
         }
 
@@ -1002,7 +1002,7 @@ namespace TombLib.LevelData
         {
             var block = GetBlockTry(new VectorInt2((int)sectorX, (int)sectorZ));
             int y = block == null ? 0 : (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
-            return new Vector3(sectorX * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, y * Level.HeightUnit, sectorZ * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
+            return new Vector3(sectorX * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, y, sectorZ * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
         }
 
         public int NumXSectors
@@ -1057,7 +1057,7 @@ namespace TombLib.LevelData
                 }
 
             foreach (var instance in _objects)
-                instance.Position -= new Vector3(0, lowest * Level.HeightUnit, 0);
+                instance.Position -= new Vector3(0, lowest, 0);
         }
 
         public static bool RemoveOutsidePortals(Level level, IEnumerable<Room> rooms, Func<IReadOnlyList<PortalInstance>, bool> beforeRemovePortals)
@@ -1973,7 +1973,7 @@ namespace TombLib.LevelData
                 return;
 
             if (incrementInFullClicks)
-                increment *= Level.FullClickUnitMultiplier;
+                increment *= Level.FullClickHeight;
 
             Block block = Blocks[x, z];
 

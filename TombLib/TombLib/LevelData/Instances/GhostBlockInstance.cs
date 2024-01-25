@@ -39,14 +39,14 @@ namespace TombLib.LevelData
         public string InfoMessage()
         {
             float
-                floorXnZp = Floor.XnZp / (float)Level.FullClickUnitMultiplier,
-                floorXpZp = Floor.XpZp / (float)Level.FullClickUnitMultiplier,
-                floorXpZn = Floor.XpZn / (float)Level.FullClickUnitMultiplier,
-                floorXnZn = Floor.XnZn / (float)Level.FullClickUnitMultiplier,
-                ceilingXnZp = Ceiling.XnZp / (float)Level.FullClickUnitMultiplier,
-                ceilingXpZp = Ceiling.XpZp / (float)Level.FullClickUnitMultiplier,
-                ceilingXpZn = Ceiling.XpZn / (float)Level.FullClickUnitMultiplier,
-                ceilingXnZn = Ceiling.XnZn / (float)Level.FullClickUnitMultiplier;
+                floorXnZp = Floor.XnZp / (float)Level.FullClickHeight,
+                floorXpZp = Floor.XpZp / (float)Level.FullClickHeight,
+                floorXpZn = Floor.XpZn / (float)Level.FullClickHeight,
+                floorXnZn = Floor.XnZn / (float)Level.FullClickHeight,
+                ceilingXnZp = Ceiling.XnZp / (float)Level.FullClickHeight,
+                ceilingXpZp = Ceiling.XpZp / (float)Level.FullClickHeight,
+                ceilingXpZn = Ceiling.XpZn / (float)Level.FullClickHeight,
+                ceilingXnZn = Ceiling.XnZn / (float)Level.FullClickHeight;
 
             return "floor: (" + floorXnZp + ", " + floorXpZp + ", " + floorXpZn + ", " + floorXnZn + ")\n" +
                    "ceiling: (" + ceilingXnZp + ", " + ceilingXpZp + ", " + ceilingXpZn + ", " + ceilingXnZn + ")";
@@ -55,7 +55,7 @@ namespace TombLib.LevelData
         public void Move(int delta, bool incrementInFullClicks, bool? forceSurface = null)
         {
             if (incrementInFullClicks)
-				delta *= Level.FullClickUnitMultiplier;
+				delta *= Level.FullClickHeight;
 
             if (SelectedCorner.HasValue)
                 Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
@@ -91,10 +91,10 @@ namespace TombLib.LevelData
             var localCenter = new Vector3(SectorPosition.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, 0, SectorPosition.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
             var type = floor ? BlockVertical.Floor : BlockVertical.Ceiling;
 
-            var hXnZn = (Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXpZp = (Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXnZp = (Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXpZn = (Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn)) * Level.HeightUnit + (floor ? -margin : margin);
+            var hXnZn = Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn) + (floor ? -margin : margin);
+            var hXpZp = Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp) + (floor ? -margin : margin);
+            var hXnZp = Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp) + (floor ? -margin : margin);
+            var hXpZn = Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn) + (floor ? -margin : margin);
 
             var shift = new Vector3();
 

@@ -3141,7 +3141,7 @@ namespace TombEditor
                         sum += b.GetHeight(vertical, edge);
 
                     if (!_editor.IsPreciseGeometryMode)
-                        sum /= Level.FullClickUnitMultiplier;
+                        sum /= Level.FullClickHeight;
 
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         b.SetHeight(vertical, edge, sum / 4);
@@ -3170,8 +3170,8 @@ namespace TombEditor
 
                             if (!_editor.IsPreciseGeometryMode)
                             {
-                                floorHeights[(int)edge] /= Level.FullClickUnitMultiplier;
-                                ceilingHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                                floorHeights[(int)edge] /= Level.FullClickHeight;
+                                ceilingHeights[(int)edge] /= Level.FullClickHeight;
                             }
                         }
 
@@ -3218,10 +3218,10 @@ namespace TombEditor
 
                             if (!_editor.IsPreciseGeometryMode)
                             {
-                                edHeight *= Level.FullClickUnitMultiplier;
-                                qaHeight *= Level.FullClickUnitMultiplier;
-                                wsHeight *= Level.FullClickUnitMultiplier;
-                                rfHeight *= Level.FullClickUnitMultiplier;
+                                edHeight *= Level.FullClickHeight;
+                                qaHeight *= Level.FullClickHeight;
+                                wsHeight *= Level.FullClickHeight;
+                                rfHeight *= Level.FullClickHeight;
                             }
 
                             block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
@@ -3261,8 +3261,8 @@ namespace TombEditor
 
                             if (!_editor.IsPreciseGeometryMode)
                             {
-                                floorHeights[(int)edge] /= Level.FullClickUnitMultiplier;
-                                ceilingHeights[(int)edge] /= Level.FullClickUnitMultiplier;
+                                floorHeights[(int)edge] /= Level.FullClickHeight;
+                                ceilingHeights[(int)edge] /= Level.FullClickHeight;
                             }
                         }
 
@@ -3341,10 +3341,10 @@ namespace TombEditor
 
                             if (!_editor.IsPreciseGeometryMode)
                             {
-                                edHeight *= Level.FullClickUnitMultiplier;
-                                qaHeight *= Level.FullClickUnitMultiplier;
-                                wsHeight *= Level.FullClickUnitMultiplier;
-                                rfHeight *= Level.FullClickUnitMultiplier;
+                                edHeight *= Level.FullClickHeight;
+                                qaHeight *= Level.FullClickHeight;
+                                wsHeight *= Level.FullClickHeight;
+                                rfHeight *= Level.FullClickHeight;
                             }
 
                             block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);

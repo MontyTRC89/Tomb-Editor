@@ -113,9 +113,9 @@ namespace TombEditor
                 if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
                 {
                     if (!args.Editor.IsPreciseGeometryMode)
-                        increment *= Level.FullClickUnitMultiplier;
+                        increment *= Level.FullClickHeight;
 
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment * Level.HeightUnit, 0), new Vector3(), true);
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment, 0), new Vector3(), true);
                 }
                 else if (args.Editor.SelectedObject is GhostBlockInstance)
                 {
