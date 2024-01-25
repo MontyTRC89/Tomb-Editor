@@ -117,9 +117,9 @@ namespace TombEditor.Controls.Panel3D
             _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
 
             float height = room.GetHighestCorner() - room.GetLowestCorner();
-            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height, room.NumZSectors * 4.0f);
+            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height / Level.FullClickHeight, room.NumZSectors * 4.0f);
             float boxX = room.WorldPos.X + room.NumXSectors * Level.BlockSizeUnit / 2.0f;
-            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) * Level.FullClickHeight / 2.0f;
+            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) / 2.0f;
             float boxZ = room.WorldPos.Z + room.NumZSectors * Level.BlockSizeUnit / 2.0f;
             Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
             solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * _viewProjection).ToSharpDX());

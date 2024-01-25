@@ -610,8 +610,8 @@ namespace TombEditor.Controls
                 {
                     Room = room,
                     Block = block,
-                    MinDepth = room.Position.Y + room.GetLowestCorner(),
-                    MaxDepth = room.Position.Y + room.GetHighestCorner()
+                    MinDepth = (room.Position.Y + room.GetLowestCorner()) / Level.FullClickHeight,
+                    MaxDepth = (room.Position.Y + room.GetHighestCorner()) / Level.FullClickHeight
                 };
 
                 // Search for a fit in the sequence for rooms it the current room is connected to on this sector
@@ -687,6 +687,6 @@ namespace TombEditor.Controls
         public float SelectedMax => Math.Max(_selectedLimit0, _selectedLimit1);
         public HashSet<Room> RoomsToMove => _roomsToMove;
         public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => roomMinDepth >= SelectedMin && roomMaxDepth <= SelectedMax;
-        public bool CheckRoom(Room room) => CheckRoom(room.Position.Y + room.GetLowestCorner(), room.Position.Y + room.GetHighestCorner());
+        public bool CheckRoom(Room room) => CheckRoom((room.Position.Y + room.GetLowestCorner()) / Level.FullClickHeight, (room.Position.Y + room.GetHighestCorner()) / Level.FullClickHeight);
     }
 }
