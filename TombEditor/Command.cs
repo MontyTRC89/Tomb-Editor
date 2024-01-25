@@ -101,22 +101,15 @@ namespace TombEditor
         {
             if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
-                EditorActions.EditSectorGeometry(
-                    args.Editor.SelectedRoom,
-                    args.Editor.SelectedSectors.Area,
-                    args.Editor.SelectedSectors.Arrow,
-                    surface, increment, smooth, oppositeDiagonal);
+                EditorActions.EditSectorGeometry( args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
             }
             else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == BlockVertical.Floor || surface == BlockVertical.Ceiling) && !oppositeDiagonal && !smooth)
             {
                 if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
-                {
-                    increment *= args.Editor.IsPreciseGeometryMode ? args.Editor.Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment, 0), new Vector3(), true);
-                }
                 else if (args.Editor.SelectedObject is GhostBlockInstance)
                 {
-                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment, !args.Editor.IsPreciseGeometryMode, surface == BlockVertical.Floor);
+                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment, surface == BlockVertical.Floor);
                     args.Editor.RoomSectorPropertiesChange(args.Editor.SelectedRoom);
                 }
             }

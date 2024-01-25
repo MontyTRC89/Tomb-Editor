@@ -52,11 +52,8 @@ namespace TombLib.LevelData
                    "ceiling: (" + ceilingXnZp + ", " + ceilingXpZp + ", " + ceilingXpZn + ", " + ceilingXnZn + ")";
         }
 
-        public void Move(int delta, bool incrementInFullClicks, bool? forceSurface = null)
+        public void Move(int delta, bool? forceSurface = null)
         {
-            if (incrementInFullClicks)
-				delta *= Level.FullClickHeight;
-
             if (SelectedCorner.HasValue)
                 Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
             else
