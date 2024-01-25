@@ -140,15 +140,15 @@ namespace TombLib.LevelData
 
                     if (!useFloor.HasValue)
                     {
-                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Floor, floor, false);
+                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Floor, floor);
 
                         for (int i = 0; i < oldBlock.ExtraFloorSubdivisions.Count; i++)
-                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor, false);
+                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraFloorSubdivision(i), floor);
 
-                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Ceiling, ceiling, false);
+                        RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVertical.Ceiling, ceiling);
 
                         for (int i = 0; i < oldBlock.ExtraCeilingSubdivisions.Count; i++)
-                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling, false);
+                            RaiseBlock(oldBlockVec.X, oldBlockVec.Y, BlockVerticalExtensions.GetExtraCeilingSubdivision(i), ceiling);
                     }
 
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
@@ -2060,7 +2060,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public void RaiseBlockStepWise(int x, int z, BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false, bool incrementInFullClicks = true)
+        public void RaiseBlockStepWise(int x, int z, BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false)
         {
             Block block = Blocks[x, z];
             DiagonalSplit split = vertical.IsOnFloor() ? block.Floor.DiagonalSplit : block.Ceiling.DiagonalSplit;

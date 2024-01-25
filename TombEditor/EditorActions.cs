@@ -227,7 +227,7 @@ namespace TombEditor
                             if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
                                 targetRoom.RaiseBlockStepWise(targetPos.X, targetPos.Y, vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             else
-                                targetRoom.RaiseBlock(targetPos.X, targetPos.Y, vertical, increment);
+                                targetRoom.RaiseBlock(targetPos.X, targetPos.Y, vertical, increment, false);
                         }
                         else
                         {
@@ -498,7 +498,7 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.RaiseBlock(w, h, vertical, (int)currentHeight);
+                        room.RaiseBlock(w, h, vertical, (int)currentHeight, false);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
@@ -3127,7 +3127,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical)
+        public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical, int increments)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -3140,8 +3140,7 @@ namespace TombEditor
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         sum += b.GetHeight(vertical, edge);
 
-                    if (!_editor.IsPreciseGeometryMode)
-                        sum /= Level.FullClickHeight;
+                    sum = sum / increments * increments;
 
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         b.SetHeight(vertical, edge, sum / 4);
@@ -3168,11 +3167,8 @@ namespace TombEditor
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
 
-                            if (!_editor.IsPreciseGeometryMode)
-                            {
-                                floorHeights[(int)edge] /= Level.FullClickHeight;
-                                ceilingHeights[(int)edge] /= Level.FullClickHeight;
-                            }
+                            floorHeights[(int)edge] /= _editor.IncrementReference;
+                            ceilingHeights[(int)edge] /= _editor.IncrementReference;
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3216,13 +3212,10 @@ namespace TombEditor
                                 wsHeight = (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f),
                                 rfHeight = (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling);
 
-                            if (!_editor.IsPreciseGeometryMode)
-                            {
-                                edHeight *= Level.FullClickHeight;
-                                qaHeight *= Level.FullClickHeight;
-                                wsHeight *= Level.FullClickHeight;
-                                rfHeight *= Level.FullClickHeight;
-                            }
+                            edHeight *= _editor.IncrementReference;
+                            qaHeight *= _editor.IncrementReference;
+                            wsHeight *= _editor.IncrementReference;
+                            rfHeight *= _editor.IncrementReference;
 
                             block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
                             block.Floor.SetHeight(edge, qaHeight);
@@ -3259,11 +3252,8 @@ namespace TombEditor
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
 
-                            if (!_editor.IsPreciseGeometryMode)
-                            {
-                                floorHeights[(int)edge] /= Level.FullClickHeight;
-                                ceilingHeights[(int)edge] /= Level.FullClickHeight;
-                            }
+                            floorHeights[(int)edge] /= _editor.IncrementReference;
+                            ceilingHeights[(int)edge] /= _editor.IncrementReference;
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3339,13 +3329,10 @@ namespace TombEditor
                                 wsHeight = (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f),
                                 rfHeight = (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling);
 
-                            if (!_editor.IsPreciseGeometryMode)
-                            {
-                                edHeight *= Level.FullClickHeight;
-                                qaHeight *= Level.FullClickHeight;
-                                wsHeight *= Level.FullClickHeight;
-                                rfHeight *= Level.FullClickHeight;
-                            }
+                            edHeight *= _editor.IncrementReference;
+                            qaHeight *= _editor.IncrementReference;
+                            wsHeight *= _editor.IncrementReference;
+                            rfHeight *= _editor.IncrementReference;
 
                             block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
                             block.Floor.SetHeight(edge, qaHeight);
