@@ -105,16 +105,13 @@ namespace TombEditor
                     args.Editor.SelectedRoom,
                     args.Editor.SelectedSectors.Area,
                     args.Editor.SelectedSectors.Arrow,
-                    surface, increment, smooth, oppositeDiagonal,
-                    incrementInFullClicks: !args.Editor.IsPreciseGeometryMode);
+                    surface, increment, smooth, oppositeDiagonal);
             }
             else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == BlockVertical.Floor || surface == BlockVertical.Ceiling) && !oppositeDiagonal && !smooth)
             {
                 if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
                 {
-                    if (!args.Editor.IsPreciseGeometryMode)
-                        increment *= Level.FullClickHeight;
-
+                    increment *= args.Editor.IsPreciseGeometryMode ? args.Editor.Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment, 0), new Vector3(), true);
                 }
                 else if (args.Editor.SelectedObject is GhostBlockInstance)
@@ -399,222 +396,222 @@ namespace TombEditor
 
             AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, 1, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, args.Editor.IncrementReference, 0));
             });
 
             AddCommand("MoveRoomDown", "Move room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, -1, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, -args.Editor.IncrementReference, 0));
             });
 
             AddCommand("MoveRoomUp4Clicks", "Move room up (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, 4, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, args.Editor.IncrementReference * 4, 0));
             });
 
             AddCommand("MoveRoomDown4Clicks", "Move room down (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, -4, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, -args.Editor.IncrementReference * 4, 0));
             });
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("RaiseQA4Click", "Raise selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("LowerQA1Click", "Lower selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)-args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("LowerQA4Click", "Lower selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(-args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("RaiseWS1Click", "Raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("RaiseWS4Click", "Raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("LowerWS1Click", "Lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)-args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("LowerWS4Click", "Lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(-args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("RaiseED1Click", "Raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("RaiseED4Click", "Raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)(args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("LowerED1Click", "Lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)-args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)(-args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("RaiseRF1Click", "Raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("RaiseRF4Click", "Raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)(args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("LowerRF1Click", "Lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -1, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)-args.Editor.IncrementReference, false, false);
             });
 
             AddCommand("LowerRF4Click", "Lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -4, false, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)(-args.Editor.IncrementReference * 4), false, false);
             });
 
             AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("RaiseQA4ClickSmooth", "Smoothly raise selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("LowerQA1ClickSmooth", "Smoothly lower selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)-args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("LowerQA4ClickSmooth", "Smoothly lower selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(-args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("RaiseWS1ClickSmooth", "Smoothly raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("RaiseWS4ClickSmooth", "Smoothly raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("LowerWS1ClickSmooth", "Smoothly lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)-args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("LowerWS4ClickSmooth", "Smoothly lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(-args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)(args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)-args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.FloorSubdivision2, (short)(-args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, 4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)(args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -1, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)-args.Editor.IncrementReference, true, false);
             });
 
             AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, -4, true, false);
+                GenericDirectionalControlCommand(args, BlockVertical.CeilingSubdivision2, (short)(-args.Editor.IncrementReference * 4), true, false);
             });
 
             AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, args.Editor.IncrementReference, false, true);
             });
 
             AddCommand("RaiseYH4Click", "Raise selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(args.Editor.IncrementReference * 4), false, true);
             });
 
             AddCommand("LowerYH1Click", "Lower selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)-args.Editor.IncrementReference, false, true);
             });
 
             AddCommand("LowerYH4Click", "Lower selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, (short)(-args.Editor.IncrementReference * 4), false, true);
             });
 
             AddCommand("RaiseUJ1Click", "Raise selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, args.Editor.IncrementReference, false, true);
             });
 
             AddCommand("RaiseUJ4Click", "Raise selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(args.Editor.IncrementReference * 4), false, true);
             });
 
             AddCommand("LowerUJ1Click", "Lower selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)-args.Editor.IncrementReference, false, true);
             });
 
             AddCommand("LowerUJ4Click", "Lower selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, (short)(-args.Editor.IncrementReference * 4), false, true);
             });
 
             AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate (CommandArgs args)
@@ -1384,56 +1381,56 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Floor);
             });
 
             AddCommand("SmoothRandomFloorDown", "Smooth random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Floor);
             });
 
             AddCommand("SmoothRandomCeilingUp", "Smooth random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Ceiling);
             });
 
             AddCommand("SmoothRandomCeilingDown", "Smooth random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Ceiling);
             });
 
             AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Floor, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Floor);
             });
 
             AddCommand("SharpRandomFloorDown", "Sharp random floor down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Floor, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Floor);
             });
 
             AddCommand("SharpRandomCeilingUp", "Sharp random ceiling up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, 1, BlockVertical.Ceiling, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.IncrementReference, BlockVertical.Ceiling);
             });
 
             AddCommand("SharpRandomCeilingDown", "Sharp random ceiling down", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
-                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, BlockVertical.Ceiling, !args.Editor.IsPreciseGeometryMode);
+                EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -args.Editor.IncrementReference, BlockVertical.Ceiling);
             });
 
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)

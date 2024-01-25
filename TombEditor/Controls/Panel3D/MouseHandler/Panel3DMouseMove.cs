@@ -152,10 +152,9 @@ namespace TombEditor.Controls.Panel3D
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     subdivisionToEdit,
-                                    (short)Math.Sign(dragValue.Value.Y),
+                                    (short)(Math.Sign(dragValue.Value.Y) * _editor.IncrementReference),
                                     ModifierKeys.HasFlag(Keys.Alt),
-                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true,
-									incrementInFullClicks: !_editor.IsPreciseGeometryMode);
+                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
                                 break;
                             case EditorToolType.Terrain:
                                 _toolHandler.DiscardEditedGeometry();
@@ -166,8 +165,7 @@ namespace TombEditor.Controls.Panel3D
                                     _toolHandler.RandomHeightMap,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
-                                    ModifierKeys.HasFlag(Keys.Alt),
-									!_editor.IsPreciseGeometryMode);
+                                    ModifierKeys.HasFlag(Keys.Alt));
                                 break;
                             default:
                                 _toolHandler.DiscardEditedGeometry();
@@ -178,8 +176,7 @@ namespace TombEditor.Controls.Panel3D
                                     subdivisionToEdit,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
-                                    ModifierKeys.HasFlag(Keys.Alt),
-									incrementInFullClicks: !_editor.IsPreciseGeometryMode);
+                                    ModifierKeys.HasFlag(Keys.Alt));
                                 break;
                         }
                     }
@@ -252,8 +249,7 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
-                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, true,
-											incrementInFullClicks: !_editor.IsPreciseGeometryMode);
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference, true);
                                         break;
 
                                     case EditorToolType.Drag:
@@ -264,14 +260,18 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
+                                        short increment =
+                                            (_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor
+                                            ? _editor.IncrementReference
+                                            : (short)-_editor.IncrementReference;
+
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                             new RectangleInt2(pos, pos),
                                             ArrowType.EntireFace,
                                             belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
-                                            (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
-                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
-                                            false, false, true, true,
-											incrementInFullClicks: !_editor.IsPreciseGeometryMode);
+                                            increment,
+                                            _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
+                                            false, false, true, true);
                                         break;
                                 }
                                 return true;

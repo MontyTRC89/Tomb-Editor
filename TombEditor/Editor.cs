@@ -1421,5 +1421,7 @@ namespace TombEditor
                 return Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnablePreciseGeometryControlsForUnsupportedEngines;
             }
         }
+
+        public short IncrementReference => IsPreciseGeometryMode ? Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
     }
 }
