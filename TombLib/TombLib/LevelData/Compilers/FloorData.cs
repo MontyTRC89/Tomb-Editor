@@ -230,8 +230,8 @@ namespace TombLib.LevelData.Compilers
 
                                 // Convert sector type to floor with maxed out floor height, as tom2pc/winroomedit does it.
                                 // Otherwise, even if tomb4 will work correctly, meta2tr or other custom tools may fail here.
-                                sector.Floor = (sbyte)(-room.Position.Y - block.Ceiling.Min);
-                                sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
+                                sector.Floor = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
+                                sector.Ceiling = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
@@ -245,7 +245,7 @@ namespace TombLib.LevelData.Compilers
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
                             // Floor
-                            int floorHeight = (-room.Position.Y / Level.FullClickHeight) - (GetBalancedRealHeight(floorShape, ceilingShape.Max, false) / Level.FullClickHeight);
+                            int floorHeight = -room.Position.FullClicksY() - (GetBalancedRealHeight(floorShape, ceilingShape.Max, false) / Level.FullClickHeight);
                             if (floorHeight < -heightLimit || floorHeight > heightLimit)
                             {
                                 floorHeight = MathC.Clamp(floorHeight, -heightLimit, heightLimit);
@@ -263,7 +263,7 @@ namespace TombLib.LevelData.Compilers
                             }
 
                             // Ceiling
-                            int ceilingHeight = (-room.Position.Y / Level.FullClickHeight) - (GetBalancedRealHeight(ceilingShape, floorShape.Min, true) / Level.FullClickHeight);
+                            int ceilingHeight = -room.Position.FullClicksY() - (GetBalancedRealHeight(ceilingShape, floorShape.Min, true) / Level.FullClickHeight);
                             if (ceilingHeight < -heightLimit || ceilingHeight > heightLimit)
                             {
                                 ceilingHeight = MathC.Clamp(ceilingHeight, -heightLimit, heightLimit);

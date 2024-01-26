@@ -1064,12 +1064,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2 * Level.FullClickHeight))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 * Level.FullClickHeight || Math.Abs(block.Floor.IfQuadSlopeZ) > 2 * Level.FullClickHeight))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;

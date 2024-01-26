@@ -63,8 +63,8 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (lowestPoint > room.Position.Y + room.GetLowestCorner())
-                    lowestPoint = room.Position.Y + room.GetLowestCorner();
+                if (lowestPoint > room.Position.FullClicksY() + room.GetLowestCorner(true))
+                    lowestPoint = room.Position.FullClicksY() + room.GetLowestCorner(true);
             }
             return lowestPoint;
         }
@@ -75,8 +75,8 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (highestPoint < room.Position.Y + room.GetHighestCorner())
-                    highestPoint = room.Position.Y + room.GetHighestCorner();
+                if (highestPoint < room.Position.FullClicksY() + room.GetHighestCorner(true))
+                    highestPoint = room.Position.FullClicksY() + room.GetHighestCorner(true);
             }
             return highestPoint;
         }
@@ -87,7 +87,7 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetHighestCorner() + tolerance && height >= r.Position.Y + r.GetHighestCorner() - tolerance));
+                return roomsOutsideGroup.FirstOrDefault(r => height < r.Position.FullClicksY() + r.GetHighestCorner(true) + tolerance && height >= r.Position.FullClicksY() + r.GetHighestCorner(true) - tolerance);
         }
 
         public Room GetNearbyRoomAbove(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
@@ -96,7 +96,7 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetLowestCorner() + tolerance && height >= r.Position.Y + r.GetLowestCorner() - tolerance));
+                return roomsOutsideGroup.FirstOrDefault(r => height < r.Position.FullClicksY() + r.GetLowestCorner(true) + tolerance && height >= r.Position.FullClicksY() + r.GetLowestCorner(true) - tolerance);
         }
 
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)

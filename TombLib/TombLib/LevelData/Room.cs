@@ -74,6 +74,12 @@ namespace TombLib.LevelData
         }
     }
 
+    public static class VectorInt3Extensions
+    {
+        public static int FullClicksY(this VectorInt3 position)
+            => (int)Math.Round(position.Y / (float)Level.FullClickHeight);
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -582,8 +588,8 @@ namespace TombLib.LevelData
             if (Properties.Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
                 return false;
 
-            const int lowestPassableHeight = 4;
-            const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
+            const int lowestPassableHeight = 4 * Level.FullClickHeight;
+            const int lowestPassableStep = 2 * Level.FullClickHeight;  // Lara still can bug out of 2-click step heights
 
             var normals = sector.GetFloorTriangleNormals();
             var slopeDirections = sector.GetFloorTriangleSlopeDirections();
@@ -898,7 +904,7 @@ namespace TombLib.LevelData
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
-        public int GetHighestCorner(RectangleInt2 area)
+        public int GetHighestCorner(RectangleInt2 area, bool resultInFullClicks = false)
         {
             area = area.Intersect(LocalArea);
 
@@ -908,7 +914,8 @@ namespace TombLib.LevelData
                     if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].Ceiling.Max);
 
-            return max == int.MinValue ? DefaultHeight : max;
+            int result = max == int.MinValue ? DefaultHeight : max;
+            return resultInFullClicks ? result / Level.FullClickHeight : result;
         }
 
         public int GetHighestNeighborCeiling(int x, int z)
@@ -935,12 +942,12 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public int GetHighestCorner()
+        public int GetHighestCorner(bool resultInFullClicks = false)
         {
-            return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
+            return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2), resultInFullClicks);
         }
 
-        public int GetLowestCorner(RectangleInt2 area)
+        public int GetLowestCorner(RectangleInt2 area, bool resultInFullClicks = false)
         {
             area = area.Intersect(LocalArea);
 
@@ -950,7 +957,8 @@ namespace TombLib.LevelData
                     if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].Floor.Min);
             
-            return min == int.MaxValue ? 0 : min;
+            int result = min == int.MaxValue ? 0 : min;
+            return resultInFullClicks ? result / Level.FullClickHeight : result;
         }
 
         public int GetLowestNeighborFloor(int x, int z)
@@ -977,9 +985,9 @@ namespace TombLib.LevelData
             return min;
         }
 
-        public int GetLowestCorner()
+        public int GetLowestCorner(bool resultInFullClicks = false)
         {
-            return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
+            return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2), resultInFullClicks);
         }
 
         public VectorInt3 WorldPos

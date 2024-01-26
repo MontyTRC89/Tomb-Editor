@@ -394,7 +394,7 @@ namespace TombLib.LevelData.IO
                         // Write basic properties
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomIndex, rooms.TryGetOrDefault(room, -1));
                         chunkIO.WriteChunkString(Prj2Chunks.RoomName, room.Name);
-                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition, room.Position);
+                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition2, room.Position);
                         chunkIO.WriteChunkArrayOfBytes(Prj2Chunks.RoomTags, System.Text.Encoding.UTF8.GetBytes(string.Join(" ", room.Properties.Tags)));
 
                         // Write sectors

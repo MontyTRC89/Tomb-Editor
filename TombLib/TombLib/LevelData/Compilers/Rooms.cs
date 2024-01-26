@@ -1301,12 +1301,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 * Level.FullClickHeight ||
+                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2 * Level.FullClickHeight))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 * Level.FullClickHeight || Math.Abs(block.Floor.IfQuadSlopeZ) > 2 * Level.FullClickHeight))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -1315,17 +1315,17 @@ namespace TombLib.LevelData.Compilers
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
                         block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        sector.Floor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Floor.Max / Level.FullClickHeight));
-                        sector.Ceiling = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Ceiling.Min / Level.FullClickHeight));
+                        sector.Floor = (sbyte)(-room.Position.FullClicksY() - block.Floor.FullClickMax);
+                        sector.Ceiling = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
                         if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
                     }
                     else
                     {
-                        sector.Floor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Floor.Max / Level.FullClickHeight));
-                        sector.Ceiling = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Ceiling.Min / Level.FullClickHeight));
+                        sector.Floor = (sbyte)(-room.Position.FullClicksY() - block.Floor.FullClickMax);
+                        sector.Ceiling = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
                     }
 
-                    aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Floor.Min / Level.FullClickHeight));
+                    aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - block.Floor.FullClickMin);
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
                     var q2 = block.Floor.XpZn;
@@ -1335,9 +1335,9 @@ namespace TombLib.LevelData.Compilers
                         block.Floor.IfQuadSlopeZ == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (Math.Min(block.Floor.XnZp, block.Floor.XpZn) / Level.FullClickHeight));
+                            aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - (Math.Min(block.Floor.XnZp, block.Floor.XpZn) / Level.FullClickHeight));
                         else
-                            aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (Math.Min(block.Floor.XpZp, block.Floor.XnZn) / Level.FullClickHeight));
+                            aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - (Math.Min(block.Floor.XpZp, block.Floor.XnZn) / Level.FullClickHeight));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1658,13 +1658,13 @@ namespace TombLib.LevelData.Compilers
                 float zMin = portalArea.Y0 * Level.BlockSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
-                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
-                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
-                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
+                float yAtXMinZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0) / Level.FullClickHeight);
+                float yAtXMaxZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0) / Level.FullClickHeight);
+				float yAtXMinZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1) / Level.FullClickHeight);
+				float yAtXMaxZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1) / Level.FullClickHeight);
 
-                // Choose portal coordinates
-                tr_vertex[] portalVertices = new tr_vertex[4];
+				// Choose portal coordinates
+				tr_vertex[] portalVertices = new tr_vertex[4];
                 tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
                 if (isCeiling)
                 {

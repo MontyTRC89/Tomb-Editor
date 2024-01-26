@@ -402,11 +402,14 @@ namespace TombLib.LevelData
         public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
-        public bool HasSlope => Max - Min > 2;
+        public bool HasSlope => FullClickMax - FullClickMin > 2;
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
         public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
         public int Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
+
+        public int FullClickMax => Max / Level.FullClickHeight;
+        public int FullClickMin => Min / Level.FullClickHeight;
 
         public int GetHeight(BlockEdge edge)
         {

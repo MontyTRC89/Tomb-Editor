@@ -591,8 +591,8 @@ namespace TombEditor.Controls
                     e.Graphics.Clear(_editor.Configuration.UI_ColorScheme.Color2DBackground.ToWinFormsColor());
 
                     // Draw hidden rooms
-                    float currentRangeMin = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetLowestCorner();
-                    float currentRangeMax = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetHighestCorner();
+                    float currentRangeMin = _editor.SelectedRoom.Position.FullClicksY() + _editor.SelectedRoom.GetLowestCorner(true);
+                    float currentRangeMax = _editor.SelectedRoom.Position.FullClicksY() + _editor.SelectedRoom.GetHighestCorner(true);
                     List<Room> sortedRoomList = _editor.Level.GetVerticallyAscendingRoomList(room =>
                         room.Position.X + room.NumXSectors >= visibleArea.Start.X && room.Position.X <= visibleArea.End.X &&
                         room.Position.Z + room.NumZSectors >= visibleArea.Start.Y && room.Position.Z <= visibleArea.End.Y).ToList();
@@ -777,9 +777,9 @@ namespace TombEditor.Controls
                 if (rectangles.Count > 0)
                 {
                     Brush brush = _roomsNormalBrush;
-                    if (room.Position.Y + room.GetHighestCorner() <= currentRangeMin)
+                    if (room.Position.FullClicksY() + room.GetHighestCorner(true) <= currentRangeMin)
                         brush = _roomsNormalBelowBrush;
-                    if (room.Position.Y + room.GetLowestCorner() >= currentRangeMax)
+                    if (room.Position.FullClicksY() + room.GetLowestCorner(true) >= currentRangeMax)
                         brush = _roomsNormalAboveBrush;
                     using (var brush2 = GetRoomBrush(room, brush))
                         e.Graphics.FillRectangles(brush2, rectangles.ToArray());
