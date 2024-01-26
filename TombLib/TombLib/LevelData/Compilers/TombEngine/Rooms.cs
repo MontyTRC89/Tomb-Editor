@@ -1074,7 +1074,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Floor.Min / Level.FullClickHeight));
+                    aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - block.Floor.FullClickMin);
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
                     var q2 = block.Floor.XpZn;
