@@ -3614,11 +3614,11 @@ namespace TombEditor
             var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - VectorInt2.One, size);
             if (alternated)
                 newRoom.AlternateOpposite.Resize(_editor.Level, resizeParameter,
-                    checked(rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner())),
-                    checked(rooms.Max(room => (room.AlternateOpposite ?? room).GetHighestCorner())));
+                    rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner()),
+                    rooms.Max(room => (room.AlternateOpposite ?? room).GetHighestCorner()));
             newRoom.Resize(_editor.Level, resizeParameter,
-                checked(rooms.Min(room => room.GetLowestCorner())),
-                checked(rooms.Max(room => room.GetHighestCorner())));
+                rooms.Min(room => room.GetLowestCorner()),
+                rooms.Max(room => room.GetHighestCorner()));
             IEnumerable<Room> mergeRooms = rooms.Where(room => room != newRoom);
 
             Action<Room, IEnumerable<Room>, Dictionary<VectorInt2, Room>, bool> performMergeAction =

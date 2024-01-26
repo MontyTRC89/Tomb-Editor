@@ -53,7 +53,7 @@ namespace TombEditor.Controls.Panel3D
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
         {
             // Get the distance between point and floor in units
-            float height = (int)(instance.Position.Y - GetFloorHeight(room, instance.Position)) / Level.FullClickHeight;
+            float height = (instance.Position.Y - GetFloorHeight(room, instance.Position)) / Level.FullClickHeight;
 
             string message = "Pos: [" + (int)instance.WorldPosition.X + ", " + -(int)instance.WorldPosition.Y + ", " + (int)instance.WorldPosition.Z + "]";
             message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "], " + height + " clicks";

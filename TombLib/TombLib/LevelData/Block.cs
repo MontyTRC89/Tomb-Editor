@@ -433,16 +433,16 @@ namespace TombLib.LevelData
             switch (edge)
             {
                 case BlockEdge.XnZp:
-                    XnZp = checked(value);
+                    XnZp = value;
                     return;
                 case BlockEdge.XpZp:
-                    XpZp = checked(value);
+                    XpZp = value;
                     return;
                 case BlockEdge.XpZn:
-                    XpZn = checked(value);
+                    XpZn = value;
                     return;
                 case BlockEdge.XnZn:
-                    XnZn = checked(value);
+                    XnZn = value;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -827,7 +827,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
                 }
 
-                existingSubdivision.Edges[(int)edge] = checked(newValue);
+                existingSubdivision.Edges[(int)edge] = newValue;
             }
             else if (vertical.IsExtraCeilingSubdivision())
             {
@@ -841,7 +841,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
                 }
                 
-                existingSubdivision.Edges[(int)edge] = checked(newValue);
+                existingSubdivision.Edges[(int)edge] = newValue;
             }
         }
 

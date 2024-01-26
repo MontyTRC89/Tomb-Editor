@@ -33,7 +33,7 @@ namespace TombEditor.Controls.Panel3D
             return null;
         }
 
-        private static float GetFloorHeight(Room room, Vector3 position)
+        private static int GetFloorHeight(Room room, Vector3 position)
         {
             int xBlock = (int)Math.Max(0, Math.Min(room.NumXSectors - 1, Math.Floor(position.X / Level.BlockSizeUnit)));
             int zBlock = (int)Math.Max(0, Math.Min(room.NumZSectors - 1, Math.Floor(position.Z / Level.BlockSizeUnit)));
@@ -67,7 +67,7 @@ namespace TombEditor.Controls.Panel3D
 
         private void AddObjectHeightLine(Room room, Vector3 position)
         {
-            float floorHeight = GetFloorHeight(room, position);
+            int floorHeight = GetFloorHeight(room, position);
 
             // Get the distance between point and floor in units
             float height = position.Y - floorHeight;
