@@ -245,7 +245,7 @@ namespace TombLib.LevelData.Compilers
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
                             // Floor
-                            int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
+                            int floorHeight = (-room.Position.Y / Level.FullClickHeight) - (GetBalancedRealHeight(floorShape, ceilingShape.Max, false) / Level.FullClickHeight);
                             if (floorHeight < -heightLimit || floorHeight > heightLimit)
                             {
                                 floorHeight = MathC.Clamp(floorHeight, -heightLimit, heightLimit);
@@ -263,7 +263,7 @@ namespace TombLib.LevelData.Compilers
                             }
 
                             // Ceiling
-                            int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
+                            int ceilingHeight = (-room.Position.Y / Level.FullClickHeight) - (GetBalancedRealHeight(ceilingShape, floorShape.Min, true) / Level.FullClickHeight);
                             if (ceilingHeight < -heightLimit || ceilingHeight > heightLimit)
                             {
                                 ceilingHeight = MathC.Clamp(ceilingHeight, -heightLimit, heightLimit);

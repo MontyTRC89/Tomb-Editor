@@ -417,7 +417,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private short GetMostDownFloor(Room room, int x, int z)
+        private int GetMostDownFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
             return _tempRooms[room].AuxSectors[x, z].LowestFloor;

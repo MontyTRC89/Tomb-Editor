@@ -66,18 +66,18 @@ namespace TombLib.LevelData
             if (floor)
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Floor.XnZn += (short)delta; break;
-                    case BlockEdge.XnZp: Floor.XnZp += (short)delta; break;
-                    case BlockEdge.XpZn: Floor.XpZn += (short)delta; break;
-                    case BlockEdge.XpZp: Floor.XpZp += (short)delta; break;
+                    case BlockEdge.XnZn: Floor.XnZn += delta; break;
+                    case BlockEdge.XnZp: Floor.XnZp += delta; break;
+                    case BlockEdge.XpZn: Floor.XpZn += delta; break;
+                    case BlockEdge.XpZp: Floor.XpZp += delta; break;
                 }
             else
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Ceiling.XnZn += (short)delta; break;
-                    case BlockEdge.XnZp: Ceiling.XnZp += (short)delta; break;
-                    case BlockEdge.XpZn: Ceiling.XpZn += (short)delta; break;
-                    case BlockEdge.XpZp: Ceiling.XpZp += (short)delta; break;
+                    case BlockEdge.XnZn: Ceiling.XnZn += delta; break;
+                    case BlockEdge.XnZp: Ceiling.XnZp += delta; break;
+                    case BlockEdge.XpZn: Ceiling.XpZn += delta; break;
+                    case BlockEdge.XpZp: Ceiling.XpZp += delta; break;
                 }
         }
 

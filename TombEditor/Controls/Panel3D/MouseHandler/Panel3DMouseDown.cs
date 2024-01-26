@@ -100,10 +100,9 @@ namespace TombEditor.Controls.Panel3D
                                     EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference);
                                 else if (_editor.Tool.Tool < EditorToolType.Flatten)
                                 {
-                                    short increment =
+                                    int increment =
                                         (_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor
-                                        ? _editor.IncrementReference
-                                        : (short)-_editor.IncrementReference;
+                                        ? _editor.IncrementReference : -_editor.IncrementReference;
 
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                         new RectangleInt2(pos, pos),
@@ -131,7 +130,7 @@ namespace TombEditor.Controls.Panel3D
                                 newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                     _editor.SelectedSectors,
                                     newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, false,
-                                    (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control),
+                                    ModifierKeys.HasFlag(Keys.Shift) ? _editor.IncrementReference : _editor.IncrementReference * 4, !ModifierKeys.HasFlag(Keys.Control),
                                     ModifierKeys.HasFlag(Keys.Alt));
                             }
 

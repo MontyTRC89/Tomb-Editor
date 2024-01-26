@@ -60,7 +60,7 @@ namespace TombEditor.Controls.Panel3D
                         Point invertedDragValue = new Point(dragValue.Value.X, -dragValue.Value.Y);
                         var currRoom = _toolHandler.ReferenceRoom;
                         RectangleInt2 resizeArea = new RectangleInt2(currRoom.LocalArea.Start, currRoom.LocalArea.End);
-                        short[] resizeHeight = { (short)currRoom.GetLowestCorner(), (short)currRoom.GetHighestCorner() };
+                        int[] resizeHeight = { currRoom.GetLowestCorner(), currRoom.GetHighestCorner() };
                         PortalDirection portalDirection;
                         int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4;
 
@@ -82,8 +82,8 @@ namespace TombEditor.Controls.Panel3D
                                 if (resizeHeight[1] - resizeHeight[0] + (portalDirection == PortalDirection.Floor ? newHeight : -newHeight) <= 0)
                                     return false;  // Limit inward dragging
 
-                                resizeHeight[0] = (short)(portalDirection == PortalDirection.Floor ? 0 : newHeight);
-                                resizeHeight[1] = (short)(portalDirection == PortalDirection.Floor ? newHeight : 0);
+                                resizeHeight[0] = portalDirection == PortalDirection.Floor ? 0 : newHeight;
+                                resizeHeight[1] = portalDirection == PortalDirection.Floor ? newHeight : 0;
                                 break;
 
                             case PortalDirection.WallNegativeX:
@@ -152,7 +152,7 @@ namespace TombEditor.Controls.Panel3D
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     subdivisionToEdit,
-                                    (short)(Math.Sign(dragValue.Value.Y) * _editor.IncrementReference),
+                                    Math.Sign(dragValue.Value.Y) * _editor.IncrementReference,
                                     ModifierKeys.HasFlag(Keys.Alt),
                                     _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
                                 break;
@@ -260,10 +260,9 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
-                                        short increment =
+                                        int increment =
                                             (_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor
-                                            ? _editor.IncrementReference
-                                            : (short)-_editor.IncrementReference;
+                                            ? _editor.IncrementReference : -_editor.IncrementReference;
 
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                             new RectangleInt2(pos, pos),

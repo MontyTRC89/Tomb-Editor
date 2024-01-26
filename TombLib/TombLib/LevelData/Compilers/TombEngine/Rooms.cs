@@ -1074,7 +1074,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
+                    aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (block.Floor.Min / Level.FullClickHeight));
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
                     var q2 = block.Floor.XpZn;
@@ -1084,15 +1084,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         block.Floor.IfQuadSlopeZ == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XnZp,
-                                                           block.Floor.XpZn));
-                        }
+                            aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (Math.Min(block.Floor.XnZp, block.Floor.XpZn) / Level.FullClickHeight));
                         else
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XpZp,
-                                                           block.Floor.XnZn));
-                        }
+                            aux.LowestFloor = (sbyte)((-room.Position.Y / Level.FullClickHeight) - (Math.Min(block.Floor.XpZp, block.Floor.XnZn) / Level.FullClickHeight));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1303,8 +1297,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private struct PortalPlane
         {
-            public readonly short SlopeX;
-            public readonly short SlopeZ;
+            public readonly int SlopeX;
+            public readonly int SlopeZ;
             public readonly int Height;
 
             public int EvaluateHeight(int x, int z)
@@ -1312,10 +1306,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return Height + x * SlopeX + z * SlopeZ;
             }
 
-            public PortalPlane(int ankerX, short ankerY, int ankerZ, int slopeX, int slopeZ)
+            public PortalPlane(int ankerX, int ankerY, int ankerZ, int slopeX, int slopeZ)
             {
-                SlopeX = (short)slopeX;
-                SlopeZ = (short)slopeZ;
+                SlopeX = slopeX;
+                SlopeZ = slopeZ;
                 Height = ankerY - ankerX * slopeX - ankerZ * slopeZ;
             }
 

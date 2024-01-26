@@ -1422,6 +1422,6 @@ namespace TombEditor
             }
         }
 
-        public short IncrementReference => IsPreciseGeometryMode ? Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
+        public int IncrementReference => IsPreciseGeometryMode ? Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
     }
 }

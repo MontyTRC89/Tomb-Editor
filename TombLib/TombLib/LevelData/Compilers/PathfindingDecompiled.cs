@@ -32,10 +32,10 @@ namespace TombLib.LevelData.Compilers
         private bool dec_flipped;
         private bool dec_jump;
         private Room dec_currentRoom;
-        private short dec_q0 = -1;
-        private short dec_q1 = -1;
-        private short dec_q2 = -1;
-        private short dec_q3 = -1;
+        private int dec_q0 = -1;
+        private int dec_q1 = -1;
+        private int dec_q2 = -1;
+        private int dec_q3 = -1;
         private dec_tr_box_aux[] dec_boxes;
         private ushort[] dec_overlaps;
         private int dec_numBoxes;

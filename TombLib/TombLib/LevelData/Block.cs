@@ -396,19 +396,19 @@ namespace TombLib.LevelData
     {
         public bool SplitDirectionToggled;
         public DiagonalSplit DiagonalSplit;
-        public short XnZp;
-        public short XpZp;
-        public short XpZn;
-        public short XnZn;
+        public int XnZp;
+        public int XpZp;
+        public int XpZn;
+        public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
         public bool HasSlope => Max - Min > 2;
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
-        public short Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
-        public short Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
+        public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
+        public int Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
 
-        public short GetHeight(BlockEdge edge)
+        public int GetHeight(BlockEdge edge)
         {
             switch (edge)
             {
@@ -430,16 +430,16 @@ namespace TombLib.LevelData
             switch (edge)
             {
                 case BlockEdge.XnZp:
-                    XnZp = checked((short)value);
+                    XnZp = checked(value);
                     return;
                 case BlockEdge.XpZp:
-                    XpZp = checked((short)value);
+                    XpZp = checked(value);
                     return;
                 case BlockEdge.XpZn:
-                    XpZn = checked((short)value);
+                    XpZn = checked(value);
                     return;
                 case BlockEdge.XnZn:
-                    XnZn = checked((short)value);
+                    XnZn = checked(value);
                     return;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -593,20 +593,20 @@ namespace TombLib.LevelData
         }
 
         public static BlockSurface operator +(BlockSurface first, BlockSurface second) 
-            => new BlockSurface() { XpZp = (short)(first.XpZp + second.XpZp), XpZn = (short)(first.XpZn + second.XpZn), XnZp = (short)(first.XnZp + second.XnZp), XnZn = (short)(first.XnZn + second.XnZn) };
+            => new BlockSurface() { XpZp = first.XpZp + second.XpZp, XpZn = first.XpZn + second.XpZn, XnZp = first.XnZp + second.XnZp, XnZn = first.XnZn + second.XnZn };
         public static BlockSurface operator -(BlockSurface first, BlockSurface second)
-            => new BlockSurface() { XpZp = (short)(first.XpZp - second.XpZp), XpZn = (short)(first.XpZn - second.XpZn), XnZp = (short)(first.XnZp - second.XnZp), XnZn = (short)(first.XnZn - second.XnZn) };
+            => new BlockSurface() { XpZp = first.XpZp - second.XpZp, XpZn = first.XpZn - second.XpZn, XnZp = first.XnZp - second.XnZp, XnZn = first.XnZn - second.XnZn };
 
     }
 
     public class Subdivision : ICloneable
     {
-        public short[] Edges { get; } = new short[4];
+        public int[] Edges { get; } = new int[4];
 
         public Subdivision()
         { }
 
-        public Subdivision(short uniformEdgeY)
+        public Subdivision(int uniformEdgeY)
             => Edges[0] = Edges[1] = Edges[2] = Edges[3] = uniformEdgeY;
 
         public object Clone()
@@ -648,8 +648,8 @@ namespace TombLib.LevelData
 
         public Block(int floor, int ceiling)
         {
-            Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
-            Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
+            Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = floor;
+            Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = ceiling;
         }
 
         public Block Clone()
@@ -762,7 +762,7 @@ namespace TombLib.LevelData
             ExtraCeilingSubdivisions.AddRange(replacement.ExtraCeilingSubdivisions);
         }
 
-        public short GetHeight(BlockVertical vertical, BlockEdge edge)
+        public int GetHeight(BlockVertical vertical, BlockEdge edge)
         {
             switch (vertical)
             {
@@ -778,7 +778,7 @@ namespace TombLib.LevelData
                 Subdivision subdivision = ExtraFloorSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                    return short.MinValue;
+                    return int.MinValue;
 
                 return subdivision.Edges[(int)edge];
             }
@@ -789,7 +789,7 @@ namespace TombLib.LevelData
                 Subdivision subdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                    return short.MaxValue;
+                    return int.MaxValue;
 
                 return subdivision.Edges[(int)edge];
             }
@@ -799,7 +799,7 @@ namespace TombLib.LevelData
 
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
-            if (newValue is short.MinValue or short.MaxValue)
+            if (newValue is int.MinValue or int.MaxValue)
                 return;
 
             switch (vertical)
@@ -824,7 +824,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
                 }
 
-                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                existingSubdivision.Edges[(int)edge] = checked(newValue);
             }
             else if (vertical.IsExtraCeilingSubdivision())
             {
@@ -838,7 +838,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
                 }
                 
-                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                existingSubdivision.Edges[(int)edge] = checked(newValue);
             }
         }
 
@@ -1203,7 +1203,7 @@ namespace TombLib.LevelData
             return new Vector3[2] { tri[0].Normal, tri[1].Normal };
         }
 
-        public short GetTriangleMinimumFloorPoint(int triangle)
+        public int GetTriangleMinimumFloorPoint(int triangle)
         {
             if (triangle != 0 && triangle != 1)
                 return 0;

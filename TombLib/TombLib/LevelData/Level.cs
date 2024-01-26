@@ -14,7 +14,7 @@ namespace TombLib.LevelData
 
         public const float BlockSizeUnit = 1024.0f;
         public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
-        public const short FullClickHeight = 256;
+        public const int FullClickHeight = 256;
 
         public const short MaxNumberOfRooms = 1024;
 

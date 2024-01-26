@@ -79,7 +79,7 @@ namespace TombLib.LevelData
         public delegate void RemovedFromRoomDelegate(Room instance);
         public event RemovedFromRoomDelegate DeletedEvent;
 
-        public const short DefaultHeight = 12 * Level.FullClickHeight;
+        public const int DefaultHeight = 12 * Level.FullClickHeight;
         public const short DefaultRoomDimensions = 20;
 
         public Level Level { get; set; }
@@ -98,7 +98,7 @@ namespace TombLib.LevelData
         // Internal data structures
         public RoomGeometry RoomGeometry { get; set; }
 
-        public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
         {
             Name = name;
             Level = level;
@@ -107,12 +107,12 @@ namespace TombLib.LevelData
             BuildGeometry();
         }
 
-        public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
             : this(level, sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
         { }
 
         // Usually it's highly recommended to call FixupNeighborPortals afterwards, to fix neighboring portals.
-        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight, bool? useFloor = false)
+        public void Resize(Level level, RectangleInt2 area, int floor = 0, int ceiling = DefaultHeight, bool? useFloor = false)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
@@ -1031,9 +1031,9 @@ namespace TombLib.LevelData
                     allBlocksAreWalls = false;
                     break;
                 }
-            
+
             // Determine lowest QAFace
-            short lowest = short.MaxValue;
+            int lowest = int.MaxValue;
             for (int z = 0; z < NumZSectors; z++)
                 for (int x = 0; x < NumXSectors; x++)
                 {
@@ -1986,7 +1986,7 @@ namespace TombLib.LevelData
                         if (IsFloorSubdivisionInVoid(BlockVertical.Floor, x, z, out int lowestNeightborFloor))
                             return;
 
-                        block.ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
+                        block.ExtraFloorSubdivisions.Add(new Subdivision(lowestNeightborFloor));
                     }
                     else
                     {
@@ -1995,7 +1995,7 @@ namespace TombLib.LevelData
                         if (IsFloorSubdivisionInVoid(lastVerical, x, z, out int lowestNeightborFloor))
                             return;
 
-                        block.ExtraFloorSubdivisions.Add(new Subdivision((short)lowestNeightborFloor));
+                        block.ExtraFloorSubdivisions.Add(new Subdivision(lowestNeightborFloor));
                     }
                 }
                 else if (vertical.IsExtraCeilingSubdivision())
@@ -2005,7 +2005,7 @@ namespace TombLib.LevelData
                         if (IsCeilingSubdivisionInVoid(BlockVertical.Ceiling, x, z, out int highestNeighborCeiling))
                             return;
 
-                        block.ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
+                        block.ExtraCeilingSubdivisions.Add(new Subdivision(highestNeighborCeiling));
                     }
                     else
                     {
@@ -2014,12 +2014,12 @@ namespace TombLib.LevelData
                         if (IsCeilingSubdivisionInVoid(lastVerical, x, z, out int highestNeighborCeiling))
                             return;
 
-                        block.ExtraCeilingSubdivisions.Add(new Subdivision((short)highestNeighborCeiling));
+                        block.ExtraCeilingSubdivisions.Add(new Subdivision(highestNeighborCeiling));
                     }
                 }
             }
 
-            block.SetHeight(vertical, edge, (short)(block.GetHeight(vertical, edge) + increment));
+            block.SetHeight(vertical, edge, block.GetHeight(vertical, edge) + increment);
         }
 
         public void RaiseBlock(int x, int z, BlockVertical vertical, int increment, bool diagonalStep = false)
