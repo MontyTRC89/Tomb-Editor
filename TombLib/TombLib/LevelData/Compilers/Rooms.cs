@@ -1660,11 +1660,11 @@ namespace TombLib.LevelData.Compilers
 
                 float yAtXMinZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0) / Level.FullClickHeight);
                 float yAtXMaxZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0) / Level.FullClickHeight);
-				float yAtXMinZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1) / Level.FullClickHeight);
-				float yAtXMaxZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1) / Level.FullClickHeight);
+                float yAtXMinZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1) / Level.FullClickHeight);
+                float yAtXMaxZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1) / Level.FullClickHeight);
 
-				// Choose portal coordinates
-				tr_vertex[] portalVertices = new tr_vertex[4];
+                // Choose portal coordinates
+                tr_vertex[] portalVertices = new tr_vertex[4];
                 tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
                 if (isCeiling)
                 {
