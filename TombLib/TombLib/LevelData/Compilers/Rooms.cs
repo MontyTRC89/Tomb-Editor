@@ -1658,10 +1658,10 @@ namespace TombLib.LevelData.Compilers
                 float zMin = portalArea.Y0 * Level.BlockSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0) / Level.FullClickHeight);
-                float yAtXMaxZMin = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0) / Level.FullClickHeight);
-                float yAtXMinZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1) / Level.FullClickHeight);
-                float yAtXMaxZMax = room.Position.FullClicksY() + (portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1) / Level.FullClickHeight);
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];
