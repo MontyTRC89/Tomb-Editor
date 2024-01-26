@@ -750,10 +750,10 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomPosition) // DEPRECATED
-						room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickHeight, 1));
-					else if (id2 == Prj2Chunks.RoomPosition2)
-						room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
-					else if (id2 == Prj2Chunks.RoomTags)
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickHeight, 1));
+                    else if (id2 == Prj2Chunks.RoomPosition2)
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
+                    else if (id2 == Prj2Chunks.RoomTags)
                     {
                         var tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ');
                         if (tags.Count() == 1 && string.IsNullOrEmpty(tags[0]))

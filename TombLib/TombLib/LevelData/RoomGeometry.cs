@@ -1991,7 +1991,7 @@ namespace TombLib.LevelData
             int floorMin = block.Floor.Min;
             int ceilingMax = block.Ceiling.Max;
 
-            return floorMin <= y / (int)Level.FullClickHeight && ceilingMax >= y / (int)Level.FullClickHeight;
+            return floorMin <= y / Level.FullClickHeight && ceilingMax >= y / Level.FullClickHeight;
         }
 
         private static bool RayTraceX(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
