@@ -175,8 +175,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     X = room.WorldPos.X,
                     Z = room.WorldPos.Z,
-                    YTop = -room.WorldPos.Y + room.GetHighestCorner(),
-                    YBottom = -room.WorldPos.Y + room.GetLowestCorner()
+                    YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
+                    YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
