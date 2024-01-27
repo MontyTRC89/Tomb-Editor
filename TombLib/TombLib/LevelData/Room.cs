@@ -77,7 +77,12 @@ namespace TombLib.LevelData
     public static class VectorInt3Extensions
     {
         public static int FullClicksY(this VectorInt3 position)
-            => (int)Math.Round(position.Y / (float)Level.FullClickHeight);
+        {
+            if (position.Y < 0)
+                return (int)Math.Floor(position.Y / (float)Level.FullClickHeight);
+            else
+                return (int)Math.Ceiling(position.Y / (float)Level.FullClickHeight);
+        }
     }
 
     public class Room : ITriggerParameter
@@ -915,7 +920,18 @@ namespace TombLib.LevelData
                         max = Math.Max(max, Blocks[x, z].Ceiling.Max);
 
             int result = max == int.MinValue ? DefaultHeight : max;
-            return resultInFullClicks ? result / Level.FullClickHeight : result;
+
+            if (resultInFullClicks)
+            {
+                float exactResult = result / (float)Level.FullClickHeight;
+
+                if (exactResult < 0)
+                    return (int)Math.Floor(exactResult);
+                else
+                    return (int)Math.Ceiling(exactResult);
+            }
+            else
+                return result;
         }
 
         public int GetHighestNeighborCeiling(int x, int z)
@@ -958,7 +974,18 @@ namespace TombLib.LevelData
                         min = Math.Min(min, Blocks[x, z].Floor.Min);
             
             int result = min == int.MaxValue ? 0 : min;
-            return resultInFullClicks ? result / Level.FullClickHeight : result;
+
+            if (resultInFullClicks)
+            {
+                float exactResult = result / (float)Level.FullClickHeight;
+
+                if (exactResult < 0)
+                    return (int)Math.Floor(exactResult);
+                else
+                    return (int)Math.Ceiling(exactResult);
+            }
+            else
+                return result;
         }
 
         public int GetLowestNeighborFloor(int x, int z)

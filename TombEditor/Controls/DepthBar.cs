@@ -371,7 +371,7 @@ namespace TombEditor.Controls
                     if (delta != 0)
                     {
                         _overallDelta += delta;
-                        EditorActions.MoveRooms(new VectorInt3(0, delta, 0), _roomsToMove, true);
+                        EditorActions.MoveRooms(new VectorInt3(0, delta * Level.FullClickHeight, 0), _roomsToMove, true);
                     }
                     break;
             }
