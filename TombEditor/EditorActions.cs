@@ -3349,7 +3349,7 @@ namespace TombEditor
                 room.BuildGeometry();
         }
 
-        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, int roomDepth = Room.DefaultHeight, bool switchRoom = true, bool clearAdjoiningArea = false)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, int roomDepth, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!selection.Empty && !selection.Valid)
             {

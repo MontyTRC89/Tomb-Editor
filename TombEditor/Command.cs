@@ -998,12 +998,12 @@ namespace TombEditor
 
             AddCommand("NewRoomUp", "New room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, true, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Ceiling, true, Room.DefaultHeight);
             });
 
             AddCommand("NewRoomDown", "New room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, true, 12);
+                EditorActions.CreateAdjoiningRoom(args.Editor.SelectedRoom, args.Editor.SelectedSectors, PortalDirection.Floor, true, Room.DefaultHeight);
             });
 
             AddCommand("NewRoomLeft", "New room left", CommandType.Rooms, delegate (CommandArgs args)
