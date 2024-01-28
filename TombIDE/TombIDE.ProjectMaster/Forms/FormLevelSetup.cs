@@ -136,6 +136,9 @@ namespace TombIDE.ProjectMaster
 					level.Settings.TexturePadding = 1;
 				}
 
+				if (_targetProject.GameVersion == TRVersion.Game.TombEngine)
+					level.Settings.TenLuaScriptFile = Path.Combine(LevelSettings.VariableCreate(VariableType.ScriptDirectory), "Levels", LevelSettings.VariableCreate(VariableType.LevelName) + ".lua");
+
 				level.Settings.LoadDefaultSoundCatalog();
 				level.Settings.LoadDefaultWad();
 

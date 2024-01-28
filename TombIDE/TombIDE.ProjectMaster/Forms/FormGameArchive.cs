@@ -83,7 +83,9 @@ namespace TombIDE.ProjectMaster.Forms
 			string[] importantFiles = new string[]
 			{
 				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "TR1X.exe"),
 				Path.Combine(engineDirectory, "Tomb1Main.exe"),
+				Path.Combine(engineDirectory, "TR1X_ConfigTool.exe"),
 				Path.Combine(engineDirectory, "Tomb1Main_ConfigTool.exe"),
 				Path.Combine(engineDirectory, "splash.xml")
 			};

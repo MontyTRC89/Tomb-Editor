@@ -1,9 +1,46 @@
+Version 1.7.1
+===========
+
+Tomb Editor:
+ * Fixed AutoSave file cleanup not working.
+ * Fixed Undo / Redo not working on yellow walls (portals).
+ * Fixed issue where creating portals manually would display phantom subdivisions.
+
+TombIDE:
+ * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
+
 Version 1.7
 ===========
 
 Tomb Editor:
- * Fix incorrect coordinates in tooltip for light objects.
- * Fix alignment option not working for display sprite node.
+ * Added more wall subdivisions, which can be accessed by using Drag Tool while holding any numerical key on a keyboard.
+ * Side faces for slopes next to flat blocks, or 2 crossing slopes next to each other, will now be rendered and can be textured.
+ * Added options to disable volumes and activate them in adjacent rooms.
+ * Added global event editor.
+ * Added global events to a node editor and to legacy trigger editor.
+ * Added ability to lock nodes.
+ * Added node for end-of-level reason management.
+ * Allow to move and sort event sets.
+ * Support default values for Vector3 and Color value types in nodes.
+ * Always link new nodes to "else" statement for conditional node, if "then" statement is already occupied.
+ * Split TrCatalog.xml file into multiple catalogs for better usability.
+ * Fixed original winroomedit bug where a wall texture would unexpectedly swap if ED / RF subdivisions were in the opposite void.
+ * Fixed incorrect coordinates in tooltip for light objects.
+ * Fixed audio track nodes not properly recognizing files in subfolders.
+ * Fixed alignment option not working for display sprite node.
+ * Fixed range for air value nodes.
+ * Fixed displaying of meshes with more than 65535 vertices.
+ * Fixed exception when attempting to load imported geometry with textures larger than 4096 pixels.
+
+TombIDE:
+ * Updated Tomb1Main to TR1X 3.0.5.
+ * Updated FLEP.
+ * Launch TEN in -debug mode from the sidebar by default.
+ * Added engine version display into Level Manager.
+ * Added engine up-to-date checks for TEN and TR1X.
+ * Added "Update" button for TEN versions 1.0.9+ and TR1X versions 3.0+.
+ * Added an "Exit" menu item into Scripting Studio.
+ * Fixed issue where autocomplete popup wouldn't open after the first completion.
 
 Version 1.6.9
 =============

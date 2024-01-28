@@ -43,6 +43,7 @@
 	<SaveAs>Save As...</SaveAs>
 	<SaveAll>Save All</SaveAll>
 	<Build>Build Script...</Build>
+	<Exit>Exit</Exit>
 
 	<Undo>Undo</Undo>
 	<CantUndo>Can't Undo</CantUndo>

@@ -245,9 +245,10 @@
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.darkCheckBox48 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox38 = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel78 = new DarkUI.Controls.DarkLabel();
-            this.darkComboBox2 = new DarkUI.Controls.DarkComboBox();
+            this.cmbVolumeEvent = new DarkUI.Controls.DarkComboBox();
             this.darkLabel77 = new DarkUI.Controls.DarkLabel();
             this.darkComboBox1 = new DarkUI.Controls.DarkComboBox();
             this.darkLabel33 = new DarkUI.Controls.DarkLabel();
@@ -256,7 +257,8 @@
             this.darkLabel75 = new DarkUI.Controls.DarkLabel();
             this.darkLabel76 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown43 = new DarkUI.Controls.DarkNumericUpDown();
-            this.darkCheckBox48 = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel79 = new DarkUI.Controls.DarkLabel();
+            this.cmbGlobalEvent = new DarkUI.Controls.DarkComboBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -349,7 +351,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 511);
+            this.tabPage6.Size = new System.Drawing.Size(386, 484);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -360,7 +362,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -474,7 +476,7 @@
             // 
             // darkNumericUpDown42
             // 
-            this.darkNumericUpDown42.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkNumericUpDown42.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.darkNumericUpDown42.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -503,7 +505,7 @@
             this.darkLabel72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel72.Location = new System.Drawing.Point(12, 29);
             this.darkLabel72.Name = "darkLabel72";
-            this.darkLabel72.Size = new System.Drawing.Size(165, 13);
+            this.darkLabel72.Size = new System.Drawing.Size(166, 13);
             this.darkLabel72.TabIndex = 72;
             this.darkLabel72.Text = "UI brightness (requires restart):";
             // 
@@ -513,7 +515,7 @@
             this.darkLabel71.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel71.Location = new System.Drawing.Point(12, 89);
             this.darkLabel71.Name = "darkLabel71";
-            this.darkLabel71.Size = new System.Drawing.Size(106, 13);
+            this.darkLabel71.Size = new System.Drawing.Size(111, 13);
             this.darkLabel71.TabIndex = 32;
             this.darkLabel71.Text = "UI button highlight:";
             // 
@@ -523,14 +525,14 @@
             this.darkLabel66.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel66.Location = new System.Drawing.Point(12, 814);
             this.darkLabel66.Name = "darkLabel66";
-            this.darkLabel66.Size = new System.Drawing.Size(132, 13);
+            this.darkLabel66.Size = new System.Drawing.Size(128, 13);
             this.darkLabel66.TabIndex = 70;
             this.darkLabel66.Text = "2D map - moved rooms:";
             // 
             // panel11
             // 
             this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel11.Location = new System.Drawing.Point(196, 85);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(67, 23);
@@ -543,7 +545,7 @@
             this.darkLabel65.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel65.Location = new System.Drawing.Point(12, 785);
             this.darkLabel65.Name = "darkLabel65";
-            this.darkLabel65.Size = new System.Drawing.Size(165, 13);
+            this.darkLabel65.Size = new System.Drawing.Size(166, 13);
             this.darkLabel65.TabIndex = 70;
             this.darkLabel65.Text = "2D map - rooms below current:";
             // 
@@ -553,7 +555,7 @@
             this.darkLabel64.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel64.Location = new System.Drawing.Point(12, 756);
             this.darkLabel64.Name = "darkLabel64";
-            this.darkLabel64.Size = new System.Drawing.Size(166, 13);
+            this.darkLabel64.Size = new System.Drawing.Size(165, 13);
             this.darkLabel64.TabIndex = 70;
             this.darkLabel64.Text = "2D map - rooms above current:";
             // 
@@ -563,14 +565,14 @@
             this.darkLabel63.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel63.Location = new System.Drawing.Point(12, 727);
             this.darkLabel63.Name = "darkLabel63";
-            this.darkLabel63.Size = new System.Drawing.Size(83, 13);
+            this.darkLabel63.Size = new System.Drawing.Size(84, 13);
             this.darkLabel63.TabIndex = 68;
             this.darkLabel63.Text = "Slide direction:";
             // 
             // panel10
             // 
             this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel10.Location = new System.Drawing.Point(196, 810);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(67, 23);
@@ -580,7 +582,7 @@
             // panel9
             // 
             this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel9.Location = new System.Drawing.Point(196, 781);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(67, 23);
@@ -590,7 +592,7 @@
             // panel8
             // 
             this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel8.Location = new System.Drawing.Point(196, 752);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(67, 23);
@@ -610,7 +612,7 @@
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel7.Location = new System.Drawing.Point(196, 723);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(67, 23);
@@ -623,14 +625,14 @@
             this.darkLabel61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel61.Location = new System.Drawing.Point(12, 118);
             this.darkLabel61.Name = "darkLabel61";
-            this.darkLabel61.Size = new System.Drawing.Size(56, 13);
+            this.darkLabel61.Size = new System.Drawing.Size(57, 13);
             this.darkLabel61.TabIndex = 30;
             this.darkLabel61.Text = "Selection:";
             // 
             // panel6
             // 
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panel6.Location = new System.Drawing.Point(196, 694);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(67, 23);
@@ -650,7 +652,7 @@
             // panelColorSelector0
             // 
             this.panelColorSelector0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector0.Location = new System.Drawing.Point(196, 114);
             this.panelColorSelector0.Name = "panelColorSelector0";
             this.panelColorSelector0.Size = new System.Drawing.Size(67, 23);
@@ -660,7 +662,7 @@
             // panelColorSelector19
             // 
             this.panelColorSelector19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector19.Location = new System.Drawing.Point(196, 665);
             this.panelColorSelector19.Name = "panelColorSelector19";
             this.panelColorSelector19.Size = new System.Drawing.Size(67, 23);
@@ -673,14 +675,14 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(123, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
             // panelColorSelector18
             // 
             this.panelColorSelector18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector18.Location = new System.Drawing.Point(196, 636);
             this.panelColorSelector18.Name = "panelColorSelector18";
             this.panelColorSelector18.Size = new System.Drawing.Size(67, 23);
@@ -693,14 +695,14 @@
             this.darkLabel58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel58.Location = new System.Drawing.Point(12, 611);
             this.darkLabel58.Name = "darkLabel58";
-            this.darkLabel58.Size = new System.Drawing.Size(71, 13);
+            this.darkLabel58.Size = new System.Drawing.Size(69, 13);
             this.darkLabel58.TabIndex = 60;
             this.darkLabel58.Text = "Beetle mark:";
             // 
             // panelColorSelector17
             // 
             this.panelColorSelector17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector17.Location = new System.Drawing.Point(196, 607);
             this.panelColorSelector17.Name = "panelColorSelector17";
             this.panelColorSelector17.Size = new System.Drawing.Size(67, 23);
@@ -713,7 +715,7 @@
             this.darkLabel57.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel57.Location = new System.Drawing.Point(12, 582);
             this.darkLabel57.Name = "darkLabel57";
-            this.darkLabel57.Size = new System.Drawing.Size(77, 13);
+            this.darkLabel57.Size = new System.Drawing.Size(78, 13);
             this.darkLabel57.TabIndex = 58;
             this.darkLabel57.Text = "Not walkable:";
             // 
@@ -723,14 +725,14 @@
             this.darkLabel56.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel56.Location = new System.Drawing.Point(12, 553);
             this.darkLabel56.Name = "darkLabel56";
-            this.darkLabel56.Size = new System.Drawing.Size(40, 13);
+            this.darkLabel56.Size = new System.Drawing.Size(41, 13);
             this.darkLabel56.TabIndex = 56;
             this.darkLabel56.Text = "Death:";
             // 
             // panelColorSelector16
             // 
             this.panelColorSelector16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector16.Location = new System.Drawing.Point(196, 578);
             this.panelColorSelector16.Name = "panelColorSelector16";
             this.panelColorSelector16.Size = new System.Drawing.Size(67, 23);
@@ -740,7 +742,7 @@
             // panelColorSelector15
             // 
             this.panelColorSelector15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector15.Location = new System.Drawing.Point(196, 549);
             this.panelColorSelector15.Name = "panelColorSelector15";
             this.panelColorSelector15.Size = new System.Drawing.Size(67, 23);
@@ -753,14 +755,14 @@
             this.darkLabel55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel55.Location = new System.Drawing.Point(12, 524);
             this.darkLabel55.Name = "darkLabel55";
-            this.darkLabel55.Size = new System.Drawing.Size(30, 13);
+            this.darkLabel55.Size = new System.Drawing.Size(28, 13);
             this.darkLabel55.TabIndex = 54;
             this.darkLabel55.Text = "Box:";
             // 
             // panelColorSelector14
             // 
             this.panelColorSelector14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector14.Location = new System.Drawing.Point(196, 520);
             this.panelColorSelector14.Name = "panelColorSelector14";
             this.panelColorSelector14.Size = new System.Drawing.Size(67, 23);
@@ -773,14 +775,14 @@
             this.darkLabel54.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel54.Location = new System.Drawing.Point(12, 495);
             this.darkLabel54.Name = "darkLabel54";
-            this.darkLabel54.Size = new System.Drawing.Size(40, 13);
+            this.darkLabel54.Size = new System.Drawing.Size(39, 13);
             this.darkLabel54.TabIndex = 52;
             this.darkLabel54.Text = "Climb:";
             // 
             // panelColorSelector13
             // 
             this.panelColorSelector13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector13.Location = new System.Drawing.Point(196, 491);
             this.panelColorSelector13.Name = "panelColorSelector13";
             this.panelColorSelector13.Size = new System.Drawing.Size(67, 23);
@@ -793,14 +795,14 @@
             this.darkLabel53.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel53.Location = new System.Drawing.Point(12, 466);
             this.darkLabel53.Name = "darkLabel53";
-            this.darkLabel53.Size = new System.Drawing.Size(80, 13);
+            this.darkLabel53.Size = new System.Drawing.Size(82, 13);
             this.darkLabel53.TabIndex = 50;
             this.darkLabel53.Text = "Monkeyswing:";
             // 
             // panelColorSelector12
             // 
             this.panelColorSelector12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector12.Location = new System.Drawing.Point(196, 462);
             this.panelColorSelector12.Name = "panelColorSelector12";
             this.panelColorSelector12.Size = new System.Drawing.Size(67, 23);
@@ -820,7 +822,7 @@
             // panelColorSelector11
             // 
             this.panelColorSelector11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector11.Location = new System.Drawing.Point(196, 433);
             this.panelColorSelector11.Name = "panelColorSelector11";
             this.panelColorSelector11.Size = new System.Drawing.Size(67, 23);
@@ -833,7 +835,7 @@
             this.darkLabel51.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel51.Location = new System.Drawing.Point(12, 408);
             this.darkLabel51.Name = "darkLabel51";
-            this.darkLabel51.Size = new System.Drawing.Size(104, 13);
+            this.darkLabel51.Size = new System.Drawing.Size(106, 13);
             this.darkLabel51.TabIndex = 46;
             this.darkLabel51.Text = "Upper wall section:";
             // 
@@ -843,14 +845,14 @@
             this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel50.Location = new System.Drawing.Point(12, 379);
             this.darkLabel50.Name = "darkLabel50";
-            this.darkLabel50.Size = new System.Drawing.Size(102, 13);
+            this.darkLabel50.Size = new System.Drawing.Size(105, 13);
             this.darkLabel50.TabIndex = 44;
             this.darkLabel50.Text = "Lower wall section:";
             // 
             // panelColorSelector10
             // 
             this.panelColorSelector10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector10.Location = new System.Drawing.Point(196, 404);
             this.panelColorSelector10.Name = "panelColorSelector10";
             this.panelColorSelector10.Size = new System.Drawing.Size(67, 23);
@@ -860,7 +862,7 @@
             // panelColorSelector9
             // 
             this.panelColorSelector9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector9.Location = new System.Drawing.Point(196, 375);
             this.panelColorSelector9.Name = "panelColorSelector9";
             this.panelColorSelector9.Size = new System.Drawing.Size(67, 23);
@@ -873,14 +875,14 @@
             this.darkLabel49.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel49.Location = new System.Drawing.Point(12, 350);
             this.darkLabel49.Name = "darkLabel49";
-            this.darkLabel49.Size = new System.Drawing.Size(105, 13);
+            this.darkLabel49.Size = new System.Drawing.Size(108, 13);
             this.darkLabel49.TabIndex = 42;
             this.darkLabel49.Text = "Center wall section:";
             // 
             // panelColorSelector8
             // 
             this.panelColorSelector8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector8.Location = new System.Drawing.Point(196, 346);
             this.panelColorSelector8.Name = "panelColorSelector8";
             this.panelColorSelector8.Size = new System.Drawing.Size(67, 23);
@@ -900,7 +902,7 @@
             // panelColorSelector7
             // 
             this.panelColorSelector7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector7.Location = new System.Drawing.Point(196, 317);
             this.panelColorSelector7.Name = "panelColorSelector7";
             this.panelColorSelector7.Size = new System.Drawing.Size(67, 23);
@@ -920,7 +922,7 @@
             // panelColorSelector6
             // 
             this.panelColorSelector6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector6.Location = new System.Drawing.Point(196, 288);
             this.panelColorSelector6.Name = "panelColorSelector6";
             this.panelColorSelector6.Size = new System.Drawing.Size(67, 23);
@@ -933,14 +935,14 @@
             this.darkLabel46.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel46.Location = new System.Drawing.Point(12, 263);
             this.darkLabel46.Name = "darkLabel46";
-            this.darkLabel46.Size = new System.Drawing.Size(130, 13);
+            this.darkLabel46.Size = new System.Drawing.Size(133, 13);
             this.darkLabel46.TabIndex = 36;
             this.darkLabel46.Text = "3D portal face highlight:";
             // 
             // panelColorSelector5
             // 
             this.panelColorSelector5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector5.Location = new System.Drawing.Point(196, 259);
             this.panelColorSelector5.Name = "panelColorSelector5";
             this.panelColorSelector5.Size = new System.Drawing.Size(67, 23);
@@ -953,14 +955,14 @@
             this.darkLabel45.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel45.Location = new System.Drawing.Point(12, 234);
             this.darkLabel45.Name = "darkLabel45";
-            this.darkLabel45.Size = new System.Drawing.Size(106, 13);
+            this.darkLabel45.Size = new System.Drawing.Size(109, 13);
             this.darkLabel45.TabIndex = 34;
             this.darkLabel45.Text = "2D portal highlight:";
             // 
             // panelColorSelector4
             // 
             this.panelColorSelector4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector4.Location = new System.Drawing.Point(196, 230);
             this.panelColorSelector4.Name = "panelColorSelector4";
             this.panelColorSelector4.Size = new System.Drawing.Size(67, 23);
@@ -973,14 +975,14 @@
             this.darkLabel44.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel44.Location = new System.Drawing.Point(12, 205);
             this.darkLabel44.Name = "darkLabel44";
-            this.darkLabel44.Size = new System.Drawing.Size(144, 13);
+            this.darkLabel44.Size = new System.Drawing.Size(145, 13);
             this.darkLabel44.TabIndex = 32;
             this.darkLabel44.Text = "Flipped room background:";
             // 
             // panelColorSelector3
             // 
             this.panelColorSelector3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector3.Location = new System.Drawing.Point(196, 201);
             this.panelColorSelector3.Name = "panelColorSelector3";
             this.panelColorSelector3.Size = new System.Drawing.Size(67, 23);
@@ -993,14 +995,14 @@
             this.darkLabel43.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel43.Location = new System.Drawing.Point(12, 176);
             this.darkLabel43.Name = "darkLabel43";
-            this.darkLabel43.Size = new System.Drawing.Size(88, 13);
+            this.darkLabel43.Size = new System.Drawing.Size(90, 13);
             this.darkLabel43.TabIndex = 30;
             this.darkLabel43.Text = "2D background:";
             // 
             // panelColorSelector2
             // 
             this.panelColorSelector2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector2.Location = new System.Drawing.Point(196, 172);
             this.panelColorSelector2.Name = "panelColorSelector2";
             this.panelColorSelector2.Size = new System.Drawing.Size(67, 23);
@@ -1013,14 +1015,14 @@
             this.darkLabel42.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel42.Location = new System.Drawing.Point(12, 147);
             this.darkLabel42.Name = "darkLabel42";
-            this.darkLabel42.Size = new System.Drawing.Size(88, 13);
+            this.darkLabel42.Size = new System.Drawing.Size(90, 13);
             this.darkLabel42.TabIndex = 28;
             this.darkLabel42.Text = "3D background:";
             // 
             // panelColorSelector1
             // 
             this.panelColorSelector1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColorSelector1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColorSelector1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.panelColorSelector1.Location = new System.Drawing.Point(196, 143);
             this.panelColorSelector1.Name = "panelColorSelector1";
             this.panelColorSelector1.Size = new System.Drawing.Size(67, 23);
@@ -1052,7 +1054,7 @@
             this.darkCheckBox45.AutoSize = true;
             this.darkCheckBox45.Location = new System.Drawing.Point(6, 228);
             this.darkCheckBox45.Name = "darkCheckBox45";
-            this.darkCheckBox45.Size = new System.Drawing.Size(282, 17);
+            this.darkCheckBox45.Size = new System.Drawing.Size(281, 17);
             this.darkCheckBox45.TabIndex = 49;
             this.darkCheckBox45.Tag = "Palette_PickColorFromSelectedObject";
             this.darkCheckBox45.Text = "Automatically pick selected object color to palette";
@@ -1062,7 +1064,7 @@
             this.darkCheckBox42.AutoSize = true;
             this.darkCheckBox42.Location = new System.Drawing.Point(6, 205);
             this.darkCheckBox42.Name = "darkCheckBox42";
-            this.darkCheckBox42.Size = new System.Drawing.Size(244, 17);
+            this.darkCheckBox42.Size = new System.Drawing.Size(246, 17);
             this.darkCheckBox42.TabIndex = 48;
             this.darkCheckBox42.Tag = "UI_GenerateRoomDescriptions";
             this.darkCheckBox42.Text = "Add descriptions for autogenerated rooms";
@@ -1072,7 +1074,7 @@
             this.darkCheckBox37.AutoSize = true;
             this.darkCheckBox37.Location = new System.Drawing.Point(6, 21);
             this.darkCheckBox37.Name = "darkCheckBox37";
-            this.darkCheckBox37.Size = new System.Drawing.Size(175, 17);
+            this.darkCheckBox37.Size = new System.Drawing.Size(177, 17);
             this.darkCheckBox37.TabIndex = 47;
             this.darkCheckBox37.Tag = "UI_WarnBeforeDeletingObjects";
             this.darkCheckBox37.Text = "Warn before deleting objects";
@@ -1082,7 +1084,7 @@
             this.darkCheckBox32.AutoSize = true;
             this.darkCheckBox32.Location = new System.Drawing.Point(6, 182);
             this.darkCheckBox32.Name = "darkCheckBox32";
-            this.darkCheckBox32.Size = new System.Drawing.Size(320, 17);
+            this.darkCheckBox32.Size = new System.Drawing.Size(318, 17);
             this.darkCheckBox32.TabIndex = 46;
             this.darkCheckBox32.Tag = "UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture";
             this.darkCheckBox32.Text = "Automatically enable skybox if invisible texture is applied";
@@ -1092,7 +1094,7 @@
             this.darkCheckBox33.AutoSize = true;
             this.darkCheckBox33.Location = new System.Drawing.Point(6, 159);
             this.darkCheckBox33.Name = "darkCheckBox33";
-            this.darkCheckBox33.Size = new System.Drawing.Size(287, 17);
+            this.darkCheckBox33.Size = new System.Drawing.Size(280, 17);
             this.darkCheckBox33.TabIndex = 46;
             this.darkCheckBox33.Tag = "UI_AutoFillTriggerTypesForSwitchAndKey";
             this.darkCheckBox33.Text = "Autofill \"Key\", \"Switch\" and \"Dummy\" trigger types";
@@ -1102,7 +1104,7 @@
             this.darkCheckBox31.AutoSize = true;
             this.darkCheckBox31.Location = new System.Drawing.Point(6, 136);
             this.darkCheckBox31.Name = "darkCheckBox31";
-            this.darkCheckBox31.Size = new System.Drawing.Size(266, 17);
+            this.darkCheckBox31.Size = new System.Drawing.Size(269, 17);
             this.darkCheckBox31.TabIndex = 26;
             this.darkCheckBox31.Tag = "UI_SetAttributesAtOnce";
             this.darkCheckBox31.Text = "Set or unset selected area\'s sector flags at once";
@@ -1112,7 +1114,7 @@
             this.darkCheckBox25.AutoSize = true;
             this.darkCheckBox25.Location = new System.Drawing.Point(6, 67);
             this.darkCheckBox25.Name = "darkCheckBox25";
-            this.darkCheckBox25.Size = new System.Drawing.Size(229, 17);
+            this.darkCheckBox25.Size = new System.Drawing.Size(232, 17);
             this.darkCheckBox25.TabIndex = 25;
             this.darkCheckBox25.Tag = "UI_DiscardSelectionOnModeSwitch";
             this.darkCheckBox25.Text = "Discard selection on editor mode switch";
@@ -1132,7 +1134,7 @@
             this.darkCheckBox15.AutoSize = true;
             this.darkCheckBox15.Location = new System.Drawing.Point(6, 90);
             this.darkCheckBox15.Name = "darkCheckBox15";
-            this.darkCheckBox15.Size = new System.Drawing.Size(253, 17);
+            this.darkCheckBox15.Size = new System.Drawing.Size(257, 17);
             this.darkCheckBox15.TabIndex = 23;
             this.darkCheckBox15.Tag = "UI_AutoSwitchSectorColoringInfo";
             this.darkCheckBox15.Text = "Autoswitch block coloring on property hover";
@@ -1142,7 +1144,7 @@
             this.darkCheckBox14.AutoSize = true;
             this.darkCheckBox14.Location = new System.Drawing.Point(6, 44);
             this.darkCheckBox14.Name = "darkCheckBox14";
-            this.darkCheckBox14.Size = new System.Drawing.Size(318, 17);
+            this.darkCheckBox14.Size = new System.Drawing.Size(319, 17);
             this.darkCheckBox14.TabIndex = 22;
             this.darkCheckBox14.Tag = "UI_OnlyShowSmallMessageWhenRoomIsLocked";
             this.darkCheckBox14.Text = "Non-intrusive message when trying to move locked room";
@@ -1215,7 +1217,7 @@
             this.cbEnableLogging.AutoSize = true;
             this.cbEnableLogging.Location = new System.Drawing.Point(6, 21);
             this.cbEnableLogging.Name = "cbEnableLogging";
-            this.cbEnableLogging.Size = new System.Drawing.Size(103, 17);
+            this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
             this.cbEnableLogging.TabIndex = 2;
             this.cbEnableLogging.Tag = "Log_WriteToFile";
             this.cbEnableLogging.Text = "Enable logging";
@@ -1252,7 +1254,7 @@
             this.darkCheckBox44.AutoSize = true;
             this.darkCheckBox44.Location = new System.Drawing.Point(6, 76);
             this.darkCheckBox44.Name = "darkCheckBox44";
-            this.darkCheckBox44.Size = new System.Drawing.Size(185, 17);
+            this.darkCheckBox44.Size = new System.Drawing.Size(188, 17);
             this.darkCheckBox44.TabIndex = 31;
             this.darkCheckBox44.Tag = "Editor_GridNewRoom";
             this.darkCheckBox44.Text = "Grid border walls in new rooms";
@@ -1292,7 +1294,7 @@
             this.darkLabel70.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel70.Location = new System.Drawing.Point(3, 50);
             this.darkLabel70.Name = "darkLabel70";
-            this.darkLabel70.Size = new System.Drawing.Size(221, 13);
+            this.darkLabel70.Size = new System.Drawing.Size(224, 13);
             this.darkLabel70.TabIndex = 29;
             this.darkLabel70.Text = "Default new room size (with border walls):";
             // 
@@ -1302,7 +1304,7 @@
             this.darkLabel34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel34.Location = new System.Drawing.Point(3, 22);
             this.darkLabel34.Name = "darkLabel34";
-            this.darkLabel34.Size = new System.Drawing.Size(204, 13);
+            this.darkLabel34.Size = new System.Drawing.Size(206, 13);
             this.darkLabel34.TabIndex = 28;
             this.darkLabel34.Text = "Default game version for new projects:";
             // 
@@ -1320,7 +1322,7 @@
             this.darkCheckBox22.AutoSize = true;
             this.darkCheckBox22.Location = new System.Drawing.Point(6, 122);
             this.darkCheckBox22.Name = "darkCheckBox22";
-            this.darkCheckBox22.Size = new System.Drawing.Size(242, 17);
+            this.darkCheckBox22.Size = new System.Drawing.Size(243, 17);
             this.darkCheckBox22.TabIndex = 7;
             this.darkCheckBox22.Tag = "Editor_UseHalfPixelCorrectionOnPrjImport";
             this.darkCheckBox22.Text = "Use half-pixel UV correction on PRJ import";
@@ -1330,7 +1332,7 @@
             this.darkCheckBox2.AutoSize = true;
             this.darkCheckBox2.Location = new System.Drawing.Point(6, 99);
             this.darkCheckBox2.Name = "darkCheckBox2";
-            this.darkCheckBox2.Size = new System.Drawing.Size(336, 17);
+            this.darkCheckBox2.Size = new System.Drawing.Size(340, 17);
             this.darkCheckBox2.TabIndex = 6;
             this.darkCheckBox2.Tag = "Editor_RespectFlybyPatchOnPrjImport";
             this.darkCheckBox2.Text = "Respect T4Larson\'s mousepatch flyby handling on PRJ import";
@@ -1355,7 +1357,7 @@
             this.darkCheckBox34.AutoSize = true;
             this.darkCheckBox34.Location = new System.Drawing.Point(6, 21);
             this.darkCheckBox34.Name = "darkCheckBox34";
-            this.darkCheckBox34.Size = new System.Drawing.Size(148, 17);
+            this.darkCheckBox34.Size = new System.Drawing.Size(151, 17);
             this.darkCheckBox34.TabIndex = 10;
             this.darkCheckBox34.Tag = "Editor_AllowMultipleInstances";
             this.darkCheckBox34.Text = "Allow multiple instances";
@@ -1365,7 +1367,7 @@
             this.darkCheckBox26.AutoSize = true;
             this.darkCheckBox26.Location = new System.Drawing.Point(6, 44);
             this.darkCheckBox26.Name = "darkCheckBox26";
-            this.darkCheckBox26.Size = new System.Drawing.Size(205, 17);
+            this.darkCheckBox26.Size = new System.Drawing.Size(210, 17);
             this.darkCheckBox26.TabIndex = 9;
             this.darkCheckBox26.Tag = "Editor_OpenLastProjectOnStartup";
             this.darkCheckBox26.Text = "Open last project on editor start-up";
@@ -1405,7 +1407,7 @@
             this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel67.Location = new System.Drawing.Point(3, 92);
             this.darkLabel67.Name = "darkLabel67";
-            this.darkLabel67.Size = new System.Drawing.Size(106, 13);
+            this.darkLabel67.Size = new System.Drawing.Size(107, 13);
             this.darkLabel67.TabIndex = 7;
             this.darkLabel67.Text = "Undo / redo depth:";
             // 
@@ -1414,7 +1416,7 @@
             this.darkCheckBox1.AutoSize = true;
             this.darkCheckBox1.Location = new System.Drawing.Point(6, 67);
             this.darkCheckBox1.Name = "darkCheckBox1";
-            this.darkCheckBox1.Size = new System.Drawing.Size(260, 17);
+            this.darkCheckBox1.Size = new System.Drawing.Size(265, 17);
             this.darkCheckBox1.TabIndex = 3;
             this.darkCheckBox1.Tag = "Editor_ReloadFilesAutomaticallyWhenChanged";
             this.darkCheckBox1.Text = "Reload resources automatically when changed";
@@ -1442,7 +1444,7 @@
             this.darkCheckBox13.AutoSize = true;
             this.darkCheckBox13.Location = new System.Drawing.Point(6, 99);
             this.darkCheckBox13.Name = "darkCheckBox13";
-            this.darkCheckBox13.Size = new System.Drawing.Size(183, 17);
+            this.darkCheckBox13.Size = new System.Drawing.Size(185, 17);
             this.darkCheckBox13.TabIndex = 12;
             this.darkCheckBox13.Tag = "AutoSave_NamePutDateFirst";
             this.darkCheckBox13.Text = "Put date first in autosave name";
@@ -1466,7 +1468,7 @@
             this.darkCheckBox12.AutoSize = true;
             this.darkCheckBox12.Location = new System.Drawing.Point(6, 122);
             this.darkCheckBox12.Name = "darkCheckBox12";
-            this.darkCheckBox12.Size = new System.Drawing.Size(249, 17);
+            this.darkCheckBox12.Size = new System.Drawing.Size(256, 17);
             this.darkCheckBox12.TabIndex = 9;
             this.darkCheckBox12.Tag = "AutoSave_CleanupEnable";
             this.darkCheckBox12.Text = "Cleanup autosaves when amount is reached:";
@@ -1485,7 +1487,7 @@
             this.darkLabel41.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel41.Location = new System.Drawing.Point(3, 73);
             this.darkLabel41.Name = "darkLabel41";
-            this.darkLabel41.Size = new System.Drawing.Size(99, 13);
+            this.darkLabel41.Size = new System.Drawing.Size(97, 13);
             this.darkLabel41.TabIndex = 7;
             this.darkLabel41.Text = "Date-time format:";
             // 
@@ -1514,7 +1516,7 @@
             this.darkLabel40.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel40.Location = new System.Drawing.Point(3, 45);
             this.darkLabel40.Name = "darkLabel40";
-            this.darkLabel40.Size = new System.Drawing.Size(157, 13);
+            this.darkLabel40.Size = new System.Drawing.Size(159, 13);
             this.darkLabel40.TabIndex = 5;
             this.darkLabel40.Text = "Autosave interval, in seconds:";
             // 
@@ -1523,7 +1525,7 @@
             this.darkCheckBox11.AutoSize = true;
             this.darkCheckBox11.Location = new System.Drawing.Point(6, 21);
             this.darkCheckBox11.Name = "darkCheckBox11";
-            this.darkCheckBox11.Size = new System.Drawing.Size(109, 17);
+            this.darkCheckBox11.Size = new System.Drawing.Size(110, 17);
             this.darkCheckBox11.TabIndex = 3;
             this.darkCheckBox11.Tag = "AutoSave_Enable";
             this.darkCheckBox11.Text = "Enable autosave";
@@ -1590,7 +1592,7 @@
             this.darkCheckBox8.AutoSize = true;
             this.darkCheckBox8.Location = new System.Drawing.Point(294, 18);
             this.darkCheckBox8.Name = "darkCheckBox8";
-            this.darkCheckBox8.Size = new System.Drawing.Size(50, 17);
+            this.darkCheckBox8.Size = new System.Drawing.Size(49, 17);
             this.darkCheckBox8.TabIndex = 44;
             this.darkCheckBox8.Tag = "Rendering3D_FontIsBold";
             this.darkCheckBox8.Text = "Bold";
@@ -1687,7 +1689,7 @@
             this.darkCheckBox39.AutoSize = true;
             this.darkCheckBox39.Location = new System.Drawing.Point(6, 182);
             this.darkCheckBox39.Name = "darkCheckBox39";
-            this.darkCheckBox39.Size = new System.Drawing.Size(231, 17);
+            this.darkCheckBox39.Size = new System.Drawing.Size(236, 17);
             this.darkCheckBox39.TabIndex = 43;
             this.darkCheckBox39.Tag = "Rendering3D_UseRoomEditorDirections";
             this.darkCheckBox39.Text = "Use winroomedit cardinal direction hints";
@@ -1697,7 +1699,7 @@
             this.darkCheckBox36.AutoSize = true;
             this.darkCheckBox36.Location = new System.Drawing.Point(6, 274);
             this.darkCheckBox36.Name = "darkCheckBox36";
-            this.darkCheckBox36.Size = new System.Drawing.Size(183, 17);
+            this.darkCheckBox36.Size = new System.Drawing.Size(187, 17);
             this.darkCheckBox36.TabIndex = 42;
             this.darkCheckBox36.Tag = "Rendering3D_AnimateGhostBlockUnfolding";
             this.darkCheckBox36.Text = "Animate ghost block unfolding";
@@ -1707,7 +1709,7 @@
             this.cbGeometryLightPreview.AutoSize = true;
             this.cbGeometryLightPreview.Location = new System.Drawing.Point(6, 44);
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
-            this.cbGeometryLightPreview.Size = new System.Drawing.Size(195, 17);
+            this.cbGeometryLightPreview.Size = new System.Drawing.Size(196, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
             this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
@@ -1717,7 +1719,7 @@
             this.darkCheckBox30.AutoSize = true;
             this.darkCheckBox30.Location = new System.Drawing.Point(6, 159);
             this.darkCheckBox30.Name = "darkCheckBox30";
-            this.darkCheckBox30.Size = new System.Drawing.Size(232, 17);
+            this.darkCheckBox30.Size = new System.Drawing.Size(230, 17);
             this.darkCheckBox30.TabIndex = 40;
             this.darkCheckBox30.Tag = "Rendering3D_AutoBookmarkSelectedObject";
             this.darkCheckBox30.Text = "Automatically bookmark selected object";
@@ -1727,7 +1729,7 @@
             this.darkCheckBox27.AutoSize = true;
             this.darkCheckBox27.Location = new System.Drawing.Point(6, 136);
             this.darkCheckBox27.Name = "darkCheckBox27";
-            this.darkCheckBox27.Size = new System.Drawing.Size(286, 17);
+            this.darkCheckBox27.Size = new System.Drawing.Size(290, 17);
             this.darkCheckBox27.TabIndex = 38;
             this.darkCheckBox27.Tag = "Rendering3D_AutoswitchCurrentRoom";
             this.darkCheckBox27.Text = "Automatically switch current room on mouse action";
@@ -1747,7 +1749,7 @@
             this.darkCheckBox23.AutoSize = true;
             this.darkCheckBox23.Location = new System.Drawing.Point(6, 113);
             this.darkCheckBox23.Name = "darkCheckBox23";
-            this.darkCheckBox23.Size = new System.Drawing.Size(166, 17);
+            this.darkCheckBox23.Size = new System.Drawing.Size(168, 17);
             this.darkCheckBox23.TabIndex = 36;
             this.darkCheckBox23.Tag = "Rendering3D_SelectObjectsInAnyRoom";
             this.darkCheckBox23.Text = "Allow selection in any room";
@@ -1767,7 +1769,7 @@
             this.darkCheckBox20.AutoSize = true;
             this.darkCheckBox20.Location = new System.Drawing.Point(6, 90);
             this.darkCheckBox20.Name = "darkCheckBox20";
-            this.darkCheckBox20.Size = new System.Drawing.Size(175, 17);
+            this.darkCheckBox20.Size = new System.Drawing.Size(179, 17);
             this.darkCheckBox20.TabIndex = 34;
             this.darkCheckBox20.Tag = "Rendering3D_AlwaysShowCurrentRoomBounds";
             this.darkCheckBox20.Text = "Show room bounds rectangle";
@@ -1777,7 +1779,7 @@
             this.darkCheckBox19.AutoSize = true;
             this.darkCheckBox19.Location = new System.Drawing.Point(6, 67);
             this.darkCheckBox19.Name = "darkCheckBox19";
-            this.darkCheckBox19.Size = new System.Drawing.Size(192, 17);
+            this.darkCheckBox19.Size = new System.Drawing.Size(196, 17);
             this.darkCheckBox19.TabIndex = 33;
             this.darkCheckBox19.Tag = "Rendering3D_AllowTexturingInLightingMode";
             this.darkCheckBox19.Text = "Allow texturing in Lighting mode";
@@ -1787,7 +1789,7 @@
             this.darkCheckBox18.AutoSize = true;
             this.darkCheckBox18.Location = new System.Drawing.Point(210, 300);
             this.darkCheckBox18.Name = "darkCheckBox18";
-            this.darkCheckBox18.Size = new System.Drawing.Size(80, 17);
+            this.darkCheckBox18.Size = new System.Drawing.Size(81, 17);
             this.darkCheckBox18.TabIndex = 32;
             this.darkCheckBox18.Tag = "Rendering3D_AnimateCameraOnRelocation";
             this.darkCheckBox18.Text = "Relocation";
@@ -1797,7 +1799,7 @@
             this.darkCheckBox17.AutoSize = true;
             this.darkCheckBox17.Location = new System.Drawing.Point(117, 300);
             this.darkCheckBox17.Name = "darkCheckBox17";
-            this.darkCheckBox17.Size = new System.Drawing.Size(91, 17);
+            this.darkCheckBox17.Size = new System.Drawing.Size(92, 17);
             this.darkCheckBox17.TabIndex = 31;
             this.darkCheckBox17.Tag = "Rendering3D_AnimateCameraOnDoubleClickRoomSwitch";
             this.darkCheckBox17.Text = "Room switch";
@@ -1817,7 +1819,7 @@
             this.darkCheckBox7.AutoSize = true;
             this.darkCheckBox7.Location = new System.Drawing.Point(6, 228);
             this.darkCheckBox7.Name = "darkCheckBox7";
-            this.darkCheckBox7.Size = new System.Drawing.Size(74, 17);
+            this.darkCheckBox7.Size = new System.Drawing.Size(76, 17);
             this.darkCheckBox7.TabIndex = 24;
             this.darkCheckBox7.Tag = "Rendering3D_ShowFPS";
             this.darkCheckBox7.Text = "Show FPS";
@@ -1827,7 +1829,7 @@
             this.darkCheckBox6.AutoSize = true;
             this.darkCheckBox6.Location = new System.Drawing.Point(6, 251);
             this.darkCheckBox6.Name = "darkCheckBox6";
-            this.darkCheckBox6.Size = new System.Drawing.Size(175, 17);
+            this.darkCheckBox6.Size = new System.Drawing.Size(176, 17);
             this.darkCheckBox6.TabIndex = 23;
             this.darkCheckBox6.Tag = "Rendering3D_ResetCameraOnRoomSwitch";
             this.darkCheckBox6.Text = "Reset camera on room switch";
@@ -1837,7 +1839,7 @@
             this.darkCheckBox4.AutoSize = true;
             this.darkCheckBox4.Location = new System.Drawing.Point(6, 21);
             this.darkCheckBox4.Name = "darkCheckBox4";
-            this.darkCheckBox4.Size = new System.Drawing.Size(194, 17);
+            this.darkCheckBox4.Size = new System.Drawing.Size(195, 17);
             this.darkCheckBox4.TabIndex = 21;
             this.darkCheckBox4.Tag = "Rendering3D_Antialias";
             this.darkCheckBox4.Text = "Use antialiasing (requires restart)";
@@ -1862,7 +1864,7 @@
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel14.Location = new System.Drawing.Point(3, 381);
             this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel14.Size = new System.Drawing.Size(110, 13);
             this.darkLabel14.TabIndex = 19;
             this.darkLabel14.Text = "Block outline width:";
             // 
@@ -1886,7 +1888,7 @@
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel13.Location = new System.Drawing.Point(3, 353);
             this.darkLabel13.Name = "darkLabel13";
-            this.darkLabel13.Size = new System.Drawing.Size(278, 13);
+            this.darkLabel13.Size = new System.Drawing.Size(277, 13);
             this.darkLabel13.TabIndex = 17;
             this.darkLabel13.Text = "Maximum portal room depth in \'Draw portals\' mode:";
             // 
@@ -1955,7 +1957,7 @@
             this.darkLabel39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel39.Location = new System.Drawing.Point(6, 121);
             this.darkLabel39.Name = "darkLabel39";
-            this.darkLabel39.Size = new System.Drawing.Size(79, 13);
+            this.darkLabel39.Size = new System.Drawing.Size(82, 13);
             this.darkLabel39.TabIndex = 39;
             this.darkLabel39.Text = "Line thickness:";
             // 
@@ -1984,7 +1986,7 @@
             this.darkLabel38.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel38.Location = new System.Drawing.Point(6, 93);
             this.darkLabel38.Name = "darkLabel38";
-            this.darkLabel38.Size = new System.Drawing.Size(95, 13);
+            this.darkLabel38.Size = new System.Drawing.Size(97, 13);
             this.darkLabel38.TabIndex = 37;
             this.darkLabel38.Text = "Scaling cube size:";
             // 
@@ -2013,7 +2015,7 @@
             this.darkLabel37.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel37.Location = new System.Drawing.Point(6, 65);
             this.darkLabel37.Name = "darkLabel37";
-            this.darkLabel37.Size = new System.Drawing.Size(108, 13);
+            this.darkLabel37.Size = new System.Drawing.Size(111, 13);
             this.darkLabel37.TabIndex = 35;
             this.darkLabel37.Text = "Centering cube size:";
             // 
@@ -2042,7 +2044,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(114, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -2071,7 +2073,7 @@
             this.darkLabel35.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel35.Location = new System.Drawing.Point(6, 9);
             this.darkLabel35.Name = "darkLabel35";
-            this.darkLabel35.Size = new System.Drawing.Size(65, 13);
+            this.darkLabel35.Size = new System.Drawing.Size(64, 13);
             this.darkLabel35.TabIndex = 31;
             this.darkLabel35.Text = "Gizmo size:";
             // 
@@ -2123,7 +2125,7 @@
             this.darkCheckBox47.AutoSize = true;
             this.darkCheckBox47.Location = new System.Drawing.Point(9, 216);
             this.darkCheckBox47.Name = "darkCheckBox47";
-            this.darkCheckBox47.Size = new System.Drawing.Size(137, 17);
+            this.darkCheckBox47.Size = new System.Drawing.Size(136, 17);
             this.darkCheckBox47.TabIndex = 13;
             this.darkCheckBox47.Tag = "RenderingItem_Animate";
             this.darkCheckBox47.Text = "Animate item preview";
@@ -2133,7 +2135,7 @@
             this.darkCheckBox46.AutoSize = true;
             this.darkCheckBox46.Location = new System.Drawing.Point(9, 193);
             this.darkCheckBox46.Name = "darkCheckBox46";
-            this.darkCheckBox46.Size = new System.Drawing.Size(297, 17);
+            this.darkCheckBox46.Size = new System.Drawing.Size(304, 17);
             this.darkCheckBox46.TabIndex = 12;
             this.darkCheckBox46.Tag = "RenderingItem_ShowMultipleWadsPrompt";
             this.darkCheckBox46.Text = "Show hint in case current object exists in several wads";
@@ -2153,7 +2155,7 @@
             this.darkCheckBox3.AutoSize = true;
             this.darkCheckBox3.Location = new System.Drawing.Point(9, 147);
             this.darkCheckBox3.Name = "darkCheckBox3";
-            this.darkCheckBox3.Size = new System.Drawing.Size(194, 17);
+            this.darkCheckBox3.Size = new System.Drawing.Size(195, 17);
             this.darkCheckBox3.TabIndex = 10;
             this.darkCheckBox3.Tag = "RenderingItem_Antialias";
             this.darkCheckBox3.Text = "Use antialiasing (requires restart)";
@@ -2217,7 +2219,7 @@
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel6.Location = new System.Drawing.Point(6, 93);
             this.darkLabel6.Name = "darkLabel6";
-            this.darkLabel6.Size = new System.Drawing.Size(122, 13);
+            this.darkLabel6.Size = new System.Drawing.Size(124, 13);
             this.darkLabel6.TabIndex = 6;
             this.darkLabel6.Text = "Mouse rotation speed:";
             // 
@@ -2246,7 +2248,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(6, 65);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(110, 13);
+            this.darkLabel5.Size = new System.Drawing.Size(109, 13);
             this.darkLabel5.TabIndex = 4;
             this.darkLabel5.Text = "Mouse move speed:";
             // 
@@ -2299,7 +2301,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(6, 9);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(142, 13);
+            this.darkLabel3.Size = new System.Drawing.Size(144, 13);
             this.darkLabel3.TabIndex = 0;
             this.darkLabel3.Text = "Mouse wheel zoom speed:";
             // 
@@ -2331,7 +2333,7 @@
             this.darkLabel25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel25.Location = new System.Drawing.Point(6, 121);
             this.darkLabel25.Name = "darkLabel25";
-            this.darkLabel25.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel25.Size = new System.Drawing.Size(123, 13);
             this.darkLabel25.TabIndex = 36;
             this.darkLabel25.Text = "Keyboard zoom speed:";
             // 
@@ -2376,7 +2378,7 @@
             this.darkLabel26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel26.Location = new System.Drawing.Point(6, 149);
             this.darkLabel26.Name = "darkLabel26";
-            this.darkLabel26.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel26.Size = new System.Drawing.Size(122, 13);
             this.darkLabel26.TabIndex = 38;
             this.darkLabel26.Text = "Keyboard move speed:";
             // 
@@ -2435,7 +2437,7 @@
             this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel19.Location = new System.Drawing.Point(6, 9);
             this.darkLabel19.Name = "darkLabel19";
-            this.darkLabel19.Size = new System.Drawing.Size(123, 13);
+            this.darkLabel19.Size = new System.Drawing.Size(122, 13);
             this.darkLabel19.TabIndex = 28;
             this.darkLabel19.Text = "Minimum zoom factor:";
             // 
@@ -2510,7 +2512,7 @@
             this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel20.Location = new System.Drawing.Point(6, 65);
             this.darkLabel20.Name = "darkLabel20";
-            this.darkLabel20.Size = new System.Drawing.Size(142, 13);
+            this.darkLabel20.Size = new System.Drawing.Size(144, 13);
             this.darkLabel20.TabIndex = 32;
             this.darkLabel20.Text = "Mouse wheel zoom speed:";
             // 
@@ -2520,7 +2522,7 @@
             this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel21.Location = new System.Drawing.Point(6, 37);
             this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel21.Size = new System.Drawing.Size(123, 13);
             this.darkLabel21.TabIndex = 30;
             this.darkLabel21.Text = "Maximum zoom factor:";
             // 
@@ -2566,7 +2568,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(386, 511);
+            this.tabPage4.Size = new System.Drawing.Size(386, 484);
             this.tabPage4.TabIndex = 22;
             this.tabPage4.Text = "Texture map";
             // 
@@ -2575,7 +2577,7 @@
             this.darkCheckBox41.AutoSize = true;
             this.darkCheckBox41.Location = new System.Drawing.Point(9, 267);
             this.darkCheckBox41.Name = "darkCheckBox41";
-            this.darkCheckBox41.Size = new System.Drawing.Size(329, 17);
+            this.darkCheckBox41.Size = new System.Drawing.Size(332, 17);
             this.darkCheckBox41.TabIndex = 48;
             this.darkCheckBox41.Tag = "TextureMap_WarnAboutIncorrectAttributes";
             this.darkCheckBox41.Text = "Warn if double-sided texture is applied to single-sided face";
@@ -2585,7 +2587,7 @@
             this.darkCheckBox40.AutoSize = true;
             this.darkCheckBox40.Location = new System.Drawing.Point(9, 244);
             this.darkCheckBox40.Name = "darkCheckBox40";
-            this.darkCheckBox40.Size = new System.Drawing.Size(193, 17);
+            this.darkCheckBox40.Size = new System.Drawing.Size(198, 17);
             this.darkCheckBox40.TabIndex = 47;
             this.darkCheckBox40.Tag = "TextureMap_ResetAttributesOnNewSelection";
             this.darkCheckBox40.Text = "Reset attributes on new selection";
@@ -2595,7 +2597,7 @@
             this.darkCheckBox35.AutoSize = true;
             this.darkCheckBox35.Location = new System.Drawing.Point(9, 221);
             this.darkCheckBox35.Name = "darkCheckBox35";
-            this.darkCheckBox35.Size = new System.Drawing.Size(178, 17);
+            this.darkCheckBox35.Size = new System.Drawing.Size(182, 17);
             this.darkCheckBox35.TabIndex = 46;
             this.darkCheckBox35.Tag = "TextureMap_PickTextureWithoutAttributes";
             this.darkCheckBox35.Text = "Pick texture without attributes";
@@ -2605,7 +2607,7 @@
             this.darkCheckBox10.AutoSize = true;
             this.darkCheckBox10.Location = new System.Drawing.Point(9, 198);
             this.darkCheckBox10.Name = "darkCheckBox10";
-            this.darkCheckBox10.Size = new System.Drawing.Size(298, 17);
+            this.darkCheckBox10.Size = new System.Drawing.Size(303, 17);
             this.darkCheckBox10.TabIndex = 45;
             this.darkCheckBox10.Tag = "TextureMap_MouseWheelMovesTheTextureInsteadOfZooming";
             this.darkCheckBox10.Text = "Scroll texture with mouse wheel instead of zooming it";
@@ -2615,7 +2617,7 @@
             this.darkCheckBox9.AutoSize = true;
             this.darkCheckBox9.Location = new System.Drawing.Point(9, 175);
             this.darkCheckBox9.Name = "darkCheckBox9";
-            this.darkCheckBox9.Size = new System.Drawing.Size(201, 17);
+            this.darkCheckBox9.Size = new System.Drawing.Size(205, 17);
             this.darkCheckBox9.TabIndex = 44;
             this.darkCheckBox9.Tag = "TextureMap_DrawSelectionDirectionIndicators";
             this.darkCheckBox9.Text = "Draw selection direction indicators";
@@ -2626,7 +2628,7 @@
             this.darkLabel27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel27.Location = new System.Drawing.Point(6, 121);
             this.darkLabel27.Name = "darkLabel27";
-            this.darkLabel27.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel27.Size = new System.Drawing.Size(123, 13);
             this.darkLabel27.TabIndex = 36;
             this.darkLabel27.Text = "Keyboard zoom speed:";
             // 
@@ -2656,7 +2658,7 @@
             this.darkLabel28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel28.Location = new System.Drawing.Point(6, 149);
             this.darkLabel28.Name = "darkLabel28";
-            this.darkLabel28.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel28.Size = new System.Drawing.Size(122, 13);
             this.darkLabel28.TabIndex = 38;
             this.darkLabel28.Text = "Keyboard move speed:";
             // 
@@ -2715,7 +2717,7 @@
             this.darkLabel30.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel30.Location = new System.Drawing.Point(6, 9);
             this.darkLabel30.Name = "darkLabel30";
-            this.darkLabel30.Size = new System.Drawing.Size(123, 13);
+            this.darkLabel30.Size = new System.Drawing.Size(122, 13);
             this.darkLabel30.TabIndex = 28;
             this.darkLabel30.Text = "Minimum zoom factor:";
             // 
@@ -2775,7 +2777,7 @@
             this.darkLabel31.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel31.Location = new System.Drawing.Point(6, 65);
             this.darkLabel31.Name = "darkLabel31";
-            this.darkLabel31.Size = new System.Drawing.Size(142, 13);
+            this.darkLabel31.Size = new System.Drawing.Size(144, 13);
             this.darkLabel31.TabIndex = 32;
             this.darkLabel31.Text = "Mouse wheel zoom speed:";
             // 
@@ -2785,7 +2787,7 @@
             this.darkLabel32.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel32.Location = new System.Drawing.Point(6, 37);
             this.darkLabel32.Name = "darkLabel32";
-            this.darkLabel32.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel32.Size = new System.Drawing.Size(123, 13);
             this.darkLabel32.TabIndex = 30;
             this.darkLabel32.Text = "Maximum zoom factor:";
             // 
@@ -2853,7 +2855,7 @@
             this.darkLabel69.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel69.Location = new System.Drawing.Point(3, 24);
             this.darkLabel69.Name = "darkLabel69";
-            this.darkLabel69.Size = new System.Drawing.Size(124, 13);
+            this.darkLabel69.Size = new System.Drawing.Size(121, 13);
             this.darkLabel69.TabIndex = 1;
             this.darkLabel69.Text = "Fly Mode move speed:";
             // 
@@ -2886,7 +2888,7 @@
             this.darkLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel24.Location = new System.Drawing.Point(3, 23);
             this.darkLabel24.Name = "darkLabel24";
-            this.darkLabel24.Size = new System.Drawing.Size(142, 13);
+            this.darkLabel24.Size = new System.Drawing.Size(144, 13);
             this.darkLabel24.TabIndex = 29;
             this.darkLabel24.Text = "Mouse wheel zoom speed:";
             // 
@@ -2909,7 +2911,7 @@
             this.darkCheckBox29.AutoSize = true;
             this.darkCheckBox29.Location = new System.Drawing.Point(6, 183);
             this.darkCheckBox29.Name = "darkCheckBox29";
-            this.darkCheckBox29.Size = new System.Drawing.Size(138, 17);
+            this.darkCheckBox29.Size = new System.Drawing.Size(140, 17);
             this.darkCheckBox29.TabIndex = 0;
             this.darkCheckBox29.Tag = "Rendering3D_CursorWarping";
             this.darkCheckBox29.Text = "Warp cursor on edges";
@@ -2919,7 +2921,7 @@
             this.darkCheckBox5.AutoSize = true;
             this.darkCheckBox5.Location = new System.Drawing.Point(6, 160);
             this.darkCheckBox5.Name = "darkCheckBox5";
-            this.darkCheckBox5.Size = new System.Drawing.Size(124, 17);
+            this.darkCheckBox5.Size = new System.Drawing.Size(123, 17);
             this.darkCheckBox5.TabIndex = 28;
             this.darkCheckBox5.Tag = "Rendering3D_InvertMouseZoom";
             this.darkCheckBox5.Text = "Invert mouse zoom";
@@ -2965,7 +2967,7 @@
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel12.Location = new System.Drawing.Point(108, -27);
             this.darkLabel12.Name = "darkLabel12";
-            this.darkLabel12.Size = new System.Drawing.Size(142, 13);
+            this.darkLabel12.Size = new System.Drawing.Size(144, 13);
             this.darkLabel12.TabIndex = 18;
             this.darkLabel12.Text = "Mouse wheel zoom speed:";
             // 
@@ -3018,7 +3020,7 @@
             this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel9.Location = new System.Drawing.Point(3, 107);
             this.darkLabel9.Name = "darkLabel9";
-            this.darkLabel9.Size = new System.Drawing.Size(122, 13);
+            this.darkLabel9.Size = new System.Drawing.Size(124, 13);
             this.darkLabel9.TabIndex = 24;
             this.darkLabel9.Text = "Mouse rotation speed:";
             // 
@@ -3028,7 +3030,7 @@
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel10.Location = new System.Drawing.Point(3, 79);
             this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(110, 13);
+            this.darkLabel10.Size = new System.Drawing.Size(109, 13);
             this.darkLabel10.TabIndex = 22;
             this.darkLabel10.Text = "Mouse move speed:";
             // 
@@ -3071,7 +3073,7 @@
             this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel22.Location = new System.Drawing.Point(3, 23);
             this.darkLabel22.Name = "darkLabel22";
-            this.darkLabel22.Size = new System.Drawing.Size(126, 13);
+            this.darkLabel22.Size = new System.Drawing.Size(123, 13);
             this.darkLabel22.TabIndex = 24;
             this.darkLabel22.Text = "Keyboard zoom speed:";
             // 
@@ -3100,7 +3102,7 @@
             this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel23.Location = new System.Drawing.Point(3, 51);
             this.darkLabel23.Name = "darkLabel23";
-            this.darkLabel23.Size = new System.Drawing.Size(138, 13);
+            this.darkLabel23.Size = new System.Drawing.Size(137, 13);
             this.darkLabel23.TabIndex = 26;
             this.darkLabel23.Text = "Keyboard rotation speed:";
             // 
@@ -3132,10 +3134,12 @@
             // tabPage9
             // 
             this.tabPage9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage9.Controls.Add(this.darkLabel79);
+            this.tabPage9.Controls.Add(this.cmbGlobalEvent);
             this.tabPage9.Controls.Add(this.darkCheckBox48);
             this.tabPage9.Controls.Add(this.darkCheckBox38);
             this.tabPage9.Controls.Add(this.darkLabel78);
-            this.tabPage9.Controls.Add(this.darkComboBox2);
+            this.tabPage9.Controls.Add(this.cmbVolumeEvent);
             this.tabPage9.Controls.Add(this.darkLabel77);
             this.tabPage9.Controls.Add(this.darkComboBox1);
             this.tabPage9.Controls.Add(this.darkLabel33);
@@ -3150,12 +3154,22 @@
             this.tabPage9.TabIndex = 24;
             this.tabPage9.Text = "Node editor";
             // 
+            // darkCheckBox48
+            // 
+            this.darkCheckBox48.AutoSize = true;
+            this.darkCheckBox48.Location = new System.Drawing.Point(6, 207);
+            this.darkCheckBox48.Name = "darkCheckBox48";
+            this.darkCheckBox48.Size = new System.Drawing.Size(161, 17);
+            this.darkCheckBox48.TabIndex = 57;
+            this.darkCheckBox48.Tag = "NodeEditor_ShowGrips";
+            this.darkCheckBox48.Text = "Show side grips for nodes";
+            // 
             // darkCheckBox38
             // 
             this.darkCheckBox38.AutoSize = true;
-            this.darkCheckBox38.Location = new System.Drawing.Point(9, 159);
+            this.darkCheckBox38.Location = new System.Drawing.Point(6, 184);
             this.darkCheckBox38.Name = "darkCheckBox38";
-            this.darkCheckBox38.Size = new System.Drawing.Size(187, 17);
+            this.darkCheckBox38.Size = new System.Drawing.Size(190, 17);
             this.darkCheckBox38.TabIndex = 56;
             this.darkCheckBox38.Tag = "NodeEditor_LinksAsRopes";
             this.darkCheckBox38.Text = "Draw node editor links as ropes";
@@ -3166,22 +3180,18 @@
             this.darkLabel78.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel78.Location = new System.Drawing.Point(6, 123);
             this.darkLabel78.Name = "darkLabel78";
-            this.darkLabel78.Size = new System.Drawing.Size(115, 13);
+            this.darkLabel78.Size = new System.Drawing.Size(156, 13);
             this.darkLabel78.TabIndex = 55;
-            this.darkLabel78.Text = "Default event to edit:";
+            this.darkLabel78.Text = "Default volume event to edit:";
             // 
-            // darkComboBox2
+            // cmbVolumeEvent
             // 
-            this.darkComboBox2.FormattingEnabled = true;
-            this.darkComboBox2.Items.AddRange(new object[] {
-            "On enter",
-            "On inside",
-            "On leave"});
-            this.darkComboBox2.Location = new System.Drawing.Point(168, 120);
-            this.darkComboBox2.Name = "darkComboBox2";
-            this.darkComboBox2.Size = new System.Drawing.Size(150, 23);
-            this.darkComboBox2.TabIndex = 54;
-            this.darkComboBox2.Tag = "NodeEditor_DefaultEventToEdit";
+            this.cmbVolumeEvent.FormattingEnabled = true;
+            this.cmbVolumeEvent.Location = new System.Drawing.Point(168, 120);
+            this.cmbVolumeEvent.Name = "cmbVolumeEvent";
+            this.cmbVolumeEvent.Size = new System.Drawing.Size(150, 23);
+            this.cmbVolumeEvent.TabIndex = 54;
+            this.cmbVolumeEvent.Tag = "NodeEditor_DefaultEventToEdit";
             // 
             // darkLabel77
             // 
@@ -3189,7 +3199,7 @@
             this.darkLabel77.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel77.Location = new System.Drawing.Point(6, 94);
             this.darkLabel77.Name = "darkLabel77";
-            this.darkLabel77.Size = new System.Drawing.Size(119, 13);
+            this.darkLabel77.Size = new System.Drawing.Size(120, 13);
             this.darkLabel77.TabIndex = 53;
             this.darkLabel77.Text = "Default editing mode:";
             // 
@@ -3211,7 +3221,7 @@
             this.darkLabel33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel33.Location = new System.Drawing.Point(6, 9);
             this.darkLabel33.Name = "darkLabel33";
-            this.darkLabel33.Size = new System.Drawing.Size(93, 13);
+            this.darkLabel33.Size = new System.Drawing.Size(94, 13);
             this.darkLabel33.TabIndex = 45;
             this.darkLabel33.Text = "Node graph size:";
             // 
@@ -3289,7 +3299,7 @@
             this.darkLabel75.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel75.Location = new System.Drawing.Point(6, 37);
             this.darkLabel75.Name = "darkLabel75";
-            this.darkLabel75.Size = new System.Drawing.Size(120, 13);
+            this.darkLabel75.Size = new System.Drawing.Size(121, 13);
             this.darkLabel75.TabIndex = 49;
             this.darkLabel75.Text = "Node graph grid step:";
             // 
@@ -3299,7 +3309,7 @@
             this.darkLabel76.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel76.Location = new System.Drawing.Point(6, 65);
             this.darkLabel76.Name = "darkLabel76";
-            this.darkLabel76.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel76.Size = new System.Drawing.Size(111, 13);
             this.darkLabel76.TabIndex = 47;
             this.darkLabel76.Text = "Default node width:";
             // 
@@ -3332,15 +3342,24 @@
             0,
             0});
             // 
-            // darkCheckBox48
+            // darkLabel79
             // 
-            this.darkCheckBox48.AutoSize = true;
-            this.darkCheckBox48.Location = new System.Drawing.Point(9, 182);
-            this.darkCheckBox48.Name = "darkCheckBox48";
-            this.darkCheckBox48.Size = new System.Drawing.Size(158, 17);
-            this.darkCheckBox48.TabIndex = 57;
-            this.darkCheckBox48.Tag = "NodeEditor_ShowGrips";
-            this.darkCheckBox48.Text = "Show side grips for nodes";
+            this.darkLabel79.AutoSize = true;
+            this.darkLabel79.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel79.Location = new System.Drawing.Point(6, 152);
+            this.darkLabel79.Name = "darkLabel79";
+            this.darkLabel79.Size = new System.Drawing.Size(152, 13);
+            this.darkLabel79.TabIndex = 59;
+            this.darkLabel79.Text = "Default global event to edit:";
+            // 
+            // cmbGlobalEvent
+            // 
+            this.cmbGlobalEvent.FormattingEnabled = true;
+            this.cmbGlobalEvent.Location = new System.Drawing.Point(168, 149);
+            this.cmbGlobalEvent.Name = "cmbGlobalEvent";
+            this.cmbGlobalEvent.Size = new System.Drawing.Size(150, 23);
+            this.cmbGlobalEvent.TabIndex = 58;
+            this.cmbGlobalEvent.Tag = "NodeEditor_DefaultGlobalEventToEdit";
             // 
             // FormOptions
             // 
@@ -3670,8 +3689,10 @@
         private DarkUI.Controls.DarkLabel darkLabel77;
         private DarkUI.Controls.DarkComboBox darkComboBox1;
         private DarkUI.Controls.DarkLabel darkLabel78;
-        private DarkUI.Controls.DarkComboBox darkComboBox2;
+        private DarkUI.Controls.DarkComboBox cmbVolumeEvent;
         private DarkUI.Controls.DarkCheckBox darkCheckBox38;
         private DarkUI.Controls.DarkCheckBox darkCheckBox48;
+        private DarkUI.Controls.DarkLabel darkLabel79;
+        private DarkUI.Controls.DarkComboBox cmbGlobalEvent;
     }
 }

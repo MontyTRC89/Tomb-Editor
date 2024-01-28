@@ -13,7 +13,7 @@ end
 -- !Section "Lara state"
 -- !Description "Sets air value to specified."
 -- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ -1000 | 1000 | 0 | 1 | 5 ], 15, Air value to define"
+-- !Arguments "Numerical, [ -1800 | 1800 | 0 | 1 | 5 ], 15, Air value to define"
 
 LevelFuncs.Engine.Node.ModifyLaraAir = function(operation, value)
 	if (operation == 0) then
@@ -28,7 +28,7 @@ end
 -- !Conditional "True"
 -- !Description "Checks current poison value."
 -- !Arguments "CompareOperator, 30, Kind of check"
--- !Arguments "Numerical, 20, Poison value, [ 0 | 1800 ]"
+-- !Arguments "Numerical, 20, Poison value, [ 0 | 1000 ]"
 
 LevelFuncs.Engine.Node.TestLaraPoison = function(operator, value)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Objects.Lara:GetPoison(), value, operator)

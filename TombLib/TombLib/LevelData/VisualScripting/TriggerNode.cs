@@ -25,6 +25,7 @@ namespace TombLib.LevelData.VisualScripting
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
         public int Size { get; set; } = DefaultSize;
         public Vector3 Color { get; set; } = Vector3.Zero;
+        public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
         public List<string> Arguments { get; private set; } = new List<string>();

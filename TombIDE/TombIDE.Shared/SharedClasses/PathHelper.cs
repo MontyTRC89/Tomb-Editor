@@ -19,7 +19,7 @@ namespace TombIDE.Shared.SharedClasses
 			switch (version)
 			{
 				case TRVersion.Game.TR1:
-					targetFile = "Tomb1Main_gameflow.json5";
+					targetFile = "TR1X_gameflow.json5";
 					targetExtension = "*.json5";
 					break;
 
@@ -37,6 +37,18 @@ namespace TombIDE.Shared.SharedClasses
 			foreach (string file in Directory.GetFiles(scriptRootDirectoryPath, targetExtension, SearchOption.TopDirectoryOnly))
 				if (Path.GetFileName(file).Equals(targetFile, StringComparison.OrdinalIgnoreCase))
 					return file;
+
+			// File not found...
+
+			if (version == TRVersion.Game.TR1)
+			{
+				// Try fall-back to Tomb1Main_gameflow.json5
+				targetFile = "Tomb1Main_gameflow.json5";
+
+				foreach (string file in Directory.GetFiles(scriptRootDirectoryPath, targetExtension, SearchOption.TopDirectoryOnly))
+					if (Path.GetFileName(file).Equals(targetFile, StringComparison.OrdinalIgnoreCase))
+						return file;
+			}
 
 			throw new FileNotFoundException("Script file is missing.");
 		}

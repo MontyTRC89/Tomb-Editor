@@ -118,6 +118,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (System.Windows.Application.Current == null)
 				new System.Windows.Application();
 
+			System.Windows.Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
+
 			System.Windows.Application.Current.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
 			{
 				Source = new Uri("pack://application:,,,/TombIDE.ScriptingStudio;component/WPFStyles/DarkColors.xaml")
@@ -139,7 +141,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			CompilerLogs = new CompilerLogs();
 			SearchResults = new SearchResults(EditorTabControl);
 
-			IDE.Global.IDEEventRaised += OnIDEEventRaised;
+			IDE.Instance.IDEEventRaised += OnIDEEventRaised;
 
 			ScriptRootDirectoryPath = scriptRootDirectoryPath;
 			EngineDirectoryPath = engineDirectoryPath;
@@ -476,6 +478,7 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.SaveAs: EditorTabControl.SaveFileAs(); break;
 				case UICommand.SaveAll: EditorTabControl.SaveAll(); break;
 				case UICommand.Build: Build(); break;
+				case UICommand.Exit: IDE.Instance.RequestProgramClose(); break;
 
 				// Edit
 				case UICommand.Undo: CurrentEditor?.Undo(); break;
@@ -620,9 +623,9 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (menuItem != null)
 				switch (command)
 				{
-					case UICommand.UseNewInclude: menuItem.Checked = IDE.Global.IDEConfiguration.UseNewIncludeMethod; break;
-					case UICommand.ShowLogsAfterBuild: menuItem.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild; break;
-					case UICommand.ReindentOnSave: menuItem.Checked = IDE.Global.IDEConfiguration.ReindentOnSave; break;
+					case UICommand.UseNewInclude: menuItem.Checked = IDE.Instance.IDEConfiguration.UseNewIncludeMethod; break;
+					case UICommand.ShowLogsAfterBuild: menuItem.Checked = IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild; break;
+					case UICommand.ReindentOnSave: menuItem.Checked = IDE.Instance.IDEConfiguration.ReindentOnSave; break;
 				}
 		}
 
@@ -632,13 +635,13 @@ namespace TombIDE.ScriptingStudio.Bases
 
 			switch (command)
 			{
-				case UICommand.UseNewInclude: IDE.Global.IDEConfiguration.UseNewIncludeMethod = menuItem.Checked; break;
-				case UICommand.ShowLogsAfterBuild: IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild = menuItem.Checked; break;
-				case UICommand.ReindentOnSave: IDE.Global.IDEConfiguration.ReindentOnSave = menuItem.Checked; break;
+				case UICommand.UseNewInclude: IDE.Instance.IDEConfiguration.UseNewIncludeMethod = menuItem.Checked; break;
+				case UICommand.ShowLogsAfterBuild: IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild = menuItem.Checked; break;
+				case UICommand.ReindentOnSave: IDE.Instance.IDEConfiguration.ReindentOnSave = menuItem.Checked; break;
 			}
 
 			Configs.SaveAllConfigs();
-			IDE.Global.IDEConfiguration.Save();
+			IDE.Instance.IDEConfiguration.Save();
 		}
 
 		protected void ShowSettingsForm()

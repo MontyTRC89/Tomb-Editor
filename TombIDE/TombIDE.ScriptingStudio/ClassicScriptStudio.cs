@@ -42,9 +42,9 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public ClassicScriptStudio() : base(IDE.Global.Project.GetScriptRootDirectory(), IDE.Global.Project.GetEngineRootDirectoryPath())
+		public ClassicScriptStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.CS_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.CS_DockPanelState;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 
@@ -57,7 +57,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR4);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR4);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -119,12 +119,12 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
+					IDE.Instance.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
 				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
+					IDE.Instance.StringDefined = IsLevelLanguageStringDefined(strpce.String);
 					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -144,8 +144,8 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -229,7 +229,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)
@@ -368,7 +368,7 @@ namespace TombIDE.ScriptingStudio
 			{
 				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
 
-				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+				if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild)
 				{
 					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
@@ -393,7 +393,7 @@ namespace TombIDE.ScriptingStudio
 			{
 				bool success = NGCompiler.Compile(
 					ScriptRootDirectoryPath, EngineDirectoryPath,
-					IDE.Global.IDEConfiguration.UseNewIncludeMethod);
+					IDE.Instance.IDEConfiguration.UseNewIncludeMethod);
 
 				string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
 				CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
@@ -401,7 +401,7 @@ namespace TombIDE.ScriptingStudio
 				if (!success)
 					DarkMessageBox.Show(this, "Script compilation yielded an error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
+				if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
 				{
 					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
@@ -435,9 +435,9 @@ namespace TombIDE.ScriptingStudio
 		{
 			EditorTabControl.SaveAll();
 
-			if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
+			if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
 				CompileTR4Script();
-			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+			else if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
 				CompileTRNGScript();
 		}
 

@@ -218,6 +218,7 @@ namespace TombEditor.Forms
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.assToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editGlobalEventSetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -408,6 +409,7 @@ namespace TombEditor.Forms
             this.toolStripSeparator1,
             this.editObjectToolStripMenuItem,
             this.editEventSetsToolStripMenuItem,
+            this.editGlobalEventSetsToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.searchAndReplaceToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -557,8 +559,8 @@ namespace TombEditor.Forms
             this.editEventSetsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editEventSetsToolStripMenuItem.Name = "editEventSetsToolStripMenuItem";
             this.editEventSetsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.editEventSetsToolStripMenuItem.Tag = "EditEventSets";
-            this.editEventSetsToolStripMenuItem.Text = "EditEventSets";
+            this.editEventSetsToolStripMenuItem.Tag = "EditVolumeEventSets";
+            this.editEventSetsToolStripMenuItem.Text = "EditVolumeEventSets";
             // 
             // searchToolStripMenuItem
             // 
@@ -2109,7 +2111,6 @@ namespace TombEditor.Forms
             this.tbSearchMenu.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.tbSearchMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tbSearchMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbSearchMenu.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tbSearchMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSearchMenu.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.tbSearchMenu.Name = "tbSearchMenu";
@@ -2298,6 +2299,15 @@ namespace TombEditor.Forms
             this.assToolStripMenuItem.Name = "assToolStripMenuItem";
             this.assToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assToolStripMenuItem.Text = "ass";
+            // 
+            // editGlobalEventSetsToolStripMenuItem
+            // 
+            this.editGlobalEventSetsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.editGlobalEventSetsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.editGlobalEventSetsToolStripMenuItem.Name = "editGlobalEventSetsToolStripMenuItem";
+            this.editGlobalEventSetsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.editGlobalEventSetsToolStripMenuItem.Tag = "EditGlobalEventSets";
+            this.editGlobalEventSetsToolStripMenuItem.Text = "EditGlobalEventSets";
             // 
             // FormMain
             // 
@@ -2526,5 +2536,6 @@ namespace TombEditor.Forms
         private ToolStripMenuItem dockableToolStripMenuItem;
         private ToolStripMenuItem floatingToolStripMenuItem;
         private ToolStripMenuItem editEventSetsToolStripMenuItem;
+        private ToolStripMenuItem editGlobalEventSetsToolStripMenuItem;
     }
 }

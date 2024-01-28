@@ -25,7 +25,7 @@ namespace TombEditor.Controls
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public VolumeEvent Event
+        public Event Event
         {
             get
             {
@@ -41,7 +41,7 @@ namespace TombEditor.Controls
                 UpdateUI();
             }
         }
-        private VolumeEvent _event = null;
+        private Event _event = null;
 
         private Editor _editor;
         private bool _lockUI = false;
@@ -159,7 +159,7 @@ namespace TombEditor.Controls
                 FindAndSelectFunction();
 
             if (!_lockUI && _event != null)
-                _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
+                _event.Mode = rbLevelScript.Checked ? EventSetMode.LevelScript : EventSetMode.NodeEditor;
         }
 
         private void UpdateNodes()
@@ -192,8 +192,8 @@ namespace TombEditor.Controls
 
             _lockUI = true;
             {
-                rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
-                rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
+                rbLevelScript.Checked = _event.Mode == EventSetMode.LevelScript;
+                rbNodeEditor.Checked = _event.Mode == EventSetMode.NodeEditor;
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
                 nudCallCount2.Value = _event.CallCounter;
@@ -207,7 +207,8 @@ namespace TombEditor.Controls
         {
             butChangeNodeColor.Enabled =
             butRenameNode.Enabled =
-            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
+            butDeleteNode.Enabled = 
+            butLockNodes.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
 
@@ -277,8 +278,7 @@ namespace TombEditor.Controls
                 return;
             }
 
-            nodeEditor.NodeFunctions.AddRange(
-                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
+            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.NodeFunctions);
         }
 
         private void FindAndSelectFunction()
@@ -458,7 +458,7 @@ namespace TombEditor.Controls
         {
             var result = new List<TriggerNode>();
 
-            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (_event == null || _event.Mode == EventSetMode.LevelScript)
                 return result;
 
             if (nodeEditor.SelectedNodes.Count == 0)
@@ -475,7 +475,7 @@ namespace TombEditor.Controls
 
         public void PasteNodes(List<TriggerNode> nodes)
         {
-            if (nodes == null || _event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (nodes == null || _event == null || _event.Mode == EventSetMode.LevelScript)
                 return;
 
             if (nodes.Count == 0)
@@ -567,6 +567,12 @@ namespace TombEditor.Controls
 
             Clipboard.SetText(exportedNodes);
             _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
+        }
+
+        private void butLockNodes_Click(object sender, EventArgs e)
+        {
+            foreach (var node in nodeEditor.SelectedNodes)
+                nodeEditor.LockNode(node, !node.Locked);
         }
     }
 }

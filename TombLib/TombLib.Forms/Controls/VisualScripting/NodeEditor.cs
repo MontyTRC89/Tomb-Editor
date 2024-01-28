@@ -79,8 +79,12 @@ namespace TombLib.Controls.VisualScripting
         private List<string> _cachedLuaFunctions = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IReadOnlyList<string> CachedEventSets { get { return _cachedEventSets; } }
-        private List<string> _cachedEventSets = new List<string>();
+        public IReadOnlyList<string> CachedVolumeEventSets { get { return _cachedVolumeEventSets; } }
+        private List<string> _cachedVolumeEventSets = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedGlobalEventSets { get { return _cachedGlobalEventSets; } }
+        private List<string> _cachedGlobalEventSets = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<MoveableInstance> CachedMoveables { get { return _cachedMoveables; } }
@@ -228,19 +232,20 @@ namespace TombLib.Controls.VisualScripting
         {
             var allObjects = level.GetAllObjects();
 
-            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
-                                    !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
-            _cachedStatics      = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedCameras      = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedSinks        = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
-            _cachedSpriteSlots  = level.Settings.WadGetAllSpriteSequences().Select(m => TrCatalog.GetSpriteSequenceName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
-            _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
-            _cachedSoundInfos   = level.Settings.GlobalSoundMap;
-            _cachedRooms        = level.ExistingRooms;
-            _cachedEventSets = level.Settings.EventSets.Select(s => s.Name).ToList();
+            _cachedMoveables        = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
+                                        !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
+            _cachedStatics          = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedCameras          = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedSinks            = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedFlybys           = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedVolumes          = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedWadSlots         = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSpriteSlots      = level.Settings.WadGetAllSpriteSequences().Select(m => TrCatalog.GetSpriteSequenceName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundTracks      = level.Settings.GetListOfSoundtracks();
+            _cachedSoundInfos       = level.Settings.GlobalSoundMap;
+            _cachedRooms            = level.ExistingRooms;
+            _cachedVolumeEventSets  = level.Settings.VolumeEventSets.Select(s => s.Name).ToList();
+            _cachedGlobalEventSets  = level.Settings.GlobalEventSets.Select(s => s.Name).ToList();
 
             if (scriptFunctions != null)
                 _cachedLuaFunctions = scriptFunctions;
@@ -309,10 +314,16 @@ namespace TombLib.Controls.VisualScripting
             if (SelectedNode == null || node == null || node.Previous != null)
                 return;
 
-            if (elseIfPossible && SelectedNode is TriggerNodeCondition && (SelectedNode as TriggerNodeCondition)?.Else == null)
+            if (SelectedNode is TriggerNodeCondition && 
+                ((elseIfPossible || (SelectedNode as TriggerNodeCondition)?.Next != null) && 
+                 (SelectedNode as TriggerNodeCondition)?.Else == null))
+            {
                 (SelectedNode as TriggerNodeCondition).Else = node;
+            }
             else if (SelectedNode.Next == null)
+            {
                 SelectedNode.Next = node;
+            }
             else
                 return;
 
@@ -436,6 +447,19 @@ namespace TombLib.Controls.VisualScripting
             SelectedNodes.Clear();
             OnSelectionChanged();
             Invalidate();
+        }
+
+        public void LockNode(TriggerNode node, bool locked)
+        {
+            if (node == null)
+                return;
+
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
+
+            if (control == null)
+                return;
+
+            node.Locked = control.Locked = locked;
         }
 
         public void ShowNode(TriggerNode node)
@@ -813,7 +837,7 @@ namespace TombLib.Controls.VisualScripting
             if (_functionList != null)
                 _functionList.FormClosed -= MakeNodeByContext;
 
-            _functionList = new FormFunctionList(PointToScreen(location), this, NodeFunctions);
+            _functionList = new FormFunctionList(Cursor.Position, this, NodeFunctions);
             _functionList.FormClosed += MakeNodeByContext;
             _functionList.Show();
         }
