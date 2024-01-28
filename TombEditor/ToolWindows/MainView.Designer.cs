@@ -209,10 +209,10 @@ namespace TombEditor.ToolWindows
             // comboPrecision
             // 
             this.comboPrecision.Dock = System.Windows.Forms.DockStyle.Right;
-            this.comboPrecision.Items.Add("256");
-            this.comboPrecision.Items.Add("128");
-            this.comboPrecision.Items.Add("64");
             this.comboPrecision.Items.Add("32");
+            this.comboPrecision.Items.Add("64");
+            this.comboPrecision.Items.Add("128");
+            this.comboPrecision.Items.Add("256");
             this.comboPrecision.Name = "comboPrecision";
             this.comboPrecision.TabIndex = 1;
             this.comboPrecision.Width = 66;

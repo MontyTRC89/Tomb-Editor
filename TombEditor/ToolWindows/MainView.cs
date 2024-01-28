@@ -42,10 +42,10 @@ namespace TombEditor.ToolWindows
 
             comboPrecision.SelectedIndex = _editor.Configuration.Editor_PreciseGeometryUnitHeight switch
             {
-                256 => 0,
-                128 => 1,
-                64 => 2,
-                32 => 3,
+                32 => 0,
+                64 => 1,
+                128 => 2,
+                256 => 3,
                 _ => -1
             };
         }
@@ -110,10 +110,10 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.IncreaseClickHeightEvent)
-                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex <= 0 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex - 1;
+                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex >= comboPrecision.Items.Count - 1 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex + 1;
 
             if (obj is Editor.DecreaseClickHeightEvent)
-                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex >= comboPrecision.Items.Count - 1 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex + 1;
+                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex <= 0 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex - 1;
 
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
@@ -334,9 +334,9 @@ namespace TombEditor.ToolWindows
         {
             _editor.Configuration.Editor_PreciseGeometryUnitHeight = comboPrecision.SelectedIndex switch
             {
-                1 => 128,
-                2 => 64,
-                3 => 32,
+                0 => 32,
+                1 => 64,
+                2 => 128,
                 _ => 256
             };
         }
