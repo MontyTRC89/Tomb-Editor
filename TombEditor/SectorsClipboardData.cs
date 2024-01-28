@@ -86,7 +86,7 @@ namespace TombEditor
                                 var vertical = (BlockVertical)reader.ReadByte();
 
                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                    b.SetHeight(vertical, edge, reader.ReadInt16());
+                                    b.SetHeight(vertical, edge, reader.ReadInt32());
                             }
 
                             b.Type = (BlockType)reader.ReadByte();
