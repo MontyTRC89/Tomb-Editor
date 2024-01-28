@@ -39,20 +39,15 @@ namespace TombEditor.ToolWindows
             UpdateToolStripLayout();
             RefreshControls(_editor.Configuration);
             UpdateStatistics();
-        }
 
-        protected override void WndProc(ref Message m)
-        {
-            UpdatePrecisionModeIndicator();
-            base.WndProc(ref m);
-        }
-
-        public void UpdatePrecisionModeIndicator()
-        {
-            bool precisionMode = _editor.IsPreciseGeometryMode;
-
-            panelPreciseModeIndicator.Visible = precisionMode;
-            lblPreciseMode.Visible = precisionMode;
+            comboPrecision.SelectedIndex = _editor.Configuration.Editor_PreciseGeometryUnitHeight switch
+            {
+                256 => 0,
+                128 => 1,
+                64 => 2,
+                32 => 3,
+                _ => -1
+            };
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -114,13 +109,19 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.CapsLockToggledEvent)
-                UpdatePrecisionModeIndicator();
+            if (obj is Editor.IncreaseClickHeightEvent)
+                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex <= 0 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex - 1;
+
+            if (obj is Editor.DecreaseClickHeightEvent)
+                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex >= comboPrecision.Items.Count - 1 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex + 1;
 
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
                 UpdateStatistics();
+
+                if (obj is Editor.ConfigurationChangedEvent)
+                    panelPreciseModeOptions.Visible = _editor.IsPreciseGeometryAllowed;
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -200,6 +201,8 @@ namespace TombEditor.ToolWindows
                 butAddSphereVolume.Enabled = _editor.Level.IsTombEngine;
                 butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
+
+                panelPreciseModeOptions.Visible = _editor.IsPreciseGeometryAllowed;
             }
 
             if (obj is Editor.MessageEvent)
@@ -325,6 +328,17 @@ namespace TombEditor.ToolWindows
                     }
                 }
             }
+        }
+
+        private void comboPrecision_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.Configuration.Editor_PreciseGeometryUnitHeight = comboPrecision.SelectedIndex switch
+            {
+                1 => 128,
+                2 => 64,
+                3 => 32,
+                _ => 256
+            };
         }
 
         private void toolStrip_MouseClick(object sender, MouseEventArgs e)

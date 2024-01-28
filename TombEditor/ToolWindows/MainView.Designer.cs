@@ -21,7 +21,7 @@ namespace TombEditor.ToolWindows
             this.panel3D = new TombEditor.Controls.Panel3D.Panel3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.panelStats = new System.Windows.Forms.Panel();
-            this.panelPreciseModeIndicator = new System.Windows.Forms.Panel();
+            this.panelPreciseModeOptions = new System.Windows.Forms.Panel();
             this.tbStats = new TombEditor.Controls.RichTextLabel();
             this.panelMainView = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip();
@@ -82,10 +82,11 @@ namespace TombEditor.ToolWindows
             this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.butBilinearFilter = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-            this.lblPreciseMode = new System.Windows.Forms.Label();
+            this.lblPreciseMode = new DarkUI.Controls.DarkLabel();
+            this.comboPrecision = new DarkUI.Controls.DarkComboBox();
             this.toolStrip.SuspendLayout();
             this.panelStats.SuspendLayout();
-            this.panelPreciseModeIndicator.SuspendLayout();
+            this.panelPreciseModeOptions.SuspendLayout();
             this.panelMainView.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -178,7 +179,7 @@ namespace TombEditor.ToolWindows
             this.panelStats.AutoSize = true;
             this.panelStats.Controls.Add(this.tbStats);
             this.panelStats.Controls.Add(this.lblPreciseMode);
-            this.panelStats.Controls.Add(this.panelPreciseModeIndicator);
+            this.panelStats.Controls.Add(this.panelPreciseModeOptions);
             this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelStats.Location = new System.Drawing.Point(0, 267);
             this.panelStats.Name = "panelStats";
@@ -186,24 +187,36 @@ namespace TombEditor.ToolWindows
             this.panelStats.Size = new System.Drawing.Size(1290, 22);
             this.panelStats.TabIndex = 15;
             // 
-            // panelPreciseModeIndicator
+            // panelPreciseModeOptions
             // 
-            this.panelPreciseModeIndicator.BackgroundImage = Properties.Resources.general_divider_24;
-            this.panelPreciseModeIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.panelPreciseModeIndicator.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelPreciseModeIndicator.Name = "panelPreciseModeIndicator";
-            this.panelPreciseModeIndicator.Size = new System.Drawing.Size(24, 24);
-            this.panelPreciseModeIndicator.TabIndex = 16;
+            this.panelPreciseModeOptions.Controls.Add(this.comboPrecision);
+            this.panelPreciseModeOptions.Controls.Add(this.lblPreciseMode);
+            this.panelPreciseModeOptions.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelPreciseModeOptions.Name = "panelPreciseModeOptions";
+            this.panelPreciseModeOptions.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.panelPreciseModeOptions.TabIndex = 16;
+            this.panelPreciseModeOptions.AutoSize = true;
             // 
             // lblPreciseMode
             // 
-            this.lblPreciseMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreciseMode.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblPreciseMode.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblPreciseMode.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblPreciseMode.Name = "lblPreciseMode";
-            this.lblPreciseMode.Text = "Precision Mode (Caps-Lock)";
+            this.lblPreciseMode.TabIndex = 0;
+            this.lblPreciseMode.Text = "Click Precision:";
+            this.lblPreciseMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblPreciseMode.Width = 88;
-            this.lblPreciseMode.TabIndex = 17;
+            // 
+            // comboPrecision
+            // 
+            this.comboPrecision.Dock = System.Windows.Forms.DockStyle.Right;
+            this.comboPrecision.Items.Add("256");
+            this.comboPrecision.Items.Add("128");
+            this.comboPrecision.Items.Add("64");
+            this.comboPrecision.Items.Add("32");
+            this.comboPrecision.Name = "comboPrecision";
+            this.comboPrecision.TabIndex = 1;
+            this.comboPrecision.Width = 66;
+            this.comboPrecision.SelectedIndexChanged += new System.EventHandler(this.comboPrecision_SelectedIndexChanged);
             // 
             // tbStats
             // 
@@ -904,7 +917,7 @@ namespace TombEditor.ToolWindows
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panelStats.ResumeLayout(false);
-            this.panelPreciseModeIndicator.ResumeLayout(false);
+            this.panelPreciseModeOptions.ResumeLayout(false);
             this.panelMainView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -976,7 +989,8 @@ namespace TombEditor.ToolWindows
         private TombEditor.Controls.RichTextLabel tbStats;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton butBilinearFilter;
-        private System.Windows.Forms.Panel panelPreciseModeIndicator;
-        private System.Windows.Forms.Label lblPreciseMode;
+        private System.Windows.Forms.Panel panelPreciseModeOptions;
+        private DarkUI.Controls.DarkLabel lblPreciseMode;
+        private DarkUI.Controls.DarkComboBox comboPrecision;
     }
 }

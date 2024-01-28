@@ -120,7 +120,8 @@ namespace TombEditor
             }
         }
 
-        public class CapsLockToggledEvent : IEditorEvent { }
+        public class IncreaseClickHeightEvent : IEditorEvent { }
+        public class DecreaseClickHeightEvent : IEditorEvent { }
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
@@ -1413,17 +1414,9 @@ namespace TombEditor
 
         public static Editor Instance;
 
-        public bool IsPreciseGeometryMode
-        {
-            get
-            {
-                if (!Control.IsKeyLocked(Keys.CapsLock))
-                    return false;
+        public bool IsPreciseGeometryAllowed
+            => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnablePreciseGeometryControlsForUnsupportedEngines;
 
-                return Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnablePreciseGeometryControlsForUnsupportedEngines;
-            }
-        }
-
-        public int IncrementReference => IsPreciseGeometryMode ? Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
+        public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_PreciseGeometryUnitHeight : Level.FullClickHeight;
     }
 }
