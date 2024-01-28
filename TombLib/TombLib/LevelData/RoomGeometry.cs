@@ -1988,8 +1988,8 @@ namespace TombLib.LevelData
                 return false;
 
             Block block = room.Blocks[currentX, currentZ];
-            int floorMin = block.Floor.Min;
-            int ceilingMax = block.Ceiling.Max;
+            int floorMin = block.Floor.FullClickMin;
+            int ceilingMax = block.Ceiling.FullClickMax;
 
             return floorMin <= y / Level.FullClickHeight && ceilingMax >= y / Level.FullClickHeight;
         }
