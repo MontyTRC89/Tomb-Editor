@@ -500,6 +500,9 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (keyData is Keys.CapsLock)
+                _editor.RaiseEvent(new Editor.CapsLockToggledEvent());
+
             // Disable all hotkeys in fly mode except ToggleFlyMode
             if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);

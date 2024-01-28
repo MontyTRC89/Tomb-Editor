@@ -120,6 +120,8 @@ namespace TombEditor
             }
         }
 
+        public class CapsLockToggledEvent : IEditorEvent { }
+
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
             public IEditorAction Previous { get; internal set; }

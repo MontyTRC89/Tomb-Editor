@@ -41,6 +41,20 @@ namespace TombEditor.ToolWindows
             UpdateStatistics();
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            UpdatePrecisionModeIndicator();
+            base.WndProc(ref m);
+        }
+
+        public void UpdatePrecisionModeIndicator()
+        {
+            bool precisionMode = _editor.IsPreciseGeometryMode;
+
+            panelPreciseModeIndicator.Visible = precisionMode;
+            lblPreciseMode.Visible = precisionMode;
+        }
+
         public void InitializeRendering(RenderingDevice device)
         {
             panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias);
@@ -100,6 +114,9 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.CapsLockToggledEvent)
+                UpdatePrecisionModeIndicator();
+
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
