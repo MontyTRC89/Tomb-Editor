@@ -62,7 +62,7 @@ namespace TombEditor.Controls.Panel3D
                         RectangleInt2 resizeArea = new RectangleInt2(currRoom.LocalArea.Start, currRoom.LocalArea.End);
                         int[] resizeHeight = { currRoom.GetLowestCorner(), currRoom.GetHighestCorner() };
                         PortalDirection portalDirection;
-                        int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4;
+                        int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? _editor.IncrementReference : _editor.IncrementReference * 4;
 
                         if (_toolHandler.ReferencePicking.IsVerticalPlane)
                             portalDirection = PortalInstance.GetOppositeDirection
