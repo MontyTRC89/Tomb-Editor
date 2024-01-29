@@ -21,7 +21,7 @@ namespace TombEditor.ToolWindows
             this.panel3D = new TombEditor.Controls.Panel3D.Panel3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.panelStats = new System.Windows.Forms.Panel();
-            this.panelPreciseModeOptions = new System.Windows.Forms.Panel();
+            this.panelStepHeightOptions = new System.Windows.Forms.Panel();
             this.tbStats = new TombEditor.Controls.RichTextLabel();
             this.panelMainView = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip();
@@ -82,11 +82,11 @@ namespace TombEditor.ToolWindows
             this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.butBilinearFilter = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-            this.lblPreciseMode = new DarkUI.Controls.DarkLabel();
-            this.comboPrecision = new DarkUI.Controls.DarkComboBox();
+            this.lblStepHeight = new DarkUI.Controls.DarkLabel();
+            this.comboStepHeight = new DarkUI.Controls.DarkComboBox();
             this.toolStrip.SuspendLayout();
             this.panelStats.SuspendLayout();
-            this.panelPreciseModeOptions.SuspendLayout();
+            this.panelStepHeightOptions.SuspendLayout();
             this.panelMainView.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -178,8 +178,8 @@ namespace TombEditor.ToolWindows
             // 
             this.panelStats.AutoSize = true;
             this.panelStats.Controls.Add(this.tbStats);
-            this.panelStats.Controls.Add(this.lblPreciseMode);
-            this.panelStats.Controls.Add(this.panelPreciseModeOptions);
+            this.panelStats.Controls.Add(this.lblStepHeight);
+            this.panelStats.Controls.Add(this.panelStepHeightOptions);
             this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelStats.Location = new System.Drawing.Point(0, 267);
             this.panelStats.Name = "panelStats";
@@ -187,36 +187,36 @@ namespace TombEditor.ToolWindows
             this.panelStats.Size = new System.Drawing.Size(1290, 22);
             this.panelStats.TabIndex = 15;
             // 
-            // panelPreciseModeOptions
+            // panelStepHeightOptions
             // 
-            this.panelPreciseModeOptions.Controls.Add(this.comboPrecision);
-            this.panelPreciseModeOptions.Controls.Add(this.lblPreciseMode);
-            this.panelPreciseModeOptions.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelPreciseModeOptions.Name = "panelPreciseModeOptions";
-            this.panelPreciseModeOptions.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
-            this.panelPreciseModeOptions.TabIndex = 16;
-            this.panelPreciseModeOptions.AutoSize = true;
+            this.panelStepHeightOptions.Controls.Add(this.comboStepHeight);
+            this.panelStepHeightOptions.Controls.Add(this.lblStepHeight);
+            this.panelStepHeightOptions.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelStepHeightOptions.Name = "panelStepHeightOptions";
+            this.panelStepHeightOptions.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.panelStepHeightOptions.TabIndex = 16;
+            this.panelStepHeightOptions.AutoSize = true;
             // 
-            // lblPreciseMode
+            // lblStepHeight
             // 
-            this.lblPreciseMode.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblPreciseMode.Name = "lblPreciseMode";
-            this.lblPreciseMode.TabIndex = 0;
-            this.lblPreciseMode.Text = "Click Precision:";
-            this.lblPreciseMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblPreciseMode.Width = 88;
+            this.lblStepHeight.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblStepHeight.Name = "lblStepHeight";
+            this.lblStepHeight.TabIndex = 0;
+            this.lblStepHeight.Text = "Step height:";
+            this.lblStepHeight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblStepHeight.Width = 75;
             // 
-            // comboPrecision
+            // comboStepHeight
             // 
-            this.comboPrecision.Dock = System.Windows.Forms.DockStyle.Right;
-            this.comboPrecision.Items.Add("32");
-            this.comboPrecision.Items.Add("64");
-            this.comboPrecision.Items.Add("128");
-            this.comboPrecision.Items.Add("256");
-            this.comboPrecision.Name = "comboPrecision";
-            this.comboPrecision.TabIndex = 1;
-            this.comboPrecision.Width = 66;
-            this.comboPrecision.SelectedIndexChanged += new System.EventHandler(this.comboPrecision_SelectedIndexChanged);
+            this.comboStepHeight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.comboStepHeight.Items.Add("32 (Eighth)");
+            this.comboStepHeight.Items.Add("64 (Quarter)");
+            this.comboStepHeight.Items.Add("128 (Half)");
+            this.comboStepHeight.Items.Add("256 (Full)");
+            this.comboStepHeight.Name = "comboStepHeight";
+            this.comboStepHeight.TabIndex = 1;
+            this.comboStepHeight.Width = 90;
+            this.comboStepHeight.SelectedIndexChanged += new System.EventHandler(this.comboStepHeight_SelectedIndexChanged);
             // 
             // tbStats
             // 
@@ -917,7 +917,7 @@ namespace TombEditor.ToolWindows
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panelStats.ResumeLayout(false);
-            this.panelPreciseModeOptions.ResumeLayout(false);
+            this.panelStepHeightOptions.ResumeLayout(false);
             this.panelMainView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -989,8 +989,8 @@ namespace TombEditor.ToolWindows
         private TombEditor.Controls.RichTextLabel tbStats;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton butBilinearFilter;
-        private System.Windows.Forms.Panel panelPreciseModeOptions;
-        private DarkUI.Controls.DarkLabel lblPreciseMode;
-        private DarkUI.Controls.DarkComboBox comboPrecision;
+        private System.Windows.Forms.Panel panelStepHeightOptions;
+        private DarkUI.Controls.DarkLabel lblStepHeight;
+        private DarkUI.Controls.DarkComboBox comboStepHeight;
     }
 }

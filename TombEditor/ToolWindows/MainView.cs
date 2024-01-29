@@ -39,15 +39,6 @@ namespace TombEditor.ToolWindows
             UpdateToolStripLayout();
             RefreshControls(_editor.Configuration);
             UpdateStatistics();
-
-            comboPrecision.SelectedIndex = _editor.Configuration.Editor_PreciseGeometryUnitHeight switch
-            {
-                32 => 0,
-                64 => 1,
-                128 => 2,
-                256 => 3,
-                _ => -1
-            };
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -109,11 +100,8 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.IncreaseClickHeightEvent)
-                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex >= comboPrecision.Items.Count - 1 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex + 1;
-
-            if (obj is Editor.DecreaseClickHeightEvent)
-                comboPrecision.SelectedIndex = comboPrecision.SelectedIndex <= 0 ? comboPrecision.SelectedIndex : comboPrecision.SelectedIndex - 1;
+            if (obj is Editor.StepHeightChangedEvent)
+                UpdateStepHeightCombo();
 
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
@@ -121,7 +109,7 @@ namespace TombEditor.ToolWindows
                 UpdateStatistics();
 
                 if (obj is Editor.ConfigurationChangedEvent)
-                    panelPreciseModeOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                    panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -202,7 +190,8 @@ namespace TombEditor.ToolWindows
                 butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
 
-                panelPreciseModeOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                UpdateStepHeightCombo();
             }
 
             if (obj is Editor.MessageEvent)
@@ -330,9 +319,21 @@ namespace TombEditor.ToolWindows
             }
         }
 
-        private void comboPrecision_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateStepHeightCombo()
         {
-            _editor.Configuration.Editor_PreciseGeometryUnitHeight = comboPrecision.SelectedIndex switch
+            comboStepHeight.SelectedIndex = _editor.Configuration.Editor_StepHeight switch
+            {
+                32 => 0,
+                64 => 1,
+                128 => 2,
+                256 => 3,
+                _ => -1
+            };
+        }
+
+        private void comboStepHeight_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.Configuration.Editor_StepHeight = comboStepHeight.SelectedIndex switch
             {
                 0 => 32,
                 1 => 64,

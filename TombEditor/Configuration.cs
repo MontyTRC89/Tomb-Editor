@@ -29,7 +29,7 @@ namespace TombEditor
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
         public bool Editor_EnablePreciseGeometryControlsForUnsupportedEngines { get; set; } = false;
-        public int Editor_PreciseGeometryUnitHeight { get; set; } = 64;
+        public int Editor_StepHeight { get; set; } = 256;
 
         // Item preview options
 

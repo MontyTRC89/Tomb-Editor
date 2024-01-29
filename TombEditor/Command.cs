@@ -2212,6 +2212,34 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -8, 0), new Vector3(), true);
             });
 
+            AddCommand("IncreaseStepHeight", "Increase step height", CommandType.General, delegate (CommandArgs args)
+            {
+                int previous = args.Editor.Configuration.Editor_StepHeight;
+
+                args.Editor.Configuration.Editor_StepHeight = args.Editor.Configuration.Editor_StepHeight switch
+                {
+                    32 => 64,
+                    64 => 128,
+                    _ => 256
+                };
+
+                args.Editor.RaiseEvent(new Editor.StepHeightChangedEvent { Previous = previous, Current = args.Editor.Configuration.Editor_StepHeight });
+            });
+
+            AddCommand("DecreaseStepHeight", "Decrease step height", CommandType.General, delegate (CommandArgs args)
+            {
+                int previous = args.Editor.Configuration.Editor_StepHeight;
+
+                args.Editor.Configuration.Editor_StepHeight = args.Editor.Configuration.Editor_StepHeight switch
+                {
+                    256 => 128,
+                    128 => 64,
+                    _ => 32
+                };
+
+                args.Editor.RaiseEvent(new Editor.StepHeightChangedEvent { Previous = previous, Current = args.Editor.Configuration.Editor_StepHeight });
+            });
+
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }

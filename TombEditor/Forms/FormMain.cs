@@ -500,11 +500,6 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData is Keys.OemOpenBrackets)
-                _editor.RaiseEvent(new Editor.DecreaseClickHeightEvent());
-            else if (keyData is Keys.OemCloseBrackets)
-                _editor.RaiseEvent(new Editor.IncreaseClickHeightEvent());
-
             // Disable all hotkeys in fly mode except ToggleFlyMode
             if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
