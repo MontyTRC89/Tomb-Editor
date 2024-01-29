@@ -79,7 +79,7 @@ namespace TombLib.LevelData
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int InFullClicks(this int value)
-            => value / Level.FullClickHeight;
+            => (int)Math.Round(value / (float)Level.FullClickHeight);
     }
 
     public class Room : ITriggerParameter

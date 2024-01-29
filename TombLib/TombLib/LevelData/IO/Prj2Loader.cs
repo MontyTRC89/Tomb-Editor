@@ -1619,14 +1619,14 @@ namespace TombLib.LevelData.IO
                     var instance = new GhostBlockInstance();
                     instance.SectorPosition = new VectorInt2(x, y);
 
-                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
