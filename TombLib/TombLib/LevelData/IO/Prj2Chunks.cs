@@ -212,7 +212,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
-        /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost");
+        /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectGhostBlock2 = ChunkId.FromString("TeGhost2");
         /**********/public static readonly ChunkId ObjectTriggerVolumeTest = ChunkId.FromString("TeVolumeTest");
         /**********/public static readonly ChunkId ObjectTriggerVolume1 = ChunkId.FromString("TeVolume1");

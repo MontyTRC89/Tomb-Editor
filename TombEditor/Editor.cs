@@ -1418,7 +1418,7 @@ namespace TombEditor
         public static Editor Instance;
 
         public bool IsPreciseGeometryAllowed
-            => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnablePreciseGeometryControlsForUnsupportedEngines;
+            => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
     }

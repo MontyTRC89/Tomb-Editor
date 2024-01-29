@@ -352,7 +352,7 @@
 			tabPage6.Location = new System.Drawing.Point(4, 22);
 			tabPage6.Name = "tabPage6";
 			tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			tabPage6.Size = new System.Drawing.Size(386, 484);
+			tabPage6.Size = new System.Drawing.Size(386, 511);
 			tabPage6.TabIndex = 16;
 			tabPage6.Text = "User interface";
 			// 
@@ -363,7 +363,7 @@
 			tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
 			tabSubPanel3.Location = new System.Drawing.Point(3, 3);
 			tabSubPanel3.Name = "tabSubPanel3";
-			tabSubPanel3.Size = new System.Drawing.Size(380, 478);
+			tabSubPanel3.Size = new System.Drawing.Size(380, 505);
 			tabSubPanel3.TabIndex = 0;
 			// 
 			// panel2
@@ -1194,10 +1194,10 @@
 			cbPreciseGeometryControls.Location = new System.Drawing.Point(6, 71);
 			cbPreciseGeometryControls.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
 			cbPreciseGeometryControls.Name = "cbPreciseGeometryControls";
-			cbPreciseGeometryControls.Size = new System.Drawing.Size(329, 17);
+			cbPreciseGeometryControls.Size = new System.Drawing.Size(301, 17);
 			cbPreciseGeometryControls.TabIndex = 32;
-			cbPreciseGeometryControls.Tag = "Editor_EnablePreciseGeometryControlsForUnsupportedEngines";
-			cbPreciseGeometryControls.Text = "Enable precise geometry controls for unsupported engines";
+			cbPreciseGeometryControls.Tag = "Editor_EnableStepHeightControlsForUnsupportedEngines";
+			cbPreciseGeometryControls.Text = "Enable step height controls for unsupported engines";
 			// 
 			// darkNumericUpDown1
 			// 
