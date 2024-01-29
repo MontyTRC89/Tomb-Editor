@@ -32,10 +32,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private bool dec_flipped;
         private bool dec_jump;
         private Room dec_currentRoom;
-        private int dec_q0 = -1;
-        private int dec_q1 = -1;
-        private int dec_q2 = -1;
-        private int dec_q3 = -1;
+        private int dec_q0 = -Level.FullClickHeight;
+        private int dec_q1 = -Level.FullClickHeight;
+        private int dec_q2 = -Level.FullClickHeight;
+        private int dec_q3 = -Level.FullClickHeight;
         private List<dec_TombEngine_box_aux> dec_boxes;
         private List<TombEngineOverlap> dec_overlaps;
         private bool dec_boxExtendsInAnotherRoom;
