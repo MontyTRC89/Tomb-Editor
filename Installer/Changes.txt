@@ -1,3 +1,14 @@
+Version 1.7.1
+===========
+
+Tomb Editor:
+ * Fixed AutoSave file cleanup not working.
+ * Fixed Undo / Redo not working on yellow walls (portals).
+ * Fixed issue where creating portals manually would display phantom subdivisions.
+
+TombIDE:
+ * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
+
 Version 1.7
 ===========
 

@@ -142,6 +142,7 @@ namespace TombEditor
         public bool NodeEditor_ShowGrips { get; set; } = true;
         public int NodeEditor_DefaultEventMode { get; set; } = 1;
         public int NodeEditor_DefaultEventToEdit { get; set; } = 0;
+        public int NodeEditor_DefaultGlobalEventToEdit { get; set; } = 0;
 
         // Gizmo options
 

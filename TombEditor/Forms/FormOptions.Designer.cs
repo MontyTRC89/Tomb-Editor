@@ -246,10 +246,12 @@
 			darkLabel23 = new DarkUI.Controls.DarkLabel();
 			darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
 			tabPage9 = new System.Windows.Forms.TabPage();
+			darkLabel79 = new DarkUI.Controls.DarkLabel();
+			cmbGlobalEvent = new DarkUI.Controls.DarkComboBox();
 			darkCheckBox48 = new DarkUI.Controls.DarkCheckBox();
 			darkCheckBox38 = new DarkUI.Controls.DarkCheckBox();
 			darkLabel78 = new DarkUI.Controls.DarkLabel();
-			darkComboBox2 = new DarkUI.Controls.DarkComboBox();
+			cmbVolumeEvent = new DarkUI.Controls.DarkComboBox();
 			darkLabel77 = new DarkUI.Controls.DarkLabel();
 			darkComboBox1 = new DarkUI.Controls.DarkComboBox();
 			darkLabel33 = new DarkUI.Controls.DarkLabel();
@@ -2781,10 +2783,12 @@
 			// tabPage9
 			// 
 			tabPage9.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			tabPage9.Controls.Add(darkLabel79);
+			tabPage9.Controls.Add(cmbGlobalEvent);
 			tabPage9.Controls.Add(darkCheckBox48);
 			tabPage9.Controls.Add(darkCheckBox38);
 			tabPage9.Controls.Add(darkLabel78);
-			tabPage9.Controls.Add(darkComboBox2);
+			tabPage9.Controls.Add(cmbVolumeEvent);
 			tabPage9.Controls.Add(darkLabel77);
 			tabPage9.Controls.Add(darkComboBox1);
 			tabPage9.Controls.Add(darkLabel33);
@@ -2795,14 +2799,33 @@
 			tabPage9.Controls.Add(darkNumericUpDown43);
 			tabPage9.Location = new System.Drawing.Point(4, 22);
 			tabPage9.Name = "tabPage9";
-			tabPage9.Size = new System.Drawing.Size(386, 484);
+			tabPage9.Size = new System.Drawing.Size(386, 511);
 			tabPage9.TabIndex = 24;
 			tabPage9.Text = "Node editor";
+			// 
+			// darkLabel79
+			// 
+			darkLabel79.AutoSize = true;
+			darkLabel79.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel79.Location = new System.Drawing.Point(6, 152);
+			darkLabel79.Name = "darkLabel79";
+			darkLabel79.Size = new System.Drawing.Size(152, 13);
+			darkLabel79.TabIndex = 59;
+			darkLabel79.Text = "Default global event to edit:";
+			// 
+			// cmbGlobalEvent
+			// 
+			cmbGlobalEvent.FormattingEnabled = true;
+			cmbGlobalEvent.Location = new System.Drawing.Point(168, 149);
+			cmbGlobalEvent.Name = "cmbGlobalEvent";
+			cmbGlobalEvent.Size = new System.Drawing.Size(150, 23);
+			cmbGlobalEvent.TabIndex = 58;
+			cmbGlobalEvent.Tag = "NodeEditor_DefaultGlobalEventToEdit";
 			// 
 			// darkCheckBox48
 			// 
 			darkCheckBox48.AutoSize = true;
-			darkCheckBox48.Location = new System.Drawing.Point(9, 182);
+			darkCheckBox48.Location = new System.Drawing.Point(6, 207);
 			darkCheckBox48.Name = "darkCheckBox48";
 			darkCheckBox48.Size = new System.Drawing.Size(161, 17);
 			darkCheckBox48.TabIndex = 57;
@@ -2812,7 +2835,7 @@
 			// darkCheckBox38
 			// 
 			darkCheckBox38.AutoSize = true;
-			darkCheckBox38.Location = new System.Drawing.Point(9, 159);
+			darkCheckBox38.Location = new System.Drawing.Point(6, 184);
 			darkCheckBox38.Name = "darkCheckBox38";
 			darkCheckBox38.Size = new System.Drawing.Size(190, 17);
 			darkCheckBox38.TabIndex = 56;
@@ -2829,15 +2852,14 @@
 			darkLabel78.TabIndex = 55;
 			darkLabel78.Text = "Default event to edit:";
 			// 
-			// darkComboBox2
+			// cmbVolumeEvent
 			// 
-			darkComboBox2.FormattingEnabled = true;
-			darkComboBox2.Items.AddRange(new object[] { "On enter", "On inside", "On leave" });
-			darkComboBox2.Location = new System.Drawing.Point(168, 120);
-			darkComboBox2.Name = "darkComboBox2";
-			darkComboBox2.Size = new System.Drawing.Size(150, 23);
-			darkComboBox2.TabIndex = 54;
-			darkComboBox2.Tag = "NodeEditor_DefaultEventToEdit";
+			cmbVolumeEvent.FormattingEnabled = true;
+			cmbVolumeEvent.Location = new System.Drawing.Point(168, 120);
+			cmbVolumeEvent.Name = "cmbVolumeEvent";
+			cmbVolumeEvent.Size = new System.Drawing.Size(150, 23);
+			cmbVolumeEvent.TabIndex = 54;
+			cmbVolumeEvent.Tag = "NodeEditor_DefaultEventToEdit";
 			// 
 			// darkLabel77
 			// 
@@ -3257,9 +3279,11 @@
         private DarkUI.Controls.DarkLabel darkLabel77;
         private DarkUI.Controls.DarkComboBox darkComboBox1;
         private DarkUI.Controls.DarkLabel darkLabel78;
-        private DarkUI.Controls.DarkComboBox darkComboBox2;
+        private DarkUI.Controls.DarkComboBox cmbVolumeEvent;
         private DarkUI.Controls.DarkCheckBox darkCheckBox38;
         private DarkUI.Controls.DarkCheckBox darkCheckBox48;
 		private DarkUI.Controls.DarkCheckBox cbPreciseGeometryControls;
+		private DarkUI.Controls.DarkLabel darkLabel79;
+		private DarkUI.Controls.DarkComboBox cmbGlobalEvent;
 	}
 }

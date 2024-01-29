@@ -18,25 +18,6 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
-		private bool _isPendingLevelListReload = false;
-
-		private bool _isMainWindowFocused;
-
-		public bool IsMainWindowFocued
-		{
-			get => _isMainWindowFocused;
-			set
-			{
-				_isMainWindowFocused = value;
-
-				if (_isMainWindowFocused && _isPendingLevelListReload)
-				{
-					_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-					_isPendingLevelListReload = false;
-				}
-			}
-		}
-
 		public LevelManager()
 		{
 			InitializeComponent();
@@ -60,10 +41,6 @@ namespace TombIDE.ProjectMaster
 
 			section_LevelList.Initialize(ide);
 			section_LevelProperties.Initialize(ide);
-
-			// Initialize the watchers
-			prj2FileWatcher.Path = _ide.Project.LevelsDirectoryPath;
-			levelFolderWatcher.Path = _ide.Project.LevelsDirectoryPath;
 		}
 
 		private void UpdateVersionLabel()
@@ -126,23 +103,6 @@ namespace TombIDE.ProjectMaster
 					label_OutdatedState.ForeColor = Color.LightGreen;
 				}
 			}
-		}
-
-		// Deleting .prj2 files is critical, so watch out
-		private void prj2FileWatcher_Deleted(object sender, FileSystemEventArgs e)
-		{
-			if (IsMainWindowFocued)
-				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-			else
-				_isPendingLevelListReload = true;
-		}
-
-		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e)
-		{
-			if (IsMainWindowFocued)
-				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-			else
-				_isPendingLevelListReload = true;
 		}
 
 		private void button_RebuildAll_Click(object sender, EventArgs e)

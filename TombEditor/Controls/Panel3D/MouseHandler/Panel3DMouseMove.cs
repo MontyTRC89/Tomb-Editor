@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -45,7 +46,14 @@ namespace TombEditor.Controls.Panel3D
             else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection)
             {
                 if (_editor.Tool.Tool != EditorToolType.PortalDigger && !_toolHandler.Dragged && _toolHandler.PositionDiffers(location.X, location.Y))
-                    _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+                {
+                    Room room = _editor.SelectedRoom;
+                    RectangleInt2 area = _editor.SelectedSectors.Area;
+                    HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area);
+                    affectedRooms.Add(room);
+
+                    _editor.UndoManager.PushGeometryChanged(affectedRooms);
+                }
 
                 var dragValue = _toolHandler.UpdateDragState(location.X, location.Y,
                     _editor.Tool.Tool == EditorToolType.Drag || _editor.Tool.Tool == EditorToolType.PortalDigger,

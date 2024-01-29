@@ -1144,4 +1144,6 @@
     <sound id="1142" name="TR5_AIRCON_LOOP" ten="1142" />
     <sound id="1143" name="TR1_SLAMDOOR_OPEN" ten="1143" />
     <sound id="1144" name="TR1_SLAMDOOR_CLOSE" ten="1144" />
+	<sound id="1145" name="TR2_DRAGON_FALL" ten="1145" />
+	<sound id="1146" name="TR2_MARCO_BARTOLLI_TRANSFORM" ten="1146" />
 </sounds>
