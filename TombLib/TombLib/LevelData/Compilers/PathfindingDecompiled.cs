@@ -294,10 +294,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = block.Floor.XnZp;
-            dec_q1 = block.Floor.XpZp;
-            dec_q2 = block.Floor.XpZn;
-            dec_q3 = block.Floor.XnZn;
+            dec_q0 = block.Floor.XnZp.InFullClicks();
+            dec_q1 = block.Floor.XpZp.InFullClicks();
+            dec_q2 = block.Floor.XpZn.InFullClicks();
+            dec_q3 = block.Floor.XnZn.InFullClicks();
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;

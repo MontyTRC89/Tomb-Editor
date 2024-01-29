@@ -755,7 +755,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write((byte)instance.Opacity);
                         }
                     else if (o is GhostBlockInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock2, LEB128.MaximumSize2Byte))
                         {
                             var instance = (GhostBlockInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));

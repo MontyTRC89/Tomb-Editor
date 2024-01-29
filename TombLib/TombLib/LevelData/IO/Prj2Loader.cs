@@ -1611,7 +1611,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectGhostBlock)
+                else if (id3 == Prj2Chunks.ObjectGhostBlock) // DEPRECATED
                 {
                     int x = LEB128.ReadInt(chunkIO.Raw);
                     int y = LEB128.ReadInt(chunkIO.Raw);
@@ -1627,6 +1627,26 @@ namespace TombLib.LevelData.IO
                     instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
                     instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectGhostBlock2)
+                {
+                    int x = LEB128.ReadInt(chunkIO.Raw);
+                    int y = LEB128.ReadInt(chunkIO.Raw);
+
+                    var instance = new GhostBlockInstance();
+                    instance.SectorPosition = new VectorInt2(x, y);
+
+                    instance.Floor.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZp = LEB128.ReadInt(chunkIO.Raw);
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);

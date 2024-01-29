@@ -1326,10 +1326,10 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - block.Floor.Min.InFullClicks());
-                    var q0 = block.Floor.XnZp;
-                    var q1 = block.Floor.XpZp;
-                    var q2 = block.Floor.XpZn;
-                    var q3 = block.Floor.XnZn;
+                    var q0 = block.Floor.XnZp.InFullClicks();
+                    var q1 = block.Floor.XpZp.InFullClicks();
+                    var q2 = block.Floor.XpZn.InFullClicks();
+                    var q3 = block.Floor.XnZn.InFullClicks();
 
                     if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
                         block.Floor.IfQuadSlopeZ == 0)
@@ -1604,45 +1604,45 @@ namespace TombLib.LevelData.Compilers
                     {
                         BlockSurface s = isCeiling ? block.Ceiling : block.Floor;
 
-                        if (s.DiagonalSplit != DiagonalSplit.None || BlockSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
+                        if (s.DiagonalSplit != DiagonalSplit.None || BlockSurface.IsQuad2(s.XnZn.InFullClicks(), s.XpZn.InFullClicks(), s.XnZp.InFullClicks(), s.XpZp.InFullClicks()))
                         {
                             switch (s.DiagonalSplit)
                             {
                                 // Ordinary quad
                                 case DiagonalSplit.None:
-                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn.InFullClicks(), z, s.XpZn.InFullClicks() - s.XnZn.InFullClicks(), s.XnZp.InFullClicks() - s.XnZn.InFullClicks()));
                                     break;
 
                                 case DiagonalSplit.XnZn:
-                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZp, z, 0, 0));
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZp.InFullClicks(), z, 0, 0));
                                     break;
 
                                 case DiagonalSplit.XnZp:
-                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZn, z, 0, 0));
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZn.InFullClicks(), z, 0, 0));
                                     break;
 
                                 case DiagonalSplit.XpZn:
-                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZp, z, 0, 0));
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZp.InFullClicks(), z, 0, 0));
                                     break;
 
                                 case DiagonalSplit.XpZp:
-                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, 0, 0));
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn.InFullClicks(), z, 0, 0));
                                     break;
                             }
                         }
                         else if (s.SplitDirectionIsXEqualsZ)
                         { // Diagonal is split X = Y
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZp)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZp - s.XnZp, s.XnZp - s.XnZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn.InFullClicks(), z, s.XpZp.InFullClicks() - s.XnZp.InFullClicks(), s.XnZp.InFullClicks() - s.XnZn.InFullClicks()));
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZn)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XpZp - s.XpZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn.InFullClicks(), z, s.XpZn.InFullClicks() - s.XnZn.InFullClicks(), s.XpZp.InFullClicks() - s.XpZn.InFullClicks()));
                         }
                         else
                         { // Diagonal is split X = -Y
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZn)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn.InFullClicks(), z, s.XpZn.InFullClicks() - s.XnZn.InFullClicks(), s.XnZp.InFullClicks() - s.XnZn.InFullClicks()));
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZp)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x + 1, s.XpZp, z + 1, s.XpZp - s.XnZp, s.XpZp - s.XpZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x + 1, s.XpZp.InFullClicks(), z + 1, s.XpZp.InFullClicks() - s.XnZp.InFullClicks(), s.XpZp.InFullClicks() - s.XpZn.InFullClicks()));
                         }
                     }
                 }
