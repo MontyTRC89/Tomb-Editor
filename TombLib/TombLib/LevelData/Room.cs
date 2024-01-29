@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
@@ -74,10 +75,11 @@ namespace TombLib.LevelData
         }
     }
 
-    public static class VectorInt3Extensions
+    public static class FullClicksExtensions
     {
-        public static int FullClicksY(this VectorInt3 position)
-            => position.Y / Level.FullClickHeight;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InFullClicks(this int value)
+            => value / Level.FullClickHeight;
     }
 
     public class Room : ITriggerParameter
@@ -915,7 +917,7 @@ namespace TombLib.LevelData
                         max = Math.Max(max, Blocks[x, z].Ceiling.Max);
 
             int result = max == int.MinValue ? DefaultHeight : max;
-            return resultInFullClicks ? result / Level.FullClickHeight : result;
+            return resultInFullClicks ? result.InFullClicks() : result;
         }
 
         public int GetHighestNeighborCeiling(int x, int z)
@@ -958,7 +960,7 @@ namespace TombLib.LevelData
                         min = Math.Min(min, Blocks[x, z].Floor.Min);
             
             int result = min == int.MaxValue ? 0 : min;
-            return resultInFullClicks ? result / Level.FullClickHeight : result;
+            return resultInFullClicks ? result.InFullClicks() : result;
         }
 
         public int GetLowestNeighborFloor(int x, int z)

@@ -402,14 +402,11 @@ namespace TombLib.LevelData
         public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
-        public bool HasSlope => FullClickMax - FullClickMin > 2;
+        public bool HasSlope => Max.InFullClicks() - Min.InFullClicks() > 2;
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
         public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
         public int Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
-
-        public int FullClickMax => Max / Level.FullClickHeight;
-        public int FullClickMin => Min / Level.FullClickHeight;
 
         public int GetHeight(BlockEdge edge)
         {
@@ -1185,10 +1182,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, Floor.XnZp / Level.FullClickHeight, 0);
-            var p1 = new Vector3(4, Floor.XpZp / Level.FullClickHeight, 0);
-            var p2 = new Vector3(4, Floor.XpZn / Level.FullClickHeight, -4);
-            var p3 = new Vector3(0, Floor.XnZn / Level.FullClickHeight, -4);
+            var p0 = new Vector3(0, Floor.XnZp.InFullClicks(), 0);
+            var p1 = new Vector3(4, Floor.XpZp.InFullClicks(), 0);
+            var p2 = new Vector3(4, Floor.XpZn.InFullClicks(), -4);
+            var p3 = new Vector3(0, Floor.XnZn.InFullClicks(), -4);
 
             // Create planes based on floor split direction
 

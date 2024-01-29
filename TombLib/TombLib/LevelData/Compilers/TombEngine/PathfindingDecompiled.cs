@@ -745,10 +745,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 block.WallPortal != null && block.WallPortal.Opacity == PortalOpacity.SolidFaces) ||
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
-                dec_q0 = -1;
-                dec_q1 = -1;
-                dec_q2 = -1;
-                dec_q3 = -1;
+                dec_q0 = -Level.FullClickHeight;
+                dec_q1 = -Level.FullClickHeight;
+                dec_q2 = -Level.FullClickHeight;
+                dec_q3 = -Level.FullClickHeight;
 
                 return _noHeight;
             }
@@ -830,10 +830,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             dec_q2 = block.Floor.XpZn;
             dec_q3 = block.Floor.XnZn;
 
-            int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
-            int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
-            int slope3 = Math.Abs(dec_q2 - dec_q3) >= 3 ? 1 : 0;
-            int slope4 = Math.Abs(dec_q3 - dec_q0) >= 3 ? 1 : 0;
+            int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 * Level.FullClickHeight ? 1 : 0;
+            int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 * Level.FullClickHeight ? 1 : 0;
+            int slope3 = Math.Abs(dec_q2 - dec_q3) >= 3 * Level.FullClickHeight ? 1 : 0;
+            int slope4 = Math.Abs(dec_q3 - dec_q0) >= 3 * Level.FullClickHeight ? 1 : 0;
 
             bool someFlag = false;
 
@@ -866,7 +866,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
             int ceiling = block.Ceiling.Max + room.Position.Y;
 
-            if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
+            if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= Level.FullClickHeight && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
@@ -960,7 +960,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                     return true;
 
                 return false;
@@ -978,12 +978,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                 {
                     if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
                     {
                         floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
-                        if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                        if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                             return true;
                     }
                 }
@@ -1008,7 +1008,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                     return true;
 
                 return false;
@@ -1026,12 +1026,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                 {
                     if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
                     {
                         floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
-                        if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                        if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                             return true;
                     }
                 }
@@ -1074,7 +1074,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                     return true;
 
                 return false;
@@ -1092,12 +1092,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                 {
                     if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
                     {
                         floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
-                        if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                        if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                             return true;
                     }
                 }
@@ -1121,7 +1121,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                     return true;
 
                 return false;
@@ -1139,12 +1139,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                 {
                     if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
                     {
                         floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
-                        if (floor <= b.TrueFloor - 2 && floor != _noHeight)
+                        if (floor <= b.TrueFloor - (2 * Level.FullClickHeight) && floor != _noHeight)
                             return true;
                     }
                 }

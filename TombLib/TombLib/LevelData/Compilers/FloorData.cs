@@ -230,8 +230,8 @@ namespace TombLib.LevelData.Compilers
 
                                 // Convert sector type to floor with maxed out floor height, as tom2pc/winroomedit does it.
                                 // Otherwise, even if tomb4 will work correctly, meta2tr or other custom tools may fail here.
-                                sector.Floor = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
-                                sector.Ceiling = (sbyte)(-room.Position.FullClicksY() - block.Ceiling.FullClickMin);
+                                sector.Floor = (sbyte)(-room.Position.Y.InFullClicks() - block.Ceiling.Min.InFullClicks());
+                                sector.Ceiling = (sbyte)(-room.Position.Y.InFullClicks() - block.Ceiling.Min.InFullClicks());
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
@@ -245,7 +245,7 @@ namespace TombLib.LevelData.Compilers
                             var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
 
                             // Floor
-                            int floorHeight = -room.Position.FullClicksY() - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
+                            int floorHeight = -room.Position.Y.InFullClicks() - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
                             if (floorHeight < -heightLimit || floorHeight > heightLimit)
                             {
                                 floorHeight = MathC.Clamp(floorHeight, -heightLimit, heightLimit);
@@ -263,7 +263,7 @@ namespace TombLib.LevelData.Compilers
                             }
 
                             // Ceiling
-                            int ceilingHeight = -room.Position.FullClicksY() - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
+                            int ceilingHeight = -room.Position.Y.InFullClicks() - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
                             if (ceilingHeight < -heightLimit || ceilingHeight > heightLimit)
                             {
                                 ceilingHeight = MathC.Clamp(ceilingHeight, -heightLimit, heightLimit);
@@ -698,18 +698,18 @@ namespace TombLib.LevelData.Compilers
             {
                 var surface = floor ? block.Floor : block.Ceiling;
 
-                HeightXnZn = surface.XnZn / Level.FullClickHeight;
-                HeightXpZn = surface.XpZn / Level.FullClickHeight;
-                HeightXnZp = surface.XnZp / Level.FullClickHeight;
-                HeightXpZp = surface.XpZp / Level.FullClickHeight;
+                HeightXnZn = surface.XnZn.InFullClicks();
+                HeightXpZn = surface.XpZn.InFullClicks();
+                HeightXnZp = surface.XnZp.InFullClicks();
+                HeightXpZp = surface.XpZp.InFullClicks();
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 if (block.HasGhostBlock && block.GhostBlock.Valid)
                 {
-                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn / Level.FullClickHeight : block.GhostBlock.Ceiling.XnZn / Level.FullClickHeight;
-                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn / Level.FullClickHeight : block.GhostBlock.Ceiling.XpZn / Level.FullClickHeight;
-                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp / Level.FullClickHeight : block.GhostBlock.Ceiling.XnZp / Level.FullClickHeight;
-                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp / Level.FullClickHeight : block.GhostBlock.Ceiling.XpZp / Level.FullClickHeight;
+                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn.InFullClicks() : block.GhostBlock.Ceiling.XnZn.InFullClicks();
+                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn.InFullClicks() : block.GhostBlock.Ceiling.XpZn.InFullClicks();
+                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp.InFullClicks() : block.GhostBlock.Ceiling.XnZp.InFullClicks();
+                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp.InFullClicks() : block.GhostBlock.Ceiling.XpZp.InFullClicks();
                 }
 
                 switch (portalType)
@@ -754,18 +754,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = (surface.XpZp - surface.XnZp) / Level.FullClickHeight;
+                        DiagonalStep = (surface.XpZp - surface.XnZp).InFullClicks();
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = (surface.XpZn - surface.XpZp) / Level.FullClickHeight;
+                        DiagonalStep = (surface.XpZn - surface.XpZp).InFullClicks();
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = (surface.XnZp - surface.XnZn) / Level.FullClickHeight;
+                        DiagonalStep = (surface.XnZp - surface.XnZn).InFullClicks();
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -774,7 +774,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = (surface.XnZn - surface.XpZn) / Level.FullClickHeight;
+                        DiagonalStep = (surface.XnZn - surface.XpZn).InFullClicks();
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

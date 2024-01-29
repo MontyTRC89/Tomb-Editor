@@ -1074,7 +1074,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - block.Floor.FullClickMin);
+                    aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - block.Floor.Min.InFullClicks());
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
                     var q2 = block.Floor.XpZn;
@@ -1084,9 +1084,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         block.Floor.IfQuadSlopeZ == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - (Math.Min(block.Floor.XnZp, block.Floor.XpZn) / Level.FullClickHeight));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - Math.Min(block.Floor.XnZp, block.Floor.XpZn).InFullClicks());
                         else
-                            aux.LowestFloor = (sbyte)(-room.Position.FullClicksY() - (Math.Min(block.Floor.XpZp, block.Floor.XnZn) / Level.FullClickHeight));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - Math.Min(block.Floor.XpZp, block.Floor.XnZn).InFullClicks());
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
