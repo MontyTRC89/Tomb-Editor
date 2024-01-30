@@ -59,7 +59,7 @@
     <anim item="0" id="216" name="ZIPLINE_RIDE" />
     <anim item="0" id="217" name="ZIPLINE_FALL" />
 	
-	<!--DRAGON_FRONT-->
+	<!-- DRAGON_FRONT -->
 	
 	<anim item="22" id="0" name="WALK" />
 	<anim item="22" id="1" name="WALK_TO_MOVE_LEFT" />
@@ -86,7 +86,7 @@
 	<anim item="22" id="22" name="DEFEATED" />
 	<anim item="22" id="23" name="RECOVER" />
 	
-	<!--DRAGON_BACK-->
+	<!-- DRAGON_BACK -->
 	
 	<anim item="23" id="0" name="WALK" />
 	<anim item="23" id="1" name="WALK_TO_MOVE_LEFT" />
