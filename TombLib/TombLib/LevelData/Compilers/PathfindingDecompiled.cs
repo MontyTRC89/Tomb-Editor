@@ -32,10 +32,10 @@ namespace TombLib.LevelData.Compilers
         private bool dec_flipped;
         private bool dec_jump;
         private Room dec_currentRoom;
-        private int dec_q0 = -1;
-        private int dec_q1 = -1;
-        private int dec_q2 = -1;
-        private int dec_q3 = -1;
+        private short dec_q0 = -1;
+        private short dec_q1 = -1;
+        private short dec_q2 = -1;
+        private short dec_q3 = -1;
         private dec_tr_box_aux[] dec_boxes;
         private ushort[] dec_overlaps;
         private int dec_numBoxes;
@@ -294,10 +294,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = block.Floor.XnZp.InFullClicks();
-            dec_q1 = block.Floor.XpZp.InFullClicks();
-            dec_q2 = block.Floor.XpZn.InFullClicks();
-            dec_q3 = block.Floor.XnZn.InFullClicks();
+            dec_q0 = (short)block.Floor.XnZp.InFullClicks();
+            dec_q1 = (short)block.Floor.XpZp.InFullClicks();
+            dec_q2 = (short)block.Floor.XpZn.InFullClicks();
+            dec_q3 = (short)block.Floor.XnZn.InFullClicks();
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -841,10 +841,10 @@ namespace TombLib.LevelData.Compilers
             int sumHeights = block.Floor.XnZp.InFullClicks() + block.Floor.XpZp.InFullClicks() + block.Floor.XpZn.InFullClicks() + block.Floor.XnZn.InFullClicks();
             int meanFloorCornerHeight = sumHeights >> 2;
 
-            dec_q0 = block.Floor.XnZp.InFullClicks();
-            dec_q1 = block.Floor.XpZp.InFullClicks();
-            dec_q2 = block.Floor.XpZn.InFullClicks();
-            dec_q3 = block.Floor.XnZn.InFullClicks();
+            dec_q0 = (short)block.Floor.XnZp.InFullClicks();
+            dec_q1 = (short)block.Floor.XpZp.InFullClicks();
+            dec_q2 = (short)block.Floor.XpZn.InFullClicks();
+            dec_q3 = (short)block.Floor.XnZn.InFullClicks();
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;

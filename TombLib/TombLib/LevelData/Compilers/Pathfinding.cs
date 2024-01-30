@@ -49,7 +49,7 @@ namespace TombLib.LevelData.Compilers
                     Xmax = (byte)dec_boxes[i].Xmax,
                     Zmin = (byte)dec_boxes[i].Zmin,
                     Zmax = (byte)dec_boxes[i].Zmax,
-                    TrueFloor = (short)-dec_boxes[i].TrueFloor,
+                    TrueFloor = (short)-(dec_boxes[i].TrueFloor * Level.FullClickHeight),
                     OverlapIndex = (ushort)((ushort)dec_boxes[i].OverlapIndex | (dec_boxes[i].IsolatedBox ? 0x8000 : 0))
                 };
                 _zones[i] = new tr_zone()
