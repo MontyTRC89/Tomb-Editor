@@ -227,7 +227,61 @@
     <anim item="219" id="12" name="IDLE_TO_WALK" />
     <anim item="219" id="13" name="WALK_TO_IDLE" />
     <anim item="219" id="14" name="DEATH" />
-    
+	
+	<!--DRAGON_FRONT-->
+	
+	<anim item="232" id="0" name="WALK" />
+	<anim item="232" id="1" name="WALK_TO_MOVE_LEFT" />
+	<anim item="232" id="2" name="MOVE_LEFT" />
+	<anim item="232" id="3" name="MOVE_LEFT_TO_WALK" />
+	<anim item="232" id="4" name="WALK_TO_MOVE_RIGHT" />
+	<anim item="232" id="5" name="MOVE_RIGHT" />
+	<anim item="232" id="6" name="MOVE_RIGHT_TO_WALK" />
+	<anim item="232" id="7" name="WALK_TO_IDLE" />
+	<anim item="232" id="8" name="IDLE" />
+	<anim item="232" id="9" name="IDLE_TO_WALK" />
+	<anim item="232" id="10" name="IDLE_TO_FIRE" />
+	<anim item="232" id="11" name="FIRE" />
+	<anim item="232" id="12" name="FIRE_TO_IDLE" />
+	<anim item="232" id="13" name="TURNING_LEFT" />
+	<anim item="232" id="14" name="TURNING_RIGHT" />
+	<anim item="232" id="15" name="ATTACK_LEFT_1" />
+	<anim item="232" id="16" name="ATTACK_LEFT_2" />
+	<anim item="232" id="17" name="ATTACK_LEFT_3" />
+	<anim item="232" id="18" name="ATTACK_RIGHT_1" />
+	<anim item="232" id="19" name="ATTACK_RIGHT_2" />
+	<anim item="232" id="20" name="ATTACK_RIGHT_3" />
+	<anim item="232" id="21" name="DEATH" />
+	<anim item="232" id="22" name="DEFEATED" />
+	<anim item="232" id="23" name="RECOVER" />
+	
+	<!--DRAGON_BACK-->
+	
+	<anim item="233" id="0" name="WALK" />
+	<anim item="233" id="1" name="WALK_TO_MOVE_LEFT" />
+	<anim item="233" id="2" name="MOVE_LEFT" />
+	<anim item="233" id="3" name="MOVE_LEFT_TO_WALK" />
+	<anim item="233" id="4" name="WALK_TO_MOVE_RIGHT" />
+	<anim item="233" id="5" name="MOVE_RIGHT" />
+	<anim item="233" id="6" name="MOVE_RIGHT_TO_WALK" />
+	<anim item="233" id="7" name="WALK_TO_IDLE" />
+	<anim item="233" id="8" name="IDLE" />
+	<anim item="233" id="9" name="IDLE_TO_WALK" />
+	<anim item="233" id="10" name="IDLE_TO_FIRE" />
+	<anim item="233" id="11" name="FIRE" />
+	<anim item="233" id="12" name="FIRE_TO_IDLE" />
+	<anim item="233" id="13" name="TURNING_LEFT" />
+	<anim item="233" id="14" name="TURNING_RIGHT" />
+	<anim item="233" id="15" name="ATTACK_LEFT_1" />
+	<anim item="233" id="16" name="ATTACK_LEFT_2" />
+	<anim item="233" id="17" name="ATTACK_LEFT_3" />
+	<anim item="233" id="18" name="ATTACK_RIGHT_1" />
+	<anim item="233" id="19" name="ATTACK_RIGHT_2" />
+	<anim item="233" id="20" name="ATTACK_RIGHT_3" />
+	<anim item="233" id="21" name="DEATH" />
+	<anim item="233" id="22" name="DEFEATED" />
+	<anim item="233" id="23" name="RECOVER" /> 
+	
     <!--COWBOY -->
     <anim item="239" id="0" name="RUN" />
     <anim item="239" id="1" name="RUN_TO_IDLE" />
