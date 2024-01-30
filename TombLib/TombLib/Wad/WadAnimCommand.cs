@@ -36,10 +36,10 @@ namespace TombLib.Wad
                             return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
 
                         case (1 << 14):
-                            return "Play Sound ID = " + soundId + " (dry land) on Frame = " + Parameter1;
+                            return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
 
                         case (1 << 15):
-                            return "Play Sound ID = " + soundId + " (wet land) on Frame = " + Parameter1;
+                            return "Play Sound ID = " + soundId + " (shallow water) on Frame = " + Parameter1;
 
                         case (1 << 12):
                             return "Play Sound ID = " + soundId + " (quicksand) on Frame = " + Parameter1;

@@ -111,7 +111,7 @@ namespace WadTool
                                 comboPlaySoundConditions.SelectedIndex = 1;
                                 break;
 
-                            // On wet land.
+                            // In shallow water.
                             case (1 << 15):
                                 comboPlaySoundConditions.SelectedIndex = 2;
                                 break;
