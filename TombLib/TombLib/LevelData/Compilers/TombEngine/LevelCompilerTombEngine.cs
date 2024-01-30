@@ -389,12 +389,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private int GetMostDownFloor(Room room, int x, int z)
-        {
-            FindBottomFloor(ref room, ref x, ref z);
-            return _tempRooms[room].AuxSectors[x, z].LowestFloor;
-        }
-
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
