@@ -63,9 +63,12 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (lowestPoint > Clicks.FromWorld(room.Position.Y + room.GetLowestCorner()))
-                    lowestPoint = Clicks.FromWorld(room.Position.Y + room.GetLowestCorner());
+                int current = Clicks.FromWorld(room.Position.Y + room.GetLowestCorner());
+
+                if (lowestPoint > current)
+                    lowestPoint = current;
             }
+
             return lowestPoint;
         }
 
@@ -75,9 +78,12 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (highestPoint < Clicks.FromWorld(room.Position.Y + room.GetHighestCorner()))
-                    highestPoint = Clicks.FromWorld(room.Position.Y + room.GetHighestCorner());
+                int current = Clicks.FromWorld(room.Position.Y + room.GetHighestCorner());
+
+                if (highestPoint < current)
+                    highestPoint = current;
             }
+
             return highestPoint;
         }
 

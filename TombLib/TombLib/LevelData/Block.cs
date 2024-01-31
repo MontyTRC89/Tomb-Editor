@@ -402,7 +402,7 @@ namespace TombLib.LevelData
         public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
-        public bool HasSlope => Clicks.FromWorld(Max - Min, Rounding.ToFloor) > 2;
+        public bool HasSlope => Clicks.FromWorld(Max - Min, RoundingMethod.Integer) > 2;
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
         public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));

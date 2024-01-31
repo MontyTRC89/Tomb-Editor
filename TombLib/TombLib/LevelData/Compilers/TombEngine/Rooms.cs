@@ -1064,12 +1064,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 2 ||
-                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 2 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -1080,8 +1080,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var q2 = block.Floor.XpZn;
                     var q3 = block.Floor.XnZn;
 
-                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
-                        block.Floor.IfQuadSlopeZ == 0)
+                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer) == 0 &&
+                        Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
                             aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));

@@ -75,11 +75,12 @@ namespace TombLib.LevelData
         }
     }
 
-    public enum Rounding
+    public enum RoundingMethod
     {
         Default,
         ToFloor,
-        ToCeiling
+        ToCeiling,
+        Integer
     }
 
     public static class Clicks
@@ -91,10 +92,11 @@ namespace TombLib.LevelData
             => (int)Math.Round(worldUnits / (float)Level.FullClickHeight);
 
         /// <inheritdoc />
-        public static int FromWorld(int worldUnits, Rounding rounding) => rounding switch
+        public static int FromWorld(int worldUnits, RoundingMethod roundingMethod) => roundingMethod switch
         {
-            Rounding.ToFloor => (int)Math.Floor(worldUnits / (float)Level.FullClickHeight),
-            Rounding.ToCeiling => (int)Math.Ceiling(worldUnits / (float)Level.FullClickHeight),
+            RoundingMethod.ToFloor => (int)Math.Floor(worldUnits / (float)Level.FullClickHeight),
+            RoundingMethod.ToCeiling => (int)Math.Ceiling(worldUnits / (float)Level.FullClickHeight),
+            RoundingMethod.Integer => worldUnits / Level.FullClickHeight,
             _ => (int)Math.Round(worldUnits / (float)Level.FullClickHeight)
         };
 
