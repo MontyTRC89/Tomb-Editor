@@ -294,10 +294,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = (short)block.Floor.XnZp.InFullClicks();
-            dec_q1 = (short)block.Floor.XpZp.InFullClicks();
-            dec_q2 = (short)block.Floor.XpZn.InFullClicks();
-            dec_q3 = (short)block.Floor.XnZn.InFullClicks();
+            dec_q0 = (short)Clicks.FromWorld(block.Floor.XnZp);
+            dec_q1 = (short)Clicks.FromWorld(block.Floor.XpZp);
+            dec_q2 = (short)Clicks.FromWorld(block.Floor.XpZn);
+            dec_q3 = (short)Clicks.FromWorld(block.Floor.XnZn);
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -838,13 +838,19 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = block.Floor.XnZp.InFullClicks() + block.Floor.XpZp.InFullClicks() + block.Floor.XpZn.InFullClicks() + block.Floor.XnZn.InFullClicks();
+            int sumHeights = Clicks.FromWorld(block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn);
             int meanFloorCornerHeight = sumHeights >> 2;
 
-            dec_q0 = (short)block.Floor.XnZp.InFullClicks();
-            dec_q1 = (short)block.Floor.XpZp.InFullClicks();
-            dec_q2 = (short)block.Floor.XpZn.InFullClicks();
-            dec_q3 = (short)block.Floor.XnZn.InFullClicks();
+            short
+                floorXnZp = (short)Clicks.FromWorld(block.Floor.XnZp),
+                floorXpZp = (short)Clicks.FromWorld(block.Floor.XpZp),
+                floorXpZn = (short)Clicks.FromWorld(block.Floor.XpZn),
+                floorXnZn = (short)Clicks.FromWorld(block.Floor.XnZn);
+
+            dec_q0 = floorXnZp;
+            dec_q1 = floorXpZp;
+            dec_q2 = floorXpZn;
+            dec_q3 = floorXnZn;
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
@@ -853,18 +859,18 @@ namespace TombLib.LevelData.Compilers
 
             bool someFlag = false;
 
-            if (block.Floor.XnZp.InFullClicks() == block.Floor.XpZn.InFullClicks())
+            if (floorXnZp == floorXpZn)
             {
                 someFlag = false;
             }
             else
             {
-                if (block.Floor.XpZp.InFullClicks() != block.Floor.XnZn.InFullClicks())
+                if (floorXpZp != floorXnZn)
                 {
-                    if (block.Floor.XnZp.InFullClicks() < block.Floor.XpZp.InFullClicks() && block.Floor.XnZp.InFullClicks() < block.Floor.XnZn.InFullClicks() ||
-                        block.Floor.XpZn.InFullClicks() < block.Floor.XpZp.InFullClicks() && block.Floor.XpZn.InFullClicks() < block.Floor.XnZn.InFullClicks() ||
-                        block.Floor.XnZp.InFullClicks() > block.Floor.XpZp.InFullClicks() && block.Floor.XnZp.InFullClicks() > block.Floor.XnZn.InFullClicks() ||
-                        block.Floor.XpZn.InFullClicks() > block.Floor.XpZp.InFullClicks() && block.Floor.XpZn.InFullClicks() > block.Floor.XnZn.InFullClicks())
+                    if (floorXnZp < floorXpZp && floorXnZp < floorXnZn ||
+                        floorXpZn < floorXpZp && floorXpZn < floorXnZn ||
+                        floorXnZp > floorXpZp && floorXnZp > floorXnZn ||
+                        floorXpZn > floorXpZp && floorXpZn > floorXnZn)
                     {
                         someFlag = true;
                     }
@@ -879,8 +885,8 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            int floorHeight = meanFloorCornerHeight + room.Position.Y.InFullClicks();
-            int ceiling = block.Ceiling.Max.InFullClicks() + room.Position.Y.InFullClicks();
+            int floorHeight = meanFloorCornerHeight + Clicks.FromWorld(room.Position.Y);
+            int ceiling = Clicks.FromWorld(block.Ceiling.Max + room.Position.Y);
 
             if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

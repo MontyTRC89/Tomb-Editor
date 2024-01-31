@@ -150,18 +150,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         case ZoneType.Skeleton:
                             // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
-                            add = (step <= Level.FullClickHeight || canJump);
+                            add = (step <= Clicks.ToWorld(1) || canJump);
                             break;
 
                         case ZoneType.Basic:
                             // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
-                            add = (step <= Level.FullClickHeight);
+                            add = (step <= Clicks.ToWorld(1));
                             break;
 
                         case ZoneType.Water:
                             // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step.
                             // In water they act like flying enemies. Guide seems to belong to this zone.
-                            add = (step <= Level.FullClickHeight || water);
+                            add = (step <= Clicks.ToWorld(1) || water);
                             break;
 
                         case ZoneType.Human:

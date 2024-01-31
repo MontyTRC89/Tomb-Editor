@@ -211,7 +211,7 @@ namespace TombEditor.Controls
                                             if (mouseDepth <= roomSequences[i][j].MaxDepth && mouseDepth >= roomSequences[i][j].MinDepth)
                                             {
                                                 _roomMouseClicked = roomSequences[i][j].Room;
-                                                _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y.InFullClicks();
+                                                _roomMouseOffset = mouseDepth - Clicks.FromWorld(_roomMouseClicked.Position.Y);
 
                                                 // If multiple rooms are selected, don't reset selection.
                                                 if (_editor.SelectedRooms.Count <= 1 || !_editor.SelectedRooms.Contains(_roomMouseClicked))
@@ -313,14 +313,14 @@ namespace TombEditor.Controls
                     float minHeight = MinDepth;
                     foreach (Room room in _roomsToMove)
                     {
-                        float roomUpperLimit = MaxDepth - (room.Position.Y.InFullClicks() - _roomMouseClicked.Position.Y.InFullClicks() + room.GetHighestCorner(true));
-                        float roomLowerLimit = MinDepth - (room.Position.Y.InFullClicks() - _roomMouseClicked.Position.Y.InFullClicks() + room.GetLowestCorner(true));
+                        float roomUpperLimit = MaxDepth - Clicks.FromWorld(room.Position.Y - _roomMouseClicked.Position.Y + room.GetHighestCorner());
+                        float roomLowerLimit = MinDepth - Clicks.FromWorld(room.Position.Y - _roomMouseClicked.Position.Y + room.GetLowestCorner());
                         maxHeight = Math.Min(maxHeight, roomUpperLimit);
                         minHeight = Math.Max(minHeight, roomLowerLimit);
                     }
 
                     destinationHeight = Math.Max(Math.Min(destinationHeight, maxHeight), minHeight);
-                    int delta = (int)(Math.Ceiling(destinationHeight) - _roomMouseClicked.Position.Y.InFullClicks());
+                    int delta = (int)(Math.Ceiling(destinationHeight) - Clicks.FromWorld(_roomMouseClicked.Position.Y));
 
                     // Snapping
                     if(!(Control.ModifierKeys.HasFlag(Keys.Alt) || Control.ModifierKeys.HasFlag(Keys.Shift)))
@@ -341,7 +341,7 @@ namespace TombEditor.Controls
                         {
                             if (Math.Abs(delta) <= _snappingMargin)
                             {
-                                int newDelta = -(lowestGroupPoint - (nearbyRoom.Position.Y.InFullClicks() + nearbyRoom.GetHighestCorner(true)));
+                                int newDelta = -(lowestGroupPoint - Clicks.FromWorld(nearbyRoom.Position.Y + nearbyRoom.GetHighestCorner()));
                                 if (newDelta + highestGroupPoint > MaxDepth)
                                     break; // Do not push room out of bounds
                                 delta = newDelta;
@@ -356,7 +356,7 @@ namespace TombEditor.Controls
                             {
                                 if (Math.Abs(delta) <= _snappingMargin)
                                 {
-                                    int newDelta = nearbyRoom.Position.Y.InFullClicks() + nearbyRoom.GetLowestCorner(true) - highestGroupPoint;
+                                    int newDelta = Clicks.FromWorld(nearbyRoom.Position.Y + nearbyRoom.GetLowestCorner()) - highestGroupPoint;
                                     if (newDelta + lowestGroupPoint < MinDepth)
                                         break; // Do not push room out of bounds
                                     delta = newDelta;
@@ -371,7 +371,7 @@ namespace TombEditor.Controls
                     if (delta != 0)
                     {
                         _overallDelta += delta;
-                        EditorActions.MoveRooms(new VectorInt3(0, delta * Level.FullClickHeight, 0), _roomsToMove, true);
+                        EditorActions.MoveRooms(new VectorInt3(0, Clicks.ToWorld(delta), 0), _roomsToMove, true);
                     }
                     break;
             }
@@ -610,8 +610,8 @@ namespace TombEditor.Controls
                 {
                     Room = room,
                     Block = block,
-                    MinDepth = room.Position.Y.InFullClicks() + room.GetLowestCorner(true),
-                    MaxDepth = room.Position.Y.InFullClicks() + room.GetHighestCorner(true)
+                    MinDepth = Clicks.FromWorld(room.Position.Y + room.GetLowestCorner()),
+                    MaxDepth = Clicks.FromWorld(room.Position.Y + room.GetHighestCorner())
                 };
 
                 // Search for a fit in the sequence for rooms it the current room is connected to on this sector
@@ -687,6 +687,6 @@ namespace TombEditor.Controls
         public float SelectedMax => Math.Max(_selectedLimit0, _selectedLimit1);
         public HashSet<Room> RoomsToMove => _roomsToMove;
         public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => roomMinDepth >= SelectedMin && roomMaxDepth <= SelectedMax;
-        public bool CheckRoom(Room room) => CheckRoom(room.Position.Y.InFullClicks() + room.GetLowestCorner(true), room.Position.Y.InFullClicks() + room.GetHighestCorner(true));
+        public bool CheckRoom(Room room) => CheckRoom(Clicks.FromWorld(room.Position.Y + room.GetLowestCorner()), Clicks.FromWorld(room.Position.Y + room.GetHighestCorner()));
     }
 }

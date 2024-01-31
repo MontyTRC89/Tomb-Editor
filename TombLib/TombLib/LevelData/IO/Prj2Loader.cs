@@ -797,9 +797,9 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -810,9 +810,9 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -822,7 +822,7 @@ namespace TombLib.LevelData.IO
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
 
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -832,7 +832,7 @@ namespace TombLib.LevelData.IO
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
 
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -847,7 +847,7 @@ namespace TombLib.LevelData.IO
                                             block.ExtraFloorSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         }
                                     }
                                     else if (id4 == Prj2Chunks.SectorCeilingSubdivisions) // DEPRECATED
@@ -860,7 +860,7 @@ namespace TombLib.LevelData.IO
                                             block.ExtraCeilingSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight);
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         }
                                     }
 
@@ -1619,14 +1619,14 @@ namespace TombLib.LevelData.IO
                     var instance = new GhostBlockInstance();
                     instance.SectorPosition = new VectorInt2(x, y);
 
-                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
-                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw) * Level.FullClickHeight;
+                    instance.Floor.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);

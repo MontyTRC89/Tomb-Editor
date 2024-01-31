@@ -75,11 +75,34 @@ namespace TombLib.LevelData
         }
     }
 
-    public static class FullClicksExtensions
+    public enum Rounding
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int InFullClicks(this int value)
-            => (int)Math.Round(value / (float)Level.FullClickHeight);
+        Default,
+        ToFloor,
+        ToCeiling
+    }
+
+    public static class Clicks
+    {
+        /// <summary>
+        /// Converts world units (256) to clicks (1).
+        /// </summary>
+        public static int FromWorld(int worldUnits)
+            => (int)Math.Round(worldUnits / (float)Level.FullClickHeight);
+
+        /// <inheritdoc />
+        public static int FromWorld(int worldUnits, Rounding rounding) => rounding switch
+        {
+            Rounding.ToFloor => (int)Math.Floor(worldUnits / (float)Level.FullClickHeight),
+            Rounding.ToCeiling => (int)Math.Ceiling(worldUnits / (float)Level.FullClickHeight),
+            _ => (int)Math.Round(worldUnits / (float)Level.FullClickHeight)
+        };
+
+        /// <summary>
+        /// Converts clicks (1) to world units (256).
+        /// </summary>
+        public static int ToWorld(int clicks)
+            => clicks * Level.FullClickHeight;
     }
 
     public class Room : ITriggerParameter
@@ -906,7 +929,7 @@ namespace TombLib.LevelData
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
-        public int GetHighestCorner(RectangleInt2 area, bool resultInFullClicks = false)
+        public int GetHighestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -916,8 +939,7 @@ namespace TombLib.LevelData
                     if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].Ceiling.Max);
 
-            int result = max == int.MinValue ? DefaultHeight : max;
-            return resultInFullClicks ? result.InFullClicks() : result;
+            return max == int.MinValue ? DefaultHeight : max;
         }
 
         public int GetHighestNeighborCeiling(int x, int z)
@@ -944,12 +966,12 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public int GetHighestCorner(bool resultInFullClicks = false)
+        public int GetHighestCorner()
         {
-            return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2), resultInFullClicks);
+            return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public int GetLowestCorner(RectangleInt2 area, bool resultInFullClicks = false)
+        public int GetLowestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -958,9 +980,8 @@ namespace TombLib.LevelData
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].Floor.Min);
-            
-            int result = min == int.MaxValue ? 0 : min;
-            return resultInFullClicks ? result.InFullClicks() : result;
+
+            return min == int.MaxValue ? 0 : min;
         }
 
         public int GetLowestNeighborFloor(int x, int z)
@@ -987,9 +1008,9 @@ namespace TombLib.LevelData
             return min;
         }
 
-        public int GetLowestCorner(bool resultInFullClicks = false)
+        public int GetLowestCorner()
         {
-            return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2), resultInFullClicks);
+            return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
         public VectorInt3 WorldPos

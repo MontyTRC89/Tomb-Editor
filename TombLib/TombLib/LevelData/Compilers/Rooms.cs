@@ -1301,12 +1301,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX.InFullClicks()) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX.InFullClicks()) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ.InFullClicks()) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ.InFullClicks()) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 2 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX.InFullClicks()) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ.InFullClicks()) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -1315,17 +1315,17 @@ namespace TombLib.LevelData.Compilers
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
                         block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y.InFullClicks() - block.Floor.Max.InFullClicks());
-                        sector.Ceiling = (sbyte)(-room.Position.Y.InFullClicks() - block.Ceiling.Min.InFullClicks());
+                        sector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Max));
+                        sector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
                         if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
                     }
                     else
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y.InFullClicks() - block.Floor.Max.InFullClicks());
-                        sector.Ceiling = (sbyte)(-room.Position.Y.InFullClicks() - block.Ceiling.Min.InFullClicks());
+                        sector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Max));
+                        sector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
                     }
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - block.Floor.Min.InFullClicks());
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Min));
                     var q0 = block.Floor.XnZp;
                     var q1 = block.Floor.XpZp;
                     var q2 = block.Floor.XpZn;
@@ -1335,9 +1335,9 @@ namespace TombLib.LevelData.Compilers
                         block.Floor.IfQuadSlopeZ == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - Math.Min(block.Floor.XnZp, block.Floor.XpZn).InFullClicks());
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));
                         else
-                            aux.LowestFloor = (sbyte)(-room.Position.Y.InFullClicks() - Math.Min(block.Floor.XpZp, block.Floor.XnZn).InFullClicks());
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XpZp, block.Floor.XnZn)));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
