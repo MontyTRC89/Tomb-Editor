@@ -1075,7 +1075,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Wall = true;
 
                     // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
-                    aux.LowestFloor = (sbyte)Clicks.FromWorld(-room.Position.Y - block.Floor.Min);
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Min));
                     var q0 = Clicks.FromWorld(block.Floor.XnZp);
                     var q1 = Clicks.FromWorld(block.Floor.XpZp);
                     var q2 = Clicks.FromWorld(block.Floor.XpZn);
@@ -1085,9 +1085,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)Clicks.FromWorld(-room.Position.Y - Math.Min(block.Floor.XnZp, block.Floor.XpZn));
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));
                         else
-                            aux.LowestFloor = (sbyte)Clicks.FromWorld(-room.Position.Y - Math.Min(block.Floor.XpZp, block.Floor.XnZn));
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XpZp, block.Floor.XnZn)));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;

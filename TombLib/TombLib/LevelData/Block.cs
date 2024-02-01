@@ -402,7 +402,7 @@ namespace TombLib.LevelData
         public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
-        public bool HasSlope => Clicks.FromWorld(Max - Min, RoundingMethod.Integer) > 2;
+        public bool HasSlope => Clicks.FromWorld(Max, RoundingMethod.Integer) - Clicks.FromWorld(Min, RoundingMethod.Integer) > 2;
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
         public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
@@ -1182,10 +1182,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, Clicks.FromWorld(Floor.XnZp), 0);
-            var p1 = new Vector3(4, Clicks.FromWorld(Floor.XpZp), 0);
-            var p2 = new Vector3(4, Clicks.FromWorld(Floor.XpZn), -4);
-            var p3 = new Vector3(0, Clicks.FromWorld(Floor.XnZn), -4);
+            var p0 = new Vector3(0, Clicks.FromWorld(Floor.XnZp, RoundingMethod.Integer), 0);
+            var p1 = new Vector3(4, Clicks.FromWorld(Floor.XpZp, RoundingMethod.Integer), 0);
+            var p2 = new Vector3(4, Clicks.FromWorld(Floor.XpZn, RoundingMethod.Integer), -4);
+            var p3 = new Vector3(0, Clicks.FromWorld(Floor.XnZn, RoundingMethod.Integer), -4);
 
             // Create planes based on floor split direction
 

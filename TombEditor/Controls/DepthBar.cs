@@ -313,8 +313,8 @@ namespace TombEditor.Controls
                     float minHeight = MinDepth;
                     foreach (Room room in _roomsToMove)
                     {
-                        float roomUpperLimit = MaxDepth - Clicks.FromWorld(room.Position.Y - _roomMouseClicked.Position.Y + room.GetHighestCorner());
-                        float roomLowerLimit = MinDepth - Clicks.FromWorld(room.Position.Y - _roomMouseClicked.Position.Y + room.GetLowestCorner());
+                        float roomUpperLimit = MaxDepth - (Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(_roomMouseClicked.Position.Y) + Clicks.FromWorld(room.GetHighestCorner()));
+                        float roomLowerLimit = MinDepth - (Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(_roomMouseClicked.Position.Y) + Clicks.FromWorld(room.GetLowestCorner()));
                         maxHeight = Math.Min(maxHeight, roomUpperLimit);
                         minHeight = Math.Max(minHeight, roomLowerLimit);
                     }
@@ -341,7 +341,7 @@ namespace TombEditor.Controls
                         {
                             if (Math.Abs(delta) <= _snappingMargin)
                             {
-                                int newDelta = -(lowestGroupPoint - Clicks.FromWorld(nearbyRoom.Position.Y + nearbyRoom.GetHighestCorner()));
+                                int newDelta = -(lowestGroupPoint - (Clicks.FromWorld(nearbyRoom.Position.Y) + Clicks.FromWorld(nearbyRoom.GetHighestCorner())));
                                 if (newDelta + highestGroupPoint > MaxDepth)
                                     break; // Do not push room out of bounds
                                 delta = newDelta;
@@ -356,7 +356,7 @@ namespace TombEditor.Controls
                             {
                                 if (Math.Abs(delta) <= _snappingMargin)
                                 {
-                                    int newDelta = Clicks.FromWorld(nearbyRoom.Position.Y + nearbyRoom.GetLowestCorner()) - highestGroupPoint;
+                                    int newDelta = (Clicks.FromWorld(nearbyRoom.Position.Y) + Clicks.FromWorld(nearbyRoom.GetLowestCorner())) - highestGroupPoint;
                                     if (newDelta + lowestGroupPoint < MinDepth)
                                         break; // Do not push room out of bounds
                                     delta = newDelta;
@@ -610,8 +610,8 @@ namespace TombEditor.Controls
                 {
                     Room = room,
                     Block = block,
-                    MinDepth = Clicks.FromWorld(room.Position.Y + room.GetLowestCorner()),
-                    MaxDepth = Clicks.FromWorld(room.Position.Y + room.GetHighestCorner())
+                    MinDepth = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetLowestCorner()),
+                    MaxDepth = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetHighestCorner())
                 };
 
                 // Search for a fit in the sequence for rooms it the current room is connected to on this sector
@@ -687,6 +687,8 @@ namespace TombEditor.Controls
         public float SelectedMax => Math.Max(_selectedLimit0, _selectedLimit1);
         public HashSet<Room> RoomsToMove => _roomsToMove;
         public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => roomMinDepth >= SelectedMin && roomMaxDepth <= SelectedMax;
-        public bool CheckRoom(Room room) => CheckRoom(Clicks.FromWorld(room.Position.Y + room.GetLowestCorner()), Clicks.FromWorld(room.Position.Y + room.GetHighestCorner()));
+        public bool CheckRoom(Room room) => CheckRoom(
+            Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetLowestCorner()),
+            Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetHighestCorner()));
     }
 }

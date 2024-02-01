@@ -838,7 +838,7 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = Clicks.FromWorld(block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn);
+            int sumHeights = Clicks.FromWorld(block.Floor.XnZp) + Clicks.FromWorld(block.Floor.XpZp) + Clicks.FromWorld(block.Floor.XpZn) + Clicks.FromWorld(block.Floor.XnZn);
             int meanFloorCornerHeight = sumHeights >> 2;
 
             short
@@ -886,7 +886,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             int floorHeight = meanFloorCornerHeight + Clicks.FromWorld(room.Position.Y);
-            int ceiling = Clicks.FromWorld(block.Ceiling.Max + room.Position.Y);
+            int ceiling = Clicks.FromWorld(block.Ceiling.Max) + Clicks.FromWorld(room.Position.Y);
 
             if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

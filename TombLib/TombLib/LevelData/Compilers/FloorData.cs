@@ -230,8 +230,8 @@ namespace TombLib.LevelData.Compilers
 
                                 // Convert sector type to floor with maxed out floor height, as tom2pc/winroomedit does it.
                                 // Otherwise, even if tomb4 will work correctly, meta2tr or other custom tools may fail here.
-                                sector.Floor = (sbyte)Clicks.FromWorld(-room.Position.Y - block.Ceiling.Min);
-                                sector.Ceiling = (sbyte)Clicks.FromWorld(-room.Position.Y - block.Ceiling.Min);
+                                sector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
+                                sector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
@@ -754,18 +754,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZp - surface.XnZp);
+                        DiagonalStep = Clicks.FromWorld(surface.XpZp) - Clicks.FromWorld(surface.XnZp);
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZn - surface.XpZp);
+                        DiagonalStep = Clicks.FromWorld(surface.XpZn) - Clicks.FromWorld(surface.XpZp);
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZp - surface.XnZn);
+                        DiagonalStep = Clicks.FromWorld(surface.XnZp) - Clicks.FromWorld(surface.XnZn);
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -774,7 +774,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZn - surface.XpZn);
+                        DiagonalStep = Clicks.FromWorld(surface.XnZn) - Clicks.FromWorld(surface.XpZn);
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

@@ -63,7 +63,7 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                int current = Clicks.FromWorld(room.Position.Y + room.GetLowestCorner());
+                int current = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetLowestCorner());
 
                 if (lowestPoint > current)
                     lowestPoint = current;
@@ -78,7 +78,7 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                int current = Clicks.FromWorld(room.Position.Y + room.GetHighestCorner());
+                int current = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetHighestCorner());
 
                 if (highestPoint < current)
                     highestPoint = current;
@@ -93,7 +93,9 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => height < Clicks.FromWorld(r.Position.Y + r.GetHighestCorner()) + tolerance && height >= Clicks.FromWorld(r.Position.Y + r.GetHighestCorner()) - tolerance);
+                return roomsOutsideGroup.FirstOrDefault(r
+                    => height < Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetHighestCorner()) + tolerance
+                    && height >= Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetHighestCorner()) - tolerance);
         }
 
         public Room GetNearbyRoomAbove(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
@@ -102,7 +104,9 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => height < Clicks.FromWorld(r.Position.Y + r.GetLowestCorner()) + tolerance && height >= Clicks.FromWorld(r.Position.Y + r.GetLowestCorner()) - tolerance);
+                return roomsOutsideGroup.FirstOrDefault(r
+                    => height < Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetLowestCorner()) + tolerance
+                    && height >= Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetLowestCorner()) - tolerance);
         }
 
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)

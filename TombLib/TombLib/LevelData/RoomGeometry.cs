@@ -2061,8 +2061,8 @@ namespace TombLib.LevelData
                     {
                         Block currentBlock = room.Blocks[currentXblock - 1, currentZblock];
 
-                        if (Clicks.FromWorld(currentBlock.Floor.XnZp + currentBlock.Floor.XnZn) / 2 > currentYclick ||
-                            Clicks.FromWorld(currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp) + Clicks.FromWorld(currentBlock.Floor.XnZn)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp) + Clicks.FromWorld(currentBlock.Ceiling.XnZn)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2079,11 +2079,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if (Clicks.FromWorld(currentBlock.Floor.XpZn + currentBlock.Floor.XpZp) / 2 > currentYclick ||
-                            Clicks.FromWorld(currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XpZp) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn) + Clicks.FromWorld(currentBlock.Floor.XpZp)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn) + Clicks.FromWorld(currentBlock.Ceiling.XpZp)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            Clicks.FromWorld(nextBlock.Floor.XnZp + nextBlock.Floor.XnZn) / 2 > currentYclick ||
-                            Clicks.FromWorld(nextBlock.Ceiling.XnZp + nextBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XnZp) + Clicks.FromWorld(nextBlock.Floor.XnZn)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XnZp) + Clicks.FromWorld(nextBlock.Ceiling.XnZn)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2166,8 +2166,8 @@ namespace TombLib.LevelData
                     {
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
 
-                        if (Clicks.FromWorld(currentBlock.Floor.XpZn + currentBlock.Floor.XnZn) / 2 > currentYclick ||
-                            Clicks.FromWorld(currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn) + Clicks.FromWorld(currentBlock.Floor.XnZn)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn) + Clicks.FromWorld(currentBlock.Ceiling.XnZn)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2184,11 +2184,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if (Clicks.FromWorld(currentBlock.Floor.XnZp + currentBlock.Floor.XpZp) / 2 > currentYclick ||
-                            Clicks.FromWorld(currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XpZp) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp) + Clicks.FromWorld(currentBlock.Floor.XpZp)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp) + Clicks.FromWorld(currentBlock.Ceiling.XpZp)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            Clicks.FromWorld(nextBlock.Floor.XpZn + nextBlock.Floor.XnZn) / 2 > currentYclick ||
-                            Clicks.FromWorld(nextBlock.Ceiling.XpZn + nextBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XpZn) + Clicks.FromWorld(nextBlock.Floor.XnZn)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XpZn) + Clicks.FromWorld(nextBlock.Ceiling.XnZn)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
