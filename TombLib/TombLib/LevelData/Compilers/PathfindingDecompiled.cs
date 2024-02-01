@@ -838,19 +838,18 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = Clicks.FromWorld(block.Floor.XnZp) + Clicks.FromWorld(block.Floor.XpZp) + Clicks.FromWorld(block.Floor.XpZn) + Clicks.FromWorld(block.Floor.XnZn);
-            int meanFloorCornerHeight = sumHeights >> 2;
-
-            short
-                floorXnZp = (short)Clicks.FromWorld(block.Floor.XnZp),
+            int floorXnZp = (short)Clicks.FromWorld(block.Floor.XnZp),
                 floorXpZp = (short)Clicks.FromWorld(block.Floor.XpZp),
                 floorXpZn = (short)Clicks.FromWorld(block.Floor.XpZn),
                 floorXnZn = (short)Clicks.FromWorld(block.Floor.XnZn);
 
-            dec_q0 = floorXnZp;
-            dec_q1 = floorXpZp;
-            dec_q2 = floorXpZn;
-            dec_q3 = floorXnZn;
+            int sumHeights = floorXnZp + floorXpZp + floorXpZn + floorXnZn;
+            int meanFloorCornerHeight = sumHeights >> 2;
+
+            dec_q0 = (short)floorXnZp;
+            dec_q1 = (short)floorXpZp;
+            dec_q2 = (short)floorXpZn;
+            dec_q3 = (short)floorXnZn;
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
