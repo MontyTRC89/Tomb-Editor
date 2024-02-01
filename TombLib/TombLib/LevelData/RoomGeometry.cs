@@ -2055,14 +2055,14 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -Level.FullClickHeight;
+                    int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
                     if (currentXblock > 0)
                     {
                         Block currentBlock = room.Blocks[currentXblock - 1, currentZblock];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp) + Clicks.FromWorld(currentBlock.Floor.XnZn)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp) + Clicks.FromWorld(currentBlock.Ceiling.XnZn)) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2079,11 +2079,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn) + Clicks.FromWorld(currentBlock.Floor.XpZp)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn) + Clicks.FromWorld(currentBlock.Ceiling.XpZp)) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (Clicks.FromWorld(nextBlock.Floor.XnZp) + Clicks.FromWorld(nextBlock.Floor.XnZn)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(nextBlock.Ceiling.XnZp) + Clicks.FromWorld(nextBlock.Ceiling.XnZn)) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2160,14 +2160,14 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -Level.FullClickHeight;
+                    int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
                     if (currentZblock > 0)
                     {
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn) + Clicks.FromWorld(currentBlock.Floor.XnZn)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn) + Clicks.FromWorld(currentBlock.Ceiling.XnZn)) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2184,11 +2184,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp) + Clicks.FromWorld(currentBlock.Floor.XpZp)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp) + Clicks.FromWorld(currentBlock.Ceiling.XpZp)) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (Clicks.FromWorld(nextBlock.Floor.XpZn) + Clicks.FromWorld(nextBlock.Floor.XnZn)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(nextBlock.Ceiling.XpZn) + Clicks.FromWorld(nextBlock.Ceiling.XnZn)) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
