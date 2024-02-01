@@ -356,7 +356,7 @@ namespace TombEditor.Controls
                             {
                                 if (Math.Abs(delta) <= _snappingMargin)
                                 {
-                                    int newDelta = (Clicks.FromWorld(nearbyRoom.Position.Y) + Clicks.FromWorld(nearbyRoom.GetLowestCorner())) - highestGroupPoint;
+                                    int newDelta = Clicks.FromWorld(nearbyRoom.Position.Y) + Clicks.FromWorld(nearbyRoom.GetLowestCorner()) - highestGroupPoint;
                                     if (newDelta + lowestGroupPoint < MinDepth)
                                         break; // Do not push room out of bounds
                                     delta = newDelta;
