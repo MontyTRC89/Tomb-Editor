@@ -427,7 +427,7 @@ namespace TombLib.LevelData.IO
                                         var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
                                         var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
 
-                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions2, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
                                             LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
 
@@ -435,7 +435,7 @@ namespace TombLib.LevelData.IO
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
-                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions2, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
                                             LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
 
