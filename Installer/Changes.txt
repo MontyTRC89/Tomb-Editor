@@ -2,6 +2,7 @@ Version 1.7.1
 ===========
 
 Tomb Editor:
+ * Added adjustable step heights for TEN levels. (Note: Can be enabled for unsupported engines, but the behavior is unpredictable.)
  * Fixed AutoSave file cleanup not working.
  * Fixed Undo / Redo not working on yellow walls (portals).
  * Fixed issue where creating portals manually would display phantom subdivisions.
