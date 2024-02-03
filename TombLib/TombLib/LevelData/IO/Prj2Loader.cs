@@ -928,7 +928,7 @@ namespace TombLib.LevelData.IO
                                         textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
                                         textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
 
-                                        if(id4 == Prj2Chunks.TextureLevelTexture2)
+                                        if(id4 == Prj2Chunks.TextureLevelTexture2 || id4 == Prj2Chunks.TextureLevelTexture3)
                                         {
                                             textureArea.ParentArea.Start = chunkIO.Raw.ReadVector2();
                                             textureArea.ParentArea.End = chunkIO.Raw.ReadVector2();
