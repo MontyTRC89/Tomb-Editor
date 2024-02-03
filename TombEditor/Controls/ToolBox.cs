@@ -222,7 +222,7 @@ namespace TombEditor.Controls
             SwitchTool(EditorToolType.GridPaint);
         }
         
-		private void toolPortalDigger_Click(object sender, EventArgs e)
+        private void toolPortalDigger_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.PortalDigger);
         }
