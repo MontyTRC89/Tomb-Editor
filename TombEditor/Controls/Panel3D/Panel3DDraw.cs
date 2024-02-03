@@ -14,6 +14,7 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using static TombLib.Rendering.RenderingTextureAllocator;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -329,38 +330,38 @@ namespace TombEditor.Controls.Panel3D
                     if (subdivisionIndex is < 0 or > 7) // QA or WS
                     {
                         // PositiveZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_PositiveZ_QA, FaceLayer.Base))))
                             HandlePositiveZ(x, z, targetBlock.Floor, yOffset);
                         // PositiveZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_PositiveZ_WS, FaceLayer.Base))))
                             HandlePositiveZ(x, z, targetBlock.Ceiling, yOffset);
 
                         // PositiveX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_PositiveX_QA, FaceLayer.Base))))
                             HandlePositiveX(x, z, targetBlock.Floor, yOffset);
                         // PositiveX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_PositiveX_WS, FaceLayer.Base))))
                             HandlePositiveX(x, z, targetBlock.Ceiling, yOffset);
 
                         // NegativeZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_NegativeZ_QA, FaceLayer.Base))))
                             HandleNegativeZ(x, z, targetBlock.Floor, yOffset);
                         // NegativeZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_NegativeZ_WS, FaceLayer.Base))))
                             HandleNegativeZ(x, z, targetBlock.Ceiling, yOffset);
 
                         // NegativeX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_QA)))
-                            HandleNegativeX(x, z, targetBlock.Floor, yOffset);
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_NegativeX_QA, FaceLayer.Base))))
+							HandleNegativeX(x, z, targetBlock.Floor, yOffset);
                         // NegativeX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_NegativeX_WS, FaceLayer.Base))))
                             HandleNegativeX(x, z, targetBlock.Ceiling, yOffset);
 
                         // Diagonal Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_Diagonal_QA, FaceLayer.Base))))
                             HandleDiagonal(x, z, targetBlock.Floor, yOffset);
                         // Diagonal Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFace.Wall_Diagonal_WS, FaceLayer.Base))))
                             HandleDiagonal(x, z, targetBlock.Ceiling, yOffset);
                     }
                     else // Actual subdivisions
@@ -378,24 +379,24 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
-                                HandlePositiveZ(x, z, floorSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, subdivisionIndex), FaceLayer.Base))))
+								HandlePositiveZ(x, z, floorSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
-                                HandlePositiveX(x, z, floorSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, subdivisionIndex), FaceLayer.Base))))
+								HandlePositiveX(x, z, floorSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
-                                HandleNegativeZ(x, z, floorSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, subdivisionIndex), FaceLayer.Base))))
+								HandleNegativeZ(x, z, floorSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
-                                HandleNegativeX(x, z, floorSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, subdivisionIndex), FaceLayer.Base))))
+								HandleNegativeX(x, z, floorSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
-                                HandleDiagonal(x, z, floorSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, subdivisionIndex), FaceLayer.Base))))
+								HandleDiagonal(x, z, floorSurface, yOffset);
                         }
                         
                         // Ceiling subdivision
@@ -411,24 +412,24 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
-                                HandlePositiveZ(x, z, ceilingSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, subdivisionIndex), FaceLayer.Base))))
+								HandlePositiveZ(x, z, ceilingSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
-                                HandlePositiveX(x, z, ceilingSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, subdivisionIndex), FaceLayer.Base))))
+								HandlePositiveX(x, z, ceilingSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
-                                HandleNegativeZ(x, z, ceilingSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, subdivisionIndex), FaceLayer.Base))))
+								HandleNegativeZ(x, z, ceilingSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
-                                HandleNegativeX(x, z, ceilingSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, subdivisionIndex), FaceLayer.Base))))
+								HandleNegativeX(x, z, ceilingSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
-                                HandleDiagonal(x, z, ceilingSurface, yOffset);
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, new FaceLayerInfo(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, subdivisionIndex), FaceLayer.Base))))
+								HandleDiagonal(x, z, ceilingSurface, yOffset);
                         }
                     }
                 }
@@ -445,6 +446,82 @@ namespace TombEditor.Controls.Panel3D
             effect.Parameters["Color"].SetValue(Vector4.One);
             effect.CurrentTechnique.Passes[0].Apply();
             _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
+        }
+
+        private void DrawDecalOutlines(Effect effect)
+        {
+            Room currentRoom = _editor.SelectedRoom;
+            var vertices = new List<SolidVertex>();
+
+            for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1; x++)
+                for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1; z++)
+                {
+                    for (BlockFace face = 0; face < BlockFace.Count; face++)
+                    {
+                        var key = new SectorInfo(x, z, new FaceLayerInfo(face, FaceLayer.Decal));
+
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
+                        {
+                            VertexRange range = currentRoom.RoomGeometry.VertexRangeLookup[key];
+
+                            if (range.Count == 3)
+                            {
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos));
+
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos));
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+                                vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+                            }
+                            else if (range.Count == 6)
+                            {
+                                if (face.IsCeiling())
+                                {
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos));
+
+                                    vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos));
+                                    vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos));
+
+                                    vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos));
+                                    vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+								}
+                                else
+                                {
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos));
+
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos));
+
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos));
+									vertices.Add(new SolidVertex(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos));
+								}
+                            }
+                        }
+                    }
+                }
+
+            if (vertices.Count == 0)
+                return;
+
+            using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
+            _legacyDevice.SetVertexBuffer(buffer);
+            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+            effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+            effect.Parameters["Color"].SetValue(new Vector4(1, 0.5f, 0, 0));
+            effect.CurrentTechnique.Passes[0].Apply();
+            _legacyDevice.Draw(PrimitiveType.LineList, buffer.ElementCount);
         }
 
         private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
@@ -1944,7 +2021,9 @@ namespace TombEditor.Controls.Panel3D
                 DrawFlybyPath(effect);
                 // Draw subdivision highlight
                 DrawSubdivisionHighlights(effect);
-            }
+				// Draw decal outlines
+				DrawDecalOutlines(effect);
+			}
 
             // Draw ghost block cubes
             if (ShowGhostBlocks)

@@ -152,9 +152,9 @@ namespace TombEditor.Forms
             int roomTextureCount = 0;
             foreach (Room room in relevantRooms)
                 foreach (Block sector in room.Blocks)
-                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                    foreach (FaceLayerInfo faceLayer in sector.GetFaceTexturesAll().Keys)
                     {
-                        var currentTextureArea = sector.GetFaceTexture(face);
+                        var currentTextureArea = sector.GetFaceTexture(faceLayer);
                         if (currentTextureArea.Texture == sourceTexture &&
                             SourceContains(currentTextureArea.TexCoord0) &&
                             SourceContains(currentTextureArea.TexCoord1) &&
@@ -179,7 +179,7 @@ namespace TombEditor.Forms
                             else
                                 currentTextureArea.ParentArea = Rectangle2.Zero;
 
-                            sector.SetFaceTexture(face, currentTextureArea);
+                            sector.SetFaceTexture(faceLayer, currentTextureArea);
                             ++roomTextureCount;
                         }
                     }

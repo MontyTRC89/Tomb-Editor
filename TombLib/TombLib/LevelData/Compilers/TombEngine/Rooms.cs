@@ -292,15 +292,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
+                            foreach (FaceLayerInfo faceLayer in room.Blocks[x, z].GetFaceTexturesAll().Keys)
                             {
-                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
-                                var shape = room.GetFaceShape(x, z, face);
+                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, faceLayer));
+                                var shape = room.GetFaceShape(x, z, faceLayer.Face);
 
                                 if (range.Count == 0)
                                     continue;
 
-                                TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                                TextureArea texture = room.Blocks[x, z].GetFaceTexture(faceLayer);
                                 if (texture.TextureIsInvisible)
                                     continue;
 
@@ -329,7 +329,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     {
                                         int vertex3Index;
 
-                                        if (face == BlockFace.Ceiling)
+                                        if (faceLayer.Face == BlockFace.Ceiling)
                                         {
                                             texture.Mirror();
                                             vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 0);
@@ -369,7 +369,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
+                                        if (faceLayer.Face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);

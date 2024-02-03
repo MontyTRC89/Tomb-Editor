@@ -133,7 +133,9 @@ namespace TombLib.LevelData.IO
         /**************/public static readonly ChunkId SectorCeilingSubdivisions2 = new ChunkId(new byte[] { 10 });
         /**************/public static readonly ChunkId TextureLevelTexture = new ChunkId(new byte[] { 16 });
         /**************/public static readonly ChunkId TextureLevelTexture2 = new ChunkId(new byte[] { 18 });
+        /**************/public static readonly ChunkId TextureLevelTexture3 = new ChunkId(new byte[] { 19 });
         /**************/public static readonly ChunkId TextureInvisible = new ChunkId(new byte[] { 17 });
+        /**************/public static readonly ChunkId TextureInvisible2 = new ChunkId(new byte[] { 20 });
         /******/public static readonly ChunkId RoomAmbientLight = ChunkId.FromString("TeAmbient");
         /******/public static readonly ChunkId RoomAlternate = ChunkId.FromString("TeAlternate");
         /**********/public static readonly ChunkId AlternateRoom = ChunkId.FromString("TeRoom");

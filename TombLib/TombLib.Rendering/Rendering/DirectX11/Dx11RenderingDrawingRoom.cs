@@ -59,7 +59,7 @@ namespace TombLib.Rendering.DirectX11
                     editorUVAndSectorTexture[i] = editorUv;
                 }
                 {
-                    SectorInfo lastSectorInfo = new SectorInfo(-1, -1, BlockFace.Floor);
+                    SectorInfo lastSectorInfo = new SectorInfo(-1, -1, new FaceLayerInfo(BlockFace.Floor, FaceLayer.Base));
                     uint lastSectorTexture = 0;
                     uint overlay = 0;
                     for (int i = 0, triangleCount = singleSidedVertexCount / 3; i < triangleCount; ++i)
@@ -67,7 +67,7 @@ namespace TombLib.Rendering.DirectX11
                         SectorInfo currentSectorInfo = roomGeometry.TriangleSectorInfo[i];
                         if (!lastSectorInfo.Equals(currentSectorInfo))
                         {
-                            SectorTextureResult result = description.SectorTextureGet(description.Room, currentSectorInfo.Pos.X, currentSectorInfo.Pos.Y, currentSectorInfo.Face);
+                            SectorTextureResult result = description.SectorTextureGet(description.Room, currentSectorInfo.Pos.X, currentSectorInfo.Pos.Y, currentSectorInfo.FaceLayer.Face);
 
                             lastSectorInfo = currentSectorInfo;
                             lastSectorTexture = 0;

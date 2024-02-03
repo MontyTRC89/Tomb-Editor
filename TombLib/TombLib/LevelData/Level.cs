@@ -16,6 +16,8 @@ namespace TombLib.LevelData
         public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
         public const int FullClickHeight = 256;
 
+        public const float DecalOffset = 8.0f;
+
         public const short MaxNumberOfRooms = 1024;
 
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
@@ -273,7 +275,7 @@ namespace TombLib.LevelData
                         VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
-                            oldFace => oldRoom.GetFaceShape(x, z, oldFace));
+                            oldFace => oldRoom.GetFaceShape(x, z, oldFace.Face));
                     }
                 newRooms[i] = newRoom;
             }
@@ -362,13 +364,13 @@ namespace TombLib.LevelData
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Block sector in room.Blocks)
-                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                    foreach (FaceLayerInfo faceLayer in sector.GetFaceTexturesAll().Keys)
                     {
-                        TextureArea currentTextureArea = sector.GetFaceTexture(face);
+                        TextureArea currentTextureArea = sector.GetFaceTexture(faceLayer);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
                         if (currentTexture != null && askIfTextureToRemove(currentTexture))
                         {
-                            sector.SetFaceTexture(face, TextureArea.None);
+                            sector.SetFaceTexture(faceLayer, TextureArea.None);
                         }
                     }
                 room.BuildGeometry();

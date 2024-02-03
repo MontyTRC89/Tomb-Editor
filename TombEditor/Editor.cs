@@ -1417,6 +1417,8 @@ namespace TombEditor
 
         public static Editor Instance;
 
+        public FaceLayer ActiveTextureLayer { get; set; }
+
         public bool IsPreciseGeometryAllowed
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 

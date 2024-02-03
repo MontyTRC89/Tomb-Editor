@@ -299,7 +299,7 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                     _editor.SelectedSectors.Empty)
-                                    return EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
+                                    return EditorActions.ApplyTexture(_editor.SelectedRoom, pos, new FaceLayerInfo(newBlockPicking.Face, _editor.ActiveTextureLayer), _editor.SelectedTexture, true);
                             }
                             else if (_editor.Tool.Tool == EditorToolType.GridPaint && _toolHandler.Engaged)
                             {

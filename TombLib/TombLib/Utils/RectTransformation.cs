@@ -25,24 +25,33 @@ namespace TombLib.Utils
             }
         }
 
-        public void TransformValueQuad(Dictionary<BlockFace, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
+        public void TransformValueQuad(Dictionary<FaceLayerInfo, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
         {
-            if (MirrorX)
-                faceTextures.TrySwap(rotation0, rotation2);
-
-            for (int i = 0; i < QuadrantRotation; ++i)
+            for (FaceLayer layer = 0; layer < FaceLayer.Count; layer++)
             {
-                TextureArea? temp = null;
+                FaceLayerInfo
+                    key0 = new(rotation0, layer),
+                    key1 = new(rotation1, layer),
+                    key2 = new(rotation2, layer),
+                    key3 = new(rotation3, layer);
 
-                if (faceTextures.ContainsKey(rotation0))
-                    temp = faceTextures[rotation0];
+                if (MirrorX)
+                    faceTextures.TrySwap(key0, key2);
 
-                faceTextures.TrySwap(rotation0, rotation3);
-                faceTextures.TrySwap(rotation3, rotation2);
-                faceTextures.TrySwap(rotation2, rotation1);
+                for (int i = 0; i < QuadrantRotation; ++i)
+                {
+                    TextureArea? temp = null;
 
-                if (temp.HasValue)
-                    faceTextures[rotation1] = temp.Value;
+                    if (faceTextures.ContainsKey(key0))
+                        temp = faceTextures[key0];
+
+                    faceTextures.TrySwap(key0, key3);
+                    faceTextures.TrySwap(key3, key2);
+                    faceTextures.TrySwap(key2, key1);
+
+                    if (temp.HasValue)
+                        faceTextures[key1] = temp.Value;
+                }
             }
         }
 

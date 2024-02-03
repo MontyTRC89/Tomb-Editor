@@ -443,9 +443,9 @@ namespace TombLib.LevelData.IO
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
-                                        foreach (BlockFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
+                                        foreach (FaceLayerInfo faceLayer in b.GetFaceTexturesAll().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
                                         {
-                                            TextureArea texture = b.GetFaceTexture(face);
+                                            TextureArea texture = b.GetFaceTexture(faceLayer);
 
                                             if (texture.Texture == null)
                                                 continue;
@@ -453,11 +453,12 @@ namespace TombLib.LevelData.IO
                                             if (texture.Texture is LevelTexture t)
                                             {
                                                 if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
-                                                    using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
+                                                    using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture3, LEB128.MaximumSize1Byte))
                                                     {
                                                         int textureIndex = levelSettingIds.LevelTextures[t];
 
-                                                        LEB128.Write(chunkIO.Raw, (long)face);
+                                                        LEB128.Write(chunkIO.Raw, (long)faceLayer.Face);
+                                                        LEB128.Write(chunkIO.Raw, (long)faceLayer.Layer);
                                                         chunkIO.Raw.Write(texture.TexCoord0);
                                                         chunkIO.Raw.Write(texture.TexCoord1);
                                                         chunkIO.Raw.Write(texture.TexCoord2);
@@ -471,7 +472,11 @@ namespace TombLib.LevelData.IO
                                                     logger.Warn("Room " + room.Name + " has a texture referring to a texture file " + t.Path + " which is missing from project.");
                                             }
                                             else if (texture.Texture == TextureInvisible.Instance)
-                                                chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
+                                                using (var chunkTextureInvisible = chunkIO.WriteChunk(Prj2Chunks.TextureInvisible2, LEB128.MaximumSize1Byte))
+                                                {
+                                                    LEB128.Write(chunkIO.Raw, (long)faceLayer.Face);
+                                                    LEB128.Write(chunkIO.Raw, (long)faceLayer.Layer);
+                                                }
                                             else
                                                 throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
                                         }
