@@ -75,7 +75,7 @@ namespace TombEditor.Controls
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
 
-                switch (currentTool.GridSize)
+                switch(currentTool.GridSize)
                 {
                     case PaintGridSize.Grid2x2:
                         toolGridPaint.Image = Properties.Resources.toolbox_GridPaint2x2_16;
@@ -221,8 +221,8 @@ namespace TombEditor.Controls
         {
             SwitchTool(EditorToolType.GridPaint);
         }
-
-        private void toolPortalDigger_Click(object sender, EventArgs e)
+        
+		private void toolPortalDigger_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.PortalDigger);
         }
