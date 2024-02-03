@@ -498,6 +498,9 @@ namespace TombEditor.Controls.Panel3D
 
         private void DrawDecalOutlines(Effect effect)
         {
+            if (_editor.Mode is not EditorMode.FaceEdit)
+                return;
+
             Room currentRoom = _editor.SelectedRoom;
             var vertices = new List<SolidVertex>();
 
