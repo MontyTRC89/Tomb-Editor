@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
