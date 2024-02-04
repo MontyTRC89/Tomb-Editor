@@ -1165,7 +1165,7 @@ namespace TombLib.LevelData.Compilers
         public bool NotWalkableFloor;
         public Room WallPortal;
         public PortalInstance FloorPortal;
-        public short LowestFloor;
+        public int LowestFloor;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

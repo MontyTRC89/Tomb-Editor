@@ -382,6 +382,8 @@ namespace TombEditor
             this["InPlaceSearchImportedGeometry"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F3 };
             this["InPlaceSearchTextures"] = new SortedSet<Hotkey> { Keys.Shift | Keys.F4 };
             this["ShowTexturePanel"] = new SortedSet<Hotkey> { Keys.Alt | Keys.T };
+            this["IncreaseStepHeight"] = new SortedSet<Hotkey> { Keys.OemCloseBrackets };
+            this["DecreaseStepHeight"] = new SortedSet<Hotkey> { Keys.OemOpenBrackets };
 
             // Check for conflicts
             var hotkeyList = _list

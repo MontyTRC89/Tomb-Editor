@@ -119,6 +119,12 @@ namespace TombEditor
             }
         }
 
+        public class StepHeightChangedEvent : IEditorEvent
+        {
+            public int Previous { get; internal set; }
+            public int Current { get; internal set; }
+        }
+
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
             public IEditorAction Previous { get; internal set; }
@@ -1409,5 +1415,10 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
+
+        public bool IsPreciseGeometryAllowed
+            => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
+
+        public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
     }
 }
