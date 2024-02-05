@@ -58,4 +58,59 @@
     <anim item="0" id="215" name="ZIPLINE_GRAB" />
     <anim item="0" id="216" name="ZIPLINE_RIDE" />
     <anim item="0" id="217" name="ZIPLINE_FALL" />
+	
+	<!-- DRAGON_FRONT -->
+	
+	<anim item="22" id="0" name="WALK" />
+	<anim item="22" id="1" name="WALK_TO_MOVE_LEFT" />
+	<anim item="22" id="2" name="MOVE_LEFT" />
+	<anim item="22" id="3" name="MOVE_LEFT_TO_WALK" />
+	<anim item="22" id="4" name="WALK_TO_MOVE_RIGHT" />
+	<anim item="22" id="5" name="MOVE_RIGHT" />
+	<anim item="22" id="6" name="MOVE_RIGHT_TO_WALK" />
+	<anim item="22" id="7" name="WALK_TO_IDLE" />
+	<anim item="22" id="8" name="IDLE" />
+	<anim item="22" id="9" name="IDLE_TO_WALK" />
+	<anim item="22" id="10" name="IDLE_TO_FIRE" />
+	<anim item="22" id="11" name="FIRE" />
+	<anim item="22" id="12" name="FIRE_TO_IDLE" />
+	<anim item="22" id="13" name="TURNING_LEFT" />
+	<anim item="22" id="14" name="TURNING_RIGHT" />
+	<anim item="22" id="15" name="ATTACK_LEFT_1" />
+	<anim item="22" id="16" name="ATTACK_LEFT_2" />
+	<anim item="22" id="17" name="ATTACK_LEFT_3" />
+	<anim item="22" id="18" name="ATTACK_RIGHT_1" />
+	<anim item="22" id="19" name="ATTACK_RIGHT_2" />
+	<anim item="22" id="20" name="ATTACK_RIGHT_3" />
+	<anim item="22" id="21" name="DEATH" />
+	<anim item="22" id="22" name="DEFEATED" />
+	<anim item="22" id="23" name="RECOVER" />
+	
+	<!-- DRAGON_BACK -->
+	
+	<anim item="23" id="0" name="WALK" />
+	<anim item="23" id="1" name="WALK_TO_MOVE_LEFT" />
+	<anim item="23" id="2" name="MOVE_LEFT" />
+	<anim item="23" id="3" name="MOVE_LEFT_TO_WALK" />
+	<anim item="23" id="4" name="WALK_TO_MOVE_RIGHT" />
+	<anim item="23" id="5" name="MOVE_RIGHT" />
+	<anim item="23" id="6" name="MOVE_RIGHT_TO_WALK" />
+	<anim item="23" id="7" name="WALK_TO_IDLE" />
+	<anim item="23" id="8" name="IDLE" />
+	<anim item="23" id="9" name="IDLE_TO_WALK" />
+	<anim item="23" id="10" name="IDLE_TO_FIRE" />
+	<anim item="23" id="11" name="FIRE" />
+	<anim item="23" id="12" name="FIRE_TO_IDLE" />
+	<anim item="23" id="13" name="TURNING_LEFT" />
+	<anim item="23" id="14" name="TURNING_RIGHT" />
+	<anim item="23" id="15" name="ATTACK_LEFT_1" />
+	<anim item="23" id="16" name="ATTACK_LEFT_2" />
+	<anim item="23" id="17" name="ATTACK_LEFT_3" />
+	<anim item="23" id="18" name="ATTACK_RIGHT_1" />
+	<anim item="23" id="19" name="ATTACK_RIGHT_2" />
+	<anim item="23" id="20" name="ATTACK_RIGHT_3" />
+	<anim item="23" id="21" name="DEATH" />
+	<anim item="23" id="22" name="DEFEATED" />
+	<anim item="23" id="23" name="RECOVER" /> 
+	
 </animations>
