@@ -197,7 +197,8 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
-        public List<VolumeEventSet> EventSets { get; set; } = new List<VolumeEventSet>();
+        public List<EventSet> GlobalEventSets { get; set; } = new List<EventSet>();
+        public List<EventSet> VolumeEventSets { get; set; } = new List<EventSet>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
 
         // Light options
@@ -304,7 +305,9 @@ namespace TombLib.LevelData
 
             return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                             .Where(s => extList.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
-                            .Select(s => Path.GetFileNameWithoutExtension(s)).Distinct().ToList();
+                            .Select(s => TextExtensions.ToLinuxPath(Path.Combine(Path.GetDirectoryName(Path.GetRelativePath(path, s)), Path.GetFileNameWithoutExtension(s))))
+                            .Distinct()
+                            .ToList();
         }
 
         public string GetVariable(VariableType type)
@@ -620,27 +623,27 @@ namespace TombLib.LevelData
             switch (GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr1.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr1.xml");
                     break;
 
                 case TRVersion.Game.TR2:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr2.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr2.xml");
                     break;
 
                 case TRVersion.Game.TR3:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr3.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr3.xml");
                     break;
 
                 case TRVersion.Game.TR4:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr4.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr4.xml");
                     break;
 
                 case TRVersion.Game.TR5:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\Sounds.tr5.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr5.xml");
                     break;
 
                 case TRVersion.Game.TombEngine:
-                    catalogName = DefaultPaths.ProgramDirectory + "\\Catalogs\\TEN Sound Catalogs\\TEN_ALL_SOUNDS.xml";
+                    catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "TEN Sound Catalogs", "TEN_ALL_SOUNDS.xml");
                     break;
             }
 
@@ -885,6 +888,14 @@ namespace TombLib.LevelData
             {
                 var paths = GetRecursiveListOfSoundPaths();
                 return GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this, paths));
+            }
+        }
+
+        public List<EventSet> AllEventSets
+        {
+            get
+            {
+                return GlobalEventSets.Concat(VolumeEventSets).ToList();
             }
         }
     }

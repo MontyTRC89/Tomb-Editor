@@ -370,9 +370,17 @@ namespace TombIDE
 			progressBar.Maximum = 1;
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
-				ExtractEntries(engineArchive.Entries.ToList(), targetProject);
+			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
+			{
+				var allFiles = new List<ZipArchiveEntry>();
+				allFiles.AddRange(engineArchive.Entries);
+				allFiles.AddRange(soundsArchive.Entries);
+
+				ExtractEntries(allFiles, targetProject);
+			}
 
 			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
 			string musicDir = Path.Combine(engineRootDirectory, "music");
@@ -444,15 +452,18 @@ namespace TombIDE
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR4.zip");
 			string sharedFilesArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TRNG Shared Files.zip");
 			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR4-TRNG.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var sharedFilesArchive = new ZipArchive(File.OpenRead(sharedFilesArchivePath)))
 			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
 			{
 				var allFiles = new List<ZipArchiveEntry>();
 				allFiles.AddRange(engineArchive.Entries);
 				allFiles.AddRange(sharedFilesArchive.Entries);
 				allFiles.AddRange(sharedAudioArchive.Entries);
+				allFiles.AddRange(soundsArchive.Entries);
 
 				ExtractEntries(allFiles, targetProject);
 			}
@@ -468,17 +479,20 @@ namespace TombIDE
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TRNG.zip");
 			string sharedFilesArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TRNG Shared Files.zip");
 			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR4-TRNG.zip");
 			string flepArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Extras", "FLEP.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var sharedFilesArchive = new ZipArchive(File.OpenRead(sharedFilesArchivePath)))
 			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
 			using (var flepArchive = new ZipArchive(File.OpenRead(flepArchivePath)))
 			{
 				var allFiles = new List<ZipArchiveEntry>();
 				allFiles.AddRange(engineArchive.Entries);
 				allFiles.AddRange(sharedFilesArchive.Entries);
 				allFiles.AddRange(sharedAudioArchive.Entries);
+				allFiles.AddRange(soundsArchive.Entries);
 
 				if (includeFLEP)
 					allFiles.AddRange(flepArchive.Entries);
@@ -497,13 +511,16 @@ namespace TombIDE
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
 			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TEN.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
+			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
 			{
 				var allFiles = new List<ZipArchiveEntry>();
 				allFiles.AddRange(engineArchive.Entries);
 				allFiles.AddRange(sharedAudioArchive.Entries);
+				allFiles.AddRange(soundsArchive.Entries);
 
 				ExtractEntries(allFiles, targetProject);
 			}

@@ -451,8 +451,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
+                writer.Write(volume.Enabled);
+                writer.Write(volume.DetectInAdjacentRooms);
+
                 writer.Write(volume.LuaName);
-                writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
+                writer.Write(OriginalRoom.Level.Settings.VolumeEventSets.IndexOf(volume.EventSet));
             }
 
             // Write final data

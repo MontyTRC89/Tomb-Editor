@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -70,6 +71,11 @@ namespace TombLib.Utils
                 source = string.Empty;
 
             return QuoteChar + source + QuoteChar;
+        }
+
+        public static string ToLinuxPath(string source)
+        {
+            return source.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
         public static List<string> ExtractValues(string source)

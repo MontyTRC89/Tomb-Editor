@@ -96,5 +96,8 @@ namespace TombIDE.Shared.NewStructure
 		/// Sets the project's script root directory to the given path. May require a restart of the IDE, depending on the implementation.
 		/// </summary>
 		void SetScriptRootDirectory(string newDirectoryPath);
+
+		Version GetCurrentEngineVersion();
+		Version GetLatestEngineVersion();
 	}
 }

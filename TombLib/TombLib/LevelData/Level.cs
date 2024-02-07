@@ -14,7 +14,7 @@ namespace TombLib.LevelData
 
         public const float BlockSizeUnit = 1024.0f;
         public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
-        public const float HeightUnit = HalfBlockSizeUnit / 2.0f;
+        public const int FullClickHeight = 256;
 
         public const short MaxNumberOfRooms = 1024;
 
@@ -63,9 +63,12 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (lowestPoint > room.Position.Y + room.GetLowestCorner())
-                    lowestPoint = room.Position.Y + room.GetLowestCorner();
+                int current = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetLowestCorner());
+
+                if (lowestPoint > current)
+                    lowestPoint = current;
             }
+
             return lowestPoint;
         }
 
@@ -75,9 +78,12 @@ namespace TombLib.LevelData
 
             foreach (Room room in roomGroup)
             {
-                if (highestPoint < room.Position.Y + room.GetHighestCorner())
-                    highestPoint = room.Position.Y + room.GetHighestCorner();
+                int current = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetHighestCorner());
+
+                if (highestPoint < current)
+                    highestPoint = current;
             }
+
             return highestPoint;
         }
 
@@ -87,7 +93,9 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetHighestCorner() + tolerance && height >= r.Position.Y + r.GetHighestCorner() - tolerance));
+                return roomsOutsideGroup.FirstOrDefault(r
+                    => height < Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetHighestCorner()) + tolerance
+                    && height >= Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetHighestCorner()) - tolerance);
         }
 
         public Room GetNearbyRoomAbove(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
@@ -96,7 +104,9 @@ namespace TombLib.LevelData
             if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
-                return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetLowestCorner() + tolerance && height >= r.Position.Y + r.GetLowestCorner() - tolerance));
+                return roomsOutsideGroup.FirstOrDefault(r
+                    => height < Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetLowestCorner()) + tolerance
+                    && height >= Clicks.FromWorld(r.Position.Y) + Clicks.FromWorld(r.GetLowestCorner()) - tolerance);
         }
 
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)
@@ -352,7 +362,7 @@ namespace TombLib.LevelData
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Block sector in room.Blocks)
-                    for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;

@@ -78,23 +78,19 @@ namespace TombEditor
                     Application.AddMessageFilter(new ControlScrollFilter());
                     SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
-                    if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml") ||
-                        !File.Exists(Application.StartupPath + "\\Catalogs\\NgCatalog.xml"))
-                    {
-                        MessageBox.Show("One of the catalog files is missing.\nMake sure you have TrCatalog.xml and NgCatalog.xml in /Catalogs/ subfolder.");
+                    if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                         Environment.Exit(1);
-                    }
 
                     // Load catalogs
                     try
                     {
-                        TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TrCatalog.xml");
-                        NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
+                        TrCatalog.LoadCatalog(DefaultPaths.EngineCatalogsDirectory);
+                        NgCatalog.LoadCatalog(Path.Combine(DefaultPaths.CatalogsDirectory, "NgCatalog.xml"));
                     }
                     catch (Exception ex)
                     {
                         log.HandleException(ex);
-                        MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
+                        MessageBox.Show("An error occured while loading one of the catalog files.\nFiles may be missing or corrupted. Check the log file for details.");
                         Environment.Exit(1);
                     }
 

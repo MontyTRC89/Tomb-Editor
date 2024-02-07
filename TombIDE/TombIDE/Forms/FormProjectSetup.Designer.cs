@@ -425,16 +425,23 @@
 			// 
 			// comboBox_EngineType
 			// 
-			comboBox_EngineType.Dock = System.Windows.Forms.DockStyle.Fill;
-			comboBox_EngineType.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			comboBox_EngineType.FormattingEnabled = true;
-			comboBox_EngineType.Items.AddRange(new object[] { "- Select -", "Tomb Raider 1 (Tomb1Main)", "Tomb Raider 2 (TR2Main)", "Tomb Raider 3 (tomb3)", "Tomb Raider 4 (Original TRLE)", "Tomb Raider Next-Generation", "Tomb Engine (Beta)" });
-			comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
-			comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
-			comboBox_EngineType.Name = "comboBox_EngineType";
-			comboBox_EngineType.Size = new System.Drawing.Size(420, 26);
-			comboBox_EngineType.TabIndex = 3;
-			comboBox_EngineType.SelectedIndexChanged += comboBox_EngineType_SelectedIndexChanged;
+			this.comboBox_EngineType.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBox_EngineType.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.comboBox_EngineType.FormattingEnabled = true;
+			this.comboBox_EngineType.Items.AddRange(new object[] {
+            "- Select -",
+            "Tomb Raider 1 (TR1X)",
+            "Tomb Raider 2 (TR2Main)",
+            "Tomb Raider 3 (tomb3)",
+            "Tomb Raider 4 (Original TRLE)",
+            "Tomb Raider Next-Generation",
+            "Tomb Engine (Beta)"});
+			this.comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
+			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBox_EngineType.Name = "comboBox_EngineType";
+			this.comboBox_EngineType.Size = new System.Drawing.Size(420, 26);
+			this.comboBox_EngineType.TabIndex = 3;
+			this.comboBox_EngineType.SelectedIndexChanged += new System.EventHandler(this.comboBox_EngineType_SelectedIndexChanged);
 			// 
 			// label_01
 			// 

@@ -78,7 +78,7 @@ namespace TombIDE
 			availableProjects = XmlHandling.GetProjectsFromXml().ToList();
 
 			using var ide = new IDE(ideConfiguration, availableProjects);
-			IDE.Global = ide;
+			IDE.Instance = ide;
 
 			using var form = new FormStart(ide);
 

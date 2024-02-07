@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
@@ -116,9 +117,9 @@ namespace TombEditor.Controls.Panel3D
             _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
 
             float height = room.GetHighestCorner() - room.GetLowestCorner();
-            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height, room.NumZSectors * 4.0f);
+            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height / Level.FullClickHeight, room.NumZSectors * 4.0f);
             float boxX = room.WorldPos.X + room.NumXSectors * Level.BlockSizeUnit / 2.0f;
-            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) * Level.HeightUnit / 2.0f;
+            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) / 2.0f;
             float boxZ = room.WorldPos.Z + room.NumZSectors * Level.BlockSizeUnit / 2.0f;
             Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
             solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * _viewProjection).ToSharpDX());
@@ -193,6 +194,257 @@ namespace TombEditor.Controls.Panel3D
                 effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.TriangleStripWithAdjacency, _flybyPathVertexBuffer.ElementCount);
             }
+        }
+
+        private void DrawSubdivisionHighlights(Effect effect)
+        {
+            if (_currentNumberKey is Keys.None || _editor.SelectedSectors == SectorSelection.None)
+                return;
+
+            int subdivisionIndex = (int)_currentNumberKey - (int)Keys.D0 - 2;
+            Room currentRoom = _editor.SelectedRoom;
+
+            var vertices = new List<SolidVertex>();
+
+            const int
+                XZ_OFFSET = 8,
+                HEIGHT = 24;
+
+            void DrawRibbon(Vector3 p1, Vector3 p2, int height, int xOffset, int yOffset, int zOffset)
+            {
+                float halfHeight = height / 2.0f;
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+            }
+
+            void HandlePositiveZ(int x, int z, BlockSurface surface, int yOffset)
+            {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XnZn)
+                    return;
+
+                Vector3
+                    p1 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position,
+                    p2 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position;
+
+                DrawRibbon(p1, p2, HEIGHT, 0, 0, XZ_OFFSET);
+            }
+
+            void HandlePositiveX(int x, int z, BlockSurface surface, int yOffset)
+            {
+                if (surface.DiagonalSplit is DiagonalSplit.XnZp or DiagonalSplit.XnZn)
+                    return;
+
+                Vector3
+                    p1 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position,
+                    p2 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position;
+
+                DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, 0, 0);
+            }
+
+            void HandleNegativeZ(int x, int z, BlockSurface surface, int yOffset)
+            {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XnZp)
+                    return;
+
+                Vector3
+                    p1 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position,
+                    p2 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position;
+
+                DrawRibbon(p1, p2, HEIGHT, 0, 0, -XZ_OFFSET);
+            }
+
+            void HandleNegativeX(int x, int z, BlockSurface surface, int yOffset)
+            {
+                if (surface.DiagonalSplit is DiagonalSplit.XpZn or DiagonalSplit.XpZp)
+                    return;
+
+                Vector3
+                    p1 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position,
+                    p2 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position;
+
+                DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, 0, 0);
+            }
+
+            void HandleDiagonal(int x, int z, BlockSurface surface, int yOffset)
+            {
+                Vector3 p1, p2;
+
+                switch (surface.DiagonalSplit)
+                {
+                    case DiagonalSplit.XnZp:
+                        p1 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position;
+                        p2 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position;
+
+                        DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, 0, -XZ_OFFSET);
+                        break;
+
+                    case DiagonalSplit.XpZp:
+                        p1 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position;
+                        p2 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position;
+
+                        DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, 0, -XZ_OFFSET);
+                        break;
+
+                    case DiagonalSplit.XnZn:
+                        p1 = new Vector3(x + 1, surface.XpZn + yOffset, z) + currentRoom.Position;
+                        p2 = new Vector3(x, surface.XnZp + yOffset, z + 1) + currentRoom.Position;
+
+                        DrawRibbon(p1, p2, HEIGHT, XZ_OFFSET, 0, XZ_OFFSET);
+                        break;
+
+                    case DiagonalSplit.XpZn:
+                        p1 = new Vector3(x + 1, surface.XpZp + yOffset, z + 1) + currentRoom.Position;
+                        p2 = new Vector3(x, surface.XnZn + yOffset, z) + currentRoom.Position;
+
+                        DrawRibbon(p1, p2, HEIGHT, -XZ_OFFSET, 0, XZ_OFFSET);
+                        break;
+                }
+            }
+
+            for (int x = _editor.SelectedSectors.Area.X0; x <= _editor.SelectedSectors.Area.X1; x++)
+                for (int z = _editor.SelectedSectors.Area.Y0; z <= _editor.SelectedSectors.Area.Y1; z++)
+                {
+                    Block block = currentRoom.Blocks[x, z],
+                        targetBlock = block;
+
+                    int yOffset = 0;
+
+                    if (block.WallPortal is not null)
+                    {
+                        RoomBlockPair pair = currentRoom.GetBlockTryThroughPortal(x, z);
+
+                        if (pair.Room != currentRoom && pair.Block is not null)
+                        {
+                            targetBlock = pair.Block;
+                            yOffset = pair.Room.Position.Y - currentRoom.Position.Y;
+                        }
+                    }
+
+                    if (subdivisionIndex is < 0 or > 7) // QA or WS
+                    {
+                        // PositiveZ Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_QA)))
+                            HandlePositiveZ(x, z, targetBlock.Floor, yOffset);
+                        // PositiveZ Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveZ_WS)))
+                            HandlePositiveZ(x, z, targetBlock.Ceiling, yOffset);
+
+                        // PositiveX Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_QA)))
+                            HandlePositiveX(x, z, targetBlock.Floor, yOffset);
+                        // PositiveX Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_PositiveX_WS)))
+                            HandlePositiveX(x, z, targetBlock.Ceiling, yOffset);
+
+                        // NegativeZ Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_QA)))
+                            HandleNegativeZ(x, z, targetBlock.Floor, yOffset);
+                        // NegativeZ Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeZ_WS)))
+                            HandleNegativeZ(x, z, targetBlock.Ceiling, yOffset);
+
+                        // NegativeX Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_QA)))
+                            HandleNegativeX(x, z, targetBlock.Floor, yOffset);
+                        // NegativeX Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_NegativeX_WS)))
+                            HandleNegativeX(x, z, targetBlock.Ceiling, yOffset);
+
+                        // Diagonal Floor
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_QA)))
+                            HandleDiagonal(x, z, targetBlock.Floor, yOffset);
+                        // Diagonal Ceiling
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFace.Wall_Diagonal_WS)))
+                            HandleDiagonal(x, z, targetBlock.Ceiling, yOffset);
+                    }
+                    else // Actual subdivisions
+                    {
+                        // Floor subdivision
+                        if (subdivisionIndex < targetBlock.ExtraFloorSubdivisions.Count)
+                        {
+                            var floorSurface = new BlockSurface
+                            {
+                                XnZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
+                                XpZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
+                                XpZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
+                                XnZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                DiagonalSplit = targetBlock.Floor.DiagonalSplit
+                            };
+
+                            // PositiveZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
+                                HandlePositiveZ(x, z, floorSurface, yOffset);
+
+                            // PositiveX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
+                                HandlePositiveX(x, z, floorSurface, yOffset);
+
+                            // NegativeZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
+                                HandleNegativeZ(x, z, floorSurface, yOffset);
+
+                            // NegativeX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
+                                HandleNegativeX(x, z, floorSurface, yOffset);
+
+                            // Diagonal
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
+                                HandleDiagonal(x, z, floorSurface, yOffset);
+                        }
+                        
+                        // Ceiling subdivision
+                        if (subdivisionIndex < targetBlock.ExtraCeilingSubdivisions.Count)
+                        {
+                            var ceilingSurface = new BlockSurface
+                            {
+                                XnZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
+                                XpZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
+                                XpZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
+                                XnZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                DiagonalSplit = targetBlock.Ceiling.DiagonalSplit
+                            };
+
+                            // PositiveZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, subdivisionIndex))))
+                                HandlePositiveZ(x, z, ceilingSurface, yOffset);
+
+                            // PositiveX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, subdivisionIndex))))
+                                HandlePositiveX(x, z, ceilingSurface, yOffset);
+
+                            // NegativeZ
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, subdivisionIndex))))
+                                HandleNegativeZ(x, z, ceilingSurface, yOffset);
+
+                            // NegativeX
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, subdivisionIndex))))
+                                HandleNegativeX(x, z, ceilingSurface, yOffset);
+
+                            // Diagonal
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, subdivisionIndex))))
+                                HandleDiagonal(x, z, ceilingSurface, yOffset);
+                        }
+                    }
+                }
+
+            if (vertices.Count == 0)
+                return;
+
+            using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+            _legacyDevice.SetVertexBuffer(buffer);
+            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+            effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+            effect.Parameters["Color"].SetValue(Vector4.One);
+            effect.CurrentTechnique.Passes[0].Apply();
+            _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
         }
 
         private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
@@ -597,6 +849,8 @@ namespace TombEditor.Controls.Panel3D
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
             var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.55f);
             var selectColor = new Vector4(baseColor.To3(), 0.7f);
+            var disabledNormalColor = new Vector4(new Vector3(normalColor.To3().GetLuma()), 0.55f);
+            var disabledSelectColor = new Vector4(new Vector3(selectColor.To3().GetLuma()), 0.55f);
 
             var currentShape = VolumeShape.Box;
             int selectedIndex = -1;
@@ -618,10 +872,12 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
 
+                color = instance.Enabled ? normalColor : disabledNormalColor;
+
                 // Switch colours
                 if (i == selectedIndex && selectedIndex >= 0)
                 {
-                    color = selectColor;
+                    color = instance.Enabled ? selectColor : disabledSelectColor;
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe); // As wireframe if selected
 
                     // Add text message
@@ -631,7 +887,6 @@ namespace TombEditor.Controls.Panel3D
                 }
                 else if (lastIndex == selectedIndex || lastIndex == -1)
                 {
-                    color = normalColor;
                     _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
                 }
                 lastIndex = i;
@@ -655,9 +910,9 @@ namespace TombEditor.Controls.Panel3D
 
                     // Switch colours
                     if (_highlightedObjects.Contains(instance))
-                        color = selectColor;
+                        color = instance.Enabled ? selectColor : disabledSelectColor;
                     else
-                        color = normalColor;
+                        color = instance.Enabled ? normalColor : disabledNormalColor;
 
                     // Switch vertex buffers (only do it if shape is changed)
                     if (shape != currentShape)
@@ -1687,6 +1942,8 @@ namespace TombEditor.Controls.Panel3D
                 DrawLights(effect, roomsToDraw, textToDraw, spritesToDraw);
                 // Draw flyby path
                 DrawFlybyPath(effect);
+                // Draw subdivision highlight
+                DrawSubdivisionHighlights(effect);
             }
 
             // Draw ghost block cubes

@@ -43,6 +43,7 @@
 	<SaveAs>Zapisz jako...</SaveAs>
 	<SaveAll>Zapisz wszystko</SaveAll>
 	<Build>Buduj skrypt...</Build>
+	<Exit>Wyjdź</Exit>
 
 	<Undo>Cofnij</Undo>
 	<CantUndo>Nie można cofnąć</CantUndo>

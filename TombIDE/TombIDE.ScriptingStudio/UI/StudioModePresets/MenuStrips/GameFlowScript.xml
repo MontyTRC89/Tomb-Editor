@@ -8,6 +8,8 @@
 		<Item LangKey="SaveAll" Command="SaveAll" Icon="SaveAll_16" Keys="SaveAll" />
 		<Separator />
 		<Item LangKey="Build" Command="Build" Icon="Play_16" Keys="Build" />
+		<Separator />
+		<Item LangKey="Exit" Command="Exit" Icon="Exit_16" Keys="Exit" />
 	</Item>
 
 	<Item LangKey="Edit" Position="1">

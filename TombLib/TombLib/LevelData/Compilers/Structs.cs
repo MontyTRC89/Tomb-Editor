@@ -1165,7 +1165,7 @@ namespace TombLib.LevelData.Compilers
         public bool NotWalkableFloor;
         public Room WallPortal;
         public PortalInstance FloorPortal;
-        public short LowestFloor;
+        public int LowestFloor;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -1308,20 +1308,5 @@ namespace TombLib.LevelData.Compilers
                 return x.Index > y.Index ? 1 : -1;
             }
         }
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct t5m_bounding_volume
-    {
-        public ushort VolumeType;
-        public int X;
-        public int Y;
-        public int Z;
-        public int Radius;
-        public tr_bounding_box Bounding_box;
-        public ushort RotationX;
-        public ushort RotationY;
-        public byte Activators;
-        public int ScriptIndex;
     }
 }

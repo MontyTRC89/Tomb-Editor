@@ -294,10 +294,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = block.Floor.XnZp;
-            dec_q1 = block.Floor.XpZp;
-            dec_q2 = block.Floor.XpZn;
-            dec_q3 = block.Floor.XnZn;
+            dec_q0 = (short)Clicks.FromWorld(block.Floor.XnZp);
+            dec_q1 = (short)Clicks.FromWorld(block.Floor.XpZp);
+            dec_q2 = (short)Clicks.FromWorld(block.Floor.XpZn);
+            dec_q3 = (short)Clicks.FromWorld(block.Floor.XnZn);
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -838,13 +838,18 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn;
+            int floorXnZp = (short)Clicks.FromWorld(block.Floor.XnZp),
+                floorXpZp = (short)Clicks.FromWorld(block.Floor.XpZp),
+                floorXpZn = (short)Clicks.FromWorld(block.Floor.XpZn),
+                floorXnZn = (short)Clicks.FromWorld(block.Floor.XnZn);
+
+            int sumHeights = floorXnZp + floorXpZp + floorXpZn + floorXnZn;
             int meanFloorCornerHeight = sumHeights >> 2;
 
-            dec_q0 = block.Floor.XnZp;
-            dec_q1 = block.Floor.XpZp;
-            dec_q2 = block.Floor.XpZn;
-            dec_q3 = block.Floor.XnZn;
+            dec_q0 = (short)floorXnZp;
+            dec_q1 = (short)floorXpZp;
+            dec_q2 = (short)floorXpZn;
+            dec_q3 = (short)floorXnZn;
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
@@ -853,18 +858,18 @@ namespace TombLib.LevelData.Compilers
 
             bool someFlag = false;
 
-            if (block.Floor.XnZp == block.Floor.XpZn)
+            if (floorXnZp == floorXpZn)
             {
                 someFlag = false;
             }
             else
             {
-                if (block.Floor.XpZp != block.Floor.XnZn)
+                if (floorXpZp != floorXnZn)
                 {
-                    if (block.Floor.XnZp < block.Floor.XpZp && block.Floor.XnZp < block.Floor.XnZn ||
-                        block.Floor.XpZn < block.Floor.XpZp && block.Floor.XpZn < block.Floor.XnZn ||
-                        block.Floor.XnZp > block.Floor.XpZp && block.Floor.XnZp > block.Floor.XnZn ||
-                        block.Floor.XpZn > block.Floor.XpZp && block.Floor.XpZn > block.Floor.XnZn)
+                    if (floorXnZp < floorXpZp && floorXnZp < floorXnZn ||
+                        floorXpZn < floorXpZp && floorXpZn < floorXnZn ||
+                        floorXnZp > floorXpZp && floorXnZp > floorXnZn ||
+                        floorXpZn > floorXpZp && floorXpZn > floorXnZn)
                     {
                         someFlag = true;
                     }
@@ -879,8 +884,8 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            int floorHeight = meanFloorCornerHeight + room.Position.Y;
-            int ceiling = block.Ceiling.Max + room.Position.Y;
+            int floorHeight = meanFloorCornerHeight + Clicks.FromWorld(room.Position.Y);
+            int ceiling = Clicks.FromWorld(block.Ceiling.Max) + Clicks.FromWorld(room.Position.Y);
 
             if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

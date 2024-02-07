@@ -100,10 +100,16 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.StepHeightChangedEvent)
+                UpdateStepHeightCombo();
+
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
                 UpdateStatistics();
+
+                if (obj is Editor.ConfigurationChangedEvent)
+                    panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -183,6 +189,9 @@ namespace TombEditor.ToolWindows
                 butAddSphereVolume.Enabled = _editor.Level.IsTombEngine;
                 butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
+
+                panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                UpdateStepHeightCombo();
             }
 
             if (obj is Editor.MessageEvent)
@@ -308,6 +317,29 @@ namespace TombEditor.ToolWindows
                     }
                 }
             }
+        }
+
+        private void UpdateStepHeightCombo()
+        {
+            comboStepHeight.SelectedIndex = _editor.Configuration.Editor_StepHeight switch
+            {
+                32 => 0,
+                64 => 1,
+                128 => 2,
+                256 => 3,
+                _ => -1
+            };
+        }
+
+        private void comboStepHeight_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.Configuration.Editor_StepHeight = comboStepHeight.SelectedIndex switch
+            {
+                0 => 32,
+                1 => 64,
+                2 => 128,
+                _ => 256
+            };
         }
 
         private void toolStrip_MouseClick(object sender, MouseEventArgs e)
