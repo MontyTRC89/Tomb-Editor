@@ -8,7 +8,6 @@
 	xmlns:reskeys="clr-namespace:AvalonDock.Themes.VS2013.Themes;assembly=AvalonDock.Themes.VS2013"
 	xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=AvalonDock">
 	<ResourceDictionary.MergedDictionaries>
-
 		<ResourceDictionary Source="Dictionaries/MarginsPaddingsAndSizes.xaml" />
 		<ResourceDictionary Source="Dictionaries/PathDefinitions.xaml" />
 

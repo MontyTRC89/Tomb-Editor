@@ -13,8 +13,13 @@ using TombLib.Wad.Catalog;
 using WinFormsApp = System.Windows.Forms.Application;
 using System.IO;
 using DarkUI.Config;
+using MvvmDialogs;
+using MvvmDialogs.DialogTypeLocators;
+using System.ComponentModel;
+using System.Windows.Markup;
 
 namespace TombEditor.WPF;
+
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
@@ -86,12 +91,8 @@ public partial class App : Application
 				WinFormsApp.AddMessageFilter(new ControlScrollFilter());
 				SynchronizationContext.SetSynchronizationContext(new System.Windows.Forms.WindowsFormsSynchronizationContext());
 
-				if (!File.Exists(WinFormsApp.StartupPath + "\\Catalogs\\TrCatalog.xml") ||
-					!File.Exists(WinFormsApp.StartupPath + "\\Catalogs\\NgCatalog.xml"))
-				{
-					MessageBox.Show("One of the catalog files is missing.\nMake sure you have TrCatalog.xml and NgCatalog.xml in /Catalogs/ subfolder.");
+				if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
 					Environment.Exit(1);
-				}
 
 				// Load catalogs
 				try
@@ -107,6 +108,7 @@ public partial class App : Application
 
 				// Run
 				Editor editor = new Editor(SynchronizationContext.Current, configuration);
+				editor.DialogService = new DialogService();
 				Editor.Instance = editor;
 
 				// Run editor normally if no batch compile is pending.

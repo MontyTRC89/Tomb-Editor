@@ -363,34 +363,6 @@ public partial class FormMain : Window
 
 	private void GenerateMenusRecursive(ItemCollection dropDownItems, bool onlyHotkeys = false)
 	{
-		foreach (object obj in dropDownItems)
-		{
-			MenuItem subMenu = obj as MenuItem;
-
-			if (subMenu != null)
-			{
-				if (subMenu.HasItems)
-					GenerateMenusRecursive(subMenu.Items, onlyHotkeys);
-				else
-				{
-					if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
-					{
-						if (!onlyHotkeys)
-						{
-							var command = CommandHandler.GetCommand(subMenu.Tag.ToString());
-							if (command != null)
-							{
-								subMenu.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = NativeWindow }); };
-								subMenu.Header = command.Type == CommandType.Windows ? command.Name.Replace("Show", string.Empty).SplitCamelcase() : command.FriendlyName;
-							}
-						}
-
-						var hotkeysForCommand = _editor.Configuration.UI_Hotkeys[subMenu.Tag.ToString()];
-						subMenu.InputGestureText = string.Join(", ", hotkeysForCommand.Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
-					}
-				}
-			}
-		}
 	}
 
 	private void OnLayoutRootPropertyChanged(object sender, PropertyChangedEventArgs e)

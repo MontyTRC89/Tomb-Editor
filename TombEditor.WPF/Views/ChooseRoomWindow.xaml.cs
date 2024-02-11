@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TombEditor.WPF.Forms;
+namespace TombEditor.WPF.Views;
 /// <summary>
 /// Interaction logic for ChooseRoomWindow.xaml
 /// </summary>
