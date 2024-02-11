@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NLog;
-using System;
 using System.Windows.Input;
 using TombEditor.WPF.Commands;
-using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 
@@ -42,77 +40,25 @@ public partial class SectorOptionsViewModel : ObservableObject
 		_editor = editor;
 		Configuration = _editor.Configuration;
 
-		SetFloorCommand = new SetFloorCommand(editor);
-		SetCeilingCommand = new SetCeilingCommand(editor);
-		SetBoxCommand = new SetSectorFlagsCommand(editor, BlockFlags.Box);
-		SetNotWalkableCommand = new SetSectorFlagsCommand(editor, BlockFlags.NotWalkableFloor);
-		SetMonkeyswingCommand = new SetSectorFlagsCommand(editor, BlockFlags.Monkey);
-		SetDeathCommand = new SetSectorFlagsCommand(editor, BlockFlags.DeathFire);
-
-		AddPortalCommand = new RelayCommand(() =>
-		{
-			if (EditorActions.CheckForRoomAndBlockSelection(null))
-			{
-				try
-				{
-					EditorActions.AddPortal(editor.SelectedRoom, editor.SelectedSectors.Area, null);
-				}
-				catch (Exception exc)
-				{
-					_logger.Error(exc, "Unable to create portal");
-					editor.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
-				}
-			}
-		});
-
-		SetWallCommand = new SetWallCommand(editor);
-
-		SetTriggerTriggererCommand = new SetSectorFlagsCommand(editor, BlockFlags.TriggerTriggerer);
-		SetBeetleCheckpointCommand = new SetSectorFlagsCommand(editor, BlockFlags.Beetle);
-		SetClimbPositiveZCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbPositiveZ);
-		SetClimbPositiveXCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbPositiveX);
-		SetClimbNegativeZCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbNegativeZ);
-		SetClimbNegativeXCommand = new SetSectorFlagsCommand(editor, BlockFlags.ClimbNegativeX);
-
-		AddGhostBlocksToSelectionCommand = new RelayCommand(() =>
-		{
-			if (!EditorActions.CheckForRoomAndBlockSelection(null))
-				return;
-
-			EditorActions.AddGhostBlocks(editor.SelectedRoom, editor.SelectedSectors.Area);
-		});
-
-		ToggleForceFloorSolidCommand = new RelayCommand(() =>
-		{
-			if (!EditorActions.CheckForRoomAndBlockSelection(null))
-				return;
-
-			EditorActions.ToggleForceFloorSolid(editor.SelectedRoom, editor.SelectedSectors.Area);
-		});
-
-		FloorStepCommand = new RelayCommand(() =>
-		{
-			if (!EditorActions.CheckForRoomAndBlockSelection(null))
-				return;
-
-			EditorActions.SetDiagonalFloorSplit(editor.SelectedRoom, editor.SelectedSectors.Area);
-		});
-
-		CeilingStepCommand = new RelayCommand(() =>
-		{
-			if (!EditorActions.CheckForRoomAndBlockSelection(null))
-				return;
-
-			EditorActions.SetDiagonalCeilingSplit(editor.SelectedRoom, editor.SelectedSectors.Area);
-		});
-
-		DiagonalWallCommand = new RelayCommand(() =>
-		{
-			if (!EditorActions.CheckForRoomAndBlockSelection(null))
-				return;
-
-			EditorActions.SetDiagonalWall(editor.SelectedRoom, editor.SelectedSectors.Area);
-		});
+		SetFloorCommand = new SetSurfaceCommand(this, editor, false, _logger);
+		SetCeilingCommand = new SetSurfaceCommand(this, editor, true, _logger);
+		SetBoxCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Box, _logger);
+		SetNotWalkableCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.NotWalkableFloor, _logger);
+		SetMonkeyswingCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Monkey, _logger);
+		SetDeathCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.DeathFire, _logger);
+		AddPortalCommand = new AddPortalCommand(this, editor, _logger);
+		SetWallCommand = new SetWallCommand(this, editor, _logger);
+		SetTriggerTriggererCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.TriggerTriggerer, _logger);
+		SetBeetleCheckpointCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Beetle, _logger);
+		SetClimbPositiveZCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbPositiveZ, _logger);
+		SetClimbPositiveXCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbPositiveX, _logger);
+		SetClimbNegativeZCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbNegativeZ, _logger);
+		SetClimbNegativeXCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbNegativeX, _logger);
+		AddGhostBlocksToSelectionCommand = new AddGhostBlocksCommand(this, editor, _logger);
+		ToggleForceFloorSolidCommand = new ToggleForceFloorSolidCommand(this, editor, _logger);
+		FloorStepCommand = new SetDiagonalFloorStepCommand(this, editor, _logger);
+		CeilingStepCommand = new SetDiagonalCeilingStepCommand(this, editor, _logger);
+		DiagonalWallCommand = new SetDiagonalWallCommand(this, editor, _logger);
 	}
 
 	[RelayCommand]

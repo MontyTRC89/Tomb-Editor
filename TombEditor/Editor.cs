@@ -1,3 +1,4 @@
+using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -121,9 +122,9 @@ namespace TombEditor
 
         public class StepHeightChangedEvent : IEditorEvent
         {
-            public int Previous { get; internal set; }
-            public int Current { get; internal set; }
-        }
+            public int Previous { get; set; } // !!! --- USED TO BE internal --- !!!
+			public int Current { get; set; } // !!! --- USED TO BE internal --- !!!
+		}
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
@@ -1421,18 +1422,6 @@ namespace TombEditor
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
 
-		public bool IsValidRoomAndSectorSelection
-		{
-            get
-            {
-				if (SelectedRoom == null || !SelectedSectors.Valid)
-				{
-					SendMessage("Please select a valid group of sectors.", PopupType.Error);
-					return false;
-				}
-
-				return true;
-			}	
-		}
+        public IDialogService DialogService { get; set; }
 	}
 }

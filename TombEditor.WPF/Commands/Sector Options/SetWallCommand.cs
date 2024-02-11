@@ -1,18 +1,18 @@
 ﻿using NLog;
-using TombEditor.WPF.Extensions;
+using System.ComponentModel;
 using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor.WPF.Commands;
 
-internal class SetWallCommand : UnconditionalEditorCommand
+internal sealed class SetWallCommand : RoomGeometryCommand
 {
-	public SetWallCommand(Editor editor, Logger? logger = null) : base(editor, logger)
+	public SetWallCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
 	{ }
 
 	public override void Execute(object? parameter)
 	{
-		if (!Editor.IsValidRoomAndSectorSelection)
+		if (!CheckForRoomAndBlockSelection())
 			return;
 
 		Room room = Editor.SelectedRoom;
@@ -33,7 +33,7 @@ internal class SetWallCommand : UnconditionalEditorCommand
 			}
 		}
 
-		room.CommitSmartBuildGeometry(area);
+		CommitSmartBuildGeometry(room, area);
 		Editor.RoomSectorPropertiesChange(room);
 	}
 }
