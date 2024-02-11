@@ -149,8 +149,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     X = room.WorldPos.X,
                     Z = room.WorldPos.Z,
-                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner()   * Level.HeightUnit),
-                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * Level.HeightUnit)
+                    YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
+                    YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
@@ -1064,35 +1064,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 2 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
-                    var q0 = block.Floor.XnZp;
-                    var q1 = block.Floor.XpZp;
-                    var q2 = block.Floor.XpZn;
-                    var q3 = block.Floor.XnZn;
+                    // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Min));
+                    var q0 = Clicks.FromWorld(block.Floor.XnZp);
+                    var q1 = Clicks.FromWorld(block.Floor.XpZp);
+                    var q2 = Clicks.FromWorld(block.Floor.XpZn);
+                    var q3 = Clicks.FromWorld(block.Floor.XnZn);
 
-                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
-                        block.Floor.IfQuadSlopeZ == 0)
+                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer) == 0 &&
+                        Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XnZp,
-                                                           block.Floor.XpZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));
                         else
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XpZp,
-                                                           block.Floor.XnZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XpZp, block.Floor.XnZn)));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1229,11 +1224,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         var relevantDirection = relevantEdges[i];
                         var oppositeRelevantDirection = oppositeRelevantEdges[i];
 
-                        var floor   = Level.HeightUnit * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
-                        var ceiling = Level.HeightUnit * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var floor   = block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
 
-                        var floorOpposite   = Level.HeightUnit * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-                        var ceilingOpposite = Level.HeightUnit * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var floorOpposite   = oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
 
                         floor = Math.Min(floor, floorOpposite);
                         ceiling = Math.Max(ceiling, ceilingOpposite);
@@ -1303,8 +1298,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private struct PortalPlane
         {
-            public readonly short SlopeX;
-            public readonly short SlopeZ;
+            public readonly int SlopeX;
+            public readonly int SlopeZ;
             public readonly int Height;
 
             public int EvaluateHeight(int x, int z)
@@ -1312,10 +1307,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return Height + x * SlopeX + z * SlopeZ;
             }
 
-            public PortalPlane(int ankerX, short ankerY, int ankerZ, int slopeX, int slopeZ)
+            public PortalPlane(int ankerX, int ankerY, int ankerZ, int slopeX, int slopeZ)
             {
-                SlopeX = (short)slopeX;
-                SlopeZ = (short)slopeZ;
+                SlopeX = slopeX;
+                SlopeZ = slopeZ;
                 Height = ankerY - ankerX * slopeX - ankerZ * slopeZ;
             }
 
@@ -1494,10 +1489,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.BlockSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * Level.HeightUnit;
-                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.HeightUnit;
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];

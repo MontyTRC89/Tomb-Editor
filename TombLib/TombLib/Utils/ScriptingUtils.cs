@@ -39,7 +39,7 @@ namespace TombLib.Utils
     {
         private const int _maxRecursionDepth = 32;
 
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop" };
 
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
