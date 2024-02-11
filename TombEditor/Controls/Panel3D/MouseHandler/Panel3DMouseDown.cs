@@ -97,15 +97,21 @@ namespace TombEditor.Controls.Panel3D
                             if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                             {
                                 if (_editor.Tool.Tool == EditorToolType.Smooth)
-                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling);
+                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference);
                                 else if (_editor.Tool.Tool < EditorToolType.Flatten)
+                                {
+                                    int increment =
+                                        (_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor
+                                        ? _editor.IncrementReference : -_editor.IncrementReference;
+
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                         new RectangleInt2(pos, pos),
                                         ArrowType.EntireFace,
                                         belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
-                                        (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
-                                        _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
+                                        increment,
+                                        _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
                                         false, false, true, true);
+                                }
                             }
                         }
                         else if (_editor.Tool.Tool == EditorToolType.PortalDigger && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
@@ -124,7 +130,7 @@ namespace TombEditor.Controls.Panel3D
                                 newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                     _editor.SelectedSectors,
                                     newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, false,
-                                    (short)(ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4), !ModifierKeys.HasFlag(Keys.Control),
+                                    ModifierKeys.HasFlag(Keys.Shift) ? _editor.IncrementReference : _editor.IncrementReference * 4, !ModifierKeys.HasFlag(Keys.Control),
                                     ModifierKeys.HasFlag(Keys.Alt));
                             }
 

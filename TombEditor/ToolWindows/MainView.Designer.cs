@@ -21,6 +21,7 @@ namespace TombEditor.ToolWindows
             this.panel3D = new TombEditor.Controls.Panel3D.Panel3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.panelStats = new System.Windows.Forms.Panel();
+            this.panelStepHeightOptions = new System.Windows.Forms.Panel();
             this.tbStats = new TombEditor.Controls.RichTextLabel();
             this.panelMainView = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip();
@@ -81,8 +82,11 @@ namespace TombEditor.ToolWindows
             this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.butBilinearFilter = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
+            this.lblStepHeight = new DarkUI.Controls.DarkLabel();
+            this.comboStepHeight = new DarkUI.Controls.DarkComboBox();
             this.toolStrip.SuspendLayout();
             this.panelStats.SuspendLayout();
+            this.panelStepHeightOptions.SuspendLayout();
             this.panelMainView.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -174,12 +178,45 @@ namespace TombEditor.ToolWindows
             // 
             this.panelStats.AutoSize = true;
             this.panelStats.Controls.Add(this.tbStats);
+            this.panelStats.Controls.Add(this.lblStepHeight);
+            this.panelStats.Controls.Add(this.panelStepHeightOptions);
             this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelStats.Location = new System.Drawing.Point(0, 267);
             this.panelStats.Name = "panelStats";
             this.panelStats.Padding = new System.Windows.Forms.Padding(4, 4, 4, 0);
             this.panelStats.Size = new System.Drawing.Size(1290, 22);
             this.panelStats.TabIndex = 15;
+            // 
+            // panelStepHeightOptions
+            // 
+            this.panelStepHeightOptions.Controls.Add(this.comboStepHeight);
+            this.panelStepHeightOptions.Controls.Add(this.lblStepHeight);
+            this.panelStepHeightOptions.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelStepHeightOptions.Name = "panelStepHeightOptions";
+            this.panelStepHeightOptions.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.panelStepHeightOptions.TabIndex = 16;
+            this.panelStepHeightOptions.AutoSize = true;
+            // 
+            // lblStepHeight
+            // 
+            this.lblStepHeight.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblStepHeight.Name = "lblStepHeight";
+            this.lblStepHeight.TabIndex = 0;
+            this.lblStepHeight.Text = "Step height:";
+            this.lblStepHeight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblStepHeight.Width = 75;
+            // 
+            // comboStepHeight
+            // 
+            this.comboStepHeight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.comboStepHeight.Items.Add("32 (Eighth)");
+            this.comboStepHeight.Items.Add("64 (Quarter)");
+            this.comboStepHeight.Items.Add("128 (Half)");
+            this.comboStepHeight.Items.Add("256 (Full)");
+            this.comboStepHeight.Name = "comboStepHeight";
+            this.comboStepHeight.TabIndex = 1;
+            this.comboStepHeight.Width = 90;
+            this.comboStepHeight.SelectedIndexChanged += new System.EventHandler(this.comboStepHeight_SelectedIndexChanged);
             // 
             // tbStats
             // 
@@ -880,6 +917,7 @@ namespace TombEditor.ToolWindows
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panelStats.ResumeLayout(false);
+            this.panelStepHeightOptions.ResumeLayout(false);
             this.panelMainView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -951,5 +989,8 @@ namespace TombEditor.ToolWindows
         private TombEditor.Controls.RichTextLabel tbStats;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton butBilinearFilter;
+        private System.Windows.Forms.Panel panelStepHeightOptions;
+        private DarkUI.Controls.DarkLabel lblStepHeight;
+        private DarkUI.Controls.DarkComboBox comboStepHeight;
     }
 }

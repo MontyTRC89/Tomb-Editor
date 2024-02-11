@@ -735,25 +735,25 @@ namespace TombLib.LevelData.IO
                                     break;
                             }
 
-                            block.Floor.XpZn = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZn = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZp = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XpZp = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
 
-                            block.Ceiling.XpZp = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZp = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZn = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XpZn = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
 
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
 
                             if ((blockFlags1 & 0x4000) != 0)
                                 block.Flags |= BlockFlags.Monkey;
@@ -1432,7 +1432,7 @@ namespace TombLib.LevelData.IO
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
                                 WadObjectId = new WadMoveableId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color
@@ -1445,7 +1445,7 @@ namespace TombLib.LevelData.IO
                             {
                                 ScriptId = currentObj.ScriptId,
                                 WadObjectId = new WadStaticId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
                                 Ocb = unchecked((short)currentObj.Ocb)

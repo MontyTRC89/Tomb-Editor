@@ -77,6 +77,34 @@
     <state item="219" id="3" name="RUN" />
     <state item="219" id="4" name="AIM" />
     <state item="219" id="6" name="SHOOT" />
+	
+	<!-- DRAGON_FRONT -->
+	
+	<state item="232" id="1" name="WALK" />
+	<state item="232" id="2" name="MOVE_LEFT" />
+	<state item="232" id="3" name="MOVE_RIGHT" />
+	<state item="232" id="4" name="AIM_1" />
+	<state item="232" id="5" name="FIRE_1" />
+	<state item="232" id="6" name="IDLE" />
+	<state item="232" id="7" name="TURN_LEFT" />
+	<state item="232" id="8" name="TURN_RIGHT" />
+	<state item="232" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="232" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="232" id="11" name="DEFEAT" />
+	
+	<!-- DRAGON_BACK -->
+	
+	<state item="233" id="1" name="WALK" />
+	<state item="233" id="2" name="MOVE_LEFT" />
+	<state item="233" id="3" name="MOVE_RIGHT" />
+	<state item="233" id="4" name="AIM_1" />
+	<state item="233" id="5" name="FIRE_1" />
+	<state item="233" id="6" name="IDLE" />
+	<state item="233" id="7" name="TURN_LEFT" />
+	<state item="233" id="8" name="TURN_RIGHT" />
+	<state item="233" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="233" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="233" id="11" name="DEFEAT" /> 	
     
     <!-- COWBOY -->
     <state item="239" id="1" name="STOP" />

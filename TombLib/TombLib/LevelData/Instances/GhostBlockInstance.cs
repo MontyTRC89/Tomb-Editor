@@ -38,8 +38,18 @@ namespace TombLib.LevelData
 
         public string InfoMessage()
         {
-            return "floor: (" + Floor.XnZp + ", " + Floor.XpZp + ", " + Floor.XpZn + ", " + Floor.XnZn + ")\n" +
-                   "ceiling: (" + Ceiling.XnZp + ", " + Ceiling.XpZp + ", " + Ceiling.XpZn + ", " + Ceiling.XnZn + ")";
+            float
+                floorXnZp = Floor.XnZp / (float)Level.FullClickHeight,
+                floorXpZp = Floor.XpZp / (float)Level.FullClickHeight,
+                floorXpZn = Floor.XpZn / (float)Level.FullClickHeight,
+                floorXnZn = Floor.XnZn / (float)Level.FullClickHeight,
+                ceilingXnZp = Ceiling.XnZp / (float)Level.FullClickHeight,
+                ceilingXpZp = Ceiling.XpZp / (float)Level.FullClickHeight,
+                ceilingXpZn = Ceiling.XpZn / (float)Level.FullClickHeight,
+                ceilingXnZn = Ceiling.XnZn / (float)Level.FullClickHeight;
+
+            return "floor: (" + floorXnZp + ", " + floorXpZp + ", " + floorXpZn + ", " + floorXnZn + ")\n" +
+                   "ceiling: (" + ceilingXnZp + ", " + ceilingXpZp + ", " + ceilingXpZn + ", " + ceilingXnZn + ")";
         }
 
         public void Move(int delta, bool? forceSurface = null)
@@ -56,18 +66,18 @@ namespace TombLib.LevelData
             if (floor)
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Floor.XnZn += (short)delta; break;
-                    case BlockEdge.XnZp: Floor.XnZp += (short)delta; break;
-                    case BlockEdge.XpZn: Floor.XpZn += (short)delta; break;
-                    case BlockEdge.XpZp: Floor.XpZp += (short)delta; break;
+                    case BlockEdge.XnZn: Floor.XnZn += delta; break;
+                    case BlockEdge.XnZp: Floor.XnZp += delta; break;
+                    case BlockEdge.XpZn: Floor.XpZn += delta; break;
+                    case BlockEdge.XpZp: Floor.XpZp += delta; break;
                 }
             else
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Ceiling.XnZn += (short)delta; break;
-                    case BlockEdge.XnZp: Ceiling.XnZp += (short)delta; break;
-                    case BlockEdge.XpZn: Ceiling.XpZn += (short)delta; break;
-                    case BlockEdge.XpZp: Ceiling.XpZp += (short)delta; break;
+                    case BlockEdge.XnZn: Ceiling.XnZn += delta; break;
+                    case BlockEdge.XnZp: Ceiling.XnZp += delta; break;
+                    case BlockEdge.XpZn: Ceiling.XpZn += delta; break;
+                    case BlockEdge.XpZp: Ceiling.XpZp += delta; break;
                 }
         }
 
@@ -78,10 +88,10 @@ namespace TombLib.LevelData
             var localCenter = new Vector3(SectorPosition.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, 0, SectorPosition.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
             var type = floor ? BlockVertical.Floor : BlockVertical.Ceiling;
 
-            var hXnZn = (Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXpZp = (Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXnZp = (Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp)) * Level.HeightUnit + (floor ? -margin : margin);
-            var hXpZn = (Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn)) * Level.HeightUnit + (floor ? -margin : margin);
+            var hXnZn = Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn) + (floor ? -margin : margin);
+            var hXpZp = Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp) + (floor ? -margin : margin);
+            var hXnZp = Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp) + (floor ? -margin : margin);
+            var hXpZn = Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn) + (floor ? -margin : margin);
 
             var shift = new Vector3();
 

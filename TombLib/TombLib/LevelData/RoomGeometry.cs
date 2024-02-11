@@ -392,18 +392,18 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
                         
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
                             
@@ -413,18 +413,18 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
 
@@ -434,18 +434,18 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
 
@@ -455,9 +455,9 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h3, (z + 1) * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
                             
@@ -465,9 +465,9 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                                 room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
                             
@@ -480,10 +480,10 @@ namespace TombLib.LevelData
             else if (BlockSurface.IsQuad2(h0, h1, h2, h3) && portalMode == Room.RoomConnectionType.NoPortal)
             {
                 AddQuad(x, z, face1,
-                    new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                    new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                    new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                    new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                    new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                    new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                    new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                    new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                     room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
@@ -491,18 +491,18 @@ namespace TombLib.LevelData
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                 {
                     AddTriangle(x, z, face2,
-                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                 {
                     AddTriangle(x, z, face1,
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                 } 
             }
@@ -511,18 +511,18 @@ namespace TombLib.LevelData
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                 {
                     AddTriangle(x, z, face1,
-                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face1), new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                 {
                     AddTriangle(x, z, face2,
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h3 * Level.HeightUnit, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h0 * Level.HeightUnit, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                         room.Blocks[x, z].GetFaceTexture(face2), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                 }
             }
@@ -1840,22 +1840,22 @@ namespace TombLib.LevelData
 
             if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             else if (yStart.A == yEnd.A && yStart.B > yEnd.B) // Is triangle (type 1)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
                     texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
             else if (yStart.A > yEnd.A && yStart.B == yEnd.B)  // Is triangle (type 2)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
             else
                 return false; // Not rendered - failed to meet any of the conditions
@@ -1870,22 +1870,22 @@ namespace TombLib.LevelData
 
             if (yStart.A < yEnd.A && yStart.B < yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             else if (yStart.A < yEnd.A && yStart.B == yEnd.B)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
             else if (yStart.A == yEnd.A && yStart.B < yEnd.B)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
                     texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
             else
                 return false; // Not rendered - failed to meet any of the conditions
@@ -1900,22 +1900,22 @@ namespace TombLib.LevelData
 
             if (yStart.A != yEnd.A && yStart.B != yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             else if (yStart.A != yEnd.A && yStart.B == yEnd.B)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yStart.A, dto.ZA * Level.BlockSizeUnit),
                     texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
             else if (yStart.A == yEnd.A && yStart.B != yEnd.B)
                 AddTriangle(dto.BlockX, dto.BlockZ, dto.Face,
-                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A * Level.HeightUnit, dto.ZA * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
-                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B * Level.HeightUnit, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XA * Level.BlockSizeUnit, yEnd.A, dto.ZA * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yEnd.B, dto.ZB * Level.BlockSizeUnit),
+                    new Vector3(dto.XB * Level.BlockSizeUnit, yStart.B, dto.ZB * Level.BlockSizeUnit),
                     texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
             else
                 return false; // Not rendered - failed to meet any of the conditions
@@ -1988,10 +1988,11 @@ namespace TombLib.LevelData
                 return false;
 
             Block block = room.Blocks[currentX, currentZ];
-            int floorMin = block.Floor.Min;
-            int ceilingMax = block.Ceiling.Max;
+            int floorMin = Clicks.FromWorld(block.Floor.Min);
+            int ceilingMax = Clicks.FromWorld(block.Ceiling.Max);
+            int yClicks = Clicks.FromWorld(y);
 
-            return floorMin <= y / (int)Level.HeightUnit && ceilingMax >= y / (int)Level.HeightUnit;
+            return floorMin <= yClicks && ceilingMax >= yClicks;
         }
 
         private static bool RayTraceX(Room room, int x, int y, int z, int xLight, int yLight, int zLight)
@@ -2054,14 +2055,14 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)Level.HeightUnit;
+                    int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
                     if (currentXblock > 0)
                     {
                         Block currentBlock = room.Blocks[currentXblock - 1, currentZblock];
 
-                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XnZn) / 2 > currentYclick ||
-                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2078,11 +2079,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XpZp) / 2 > currentYclick ||
-                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XpZp) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (nextBlock.Floor.XnZp + nextBlock.Floor.XnZn) / 2 > currentYclick ||
-                            (nextBlock.Ceiling.XnZp + nextBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2159,14 +2160,14 @@ namespace TombLib.LevelData
                 }
                 else
                 {
-                    int currentYclick = currentY / -(int)Level.HeightUnit;
+                    int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
                     if (currentZblock > 0)
                     {
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
 
-                        if ((currentBlock.Floor.XpZn + currentBlock.Floor.XnZn) / 2 > currentYclick ||
-                            (currentBlock.Ceiling.XpZn + currentBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2183,11 +2184,11 @@ namespace TombLib.LevelData
                         var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = room.Blocks[currentXblock, currentZblock];
 
-                        if ((currentBlock.Floor.XnZp + currentBlock.Floor.XpZp) / 2 > currentYclick ||
-                            (currentBlock.Ceiling.XnZp + currentBlock.Ceiling.XpZp) / 2 < currentYclick ||
+                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
                             currentBlock.Type == BlockType.Wall ||
-                            (nextBlock.Floor.XpZn + nextBlock.Floor.XnZn) / 2 > currentYclick ||
-                            (nextBlock.Ceiling.XpZn + nextBlock.Ceiling.XnZn) / 2 < currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
