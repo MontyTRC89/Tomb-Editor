@@ -5,11 +5,9 @@ using TombLib.LevelData;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class ToggleForceFloorSolidCommand : RoomGeometryCommand
+internal sealed class ToggleForceFloorSolidCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+	: SmartBuildGeometryCommand(caller, editor, logger)
 {
-	public ToggleForceFloorSolidCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
-	{ }
-
 	public override void Execute(object? parameter)
 	{
 		if (!CheckForRoomAndBlockSelection())

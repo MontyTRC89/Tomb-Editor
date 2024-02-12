@@ -5,7 +5,10 @@ using TombLib.LevelData;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class SetWallCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+/// <summary>
+/// Flattens the selected sectors to the average height of each individual sector.
+/// </summary>
+internal sealed class AverageSectorsCommand(INotifyPropertyChanged caller, Editor editor, int increments, BlockVertical vertical, Logger? logger = null)
 	: SmartBuildGeometryCommand(caller, editor, logger)
 {
 	public override void Execute(object? parameter)
@@ -22,16 +25,19 @@ internal sealed class SetWallCommand(INotifyPropertyChanged caller, Editor edito
 		{
 			for (int z = area.Y0; z <= area.Y1; z++)
 			{
-				if (room.Blocks[x, z].Type == BlockType.BorderWall)
-					continue;
+				Block b = room.Blocks[x, z];
+				int sum = 0;
 
-				room.Blocks[x, z].Type = BlockType.Wall;
-				room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
-				room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
+				for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+					sum += b.GetHeight(vertical, edge);
+
+				sum /= increments;
+
+				for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+					b.SetHeight(vertical, edge, sum / 4 * increments);
 			}
 		}
 
 		CommitSmartBuildGeometry(room, area);
-		Editor.RoomSectorPropertiesChange(room);
 	}
 }

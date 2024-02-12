@@ -6,11 +6,9 @@ using TombLib.Utils;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class SetDiagonalFloorStepCommand : RoomGeometryCommand
+internal sealed class SetDiagonalFloorStepCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+	: SmartBuildGeometryCommand(caller, editor, logger)
 {
-	public SetDiagonalFloorStepCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
-	{ }
-
 	public override void Execute(object? parameter)
 	{
 		if (!CheckForRoomAndBlockSelection())

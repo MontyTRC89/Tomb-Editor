@@ -4,6 +4,9 @@ using System.Windows.Input;
 
 namespace TombEditor.WPF.Commands;
 
+/// <summary>
+/// A command where the <see cref="CanExecute(object)"/> method always returns <see langword="true" />.
+/// </summary>
 public abstract class UnconditionalCommand : ICommand
 {
 	public INotifyPropertyChanged Caller { get; init; }

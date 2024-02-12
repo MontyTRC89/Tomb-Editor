@@ -6,11 +6,9 @@ using TombLib.Utils;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class SetDiagonalWallCommand : RoomGeometryCommand
+internal sealed class SetDiagonalWallCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+	: SmartBuildGeometryCommand(caller, editor, logger)
 {
-	public SetDiagonalWallCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
-	{ }
-
 	public override void Execute(object? parameter)
 	{
 		if (!CheckForRoomAndBlockSelection())

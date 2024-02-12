@@ -7,11 +7,9 @@ using TombLib.LevelData;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class AddGhostBlocksCommand : UnconditionalEditorCommand
+internal sealed class AddGhostBlocksCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+	: UnconditionalEditorCommand(caller, editor, logger)
 {
-	public AddGhostBlocksCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
-	{ }
-
 	public override void Execute(object? parameter)
 	{
 		if (!CheckForRoomAndBlockSelection())

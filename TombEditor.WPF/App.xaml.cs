@@ -1,9 +1,12 @@
-﻿using DarkUI.Win32;
+﻿using DarkUI.Config;
+using DarkUI.Win32;
+using MvvmDialogs;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
-using System;
 using System.Threading;
 using System.Windows;
 using TombLib.LevelData;
@@ -11,12 +14,6 @@ using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using WinFormsApp = System.Windows.Forms.Application;
-using System.IO;
-using DarkUI.Config;
-using MvvmDialogs;
-using MvvmDialogs.DialogTypeLocators;
-using System.ComponentModel;
-using System.Windows.Markup;
 
 namespace TombEditor.WPF;
 
@@ -25,7 +22,7 @@ namespace TombEditor.WPF;
 /// </summary>
 public partial class App : Application
 {
-	static Mutex mutex = new Mutex(true, "{84867F76-232B-442B-9B10-DC72C8288839}");
+	private static Mutex mutex = new Mutex(true, "{84867F76-232B-442B-9B10-DC72C8288839}");
 
 	protected override void OnStartup(StartupEventArgs e)
 	{

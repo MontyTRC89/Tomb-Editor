@@ -10,11 +10,9 @@ using TombLib.LevelData;
 
 namespace TombEditor.WPF.Commands;
 
-internal sealed class AddPortalCommand : UnconditionalEditorCommand
+internal sealed class AddPortalCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null)
+	: UnconditionalEditorCommand(caller, editor, logger)
 {
-	public AddPortalCommand(INotifyPropertyChanged caller, Editor editor, Logger? logger = null) : base(caller, editor, logger)
-	{ }
-
 	public override void Execute(object? parameter)
 	{
 		if (CheckForRoomAndBlockSelection())

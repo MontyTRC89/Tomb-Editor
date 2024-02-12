@@ -4,6 +4,10 @@ using TombLib.Forms;
 
 namespace TombEditor.WPF.Commands;
 
+/// <summary>
+/// A command where the <see cref="CanExecute(object)"/> method always returns <see langword="true" />.
+/// <para>It additionally bundles a reference to the <see cref="TombEditor.Editor"/> and <see cref="NLog.Logger"/> class.</para>
+/// </summary>
 public abstract class UnconditionalEditorCommand : UnconditionalCommand
 {
 	public Editor Editor { get; }
