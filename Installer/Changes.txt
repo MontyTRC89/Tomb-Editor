@@ -11,6 +11,7 @@ Tomb Editor:
  * Fixed OnLoop TEN callback appearing in level script functions list.
 
 TombIDE:
+ * Added Plugin_Video into default TRNG preset.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
 
 Version 1.7
