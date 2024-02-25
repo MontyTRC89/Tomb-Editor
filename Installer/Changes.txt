@@ -1,5 +1,5 @@
 Version 1.7.1
-===========
+=============
 
 Tomb Editor:
  * Added adjustable step height for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
