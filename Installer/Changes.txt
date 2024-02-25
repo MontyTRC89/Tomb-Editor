@@ -10,6 +10,9 @@ Tomb Editor:
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
  * Fixed OnLoop TEN callback appearing in level script functions list.
 
+WadTool:
+ * Fixed incorrect annotation for set jump reference animcommand.
+
 TombIDE:
  * Added Plugin_Video into default TRNG preset.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
