@@ -2,7 +2,7 @@ Version 1.7.1
 ===========
 
 Tomb Editor:
- * Added adjustable step heights for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
+ * Added adjustable step height for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
  * Copying room geometry will now include texture information with each face.
  * Fixed autosave file cleanup not working.
  * Fixed undo / redo not working on yellow walls (portals).
@@ -12,6 +12,7 @@ Tomb Editor:
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
+ * Fixed incorrect animation frame display after switching from null animation in animation editor.
 
 TombIDE:
  * Added Plugin_Video into default TRNG preset.
