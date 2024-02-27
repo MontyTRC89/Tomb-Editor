@@ -19,12 +19,12 @@ public abstract class UnconditionalEditorCommand : UnconditionalCommand
 		Logger = logger ?? LogManager.GetCurrentClassLogger();
     }
 
-	protected bool VersionCheck(bool supported, string objectType)
+	protected bool CheckVersion(bool condition, string objectType)
 	{
-		if (!supported)
+		if (!condition)
 			Editor.SendMessage($"{objectType} is not supported in current game version.", PopupType.Info);
 
-		return supported;
+		return condition;
 	}
 
 	protected bool CheckForRoomAndBlockSelection()

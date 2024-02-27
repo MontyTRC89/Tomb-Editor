@@ -20,7 +20,7 @@ internal sealed class SetSectorFlagsCommand(INotifyPropertyChanged caller, Edito
 			case BlockFlags.Beetle:
 			case BlockFlags.Monkey:
 			case BlockFlags.TriggerTriggerer:
-				if (!VersionCheck(Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
+				if (!CheckVersion(Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
 					return;
 				break;
 
@@ -28,7 +28,7 @@ internal sealed class SetSectorFlagsCommand(INotifyPropertyChanged caller, Edito
 			case BlockFlags.ClimbNegativeZ:
 			case BlockFlags.ClimbPositiveX:
 			case BlockFlags.ClimbPositiveZ:
-				if (!VersionCheck(Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
+				if (!CheckVersion(Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
 					return;
 				break;
 		}
