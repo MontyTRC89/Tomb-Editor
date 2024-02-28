@@ -17,6 +17,8 @@ WadTool:
 TombIDE:
  * Added Plugin_Video into default TRNG preset.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
+ * Fixed a bug where '>' symbols inside comments were taken into consideration when error checking.
+ * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
 
 Version 1.7
 ===========
