@@ -1,0 +1,21 @@
+﻿{
+	"SetFloor": "Set floor",
+	"SetCeiling": "Set ceiling",
+	"SetBox": "Set box sector property",
+	"SetNotWalkable": "Set non-walkable floor",
+	"SetMonkeyswing": "Set monkeyswing sector property",
+	"SetDeath": "Set death sector property",
+	"AddPortal": "Add portal",
+	"SetWall": "Set wall",
+	"SetTriggerTriggerer": "Set trigger triggerer / minecart left (TR3)",
+	"SetBeetleCheckpoint": "Set beetle checkpoint / minecart right (TR3)",
+	"SetClimbPositiveZ": "Climb on North sector side",
+	"SetClimbNegativeZ": "Climb on South sector side",
+	"SetClimbNegativeX": "Climb on West sector side",
+	"SetClimbPositiveX": "Climb on East sector side",
+	"AddGhostBlocksToSelection": "Add ghost blocks to selected area",
+	"ToggleForceFloorSolid": "Force solid floor",
+	"FloorStep": "Floor step",
+	"CeilingStep": "Ceiling step",
+	"DiagonalWall": "Diag wall"
+}

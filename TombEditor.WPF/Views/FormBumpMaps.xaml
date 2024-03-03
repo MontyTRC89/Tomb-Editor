@@ -1,0 +1,42 @@
+﻿<Window 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+        x:Class="TombEditor.WPF.Forms.FormBumpMaps"
+        mc:Ignorable="d"
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Bumpmaps" Height="601" Width="440">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </sg:SpacedGrid.RowDefinitions>
+        <darkCtrl:SearchableComboBox/>
+        <WindowsFormsHost x:Name="ViewportHost" Grid.Row="1" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <CheckBox Uid="customFile" Content="Use custom file:" Margin="0,0,4,0"/>
+            <Label Content="path to custom file" Opacity="0.4"/>
+        </StackPanel>
+        <sg:SpacedGrid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <darkCtrl:SearchableComboBox>
+                <ComboBoxItem>None</ComboBoxItem>
+                <ComboBoxItem>Level1</ComboBoxItem>
+                <ComboBoxItem>Level2</ComboBoxItem>
+                <ComboBoxItem>Level3</ComboBoxItem>
+            </darkCtrl:SearchableComboBox>
+            <Button Grid.Column="1" Width="113" Content="Assign bumpmap"/>
+            <Button Grid.Column="2" Width="80" Content="OK" IsDefault="True" />
+        </sg:SpacedGrid>
+    </sg:SpacedGrid>
+</Window>

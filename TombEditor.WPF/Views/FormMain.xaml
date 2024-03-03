@@ -1,0 +1,1110 @@
+﻿<Window
+	x:Class="TombEditor.WPF.Forms.FormMain"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
+	xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+	Title="Tomb Editor"
+	Width="800"
+	Height="450"
+	Icon="/TombEditor.WPF;component/Resources/misc/TE.png"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowState="Maximized"
+	mc:Ignorable="d">
+
+	<Grid x:Name="layoutRoot">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Menu x:Name="menuStrip" VerticalAlignment="Stretch">
+			<MenuItem Header="File">
+				<MenuItem
+					x:Name="newLevelToolStripMenuItem"
+					Header="NewLevel"
+					Tag="NewLevel">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="openLevelToolStripMenuItem"
+					Header="OpenLevel"
+					Tag="OpenLevel">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Open-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="openRecentToolStripMenuItem" Header="Open recent" />
+				<MenuItem
+					x:Name="saveLevelToolStripMenuItem"
+					Header="SaveLevel"
+					Tag="SaveLevel">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="saveAsToolStripMenuItem"
+					Header="SaveLevelAs"
+					Tag="SaveLevelAs">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save As-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="importTRLEPRJToolStripMenuItem"
+					Header="ImportPrj"
+					Tag="ImportPrj">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="convertToTENToolstripMenuItem"
+					Header="ConvertLevelToTombEngine"
+					Tag="ConvertLevelToTombEngine">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TEN-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="buildLevelPlayToolStripMenuItem"
+					Header="BuildAndPlay"
+					Tag="BuildAndPlay">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="buildLevelToolStripMenuItem"
+					Header="BuildLevel"
+					Tag="BuildLevel">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="exitToolStripMenuItem"
+					Header="QuitEditor"
+					Tag="QuitEditor" />
+			</MenuItem>
+
+			<MenuItem Header="Edit">
+				<MenuItem
+					x:Name="undoToolStripMenuItem"
+					Header="Undo"
+					Tag="Undo">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="redoToolStripMenuItem"
+					Header="Redo"
+					Tag="Redo">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="cutToolStripMenuItem"
+					Header="Cut"
+					Tag="Cut">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_cut-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="copyToolStripMenuItem"
+					Header="Copy"
+					Tag="Copy">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="pasteToolStripMenuItem"
+					Header="Paste"
+					Tag="Paste">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="stampToolStripMenuItem"
+					Header="StampObject"
+					Tag="StampObject">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="deleteToolStripMenuItem"
+					Header="Delete"
+					Tag="Delete" />
+				<MenuItem
+					x:Name="selectAllToolStripMenuItem"
+					Header="SelectAll"
+					Tag="SelectAll" />
+				<Separator />
+				<MenuItem
+					x:Name="bookmarkObjectToolStripMenuItem"
+					Header="BookmarkObject"
+					Tag="BookmarkObject" />
+				<MenuItem
+					x:Name="bookmarkRestoreObjectToolStripMenuItem"
+					Header="SelectBookmarkedObject"
+					Tag="SelectBookmarkedObject" />
+				<Separator />
+				<MenuItem
+					x:Name="editObjectToolStripMenuItem"
+					Header="EditObject"
+					Tag="EditObject" />
+				<MenuItem
+					x:Name="editEventSetsToolStripMenuItem"
+					Header="EditEventSets"
+					Tag="EditEventSets" />
+				<MenuItem
+					x:Name="searchToolStripMenuItem"
+					Header="Search"
+					Tag="Search">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="searchAndReplaceToolStripMenuItem"
+					Header="SearchAndReplaceObjects"
+					Tag="SearchAndReplaceObjects">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-and-replace-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<MenuItem Header="View">
+				<MenuItem
+					x:Name="resetCameraToolStripMenuItem"
+					Header="ResetCamera"
+					Tag="ResetCamera">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="relocateCameraToolStripMenuItem"
+					Header="RelocateCamera"
+					Tag="RelocateCamera" />
+				<MenuItem
+					x:Name="toggleFlyModeToolStripMenuItem"
+					Header="ToggleFlyMode"
+					Tag="ToggleFlyMode">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="drawWhiteTextureLightingOnlyToolStripMenuItem"
+					Header="DrawWhiteTextureLightingOnly"
+					Tag="DrawWhiteTextureLightingOnly">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="showRealTintForObjectsToolStripMenuItem"
+					Header="ShowRealTintForObjects"
+					Tag="ShowRealTintForObjects">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<MenuItem Header="Rooms">
+				<MenuItem x:Name="newRoomToolStripMenuItem" Header="New room">
+					<MenuItem
+						x:Name="newRoomUpToolStripMenuItem"
+						Header="NewRoomUp"
+						Tag="NewRoomUp" />
+					<MenuItem
+						x:Name="newRoomDownToolStripMenuItem"
+						Header="NewRoomDown"
+						Tag="NewRoomDown" />
+					<MenuItem
+						x:Name="newRoomLeftToolStripMenuItem"
+						Header="NewRoomLeft"
+						Tag="NewRoomLeft" />
+					<MenuItem
+						x:Name="newRoomRightToolStripMenuItem"
+						Header="NewRoomRight"
+						Tag="NewRoomRight" />
+					<MenuItem
+						x:Name="newRoomFrontToolStripMenuItem"
+						Header="NewRoomFront"
+						Tag="NewRoomFront" />
+					<MenuItem
+						x:Name="newRoomBackToolStripMenuItem"
+						Header="NewRoomBack"
+						Tag="NewRoomBack" />
+				</MenuItem>
+				<MenuItem
+					x:Name="duplicateRoomToolStripMenuItem"
+					Header="DuplicateRoom"
+					Tag="DuplicateRoom">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="cropRoomToolStripMenuItem"
+					Header="CropRoom"
+					Tag="CropRoom">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_crop-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="splitRoomToolStripMenuItem"
+					Header="SplitRoom"
+					Tag="SplitRoom">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Split-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="mergeRoomsHorizontallyToolStripMenuItem"
+					Header="MergeRoomsHorizontally"
+					Tag="MergeRoomsHorizontally">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="deleteRoomsToolStripMenuItem"
+					Header="DeleteRooms"
+					Tag="DeleteRooms">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem x:Name="moveRoomsToolStripMenuItem" Header="Move rooms">
+					<MenuItem
+						x:Name="wholeRoomUpToolStripMenuItem"
+						Header="MoveRoomUp"
+						Tag="MoveRoomUp" />
+					<MenuItem
+						x:Name="moveRoomUp4ClicksToolStripMenuItem"
+						Header="MoveRoomUp4Clicks"
+						Tag="MoveRoomUp4Clicks" />
+					<MenuItem
+						x:Name="wholeRoomDownToolStripMenuItem"
+						Header="MoveRoomDown"
+						Tag="MoveRoomDown" />
+					<MenuItem
+						x:Name="moveRoomDown4ClicksToolStripMenuItem"
+						Header="MoveRoomDown4Clicks"
+						Tag="MoveRoomDown4Clicks" />
+					<MenuItem
+						x:Name="moveRoomLeftToolStripMenuItem"
+						Header="MoveRoomLeft"
+						Tag="MoveRoomLeft" />
+					<MenuItem
+						x:Name="moveRoomRightToolStripMenuItem"
+						Header="MoveRoomRight"
+						Tag="MoveRoomRight" />
+					<MenuItem
+						x:Name="moveRoomForwardToolStripMenuItem"
+						Header="MoveRoomForward"
+						Tag="MoveRoomForward" />
+					<MenuItem
+						x:Name="moveRoomBackToolStripMenuItem"
+						Header="MoveRoomBack"
+						Tag="MoveRoomBack" />
+				</MenuItem>
+				<MenuItem x:Name="transformRoomsToolStripMenuItem" Header="Transform rooms">
+					<MenuItem
+						x:Name="rotateRoomsToolStripMenuItem"
+						Header="RotateRoomsClockwise"
+						Tag="RotateRoomsClockwise" />
+					<MenuItem
+						x:Name="rotateRoomsCountercockwiseToolStripMenuItem"
+						Header="RotateRoomsCounterClockwise"
+						Tag="RotateRoomsCounterClockwise" />
+					<MenuItem
+						x:Name="mirrorRoomsOnXAxisToolStripMenuItem"
+						Header="MirrorRoomsX"
+						Tag="MirrorRoomsX" />
+					<MenuItem
+						x:Name="mirrorRoomsOnZAxisToolStripMenuItem"
+						Header="MirrorRoomsZ"
+						Tag="MirrorRoomsZ" />
+				</MenuItem>
+				<MenuItem x:Name="selectRoomsToolStripMenuItem" Header="Select rooms">
+					<MenuItem
+						x:Name="selectWaterRoomsToolStripMenuItem"
+						Header="SelectWaterRooms"
+						Tag="SelectWaterRooms" />
+					<MenuItem
+						x:Name="selectSkyRoomsToolStripMenuItem"
+						Header="SelectSkyRooms"
+						Tag="SelectSkyRooms" />
+					<MenuItem
+						x:Name="selectOutsideRoomsToolStripMenuItem"
+						Header="SelectOutsideRooms"
+						Tag="SelectOutsideRooms" />
+					<MenuItem
+						x:Name="selectQuicksandRoomsToolStripMenuItem"
+						Header="SelectQuicksandRooms"
+						Tag="SelectQuicksandRooms" />
+					<Separator />
+					<MenuItem
+						x:Name="selectConnectedRoomsToolStripMenuItem"
+						Header="SelectConnectedRooms"
+						Tag="SelectConnectedRooms" />
+					<MenuItem
+						x:Name="selectRoomsByTagsToolStripMenuItem"
+						Header="SelectRoomsByTags"
+						Tag="SelectRoomsByTags" />
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="exportRoomToolStripMenuItem"
+					Header="ExportRooms"
+					Tag="ExportRooms">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Export-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="importRoomsToolStripMenuItem"
+					Header="ImportRooms"
+					Tag="ImportRooms">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="applyRoomPropertiesToolStripMenuItem"
+					Header="ApplyRoomProperties"
+					Tag="ApplyRoomProperties" />
+			</MenuItem>
+
+			<MenuItem Header="Items">
+				<MenuItem
+					x:Name="addWadToolStripMenuItem"
+					Header="AddWad"
+					Tag="ImportRooms">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="removeWadsToolStripMenuItem"
+					Header="RemoveWads"
+					Tag="RemoveWads">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="reloadWadsToolStripMenuItem"
+					Header="ReloadWads"
+					Tag="ReloadWads" />
+				<MenuItem
+					x:Name="reloadSoundsToolStripMenuItem"
+					Header="ReloadSounds"
+					Tag="ReloadSounds" />
+				<Separator />
+				<MenuItem x:Name="addItemToolStripMenuItem" Header="Add item">
+					<MenuItem
+						x:Name="addCameraToolStripMenuItem"
+						Header="AddCamera"
+						Tag="AddCamera">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addFlybyCameraToolStripMenuItem"
+						Header="AddFlybyCamera"
+						Tag="AddFlybyCamera">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addSpriteToolStripMenuItem"
+						Header="AddSprite"
+						Tag="AddSprite">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Sprite-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addSinkToolStripMenuItem"
+						Header="AddSink"
+						Tag="AddSink">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addSoundSourceToolStripMenuItem"
+						Header="AddSoundSource"
+						Tag="AddSoundSource">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addImportedGeometryToolStripMenuItem"
+						Header="AddImportedGeometry"
+						Tag="AddImportedGeometry">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addGhostBlockToolStripMenuItem"
+						Header="AddGhostBlock"
+						Tag="AddGhostBlock">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						x:Name="addMemoToolStripMenuItem"
+						Header="AddMemo"
+						Tag="AddMemo">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+				</MenuItem>
+				<MenuItem
+					x:Name="addPortalToolStripMenuItem"
+					Header="AddPortal"
+					Tag="AddPortal" />
+				<MenuItem
+					x:Name="addTriggerToolStripMenuItem"
+					Header="AddTrigger"
+					Tag="AddTrigger" />
+				<MenuItem
+					x:Name="addBoxVolumeToolStripMenuItem"
+					Header="AddBoxVolume"
+					Tag="AddBoxVolume">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_volume-box-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="addSphereVolumeToolStripMenuItem"
+					Header="AddSphereVolume"
+					Tag="AddSphereVolume">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_volume-sphere-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem x:Name="deleteAllToolStripMenuItem" Header="Delete...">
+					<MenuItem
+						x:Name="deleteAllLightsToolStripMenuItem"
+						Header="DeleteAllLights"
+						Tag="DeleteAllLights" />
+					<MenuItem
+						x:Name="deleteAllObjectsToolStripMenuItem"
+						Header="DeleteAllObjects"
+						Tag="DeleteAllObjects" />
+					<MenuItem
+						x:Name="deleteAllTriggersToolStripMenuItem"
+						Header="DeleteAllTriggers"
+						Tag="DeleteAllTriggers" />
+					<MenuItem
+						x:Name="deleteMissingObjectsToolStripMenuItem"
+						Header="DeleteMissingObjects"
+						Tag="DeleteMissingObjects" />
+				</MenuItem>
+				<MenuItem
+					x:Name="findObjectToolStripMenuItem"
+					Header="LocateItem"
+					Tag="LocateItem">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_target-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="moveLaraToolStripMenuItem"
+					Header="MoveLara"
+					Tag="MoveLara" />
+				<MenuItem
+					x:Name="selectItemsInSelectedAreaToolStripMenuItem"
+					Header="SelectAllObjectsInArea"
+					Tag="SelectAllObjectsInArea" />
+				<MenuItem
+					x:Name="selectFloorBelowObjectToolStripMenuItem"
+					Header="SelectFloorBelowObject"
+					Tag="SelectFloorBelowObject" />
+				<MenuItem
+					x:Name="splitSectorObjectOnSelectionToolStripMenuItem"
+					Header="SplitSectorObjectOnSelection"
+					Tag="SplitSectorObjectOnSelection" />
+				<Separator />
+				<MenuItem
+					x:Name="setStaticMeshColorToRoomLightToolStripMenuItem"
+					Header="SetStaticMeshesColorToRoomLight"
+					Tag="SetStaticMeshesColorToRoomLight" />
+				<MenuItem
+					x:Name="setStaticMeshesColorToolStripMenuItem"
+					Header="SetStaticMeshesColor"
+					Tag="SetStaticMeshesColor" />
+				<Separator />
+				<MenuItem
+					x:Name="makeQuickItemGroupToolStripMenuItem"
+					Header="MakeQuickItemGroup"
+					Tag="MakeQuickItemGroup" />
+				<MenuItem
+					x:Name="getObjectStatisticsToolStripMenuItem"
+					Header="GetObjectStatistics"
+					Tag="GetObjectStatistics" />
+				<MenuItem
+					x:Name="generateObjectNamesToolStripMenuItem"
+					Header="GenerateObjectNames"
+					Tag="GenerateObjectNames" />
+			</MenuItem>
+
+			<MenuItem Header="Textures">
+				<MenuItem
+					x:Name="loadTextureToolStripMenuItem"
+					Header="AddTexture"
+					Tag="AddTexture">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="removeTexturesToolStripMenuItem"
+					Header="RemoveTextures"
+					Tag="RemoveTextures">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="unloadTexturesToolStripMenuItem"
+					Header="UnloadTextures"
+					Tag="UnloadTextures" />
+				<MenuItem
+					x:Name="reloadTexturesToolStripMenuItem"
+					Header="ReloadTextures"
+					Tag="ReloadTextures" />
+				<MenuItem
+					x:Name="importConvertTexturesToPng"
+					Header="ConvertTexturesToPNG"
+					Tag="ConvertTexturesToPNG">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="remapTextureToolStripMenuItem"
+					Header="RemapTexture"
+					Tag="RemapTexture">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_crop-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="textureFloorToolStripMenuItem"
+					Header="TextureFloor"
+					Tag="TextureFloor">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Floor2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="textureWallsToolStripMenuItem"
+					Header="TextureWalls"
+					Tag="TextureWalls">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Walls2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="textureCeilingToolStripMenuItem"
+					Header="TextureCeiling"
+					Tag="TextureCeiling">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Ceiling2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					x:Name="clearAllTexturesInRoomToolStripMenuItem"
+					Header="ClearAllTexturesInRoom"
+					Tag="ClearAllTexturesInRoom">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_toolbox/toolbox_Eraser-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="clearAllTexturesInLevelToolStripMenuItem"
+					Header="ClearAllTexturesInLevel"
+					Tag="ClearAllTexturesInLevel" />
+				<Separator />
+				<MenuItem
+					x:Name="findTexturesToolStripMenuItem"
+					Header="SearchTextures"
+					Tag="SearchTextures">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="animationRangesToolStripMenuItem"
+					Header="EditAnimationRanges"
+					Tag="EditAnimationRanges">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_anim_ranges-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<MenuItem Header="Transform">
+				<MenuItem
+					x:Name="smoothRandomFloorUpToolStripMenuItem"
+					Header="SmoothRandomFloorUp"
+					Tag="SmoothRandomFloorUp" />
+				<MenuItem
+					x:Name="smoothRandomFloorDownToolStripMenuItem"
+					Header="SmoothRandomFloorDown"
+					Tag="SmoothRandomFloorDown" />
+				<MenuItem
+					x:Name="smoothRandomCeilingUpToolStripMenuItem"
+					Header="SmoothRandomCeilingUp"
+					Tag="SmoothRandomCeilingUp" />
+				<MenuItem
+					x:Name="smoothRandomCeilingDownToolStripMenuItem"
+					Header="SmoothRandomCeilingDown"
+					Tag="SmoothRandomCeilingDown" />
+				<Separator />
+				<MenuItem
+					x:Name="sharpRandomFloorUpToolStripMenuItem"
+					Header="SharpRandomFloorUp"
+					Tag="SharpRandomFloorUp" />
+				<MenuItem
+					x:Name="sharpRandomFloorDownToolStripMenuItem"
+					Header="SharpRandomFloorDown"
+					Tag="SharpRandomFloorDown" />
+				<MenuItem
+					x:Name="sharpRandomCeilingUpToolStripMenuItem"
+					Header="SharpRandomCeilingUp"
+					Tag="SharpRandomCeilingUp" />
+				<MenuItem
+					x:Name="sharpRandomCeilingDownToolStripMenuItem"
+					Header="SharpRandomCeilingDown"
+					Tag="SharpRandomCeilingDown" />
+				<Separator />
+				<MenuItem
+					x:Name="averageFloorToolStripMenuItem"
+					Header="AverageFloor"
+					Tag="AverageFloor" />
+				<MenuItem
+					x:Name="averageCeilingToolStripMenuItem"
+					Header="AverageCeiling"
+					Tag="AverageCeiling" />
+				<MenuItem
+					x:Name="flattenFloorToolStripMenuItem"
+					Header="FlattenFloor"
+					Tag="FlattenFloor" />
+				<MenuItem
+					x:Name="flattenCeilingToolStripMenuItem"
+					Header="FlattenCeiling"
+					Tag="FlattenCeiling" />
+				<MenuItem
+					x:Name="resetGeometryToolStripMenuItem"
+					Header="ResetGeometry"
+					Tag="ResetGeometry" />
+				<Separator />
+				<MenuItem
+					x:Name="gridWallsIn3ToolStripMenuItem"
+					Header="GridWallsIn3"
+					Tag="GridWallsIn3" />
+				<MenuItem
+					x:Name="gridWallsIn5ToolStripMenuItem"
+					Header="GridWallsIn5"
+					Tag="GridWallsIn5" />
+				<MenuItem
+					x:Name="gridWallsIn3SquaresToolStripMenuItem"
+					Header="GridWallsIn3Squares"
+					Tag="GridWallsIn3Squares" />
+				<MenuItem
+					x:Name="gridWallsIn5SquaresToolStripMenuItem"
+					Header="GridWallsIn5Squares"
+					Tag="GridWallsIn5Squares" />
+			</MenuItem>
+
+			<MenuItem Header="Tools">
+				<MenuItem
+					x:Name="editLevelSettingsToolStripMenuItem"
+					Click="OnShowEditorOptions"
+					Header="EditLevelSettings">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_settings-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="editOptionsToolStripMenuItem"
+					Header="EditOptions"
+					Tag="EditOptions">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_options-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					x:Name="keyboardLayoutToolStripMenuItem"
+					Header="EditKeyboardLayout"
+					Tag="EditKeyboardLayout" />
+				<Separator />
+				<MenuItem
+					x:Name="startWadToolToolStripMenuItem"
+					Header="StartWadTool"
+					Tag="StartWadTool" />
+				<MenuItem
+					x:Name="startSoundToolToolStripMenuItem"
+					Header="StartSoundTool"
+					Tag="StartSoundTool" />
+			</MenuItem>
+
+			<MenuItem Header="Window">
+				<MenuItem x:Name="restoreDefaultLayoutToolStripMenuItem" Header="Restore default layout" />
+				<Separator />
+				<MenuItem
+					x:Name="sectorOptionsToolStripMenuItem"
+					Header="ShowSectorOptions"
+					IsCheckable="True"
+					Tag="ShowSectorOptions" />
+				<MenuItem
+					x:Name="roomOptionsToolStripMenuItem"
+					Header="ShowRoomOptions"
+					IsCheckable="True"
+					Tag="ShowRoomOptions" />
+				<MenuItem
+					x:Name="itemBrowserToolStripMenuItem"
+					Header="ShowItemBrowser"
+					IsCheckable="True"
+					Tag="ShowItemBrowser" />
+				<MenuItem
+					x:Name="importedGeometryBrowserToolstripMenuItem"
+					Header="ShowImportedGeometryBrowser"
+					IsCheckable="True"
+					Tag="ShowImportedGeometryBrowser" />
+				<MenuItem
+					x:Name="triggerListToolStripMenuItem"
+					Header="ShowTriggerList"
+					IsCheckable="True"
+					Tag="ShowTriggerList" />
+				<MenuItem
+					x:Name="lightingToolStripMenuItem"
+					Header="ShowLighting"
+					IsCheckable="True"
+					Tag="ShowLighting" />
+				<MenuItem
+					x:Name="paletteToolStripMenuItem"
+					Header="ShowPalette"
+					IsCheckable="True"
+					Tag="ShowPalette" />
+				<MenuItem
+					x:Name="texturePanelToolStripMenuItem"
+					Header="ShowTexturePanel"
+					IsCheckable="True"
+					Tag="ShowTexturePanel" />
+				<MenuItem
+					x:Name="objectListToolStripMenuItem"
+					Header="ShowObjectList"
+					IsCheckable="True"
+					Tag="ShowObjectList" />
+				<MenuItem
+					x:Name="statisticsToolStripMenuItem"
+					Header="ShowStatistics"
+					IsCheckable="True"
+					Tag="ShowStatistics" />
+				<MenuItem
+					x:Name="dockableToolStripMenuItem"
+					Header="ShowToolPalette"
+					IsCheckable="True"
+					Tag="ShowToolPalette" />
+				<MenuItem
+					x:Name="floatingToolStripMenuItem"
+					Header="Tool Palette (floating)"
+					IsCheckable="True" />
+			</MenuItem>
+
+			<MenuItem Header="Help">
+				<MenuItem x:Name="aboutToolStripMenuItem" Header="About Tomb Editor...">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_AboutIcon-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+
+		<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.TinyThickness}" HorizontalAlignment="Right">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<AdornerDecorator>
+				<TextBox x:Name="tbSearchMenu" Style="{DynamicResource FlatDarkTextBox}">
+					<darkUI:WatermarkService.Watermark>
+						<TextBlock Foreground="{DynamicResource Brush_Text}" Text="Search for menu entry..." />
+					</darkUI:WatermarkService.Watermark>
+				</TextBox>
+			</AdornerDecorator>
+			<Button
+				x:Name="butFindMenu"
+				Grid.Column="1"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Search for menu entry">
+				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+			</Button>
+		</sg:SpacedGrid>
+
+		<DockingManager x:Name="dockManager" Grid.Row="1">
+			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
+				<LayoutPanel Orientation="Horizontal">
+					<LayoutAnchorablePaneGroup DockWidth="287" Orientation="Vertical">
+						<LayoutAnchorablePane
+							DockHeight="279"
+							DockMinHeight="279"
+							DockMinWidth="287">
+							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
+								<toolwindows:SectorOptions x:Name="SectorOptions" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane
+							DockHeight="223"
+							DockMinHeight="223"
+							DockMinWidth="287">
+							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
+								<toolwindows:RoomOptions x:Name="RoomOptions" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
+							<LayoutAnchorable Title="Items" ContentId="Items">
+								<toolwindows:ItemBrowser x:Name="Items" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Imported Geometry" ContentId="ImportedGeometry">
+								<toolwindows:ImportedGeometryBrowser x:Name="ImportedGeometry" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
+							<LayoutAnchorable Title="Triggers" ContentId="Triggers">
+								<toolwindows:TriggerList x:Name="Triggers" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Objects in Room" ContentId="ObjectsInRoom">
+								<toolwindows:ObjectList x:Name="ObjectsInRoom" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+					</LayoutAnchorablePaneGroup>
+
+					<LayoutPanel Orientation="Vertical">
+						<LayoutDocumentPane>
+							<LayoutDocument x:Name="MainView" Title="3D View">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToolBarTray>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_2DView-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_3DView-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TextureMode-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_light_on-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawPortals-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawAllRooms-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_horizon-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_generic_text-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawCardinalDirections-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Transparent_1-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_AlphaTest-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Slide-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideCustomGeometry_1-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideHiddenRooms-16.png" />
+											</ToggleButton>
+											<xceed:DropDownButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawObjects-16.png" />
+											</xceed:DropDownButton>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_link-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Solid-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity2-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play_fast-16.png" />
+											</Button>
+										</ToolBar>
+									</ToolBarTray>
+									<toolwindows:MainView Grid.Row="1" />
+									<TextBlock
+										Grid.Row="2"
+										Margin="4"
+										TextWrapping="Wrap">
+										Rooms: 1 Objects: 0 / 0 Statics: 0 / 0 Triggers: 0 / 0 Lights: 0 / 0 Cameras: 0 / 0 Flybys: 0 / 0<LineBreak />
+										Room vertices / faces: 0 / 0 Last level output: compile level</TextBlock>
+								</Grid>
+							</LayoutDocument>
+							<LayoutDocument Title="2D View">
+								<toolwindows:MainView2 />
+							</LayoutDocument>
+						</LayoutDocumentPane>
+
+						<LayoutAnchorablePaneGroup DockHeight="140" Orientation="Horizontal">
+							<LayoutAnchorablePane DockMinWidth="370" DockWidth="370">
+								<LayoutAnchorable Title="Lighting" ContentId="Lighting">
+									<toolwindows:Lighting x:Name="Lighting" />
+								</LayoutAnchorable>
+							</LayoutAnchorablePane>
+							<LayoutAnchorablePane DockWidth="*">
+								<LayoutAnchorable Title="Palette" ContentId="Palette">
+									<toolwindows:Palette x:Name="Palette" />
+								</LayoutAnchorable>
+							</LayoutAnchorablePane>
+						</LayoutAnchorablePaneGroup>
+					</LayoutPanel>
+
+					<LayoutAnchorablePane DockWidth="300">
+						<LayoutAnchorable Title="Texturing" ContentId="Texturing">
+							<toolwindows:TexturePanel x:Name="Texturing" />
+						</LayoutAnchorable>
+					</LayoutAnchorablePane>
+				</LayoutPanel>
+			</LayoutRoot>
+		</DockingManager>
+		<StatusBar Grid.Row="2">
+			<TextBlock Text="Selected room: Name = Room 0 | Size = 18 x 18 | Pos = (0,0,0) | Floor = 0 | Ceiling = 12" />
+		</StatusBar>
+	</Grid>
+</Window>

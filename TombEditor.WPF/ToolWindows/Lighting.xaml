@@ -1,0 +1,247 @@
+﻿<UserControl
+	x:Class="TombEditor.WPF.ToolWindows.Lighting"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	d:DesignHeight="120"
+	d:DesignWidth="375"
+	mc:Ignorable="d">
+
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+
+		<sg:SpacedGrid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<sg:SpacedGrid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<sg:SpacedGrid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<ComboBox>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_LightPoint-16.png" />
+								<TextBlock Text="Point" />
+							</StackPanel>
+						</ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Shadow-16.png" />
+								<TextBlock Text="Shadow" />
+							</StackPanel>
+						</ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Spotlight-16.png" />
+								<TextBlock Text="Spot" />
+							</StackPanel>
+						</ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Effect-16.png" />
+								<TextBlock Text="Effect" />
+							</StackPanel>
+						</ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_sun-16.png" />
+								<TextBlock Text="Sun" />
+							</StackPanel>
+						</ComboBoxItem>
+						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Fog-16.png" />
+								<TextBlock Text="Fog bulb" />
+							</StackPanel>
+						</ComboBoxItem>
+					</ComboBox>
+
+					<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</Button>
+				</sg:SpacedGrid>
+
+				<ComboBox Grid.Row="1" Grid.ColumnSpan="2">
+					<ComboBoxItem>Default quality</ComboBoxItem>
+				</ComboBox>
+			</sg:SpacedGrid>
+
+			<sg:SpacedGrid Grid.Row="1" ColumnSpacing="{x:Static darkUI:Defaults.LargeThicknessWidth}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<CheckBox Content="Enabled" IsEnabled="False" />
+				<CheckBox
+					Grid.Row="1"
+					Content="Obstruct"
+					IsEnabled="False" />
+				<CheckBox
+					Grid.Row="2"
+					Content="Shadow"
+					IsEnabled="False" />
+
+				<CheckBox
+					Grid.Column="1"
+					Content="Static"
+					IsEnabled="False" />
+				<CheckBox
+					Grid.Row="1"
+					Grid.Column="1"
+					Content="Dynamic"
+					IsEnabled="False" />
+				<CheckBox
+					Grid.Row="2"
+					Grid.Column="1"
+					Content="Imported"
+					IsEnabled="False" />
+			</sg:SpacedGrid>
+		</sg:SpacedGrid>
+
+		<sg:SpacedGrid Grid.Column="1" ColumnSpacing="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<Label
+				HorizontalAlignment="Right"
+				Content="Color"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
+			<controls:ColorPickerButton Grid.Column="1" Height="22" />
+			<Label
+				Grid.Row="1"
+				HorizontalAlignment="Right"
+				Content="Intensity"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
+			<xctk:DoubleUpDown
+				Grid.Row="1"
+				Grid.Column="1"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+			<Label
+				Grid.Row="2"
+				HorizontalAlignment="Right"
+				Content="In d"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
+			<xctk:DoubleUpDown
+				Grid.Row="2"
+				Grid.Column="1"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+			<Label
+				Grid.Row="3"
+				HorizontalAlignment="Right"
+				Content="Out d"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}" />
+			<xctk:DoubleUpDown
+				Grid.Row="3"
+				Grid.Column="1"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+
+			<Label
+				Grid.Column="2"
+				HorizontalAlignment="Right"
+				Content="In α"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+				</Label.Margin>
+			</Label>
+			<xctk:DoubleUpDown
+				Grid.Column="3"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+			<Label
+				Grid.Row="1"
+				Grid.Column="2"
+				HorizontalAlignment="Right"
+				Content="Out α"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+				</Label.Margin>
+			</Label>
+			<xctk:DoubleUpDown
+				Grid.Row="1"
+				Grid.Column="3"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+			<Label
+				Grid.Row="2"
+				Grid.Column="2"
+				HorizontalAlignment="Right"
+				Content="Dir Y"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+				</Label.Margin>
+			</Label>
+			<xctk:DoubleUpDown
+				Grid.Row="2"
+				Grid.Column="3"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+			<Label
+				Grid.Row="3"
+				Grid.Column="2"
+				HorizontalAlignment="Right"
+				Content="Dir X"
+				Style="{DynamicResource ExtraHorizontalMarginLabel}">
+				<Label.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+				</Label.Margin>
+			</Label>
+			<xctk:DoubleUpDown
+				Grid.Row="3"
+				Grid.Column="3"
+				FormatString="F2"
+				Increment="0.01"
+				Value="2.50" />
+		</sg:SpacedGrid>
+	</sg:SpacedGrid>
+</UserControl>
