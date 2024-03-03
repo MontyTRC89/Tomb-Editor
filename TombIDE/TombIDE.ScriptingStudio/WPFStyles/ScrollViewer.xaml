@@ -88,7 +88,7 @@
 		<Setter Property="Background" Value="{DynamicResource Brush_Background_Low}" />
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Left="{x:Static local:Defaults.SmallThicknessWidth}" Right="{x:Static local:Defaults.SmallThicknessWidth}" />
+				<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" Right="{x:Static local:Defaults.MediumThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -127,7 +127,7 @@
 		<Setter Property="Background" Value="{DynamicResource Brush_Background_Low}" />
 		<Setter Property="Padding">
 			<Setter.Value>
-				<Thickness Bottom="{x:Static local:Defaults.SmallThicknessWidth}" Top="{x:Static local:Defaults.SmallThicknessWidth}" />
+				<Thickness Bottom="{x:Static local:Defaults.MediumThicknessWidth}" Top="{x:Static local:Defaults.MediumThicknessWidth}" />
 			</Setter.Value>
 		</Setter>
 
@@ -190,7 +190,7 @@
 							Style="{StaticResource ScrollBarButton}">
 							<Path
 								x:Name="arrowUpGlyph"
-								Margin="{x:Static local:Defaults.SmallThickness}"
+								Margin="{x:Static local:Defaults.MediumThickness}"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Data="{DynamicResource WideArrowUp}"
@@ -218,7 +218,7 @@
 							Style="{StaticResource ScrollBarButton}">
 							<Path
 								x:Name="arrowDownGlyph"
-								Margin="{x:Static local:Defaults.SmallThickness}"
+								Margin="{x:Static local:Defaults.MediumThickness}"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Data="{DynamicResource WideArrowDown}"
@@ -301,7 +301,7 @@
 									Style="{StaticResource ScrollBarButton}">
 									<Path
 										x:Name="arrowLeftGlyph"
-										Margin="{x:Static local:Defaults.SmallThickness}"
+										Margin="{x:Static local:Defaults.MediumThickness}"
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
 										Data="{DynamicResource WideArrowLeft}"
@@ -326,7 +326,7 @@
 									Style="{StaticResource ScrollBarButton}">
 									<Path
 										x:Name="arrowRightGlyph"
-										Margin="{x:Static local:Defaults.SmallThickness}"
+										Margin="{x:Static local:Defaults.MediumThickness}"
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
 										Data="{DynamicResource WideArrowRight}"

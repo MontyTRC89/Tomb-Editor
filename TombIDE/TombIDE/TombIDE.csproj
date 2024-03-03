@@ -50,87 +50,33 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\TEN_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\add-48.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\forward-arrow-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_ArrowDown-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_ArrowUp-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_edit-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_Import-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_Open-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_plus_math-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\general_trash-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-back-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-folder-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-master-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-play-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-plugin-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-plugin-30_disabled.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-script-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide-tools-30.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ide_projectmanager.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\import-48.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\open-48.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TIDE_Logo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TR1_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TR2_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TR3_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TR4_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\TRNG_LVL.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Resources\TEN_LVL.png" />
+    <Content Include="Resources\add-48.png" />
+    <Content Include="Resources\forward-arrow-16.png" />
+    <Content Include="Resources\general_ArrowDown-16.png" />
+    <Content Include="Resources\general_ArrowUp-16.png" />
+    <Content Include="Resources\general_edit-16.png" />
+    <Content Include="Resources\general_Import-16.png" />
+    <Content Include="Resources\general_Open-16.png" />
+    <Content Include="Resources\general_plus_math-16.png" />
+    <Content Include="Resources\general_trash-16.png" />
+    <Content Include="Resources\ide-back-30.png" />
+    <Content Include="Resources\ide-folder-30.png" />
+    <Content Include="Resources\ide-master-30.png" />
+    <Content Include="Resources\ide-play-30.png" />
+    <Content Include="Resources\ide-plugin-30.png" />
+    <Content Include="Resources\ide-plugin-30_disabled.png" />
+    <Content Include="Resources\ide-script-30.png" />
+    <Content Include="Resources\ide-tools-30.png" />
+    <Content Include="Resources\ide_projectmanager.png" />
+    <Content Include="Resources\import-48.png" />
+    <Content Include="Resources\open-48.png" />
+    <Content Include="Resources\TIDE_Logo.png" />
+    <Content Include="Resources\TR1_LVL.png" />
+    <Content Include="Resources\TR2_LVL.png" />
+    <Content Include="Resources\TR3_LVL.png" />
+    <Content Include="Resources\TR4_LVL.png" />
+    <Content Include="Resources\TRNG_LVL.png" />
     <Content Include="TIDE.ico" />
   </ItemGroup>
   <ItemGroup>
