@@ -1,4 +1,7 @@
-﻿using MvvmDialogs;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.VisualBasic.ApplicationServices;
+using MvvmDialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +9,11 @@ using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombEditor.WPF;
+
+public class ResetCameraMessage(bool newCamera) : RequestMessage<bool>
+{
+	public bool NewCamera { get; } = newCamera;
+}
 
 public enum SelectionType
 {
@@ -32,17 +40,12 @@ public delegate void ValueChangedEventHandler<T>(object? sender, ValueChangedEve
 
 public interface IEditor : IDisposable
 {
-	/// <summary>
-	/// The service used to locate and open Dialogs / Windows from ViewModels / Commands.
-	/// </summary>
-	IDialogService DialogService { get; }
+	SectorColoringManager SectorColoringManager { get; }
 
 	/// <summary>
 	/// Everything about the editor's Undo / Redo system.
 	/// </summary>
 	EditorUndoManager UndoManager { get; }
-
-	SectorColoringManager SectorColoringManager { get; }
 
 	/// <summary>
 	/// The configuration of the editor instance.
@@ -195,11 +198,11 @@ public interface IEditor : IDisposable
 
 public abstract class EditorBase : IEditor
 {
-	public IDialogService DialogService { get; }
-
-	public EditorUndoManager UndoManager { get; }
+	public abstract bool IsPreciseGeometryAllowed { get; }
 
 	public SectorColoringManager SectorColoringManager { get; }
+
+	public EditorUndoManager UndoManager { get; }
 
 	private Configuration _configuration = new();
 	public Configuration Configuration
@@ -216,11 +219,9 @@ public abstract class EditorBase : IEditor
 		}
 	}
 
-	public abstract bool IsPreciseGeometryAllowed { get; }
-
 	public Level Level { get; }
 
-	public StatisticSummary Stats { get; }
+	public StatisticSummary Stats { get; } = new();
 
 	private bool _hasUnsavedChanges;
 	public bool HasUnsavedChanges
@@ -530,7 +531,8 @@ public abstract class EditorBase : IEditor
 
 	public void ResetCamera(bool newCamera = false)
 	{
-		RaiseEvent(new ResetCameraEvent { NewCamera = newCamera });
+		var message = new ResetCameraMessage(newCamera);
+		WeakReferenceMessenger.Default.Send(message);
 	}
 
 	/// <summary>
