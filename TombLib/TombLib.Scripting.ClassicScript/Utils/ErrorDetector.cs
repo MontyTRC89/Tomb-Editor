@@ -175,7 +175,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				{
 					string entryValue = entry.Value.ToString();
 
-					if (entryValue.Contains("["))
+					if (entryValue.Contains('['))
 						correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
 
 					break;
@@ -226,7 +226,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 					break;
 
 				nextLine = document.GetLineByNumber(i);
-				nextLineText = document.GetText(nextLine.Offset, nextLine.Length);
+				nextLineText = LineParser.EscapeComments(document.GetText(nextLine.Offset, nextLine.Length));
 
 				if ((nextLineText.Contains('>') && !Regex.IsMatch(nextLineText, Patterns.NextLineKey)) || nextLineText.Count('>') > 1)
 					return true;
@@ -250,7 +250,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			lineText = LineParser.EscapeComments(lineText);
 
-			if (!lineText.Contains("="))
+			if (!lineText.Contains('='))
 				return false;
 
 			string command = CommandParser.GetCommandKey(document, lineOffset);

@@ -217,6 +217,7 @@ namespace TombEditor.ToolWindows
             this.comboStepHeight.TabIndex = 1;
             this.comboStepHeight.Width = 90;
             this.comboStepHeight.SelectedIndexChanged += new System.EventHandler(this.comboStepHeight_SelectedIndexChanged);
+            this.toolTip.SetToolTip(this.comboStepHeight, "Set minimum step height for room geometry actions");
             // 
             // tbStats
             // 
