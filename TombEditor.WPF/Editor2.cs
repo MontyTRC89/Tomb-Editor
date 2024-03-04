@@ -40,8 +40,6 @@ public delegate void ValueChangedEventHandler<T>(object? sender, ValueChangedEve
 
 public interface IEditor : IDisposable
 {
-	SectorColoringManager SectorColoringManager { get; }
-
 	/// <summary>
 	/// Everything about the editor's Undo / Redo system.
 	/// </summary>

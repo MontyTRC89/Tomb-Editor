@@ -58,11 +58,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.GameFlowS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.Tomb1Main", "TombLib\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj", "{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkUI.WPF", "DarkUI\DarkUI.WPF\DarkUI.WPF.csproj", "{0C7A85FF-EC0D-493D-90AF-9133BABC35CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkUI.WPF", "DarkUI\DarkUI.WPF\DarkUI.WPF.csproj", "{0C7A85FF-EC0D-493D-90AF-9133BABC35CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkUI.WPF.Demo", "DarkUI\DarkUI.WPF.Demo\DarkUI.WPF.Demo.csproj", "{1AF3B939-0179-41CE-8D70-158D0CA63A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkUI.WPF.Demo", "DarkUI\DarkUI.WPF.Demo\DarkUI.WPF.Demo.csproj", "{1AF3B939-0179-41CE-8D70-158D0CA63A99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor.WPF", "TombEditor.WPF\TombEditor.WPF.csproj", "{D16088CD-8B58-4CB4-8322-8562BF97C44E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombEditor.WPF", "TombEditor.WPF\TombEditor.WPF.csproj", "{D16088CD-8B58-4CB4-8322-8562BF97C44E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
