@@ -5,16 +5,142 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         xmlns:local="clr-namespace:TombEditor.WPF.Forms"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Animated textures" Height="450" Width="800">
+        Title="Animated textures" Height="695" Width="885">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="480" />
             <ColumnDefinition Width="400" />
         </Grid.ColumnDefinitions>
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </sg:SpacedGrid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+            <Label Content="Animation set:"/>
+            <darkCtrl:SearchableComboBox Width="320" Margin="0,0,2,0">
+            </darkCtrl:SearchableComboBox>
+            <Button  Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
+                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_edit-16.png" />
+            </Button>
+            <Button  Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
+                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+            </Button>
+            <Button  Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
+                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+            </Button>
+        </StackPanel>
+        
+        <sg:SpacedGrid Grid.Column="0" Grid.Row="1">
+            <GroupBox Header="Frame">
+                <sg:SpacedGrid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Height="300" Width="425" Grid.Column="0" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Image"/>
+                            <DataGridTextColumn Header="Repeat"/>
+                            <DataGridHyperlinkColumn Header="Area" />
+                            <DataGridCheckBoxColumn Header="Edge 0" />
+                            <DataGridCheckBoxColumn Header="Edge 1" />
+                            <DataGridCheckBoxColumn Header="Edge 2" />
+                            <DataGridCheckBoxColumn Header="Edge 3" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <Button Margin="0,0,0,2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+                        </Button>
+                        <Button Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+                        </Button>
+                        <Button Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png" />
+                        </Button>
+                        <Button VerticalAlignment="Bottom" Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowUp-16.png" />
+                        </Button>
+                        <Button VerticalAlignment="Bottom" Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png" />
+                        </Button>
+                    </StackPanel>
+                </sg:SpacedGrid>
+            </GroupBox>
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Column="0" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="133"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <GroupBox Header="Procedural animation tool">
+                    <sg:SpacedGrid>
+                        <sg:SpacedGrid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </sg:SpacedGrid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <Label Content="Animator:" Width="180"/>
+                            <Label Content="Progress %:" Width="69"/>
+                            <Label Content="Frames:"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1">
+                            <darkCtrl:SearchableComboBox Width="186" Margin="0,0,2,0">
+                                <ComboBoxItem>Stretch horizontal</ComboBoxItem>
+                                <ComboBoxItem>Stretch vertical</ComboBoxItem>
+                                <ComboBoxItem>Scale</ComboBoxItem>
+                                <ComboBoxItem>Scale Skew horizontal ↖</ComboBoxItem>
+                                <ComboBoxItem>Skew horizontal ↗</ComboBoxItem>
+                                <ComboBoxItem>Skew vertical ↖</ComboBoxItem>
+                                <ComboBoxItem>Skew vertical ↗</ComboBoxItem>
+                                <ComboBoxItem>Spin</ComboBoxItem>
+                                <ComboBoxItem>Pan horizontal</ComboBoxItem>
+                                <ComboBoxItem>Pan vertical</ComboBoxItem>
+                                <ComboBoxItem>Shake</ComboBoxItem>
+                            </darkCtrl:SearchableComboBox>
+                            <xceed:IntegerUpDown Width="66" Margin="0,0,2,0"/>
+                            <xceed:IntegerUpDown Width="67" Margin="0,0,2,0"/>
+                        </StackPanel>
+                        <DockPanel Grid.Row="2">
+                            <CheckBox DockPanel.Dock="Left" Margin="0,6,0,6" Content="Symmetric"/>
+                            <CheckBox DockPanel.Dock="Left" Margin="4,6,4,6" Content="Smooth" Width="120"/>
+                            <Button DockPanel.Dock="Right" Margin="2,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png" />
+                            </Button>
+                            <Button DockPanel.Dock="Right" Margin="2,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+                            </Button>
+                            <Button DockPanel.Dock="Right" Margin="2,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png" />
+                            </Button>
+                            <Button DockPanel.Dock="Right" Margin="2,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+                            </Button>
+                            <Button DockPanel.Dock="Right" Margin="0,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png" />
+                            </Button>
+                        </DockPanel>
+                    </sg:SpacedGrid>
+                </GroupBox>
+                <GroupBox Header="Setting">
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <GroupBox Header="Preview" Height="133">
+                </GroupBox>
+            </StackPanel>
+
+        </sg:SpacedGrid>
+
+
     </sg:SpacedGrid>
 </Window>
 
