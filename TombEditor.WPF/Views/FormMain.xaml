@@ -758,10 +758,7 @@
 			</MenuItem>
 
 			<MenuItem Header="Tools">
-				<MenuItem
-					x:Name="editLevelSettingsToolStripMenuItem"
-					Click="OnShowEditorOptions"
-					Header="EditLevelSettings">
+				<MenuItem x:Name="editLevelSettingsToolStripMenuItem" Header="EditLevelSettings">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_settings-16.png" />
 					</MenuItem.Icon>
@@ -884,7 +881,7 @@
 		</sg:SpacedGrid>
 
 		<DockingManager x:Name="dockManager" Grid.Row="1">
-			<LayoutRoot PropertyChanged="OnLayoutRootPropertyChanged">
+			<LayoutRoot>
 				<LayoutPanel Orientation="Horizontal">
 					<LayoutAnchorablePaneGroup DockWidth="287" Orientation="Vertical">
 						<LayoutAnchorablePane

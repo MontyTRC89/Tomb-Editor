@@ -1,11 +1,9 @@
 ﻿using DarkUI.Config;
 using DarkUI.Win32;
-using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -104,31 +102,8 @@ public partial class App : Application
 				}
 
 				// Run
-				Editor editor = new Editor(SynchronizationContext.Current, configuration);
-				editor.DialogService = new DialogService();
+				var editor = new Editor(SynchronizationContext.Current, configuration);
 				Editor.Instance = editor;
-
-				// Run editor normally if no batch compile is pending.
-				// Otherwise, don't load main form and jump straight to batch-compiling levels.
-
-				if (!doBatchCompile)
-				{
-					if (!string.IsNullOrEmpty(startFile)) // Open files on start
-					{
-						if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-							EditorActions.OpenLevelPrj((MainWindow as Forms.FormMain).NativeWindow, startFile);
-						else
-							EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, startFile);
-					}
-					else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-					{
-						if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
-							File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
-							EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, TombEditor.Properties.Settings.Default.RecentProjects[0]);
-					}
-				}
-				else
-					EditorActions.BuildInBatch(editor, batchList, batchFile);
 			}
 		}
 		else if (startFile != null) // Send opening file to existing editor instance
