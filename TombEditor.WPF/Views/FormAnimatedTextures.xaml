@@ -9,10 +9,10 @@
         xmlns:local="clr-namespace:TombEditor.WPF.Forms"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Animated textures" Height="618" Width="885">
+        Title="Animated textures" Height="618" Width="800">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="431"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <sg:SpacedGrid.RowDefinitions>
@@ -151,7 +151,7 @@
                 </GroupBox>
             </StackPanel>
             <StackPanel Grid.Column="1">
-                <GroupBox Header="Preview" Height="192">
+                <GroupBox Header="Preview" Height="188">
                     <StackPanel VerticalAlignment="Center">
                         <Border BorderThickness="1" BorderBrush="#FF5C5C5C" Height="113" Width="113">
                             <Image Name="img1" Source="/TombEditor.WPF;component/Resources/misc/TE.png" Height="113" Width="113"/>
@@ -166,9 +166,9 @@
             <Button DockPanel.Dock="Right" Margin="0,0,4,0" Width="90" Content="OK" IsDefault="True"/>
         </DockPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-            <darkCtrl:SearchableComboBox Width="430"/>
+            <darkCtrl:SearchableComboBox Width="347"/>
         </StackPanel>
-        <DockPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Width="430" >
+        <DockPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Width="346" >
             <Border BorderThickness="1" BorderBrush="#FF5C5C5C">
                 <WindowsFormsHost x:Name="ViewportHost"/>
             </Border>
