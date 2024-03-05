@@ -10,20 +10,21 @@
         xmlns:local="clr-namespace:TombEditor.WPF.Forms"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Animated textures" Height="695" Width="885">
+        Title="Animated textures" Height="619" Width="885">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="480" />
-            <ColumnDefinition Width="400" />
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
             <Label Content="Animation set:"/>
-            <darkCtrl:SearchableComboBox Width="320" Margin="0,0,2,0">
+            <darkCtrl:SearchableComboBox Width="274" Margin="0,0,2,0">
             </darkCtrl:SearchableComboBox>
             <Button  Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
                 <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_edit-16.png" />
@@ -35,15 +36,14 @@
                 <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
             </Button>
         </StackPanel>
-        
-        <sg:SpacedGrid Grid.Column="0" Grid.Row="1">
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
             <GroupBox Header="Frame">
                 <sg:SpacedGrid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid Height="300" Width="425" Grid.Column="0" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                    <DataGrid Height="300" Width="383" Grid.Column="0" ItemsSource="{Binding}" AutoGenerateColumns="False" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Image"/>
                             <DataGridTextColumn Header="Repeat"/>
@@ -73,13 +73,13 @@
                     </StackPanel>
                 </sg:SpacedGrid>
             </GroupBox>
-        </sg:SpacedGrid>
+        </StackPanel>
         <sg:SpacedGrid Grid.Column="0" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="133"/>
             </Grid.ColumnDefinitions>
-            <StackPanel>
+            <StackPanel Grid.Row="0">
                 <GroupBox Header="Procedural animation tool">
                     <sg:SpacedGrid>
                         <sg:SpacedGrid.RowDefinitions>
@@ -88,12 +88,12 @@
                             <RowDefinition Height="auto"/>
                         </sg:SpacedGrid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <Label Content="Animator:" Width="180"/>
+                            <Label Content="Animator:" Width="139"/>
                             <Label Content="Progress %:" Width="69"/>
                             <Label Content="Frames:"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Row="1">
-                            <darkCtrl:SearchableComboBox Width="186" Margin="0,0,2,0">
+                            <darkCtrl:SearchableComboBox Width="136" Margin="0,0,2,0">
                                 <ComboBoxItem>Stretch horizontal</ComboBoxItem>
                                 <ComboBoxItem>Stretch vertical</ComboBoxItem>
                                 <ComboBoxItem>Scale</ComboBoxItem>
@@ -107,11 +107,11 @@
                                 <ComboBoxItem>Shake</ComboBoxItem>
                             </darkCtrl:SearchableComboBox>
                             <xceed:IntegerUpDown Width="66" Margin="0,0,2,0"/>
-                            <xceed:IntegerUpDown Width="67" Margin="0,0,2,0"/>
+                            <xceed:IntegerUpDown Width="70" Margin="0,0,0,0"/>
                         </StackPanel>
                         <DockPanel Grid.Row="2">
                             <CheckBox DockPanel.Dock="Left" Margin="0,6,0,6" Content="Symmetric"/>
-                            <CheckBox DockPanel.Dock="Left" Margin="4,6,4,6" Content="Smooth" Width="120"/>
+                            <CheckBox DockPanel.Dock="Left" Margin="4,6,4,6" Content="Smooth" Width="70"/>
                             <Button DockPanel.Dock="Right" Margin="2,6,0,6" Style="{DynamicResource ButtonWithIconOnly}">
                                 <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png" />
                             </Button>
@@ -131,16 +131,47 @@
                     </sg:SpacedGrid>
                 </GroupBox>
                 <GroupBox Header="Setting">
+                    <sg:SpacedGrid>
+                        <sg:SpacedGrid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </sg:SpacedGrid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <Label Content="Type:" Width="100"/>
+                            <Label Content="FPS:" Width="77"/>
+                            <Label Content="UvRotate"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1">
+                            <darkCtrl:SearchableComboBox Width="96" Margin="0,0,2,0">
+                            </darkCtrl:SearchableComboBox>
+                            <xceed:IntegerUpDown Width="76" Margin="0,0,2,0"/>
+                            <darkCtrl:SearchableComboBox Width="96" Margin="0,0,2,0">
+                            </darkCtrl:SearchableComboBox>
+                        </StackPanel>
+                    </sg:SpacedGrid>
                 </GroupBox>
             </StackPanel>
             <StackPanel Grid.Column="1">
-                <GroupBox Header="Preview" Height="133">
+                <GroupBox Header="Preview" Height="192">
+                    <StackPanel VerticalAlignment="Center">
+                        <Border BorderThickness="1" BorderBrush="Red" Height="113" Width="113">
+                            <Image Name="img1" Source="/TombEditor.WPF;component/Resources/misc/TE.png" Height="113" Width="113"/>
+                        </Border>
+                        <ProgressBar></ProgressBar>
+                    </StackPanel>
                 </GroupBox>
             </StackPanel>
-
         </sg:SpacedGrid>
-
-
+        <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+            <Button DockPanel.Dock="Right"  Width="90" Margin="0,0,1,0" Content="Cancel"/>
+            <Button DockPanel.Dock="Right" Margin="0,0,4,0" Width="90" Content="OK" IsDefault="True"/>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+            <darkCtrl:SearchableComboBox Width="432"/>
+        </StackPanel>
+        <DockPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
+            <WindowsFormsHost x:Name="ViewportHost"/>
+        </DockPanel>
     </sg:SpacedGrid>
 </Window>
 
