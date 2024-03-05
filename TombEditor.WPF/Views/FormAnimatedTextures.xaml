@@ -42,15 +42,22 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid Height="300" Width="383" Grid.Column="0" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                    <DataGrid Height="300" Width="383" Grid.Column="0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Image"/>
+                            <DataGridTemplateColumn Header="Image">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Name="Image"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Repeat"/>
-                            <DataGridHyperlinkColumn Header="Area" />
-                            <DataGridCheckBoxColumn Header="Edge 0" />
-                            <DataGridCheckBoxColumn Header="Edge 1" />
-                            <DataGridCheckBoxColumn Header="Edge 2" />
-                            <DataGridCheckBoxColumn Header="Edge 3" />
+                            <DataGridTextColumn Header="Area"/>
+                            <DataGridTextColumn Header="Area" />
+                            <DataGridTextColumn Header="Edge 0" />
+                            <DataGridTextColumn Header="Edge 1" />
+                            <DataGridTextColumn Header="Edge 2" />
+                            <DataGridTextColumn Header="Edge 3" />
                         </DataGrid.Columns>
                     </DataGrid>
                     <StackPanel Orientation="Vertical" Grid.Column="1">
