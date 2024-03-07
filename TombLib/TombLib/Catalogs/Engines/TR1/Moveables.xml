@@ -130,7 +130,7 @@
     <moveable id="170" name="Waterfall mist" essential="false" ten="WATERFALLMIST" />
     <moveable id="172" name="Mutant bullet" hidden="true" ten="PROJ_SHARD" />
     <moveable id="173" name="Mutant grenade" hidden="true" ten="PROJ_BOMB" />
-    <moveable id="177" name="Lava particle emitter" essential="false" />
+    <moveable id="177" name="Lava particle emitter" essential="false" ten="LAVA_EMITTER" />
     <moveable id="179" name="Flame emitter" essential="false" ten="FLAME_EMITTER1" />
     <moveable id="180" name="Flowing Atlantean lava" essential="false" />
     <moveable id="181" name="Mutant egg and holder (big)" essential="false" />
