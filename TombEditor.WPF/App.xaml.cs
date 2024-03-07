@@ -105,7 +105,7 @@ public partial class App : Application
 
 				// Run
 				Editor editor = new Editor(SynchronizationContext.Current, configuration);
-				editor.DialogService = new DialogService();
+				//editor.DialogService = new DialogService();
 				Editor.Instance = editor;
 
 				// Run editor normally if no batch compile is pending.
@@ -113,19 +113,19 @@ public partial class App : Application
 
 				if (!doBatchCompile)
 				{
-					if (!string.IsNullOrEmpty(startFile)) // Open files on start
-					{
-						if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-							EditorActions.OpenLevelPrj((MainWindow as Forms.FormMain).NativeWindow, startFile);
-						else
-							EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, startFile);
-					}
-					else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-					{
-						if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
-							File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
-							EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, TombEditor.Properties.Settings.Default.RecentProjects[0]);
-					}
+					//if (!string.IsNullOrEmpty(startFile)) // Open files on start
+					//{
+					//	if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+					//		EditorActions.OpenLevelPrj((MainWindow as Forms.FormMain).NativeWindow, startFile);
+					//	else
+					//		EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, startFile);
+					//}
+					//else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
+					//{
+					//	if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
+					//		File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
+					//		EditorActions.OpenLevel((MainWindow as Forms.FormMain).NativeWindow, TombEditor.Properties.Settings.Default.RecentProjects[0]);
+					//}
 				}
 				else
 					EditorActions.BuildInBatch(editor, batchList, batchFile);
