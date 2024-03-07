@@ -758,7 +758,7 @@
     <moveable id="1054" name="KILL_ALL_TRIGGERS" />
     <moveable id="1055" name="TRIGGER_TRIGGERER" />
     <moveable id="1056" name="HIGH_OBJECT" />
-    <moveable id="1057" name="LAVA_EMITTER" />
+    <moveable id="1057" name="EMBER_EMITTER" />
     <moveable id="1058" name="SMASH_OBJECT1" />
     <moveable id="1059" name="SMASH_OBJECT2" />
     <moveable id="1060" name="SMASH_OBJECT3" />
