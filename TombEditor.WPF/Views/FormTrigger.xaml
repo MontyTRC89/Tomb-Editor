@@ -9,7 +9,11 @@
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         x:Class="TombEditor.WPF.Forms.FormTrigger"
         mc:Ignorable="d"
-        Style="{DynamicResource CustomWindowStyle}" Height="auto" Width="711">
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Trigger"
+        Height="260"
+        Width="711"
+        ResizeMode="NoResize">
 
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
