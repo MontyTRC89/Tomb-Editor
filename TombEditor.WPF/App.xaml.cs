@@ -27,12 +27,10 @@ public partial class App : Application
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		Localizer.Instance.LoadLanguage("en");
-
 		Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		string[] args = e.Args;
-
-		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		string startFile = null;
 		string batchFile = null;

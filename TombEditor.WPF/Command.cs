@@ -41,20 +41,26 @@ namespace TombEditor.WPF
         Settings
     }
 
-    public class CommandObj
+    public class CommandObj : ICommand
     {
-        public string Name { get; set; }
-        public string FriendlyName { get; set; }
-        public Action<CommandArgs> Execute { get; set; }
+        public string? Name { get; set; }
+        public string? FriendlyName { get; set; }
+        public Action<CommandArgs> ExecuteAction { get; set; }
+        public CommandArgs? Args { get; set; }
         public CommandType Type { get; set; }
+
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object? parameter) => true;
+        public void Execute(object? parameter) => ExecuteAction(Args);
     }
 
-    public class CommandArgs
+    public class CommandArgs(INotifyPropertyChanged caller, Editor editor, Key keyData = Key.None, IDialogService? dialogService = null)
     {
-        public Editor Editor;
-        public IDialogService DialogService;
-        public INotifyPropertyChanged Caller;
-        public Key KeyData = Key.None;
+        public INotifyPropertyChanged Caller { get; init; } = caller;
+        public Editor Editor { get; init; } = editor;
+        public IDialogService? DialogService { get; init; } = dialogService;
+        public Key KeyData { get; init; } = keyData;
     }
 
     public static class CommandHandler
@@ -63,11 +69,12 @@ namespace TombEditor.WPF
         private static List<CommandObj> _commands = new List<CommandObj>();
         public static IEnumerable<CommandObj> Commands => _commands;
 
-        public static CommandObj GetCommand(string name)
+        public static CommandObj GetCommand(string name, CommandArgs args)
         {
-            CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (command == null)
-                throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+            CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+
+            command.Args = args;
             return command;
         }
 
@@ -95,7 +102,7 @@ namespace TombEditor.WPF
                 throw new InvalidOperationException("You cannot add multiple commands with the same name.");
 
             command += delegate { logger.Info(commandName); };
-            _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Execute = command, Type = type });
+            _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, ExecuteAction = command, Type = type });
         }
 
         static CommandHandler()
@@ -674,7 +681,7 @@ namespace TombEditor.WPF
 
             AddCommand("Cut", "Cut", CommandType.Edit, delegate (CommandArgs args)
             {
-                GetCommand("Copy").Execute.Invoke(args);
+                GetCommand("Copy", args).Execute(null);
 
                 if (args.Editor.Mode == EditorMode.Map2D)
                 {
@@ -776,8 +783,8 @@ namespace TombEditor.WPF
 
             AddCommand("DeleteMissingObjects", "Delete missing objects", CommandType.Edit, delegate (CommandArgs args)
             {
-				if (args.DialogService.ShowMessageBox(args.Caller, "Do you want to delete all missing objects in all rooms?\nThis action can't be undone and will also remove associated triggers.",
-									   "Delete all missing objects", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (args.DialogService.ShowMessageBox(args.Caller, "Do you want to delete all missing objects in all rooms?\nThis action can't be undone and will also remove associated triggers.",
+                                       "Delete all missing objects", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     foreach (var room in args.Editor.Level.ExistingRooms)
                     {
@@ -802,7 +809,6 @@ namespace TombEditor.WPF
                 if (args.DialogService.ShowMessageBox(args.Caller, "Do you want to delete all objects in selected rooms? This action can't be undone.",
                                        "Delete all objects", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-
                     foreach (var room in args.Editor.SelectedRooms)
                     {
                         var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && !(ob is LightInstance)).ToList();
@@ -1015,7 +1021,6 @@ namespace TombEditor.WPF
                 EditorActions.ImportRooms(args.Caller);
             });
 
-
             AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 var room = args.Editor.SelectedRoom;
@@ -1060,7 +1065,7 @@ namespace TombEditor.WPF
                 if (existingWindow == null)
                 {
                     var propForm = new FormRoomProperties(args.Editor);
-					propForm.Show(GetWin32WindowFromCaller(args.Caller));
+                    propForm.Show(GetWin32WindowFromCaller(args.Caller));
                 }
                 else
                     existingWindow.Focus();
@@ -1288,7 +1293,7 @@ namespace TombEditor.WPF
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
-				using (var form = new FormTextureRemap(args.Editor))
+                using (var form = new FormTextureRemap(args.Editor))
                     form.ShowDialog(GetWin32WindowFromCaller(args.Caller));
             });
 
@@ -1690,7 +1695,7 @@ namespace TombEditor.WPF
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args) 
+            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly = !args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
                 args.Editor.ConfigurationChange();
@@ -1948,7 +1953,7 @@ namespace TombEditor.WPF
 
             AddCommand("SetRoomOutside", "Set to outside", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if(args.Editor.SelectedRoom != null )
+                if (args.Editor.SelectedRoom != null)
                 {
                     args.Editor.SelectedRoom.Properties.FlagOutside = !args.Editor.SelectedRoom.Properties.FlagOutside;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
@@ -2105,50 +2110,52 @@ namespace TombEditor.WPF
                 args.Editor.ActivateDefaultControl(nameof(WPF.Forms.FormMain));
             });
 
-            AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 
+            AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (args.DialogService.ShowMessageBox(args.Caller, "Do you want to delete all lights in level? This action can't be undone.",
                                    "Delete all lights", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
 
-				foreach (var room in args.Editor.SelectedRooms)
+                foreach (var room in args.Editor.SelectedRooms)
                 {
-					var objects = room.Objects.Where(ob => ob is LightInstance).ToList();
-					if (objects.Count > 0)
-						for (int i = objects.Count - 1; i >= 0; i--)
+                    var objects = room.Objects.Where(ob => ob is LightInstance).ToList();
+                    if (objects.Count > 0)
+                        for (int i = objects.Count - 1; i >= 0; i--)
                         {
-							var obj = objects[i];
-							EditorActions.DeleteObjectWithoutUpdate(obj);
-							objects.RemoveAt(i);
-						}
-				}
-			});
+                            var obj = objects[i];
+                            EditorActions.DeleteObjectWithoutUpdate(obj);
+                            objects.RemoveAt(i);
+                        }
+                }
+            });
 
-			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args) 
+            AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
-				SortedDictionary<WadMoveableId,uint> moveablesCount = new SortedDictionary<WadMoveableId, uint>();
-				SortedDictionary<WadStaticId,uint> staticsCount = new SortedDictionary<WadStaticId, uint>();
-				int totalMoveablesCount;
-				int totalStaticsCount;
+                SortedDictionary<WadMoveableId, uint> moveablesCount = new SortedDictionary<WadMoveableId, uint>();
+                SortedDictionary<WadStaticId, uint> staticsCount = new SortedDictionary<WadStaticId, uint>();
+                int totalMoveablesCount;
+                int totalStaticsCount;
 
-				EditorActions.GetObjectStatistics(args.Editor, moveablesCount, staticsCount, out totalMoveablesCount, out totalStaticsCount);
+                EditorActions.GetObjectStatistics(args.Editor, moveablesCount, staticsCount, out totalMoveablesCount, out totalStaticsCount);
 
-				var sb = new StringBuilder();
-				foreach (var kvp in moveablesCount) {
-					string name = TrCatalog.GetMoveableName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
-					sb.AppendLine(name + "\t\t\tx" + kvp.Value);
-				}
-				sb.AppendLine("----------------------------------------------------");
-				foreach (var kvp in staticsCount) {
-					string name = TrCatalog.GetStaticName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
-					sb.AppendLine(name + "\t\t\tx" + kvp.Value);
-				}
-				sb.AppendLine("----------------------------------------------------");
-				sb.AppendLine("Total Moveables :\t\t\t" + totalMoveablesCount);
-				sb.AppendLine("Total Statics :\t\t\t" + totalStaticsCount);
-				Clipboard.SetText(sb.ToString());
-				args.Editor.SendMessage("Object statistics copied into clipboard!", PopupType.Info);
-			});
+                var sb = new StringBuilder();
+                foreach (var kvp in moveablesCount)
+                {
+                    string name = TrCatalog.GetMoveableName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
+                    sb.AppendLine(name + "\t\t\tx" + kvp.Value);
+                }
+                sb.AppendLine("----------------------------------------------------");
+                foreach (var kvp in staticsCount)
+                {
+                    string name = TrCatalog.GetStaticName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
+                    sb.AppendLine(name + "\t\t\tx" + kvp.Value);
+                }
+                sb.AppendLine("----------------------------------------------------");
+                sb.AppendLine("Total Moveables :\t\t\t" + totalMoveablesCount);
+                sb.AppendLine("Total Statics :\t\t\t" + totalStaticsCount);
+                Clipboard.SetText(sb.ToString());
+                args.Editor.SendMessage("Object statistics copied into clipboard!", PopupType.Info);
+            });
 
             AddCommand("MoveObjectLeftPrecise", "Move object left (8 units)", CommandType.Objects, delegate (CommandArgs args)
             {
@@ -2218,8 +2225,8 @@ namespace TombEditor.WPF
         }
 
         private static WinForms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-			.Cast<WindowEx>()
-			.FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
-			.Win32Window;
-	}
+            .Cast<WindowEx>()
+            .FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
+            .Win32Window;
+    }
 }
