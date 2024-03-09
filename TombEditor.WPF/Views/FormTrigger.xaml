@@ -13,7 +13,8 @@
         Height="265" MaxHeight="265"
         Width="711" MaxWidth="711"
         ResizeMode="NoResize"
-        WindowStyle="ToolWindow">
+        WindowStyle="ToolWindow"
+        Title="Trigger">
 
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <sg:SpacedGrid.RowDefinitions>
