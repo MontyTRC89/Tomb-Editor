@@ -10,10 +10,10 @@
         x:Class="TombEditor.WPF.Forms.FormTrigger"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Trigger"
-        Height="260"
-        Width="711"
-        ResizeMode="NoResize">
+        Height="265" MaxHeight="265"
+        Width="711" MaxWidth="711"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow">
 
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <sg:SpacedGrid.RowDefinitions>
