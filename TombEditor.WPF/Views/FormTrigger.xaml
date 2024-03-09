@@ -15,16 +15,16 @@
         Width="711"
         ResizeMode="NoResize">
 
-    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
         <sg:SpacedGrid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <sg:SpacedGrid.ColumnDefinitions>
             <ColumnDefinition Width="70"/>
@@ -45,7 +45,7 @@
         <xceed:IntegerUpDown Grid.Column="1" Grid.Row="2"  Visibility="Visible"/>
         <darkCtrl:SearchableComboBox Grid.Column="1" Grid.Row="2" Visibility="Hidden"/>
         <Label Grid.Column="1" Grid.Row="2" Visibility="Hidden" Content="Wrong parameter:"/>
-        <Button Grid.Column="2" Grid.Row="2" Width="60" Content="Locate"/>
+        <Button Grid.Column="2" Grid.Row="2" Content="Locate"/>
 
         <!-- Time -->
         <Label Grid.Column="0" Grid.Row="3" Content="(&amp;) Time:"/>
@@ -59,41 +59,70 @@
 
         <DockPanel Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3">
             <!--Bits-->
-            <CheckBox DockPanel.Dock="Left"  Uid="bit1" Content="Bit 1"/>
-            <CheckBox DockPanel.Dock="Left"  Margin="4,0,4,0" Uid="bit2" Content="Bit 2"/>
-            <CheckBox DockPanel.Dock="Left" Margin="4,0,4,0" Uid="bit3" Content="Bit 3"/>
-            <CheckBox DockPanel.Dock="Left" Margin="4,0,4,0" Uid="bit4" Content="Bit 4"/>
-            <CheckBox DockPanel.Dock="Left" Margin="4,0,0,0" Uid="bit5" Content="Bit 5"/>
+            <sg:SpacedGrid>
+                <sg:SpacedGrid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="100"/>
+                </sg:SpacedGrid.ColumnDefinitions>
+                <CheckBox Uid="bit1" Content="Bit 1"/>
+                <CheckBox Uid="bit2" Content="Bit 2" Grid.Column="1"/>
+                <CheckBox Uid="bit3" Content="Bit 3" Grid.Column="2"/>
+                <CheckBox Uid="bit4" Content="Bit 4" Grid.Column="3"/>
+                <CheckBox Uid="bit5" Content="Bit 5" Grid.Column="4"/>
+
+            </sg:SpacedGrid>
 
             <!-- NG Script-->
-            <Button DockPanel.Dock="Right" Margin="2,0,0,0" Style="{DynamicResource ButtonWithIconOnly}">
-                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_animcommand-16.png" />
-            </Button>
-            <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
-            </Button>
-            <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_comments-16.png"/>
-            </Button>
-            <Button DockPanel.Dock="Right" Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
-            </Button>
-            <TextBox DockPanel.Dock="Right" Width="200" Margin="2,0,2,0" Style="{DynamicResource FlatDarkTextBox}"/>
-            <Label Content="Script" HorizontalAlignment="Right" Margin="2,0,2,0"/>
+            <sg:SpacedGrid>
+                <sg:SpacedGrid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </sg:SpacedGrid.ColumnDefinitions>
+                <Label Content="Script"/>
+                <TextBox Width="200" Style="{DynamicResource FlatDarkTextBox}" Grid.Column="1"/>
+                <Button Style="{DynamicResource ButtonWithIconOnly}" Grid.Column="2">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+                </Button>
+                <Button Style="{DynamicResource ButtonWithIconOnly}" Grid.Column="3">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_comments-16.png"/>
+                </Button>
+                <Button Style="{DynamicResource ButtonWithIconOnly}" Grid.Column="4">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png"/>
+                </Button>
+                <Button Style="{DynamicResource ButtonWithIconOnly}" Grid.Column="5">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_animcommand-16.png" />
+                </Button>
+            </sg:SpacedGrid>
         </DockPanel>
-
-        <DockPanel Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3">
+        <sg:SpacedGrid Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="430"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
             <!-- OneShot -->
-            <CheckBox DockPanel.Dock="Left" Uid="OneShot" Content="One Shot"/>
-            
+            <CheckBox Grid.Column="0" DockPanel.Dock="Left" Uid="OneShot" Content="One Shot"/>
+
             <!-- Raw mode -->
-            <CheckBox  DockPanel.Dock="Right" FlowDirection="RightToLeft" Content="Raw mode (show numeric values)" />
-        </DockPanel>
+            <Label Grid.Column="1" Content="Raw mode (show numeric values" VerticalAlignment="Center"/>
+            <CheckBox Grid.Column="2" Content="(" FlowDirection="RightToLeft" Margin="-8,0,0,0"/>
+        </sg:SpacedGrid>
 
         <!-- OK - Cancel -->
-        <DockPanel  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" HorizontalAlignment="Right">
-            <Button DockPanel.Dock="Right"  Width="90" Content="Cancel"/>
-            <Button DockPanel.Dock="Right" Margin="0,0,4,0" Width="90" Content="OK"/>
-        </DockPanel>
+        <sg:SpacedGrid Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width="90" Content="OK" IsDefault="True"/>
+            <Button Grid.Column="1" Width="90" Content="Cancel" DockPanel.Dock="Right"/>
+        </sg:SpacedGrid>
     </sg:SpacedGrid>
 </Window>
