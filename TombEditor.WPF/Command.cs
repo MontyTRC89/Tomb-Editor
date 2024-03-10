@@ -21,7 +21,6 @@ using System.Windows;
 using System.Windows.Input;
 using WinForms = System.Windows.Forms;
 using WinFormsApp = System.Windows.Forms.Application;
-using TombEditor.WPF.Forms;
 
 namespace TombEditor.WPF
 {
@@ -2107,7 +2106,7 @@ namespace TombEditor.WPF
 
             AddCommand("SearchMenus", "Search menu entries", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(WPF.Forms.FormMain));
+                args.Editor.ActivateDefaultControl(nameof(WPF.Forms.MainWindow));
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args)
@@ -2225,7 +2224,7 @@ namespace TombEditor.WPF
         }
 
         private static WinForms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-            .Cast<WindowEx>()
+            .Cast<TombEditor.WPF.Views.WindowEx>()
             .FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
             .Win32Window;
     }

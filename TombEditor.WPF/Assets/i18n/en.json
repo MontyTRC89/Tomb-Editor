@@ -1,4 +1,6 @@
 ﻿{
+	"NewLevel": "New level...",
+
 	"SetFloor": "Set floor",
 	"SetCeiling": "Set ceiling",
 	"SetBox": "Set box sector property",

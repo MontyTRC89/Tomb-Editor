@@ -9,9 +9,13 @@ namespace TombEditor.WPF.ViewModels;
 
 public partial class SectorOptionsViewModel : ObservableObject
 {
-	private readonly Editor _editor;
-
-	public Configuration Configuration { get; }
+	[ObservableProperty] private Vector4 floorColor;
+	[ObservableProperty] private Vector4 boxColor;
+	[ObservableProperty] private Vector4 notWalkableColor;
+	[ObservableProperty] private Vector4 monkeyswingColor;
+	[ObservableProperty] private Vector4 deathColor;
+	[ObservableProperty] private Vector4 portalColor;
+	[ObservableProperty] private Vector4 wallColor;
 
 	public ICommand SetFloorCommand { get; }
 	public ICommand SetCeilingCommand { get; }
@@ -33,18 +37,12 @@ public partial class SectorOptionsViewModel : ObservableObject
 	public ICommand CeilingStepCommand { get; }
 	public ICommand DiagonalWallCommand { get; }
 
-	[ObservableProperty] private Vector4 floorColor;
-	[ObservableProperty] private Vector4 boxColor;
-	[ObservableProperty] private Vector4 notWalkableColor;
-	[ObservableProperty] private Vector4 monkeyswingColor;
-	[ObservableProperty] private Vector4 deathColor;
-	[ObservableProperty] private Vector4 portalColor;
-	[ObservableProperty] private Vector4 wallColor;
+	private readonly Editor _editor;
 
 	public SectorOptionsViewModel(Editor editor)
 	{
 		_editor = editor;
-		Configuration = _editor.Configuration;
+		_editor.EditorEventRaised += EditorEventRaised;
 
 		SetFloorCommand = CommandHandler.GetCommand("SetFloor", new CommandArgs(this, _editor));
 		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", new CommandArgs(this, _editor));
@@ -66,13 +64,24 @@ public partial class SectorOptionsViewModel : ObservableObject
 		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", new CommandArgs(this, _editor));
 		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", new CommandArgs(this, _editor));
 
-		floorColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
-		boxColor = _editor.Configuration.UI_ColorScheme.ColorBox;
-		notWalkableColor = _editor.Configuration.UI_ColorScheme.ColorNotWalkable;
-		monkeyswingColor = _editor.Configuration.UI_ColorScheme.ColorMonkey;
-		deathColor = _editor.Configuration.UI_ColorScheme.ColorDeath;
-		portalColor = _editor.Configuration.UI_ColorScheme.ColorPortal;
-		wallColor = _editor.Configuration.UI_ColorScheme.ColorWall;
+		SetButtonColors();
+	}
+
+	private void EditorEventRaised(IEditorEvent obj)
+	{
+		if (obj is Editor.ConfigurationChangedEvent)
+			SetButtonColors();
+	}
+
+	private void SetButtonColors()
+	{
+		FloorColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
+		BoxColor = _editor.Configuration.UI_ColorScheme.ColorBox;
+		NotWalkableColor = _editor.Configuration.UI_ColorScheme.ColorNotWalkable;
+		MonkeyswingColor = _editor.Configuration.UI_ColorScheme.ColorMonkey;
+		DeathColor = _editor.Configuration.UI_ColorScheme.ColorDeath;
+		PortalColor = _editor.Configuration.UI_ColorScheme.ColorPortal;
+		WallColor = _editor.Configuration.UI_ColorScheme.ColorWall;
 	}
 
 	[RelayCommand]

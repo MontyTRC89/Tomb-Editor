@@ -1,3 +1,4 @@
+using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -1420,5 +1421,7 @@ namespace TombEditor
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
+
+        public IDialogService DialogService { get; set; }
     }
 }

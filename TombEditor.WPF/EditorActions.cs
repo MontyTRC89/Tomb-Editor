@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TombEditor.Forms;
-using TombEditor.WPF.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
@@ -5796,7 +5795,7 @@ namespace TombEditor.WPF
 		}
 
 		private static WinForms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-			.Cast<WindowEx>()
+			.Cast<TombEditor.WPF.Views.WindowEx>()
 			.FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
 			.Win32Window;
 	}

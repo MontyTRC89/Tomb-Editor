@@ -2,10 +2,11 @@
 using System.Windows;
 using System.Windows.Forms;
 using TombEditor.WPF.ViewModels;
+using TombEditor.WPF.Views;
 
 namespace TombEditor.WPF.Forms;
 
-public partial class FormOptions : WindowEx<OptionsViewModel>
+public partial class FormOptions : ViewWindow<OptionsViewModel>
 {
 	public FormOptions(Editor editor)
 	{
