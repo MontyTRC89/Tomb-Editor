@@ -21,10 +21,21 @@
 	mc:Ignorable="d">
 
 	<Window.InputBindings>
+		<!--  File Menu  -->
 		<local:DynamicKeyBinding Command="{Binding NewLevelCommand}" InputGestureText="{local:KeyBindings NewLevel}" />
 		<local:DynamicKeyBinding Command="{Binding OpenLevelCommand}" InputGestureText="{local:KeyBindings OpenLevel}" />
 		<local:DynamicKeyBinding Command="{Binding SaveLevelCommand}" InputGestureText="{local:KeyBindings SaveLevel}" />
 		<local:DynamicKeyBinding Command="{Binding SaveLevelAsCommand}" InputGestureText="{local:KeyBindings SaveLevelAs}" />
+		<local:DynamicKeyBinding Command="{Binding BuildAndPlayCommand}" InputGestureText="{local:KeyBindings BuildAndPlay}" />
+		<local:DynamicKeyBinding Command="{Binding BuildLevelCommand}" InputGestureText="{local:KeyBindings BuildLevel}" />
+		<local:DynamicKeyBinding Command="{Binding QuitEditorCommand}" InputGestureText="{local:KeyBindings QuitEditor}" />
+
+		<!--  Edit Menu  -->
+		<local:DynamicKeyBinding Command="{Binding UndoCommand}" InputGestureText="{local:KeyBindings Undo}" />
+		<local:DynamicKeyBinding Command="{Binding RedoCommand}" InputGestureText="{local:KeyBindings Redo}" />
+		<local:DynamicKeyBinding Command="{Binding CutCommand}" InputGestureText="{local:KeyBindings Cut}" />
+		<local:DynamicKeyBinding Command="{Binding CopyCommand}" InputGestureText="{local:KeyBindings Copy}" />
+		<local:DynamicKeyBinding Command="{Binding PasteCommand}" InputGestureText="{local:KeyBindings Paste}" />
 	</Window.InputBindings>
 
 	<Grid x:Name="layoutRoot">
@@ -34,6 +45,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Menu x:Name="menuStrip" VerticalAlignment="Stretch">
+			<!--  File Menu  -->
 			<MenuItem Header="File">
 				<MenuItem
 					Command="{Binding NewLevelCommand}"
@@ -80,58 +92,68 @@
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
-				<MenuItem Command="{Binding BuildAndPlayCommand}" Header="{local:Localize BuildAndPlay}">
+				<MenuItem
+					Command="{Binding BuildAndPlayCommand}"
+					Header="{local:Localize BuildAndPlay}"
+					InputGestureText="{local:KeyBindings BuildAndPlay}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Command="{Binding BuildLevelCommand}" Header="{local:Localize BuildLevel}">
+				<MenuItem
+					Command="{Binding BuildLevelCommand}"
+					Header="{local:Localize BuildLevel}"
+					InputGestureText="{local:KeyBindings BuildLevel}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
-				<MenuItem Command="{Binding QuitEditorCommand}" Header="{local:Localize QuitEditor}" />
+				<MenuItem
+					Command="{Binding QuitEditorCommand}"
+					Header="{local:Localize QuitEditor}"
+					InputGestureText="{local:KeyBindings QuitEditor}" />
 			</MenuItem>
 
+			<!--  Edit Menu  -->
 			<MenuItem Header="Edit">
 				<MenuItem
-					x:Name="undoToolStripMenuItem"
-					Header="Undo"
-					Tag="Undo">
+					Command="{Binding UndoCommand}"
+					Header="{local:Localize Undo}"
+					InputGestureText="{local:KeyBindings Undo}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem
-					x:Name="redoToolStripMenuItem"
-					Header="Redo"
-					Tag="Redo">
+					Command="{Binding RedoCommand}"
+					Header="{local:Localize Redo}"
+					InputGestureText="{local:KeyBindings Redo}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
 				<MenuItem
-					x:Name="cutToolStripMenuItem"
-					Header="Cut"
-					Tag="Cut">
+					Command="{Binding CutCommand}"
+					Header="{local:Localize Cut}"
+					InputGestureText="{local:KeyBindings Cut}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_cut-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem
-					x:Name="copyToolStripMenuItem"
-					Header="Copy"
-					Tag="Copy">
+					Command="{Binding CopyCommand}"
+					Header="{local:Localize Copy}"
+					InputGestureText="{local:KeyBindings Copy}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem
-					x:Name="pasteToolStripMenuItem"
-					Header="Paste"
-					Tag="Paste">
+					Command="{Binding PasteCommand}"
+					Header="{local:Localize Paste}"
+					InputGestureText="{local:KeyBindings Paste}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
 					</MenuItem.Icon>
@@ -188,6 +210,7 @@
 				</MenuItem>
 			</MenuItem>
 
+			<!--  View Menu  -->
 			<MenuItem Header="View">
 				<MenuItem
 					x:Name="resetCameraToolStripMenuItem"
@@ -228,6 +251,7 @@
 				</MenuItem>
 			</MenuItem>
 
+			<!--  Rooms Menu  -->
 			<MenuItem Header="Rooms">
 				<MenuItem x:Name="newRoomToolStripMenuItem" Header="New room">
 					<MenuItem
@@ -398,6 +422,7 @@
 					Tag="ApplyRoomProperties" />
 			</MenuItem>
 
+			<!--  Items Menu  -->
 			<MenuItem Header="Items">
 				<MenuItem
 					x:Name="addWadToolStripMenuItem"
@@ -581,6 +606,7 @@
 					Tag="GenerateObjectNames" />
 			</MenuItem>
 
+			<!--  Textures Menu  -->
 			<MenuItem Header="Textures">
 				<MenuItem
 					x:Name="loadTextureToolStripMenuItem"
@@ -679,6 +705,7 @@
 				</MenuItem>
 			</MenuItem>
 
+			<!--  Transform Menu  -->
 			<MenuItem Header="Transform">
 				<MenuItem
 					x:Name="smoothRandomFloorUpToolStripMenuItem"
@@ -753,6 +780,7 @@
 					Tag="GridWallsIn5Squares" />
 			</MenuItem>
 
+			<!--  Tools Menu  -->
 			<MenuItem Header="Tools">
 				<MenuItem x:Name="editLevelSettingsToolStripMenuItem" Header="EditLevelSettings">
 					<MenuItem.Icon>
@@ -782,6 +810,7 @@
 					Tag="StartSoundTool" />
 			</MenuItem>
 
+			<!--  Window Menu  -->
 			<MenuItem Header="Window">
 				<MenuItem x:Name="restoreDefaultLayoutToolStripMenuItem" Header="Restore default layout" />
 				<Separator />
@@ -846,6 +875,7 @@
 					IsCheckable="True" />
 			</MenuItem>
 
+			<!--  Help Menu  -->
 			<MenuItem Header="Help">
 				<MenuItem x:Name="aboutToolStripMenuItem" Header="About Tomb Editor...">
 					<MenuItem.Icon>

@@ -13,7 +13,7 @@ namespace TombEditor.WPF
 	{
 		public static readonly DependencyProperty InputGestureTextProperty = DependencyProperty.Register(nameof(InputGestureText), typeof(string), typeof(DynamicKeyBinding));
 
-		public string InputGestureText
+		public string? InputGestureText
 		{
 			get => (string)GetValue(InputGestureTextProperty);
 			set => SetValue(InputGestureTextProperty, value);
@@ -24,7 +24,12 @@ namespace TombEditor.WPF
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.Property == InputGestureTextProperty && e.NewValue is string text)
-				Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+			{
+				if (string.IsNullOrEmpty(text))
+					Gesture = new KeyGesture(Key.NoName);
+				else
+					Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+			}
 
 			base.OnPropertyChanged(e);
 		}

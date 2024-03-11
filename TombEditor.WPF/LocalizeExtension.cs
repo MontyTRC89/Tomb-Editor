@@ -74,7 +74,7 @@ public class KeyBindingsExtension : MarkupExtension, IValueConverter
 			return binding.ProvideValue(serviceProvider);
 		}
 
-		return Binding.DoNothing;
+		return string.Empty;
 	}
 
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
