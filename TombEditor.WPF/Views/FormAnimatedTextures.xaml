@@ -9,242 +9,427 @@
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
 	Title="Animated textures"
-	Width="800"
-	Height="640"
+	Width="810" MinWidth="810"
+	Height="630" MinHeight="630"
 	Style="{DynamicResource CustomWindowStyle}"
 	mc:Ignorable="d">
 
-	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="431" />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
-		<sg:SpacedGrid.RowDefinitions>
-			<RowDefinition Height="auto" />
-			<RowDefinition Height="auto" />
-			<RowDefinition Height="auto" />
-			<RowDefinition Height="auto" />
-		</sg:SpacedGrid.RowDefinitions>
-		<StackPanel
-			Grid.Row="0"
-			Grid.Column="0"
-			Orientation="Horizontal">
-			<Label Content="Animation set:" />
-			<darkCtrl:SearchableComboBox Width="274" Margin="0,0,2,0" />
-			<Button Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_edit-16.png" />
-			</Button>
-			<Button Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
-			</Button>
-			<Button Margin="2,0,2,0" Style="{DynamicResource ButtonWithIconOnly}">
-				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
-			</Button>
-		</StackPanel>
-		<StackPanel
-			Grid.Row="1"
-			Grid.Column="0"
-			Orientation="Horizontal">
-			<GroupBox Header="Frame">
-				<sg:SpacedGrid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="auto" />
-						<ColumnDefinition Width="auto" />
-					</Grid.ColumnDefinitions>
-					<DataGrid
-						Grid.Column="0"
-						Width="383"
-						Height="300">
-						<DataGrid.Columns>
-							<DataGridTemplateColumn Header="Image">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Image Name="Image" />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Header="Repeat" />
-							<DataGridTextColumn Header="Area" />
-							<DataGridTextColumn Header="Edge 0" />
-							<DataGridTextColumn Header="Edge 1" />
-							<DataGridTextColumn Header="Edge 2" />
-							<DataGridTextColumn Header="Edge 3" />
-						</DataGrid.Columns>
-					</DataGrid>
-					<StackPanel Grid.Column="1" Orientation="Vertical">
-						<Button Margin="0,0,0,2" Style="{DynamicResource ButtonWithIconOnly}">
-							<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
-						</Button>
-						<Button Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
-							<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
-						</Button>
-						<Button Margin="0,2,0,2" Style="{DynamicResource ButtonWithIconOnly}">
-							<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png" />
-						</Button>
-						<Button
-							Margin="0,2,0,2"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonWithIconOnly}">
-							<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowUp-16.png" />
-						</Button>
-						<Button
-							Margin="0,2,0,2"
-							VerticalAlignment="Bottom"
-							Style="{DynamicResource ButtonWithIconOnly}">
-							<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png" />
-						</Button>
-					</StackPanel>
-				</sg:SpacedGrid>
-			</GroupBox>
-		</StackPanel>
-		<sg:SpacedGrid Grid.Row="2" Grid.Column="0">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="133" />
-			</Grid.ColumnDefinitions>
-			<StackPanel Grid.Row="0">
-				<GroupBox Header="Procedural animation tool">
-					<sg:SpacedGrid>
-						<sg:SpacedGrid.RowDefinitions>
-							<RowDefinition Height="auto" />
-							<RowDefinition Height="auto" />
-							<RowDefinition Height="auto" />
-						</sg:SpacedGrid.RowDefinitions>
-						<StackPanel Grid.Row="0" Orientation="Horizontal">
-							<Label Width="139" Content="Animator:" />
-							<Label Width="69" Content="Progress %:" />
-							<Label Content="Frames:" />
-						</StackPanel>
-						<StackPanel Grid.Row="1" Orientation="Horizontal">
-							<darkCtrl:SearchableComboBox Width="134" Margin="0,0,2,0">
-								<ComboBoxItem>Stretch horizontal</ComboBoxItem>
-								<ComboBoxItem>Stretch vertical</ComboBoxItem>
-								<ComboBoxItem>Scale</ComboBoxItem>
-								<ComboBoxItem>Scale Skew horizontal ↖</ComboBoxItem>
-								<ComboBoxItem>Skew horizontal ↗</ComboBoxItem>
-								<ComboBoxItem>Skew vertical ↖</ComboBoxItem>
-								<ComboBoxItem>Skew vertical ↗</ComboBoxItem>
-								<ComboBoxItem>Spin</ComboBoxItem>
-								<ComboBoxItem>Pan horizontal</ComboBoxItem>
-								<ComboBoxItem>Pan vertical</ComboBoxItem>
-								<ComboBoxItem>Shake</ComboBoxItem>
-							</darkCtrl:SearchableComboBox>
-							<xceed:IntegerUpDown Width="64" Margin="2,0,2,0" />
-							<xceed:IntegerUpDown Width="68" Margin="2,0,0,0" />
-						</StackPanel>
-						<DockPanel Grid.Row="2">
-							<CheckBox
-								Margin="0,4,4,4"
-								Content="Symmetric"
-								DockPanel.Dock="Left" />
-							<CheckBox
-								Width="61"
-								Margin="2,4,4,4"
-								Content="Smooth"
-								DockPanel.Dock="Left" />
-							<Button
-								Margin="2,4,0,4"
-								DockPanel.Dock="Right"
-								Style="{DynamicResource ButtonWithIconOnly}">
-								<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png" />
-							</Button>
-							<Button
-								Margin="2,4,2,4"
-								DockPanel.Dock="Right"
-								Style="{DynamicResource ButtonWithIconOnly}">
-								<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
-							</Button>
-							<Button
-								Margin="2,4,2,4"
-								DockPanel.Dock="Right"
-								Style="{DynamicResource ButtonWithIconOnly}">
-								<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png" />
-							</Button>
-							<Button
-								Margin="2,4,2,4"
-								DockPanel.Dock="Right"
-								Style="{DynamicResource ButtonWithIconOnly}">
-								<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
-							</Button>
-							<Button
-								Margin="0,4,2,4"
-								DockPanel.Dock="Right"
-								Style="{DynamicResource ButtonWithIconOnly}">
-								<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png" />
-							</Button>
-						</DockPanel>
-					</sg:SpacedGrid>
-				</GroupBox>
-				<GroupBox Header="Setting">
-					<sg:SpacedGrid>
-						<sg:SpacedGrid.RowDefinitions>
-							<RowDefinition Height="auto" />
-							<RowDefinition Height="auto" />
-						</sg:SpacedGrid.RowDefinitions>
-						<StackPanel Grid.Row="0" Orientation="Horizontal">
-							<Label Width="100" Content="Type:" />
-							<Label Width="77" Content="FPS:" />
-							<Label Content="UvRotate" />
-						</StackPanel>
-						<StackPanel Grid.Row="1" Orientation="Horizontal">
-							<darkCtrl:SearchableComboBox Width="96" Margin="0,0,2,0" />
-							<xceed:IntegerUpDown Width="74" Margin="2,0,2,0" />
-							<darkCtrl:SearchableComboBox Width="96" Margin="2,0,0,0" />
-						</StackPanel>
-					</sg:SpacedGrid>
-				</GroupBox>
-			</StackPanel>
-			<StackPanel Grid.Column="1">
-				<GroupBox Height="188" Header="Preview">
-					<StackPanel VerticalAlignment="Center">
-						<Border
-							Width="113"
-							Height="113"
-							BorderBrush="#FF5C5C5C"
-							BorderThickness="1">
-							<Image
-								Name="img1"
-								Width="113"
-								Height="113"
-								Source="/TombEditor.WPF;component/Resources/misc/TE.png" />
-						</Border>
-						<ProgressBar />
-					</StackPanel>
-				</GroupBox>
-			</StackPanel>
-		</sg:SpacedGrid>
-		<DockPanel
-			Grid.Row="3"
-			Grid.Column="0"
-			Grid.ColumnSpan="2"
-			HorizontalAlignment="Right">
-			<Button
-				Width="90"
-				Margin="0,0,1,0"
-				Content="Cancel"
-				DockPanel.Dock="Right" />
-			<Button
-				Width="90"
-				Margin="0,0,4,0"
-				Content="OK"
-				DockPanel.Dock="Right"
-				IsDefault="True" />
-		</DockPanel>
-		<StackPanel
-			Grid.Row="0"
-			Grid.Column="1"
-			Orientation="Horizontal">
-			<darkCtrl:SearchableComboBox Width="347" />
-		</StackPanel>
-		<DockPanel
-			Grid.Row="1"
-			Grid.RowSpan="2"
-			Grid.Column="1"
-			Width="346">
-			<Border BorderBrush="#FF5C5C5C" BorderThickness="1">
-				<WindowsFormsHost x:Name="ViewportHost" />
-			</Border>
-		</DockPanel>
-	</sg:SpacedGrid>
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="40*"/>
+        </Grid.ColumnDefinitions>
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </sg:SpacedGrid.RowDefinitions>
+        <sg:SpacedGrid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Animation set:"/>
+            <darkCtrl:SearchableComboBox Grid.Column="1"/>
+            <sg:SpacedGrid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_edit-16.png"/>
+                </Button>
+                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
+                </Button>
+                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png"/>
+                </Button>
+            </sg:SpacedGrid>
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Frame">
+                <sg:SpacedGrid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <DataGrid ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Image">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Name="Image"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Texture">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <darkCtrl:SearchableComboBox/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Repeat"/>
+                            <DataGridTextColumn Header="Area"/>
+                            <DataGridTextColumn Header="Edge 0"/>
+                            <DataGridTextColumn Header="Edge 1"/>
+                            <DataGridTextColumn Header="Edge 2"/>
+                            <DataGridTextColumn Header="Edge 3"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <sg:SpacedGrid Grid.Column="1">
+                        <sg:SpacedGrid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </sg:SpacedGrid.RowDefinitions>
+                        <Button Grid.Row="0" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
+                        </Button>
+                        <Button Grid.Row="1" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png"/>
+                        </Button>
+                        <Button Grid.Row="2" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png"/>
+                        </Button>
+                        <DockPanel Grid.Row="3" Width="25" VerticalAlignment="Stretch" Background="Firebrick">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png"/>
+                        </DockPanel>
+                        <Button Grid.Row="4" VerticalAlignment="Bottom" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowUp-16.png"/>
+                        </Button>
+                        <Button Grid.Row="5" Style="{DynamicResource ButtonWithIconOnly}">
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png"/>
+                        </Button>
+                    </sg:SpacedGrid>
+                </sg:SpacedGrid>
+            </GroupBox>
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Row="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="133"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0">
+                <GroupBox Header="Procedural animation tool">
+                    <sg:SpacedGrid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <sg:SpacedGrid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </sg:SpacedGrid.RowDefinitions>
+                        <sg:SpacedGrid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" HorizontalAlignment="Stretch" Content="Animator:"/>
+                            <Label Grid.Column="1" Width="63" Content="Progress %:" />
+                            <Label Grid.Column="2" Width="68" Content="Frames:" />
+                        </sg:SpacedGrid>
+                        <sg:SpacedGrid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch">
+                                <ComboBoxItem>Stretch horizontal</ComboBoxItem>
+                                <ComboBoxItem>Stretch vertical</ComboBoxItem>
+                                <ComboBoxItem>Scale</ComboBoxItem>
+                                <ComboBoxItem>Scale Skew horizontal ↖</ComboBoxItem>
+                                <ComboBoxItem>Skew horizontal ↗</ComboBoxItem>
+                                <ComboBoxItem>Skew vertical ↖</ComboBoxItem>
+                                <ComboBoxItem>Skew vertical ↗</ComboBoxItem>
+                                <ComboBoxItem>Spin</ComboBoxItem>
+                                <ComboBoxItem>Pan horizontal</ComboBoxItem>
+                                <ComboBoxItem>Pan vertical</ComboBoxItem>
+                                <ComboBoxItem>Shake</ComboBoxItem>
+                            </ComboBox>
+                            <xceed:IntegerUpDown Grid.Column="1" Width="64"/>
+                            <xceed:IntegerUpDown Grid.Column="2" Width="68"/>
+                        </sg:SpacedGrid>
+                        <sg:SpacedGrid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0" Content="Symmetric"/>
+                            <CheckBox Grid.Column="1" HorizontalAlignment="Stretch" Content="Smooth"/>
+                            <sg:SpacedGrid Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}">
+                                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png"/>
+                                </Button>
+                                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+                                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png"/>
+                                </Button>
+                                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+                                    <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png"/>
+                                </Button>
+                                <Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
+                                    <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
+                                </Button>
+                                <Button Grid.Column="4" Style="{DynamicResource ButtonWithIconOnly}">
+                                    <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png"/>
+                                </Button>
+                            </sg:SpacedGrid>
+                        </sg:SpacedGrid>
+                    </sg:SpacedGrid>
+                </GroupBox>
+                <GroupBox Header="Setting" Height="84">
+                    <sg:SpacedGrid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <sg:SpacedGrid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </sg:SpacedGrid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Type:" HorizontalAlignment="Stretch"/>
+                        <Label Grid.Row="0" Grid.Column="1" Content="FPS:" Width="71"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="UvRotate"/>
+                        <ComboBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch">
+                            <ComboBoxItem>Frames</ComboBoxItem>
+                            <ComboBoxItem>UVRotate</ComboBoxItem>
+                            <ComboBoxItem>PFrames</ComboBoxItem>
+                        </ComboBox>
+                        <xceed:IntegerUpDown Width="74" Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
+                        <darkCtrl:SearchableComboBox Width="74" Grid.Row="1" Grid.Column="1" Visibility="Visible">
+                            <ComboBoxItem>1 FPS</ComboBoxItem>
+                            <ComboBoxItem>2 FPS</ComboBoxItem>
+                            <ComboBoxItem>3 FPS</ComboBoxItem>
+                            <ComboBoxItem>4 FPS</ComboBoxItem>
+                            <ComboBoxItem>4 FPS</ComboBoxItem>
+                            <ComboBoxItem>5 FPS</ComboBoxItem>
+                            <ComboBoxItem>6 FPS</ComboBoxItem>
+                            <ComboBoxItem>7 FPS</ComboBoxItem>
+                            <ComboBoxItem>8 FPS</ComboBoxItem>
+                            <ComboBoxItem>9 FPS</ComboBoxItem>
+                            <ComboBoxItem>10 FPS</ComboBoxItem>
+                            <ComboBoxItem>11 FPS</ComboBoxItem>
+                            <ComboBoxItem>12 FPS</ComboBoxItem>
+                            <ComboBoxItem>13 FPS</ComboBoxItem>
+                            <ComboBoxItem>14 FPS</ComboBoxItem>
+                            <ComboBoxItem>15 FPS</ComboBoxItem>
+                            <ComboBoxItem>16 FPS</ComboBoxItem>
+                            <ComboBoxItem>17 FPS</ComboBoxItem>
+                            <ComboBoxItem>18 FPS</ComboBoxItem>
+                            <ComboBoxItem>19 FPS</ComboBoxItem>
+                            <ComboBoxItem>20FPS</ComboBoxItem>
+                            <ComboBoxItem>21 FPS</ComboBoxItem>
+                            <ComboBoxItem>22 FPS</ComboBoxItem>
+                            <ComboBoxItem>23 FPS</ComboBoxItem>
+                            <ComboBoxItem>24 FPS</ComboBoxItem>
+                            <ComboBoxItem>25 FPS</ComboBoxItem>
+                            <ComboBoxItem>26 FPS</ComboBoxItem>
+                            <ComboBoxItem>27 FPS</ComboBoxItem>
+                            <ComboBoxItem>28 FPS</ComboBoxItem>
+                            <ComboBoxItem>29 FPS</ComboBoxItem>
+                            <ComboBoxItem>30 FPS</ComboBoxItem>
+                            <ComboBoxItem>31 FPS</ComboBoxItem>
+                            <ComboBoxItem>32 FPS</ComboBoxItem>
+                        </darkCtrl:SearchableComboBox>
+                        <darkCtrl:SearchableComboBox Width="140" Grid.Row="1" Grid.Column="2" SelectedIndex="64">
+                            <ComboBoxItem>UVRotate = -64</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -63</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -62</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -61</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -60</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -59</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -58</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -57</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -56</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -55</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -54</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -53</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -52</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -51</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -50</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -49</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -48</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -47</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -46</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -45</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -44</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -43</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -42</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -41</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -40</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -39</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -38</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -37</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -36</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -35</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -34</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -33</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -32</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -31</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -30</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -29</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -28</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -27</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -26</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -25</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -24</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -23</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -22</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -21</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -20</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -19</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -18</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -17</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -16</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -15</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -14</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -13</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -12</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -11</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -10</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -9</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -8</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -7</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -6</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -5</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -4</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -3</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -2</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = -1</ComboBoxItem>
+                            <ComboBoxItem>Default (from script)</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 1</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 2</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 3</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 4</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 5</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 6</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 7</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 8</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 9</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 10</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 11</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 12</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 13</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 14</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 15</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 16</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 17</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 18</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 19</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 20</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 21</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 22</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 23</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 24</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 25</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 26</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 27</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 28</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 29</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 30</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 31</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 32</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 33</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 34</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 35</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 36</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 37</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 38</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 39</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 40</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 41</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 42</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 43</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 44</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 45</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 46</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 47</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 48</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 49</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 50</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 51</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 52</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 53</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 54</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 55</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 56</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 57</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 58</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 59</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 60</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 61</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 62</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 63</ComboBoxItem>
+                            <ComboBoxItem>UVRotate = 64</ComboBoxItem>
+                        </darkCtrl:SearchableComboBox>
+                    </sg:SpacedGrid>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <GroupBox Height="188" Header="Preview">
+                    <sg:SpacedGrid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="120"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Width="113" Height="113" BorderBrush="#FF5C5C5C" BorderThickness="1">
+                            <Image Name="img1" Width="113" Height="113" Source="/TombEditor.WPF;component/Resources/misc/TE.png"/>
+                        </Border>
+                        <ProgressBar Grid.Row="1" VerticalAlignment="Center"/>
+                    </sg:SpacedGrid>
+                </GroupBox>
+            </StackPanel>
+        </sg:SpacedGrid>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <darkCtrl:SearchableComboBox Grid.Column="1" HorizontalAlignment="Stretch"/>
+        </Grid>
+        <sg:SpacedGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="#FF5C5C5C" BorderThickness="1">
+                <WindowsFormsHost x:Name="ViewportHost" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+            </Border>
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width="90" Content="OK" IsDefault="True"/>
+            <Button Grid.Column="1" Width="90" Content="Cancel" DockPanel.Dock="Right"/>
+        </sg:SpacedGrid>
+    </sg:SpacedGrid>
 </Window>
 
