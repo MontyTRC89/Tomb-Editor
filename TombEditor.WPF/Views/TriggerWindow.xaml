@@ -7,7 +7,7 @@
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
-        x:Class="TombEditor.WPF.Forms.FormTrigger"
+        x:Class="TombEditor.WPF.Forms.TriggerWindow"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
         Height="265" MaxHeight="265"
