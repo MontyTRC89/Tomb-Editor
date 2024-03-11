@@ -11,7 +11,6 @@ using System.Threading;
 using System.Windows;
 using TombEditor.WPF.Forms;
 using TombEditor.WPF.ViewModels;
-//using TombEditor.WPF.Views;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
