@@ -20,6 +20,6 @@ public partial class ImportedGeometryBrowser : System.Windows.Controls.UserContr
 		//panel.Controls.AddRange(WinFormsLayer.Controls.Cast<Control>().ToArray());
 		//panel.Dock = DockStyle.Fill;
 
-		ItemPreviewHost.Child = new PanelRenderingImportedGeometry();
+		//ItemPreviewHost.Child = new PanelRenderingImportedGeometry();
 	}
 }

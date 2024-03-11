@@ -9,7 +9,11 @@
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Edit camera" Height="113" Width="243">
+        Title="Edit camera"
+        Height="120" MinHeight="120"
+        Width="243" MinWidth="243"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="Auto"/>

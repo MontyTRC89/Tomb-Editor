@@ -1,4 +1,21 @@
 ﻿{
+	"NewLevel": "New level",
+	"OpenLevel": "Open existing level...",
+	"OpenRecent": "Open recent",
+	"SaveLevel": "Save level",
+	"SaveLevelAs": "Save level as...",
+	"ImportPrj": "Import TRLE level...",
+	"ConvertLevelToTombEngine": "Convert level to TombEngine...",
+	"BuildAndPlay": "Build level and play",
+	"BuildLevel": "Build level",
+	"QuitEditor": "Quit editor",
+
+	"Undo": "Undo",
+	"Redo": "Redo",
+	"Cut": "Cut",
+	"Copy": "Copy",
+	"Paste": "Paste",
+
 	"SetFloor": "Set floor",
 	"SetCeiling": "Set ceiling",
 	"SetBox": "Set box sector property",

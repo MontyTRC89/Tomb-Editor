@@ -1,11 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Input;
 
 namespace TombEditor.WPF
 {
+	public sealed class DynamicKeyBinding : KeyBinding
+	{
+		public static readonly DependencyProperty InputGestureTextProperty = DependencyProperty.Register(nameof(InputGestureText), typeof(string), typeof(DynamicKeyBinding));
+
+		public string? InputGestureText
+		{
+			get => (string)GetValue(InputGestureTextProperty);
+			set => SetValue(InputGestureTextProperty, value);
+		}
+
+		private readonly KeyGestureValueSerializer _serializer = new();
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.Property == InputGestureTextProperty && e.NewValue is string text)
+			{
+				if (string.IsNullOrEmpty(text))
+					Gesture = new KeyGesture(Key.NoName);
+				else
+					Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+			}
+
+			base.OnPropertyChanged(e);
+		}
+	}
+
 	public class Localizer : INotifyPropertyChanged
 	{
 		public static Localizer Instance { get; set; } = new Localizer();
@@ -38,7 +67,7 @@ namespace TombEditor.WPF
 		{
 			get
 			{
-				if (Strings != null && Strings.TryGetValue(key, out string? value))
+				if (Strings is not null && Strings.TryGetValue(key, out string? value))
 					return value.Replace("\\n", "\n");
 
 				return $"{Language}:{key}";
